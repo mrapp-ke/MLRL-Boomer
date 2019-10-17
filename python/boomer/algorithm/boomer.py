@@ -12,8 +12,9 @@ import logging as log
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
 
-from boomer.algorithm.model import Theory, Stats
+from boomer.algorithm.model import Theory
 from boomer.algorithm.persistence import ModelPersistence
+from boomer.algorithm.stats import Stats
 from boomer.learners import MLLearner
 
 
