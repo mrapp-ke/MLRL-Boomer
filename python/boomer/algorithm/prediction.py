@@ -33,4 +33,4 @@ class LinearCombination(Bipartition):
             mask = rule.body.match(x)
             prediction[mask] += rule.head
 
-        return np.where(np.greater(prediction, 0), 1, 0)
+        return np.where(prediction > 0, 1, 0)
