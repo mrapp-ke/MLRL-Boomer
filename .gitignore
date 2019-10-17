@@ -1,0 +1,9 @@
+# Virtual Environment
+venv/
+
+# IntelliJ
+.idea/
+
+# Experiments
+results/
+models/
