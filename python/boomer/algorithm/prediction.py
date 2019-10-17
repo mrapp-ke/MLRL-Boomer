@@ -7,8 +7,8 @@ Provides classes for making predictions based on rules.
 """
 import numpy as np
 
-from boomer.algorithm.boomer import Prediction
 from boomer.algorithm.model import Theory
+from boomer.algorithm.modules import Prediction
 from boomer.algorithm.stats import Stats, get_num_examples
 
 
