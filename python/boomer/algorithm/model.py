@@ -8,6 +8,7 @@ Provides classes for representing the model learned by a classifier or ranker.
 from typing import List
 
 import numpy as np
+from boomer.algorithm.stats import get_num_examples
 
 # Type alias for a theory, which is a list containing several rules
 Theory = List['Rule']
@@ -18,7 +19,33 @@ Head = np.ndarray
 
 class Body:
     """
-    The body of a rule. A body is a conjunction of numerical conditions using <= and > operators.
+    A base class for the body of a rule.
+    """
+
+    def match(self, x: np.ndarray) -> np.ndarray:
+        """
+        Allows to check whether several examples are covered by the body, or not.
+
+        :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
+                        examples to be matched
+        :return:        An array of dtype bool, shape `(num_examples,)`, specifying for each example whether it is
+                        covered by the body, or not
+        """
+        pass
+
+
+class EmptyBody(Body):
+    """
+    An empty body that matches all examples.
+    """
+
+    def match(self, x: np.ndarray) -> np.ndarray:
+        return np.full((get_num_examples(x)), True)
+
+
+class ConjunctiveBody(Body):
+    """
+    A body that given as a conjunction of numerical conditions using <= and > operators.
     """
 
     def __init__(self, leq_features: np.ndarray, leq_thresholds: np.ndarray, gr_features: np.ndarray,
@@ -39,15 +66,6 @@ class Body:
         self.gr_thresholds = gr_thresholds
 
     def match(self, x: np.ndarray) -> np.ndarray:
-        """
-        Allows to check whether several examples are covered by the body, or not.
-
-        :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
-                        examples to be matched
-        :return:        An array of dtype bool, shape `(num_examples,)`, specifying for each example whether it is
-                        covered by the body, or not
-        """
-
         return np.all(np.less_equal(x[:, self.leq_features], self.leq_thresholds), axis=1) & np.all(
             np.greater(x[:, self.gr_features], self.gr_thresholds), axis=1)
 
