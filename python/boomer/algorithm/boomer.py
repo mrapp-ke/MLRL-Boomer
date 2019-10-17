@@ -7,13 +7,14 @@
 Provides a scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
 classification rules. The classifier is composed of several modules, e.g., for rule induction and prediction.
 """
-import numpy as np
+import logging as log
 
+import numpy as np
 from sklearn.utils.validation import check_is_fitted
 
-import logging as log
-from boomer.learners import MLLearner
 from boomer.algorithm.model import Theory
+from boomer.algorithm.persistence import ModelPersistence
+from boomer.learners import MLLearner
 
 
 class Module:
@@ -79,7 +80,7 @@ class Boomer(MLLearner):
 
     theory: Theory
 
-    persistence = None
+    persistence: ModelPersistence = None
 
     def __init__(self, rule_induction: RuleInduction, prediction: Prediction, random_state: int = 0):
         """
