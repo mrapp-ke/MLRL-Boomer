@@ -13,6 +13,5 @@ This project implements `BOOMER` -- an algorithm for learning gradient boosted m
     |-- setup.py			Distutil definition of the library for installation via pip
 	|-- main.py				Implements the main function that is executed when starting an experiment
 |-- install_venv.sh			Bash script for installing a Python virtual environment including the project's library and all of its dependencies
-|-- run_experiments.sh		Bash script for running experiments using the SLURM worload manager
 |-- README.md				This file
 ```
