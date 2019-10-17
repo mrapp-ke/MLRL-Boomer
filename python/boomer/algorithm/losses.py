@@ -19,7 +19,7 @@ class Loss:
 
         :param ground_truth:    An array of dtype float, shape `(num_rows, num_cols)`, representing the expected
                                 confidence scores according to the ground truth labeling
-        :param prediction:     An array of dtype float, shape `(num_rows, num_cols)`, representing the predicted
+        :param prediction:      An array of dtype float, shape `(num_rows, num_cols)`, representing the predicted
                                 confidence scores
         :param index            The index of the prediction
         :return:                The first partial derivative of the loss with respect to the given prediction
@@ -32,7 +32,7 @@ class Loss:
 
         :param ground_truth:    An array of dtype float, shape `(num_rows, num_cols)`, representing the expected
                                 confidence scores according to the ground truth labeling
-        :param prediction:     An array of dtype float, shape `(num_rows, num_cols)`, representing the predicted
+        :param prediction:      An array of dtype float, shape `(num_rows, num_cols)`, representing the predicted
                                 confidence scores
         :param index1           The index of the first prediction
         :param index2           The index of the second prediction
