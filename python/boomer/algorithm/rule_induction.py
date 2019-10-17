@@ -61,7 +61,7 @@ class GradientBoosting(RuleInduction):
                                     including the rule in the theory
         """
 
-        if self.loss is DecomposableLoss:
+        if isinstance(self.loss, DecomposableLoss):
             head, predicted_scores = self.__derive_full_head_using_decomposable_loss(expected_scores, predicted_scores)
         else:
             # TODO: Implement
