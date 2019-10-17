@@ -9,7 +9,7 @@ import numpy as np
 
 from boomer.algorithm.boomer import RuleInduction
 from boomer.algorithm.losses import Loss, SquaredErrorLoss
-from boomer.algorithm.model import Theory
+from boomer.algorithm.model import Theory, Rule
 from boomer.algorithm.stats import Stats
 
 
@@ -27,4 +27,33 @@ class GradientBoosting(RuleInduction):
         self.loss = loss
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+        # Convert binary ground truth labeling into expected confidence scores {-1, 1}
+        ground_truth = np.where(np.greater(y, 0), 1, -1)
+        theory = []
+        t = 0
+
+        if t < self.num_rules:
+            theory.append(self.__induce_default_rule())
+            t += 1
+
+        while t < self.num_rules:
+            theory.append(self.__induce_rule())
+            t += 1
+
+        return theory
+
+    def __induce_default_rule(self) -> Rule:
+        """
+        Induces the default rule.
+
+        :return: The induced default rule
+        """
+        pass
+
+    def __induce_rule(self) -> Rule:
+        """
+        Induces a single- or multi-label classification rule.
+
+        :return: The induced rule
+        """
         pass
