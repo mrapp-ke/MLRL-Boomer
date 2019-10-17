@@ -39,4 +39,6 @@ class SquaredErrorLoss(DecomposableLoss):
     """
 
     def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
-        return np.sum(-((2 * predicted_scores) - (2 * expected_scores)) / 2, axis=0)
+        first_derivative = (2 * predicted_scores) - (2 * expected_scores)
+        second_derivative = 2
+        return np.sum(-first_derivative / second_derivative, axis=0)
