@@ -14,6 +14,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm.model import Theory
 from boomer.algorithm.persistence import ModelPersistence
+from boomer.algorithm.prediction import LinearCombination
 from boomer.algorithm.stats import Stats
 from boomer.learners import MLLearner
 
@@ -89,7 +90,8 @@ class Boomer(MLLearner):
 
     persistence: ModelPersistence = None
 
-    def __init__(self, rule_induction: RuleInduction, prediction: Prediction, random_state: int = 0):
+    def __init__(self, rule_induction: RuleInduction, prediction: Prediction = LinearCombination(),
+                 random_state: int = 0):
         """
         :param rule_induction:  The module that is used to induce classification rules
         :param prediction:      The module that is used to make a prediction
