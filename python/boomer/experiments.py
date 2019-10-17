@@ -118,15 +118,15 @@ class Experiment(AbstractExperiment):
     validation or separate training and test sets.
     """
 
-    def __init__(self, name: str, classifier: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
+    def __init__(self, name: str, learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
                  folds: int = 1, random_state: int = 0):
         """
-        :param name:        The name of the experiment to be written to output files
-        :param classifier:  The scikit-learn classifier to be trained
+        :param name:    The name of the experiment to be written to output files
+        :param learner: The classifier or ranker to be trained
         """
         super().__init__(evaluation, data_dir, data_set, folds, random_state)
         self.name = name
-        self.classifier = classifier
+        self.learner = learner
 
     def run(self):
         log.info('Starting experiment \"' + self.name + '\"...')
@@ -134,10 +134,10 @@ class Experiment(AbstractExperiment):
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         # Train classifier
-        self.classifier.random_state = self.random_state
-        self.classifier.fold = current_fold
-        self.classifier.fit(train_x, train_y)
+        self.learner.random_state = self.random_state
+        self.learner.fold = current_fold
+        self.learner.fit(train_x, train_y)
 
         # Obtain and evaluate predictions for test data
-        predictions = self.classifier.predict(test_x)
+        predictions = self.learner.predict(test_x)
         self.evaluation.evaluate(self.name, predictions, test_y, current_fold=current_fold, total_folds=self.folds)
