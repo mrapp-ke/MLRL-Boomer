@@ -52,7 +52,8 @@ class Prediction(Module):
     """
 
     def predict(self, theory: Theory, x: np.ndarray) -> np.ndarray:
-        """Predicts the labels of examples using a specific theory.
+        """
+        Predicts the labels of examples using a specific theory.
 
         :param theory:  The theory that is used to make predictions
         :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
