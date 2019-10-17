@@ -138,7 +138,7 @@ class EvaluationResult:
         for measure in self.measures:
             score, std_dev = self.avg(measure)
             result[measure] = score
-            result['Std.-dev. ' + measure] = std_dev[0]
+            result['Std.-dev. ' + measure] = std_dev
 
         return result
 
