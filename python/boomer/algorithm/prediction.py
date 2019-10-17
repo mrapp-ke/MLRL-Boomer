@@ -8,7 +8,7 @@ Provides classes for making predictions based on rules.
 import numpy as np
 
 from boomer.algorithm.boomer import Prediction
-from boomer.algorithm.model import Theory, Body
+from boomer.algorithm.model import Theory
 from boomer.algorithm.stats import Stats, get_num_examples
 
 
@@ -30,7 +30,7 @@ class LinearCombination(Bipartition):
         prediction = np.full((get_num_examples(x), stats.num_labels), 0, dtype=float)
 
         for rule in theory:
-            mask = Body.match(rule.body, x)
+            mask = rule.body.match(x)
             prediction[mask] += rule.head
 
         return prediction
