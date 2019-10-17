@@ -13,52 +13,28 @@ class Loss:
     A base class for all loss functions.
     """
 
-    def first_derivative(self, ground_truth: np.ndarray, prediction: np.ndarray, index: int) -> float:
-        """
-        Calculates the first partial derivative of the loss with respect to the prediction at a specific index.
 
-        :param ground_truth:    An array of dtype float, shape `(num_rows, num_cols)`, representing the expected
-                                confidence scores according to the ground truth labeling
-        :param prediction:      An array of dtype float, shape `(num_rows, num_cols)`, representing the predicted
-                                confidence scores
-        :param index            The index of the prediction
-        :return:                The first partial derivative of the loss with respect to the given prediction
-        """
-        pass
+class DecomposableLoss(Loss):
+    """
+    A base class for all decomposable loss functions.
+    """
 
-    def second_derivative(self, ground_truth: np.ndarray, prediction: np.ndarray, index1: int, index2: int) -> float:
+    def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
         """
-        Calculates the second partial derivative of the loss with respect to the predictions at a specific indices.
-
-        :param ground_truth:    An array of dtype float, shape `(num_rows, num_cols)`, representing the expected
-                                confidence scores according to the ground truth labeling
-        :param prediction:      An array of dtype float, shape `(num_rows, num_cols)`, representing the predicted
-                                confidence scores
-        :param index1           The index of the first prediction
-        :param index2           The index of the second prediction
-        :return:                The second partial derivative of the loss with respect to the given prediction
-        """
-        pass
-
-    def is_decomposable(self) -> bool:
-        """
-        Returns whether the loss is element-wise decomposable or not.
-
-        :return: 'True', if the loss is decomposable, 'False' otherwise
+        :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                    expected confidence scores according to the ground truth
+        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
+                                    currently predicted confidence scores
+        :return:                    An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                    optimal scores to be predicted by a rule for each label
         """
         pass
 
 
-class SquaredErrorLoss(Loss):
+class SquaredErrorLoss(DecomposableLoss):
     """
     A multi-label variant of the squared error loss.
     """
 
-    def first_derivative(self, ground_truth: np.ndarray, prediction: np.ndarray, index: int) -> float:
-        return (2 * prediction[index]) - (2 * ground_truth[index])
-
-    def second_derivative(self, ground_truth: np.ndarray, prediction: np.ndarray, index1: int, index2: int) -> float:
-        return 2
-
-    def is_decomposable(self) -> bool:
-        return True
+    def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
+        return (2 * predicted_scores) - (2 * expected_scores)
