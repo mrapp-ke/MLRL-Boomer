@@ -38,50 +38,18 @@ class Body:
         self.gr_features = gr_features
         self.gr_thresholds = gr_thresholds
 
-    @staticmethod
-    def match(body: 'Body', x: np.ndarray) -> np.ndarray:
+    def match(self, x: np.ndarray) -> np.ndarray:
         """
-        Allows to check whether several examples are covered by a body, or not.
+        Allows to check whether several examples are covered by the body, or not.
 
-        :param body:    The body
         :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
                         examples to be matched
         :return:        An array of dtype bool, shape `(num_examples,)`, specifying for each example whether it is
                         covered by the body, or not
         """
 
-        return np.all(np.less_equal(x[:, body.leq_features], body.leq_thresholds), axis=1) & np.all(
-            np.greater(x[:, body.gr_features], body.gr_thresholds), axis=1)
-
-    @staticmethod
-    def filter_examples(body: 'Body', x: np.ndarray) -> np.ndarray:
-        """
-        Filters those examples that are covered by a body.
-
-        :param body:    The body
-        :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
-                        examples to be matched
-        :return:        An array of dtype float, shape `(num_covered, num_features)`, representing the features of the
-                        covered examples
-        """
-
-        return x[Body.match(body, x)]
-
-    @staticmethod
-    def filter_labels(body: 'Body', x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        """
-        Filters the label vectors of those examples that are covered by a body.
-
-        :param body:    The body
-        :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
-                        examples to be matched
-        :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the
-                        given examples
-        :return:        An array of dtype float, shape `(num_covered, num_labels)`, representing the label vectors of
-                        the covered examples
-        """
-
-        return y[Body.match(body, x)]
+        return np.all(np.less_equal(x[:, self.leq_features], self.leq_thresholds), axis=1) & np.all(
+            np.greater(x[:, self.gr_features], self.gr_thresholds), axis=1)
 
 
 class Rule:
