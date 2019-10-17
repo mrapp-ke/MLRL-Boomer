@@ -21,6 +21,8 @@ class DecomposableLoss(Loss):
 
     def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
         """
+        Derives the optimal scores to be predicted for each label.
+
         :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
                                     expected confidence scores according to the ground truth
         :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
