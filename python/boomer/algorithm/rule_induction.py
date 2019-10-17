@@ -5,6 +5,8 @@
 
 Provides class for inducing classification rules.
 """
+import logging as log
+
 import numpy as np
 
 from boomer.algorithm.boomer import RuleInduction
@@ -30,13 +32,15 @@ class GradientBoosting(RuleInduction):
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
         ground_truth = np.where(np.nonzero(y), y, -1)
         theory = []
-        t = 0
+        t = 1
 
-        if t < self.num_rules:
+        if t <= self.num_rules:
+            log.info('Learning rule %s / %s (default rule)...', t, self.num_rules)
             theory.append(self.__induce_default_rule())
             t += 1
 
-        while t < self.num_rules:
+        while t <= self.num_rules:
+            log.info('Learning rule %s / %s...', t, self.num_rules)
             theory.append(self.__induce_rule())
             t += 1
 
