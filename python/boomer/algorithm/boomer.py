@@ -12,7 +12,7 @@ import logging as log
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
 
-from boomer.algorithm.model import Theory
+from boomer.algorithm.model import Theory, Stats
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.learners import MLLearner
 
@@ -33,10 +33,11 @@ class RuleInduction(Module):
     A module that allows to induce a `Theory`, consisting of several classification rules.
     """
 
-    def induce_rules(self, x: np.ndarray, y: np.ndarray) -> Theory:
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         """
         Creates and returns a 'Theory' that contains several candidate rules.
 
+        :param stats:   Statistics about the training data set
         :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
                         training examples
         :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the
@@ -51,10 +52,11 @@ class Prediction(Module):
     A module that allows to make predictions using a 'Theory'.
     """
 
-    def predict(self, theory: Theory, x: np.ndarray) -> np.ndarray:
+    def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
         """
         Predicts the labels of examples using a specific theory.
 
+        :param stats:   Statistics about the training data set
         :param theory:  The theory that is used to make predictions
         :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
                         examples to be classified
@@ -69,6 +71,7 @@ class Boomer(MLLearner):
     classification rules.
 
     Attributes
+        stats           Statistics about the training data set
         theory          The theory that contains the classification rules
         persistence     The 'ModelPersistence' to be used to load/save the theory
     """
@@ -78,6 +81,8 @@ class Boomer(MLLearner):
     STEP_RULE_INDUCTION = 1
 
     PREFIX_RULES = 'rules'
+
+    stats: Stats
 
     theory: Theory
 
@@ -127,7 +132,7 @@ class Boomer(MLLearner):
         """
 
         self.rule_induction.random_state = self.random_state
-        model = self.rule_induction.induce_rules(x, y)
+        model = self.rule_induction.induce_rules(self.stats, x, y)
         self.__save_rules(model)
         return model
 
@@ -139,6 +144,9 @@ class Boomer(MLLearner):
         # Create a dense representation of the training data
         x = self._ensure_input_format(x)
         y = self._ensure_input_format(y)
+
+        # Obtain information about the training data
+        self.stats = Stats.create_stats(x, y)
 
         # Load model from disk, if possible
         model, step = self.__load_model()
@@ -159,4 +167,4 @@ class Boomer(MLLearner):
 
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
         self.prediction.random_state = self.random_state
-        return self.prediction.predict(self.theory, x)
+        return self.prediction.predict(self.stats, self.theory, x)
