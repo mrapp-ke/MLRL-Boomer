@@ -21,16 +21,7 @@ class Bipartition(Prediction):
         pass
 
 
-class Ranking(Prediction):
-    """
-    A base class for all subclasses of the class 'Prediction' that predict probabilities of labels being positive.
-    """
-
-    def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        pass
-
-
-class LinearCombination(Ranking):
+class LinearCombination(Bipartition):
     """
     Predicts the linear combination of rules, i.e., the sum of the scores provided by all covering rules for each label.
     """
@@ -42,4 +33,4 @@ class LinearCombination(Ranking):
             mask = rule.body.match(x)
             prediction[mask] += rule.head
 
-        return prediction
+        return np.where(np.greater(prediction, 0), 1, 0)
