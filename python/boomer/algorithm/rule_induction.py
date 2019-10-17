@@ -30,7 +30,7 @@ class GradientBoosting(RuleInduction):
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
-        expected_scores = np.where(np.nonzero(y), y, -1)
+        expected_scores = np.where(y > 0, y, -1)
         # Initialize the confidence scores that are initially predicted for each example and label
         predicted_scores = np.zeros(np.shape(expected_scores), dtype=float)
         theory = []
