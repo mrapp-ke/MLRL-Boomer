@@ -14,8 +14,11 @@ class MLLearner(MLClassifierBase):
     A base class for all multi-label label classifiers or rankers.
 
     Attributes
-        fold    The current fold or None, if no cross validation is used
+        random_state    The seed to be used by RNGs
+        fold            The current fold or None, if no cross validation is used
     """
+
+    random_state: int = 0
 
     fold: int = None
 
