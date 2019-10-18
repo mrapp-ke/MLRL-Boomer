@@ -9,10 +9,29 @@ import logging as log
 
 import numpy as np
 
-from boomer.algorithm.boomer import RuleInduction
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm.model import Theory, Rule, EmptyBody, Head
 from boomer.algorithm.stats import Stats
+from boomer.learners import Module
+
+
+class RuleInduction(Module):
+    """
+    A module that allows to induce a `Theory`, consisting of several classification rules.
+    """
+
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+        """
+        Creates and returns a 'Theory' that contains several candidate rules.
+
+        :param stats:   Statistics about the training data set
+        :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
+                        training examples
+        :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the
+                        training examples
+        :return:        A 'Theory' that contains the generated candidate rules
+        """
+        pass
 
 
 class GradientBoosting(RuleInduction):

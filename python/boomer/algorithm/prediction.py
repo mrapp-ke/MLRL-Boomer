@@ -8,8 +8,26 @@ Provides classes for making predictions based on rules.
 import numpy as np
 
 from boomer.algorithm.model import Theory
-from boomer.algorithm.modules import Prediction
 from boomer.algorithm.stats import Stats, get_num_examples
+from boomer.learners import Module
+
+
+class Prediction(Module):
+    """
+    A module that allows to make predictions using a 'Theory'.
+    """
+
+    def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
+        """
+        Predicts the labels of examples using a specific theory.
+
+        :param stats:   Statistics about the training data set
+        :param theory:  The theory that is used to make predictions
+        :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
+                        examples to be classified
+        :return:        An array of dtype float, shape `(num_examples, num_labels)', representing the predicted labels
+        """
+        pass
 
 
 class Bipartition(Prediction):
