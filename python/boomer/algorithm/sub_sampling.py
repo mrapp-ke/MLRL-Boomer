@@ -6,6 +6,7 @@
 Provides classes that implement different strategies for sub-sampling training examples and features, such as bagging or
 random feature subset selection.
 """
+import logging as log
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -78,6 +79,9 @@ class Bagging(InstanceSubSampling):
         # Calculate number of examples to be included in the sample
         num_examples = get_num_examples(x)
         num_samples = int(self.sample_size * num_examples)
+
+        log.debug('Drawing %s out of %s examples %s replacement...', num_samples, num_examples,
+                  'with' if self.with_replacement else 'without')
 
         # Get indices of examples that are included in the sample
         return self.__get_sample_indices(num_examples, num_samples)
