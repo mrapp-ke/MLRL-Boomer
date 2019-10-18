@@ -126,6 +126,7 @@ class Boomer(MLLearner):
             log.info('%s classification rules induced in total', num_candidates)
 
         self.theory = model
+        return self
 
     def predict(self, x):
         check_is_fitted(self, ('theory', 'stats'))
