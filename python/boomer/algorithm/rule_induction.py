@@ -12,7 +12,7 @@ import numpy as np
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm.model import Theory, Rule, EmptyBody, Head
 from boomer.algorithm.stats import Stats
-from boomer.algorithm.subsampling import InstanceSubSampling, Bagging
+from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging
 from boomer.learners import Module
 
 
