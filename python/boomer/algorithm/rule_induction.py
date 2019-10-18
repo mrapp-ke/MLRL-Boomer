@@ -67,14 +67,12 @@ class GradientBoosting(RuleInduction):
         log.info('Learning rule 1 / %s (default rule)...', self.num_rules)
         default_rule, predicted_scores = self.__induce_default_rule(expected_scores, predicted_scores)
         theory.append(default_rule)
-        t = 2
 
-        while t <= self.num_rules:
-            log.info('Learning rule %s / %s...', t, self.num_rules)
+        while len(theory) <= self.num_rules:
+            log.info('Learning rule %s / %s...', len(theory) + 1, self.num_rules)
             rule = self.__induce_rule(x)
             # TODO theory.append(rule)
             self.random_state += 1
-            t += 1
 
         return theory
 
