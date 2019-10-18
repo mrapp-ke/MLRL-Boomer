@@ -29,6 +29,8 @@ class GradientBoosting(RuleInduction):
         self.loss = loss
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+        self.__validate()
+
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
         expected_scores = np.where(y > 0, y, -1)
         # Initialize the confidence scores that are initially predicted for each example and label
@@ -48,6 +50,16 @@ class GradientBoosting(RuleInduction):
             t += 1
 
         return theory
+
+    def __validate(self):
+        """
+        Raises exceptions if the module is not configured properly.
+        """
+
+        if self.num_rules < 1:
+            raise ValueError('Parameter \'num_rules\' must be at least 1, got {0}'.format(self.num_rules))
+        if self.loss is None:
+            raise ValueError('Parameter \'loss\' may not be None')
 
     def __induce_default_rule(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> (Rule, np.ndarray):
         """

@@ -55,6 +55,16 @@ class Boomer(MLLearner):
         self.rule_induction = rule_induction
         self.prediction = prediction
 
+    def __validate(self):
+        """
+        Raises exceptions if the algorithm is not configured properly.
+        """
+
+        if self.rule_induction is None:
+            raise ValueError('Module \'rule_induction\' may not be None')
+        if self.prediction is None:
+            raise ValueError('Module \'prediction\' may not be None')
+
     def __load_model(self):
         """
         Loads the model from disk, if available.
@@ -97,6 +107,8 @@ class Boomer(MLLearner):
             self.persistence.save_model(model, Boomer.PREFIX_RULES, fold=self.fold)
 
     def fit(self, x, y):
+        self.__validate()
+
         # Create a dense representation of the training data
         x = self._ensure_input_format(x)
         y = self._ensure_input_format(y)
