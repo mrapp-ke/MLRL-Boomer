@@ -43,8 +43,8 @@ class Boomer(MLLearner):
 
     persistence: ModelPersistence = None
 
-    def __init__(self, rule_induction: RuleInduction = GradientBoosting(), prediction: Prediction = LinearCombination(),
-                 random_state: int = 0):
+    def __init__(self, rule_induction: RuleInduction = GradientBoosting(),
+                 prediction: Prediction = LinearCombination()):
         """
         :param rule_induction:  The module that is used to induce classification rules
         :param prediction:      The module that is used to make a prediction
@@ -54,7 +54,6 @@ class Boomer(MLLearner):
         self.require_dense = [True, True]  # We need a dense representation of the training data
         self.rule_induction = rule_induction
         self.prediction = prediction
-        self.random_state = random_state
 
     def __load_model(self):
         """
@@ -89,6 +88,7 @@ class Boomer(MLLearner):
 
         self.rule_induction.random_state = self.random_state
         model = self.rule_induction.induce_rules(self.stats, x, y)
+        self.random_state = self.rule_induction.random_state
         self.__save_rules(model)
         return model
 
@@ -123,4 +123,6 @@ class Boomer(MLLearner):
 
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
         self.prediction.random_state = self.random_state
-        return self.prediction.predict(self.stats, self.theory, x)
+        prediction = self.prediction.predict(self.stats, self.theory, x)
+        self.random_state = self.prediction.random_state
+        return prediction
