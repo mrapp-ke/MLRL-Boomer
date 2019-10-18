@@ -56,19 +56,18 @@ class GradientBoosting(RuleInduction):
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         self.__validate()
+        theory = []
 
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
         expected_scores = np.where(y > 0, y, -1)
+
         # Initialize the confidence scores that are initially predicted for each example and label
         predicted_scores = np.zeros(np.shape(expected_scores), dtype=float)
-        theory = []
-        t = 1
 
-        if t <= self.num_rules:
-            log.info('Learning rule %s / %s (default rule)...', t, self.num_rules)
-            default_rule, predicted_scores = self.__induce_default_rule(expected_scores, predicted_scores)
-            theory.append(default_rule)
-            t += 1
+        log.info('Learning rule 1 / %s (default rule)...', self.num_rules)
+        default_rule, predicted_scores = self.__induce_default_rule(expected_scores, predicted_scores)
+        theory.append(default_rule)
+        t = 2
 
         while t <= self.num_rules:
             log.info('Learning rule %s / %s...', t, self.num_rules)
