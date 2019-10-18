@@ -97,7 +97,6 @@ class Boomer(MLLearner):
 
         self.rule_induction.random_state = self.random_state
         model = self.rule_induction.induce_rules(self.stats, x, y)
-        self.random_state = self.rule_induction.random_state
         self.__save_rules(model)
         return model
 
@@ -136,5 +135,4 @@ class Boomer(MLLearner):
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
         self.prediction.random_state = self.random_state
         prediction = self.prediction.predict(self.stats, self.theory, x)
-        self.random_state = self.prediction.random_state
         return prediction

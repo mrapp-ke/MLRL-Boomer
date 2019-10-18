@@ -72,6 +72,7 @@ class GradientBoosting(RuleInduction):
             log.info('Learning rule %s / %s...', t, self.num_rules)
             rule = self.__induce_rule(x)
             # TODO theory.append(rule)
+            self.random_state += 1
             t += 1
 
         return theory
@@ -102,7 +103,7 @@ class GradientBoosting(RuleInduction):
             head, predicted_scores = self.__derive_full_head_using_decomposable_loss(expected_scores, predicted_scores)
         else:
             # TODO: Implement
-            pass
+            raise NotImplementedError('Non-decomposable loss functions not supported yet...')
 
         rule = Rule(EmptyBody(), head)
         return rule, predicted_scores
@@ -136,6 +137,7 @@ class GradientBoosting(RuleInduction):
         if self.instance_sub_sampling is None:
             grow_set = x
         else:
+            self.instance_sub_sampling.random_state = self.random_state
             sample_indices = self.instance_sub_sampling.sub_sample(x)
             grow_set = x[sample_indices]
 
