@@ -12,7 +12,7 @@ import numpy as np
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm.model import Theory, Rule, EmptyBody, Head
 from boomer.algorithm.stats import Stats
-from boomer.algorithm.subsampling import InstanceSubSampling
+from boomer.algorithm.subsampling import InstanceSubSampling, Bagging
 from boomer.learners import Module
 
 
@@ -41,7 +41,7 @@ class GradientBoosting(RuleInduction):
     """
 
     def __init__(self, num_rules: int = 100, loss: Loss = SquaredErrorLoss(),
-                 instance_sub_sampling: InstanceSubSampling = None):
+                 instance_sub_sampling: InstanceSubSampling = Bagging()):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param loss:                    The (surrogate) loss to be minimized
@@ -70,7 +70,8 @@ class GradientBoosting(RuleInduction):
 
         while t <= self.num_rules:
             log.info('Learning rule %s / %s...', t, self.num_rules)
-            # TODO theory.append(self.__induce_rule())
+            rule = self.__induce_rule(x)
+            # TODO theory.append(rule)
             t += 1
 
         return theory
@@ -123,10 +124,19 @@ class GradientBoosting(RuleInduction):
         predicted_scores += head
         return head, predicted_scores
 
-    def __induce_rule(self) -> Rule:
+    def __induce_rule(self, x: np.ndarray) -> Rule:
         """
         Induces a single- or multi-label classification rule.
 
-        :return: The induced rule
+        :param x:   An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
+                    training examples
+        :return:    The induced rule
         """
-        pass
+
+        if self.instance_sub_sampling is None:
+            grow_set = x
+        else:
+            sample_indices = self.instance_sub_sampling.sub_sample(x)
+            grow_set = x[sample_indices]
+
+        return None
