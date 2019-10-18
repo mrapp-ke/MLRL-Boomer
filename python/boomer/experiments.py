@@ -16,29 +16,27 @@ from skmultilearn.dataset import load_from_arff
 from boomer.data import one_hot_encode
 from boomer.data import parse_metadata
 from boomer.evaluation import Evaluation
-from boomer.learners import MLLearner
+from boomer.learners import Randomized, MLLearner
 
 
-class AbstractExperiment:
+class AbstractExperiment(Randomized):
     """
     An abstract base class for all experiments. It automatically encodes nominal attributes using one-hot encoding.
     """
 
-    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1, random_state: int = 0):
+    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
         """
         :param evaluation:      The evaluation to be used
         :param data_dir:        The path of the directory that contains the .arff file(s)
         :param data_set:        Name of the data set, e.g. "emotions".
         :param folds:           Number of folds to be used by cross validation or 1, if separate training and test sets
                                 should be used
-        :param random_state:    The seed to be used by RNGs
         """
 
         self.evaluation = evaluation
         self.data_dir = data_dir
         self.data_set = data_set
         self.folds = folds
-        self.random_state = random_state
 
     def run(self):
         if self.folds > 1:
@@ -119,12 +117,12 @@ class Experiment(AbstractExperiment):
     """
 
     def __init__(self, name: str, learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
-                 folds: int = 1, random_state: int = 0):
+                 folds: int = 1):
         """
         :param name:    The name of the experiment to be written to output files
         :param learner: The classifier or ranker to be trained
         """
-        super().__init__(evaluation, data_dir, data_set, folds, random_state)
+        super().__init__(evaluation, data_dir, data_set, folds)
         self.name = name
         self.learner = learner
 
