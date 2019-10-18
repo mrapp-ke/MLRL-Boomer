@@ -7,6 +7,8 @@ Provides classes that represent (surrogate) loss functions for use in gradient b
 """
 import numpy as np
 
+from boomer.algorithm.stats import get_num_examples
+
 
 class Loss:
     """
@@ -40,5 +42,4 @@ class SquaredErrorLoss(DecomposableLoss):
 
     def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
         first_derivative = (2 * predicted_scores) - (2 * expected_scores)
-        second_derivative = 2
-        return np.sum(-first_derivative / second_derivative, axis=0)
+        return -np.sum(first_derivative, axis=0) / (get_num_examples(expected_scores) * 2)
