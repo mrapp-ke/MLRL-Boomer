@@ -5,6 +5,8 @@
 
 Provides classes for making predictions based on rules.
 """
+from abc import abstractmethod
+
 import numpy as np
 
 from boomer.algorithm.model import Theory
@@ -17,6 +19,7 @@ class Prediction(Module):
     A module that allows to make predictions using a 'Theory'.
     """
 
+    @abstractmethod
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
         """
         Predicts the labels of examples using a specific theory.
@@ -35,6 +38,7 @@ class Bipartition(Prediction):
     A base class for all subclasses of the class 'Prediction' that predict binary label vectors.
     """
 
+    @abstractmethod
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
         pass
 

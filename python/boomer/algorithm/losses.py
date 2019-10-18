@@ -5,12 +5,14 @@
 
 Provides classes that represent (surrogate) loss functions for use in gradient boosting.
 """
+from abc import ABC, abstractmethod
+
 import numpy as np
 
 from boomer.algorithm.stats import get_num_examples
 
 
-class Loss:
+class Loss(ABC):
     """
     A base class for all loss functions.
     """
@@ -21,6 +23,7 @@ class DecomposableLoss(Loss):
     A base class for all decomposable loss functions.
     """
 
+    @abstractmethod
     def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
         """
         Derives the optimal scores to be predicted for each label.

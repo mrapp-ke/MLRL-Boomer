@@ -6,10 +6,12 @@
 
 Provides base classes for implementing multi-label classifiers or rankers.
 """
+from abc import ABC, abstractmethod
+
 from skmultilearn.base import MLClassifierBase
 
 
-class Randomized:
+class Randomized(ABC):
     """
     A base class for all classes that use RNGs.
 
@@ -36,8 +38,10 @@ class MLLearner(MLClassifierBase, Randomized):
 
     fold: int = None
 
+    @abstractmethod
     def fit(self, x, y):
         pass
 
+    @abstractmethod
     def predict(self, x):
         pass

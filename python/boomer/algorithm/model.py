@@ -5,9 +5,11 @@
 
 Provides classes for representing the model learned by a classifier or ranker.
 """
+from abc import ABC, abstractmethod
 from typing import List
 
 import numpy as np
+
 from boomer.algorithm.stats import get_num_examples
 
 # Type alias for a theory, which is a list containing several rules
@@ -17,11 +19,12 @@ Theory = List['Rule']
 Head = np.ndarray
 
 
-class Body:
+class Body(ABC):
     """
     A base class for the body of a rule.
     """
 
+    @abstractmethod
     def match(self, x: np.ndarray) -> np.ndarray:
         """
         Allows to check whether several examples are covered by the body, or not.
