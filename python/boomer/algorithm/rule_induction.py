@@ -6,6 +6,7 @@
 Provides class for inducing classification rules.
 """
 import logging as log
+from abc import abstractmethod
 
 import numpy as np
 
@@ -21,6 +22,7 @@ class RuleInduction(Module):
     A module that allows to induce a `Theory`, consisting of several classification rules.
     """
 
+    @abstractmethod
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         """
         Creates and returns a 'Theory' that contains several candidate rules.

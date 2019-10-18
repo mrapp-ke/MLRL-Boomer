@@ -10,6 +10,7 @@ import csv
 import logging as log
 import os
 import os.path as path
+from abc import ABC, abstractmethod
 from typing import List, Dict, Set
 
 import numpy as np
@@ -46,11 +47,12 @@ MACRO_F1 = 'Ma. F1'
 RANK_LOSS = 'Rank Loss'
 
 
-class Evaluation:
+class Evaluation(ABC):
     """
     Base class for all classes that evaluate the predictions provided by a classifier or ranker.
     """
 
+    @abstractmethod
     def evaluate(self, experiment_name: str, predictions, ground_truth, current_fold: int, total_folds: int):
         """
         Evaluates the predictions provided by a classifier or ranker.
@@ -142,7 +144,7 @@ class EvaluationResult:
         return result
 
 
-class Output:
+class Output(ABC):
     """
     An abstract base class for all outputs, evaluation results may be written to.
     """
@@ -154,6 +156,7 @@ class Output:
         """
         self.output_predictions = output_predictions
 
+    @abstractmethod
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
         """
@@ -167,6 +170,7 @@ class Output:
         """
         pass
 
+    @abstractmethod
     def write_predictions(self, experiment_name: str, predictions, ground_truth, total_folds: int, fold: int = None):
         """
         Writes predictions to the output.
@@ -327,6 +331,7 @@ class AbstractEvaluation(Evaluation):
         self.__write_predictions(experiment_name, predictions, ground_truth, current_fold, total_folds)
         self.__write_evaluation_result(experiment_name, result, current_fold, total_folds)
 
+    @abstractmethod
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int,
                          total_folds: int):
         pass

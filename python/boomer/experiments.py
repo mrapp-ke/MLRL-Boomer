@@ -9,6 +9,7 @@ and test sets.
 """
 import logging as log
 import os.path as path
+from abc import abstractmethod
 
 from sklearn.model_selection import KFold
 from skmultilearn.dataset import load_from_arff
@@ -106,7 +107,17 @@ class AbstractExperiment(Randomized):
         # Train and evaluate classifier
         self._train_and_evaluate(train_x, train_y, test_x, test_y, current_fold=0, total_folds=1)
 
+    @abstractmethod
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
+        """
+
+        :param train_x:         The feature matrix of the training examples
+        :param train_y:         The label matrix of the training examples
+        :param test_x:          The feature matrix of the test examples
+        :param test_y:          The label matrix of the test examples
+        :param current_fold:    The current fold starting at 0
+        :param total_folds:     The total number of folds or 0, if no cross validation is used
+        """
         pass
 
 

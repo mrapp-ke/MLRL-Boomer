@@ -7,7 +7,7 @@ Provides classes that implement different strategies for sub-sampling training e
 random feature subset selection.
 """
 import logging as log
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 import numpy as np
 from sklearn.utils import check_random_state
@@ -17,7 +17,7 @@ from boomer.algorithm.stats import get_num_examples
 from boomer.learners import Randomized
 
 
-class InstanceSubSampling(ABC, Randomized):
+class InstanceSubSampling(Randomized):
     """
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
