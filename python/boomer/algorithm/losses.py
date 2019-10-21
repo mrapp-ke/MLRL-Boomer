@@ -24,7 +24,7 @@ class DecomposableLoss(Loss):
     """
 
     @abstractmethod
-    def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
+    def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> (np.ndarray, np.ndarray):
         """
         Derives the optimal scores to be predicted for each label.
 
@@ -33,8 +33,14 @@ class DecomposableLoss(Loss):
         :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
                                     currently predicted confidence scores
         :return:                    An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    optimal scores to be predicted by a rule for each label
+                                    optimal scores to be predicted by a rule for each label, as well as an array of type
+                                    float, shape `(num_examples, num_labels)`, representing the gradients for each
+                                    example and label
         """
+        pass
+
+    def evaluate_predictions(self, scores: np.ndarray, first_derivative: np.ndarray) -> float:
+        # TODO comment
         pass
 
 
@@ -43,6 +49,11 @@ class SquaredErrorLoss(DecomposableLoss):
     A multi-label variant of the squared error loss.
     """
 
-    def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> np.ndarray:
+    def derive_scores(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> (np.ndarray, np.ndarray):
         first_derivative = (2 * predicted_scores) - (2 * expected_scores)
-        return -np.sum(first_derivative, axis=0) / (get_num_examples(expected_scores) * 2)
+        scores = -np.sum(first_derivative, axis=0) / (get_num_examples(expected_scores) * 2)
+        return scores, first_derivative
+
+    def evaluate_predictions(self, scores: np.ndarray, first_derivative: np.ndarray) -> float:
+        # gradient * score + 1/2 * hessian * score^2 = gradient * score + score^2
+        return np.sum((first_derivative * scores) + np.square(scores)) / first_derivative.size
