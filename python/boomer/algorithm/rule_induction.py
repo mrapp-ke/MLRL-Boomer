@@ -16,6 +16,12 @@ from boomer.algorithm.stats import Stats
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging
 from boomer.learners import Module
 
+DTYPE_INDICES = np.int32
+
+DTYPE_SCORES = np.float64
+
+DTYPE_FEATURES = np.float32
+
 
 class RuleInduction(Module):
     """
@@ -56,25 +62,34 @@ class GradientBoosting(RuleInduction):
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         self.__validate()
-        theory = []
 
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
-        expected_scores = np.where(y > 0, y, -1)
+        expected_scores = np.ascontiguousarray(np.where(y > 0, y, -1), dtype=DTYPE_SCORES)
 
         # Initialize the confidence scores that are initially predicted for each example and label
-        predicted_scores = np.zeros(np.shape(expected_scores), dtype=float)
+        predicted_scores = np.ascontiguousarray(np.zeros(expected_scores.shape, dtype=DTYPE_SCORES))
 
+        # Induce default rule
         log.info('Learning rule 1 / %s (default rule)...', self.num_rules)
         default_rule, predicted_scores = self.__induce_default_rule(expected_scores, predicted_scores)
-        theory.append(default_rule)
-        t = 2
+        theory = [default_rule]
 
-        while t <= self.num_rules:
-            log.info('Learning rule %s / %s...', t, self.num_rules)
-            rule = self.__induce_rule(x)
-            # TODO theory.append(rule)
-            self.random_state += 1
-            t += 1
+        if self.num_rules > 1:
+            # Convert feature matrix into Fortran array for efficiency
+            x = np.asfortranarray(x, dtype=DTYPE_FEATURES)
+
+            # Presort features for efficient evaluation of numerical conditions
+            x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INDICES)
+
+            # TODO: Get rid of counter variable
+            t = 2
+
+            while t <= self.num_rules:
+                log.info('Learning rule %s / %s...', t, self.num_rules)
+                rule = self.__induce_rule(x)
+                # TODO theory.append(rule)
+                self.random_state += 1
+                t += 1
 
         return theory
 
@@ -106,8 +121,7 @@ class GradientBoosting(RuleInduction):
             # TODO: Implement
             raise NotImplementedError('Non-decomposable loss functions not supported yet...')
 
-        rule = Rule(EmptyBody(), head)
-        return rule, predicted_scores
+        return Rule(EmptyBody(), head), predicted_scores
 
     def __derive_full_head_using_decomposable_loss(self, expected_scores: np.ndarray,
                                                    predicted_scores: np.ndarray) -> (Head, np.ndarray):
