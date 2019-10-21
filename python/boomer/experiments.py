@@ -8,14 +8,11 @@ Provides classes for training and evaluating multi-label classifiers using eithe
 and test sets.
 """
 import logging as log
-import os.path as path
 from abc import abstractmethod
 
 from sklearn.model_selection import KFold
-from skmultilearn.dataset import load_from_arff
 
-from boomer.data import one_hot_encode
-from boomer.data import parse_metadata
+from boomer.data import load_data_set_and_meta_data, load_data_set, one_hot_encode
 from boomer.evaluation import Evaluation
 from boomer.learners import Randomized, MLLearner
 
@@ -29,7 +26,7 @@ class AbstractExperiment(Randomized):
         """
         :param evaluation:      The evaluation to be used
         :param data_dir:        The path of the directory that contains the .arff file(s)
-        :param data_set:        Name of the data set, e.g. "emotions".
+        :param data_set:        Name of the data set, e.g. "emotions"
         :param folds:           Number of folds to be used by cross validation or 1, if separate training and test sets
                                 should be used
         """
@@ -51,14 +48,8 @@ class AbstractExperiment(Randomized):
         """
 
         log.info('Performing %s-fold cross validation...', self.folds)
-
-        log.debug('Parsing meta data from data set...')
-        arff_file = path.join(self.data_dir, self.data_set + '.arff')
-        xml_file = path.join(self.data_dir, self.data_set + '.xml')
-        num_labels, label_location, nominal_attributes = parse_metadata(arff_file, xml_file)
-        log.debug('Loading training set from file \"%s\"...', arff_file)
-        x, y = load_from_arff(arff_file, label_count=num_labels, label_location=label_location)
-        x, _ = one_hot_encode(x, y, nominal_attributes)
+        x, y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + ".arff", self.data_set + ".xml")
+        x, _ = one_hot_encode(x, y, meta_data.nominal_attributes)
 
         # Cross validate
         k_fold = KFold(n_splits=self.folds, random_state=self.random_state, shuffle=True)
@@ -88,21 +79,14 @@ class AbstractExperiment(Randomized):
 
         log.info('Using separate training and test sets...')
 
-        log.debug('Parsing meta data from data set...')
-        train_file = path.join(self.data_dir, self.data_set + '-train.arff')
-        xml_file = path.join(self.data_dir, self.data_set + '.xml')
-        num_labels, label_location, nominal_attributes = parse_metadata(train_file, xml_file)
-
         # Load training data
-        log.debug('Loading training set from file \"%s\"...', train_file)
-        train_x, train_y = load_from_arff(train_file, label_count=num_labels, label_location=label_location)
-        train_x, encoder = one_hot_encode(train_x, train_y, nominal_attributes)
+        train_x, train_y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + '-train.arff',
+                                                                  self.data_set + '.xml')
+        train_x, encoder = one_hot_encode(train_x, train_y, meta_data.nominal_attributes)
 
         # Load test data
-        test_file = path.join(self.data_dir, self.data_set + '-test.arff')
-        log.debug('Loading test set from file \"%s\"...', test_file)
-        test_x, test_y = load_from_arff(test_file, label_count=num_labels, label_location=label_location)
-        test_x = one_hot_encode(test_x, test_y, nominal_attributes, encoder=encoder)
+        test_x, test_y = load_data_set(self.data_dir, self.data_set + '-test.arff', meta_data)
+        test_x, _ = one_hot_encode(test_x, test_y, meta_data.nominal_attributes, encoder=encoder)
 
         # Train and evaluate classifier
         self._train_and_evaluate(train_x, train_y, test_x, test_y, current_fold=0, total_folds=1)
