@@ -15,6 +15,7 @@ setup(name='boomer',
           'scikit-multilearn',
           'scipy',
           'sklearn',
-          'requests'
+          'requests',
+          'matplotlib'
       ],
       zip_safe=False)
