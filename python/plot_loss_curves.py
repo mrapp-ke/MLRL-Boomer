@@ -73,7 +73,6 @@ class Plotter(CrossValidation, MLClassifierBase):
         log.info('Creating plot...')
 
         for measure in Plotter.MEASURES:
-
             for prefix in ['train', 'test']:
                 x = []
                 y = []
