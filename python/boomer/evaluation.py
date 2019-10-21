@@ -90,12 +90,12 @@ class EvaluationResult:
         """
 
         if self.results is None:
-            self.results = [None] * total_folds
+            self.results = [dict()] * total_folds
         elif len(self.results) != total_folds:
             raise AssertionError('Inconsistent number of total folds given')
 
         self.measures.add(name)
-        values = self.results[fold] if self.results[fold] is not None else dict()
+        values = self.results[fold]
         values[name] = score
         self.results[fold] = values
 
