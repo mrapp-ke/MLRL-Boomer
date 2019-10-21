@@ -17,21 +17,19 @@ from boomer.evaluation import Evaluation
 from boomer.learners import Randomized, MLLearner
 
 
-class AbstractExperiment(Randomized):
+class CrossValidation(Randomized):
     """
-    An abstract base class for all experiments. It automatically encodes nominal attributes using one-hot encoding.
+    A base class for all classes that use cross validation or a train-test split to train and evaluate a multi-label
+    classifier or ranker.
     """
 
-    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
+    def __init__(self, data_dir: str, data_set: str, folds: int):
         """
-        :param evaluation:      The evaluation to be used
-        :param data_dir:        The path of the directory that contains the .arff file(s)
-        :param data_set:        Name of the data set, e.g. "emotions"
-        :param folds:           Number of folds to be used by cross validation or 1, if separate training and test sets
-                                should be used
+        :param data_dir:    The path of the directory that contains the .arff file(s)
+        :param data_set:    Name of the data set, e.g. "emotions"
+        :param folds:       Number of folds to be used by cross validation or 1, if separate training and test sets
+                            should be used
         """
-
-        self.evaluation = evaluation
         self.data_dir = data_dir
         self.data_set = data_set
         self.folds = folds
@@ -44,7 +42,7 @@ class AbstractExperiment(Randomized):
 
     def __cross_validate(self):
         """
-        Trains the classifier used in the experiment using n-fold cross validation.
+        Performs n-fold cross validation.
         """
 
         log.info('Performing %s-fold cross validation...', self.folds)
@@ -94,6 +92,8 @@ class AbstractExperiment(Randomized):
     @abstractmethod
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         """
+        The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
+        test set.
 
         :param train_x:         The feature matrix of the training examples
         :param train_y:         The label matrix of the training examples
@@ -102,6 +102,23 @@ class AbstractExperiment(Randomized):
         :param current_fold:    The current fold starting at 0
         :param total_folds:     The total number of folds or 0, if no cross validation is used
         """
+        pass
+
+
+class AbstractExperiment(CrossValidation):
+    """
+    An abstract base class for all experiments. It automatically encodes nominal attributes using one-hot encoding.
+    """
+
+    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
+        """
+        :param evaluation:      The evaluation to be used
+        """
+
+        super().__init__(data_dir, data_set, folds)
+        self.evaluation = evaluation
+
+    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         pass
 
 
