@@ -56,4 +56,4 @@ class SquaredErrorLoss(DecomposableLoss):
 
     def evaluate_predictions(self, scores: np.ndarray, first_derivative: np.ndarray) -> float:
         # gradient * score + 1/2 * hessian * score^2 = gradient * score + score^2
-        return np.sum((first_derivative * scores) + np.square(scores)) / first_derivative.size
+        return np.sum((first_derivative * scores) + np.square(scores)).item()
