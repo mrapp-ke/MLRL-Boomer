@@ -12,6 +12,7 @@ import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm.model import Theory, Rule, EmptyBody, Head
+from boomer.algorithm.rule_refinement import refine_rule, AllFeaturesIterator
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging
 from boomer.learners import Module
@@ -78,18 +79,16 @@ class GradientBoosting(RuleInduction):
             # Convert feature matrix into Fortran array for efficiency
             x = np.asfortranarray(x, dtype=DTYPE_FEATURES)
 
-            # Presort features for efficient evaluation of numerical conditions
-            x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INDICES)
+            while len(theory) < self.num_rules:
+                log.info('Learning rule %s / %s...', len(theory) + 1, self.num_rules)
+                rule = self.__induce_rule(x, expected_scores, predicted_scores)
 
-            # TODO: Get rid of counter variable
-            t = 2
+                # TODO: Can we make this more efficient?
+                mask = rule.body.match(x)
+                predicted_scores[mask] += rule.head
 
-            while t <= self.num_rules:
-                log.info('Learning rule %s / %s...', t, self.num_rules)
-                rule = self.__induce_rule(x)
-                # TODO theory.append(rule)
+                theory.append(rule)
                 self.random_state += 1
-                t += 1
 
         return theory
 
@@ -136,11 +135,11 @@ class GradientBoosting(RuleInduction):
                                     head to the given predicted scores
         """
 
-        head = self.loss.derive_scores(expected_scores, predicted_scores)
+        head, _ = self.loss.derive_scores(expected_scores, predicted_scores)
         predicted_scores += head
         return head, predicted_scores
 
-    def __induce_rule(self, x: np.ndarray) -> Rule:
+    def __induce_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:
         """
         Induces a single- or multi-label classification rule.
 
@@ -151,9 +150,18 @@ class GradientBoosting(RuleInduction):
 
         if self.instance_sub_sampling is None:
             grow_set = x
+            expected_scores_grow_set = expected_scores
+            predicted_scores_grow_set = predicted_scores
         else:
             self.instance_sub_sampling.random_state = self.random_state
             sample_indices = self.instance_sub_sampling.sub_sample(x)
             grow_set = x[sample_indices]
+            expected_scores_grow_set = expected_scores[sample_indices]
+            predicted_scores_grow_set = predicted_scores[sample_indices]
 
-        return None
+        # Presort features for efficient evaluation of numerical conditions
+        # TODO Keep if no sub-sampling is used
+        x_sorted_indices = np.asfortranarray(np.argsort(grow_set, axis=0), dtype=DTYPE_INDICES)
+
+        return refine_rule(grow_set, x_sorted_indices, expected_scores_grow_set, predicted_scores_grow_set, self.loss,
+                           AllFeaturesIterator(grow_set))
