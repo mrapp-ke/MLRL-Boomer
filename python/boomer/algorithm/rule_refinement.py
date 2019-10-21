@@ -97,8 +97,8 @@ def __get_best_refinement(x: np.ndarray, x_sorted_indices: np.ndarray, expected_
                     if refinement is None:
                         refinement = Refinement(h=h, leq=True,
                                                 threshold=__get_threshold(current_threshold, next_threshold),
-                                                feature_index=c, threshold_index=r,
-                                                head=head, covered_indices=indices[:r])
+                                                feature_index=c, threshold_index=r, head=head,
+                                                covered_indices=indices[:r])
                     else:
                         refinement.h = h
                         refinement.leq = True
