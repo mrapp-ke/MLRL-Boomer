@@ -4,6 +4,7 @@ import argparse
 import logging as log
 
 from boomer.algorithm.boomer import Boomer
+from boomer.algorithm.persistence import ModelPersistence
 from boomer.evaluation import ClassificationEvaluation, LogOutput, CsvOutput
 from boomer.experiments import Experiment
 
@@ -30,6 +31,10 @@ if __name__ == '__main__':
 
     experiment_name = args.dataset
     learner = Boomer()
+
+    if args.model_dir is not None:
+        learner.persistence = ModelPersistence(model_dir=args.model_dir, model_name=args.dataset)
+
     evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
                                                                  output_predictions=args.store_predictions))
 
