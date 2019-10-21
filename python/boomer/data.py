@@ -46,8 +46,16 @@ class NominalAttribute(Attribute):
 
 
 class MetaData:
+    """
+    Stores the meta data of a multi-label data set.
+    """
 
     def __init__(self, num_labels: int, label_location: str, nominal_attributes: List[int]):
+        """
+        :param num_labels:          The number of labels contained in the data set
+        :param label_location:      Whether the labels are located at the 'start', or the 'end'
+        :param nominal_attributes:  A list that contains the indices of all nominal attributes
+        """
         self.num_labels = num_labels
         self.label_location = label_location
         self.nominal_attributes = nominal_attributes
