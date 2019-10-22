@@ -117,4 +117,4 @@ class Rule:
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
                                 predicted for the given examples
         """
-        predictions[self.body.match(x), self.head.labels] += self.head.scores
+        predictions[self.body.match(x), :][:, self.head.labels] += self.head.scores
