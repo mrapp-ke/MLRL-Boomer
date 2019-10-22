@@ -53,6 +53,6 @@ class LinearCombination(Bipartition):
 
         for rule in theory:
             mask = rule.body.match(x)
-            prediction[mask] += rule.head
+            prediction[mask, rule.head.labels] += rule.head.scores
 
         return np.where(prediction > 0, 1, 0)

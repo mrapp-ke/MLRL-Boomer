@@ -8,7 +8,7 @@ Provides functions for refining and evaluating candidate rules.
 import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss
-from boomer.algorithm.model import Rule, ConjunctiveBody, Head
+from boomer.algorithm.model import Rule, ConjunctiveBody, Head, DTYPE_INDICES
 from boomer.algorithm.stats import get_num_features, get_num_examples
 
 
@@ -138,9 +138,9 @@ def __derive_optimal_head(expected_scores: np.ndarray, predicted_scores: np.ndar
 
 def __derive_optimal_head_using_decomposable_loss(expected_scores: np.ndarray, predicted_scores: np.ndarray,
                                                   loss: DecomposableLoss) -> (Head, float):
-    head, gradients = loss.derive_scores(expected_scores, predicted_scores)
-    h = loss.evaluate_predictions(head, gradients)
-    return head, h
+    scores, gradients = loss.derive_scores(expected_scores, predicted_scores)
+    h = loss.evaluate_predictions(scores, gradients)
+    return Head(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores), h
 
 
 def __build_rule(leq_conditions, gr_conditions, head: Head) -> Rule:
