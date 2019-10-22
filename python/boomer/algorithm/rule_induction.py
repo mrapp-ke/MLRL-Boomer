@@ -11,17 +11,11 @@ from abc import abstractmethod
 import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
-from boomer.algorithm.model import Theory, Rule, EmptyBody, Head
+from boomer.algorithm.model import Theory, Rule, EmptyBody, Head, DTYPE_SCORES, DTYPE_FEATURES, DTYPE_INDICES
 from boomer.algorithm.rule_refinement import refine_rule, AllFeaturesIterator
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging
 from boomer.learners import Module
-
-DTYPE_INDICES = np.int32
-
-DTYPE_SCORES = np.float64
-
-DTYPE_FEATURES = np.float32
 
 
 class RuleInduction(Module):

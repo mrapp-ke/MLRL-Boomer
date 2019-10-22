@@ -12,11 +12,17 @@ import numpy as np
 
 from boomer.algorithm.stats import get_num_examples
 
+# The dtype used for indices
+DTYPE_INDICES = np.int32
+
+# The dtype used for numerical scores
+DTYPE_SCORES = np.float64
+
+# The dtype used for feature values
+DTYPE_FEATURES = np.float32
+
 # Type alias for a theory, which is a list containing several rules
 Theory = List['Rule']
-
-# Type alias for the head of a rule. A head assigns a numerical score to each label.
-Head = np.ndarray
 
 
 class Body(ABC):
@@ -71,6 +77,22 @@ class ConjunctiveBody(Body):
     def match(self, x: np.ndarray) -> np.ndarray:
         return np.all(np.less_equal(x[:, self.leq_features], self.leq_thresholds), axis=1) & np.all(
             np.greater(x[:, self.gr_features], self.gr_thresholds), axis=1)
+
+
+class Head:
+    """
+    The head of a rule. It assigns a numerical score to one or several labels.
+    """
+
+    def __init__(self, labels: np.ndarray, scores: np.ndarray):
+        """
+        :param labels:  An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the labels
+                        for which the rule predicts
+        :param scores:  An array of dtype float, shape `(num_predicted_labels)`, representing the scores that are
+                        predicted by the rule
+        """
+        self.labels = labels
+        self.scores = scores
 
 
 class Rule:
