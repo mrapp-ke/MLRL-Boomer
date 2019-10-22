@@ -107,3 +107,14 @@ class Rule:
         """
         self.body = body
         self.head = head
+
+    def predict(self, x: np.ndarray, predictions: np.ndarray):
+        """
+        Applies the rule's prediction to all examples it covers.
+
+        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
+                                of the examples to predict for
+        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
+                                predicted for the given examples
+        """
+        predictions[self.body.match(x), self.head.labels] += self.head.scores
