@@ -24,6 +24,7 @@ if __name__ == '__main__':
     parser.add_argument('--model-dir', type=str, default=None,
                         help='The path of the directory where models should be saved')
     parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
+    parser.add_argument('--folds', type=int, default=1, help='Number of folds to be used by cross validation')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
     args = parser.parse_args()
@@ -39,5 +40,5 @@ if __name__ == '__main__':
                                                                  output_predictions=args.store_predictions))
 
     experiment = Experiment(experiment_name, learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
-                            folds=10)
+                            folds=args.folds)
     experiment.run()
