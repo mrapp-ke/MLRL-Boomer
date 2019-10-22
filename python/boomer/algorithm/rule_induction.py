@@ -14,7 +14,7 @@ from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm.model import Theory, Rule, EmptyBody, Head, DTYPE_SCORES, DTYPE_FEATURES, DTYPE_INDICES
 from boomer.algorithm.rule_refinement import refine_rule, AllFeaturesIterator
 from boomer.algorithm.stats import Stats
-from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging
+from boomer.algorithm.sub_sampling import InstanceSubSampling
 from boomer.learners import Module
 
 
@@ -44,7 +44,7 @@ class GradientBoosting(RuleInduction):
     """
 
     def __init__(self, num_rules: int = 100, loss: Loss = SquaredErrorLoss(),
-                 instance_sub_sampling: InstanceSubSampling = Bagging()):
+                 instance_sub_sampling: InstanceSubSampling = None):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param loss:                    The (surrogate) loss to be minimized
