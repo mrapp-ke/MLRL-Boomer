@@ -78,8 +78,8 @@ class GradientBoosting(RuleInduction):
                 rule = self.__induce_rule(x, expected_scores, predicted_scores)
 
                 # TODO: Can we make this more efficient?
-                mask = rule.body.match(x)
-                predicted_scores[mask] += rule.head
+                # Apply prediction of the new rule to the matrix of predicted scores
+                rule.predict(x, predicted_scores)
 
                 theory.append(rule)
                 self.random_state += 1
