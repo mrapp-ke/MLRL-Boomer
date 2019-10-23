@@ -8,7 +8,7 @@ Provides functions for refining and evaluating candidate rules.
 import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss
-from boomer.algorithm.model import Rule, ConjunctiveBody, Head, DTYPE_INDICES
+from boomer.algorithm.model import Rule, ConjunctiveBody, Head, DTYPE_INDICES, DTYPE_FEATURES
 from boomer.algorithm.stats import get_num_features, get_num_examples
 
 
@@ -144,9 +144,9 @@ def __derive_optimal_head_using_decomposable_loss(expected_scores: np.ndarray, p
 
 
 def __build_rule(leq_conditions, gr_conditions, head: Head) -> Rule:
-    leq_features = np.fromiter(leq_conditions.keys(), dtype=np.int32)
-    leq_thresholds = np.fromiter(leq_conditions.values(), dtype=np.float32)
-    gr_features = np.fromiter(gr_conditions.keys(), dtype=np.int32)
-    gr_thresholds = np.fromiter(gr_conditions.values(), dtype=np.float32)
+    leq_features = np.fromiter(leq_conditions.keys(), dtype=DTYPE_INDICES)
+    leq_thresholds = np.fromiter(leq_conditions.values(), dtype=DTYPE_FEATURES)
+    gr_features = np.fromiter(gr_conditions.keys(), dtype=DTYPE_INDICES)
+    gr_thresholds = np.fromiter(gr_conditions.values(), dtype=DTYPE_FEATURES)
     body = ConjunctiveBody(leq_features, leq_thresholds, gr_features, gr_thresholds)
     return Rule(body, head)
