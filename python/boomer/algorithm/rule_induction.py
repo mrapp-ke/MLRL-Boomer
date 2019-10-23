@@ -12,9 +12,9 @@ import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm.model import Theory, Rule, EmptyBody, Head, DTYPE_SCORES, DTYPE_FEATURES
-from boomer.algorithm.rule_refinement import refine_rule, presort_features, AllFeaturesIterator
+from boomer.algorithm.rule_refinement import refine_rule, presort_features
 from boomer.algorithm.stats import Stats
-from boomer.algorithm.sub_sampling import InstanceSubSampling
+from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
 from boomer.learners import Module
 
 
@@ -44,16 +44,19 @@ class GradientBoosting(RuleInduction):
     """
 
     def __init__(self, num_rules: int = 100, loss: Loss = SquaredErrorLoss(),
-                 instance_sub_sampling: InstanceSubSampling = None):
+                 instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param loss:                    The (surrogate) loss to be minimized
         :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
                                         classification rule is learned
+        :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
+                                        classification rule is refined
         """
         self.num_rules = num_rules
         self.loss = loss
         self.instance_sub_sampling = instance_sub_sampling
+        self.feature_sub_sampling = feature_sub_sampling
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         self.__validate()
@@ -156,4 +159,4 @@ class GradientBoosting(RuleInduction):
             presorted_indices = None
 
         return refine_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, self.loss,
-                           AllFeaturesIterator(grow_set), presorted_indices)
+                           self.feature_sub_sampling, presorted_indices, random_state=self.random_state)
