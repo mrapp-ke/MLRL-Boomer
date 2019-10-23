@@ -100,6 +100,7 @@ def __find_best_refinement(x: np.ndarray, expected_scores: np.ndarray, predicted
             current_threshold = x[indices[r - 1], c]
             next_threshold = x[indices[r], c]
 
+            # TODO Check if the second part of the if-condition is a good idea
             if current_threshold != next_threshold and not np.array_equal(expected_scores_sorted[r - 1, :],
                                                                           expected_scores_sorted[r, :]):
                 # LEQ
