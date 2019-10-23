@@ -11,8 +11,8 @@ from abc import abstractmethod
 import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
-from boomer.algorithm.model import Theory, Rule, EmptyBody, Head, DTYPE_SCORES, DTYPE_FEATURES, DTYPE_INDICES
-from boomer.algorithm.rule_refinement import refine_rule, AllFeaturesIterator
+from boomer.algorithm.model import Theory, Rule, EmptyBody, Head, DTYPE_SCORES, DTYPE_FEATURES
+from boomer.algorithm.rule_refinement import refine_rule, presort_features, AllFeaturesIterator
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.sub_sampling import InstanceSubSampling
 from boomer.learners import Module
@@ -146,16 +146,14 @@ class GradientBoosting(RuleInduction):
             grow_set = x
             expected_scores_grow_set = expected_scores
             predicted_scores_grow_set = predicted_scores
+            presorted_indices = presort_features(grow_set)
         else:
             self.instance_sub_sampling.random_state = self.random_state
             sample_indices = self.instance_sub_sampling.sub_sample(x)
             grow_set = x[sample_indices]
             expected_scores_grow_set = expected_scores[sample_indices]
             predicted_scores_grow_set = predicted_scores[sample_indices]
+            presorted_indices = None
 
-        # Presort features for efficient evaluation of numerical conditions
-        # TODO Keep if no sub-sampling is used
-        x_sorted_indices = np.asfortranarray(np.argsort(grow_set, axis=0), dtype=DTYPE_INDICES)
-
-        return refine_rule(grow_set, x_sorted_indices, expected_scores_grow_set, predicted_scores_grow_set, self.loss,
-                           AllFeaturesIterator(grow_set))
+        return refine_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, self.loss,
+                           AllFeaturesIterator(grow_set), presorted_indices)
