@@ -45,8 +45,23 @@ class Refinement:
         self.covered_indices = covered_indices
 
 
-def refine_rule(x: np.ndarray, x_sorted_indices: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
-                loss: Loss, feature_iterator) -> Rule:
+def presort_features(x: np.ndarray) -> np.ndarray:
+    """
+    Column-wise sorts a given feature matrix.
+
+    :param x:   An array of dtype float, shape `(num_examples, num_features)`, representing the features of the training
+                examples
+    :return:    An array of dtype int, shape `(num_examples, num_features)`, representing the row-indices of the
+                original examples at a certain position when sorting column-wise
+    """
+    x_sorted_indices = np.argsort(x, axis=0)
+    return x_sorted_indices if x_sorted_indices.flags.fortran else np.asfortranarray(x_sorted_indices,
+                                                                                     dtype=DTYPE_INDICES)
+
+
+def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss, feature_iterator,
+                presorted_indices: np.ndarray = None) -> Rule:
+    x_sorted_indices = presorted_indices if presorted_indices is not None else presort_features(x)
     current_h = None
     leq_conditions: Dict[int, float] = {}
     gr_conditions: Dict[int, float] = {}
@@ -68,7 +83,7 @@ def refine_rule(x: np.ndarray, x_sorted_indices: np.ndarray, expected_scores: np
             x = x[refinement.covered_indices]
             expected_scores = expected_scores[refinement.covered_indices]
             predicted_scores = predicted_scores[refinement.covered_indices]
-            x_sorted_indices = np.argsort(x, axis=0)
+            x_sorted_indices = presort_features(x)
         else:
             break
 
