@@ -42,18 +42,17 @@ def presort_features(x: np.ndarray) -> np.ndarray:
                                                                                      dtype=DTYPE_INDICES)
 
 
-def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss,
-                feature_sub_sampling: FeatureSubSampling = None, presorted_indices: np.ndarray = None,
-                random_state: int = 0) -> Rule:
+def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss, random_state: int,
+                feature_sub_sampling: FeatureSubSampling = None, presorted_indices: np.ndarray = None) -> Rule:
     current_h = None
     leq_conditions: Dict[int, float] = {}
     gr_conditions: Dict[int, float] = {}
     head = None
+    i = 1
 
     while True:
-        current_random_state = (len(leq_conditions) + len(gr_conditions) + 1) * random_state
         refinement = __get_best_refinement(x, expected_scores, predicted_scores, loss, feature_sub_sampling,
-                                           presorted_indices, current_random_state)
+                                           presorted_indices, iteration=i, random_state=random_state)
 
         if refinement is not None and (current_h is None or refinement.h < current_h):
             current_h = refinement.h
@@ -67,24 +66,26 @@ def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np
             x = x[refinement.covered_indices]
             expected_scores = expected_scores[refinement.covered_indices]
             predicted_scores = predicted_scores[refinement.covered_indices]
+            i += 1
         else:
             break
 
     return __build_rule(leq_conditions, gr_conditions, head)
 
 
-def __sub_sample_features(x: np.ndarray, feature_sub_sampling: FeatureSubSampling, random_state: int) -> np.ndarray:
+def __sub_sample_features(x: np.ndarray, feature_sub_sampling: FeatureSubSampling, iteration: int,
+                          random_state: int) -> np.ndarray:
     if feature_sub_sampling is None:
         return x
     else:
-        feature_sub_sampling.random_state = random_state
+        feature_sub_sampling.random_state = iteration * random_state
         return x[feature_sub_sampling.sub_sample(x)]
 
 
 def __get_best_refinement(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss,
                           feature_sub_sampling: FeatureSubSampling, presorted_indices: np.ndarray,
-                          random_state: int) -> Refinement:
-    x = __sub_sample_features(x, feature_sub_sampling, random_state=random_state)
+                          iteration: int, random_state: int) -> Refinement:
+    x = __sub_sample_features(x, feature_sub_sampling, iteration=iteration, random_state=random_state)
     x_sorted_indices = presorted_indices if presorted_indices is not None else presort_features(x)
     refinement = None
 
