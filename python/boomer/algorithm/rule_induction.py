@@ -132,7 +132,7 @@ class GradientBoosting(RuleInduction):
         self.feature_sub_sampling = feature_sub_sampling
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
-        del self.presorted_indices
+        self.presorted_indices = None
         self.__validate()
 
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
@@ -166,7 +166,7 @@ class GradientBoosting(RuleInduction):
                 theory.append(rule)
                 self.random_state += 1
 
-        del self.presorted_indices
+        self.presorted_indices = None
         return theory
 
     def __validate(self):
