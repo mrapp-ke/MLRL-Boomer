@@ -41,7 +41,14 @@ class RuleInduction(Module):
 class GradientBoosting(RuleInduction):
     """
     Implements the induction of (multi-label) classification rules using gradient boosting.
+
+    Attributes
+        presorted_indices   An array of dtype int, shape `(num_examples, num_features)`, representing the row-indices of
+                            the training examples at a certain position when sorting column-wise. This matrix is cached
+                            during training, if instance sub-sampling is used
     """
+
+    presorted_indices: np.ndarray = None
 
     def __init__(self, num_rules: int = 100, loss: Loss = SquaredErrorLoss(),
                  instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None):
@@ -59,6 +66,7 @@ class GradientBoosting(RuleInduction):
         self.feature_sub_sampling = feature_sub_sampling
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+        self.presorted_indices = None
         self.__validate()
 
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
@@ -87,6 +95,7 @@ class GradientBoosting(RuleInduction):
                 theory.append(rule)
                 self.random_state += 1
 
+        self.presorted_indices = None
         return theory
 
     def __validate(self):
@@ -149,7 +158,7 @@ class GradientBoosting(RuleInduction):
             grow_set = x
             expected_scores_grow_set = expected_scores
             predicted_scores_grow_set = predicted_scores
-            presorted_indices = presort_features(grow_set)
+            presorted_indices = presort_features(grow_set) if self.presorted_indices is None else self.presorted_indices
         else:
             self.instance_sub_sampling.random_state = self.random_state
             sample_indices = self.instance_sub_sampling.sub_sample(x)
