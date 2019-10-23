@@ -243,57 +243,50 @@ class GradientBoosting(RuleInduction):
     def __find_best_refinement(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
                                presorted_indices: np.ndarray, iteration: int) -> Refinement:
         x, presorted_indices = self.__sub_sample_features(x, presorted_indices, iteration=iteration)
-        x_sorted_indices = presorted_indices if presorted_indices is not None else GradientBoosting.presort_features(x)
-        refinement = None
+        sorted_indices = presorted_indices if presorted_indices is not None else GradientBoosting.presort_features(x)
+        best_refinement = None
 
-        for c in range(0, get_num_features(x)):
-            indices = x_sorted_indices[:, c]
-            expected_scores_sorted = expected_scores[indices]
-            predicted_scores_sorted = predicted_scores[indices]
+        for column_index in range(0, get_num_features(sorted_indices)):
+            indices = sorted_indices[:, column_index]
+            new_refinement = self.__find_best_condition(x, indices, expected_scores[indices], predicted_scores[indices],
+                                                        column_index)
+            best_refinement = GradientBoosting.__get_best_refinement(new_refinement, best_refinement)
 
-            for r in range(1, get_num_examples(x) - 1):
-                current_threshold = x[indices[r - 1], c]
-                next_threshold = x[indices[r], c]
+        return best_refinement
 
-                # TODO Check if the second part of the if-condition is a good idea
-                if current_threshold != next_threshold and not np.array_equal(expected_scores_sorted[r - 1, :],
-                                                                              expected_scores_sorted[r, :]):
-                    # LEQ
-                    expected_scores_subset = expected_scores_sorted[:r, :]
-                    predicted_scores_subset = predicted_scores_sorted[:r, :]
-                    head, h = self.head_refinement.find_head(expected_scores_subset, predicted_scores_subset)
+    def __find_best_condition(self, x: np.ndarray, sorted_indices: np.ndarray, expected_scores: np.ndarray,
+                              predicted_scores: np.ndarray, feature_index: int) -> Refinement:
+        best_refinement = None
 
-                    if refinement is None or h <= refinement.h:
-                        if refinement is None:
-                            refinement = Refinement(h=h, leq=True,
-                                                    threshold=GradientBoosting.__calculate_threshold(current_threshold,
-                                                                                                     next_threshold),
-                                                    feature_index=c, threshold_index=r, head=head,
-                                                    covered_indices=indices[:r])
-                        else:
-                            refinement.h = h
-                            refinement.leq = True
-                            refinement.threshold = GradientBoosting.__calculate_threshold(current_threshold,
-                                                                                          next_threshold)
-                            refinement.feature_index = c
-                            refinement.threshold_index = r
-                            refinement.head = head
-                            refinement.covered_indices = indices[:r]
+        for r in range(1, get_num_examples(sorted_indices) - 1):
+            current_threshold = x[sorted_indices[r - 1], feature_index]  # TODO: Do not access this in each iteration
+            next_threshold = x[sorted_indices[r], feature_index]
 
-                    # GR
-                    expected_scores_subset = expected_scores_sorted[r:, :]
-                    predicted_scores_subset = predicted_scores_sorted[r:, :]
-                    head, h = self.head_refinement.find_head(expected_scores_subset, predicted_scores_subset)
+            # TODO Check if the second part of the if-condition is a good idea
+            if current_threshold != next_threshold and not np.array_equal(expected_scores[r - 1, :],
+                                                                          expected_scores[r, :]):
+                # LEQ
+                head, h = self.head_refinement.find_head(expected_scores[:r, :], predicted_scores[:r, :])
 
-                    if h < refinement.h:
-                        refinement.h = h
-                        refinement.leq = False
-                        refinement.threshold = GradientBoosting.__calculate_threshold(current_threshold, next_threshold)
-                        refinement.threshold_index = r
-                        refinement.head = head
-                        refinement.covered_indices = indices[r:]
+                if best_refinement is None or GradientBoosting.__is_improvement(h, best_refinement.h,
+                                                                                strictly_better=False):
+                    best_refinement = GradientBoosting.__update_refinement(best_refinement, h=h, leq=True,
+                                                                           threshold=GradientBoosting.__calculate_threshold(
+                                                                               current_threshold, next_threshold),
+                                                                           feature_index=feature_index, r=r, head=head,
+                                                                           sorted_indices=sorted_indices[:r])
 
-        return refinement
+                # GR
+                head, h = self.head_refinement.find_head(expected_scores[r:, :], predicted_scores[r:, :])
+
+                if GradientBoosting.__is_improvement(h, best_refinement.h):
+                    best_refinement = GradientBoosting.__update_refinement(best_refinement, h=h, leq=False,
+                                                                           threshold=GradientBoosting.__calculate_threshold(
+                                                                               current_threshold, next_threshold),
+                                                                           feature_index=feature_index, r=r,
+                                                                           head=head, sorted_indices=sorted_indices[r:])
+
+        return best_refinement
 
     def __sub_sample_features(self, x: np.ndarray, presorted_indices: np.ndarray,
                               iteration: int) -> (np.ndarray, np.ndarray):
@@ -339,3 +332,46 @@ class GradientBoosting(RuleInduction):
         :return:        The threshold that has been calculated
         """
         return first + ((second - first) * 0.5)
+
+    @staticmethod
+    def __get_best_refinement(new: Refinement, existing: Refinement, strictly_better: bool = True) -> Refinement:
+        """
+        Returns the best among two possible refinements.
+
+        :param new:             A new refinement
+        :param existing:        The refinement that is currently considered the best
+        :param strictly_better: True, if the new refinement must be strictly better than the existing one, False
+                                otherwise
+        :return:                The refinement that is considered best
+        """
+        return new if existing is None or GradientBoosting.__is_improvement(new.h, existing.h,
+                                                                            strictly_better) else existing
+
+    @staticmethod
+    def __is_improvement(first: float, second: float, strictly_better: bool = True) -> bool:
+        """
+        Returns, whether a heuristic value is better than an another one.
+
+        :param first:           The first heuristic value
+        :param second:          The second heuristic value
+        :param strictly_better: True, if the first heuristic value must be strictly better than the second one, False
+                                otherwise
+        :return:                True, if the first heuristic value is better than the second one, False otherwise
+        """
+        return first > second if strictly_better else first >= second
+
+    @staticmethod
+    def __update_refinement(refinement: Refinement, h: float, threshold: float, feature_index: int, head: Head,
+                            r: int, sorted_indices: np.ndarray, leq: bool) -> Refinement:
+        if refinement is None:
+            return Refinement(h=h, leq=leq, threshold=threshold, feature_index=feature_index, threshold_index=r,
+                              head=head, covered_indices=sorted_indices)
+        else:
+            refinement.h = h
+            refinement.leq = leq
+            refinement.threshold = threshold
+            refinement.feature_index = feature_index
+            refinement.threshold_index = r
+            refinement.head = head
+            refinement.covered_indices = sorted_indices
+            return refinement
