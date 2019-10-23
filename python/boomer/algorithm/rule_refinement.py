@@ -5,6 +5,8 @@
 
 Provides functions for refining and evaluating candidate rules.
 """
+from typing import Dict
+
 import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss
@@ -46,8 +48,8 @@ class Refinement:
 def refine_rule(x: np.ndarray, x_sorted_indices: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
                 loss: Loss, feature_iterator) -> Rule:
     current_h = None
-    leq_conditions = {}  # TODO Specify type
-    gr_conditions = {}  # TODO Specify type
+    leq_conditions: Dict[int, float] = {}
+    gr_conditions: Dict[int, float] = {}
     head = None
 
     while True:
@@ -143,7 +145,18 @@ def __derive_optimal_head_using_decomposable_loss(expected_scores: np.ndarray, p
     return Head(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores), h
 
 
-def __build_rule(leq_conditions, gr_conditions, head: Head) -> Rule:
+def __build_rule(leq_conditions: Dict[int, float], gr_conditions: Dict[int, float], head: Head) -> Rule:
+    """
+    Creates and returns a new rule with certain conditions and a specific head.
+
+    :param leq_conditions:  A 'Dict' that contains the conditions that use the "less-or-equal" operator. The keys
+                            correspond to the feature indices and the values denote the thresholds to be used by the
+                            conditions
+    :param gr_conditions:   A 'Dict' that contains the conditions that use the "greater" operator. The keys correspond
+                            to the feature indices and the values denote the thresholds to be used by the conditions
+    :param head:            The 'Head' of the rule
+    :return:                The 'Rule' that has been created
+    """
     leq_features = np.fromiter(leq_conditions.keys(), dtype=DTYPE_INDICES)
     leq_thresholds = np.fromiter(leq_conditions.values(), dtype=DTYPE_FEATURES)
     gr_features = np.fromiter(gr_conditions.keys(), dtype=DTYPE_INDICES)
