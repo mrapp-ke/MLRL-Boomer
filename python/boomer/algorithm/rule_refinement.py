@@ -43,7 +43,7 @@ def presort_features(x: np.ndarray) -> np.ndarray:
 
 
 def grow_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss, random_state: int,
-                feature_sub_sampling: FeatureSubSampling = None, presorted_indices: np.ndarray = None) -> Rule:
+              feature_sub_sampling: FeatureSubSampling = None, presorted_indices: np.ndarray = None) -> Rule:
     current_h = None
     leq_conditions: Dict[int, float] = {}
     gr_conditions: Dict[int, float] = {}
