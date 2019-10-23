@@ -153,3 +153,16 @@ class Rule:
                                 predicted for the given examples
         """
         self.head.predict(predictions[self.body.match(x), :])
+
+
+class Refinement:
+
+    def __init__(self, h: float, leq: bool, threshold: float, feature_index: int, threshold_index: int, head: Head,
+                 covered_indices: np.ndarray):
+        self.h = h
+        self.leq = leq
+        self.threshold = threshold
+        self.feature_index = feature_index
+        self.threshold_index = threshold_index
+        self.head = head
+        self.covered_indices = covered_indices

@@ -7,13 +7,15 @@ Provides classes for inducing classification rules.
 """
 import logging as log
 from abc import abstractmethod
+from typing import Dict
 
 import numpy as np
 
-from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
-from boomer.algorithm.model import Theory, Rule, EmptyBody, FullHead, DTYPE_SCORES, DTYPE_FEATURES
-from boomer.algorithm.rule_refinement import grow_rule, presort_features
-from boomer.algorithm.stats import Stats
+from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement
+from boomer.algorithm.losses import SquaredErrorLoss
+from boomer.algorithm.model import DTYPE_SCORES, DTYPE_FEATURES, DTYPE_INDICES
+from boomer.algorithm.model import Theory, Rule, EmptyBody, ConjunctiveBody, Head, Refinement
+from boomer.algorithm.stats import Stats, get_num_examples, get_num_features
 from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
 from boomer.learners import Module
 
@@ -48,25 +50,26 @@ class GradientBoosting(RuleInduction):
                             during training, if instance sub-sampling is used
     """
 
-    presorted_indices: np.ndarray = None
+    presorted_indices: np.ndarray
 
-    def __init__(self, num_rules: int = 100, loss: Loss = SquaredErrorLoss(),
+    def __init__(self, num_rules: int = 100,
+                 head_refinement: HeadRefinement = SingleLabelHeadRefinement(SquaredErrorLoss()),
                  instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
-        :param loss:                    The (surrogate) loss to be minimized
+        :param head_refinement:         The strategy that is used to find the heads of rules
         :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
                                         classification rule is learned
         :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
                                         classification rule is refined
         """
         self.num_rules = num_rules
-        self.loss = loss
+        self.head_refinement = head_refinement
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
-        self.presorted_indices = None
+        del self.presorted_indices
         self.__validate()
 
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
@@ -100,7 +103,7 @@ class GradientBoosting(RuleInduction):
                 theory.append(rule)
                 self.random_state += 1
 
-        self.presorted_indices = None
+        del self.presorted_indices
         return theory
 
     def __validate(self):
@@ -110,8 +113,8 @@ class GradientBoosting(RuleInduction):
 
         if self.num_rules < 1:
             raise ValueError('Parameter \'num_rules\' must be at least 1, got {0}'.format(self.num_rules))
-        if self.loss is None:
-            raise ValueError('Parameter \'loss\' may not be None')
+        if self.head_refinement is None:
+            raise ValueError('Parameter \'head_refinement\' may not be None')
 
     def __induce_default_rule(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:
         """
@@ -121,24 +124,11 @@ class GradientBoosting(RuleInduction):
                                     expected confidence scores according to the ground truth
         :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
                                     currently predicted confidence scores
-        :return:                    The induced default rule, as well as the confidence scores that are predicted after
-                                    including the rule in the theory
+        :return:                    The default rule
         """
-
-        if isinstance(self.loss, DecomposableLoss):
-            scores = self.__derive_full_head_using_decomposable_loss(expected_scores,
-                                                                     predicted_scores)
-        else:
-            # TODO: Implement
-            raise NotImplementedError('Non-decomposable loss functions not supported yet...')
-
-        return Rule(EmptyBody(), FullHead(scores))
-
-    def __derive_full_head_using_decomposable_loss(self, expected_scores: np.ndarray,
-                                                   predicted_scores: np.ndarray) -> np.ndarray:
-        gradients = self.loss.calculate_gradients(expected_scores, predicted_scores)
-        scores = self.loss.calculate_optimal_scores(gradients)
-        return scores
+        self.head_refinement.random_state = self.random_state
+        head = self.head_refinement.find_default_head(expected_scores, predicted_scores)
+        return Rule(EmptyBody(), head)
 
     def __induce_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:
         """
@@ -153,7 +143,8 @@ class GradientBoosting(RuleInduction):
             grow_set = x
             expected_scores_grow_set = expected_scores
             predicted_scores_grow_set = predicted_scores
-            presorted_indices = presort_features(grow_set) if self.presorted_indices is None else self.presorted_indices
+            presorted_indices = GradientBoosting.presort_features(
+                grow_set) if self.presorted_indices is None else self.presorted_indices
         else:
             self.instance_sub_sampling.random_state = self.random_state
             sample_indices = self.instance_sub_sampling.sub_sample(x)
@@ -162,5 +153,145 @@ class GradientBoosting(RuleInduction):
             predicted_scores_grow_set = predicted_scores[sample_indices]
             presorted_indices = None
 
-        return grow_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, self.loss, self.random_state,
-                         self.feature_sub_sampling, presorted_indices)
+        return self.grow_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, presorted_indices)
+
+    def grow_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
+                  presorted_indices: np.ndarray) -> Rule:
+        current_h = None
+        leq_conditions: Dict[int, float] = {}
+        gr_conditions: Dict[int, float] = {}
+        head = None
+        i = 1
+
+        while True:
+            refinement = self.__find_best_refinement(x, expected_scores, predicted_scores, presorted_indices,
+                                                     iteration=i)
+
+            if refinement is not None and (current_h is None or refinement.h < current_h):
+                current_h = refinement.h
+                head = refinement.head
+
+                if refinement.leq:
+                    leq_conditions[refinement.feature_index] = refinement.threshold
+                else:
+                    gr_conditions[refinement.feature_index] = refinement.threshold
+
+                x = x[refinement.covered_indices]
+                expected_scores = expected_scores[refinement.covered_indices]
+                predicted_scores = predicted_scores[refinement.covered_indices]
+                i += 1
+            else:
+                break
+
+        return GradientBoosting.__create_rule(leq_conditions, gr_conditions, head)
+
+    def __find_best_refinement(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
+                               presorted_indices: np.ndarray, iteration: int) -> Refinement:
+        x, presorted_indices = self.__sub_sample_features(x, presorted_indices, iteration=iteration)
+        x_sorted_indices = presorted_indices if presorted_indices is not None else GradientBoosting.presort_features(x)
+        refinement = None
+
+        for c in range(0, get_num_features(x)):
+            indices = x_sorted_indices[:, c]
+            expected_scores_sorted = expected_scores[indices]
+            predicted_scores_sorted = predicted_scores[indices]
+
+            for r in range(1, get_num_examples(x) - 1):
+                current_threshold = x[indices[r - 1], c]
+                next_threshold = x[indices[r], c]
+
+                # TODO Check if the second part of the if-condition is a good idea
+                if current_threshold != next_threshold and not np.array_equal(expected_scores_sorted[r - 1, :],
+                                                                              expected_scores_sorted[r, :]):
+                    # LEQ
+                    expected_scores_subset = expected_scores_sorted[:r, :]
+                    predicted_scores_subset = predicted_scores_sorted[:r, :]
+                    head, h = self.head_refinement.find_head(expected_scores_subset, predicted_scores_subset)
+
+                    if refinement is None or h <= refinement.h:
+                        if refinement is None:
+                            refinement = Refinement(h=h, leq=True,
+                                                    threshold=GradientBoosting.__calculate_threshold(current_threshold,
+                                                                                                     next_threshold),
+                                                    feature_index=c, threshold_index=r, head=head,
+                                                    covered_indices=indices[:r])
+                        else:
+                            refinement.h = h
+                            refinement.leq = True
+                            refinement.threshold = GradientBoosting.__calculate_threshold(current_threshold,
+                                                                                          next_threshold)
+                            refinement.feature_index = c
+                            refinement.threshold_index = r
+                            refinement.head = head
+                            refinement.covered_indices = indices[:r]
+
+                    # GR
+                    expected_scores_subset = expected_scores_sorted[r:, :]
+                    predicted_scores_subset = predicted_scores_sorted[r:, :]
+                    head, h = self.head_refinement.find_head(expected_scores_subset, predicted_scores_subset)
+
+                    if h < refinement.h:
+                        refinement.h = h
+                        refinement.leq = False
+                        refinement.threshold = GradientBoosting.__calculate_threshold(current_threshold, next_threshold)
+                        refinement.threshold_index = r
+                        refinement.head = head
+                        refinement.covered_indices = indices[r:]
+
+        return refinement
+
+    def __sub_sample_features(self, x: np.ndarray, presorted_indices: np.ndarray,
+                              iteration: int) -> (np.ndarray, np.ndarray):
+        if self.feature_sub_sampling is None:
+            return x, presorted_indices
+        else:
+            self.feature_sub_sampling.random_state = iteration * self.random_state
+            sample_indices = self.feature_sub_sampling.sub_sample(x)
+            return x[sample_indices], presorted_indices[sample_indices] if presorted_indices is not None else None
+
+    @staticmethod
+    def presort_features(x: np.ndarray) -> np.ndarray:
+        """
+        Column-wise sorts a given feature matrix.
+
+        :param x:   An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
+                    training examples
+        :return:    An array of dtype int, shape `(num_examples, num_features)`, representing the row-indices of the
+                    original examples at a certain position when sorting column-wise
+        """
+        x_sorted_indices = np.argsort(x, axis=0)
+        return x_sorted_indices if x_sorted_indices.flags.fortran else np.asfortranarray(x_sorted_indices,
+                                                                                         dtype=DTYPE_INDICES)
+
+    @staticmethod
+    def __calculate_threshold(first: float, second: float) -> float:
+        """
+        Calculates the threshold for a numerical condition as the value between two feature values.
+
+        :param first:   The first feature value
+        :param second:  The second feature value
+        :return:        The threshold that has been calculated
+        """
+        return first + ((second - first) * 0.5)
+
+    # TODO Replace with builder
+    @staticmethod
+    def __create_rule(leq_conditions: Dict[int, float], gr_conditions: Dict[int, float], head: Head) -> Rule:
+        """
+        Creates and returns a new rule with certain conditions and a specific head.
+
+        :param leq_conditions:  A 'Dict' that contains the conditions that use the "less-or-equal" operator. The keys
+                                correspond to the feature indices and the values denote the thresholds to be used by the
+                                conditions
+        :param gr_conditions:   A 'Dict' that contains the conditions that use the "greater" operator. The keys
+                                correspond to the feature indices and the values denote the thresholds to be used by the
+                                conditions
+        :param head:            The 'Head' of the rule
+        :return:                The 'Rule' that has been created
+        """
+        leq_features = np.fromiter(leq_conditions.keys(), dtype=DTYPE_INDICES)
+        leq_thresholds = np.fromiter(leq_conditions.values(), dtype=DTYPE_FEATURES)
+        gr_features = np.fromiter(gr_conditions.keys(), dtype=DTYPE_INDICES)
+        gr_thresholds = np.fromiter(gr_conditions.values(), dtype=DTYPE_FEATURES)
+        body = ConjunctiveBody(leq_features, leq_thresholds, gr_features, gr_thresholds)
+        return Rule(body, head)
