@@ -80,7 +80,7 @@ class GradientBoosting(RuleInduction):
         default_rule = self.__induce_default_rule(expected_scores, predicted_scores)
 
         # Apply prediction of the default rule to the matrix of predicted scores
-        predicted_scores += default_rule.head.scores
+        default_rule.predict(x, predicted_scores)
 
         # Create initial theory
         theory = [default_rule]

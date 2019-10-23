@@ -79,29 +79,55 @@ class ConjunctiveBody(Body):
             np.greater(x[:, self.gr_features], self.gr_thresholds), axis=1)
 
 
-class Head:
+class Head(ABC):
     """
-    The head of a rule. It assigns a numerical score to one or several labels.
+    A base class for the head of a rule.
     """
 
-    def __init__(self, labels: np.ndarray, scores: np.ndarray):
+    @abstractmethod
+    def predict(self, predictions: np.ndarray):
+        """
+        Applies the head's prediction to a given matrix of predictions.
+
+        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
+                                predicted for the corresponding examples
+        """
+        pass
+
+
+class FullHead(Head):
+    """
+    A full head that assigns a numerical score to each label.
+    """
+
+    def __init__(self, scores: np.ndarray):
+        """
+        :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
+                        rule for each label
+        """
+        self.scores = scores
+
+    def predict(self, predictions: np.ndarray):
+        predictions += self.scores
+
+
+class PartialHead(Head):
+    """
+    A partial head that assigns a numerical score to one or several labels.
+    """
+
+    def __init__(self, scores: np.ndarray, labels: np.ndarray):
         """
         :param labels:  An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the labels
                         for which the rule predicts
         :param scores:  An array of dtype float, shape `(num_predicted_labels)`, representing the scores that are
                         predicted by the rule
-        """
-        self.labels = labels
+                """
         self.scores = scores
+        self.labels = labels
 
-
-class FullHead(Head):
-    """
-    A full head of a rule. It assigns a numerical score to each label.
-    """
-
-    def __init__(self, scores: np.ndarray):
-        super().__init__(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores)
+    def predict(self, predictions: np.ndarray):
+        predictions[:, self.labels] += self.scores
 
 
 class Rule:
@@ -126,4 +152,4 @@ class Rule:
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
                                 predicted for the given examples
         """
-        predictions[self.body.match(x), :][:, self.head.labels] += self.head.scores
+        self.head.predict(predictions[self.body.match(x), :])
