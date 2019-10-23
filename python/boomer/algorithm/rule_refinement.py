@@ -70,7 +70,7 @@ def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np
         else:
             break
 
-    return __build_rule(leq_conditions, gr_conditions, head)
+    return __create_rule(leq_conditions, gr_conditions, head)
 
 
 def __sub_sample_features(x: np.ndarray, feature_sub_sampling: FeatureSubSampling, iteration: int,
@@ -155,7 +155,7 @@ def __derive_optimal_head_using_decomposable_loss(expected_scores: np.ndarray, p
     return Head(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores), h
 
 
-def __build_rule(leq_conditions: Dict[int, float], gr_conditions: Dict[int, float], head: Head) -> Rule:
+def __create_rule(leq_conditions: Dict[int, float], gr_conditions: Dict[int, float], head: Head) -> Rule:
     """
     Creates and returns a new rule with certain conditions and a specific head.
 
