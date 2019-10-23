@@ -10,7 +10,7 @@ from typing import Dict
 import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss
-from boomer.algorithm.model import Rule, ConjunctiveBody, Head, DTYPE_INDICES, DTYPE_FEATURES
+from boomer.algorithm.model import Rule, ConjunctiveBody, Head, PartialHead, DTYPE_INDICES, DTYPE_FEATURES
 from boomer.algorithm.stats import get_num_features, get_num_examples
 from boomer.algorithm.sub_sampling import FeatureSubSampling
 
@@ -156,7 +156,7 @@ def __derive_optimal_head_using_decomposable_loss(expected_scores: np.ndarray, p
     gradients = loss.calculate_gradients(expected_scores, predicted_scores)
     scores = loss.calculate_optimal_scores(gradients)
     h = loss.evaluate_predictions(scores, gradients)
-    return Head(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores), h
+    return PartialHead(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores), h
 
 
 def __create_rule(leq_conditions: Dict[int, float], gr_conditions: Dict[int, float], head: Head) -> Rule:
