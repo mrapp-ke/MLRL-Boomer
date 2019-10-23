@@ -297,6 +297,17 @@ class GradientBoosting(RuleInduction):
 
     def __sub_sample_features(self, x: np.ndarray, presorted_indices: np.ndarray,
                               iteration: int) -> (np.ndarray, np.ndarray):
+        """
+        Sub-samples the features.
+
+        :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the
+                                    features of the training examples
+        :param presorted_indices:   An array of dtype int, shape `(num_examples, num_features)`, representing the
+                                    row-indices of the original examples at a certain position when sorting column-wise
+                                    or None, if such an array is not available
+        :param iteration:           The current iteration of the rule refinement process starting at 1
+        :return:                    The
+        """
         if self.feature_sub_sampling is None:
             return x, presorted_indices
         else:
