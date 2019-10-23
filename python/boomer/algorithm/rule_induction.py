@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides class for inducing classification rules.
+Provides classes for inducing classification rules.
 """
 import logging as log
 from abc import abstractmethod
