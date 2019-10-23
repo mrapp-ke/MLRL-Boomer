@@ -12,24 +12,7 @@ import numpy as np
 from boomer.algorithm.losses import Loss, DecomposableLoss
 from boomer.algorithm.model import Rule, ConjunctiveBody, Head, DTYPE_INDICES, DTYPE_FEATURES
 from boomer.algorithm.stats import get_num_features, get_num_examples
-
-
-class AllFeaturesIterator:
-
-    def __init__(self, x: np.ndarray):
-        self.num_features = get_num_features(x)
-
-    def __iter__(self):
-        self.i = 0
-        return self
-
-    def __next__(self):
-        if self.i < self.num_features - 1:
-            result = self.i
-            self.i += 1
-            return result
-        else:
-            raise StopIteration
+from boomer.algorithm.sub_sampling import FeatureSubSampling
 
 
 class Refinement:
@@ -59,17 +42,18 @@ def presort_features(x: np.ndarray) -> np.ndarray:
                                                                                      dtype=DTYPE_INDICES)
 
 
-def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss, feature_iterator,
-                presorted_indices: np.ndarray = None) -> Rule:
-    x_sorted_indices = presorted_indices if presorted_indices is not None else presort_features(x)
+def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss,
+                feature_sub_sampling: FeatureSubSampling = None, presorted_indices: np.ndarray = None,
+                random_state: int = 0) -> Rule:
     current_h = None
     leq_conditions: Dict[int, float] = {}
     gr_conditions: Dict[int, float] = {}
     head = None
 
     while True:
-        refinement = __get_best_refinement(x, x_sorted_indices, expected_scores, predicted_scores, loss,
-                                           feature_iterator)
+        current_random_state = (len(leq_conditions) + len(gr_conditions) + 1) * random_state
+        refinement = __get_best_refinement(x, expected_scores, predicted_scores, loss, feature_sub_sampling,
+                                           presorted_indices, current_random_state)
 
         if refinement is not None and (current_h is None or refinement.h < current_h):
             current_h = refinement.h
@@ -83,18 +67,28 @@ def refine_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np
             x = x[refinement.covered_indices]
             expected_scores = expected_scores[refinement.covered_indices]
             predicted_scores = predicted_scores[refinement.covered_indices]
-            x_sorted_indices = presort_features(x)
         else:
             break
 
     return __build_rule(leq_conditions, gr_conditions, head)
 
 
-def __get_best_refinement(x: np.ndarray, x_sorted_indices: np.ndarray, expected_scores: np.ndarray,
-                          predicted_scores: np.ndarray, loss: Loss, feature_iterator) -> Refinement:
+def __sub_sample_features(x: np.ndarray, feature_sub_sampling: FeatureSubSampling, random_state: int) -> np.ndarray:
+    if feature_sub_sampling is None:
+        return x
+    else:
+        feature_sub_sampling.random_state = random_state
+        return x[feature_sub_sampling.sub_sample(x)]
+
+
+def __get_best_refinement(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss,
+                          feature_sub_sampling: FeatureSubSampling, presorted_indices: np.ndarray,
+                          random_state: int) -> Refinement:
+    x = __sub_sample_features(x, feature_sub_sampling, random_state=random_state)
+    x_sorted_indices = presorted_indices if presorted_indices is not None else presort_features(x)
     refinement = None
 
-    for c in iter(feature_iterator):
+    for c in range(0, get_num_features(x)):
         indices = x_sorted_indices[:, c]
         expected_scores_sorted = expected_scores[indices]
         predicted_scores_sorted = predicted_scores[indices]
