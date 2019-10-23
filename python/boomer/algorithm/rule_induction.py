@@ -12,7 +12,7 @@ import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm.model import Theory, Rule, EmptyBody, Head, DTYPE_SCORES, DTYPE_FEATURES
-from boomer.algorithm.rule_refinement import refine_rule, presort_features
+from boomer.algorithm.rule_refinement import grow_rule, presort_features
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
 from boomer.learners import Module
@@ -158,5 +158,5 @@ class GradientBoosting(RuleInduction):
             predicted_scores_grow_set = predicted_scores[sample_indices]
             presorted_indices = None
 
-        return refine_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, self.loss, self.random_state,
-                           self.feature_sub_sampling, presorted_indices)
+        return grow_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, self.loss, self.random_state,
+                         self.feature_sub_sampling, presorted_indices)
