@@ -25,6 +25,7 @@ if __name__ == '__main__':
                         help='The path of the directory where models should be saved')
     parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
     parser.add_argument('--folds', type=int, default=1, help='Number of folds to be used by cross validation')
+    parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
     args = parser.parse_args()
@@ -32,6 +33,7 @@ if __name__ == '__main__':
 
     experiment_name = args.dataset
     learner = Boomer()
+    learner.random_state = args.random_state
 
     if args.model_dir is not None:
         learner.persistence = ModelPersistence(model_dir=args.model_dir, model_name=args.dataset)

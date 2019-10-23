@@ -19,7 +19,7 @@ class Randomized(ABC):
         random_state   The seed to be used by RNGs
     """
 
-    random_state: int = 0
+    random_state: int = 1
 
 
 class Module(Randomized):
