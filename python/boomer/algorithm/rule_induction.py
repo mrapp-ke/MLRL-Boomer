@@ -93,7 +93,6 @@ class GradientBoosting(RuleInduction):
                 log.info('Learning rule %s / %s...', len(theory) + 1, self.num_rules)
                 rule = self.__induce_rule(x, expected_scores, predicted_scores)
 
-                # TODO: Can we make this more efficient?
                 # Apply prediction of the new rule to the matrix of predicted scores
                 rule.predict(x, predicted_scores)
 
