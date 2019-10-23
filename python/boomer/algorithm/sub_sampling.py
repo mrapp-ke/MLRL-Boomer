@@ -69,6 +69,11 @@ class RandomFeatureSubSampling(FeatureSubSampling):
     """
 
     def __init__(self, sample_size: float = None):
+        """
+        :param sample_size: The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
+                            60 % of the features) or None, if the default sample size int(log2(num_features - 1 ) + 1)
+                            should be used
+        """
         self.sample_size = sample_size
 
     def __validate(self):
@@ -117,8 +122,8 @@ class Bagging(InstanceSubSampling):
 
     def __init__(self, sample_size: float = 1.0, with_replacement: bool = True):
         """
-        :param sample_size:         The fraction of examples to be included in the sample, e.g. a value of 0.6
-                                    corresponds to 60 % of the examples
+        :param sample_size:         The fraction of examples to be included in the sample (e.g. a value of 0.6
+                                    corresponds to 60 % of the examples)
         :param with_replacement:    'True', if the examples should be drawn with replacement, 'False' otherwise
         """
         self.sample_size = sample_size
