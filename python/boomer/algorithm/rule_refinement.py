@@ -153,7 +153,8 @@ def __derive_optimal_head(expected_scores: np.ndarray, predicted_scores: np.ndar
 
 def __derive_optimal_head_using_decomposable_loss(expected_scores: np.ndarray, predicted_scores: np.ndarray,
                                                   loss: DecomposableLoss) -> (Head, float):
-    scores, gradients = loss.derive_scores(expected_scores, predicted_scores)
+    gradients = loss.calculate_gradients(expected_scores, predicted_scores)
+    scores = loss.calculate_optimal_scores(gradients)
     h = loss.evaluate_predictions(scores, gradients)
     return Head(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores), h
 

@@ -11,7 +11,7 @@ from abc import abstractmethod
 import numpy as np
 
 from boomer.algorithm.losses import Loss, DecomposableLoss, SquaredErrorLoss
-from boomer.algorithm.model import Theory, Rule, EmptyBody, Head, DTYPE_SCORES, DTYPE_FEATURES
+from boomer.algorithm.model import Theory, Rule, EmptyBody, FullHead, DTYPE_SCORES, DTYPE_FEATURES
 from boomer.algorithm.rule_refinement import grow_rule, presort_features
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
@@ -77,7 +77,12 @@ class GradientBoosting(RuleInduction):
 
         # Induce default rule
         log.info('Learning rule 1 / %s (default rule)...', self.num_rules)
-        default_rule, predicted_scores = self.__induce_default_rule(expected_scores, predicted_scores)
+        default_rule = self.__induce_default_rule(expected_scores, predicted_scores)
+
+        # Apply prediction of the default rule to the matrix of predicted scores
+        predicted_scores += default_rule.head.scores
+
+        # Create initial theory
         theory = [default_rule]
 
         if self.num_rules > 1:
@@ -92,6 +97,7 @@ class GradientBoosting(RuleInduction):
                 # Apply prediction of the new rule to the matrix of predicted scores
                 rule.predict(x, predicted_scores)
 
+                # Add new rule to theory
                 theory.append(rule)
                 self.random_state += 1
 
@@ -108,7 +114,7 @@ class GradientBoosting(RuleInduction):
         if self.loss is None:
             raise ValueError('Parameter \'loss\' may not be None')
 
-    def __induce_default_rule(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> (Rule, np.ndarray):
+    def __induce_default_rule(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:
         """
         Induces the default rule.
 
@@ -121,29 +127,19 @@ class GradientBoosting(RuleInduction):
         """
 
         if isinstance(self.loss, DecomposableLoss):
-            head, predicted_scores = self.__derive_full_head_using_decomposable_loss(expected_scores, predicted_scores)
+            scores = self.__derive_full_head_using_decomposable_loss(expected_scores,
+                                                                     predicted_scores)
         else:
             # TODO: Implement
             raise NotImplementedError('Non-decomposable loss functions not supported yet...')
 
-        return Rule(EmptyBody(), head), predicted_scores
+        return Rule(EmptyBody(), FullHead(scores))
 
     def __derive_full_head_using_decomposable_loss(self, expected_scores: np.ndarray,
-                                                   predicted_scores: np.ndarray) -> (Head, np.ndarray):
-        """
-        Derives a full head, if the used loss function is decomposable.
-
-        :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    expected confidence scores according to the ground truth
-        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
-                                    currently predicted confidence scores
-        :return:                    The derived head, as well as the confidence scores that predicted after applying the
-                                    head to the given predicted scores
-        """
-
-        head, _ = self.loss.derive_scores(expected_scores, predicted_scores)
-        predicted_scores += head
-        return head, predicted_scores
+                                                   predicted_scores: np.ndarray) -> np.ndarray:
+        gradients = self.loss.calculate_gradients(expected_scores, predicted_scores)
+        scores = self.loss.calculate_optimal_scores(gradients)
+        return scores
 
     def __induce_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:
         """
