@@ -51,8 +51,8 @@ def grow_rule(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.n
     i = 1
 
     while True:
-        refinement = __get_best_refinement(x, expected_scores, predicted_scores, loss, feature_sub_sampling,
-                                           presorted_indices, iteration=i, random_state=random_state)
+        refinement = __find_best_refinement(x, expected_scores, predicted_scores, loss, feature_sub_sampling,
+                                            presorted_indices, iteration=i, random_state=random_state)
 
         if refinement is not None and (current_h is None or refinement.h < current_h):
             current_h = refinement.h
@@ -82,9 +82,9 @@ def __sub_sample_features(x: np.ndarray, feature_sub_sampling: FeatureSubSamplin
         return x[feature_sub_sampling.sub_sample(x)]
 
 
-def __get_best_refinement(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss,
-                          feature_sub_sampling: FeatureSubSampling, presorted_indices: np.ndarray,
-                          iteration: int, random_state: int) -> Refinement:
+def __find_best_refinement(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss,
+                           feature_sub_sampling: FeatureSubSampling, presorted_indices: np.ndarray,
+                           iteration: int, random_state: int) -> Refinement:
     x = __sub_sample_features(x, feature_sub_sampling, iteration=iteration, random_state=random_state)
     x_sorted_indices = presorted_indices if presorted_indices is not None else presort_features(x)
     refinement = None
