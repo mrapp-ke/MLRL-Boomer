@@ -158,5 +158,5 @@ class GradientBoosting(RuleInduction):
             predicted_scores_grow_set = predicted_scores[sample_indices]
             presorted_indices = None
 
-        return refine_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, self.loss,
-                           self.feature_sub_sampling, presorted_indices, random_state=self.random_state)
+        return refine_rule(grow_set, expected_scores_grow_set, predicted_scores_grow_set, self.loss, self.random_state,
+                           self.feature_sub_sampling, presorted_indices)
