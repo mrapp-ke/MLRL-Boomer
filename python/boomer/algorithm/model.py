@@ -95,6 +95,15 @@ class Head:
         self.scores = scores
 
 
+class FullHead(Head):
+    """
+    A full head of a rule. It assigns a numerical score to each label.
+    """
+
+    def __init__(self, scores: np.ndarray):
+        super().__init__(np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES), scores)
+
+
 class Rule:
     """
     A rule consisting of a body and head.
