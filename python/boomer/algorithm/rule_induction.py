@@ -33,6 +33,56 @@ class Refinement:
         self.covered_indices = covered_indices
 
 
+class RuleBuilder:
+    """
+    A builder that allows to configure and create a 'Rule'.
+
+    Attributes
+        leq_conditions  A 'Dict' that contains the conditions of the rule that use the "less-or-equal" operator. The
+                        keys correspond to the feature indices and the values denote the thresholds to be used by the
+                        conditions
+        gr_conditions   A 'Dict' that contains the conditions of the rule that use the "greater" operator. The keys
+                        correspond to the feature indices and the values denote the thresholds to be used by the
+                        conditions
+        head            The 'Head' of the rule
+    """
+
+    leq_conditions: Dict[int, float] = {}
+
+    gr_conditions: Dict[int, float] = {}
+
+    head: Head = None
+
+    def apply_refinement(self, refinement: Refinement) -> 'RuleBuilder':
+        """
+        Applies a specific 'Refinement'.
+
+        :param refinement:  The refinement to be applied
+        :return:            The builder
+        """
+        self.head = refinement.head
+
+        if refinement.leq:
+            self.leq_conditions[refinement.feature_index] = refinement.threshold
+        else:
+            self.gr_conditions[refinement.feature_index] = refinement.threshold
+
+        return self
+
+    def build(self) -> Rule:
+        """
+        Creates and returns the rule that has been configured via the builder.
+
+        :return: The 'Rule' that has been created
+        """
+        leq_features = np.fromiter(self.leq_conditions.keys(), dtype=DTYPE_INDICES)
+        leq_thresholds = np.fromiter(self.leq_conditions.values(), dtype=DTYPE_FEATURES)
+        gr_features = np.fromiter(self.gr_conditions.keys(), dtype=DTYPE_INDICES)
+        gr_thresholds = np.fromiter(self.gr_conditions.values(), dtype=DTYPE_FEATURES)
+        body = ConjunctiveBody(leq_features, leq_thresholds, gr_features, gr_thresholds)
+        return Rule(body, self.head)
+
+
 class RuleInduction(Module):
     """
     A module that allows to induce a `Theory`, consisting of several classification rules.
@@ -171,9 +221,7 @@ class GradientBoosting(RuleInduction):
     def grow_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
                   presorted_indices: np.ndarray) -> Rule:
         current_h = None
-        leq_conditions: Dict[int, float] = {}
-        gr_conditions: Dict[int, float] = {}
-        head = None
+        builder = RuleBuilder()
         i = 1
 
         while True:
@@ -182,13 +230,7 @@ class GradientBoosting(RuleInduction):
 
             if refinement is not None and (current_h is None or refinement.h < current_h):
                 current_h = refinement.h
-                head = refinement.head
-
-                if refinement.leq:
-                    leq_conditions[refinement.feature_index] = refinement.threshold
-                else:
-                    gr_conditions[refinement.feature_index] = refinement.threshold
-
+                builder.apply_refinement(refinement)
                 x = x[refinement.covered_indices]
                 expected_scores = expected_scores[refinement.covered_indices]
                 predicted_scores = predicted_scores[refinement.covered_indices]
@@ -196,7 +238,7 @@ class GradientBoosting(RuleInduction):
             else:
                 break
 
-        return GradientBoosting.__create_rule(leq_conditions, gr_conditions, head)
+        return builder.build()
 
     def __find_best_refinement(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
                                presorted_indices: np.ndarray, iteration: int) -> Refinement:
@@ -286,25 +328,3 @@ class GradientBoosting(RuleInduction):
         :return:        The threshold that has been calculated
         """
         return first + ((second - first) * 0.5)
-
-    # TODO Replace with builder
-    @staticmethod
-    def __create_rule(leq_conditions: Dict[int, float], gr_conditions: Dict[int, float], head: Head) -> Rule:
-        """
-        Creates and returns a new rule with certain conditions and a specific head.
-
-        :param leq_conditions:  A 'Dict' that contains the conditions that use the "less-or-equal" operator. The keys
-                                correspond to the feature indices and the values denote the thresholds to be used by the
-                                conditions
-        :param gr_conditions:   A 'Dict' that contains the conditions that use the "greater" operator. The keys
-                                correspond to the feature indices and the values denote the thresholds to be used by the
-                                conditions
-        :param head:            The 'Head' of the rule
-        :return:                The 'Rule' that has been created
-        """
-        leq_features = np.fromiter(leq_conditions.keys(), dtype=DTYPE_INDICES)
-        leq_thresholds = np.fromiter(leq_conditions.values(), dtype=DTYPE_FEATURES)
-        gr_features = np.fromiter(gr_conditions.keys(), dtype=DTYPE_INDICES)
-        gr_thresholds = np.fromiter(gr_conditions.values(), dtype=DTYPE_FEATURES)
-        body = ConjunctiveBody(leq_features, leq_thresholds, gr_features, gr_thresholds)
-        return Rule(body, head)
