@@ -14,10 +14,23 @@ import numpy as np
 from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement
 from boomer.algorithm.losses import SquaredErrorLoss
 from boomer.algorithm.model import DTYPE_SCORES, DTYPE_FEATURES, DTYPE_INDICES
-from boomer.algorithm.model import Theory, Rule, EmptyBody, ConjunctiveBody, Head, Refinement
+from boomer.algorithm.model import Theory, Rule, EmptyBody, ConjunctiveBody, Head
 from boomer.algorithm.stats import Stats, get_num_examples, get_num_features
 from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
 from boomer.learners import Module
+
+
+class Refinement:
+
+    def __init__(self, h: float, leq: bool, threshold: float, feature_index: int, threshold_index: int, head: Head,
+                 covered_indices: np.ndarray):
+        self.h = h
+        self.leq = leq
+        self.threshold = threshold
+        self.feature_index = feature_index
+        self.threshold_index = threshold_index
+        self.head = head
+        self.covered_indices = covered_indices
 
 
 class RuleInduction(Module):
