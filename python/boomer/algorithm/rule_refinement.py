@@ -80,7 +80,7 @@ def __sub_sample_features(x: np.ndarray, presorted_indices: np.ndarray, feature_
     else:
         feature_sub_sampling.random_state = iteration * random_state
         sample_indices = feature_sub_sampling.sub_sample(x)
-        return x[sample_indices], presorted_indices[sample_indices]
+        return x[sample_indices], presorted_indices[sample_indices] if presorted_indices is not None else None
 
 
 def __find_best_refinement(x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray, loss: Loss,
