@@ -250,7 +250,9 @@ class GradientBoosting(RuleInduction):
             indices = sorted_indices[:, column_index]
             new_refinement = self.__find_best_condition(x, indices, expected_scores[indices], predicted_scores[indices],
                                                         column_index)
-            best_refinement = GradientBoosting.__get_best_refinement(new_refinement, best_refinement)
+
+            if best_refinement is None or new_refinement.h < best_refinement.h:
+                best_refinement = new_refinement
 
         return best_refinement
 
@@ -268,8 +270,7 @@ class GradientBoosting(RuleInduction):
                 # LEQ
                 head, h = self.head_refinement.find_head(expected_scores[:r, :], predicted_scores[:r, :])
 
-                if best_refinement is None or GradientBoosting.__is_improvement(h, best_refinement.h,
-                                                                                strictly_better=False):
+                if best_refinement is None or h <= best_refinement.h:
                     best_refinement = GradientBoosting.__update_refinement(best_refinement, h=h, leq=True,
                                                                            threshold=GradientBoosting.__calculate_threshold(
                                                                                current_threshold, next_threshold),
@@ -279,7 +280,7 @@ class GradientBoosting(RuleInduction):
                 # GR
                 head, h = self.head_refinement.find_head(expected_scores[r:, :], predicted_scores[r:, :])
 
-                if GradientBoosting.__is_improvement(h, best_refinement.h):
+                if h < best_refinement.h:
                     best_refinement = GradientBoosting.__update_refinement(best_refinement, h=h, leq=False,
                                                                            threshold=GradientBoosting.__calculate_threshold(
                                                                                current_threshold, next_threshold),
@@ -332,33 +333,6 @@ class GradientBoosting(RuleInduction):
         :return:        The threshold that has been calculated
         """
         return first + ((second - first) * 0.5)
-
-    @staticmethod
-    def __get_best_refinement(new: Refinement, existing: Refinement, strictly_better: bool = True) -> Refinement:
-        """
-        Returns the best among two possible refinements.
-
-        :param new:             A new refinement
-        :param existing:        The refinement that is currently considered the best
-        :param strictly_better: True, if the new refinement must be strictly better than the existing one, False
-                                otherwise
-        :return:                The refinement that is considered best
-        """
-        return new if existing is None or GradientBoosting.__is_improvement(new.h, existing.h,
-                                                                            strictly_better) else existing
-
-    @staticmethod
-    def __is_improvement(first: float, second: float, strictly_better: bool = True) -> bool:
-        """
-        Returns, whether a heuristic value is better than an another one.
-
-        :param first:           The first heuristic value
-        :param second:          The second heuristic value
-        :param strictly_better: True, if the first heuristic value must be strictly better than the second one, False
-                                otherwise
-        :return:                True, if the first heuristic value is better than the second one, False otherwise
-        """
-        return first > second if strictly_better else first >= second
 
     @staticmethod
     def __update_refinement(refinement: Refinement, h: float, threshold: float, feature_index: int, head: Head,
