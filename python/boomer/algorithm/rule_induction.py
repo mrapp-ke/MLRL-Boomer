@@ -271,20 +271,19 @@ class GradientBoosting(RuleInduction):
     def __find_best_condition(self, x: np.ndarray, sorted_indices: np.ndarray, expected_scores: np.ndarray,
                               predicted_scores: np.ndarray, feature_index: int) -> Refinement:
         best_refinement = None
+        previous_threshold = x[sorted_indices[0], feature_index]
 
         for r in range(1, get_num_examples(sorted_indices) - 1):
-            current_threshold = x[sorted_indices[r - 1], feature_index]  # TODO: Do not access this in each iteration
-            next_threshold = x[sorted_indices[r], feature_index]
+            threshold = x[sorted_indices[r], feature_index]
 
             # TODO Check if the second part of the if-condition is a good idea
-            if current_threshold != next_threshold and not np.array_equal(expected_scores[r - 1, :],
-                                                                          expected_scores[r, :]):
+            if previous_threshold != threshold and not np.array_equal(expected_scores[r - 1, :], expected_scores[r, :]):
                 # LEQ
                 head, h = self.head_refinement.find_head(expected_scores[:r, :], predicted_scores[:r, :])
 
                 if best_refinement is None or h <= best_refinement.h:
                     best_refinement = Refinement(h=h, leq=True, threshold=GradientBoosting.__calculate_threshold(
-                        current_threshold, next_threshold), feature_index=feature_index, threshold_index=r,
+                        previous_threshold, threshold), feature_index=feature_index, threshold_index=r,
                                                  head=head, covered_indices=sorted_indices[:r])
 
                 # GR
@@ -292,8 +291,10 @@ class GradientBoosting(RuleInduction):
 
                 if h < best_refinement.h:
                     best_refinement = Refinement(h=h, leq=False, threshold=GradientBoosting.__calculate_threshold(
-                        current_threshold, next_threshold), feature_index=feature_index, threshold_index=r,
+                        previous_threshold, threshold), feature_index=feature_index, threshold_index=r,
                                                  head=head, covered_indices=sorted_indices[r:])
+
+            previous_threshold = threshold
 
         return best_refinement
 
