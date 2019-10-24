@@ -244,6 +244,7 @@ class GradientBoosting(RuleInduction):
                 x = x[refinement.covered_indices]
                 expected_scores = expected_scores[refinement.covered_indices]
                 predicted_scores = predicted_scores[refinement.covered_indices]
+                presorted_indices = None
                 i += 1
             else:
                 break
@@ -262,7 +263,7 @@ class GradientBoosting(RuleInduction):
             new_refinement = self.__find_best_condition(x, indices, expected_scores[indices], predicted_scores[indices],
                                                         feature_index)
 
-            if best_refinement is None or new_refinement.h < best_refinement.h:
+            if best_refinement is None or (new_refinement is not None and new_refinement.h < best_refinement.h):
                 best_refinement = new_refinement
 
         return best_refinement
@@ -282,21 +283,17 @@ class GradientBoosting(RuleInduction):
                 head, h = self.head_refinement.find_head(expected_scores[:r, :], predicted_scores[:r, :])
 
                 if best_refinement is None or h <= best_refinement.h:
-                    best_refinement = GradientBoosting.__update_refinement(best_refinement, h=h, leq=True,
-                                                                           threshold=GradientBoosting.__calculate_threshold(
-                                                                               current_threshold, next_threshold),
-                                                                           feature_index=feature_index, r=r, head=head,
-                                                                           sorted_indices=sorted_indices[:r])
+                    best_refinement = Refinement(h=h, leq=True, threshold=GradientBoosting.__calculate_threshold(
+                        current_threshold, next_threshold), feature_index=feature_index, threshold_index=r,
+                                                 head=head, covered_indices=sorted_indices[:r])
 
                 # GR
                 head, h = self.head_refinement.find_head(expected_scores[r:, :], predicted_scores[r:, :])
 
                 if h < best_refinement.h:
-                    best_refinement = GradientBoosting.__update_refinement(best_refinement, h=h, leq=False,
-                                                                           threshold=GradientBoosting.__calculate_threshold(
-                                                                               current_threshold, next_threshold),
-                                                                           feature_index=feature_index, r=r,
-                                                                           head=head, sorted_indices=sorted_indices[r:])
+                    best_refinement = Refinement(h=h, leq=False, threshold=GradientBoosting.__calculate_threshold(
+                        current_threshold, next_threshold), feature_index=feature_index, threshold_index=r,
+                                                 head=head, covered_indices=sorted_indices[r:])
 
         return best_refinement
 
@@ -347,10 +344,10 @@ class GradientBoosting(RuleInduction):
 
     @staticmethod
     def __update_refinement(refinement: Refinement, h: float, threshold: float, feature_index: int, head: Head,
-                            r: int, sorted_indices: np.ndarray, leq: bool) -> Refinement:
+                            r: int, covered_indices: np.ndarray, leq: bool) -> Refinement:
         if refinement is None:
             return Refinement(h=h, leq=leq, threshold=threshold, feature_index=feature_index, threshold_index=r,
-                              head=head, covered_indices=sorted_indices)
+                              head=head, covered_indices=covered_indices)
         else:
             refinement.h = h
             refinement.leq = leq
@@ -358,5 +355,5 @@ class GradientBoosting(RuleInduction):
             refinement.feature_index = feature_index
             refinement.threshold_index = r
             refinement.head = head
-            refinement.covered_indices = sorted_indices
+            refinement.covered_indices = covered_indices
             return refinement
