@@ -47,11 +47,19 @@ class RuleBuilder:
         head            The 'Head' of the rule
     """
 
+    h = None
+
+    head: Head = None
+
     leq_conditions: Dict[int, float] = {}
 
     gr_conditions: Dict[int, float] = {}
 
-    head: Head = None
+    def reset(self):
+        self.h = None
+        self.head = None
+        self.leq_conditions.clear()
+        self.leq_conditions.clear()
 
     def apply_refinement(self, refinement: Refinement) -> 'RuleBuilder':
         """
@@ -60,6 +68,7 @@ class RuleBuilder:
         :param refinement:  The refinement to be applied
         :return:            The builder
         """
+        self.h = refinement.h
         self.head = refinement.head
 
         if refinement.leq:
@@ -115,6 +124,8 @@ class GradientBoosting(RuleInduction):
 
     presorted_indices: np.ndarray
 
+    rule_builder = RuleBuilder()
+
     def __init__(self, num_rules: int = 100,
                  head_refinement: HeadRefinement = SingleLabelHeadRefinement(SquaredErrorLoss()),
                  instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None):
@@ -160,6 +171,8 @@ class GradientBoosting(RuleInduction):
                 rule = self.__induce_rule(x, expected_scores, predicted_scores)
 
                 # Apply prediction of the new rule to the matrix of predicted scores
+                # TODO: Can we make this more efficient by applied the rule to the bagged and remaining instances
+                #  separately?
                 rule.predict(x, predicted_scores)
 
                 # Add new rule to theory
@@ -220,17 +233,14 @@ class GradientBoosting(RuleInduction):
 
     def grow_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
                   presorted_indices: np.ndarray) -> Rule:
-        current_h = None
-        builder = RuleBuilder()
+        self.rule_builder.reset()
         i = 1
 
         while True:
-            refinement = self.__find_best_refinement(x, expected_scores, predicted_scores, presorted_indices,
-                                                     iteration=i)
+            refinement = self.__find_best_refinement(x, expected_scores, predicted_scores, presorted_indices, i)
 
-            if refinement is not None and (current_h is None or refinement.h < current_h):
-                current_h = refinement.h
-                builder.apply_refinement(refinement)
+            if refinement is not None and (self.rule_builder.h is None or refinement.h < self.rule_builder.h):
+                self.rule_builder.apply_refinement(refinement)
                 x = x[refinement.covered_indices]
                 expected_scores = expected_scores[refinement.covered_indices]
                 predicted_scores = predicted_scores[refinement.covered_indices]
@@ -238,18 +248,19 @@ class GradientBoosting(RuleInduction):
             else:
                 break
 
-        return builder.build()
+        return self.rule_builder.build()
 
     def __find_best_refinement(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray,
                                presorted_indices: np.ndarray, iteration: int) -> Refinement:
         x, presorted_indices = self.__sub_sample_features(x, presorted_indices, iteration=iteration)
+        # TODO: Do we really need to sort each time?
         sorted_indices = presorted_indices if presorted_indices is not None else GradientBoosting.presort_features(x)
         best_refinement = None
 
-        for column_index in range(0, get_num_features(sorted_indices)):
-            indices = sorted_indices[:, column_index]
+        for feature_index in range(0, get_num_features(sorted_indices)):
+            indices = sorted_indices[:, feature_index]
             new_refinement = self.__find_best_condition(x, indices, expected_scores[indices], predicted_scores[indices],
-                                                        column_index)
+                                                        feature_index)
 
             if best_refinement is None or new_refinement.h < best_refinement.h:
                 best_refinement = new_refinement
