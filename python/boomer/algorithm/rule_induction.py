@@ -10,7 +10,7 @@ from abc import abstractmethod
 from typing import Dict
 
 import numpy as np
-from boomer.algorithm._model import Rule, EmptyBody, ConjunctiveBody, Head
+from boomer.algorithm._model import Rule, EmptyBody, ConjunctiveBody, Head, DTYPE_FEATURES, DTYPE_INDICES, DTYPE_SCORES
 
 from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement
 from boomer.algorithm.losses import SquaredErrorLoss
@@ -84,10 +84,10 @@ class RuleBuilder:
 
         :return: The 'Rule' that has been created
         """
-        leq_features = np.fromiter(self.leq_conditions.keys(), dtype=np.int32)
-        leq_thresholds = np.fromiter(self.leq_conditions.values(), dtype=np.float32)
-        gr_features = np.fromiter(self.gr_conditions.keys(), dtype=np.int32)
-        gr_thresholds = np.fromiter(self.gr_conditions.values(), dtype=np.float32)
+        leq_features = np.fromiter(self.leq_conditions.keys(), dtype=DTYPE_INDICES)
+        leq_thresholds = np.fromiter(self.leq_conditions.values(), dtype=DTYPE_FEATURES)
+        gr_features = np.fromiter(self.gr_conditions.keys(), dtype=np.DTYPE_INDICES)
+        gr_thresholds = np.fromiter(self.gr_conditions.values(), dtype=DTYPE_FEATURES)
         body = ConjunctiveBody(leq_features, leq_thresholds, gr_features, gr_thresholds)
         return Rule(body, self.head)
 
@@ -146,11 +146,14 @@ class GradientBoosting(RuleInduction):
         self.presorted_indices = None
         self.__validate()
 
+        # Convert feature matrix into Fortran array for efficiency
+        x = np.asfortranarray(x, dtype=DTYPE_FEATURES)
+
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
-        expected_scores = np.ascontiguousarray(np.where(y > 0, y, -1), dtype=np.float64)
+        expected_scores = np.asfortranarray(np.where(y > 0, y, -1), dtype=DTYPE_SCORES)
 
         # Initialize the confidence scores that are initially predicted for each example and label
-        predicted_scores = np.ascontiguousarray(np.zeros(expected_scores.shape, dtype=np.float64))
+        predicted_scores = np.asfortranarray(np.zeros(expected_scores.shape, dtype=DTYPE_SCORES))
 
         # Induce default rule
         log.info('Learning rule 1 / %s (default rule)...', self.num_rules)
@@ -163,9 +166,6 @@ class GradientBoosting(RuleInduction):
         theory = [default_rule]
 
         if self.num_rules > 1:
-            # Convert feature matrix into Fortran array for efficiency
-            x = np.asfortranarray(x, dtype=np.float32)
-
             while len(theory) < self.num_rules:
                 log.info('Learning rule %s / %s...', len(theory) + 1, self.num_rules)
                 rule = self.__induce_rule(x, expected_scores, predicted_scores)
@@ -330,7 +330,7 @@ class GradientBoosting(RuleInduction):
         """
         x_sorted_indices = np.argsort(x, axis=0)
         return x_sorted_indices if x_sorted_indices.flags.fortran else np.asfortranarray(x_sorted_indices,
-                                                                                         dtype=np.int32)
+                                                                                         dtype=DTYPE_INDICES)
 
     @staticmethod
     def __calculate_threshold(first: float, second: float) -> float:

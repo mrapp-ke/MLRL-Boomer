@@ -8,6 +8,7 @@ Provides classes for making predictions based on rules.
 from abc import abstractmethod
 
 import numpy as np
+from boomer.algorithm._model import DTYPE_SCORES
 
 from boomer.algorithm.model import Theory
 from boomer.algorithm.stats import Stats, get_num_examples
@@ -49,7 +50,7 @@ class LinearCombination(Bipartition):
     """
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        prediction = np.zeros((get_num_examples(x), stats.num_labels), dtype=np.float64)
+        prediction = np.zeros((get_num_examples(x), stats.num_labels), dtype=DTYPE_SCORES)
 
         for rule in theory:
             rule.predict(x, prediction)
