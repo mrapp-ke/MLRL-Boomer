@@ -86,7 +86,7 @@ class RuleBuilder:
         """
         leq_features = np.fromiter(self.leq_conditions.keys(), dtype=DTYPE_INDICES)
         leq_thresholds = np.fromiter(self.leq_conditions.values(), dtype=DTYPE_FEATURES)
-        gr_features = np.fromiter(self.gr_conditions.keys(), dtype=np.DTYPE_INDICES)
+        gr_features = np.fromiter(self.gr_conditions.keys(), dtype=DTYPE_INDICES)
         gr_thresholds = np.fromiter(self.gr_conditions.values(), dtype=DTYPE_FEATURES)
         body = ConjunctiveBody(leq_features, leq_thresholds, gr_features, gr_thresholds)
         return Rule(body, self.head)
