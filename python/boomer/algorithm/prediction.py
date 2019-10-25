@@ -9,7 +9,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-from boomer.algorithm.model import Theory, DTYPE_SCORES
+from boomer.algorithm.model import Theory
 from boomer.algorithm.stats import Stats, get_num_examples
 from boomer.learners import Module
 
@@ -49,7 +49,7 @@ class LinearCombination(Bipartition):
     """
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        prediction = np.zeros((get_num_examples(x), stats.num_labels), dtype=DTYPE_SCORES)
+        prediction = np.zeros((get_num_examples(x), stats.num_labels), dtype=np.float64)
 
         for rule in theory:
             rule.predict(x, prediction)
