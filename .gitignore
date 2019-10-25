@@ -1,6 +1,7 @@
-# Compiled C files
+# Build files
 *.so
 *.c
+python/build/
 
 # Virtual Environment
 venv/
