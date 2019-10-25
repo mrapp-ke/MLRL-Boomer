@@ -1,5 +1,6 @@
 from distutils.core import setup
 
+import numpy
 from Cython.Build import cythonize
 
 setup(name='boomer',
@@ -21,5 +22,6 @@ setup(name='boomer',
           'matplotlib',
           'Cython'
       ],
-      ext_modules=cythonize('boomer/algorithm/*.pyx'),
+      ext_modules=cythonize('boomer/algorithm/*.pyx', language_level='3'),
+      include_dirs=[numpy.get_include()],
       zip_safe=False)
