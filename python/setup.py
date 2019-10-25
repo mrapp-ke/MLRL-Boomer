@@ -1,4 +1,6 @@
-from setuptools import setup
+from distutils.core import setup
+
+from Cython.Build import cythonize
 
 setup(name='boomer',
       version='0.1.0',
@@ -16,6 +18,8 @@ setup(name='boomer',
           'scipy',
           'sklearn',
           'requests',
-          'matplotlib'
+          'matplotlib',
+          'Cython'
       ],
+      ext_modules=cythonize('boomer/algorithm/*.pyx'),
       zip_safe=False)
