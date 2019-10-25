@@ -95,7 +95,7 @@ cdef class Head:
     A base class for the head of a rule.
     """
 
-    cpdef predict(self, float64[:] predictions):
+    cdef predict(self, float64[:] predictions):
         """
         Applies the head's prediction to a given vector of predictions.
 
@@ -118,7 +118,7 @@ cdef class FullHead(Head):
         """
         self.scores = scores
 
-    cpdef predict(self, float64[:] predictions):
+    cdef predict(self, float64[:] predictions):
         cdef float64[:] scores = self.scores
         cdef Py_ssize_t num_cols = predictions.shape[1]
         cdef Py_ssize_t c
@@ -146,7 +146,7 @@ cdef class PartialHead(Head):
         self.scores = scores
         self.labels = labels
 
-    cpdef predict(self, float64[:] predictions):
+    cdef predict(self, float64[:] predictions):
         cdef int32[:] labels = self.labels
         cdef float64[:] scores = self.scores
         cdef Py_ssize_t num_labels = labels.shape[0]
