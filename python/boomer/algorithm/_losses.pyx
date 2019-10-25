@@ -17,7 +17,7 @@ cdef class DecomposableLoss(Loss):
     A base class for all decomposable loss functions.
     """
 
-    cdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
+    cpdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
         """
         Calculates the gradient statistics, i.e., the first derivative of the loss function, given expected and
         predicted scores for individual examples and labels.
@@ -31,7 +31,7 @@ cdef class DecomposableLoss(Loss):
         """
         pass
 
-    cdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
+    cpdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
         """
         Calculates the optimal scores to be predicted for each label.
 
@@ -42,7 +42,7 @@ cdef class DecomposableLoss(Loss):
         """
         pass
 
-    cdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
+    cpdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
         # TODO comment
         pass
 
@@ -52,7 +52,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     A multi-label variant of the squared error loss.
     """
 
-    cdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
+    cpdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
         cdef Py_ssize_t num_rows = expected_scores.shape[0]
         cdef Py_ssize_t num_cols = expected_scores.shape[1]
         cdef float64[::1, :] gradients = np.empty((num_rows, num_cols), dtype=DTYPE_SCORES, order='F')
@@ -64,7 +64,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         return gradients
 
-    cdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
+    cpdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
         cdef Py_ssize_t num_rows = gradients.shape[0]
         cdef Py_ssize_t num_cols = gradients.shape[1]
         cdef float64[::1] scores = np.empty((num_cols), dtype=DTYPE_SCORES)
@@ -81,7 +81,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         return scores
 
-    cdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
+    cpdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
         cdef Py_ssize_t num_rows = gradients.shape[0]
         cdef Py_ssize_t num_cols = gradients.shape[1]
         cdef float64 h = 0
