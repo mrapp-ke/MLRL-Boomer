@@ -23,6 +23,7 @@ cdef class Body:
         Returns whether a certain example is covered by the body, or not.
 
         :param example: An array of dtype float, shape `(num_features)`, representing the features of an example
+        :return:        0, if the example is not covered, 1 otherwise
         """
         pass
 
