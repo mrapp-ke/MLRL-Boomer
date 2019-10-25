@@ -41,16 +41,16 @@ cdef class ConjunctiveBody(Body):
     A body that given as a conjunction of numerical conditions using <= and > operators.
     """
 
-    cdef int32[:] leq_features
+    cdef int32[::1] leq_features
 
-    cdef float32[:] leq_thresholds
+    cdef float32[::1] leq_thresholds
 
-    cdef int32[:] gr_features
+    cdef int32[::1] gr_features
 
-    cdef float32[:] gr_thresholds
+    cdef float32[::1] gr_thresholds
 
-    def __cinit__(self, int32[:] leq_features, float32[:] leq_thresholds, int32[:] gr_features,
-                  float32[:] gr_thresholds):
+    def __cinit__(self, int32[::1] leq_features, float32[::1] leq_thresholds, int32[::1] gr_features,
+                  float32[::1] gr_thresholds):
         """
         :param leq_features:    An array of dtype int, shape `(num_leq_conditions)`, representing the features of the
                                 conditions that use the <= operator
@@ -67,10 +67,10 @@ cdef class ConjunctiveBody(Body):
         self.gr_thresholds = gr_thresholds
 
     cdef bint covers(self, float32[:] example):
-        cdef int32[:] leq_features = self.leq_features
-        cdef float32[:] leq_thresholds = self.leq_thresholds
-        cdef int32[:] gr_features = self.gr_features
-        cdef float32[:] gr_thresholds = self.gr_thresholds
+        cdef int32[::1] leq_features = self.leq_features
+        cdef float32[::1] leq_thresholds = self.leq_thresholds
+        cdef int32[::1] gr_features = self.gr_features
+        cdef float32[::1] gr_thresholds = self.gr_thresholds
         cdef Py_ssize_t num_leq_conditions = leq_features.shape[0]
         cdef Py_ssize_t num_gr_conditions = gr_features.shape[0]
         cdef Py_ssize_t i, c
@@ -109,9 +109,9 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    cdef readonly float64[:] scores
+    cdef readonly float64[::1] scores
 
-    def __cinit__(self, float64[:] scores):
+    def __cinit__(self, float64[::1] scores):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                         rule for each label
@@ -119,7 +119,7 @@ cdef class FullHead(Head):
         self.scores = scores
 
     cdef predict(self, float64[:] predictions):
-        cdef float64[:] scores = self.scores
+        cdef float64[::1] scores = self.scores
         cdef Py_ssize_t num_cols = predictions.shape[1]
         cdef Py_ssize_t c
 
@@ -132,11 +132,11 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    cdef readonly float64[:] scores
+    cdef readonly float64[::1] scores
 
-    cdef readonly int32[:] labels
+    cdef readonly int32[::1] labels
 
-    def __cinit__(self, float64[:] scores, int32[:] labels):
+    def __cinit__(self, float64[::1] scores, int32[::1] labels):
         """
         :param labels:  An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the labels
                         for which the rule predicts
@@ -147,8 +147,8 @@ cdef class PartialHead(Head):
         self.labels = labels
 
     cdef predict(self, float64[:] predictions):
-        cdef int32[:] labels = self.labels
-        cdef float64[:] scores = self.scores
+        cdef int32[::1] labels = self.labels
+        cdef float64[::1] scores = self.scores
         cdef Py_ssize_t num_labels = labels.shape[0]
         cdef Py_ssize_t c, label
 
