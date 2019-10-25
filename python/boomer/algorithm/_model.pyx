@@ -2,8 +2,9 @@
 # cython: wraparound=False
 import numpy as np
 cimport numpy as np
-
-DTYPE_MASK = np.uint8
+ctypedef np.int32_t int32
+ctypedef np.float32_t float32
+ctypedef np.float64_t float64
 
 DTYPE_INDICES = np.int32
 
@@ -17,7 +18,12 @@ cdef class Body:
     A base class for the body of a rule.
     """
 
-    cpdef np.ndarray match(self, x: np.ndarray):
+    cdef bint covers(self, float32[:] example):
+        """
+        Returns whether a certain example is covered by the body, or not.
+
+        :param example: An array of dtype float, shape `(num_features)`, representing the features of an example
+        """
         pass
 
 
@@ -26,9 +32,8 @@ cdef class EmptyBody(Body):
     An empty body that matches all examples.
     """
 
-    cpdef np.ndarray match(self, x: np.ndarray):
-        cdef Py_ssize_t num_examples = x.shape[0]
-        return np.full((num_examples), True, dtype=DTYPE_MASK)
+    cdef bint covers(self, float32[:] example):
+        return 1
 
 
 cdef class ConjunctiveBody(Body):
@@ -36,16 +41,16 @@ cdef class ConjunctiveBody(Body):
     A body that given as a conjunction of numerical conditions using <= and > operators.
     """
 
-    cdef readonly np.ndarray leq_features
+    cdef int32[:] leq_features
 
-    cdef readonly np.ndarray leq_thresholds
+    cdef float32[:] leq_thresholds
 
-    cdef readonly np.ndarray gr_features
+    cdef int32[:] gr_features
 
-    cdef readonly np.ndarray gr_thresholds
+    cdef float32[:] gr_thresholds
 
-    def __cinit__(self, leq_features: np.ndarray, leq_thresholds: np.ndarray, gr_features: np.ndarray,
-                  gr_thresholds: np.ndarray):
+    def __cinit__(self, int32[:] leq_features, float32[:] leq_thresholds, int32[:] gr_features,
+                  float32[:] gr_thresholds):
         """
         :param leq_features:    An array of dtype int, shape `(num_leq_conditions)`, representing the features of the
                                 conditions that use the <= operator
@@ -61,9 +66,28 @@ cdef class ConjunctiveBody(Body):
         self.gr_features = gr_features
         self.gr_thresholds = gr_thresholds
 
-    cpdef np.ndarray match(self, x: np.ndarray):
-        return np.all(np.less_equal(x[:, self.leq_features], self.leq_thresholds), axis=1) & np.all(
-            np.greater(x[:, self.gr_features], self.gr_thresholds), axis=1)
+    cdef bint covers(self, float32[:] example):
+        cdef int32[:] leq_features = self.leq_features
+        cdef float32[:] leq_thresholds = self.leq_thresholds
+        cdef int32[:] gr_features = self.gr_features
+        cdef float32[:] gr_thresholds = self.gr_thresholds
+        cdef Py_ssize_t num_leq_conditions = leq_features.shape[0]
+        cdef Py_ssize_t num_gr_conditions = gr_features.shape[0]
+        cdef Py_ssize_t i, c
+
+        for i in range(num_leq_conditions):
+            c = leq_features[i]
+
+            if example[c] > leq_thresholds[i]:
+                return 0
+
+        for i in range(num_gr_conditions):
+            c = gr_features[i]
+
+            if example[c] <= gr_thresholds[i]:
+                return 0
+
+        return 1
 
 
 cdef class Head:
@@ -71,12 +95,11 @@ cdef class Head:
     A base class for the head of a rule.
     """
 
-    cpdef predict(self, predictions: np.ndarray):
+    cpdef predict(self, float64[:] predictions):
         """
-        Applies the head's prediction to a given matrix of predictions.
+        Applies the head's prediction to a given vector of predictions.
 
-        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
-                                predicted for the corresponding examples
+        :param predictions: An array of dtype float, shape `(num_labels)`, representing a vector of predictions
         """
         pass
 
@@ -86,17 +109,22 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    cdef readonly np.ndarray scores
+    cdef readonly float64[:] scores
 
-    def __cinit__(self, scores: np.ndarray):
+    def __cinit__(self, float64[:] scores):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                         rule for each label
         """
         self.scores = scores
 
-    cpdef predict(self, predictions: np.ndarray):
-        predictions += self.scores
+    cpdef predict(self, float64[:] predictions):
+        cdef float64[:] scores = self.scores
+        cdef Py_ssize_t num_cols = predictions.shape[1]
+        cdef Py_ssize_t c
+
+        for c in range(num_cols):
+            predictions[c] += scores[c]
 
 
 cdef class PartialHead(Head):
@@ -104,11 +132,11 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    cdef readonly np.ndarray scores
+    cdef readonly float64[:] scores
 
-    cdef readonly np.ndarray labels
+    cdef readonly int32[:] labels
 
-    def __cinit__(self, scores: np.ndarray, labels: np.ndarray):
+    def __cinit__(self, float64[:] scores, int32[:] labels):
         """
         :param labels:  An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the labels
                         for which the rule predicts
@@ -118,8 +146,15 @@ cdef class PartialHead(Head):
         self.scores = scores
         self.labels = labels
 
-    cpdef predict(self, predictions: np.ndarray):
-        predictions[:, self.labels] += self.scores
+    cpdef predict(self, float64[:] predictions):
+        cdef int32[:] labels = self.labels
+        cdef float64[:] scores = self.scores
+        cdef Py_ssize_t num_labels = labels.shape[0]
+        cdef Py_ssize_t c, label
+
+        for c in range(num_labels):
+            label = labels[c]
+            predictions[label] += scores[c]
 
 
 cdef class Rule:
@@ -139,7 +174,7 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cpdef predict(self, x: np.ndarray, predictions: np.ndarray):
+    cpdef predict(self, float32[::1, :] x, float64[::1, :] predictions):
         """
         Applies the rule's prediction to all examples it covers.
 
@@ -148,4 +183,11 @@ cdef class Rule:
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
                                 predicted for the given examples
         """
-        self.head.predict(predictions[self.body.match(x), :])
+        cdef Body body = self.body
+        cdef Head head = self.head
+        cdef Py_ssize_t num_examples = x.shape[0]
+        cdef Py_ssize_t c
+
+        for r in range(num_examples):
+            if body.covers(x[r, :]):
+                head.predict(predictions[r, :])
