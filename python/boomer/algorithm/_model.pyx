@@ -3,7 +3,14 @@
 import numpy as np
 cimport numpy as np
 
-DTYPE_INDICES = np.intc
+DTYPE_MASK = np.uint8
+
+DTYPE_INDICES = np.int32
+
+DTYPE_FEATURES = np.float32
+
+DTYPE_SCORES = np.float64
+
 
 cdef class Body:
     """
@@ -21,13 +28,21 @@ cdef class EmptyBody(Body):
 
     cpdef np.ndarray match(self, x: np.ndarray):
         cdef Py_ssize_t num_examples = x.shape[0]
-        return np.full((num_examples), True, dtype=DTYPE_INDICES)
+        return np.full((num_examples), True, dtype=DTYPE_MASK)
 
 
 cdef class ConjunctiveBody(Body):
     """
     A body that given as a conjunction of numerical conditions using <= and > operators.
     """
+
+    cdef readonly np.ndarray leq_features
+
+    cdef readonly np.ndarray leq_thresholds
+
+    cdef readonly np.ndarray gr_features
+
+    cdef readonly np.ndarray gr_thresholds
 
     def __cinit__(self, leq_features: np.ndarray, leq_thresholds: np.ndarray, gr_features: np.ndarray,
                   gr_thresholds: np.ndarray):
