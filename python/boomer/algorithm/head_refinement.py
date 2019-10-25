@@ -9,9 +9,9 @@ Provides classes for finding the optimal heads for rules that cover a certain re
 from abc import abstractmethod
 
 import numpy as np
+from boomer.algorithm._losses import Loss, DecomposableLoss
 from boomer.algorithm._model import Head, FullHead, PartialHead, DTYPE_INDICES
 
-from boomer.algorithm.losses import Loss, DecomposableLoss
 from boomer.learners import Randomized
 
 

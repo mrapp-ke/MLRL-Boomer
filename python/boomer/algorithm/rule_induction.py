@@ -10,10 +10,10 @@ from abc import abstractmethod
 from typing import Dict
 
 import numpy as np
+from boomer.algorithm._losses import SquaredErrorLoss
 from boomer.algorithm._model import Rule, EmptyBody, ConjunctiveBody, Head, DTYPE_FEATURES, DTYPE_INDICES, DTYPE_SCORES
 
 from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement
-from boomer.algorithm.losses import SquaredErrorLoss
 from boomer.algorithm.model import Theory
 from boomer.algorithm.stats import Stats, get_num_examples, get_num_features
 from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
@@ -164,20 +164,6 @@ class GradientBoosting(RuleInduction):
 
         # Create initial theory
         theory = [default_rule]
-
-        if self.num_rules > 1:
-            while len(theory) < self.num_rules:
-                log.info('Learning rule %s / %s...', len(theory) + 1, self.num_rules)
-                rule = self.__induce_rule(x, expected_scores, predicted_scores)
-
-                # Apply prediction of the new rule to the matrix of predicted scores
-                # TODO: Can we make this more efficient by applied the rule to the bagged and remaining instances
-                #  separately?
-                rule.predict(x, predicted_scores)
-
-                # Add new rule to theory
-                theory.append(rule)
-                self.random_state += 1
 
         self.presorted_indices = None
         return theory
