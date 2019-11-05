@@ -8,36 +8,6 @@ Provides utility functions and classes to obtain statistics about multi-label da
 import numpy as np
 
 
-def get_num_examples(x: np.ndarray) -> int:
-    """
-    Returns the number of examples contained in a data set.
-
-    :param x:   An array of dtype float, shape `(num_examples, num_features)`, representing the features of examples
-    :return:    The number of examples contained in the given data set
-    """
-    return np.shape(x)[0]
-
-
-def get_num_features(x: np.ndarray) -> int:
-    """
-    Returns the number of features contained in a data set.
-
-    :param x:   An array of dtype float, shape `(num_examples, num_features)`, representing the features of examples
-    :return:    The number of features contained in the given data set
-    """
-    return np.shape(x)[1]
-
-
-def get_num_labels(y: np.ndarray) -> int:
-    """
-    Returns the number of labels contained in a label set.
-
-    :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of examples
-    :return:    The number of labels contained in the given label set
-    """
-    return np.shape(y)[1]
-
-
 class Stats:
     """
     Stores useful information about a multi-label training data set, such as the number of examples, features, and
@@ -65,4 +35,7 @@ class Stats:
                     examples
         :return:    'Stats' storing information about the given data set
         """
-        return Stats(num_examples=get_num_examples(x), num_features=get_num_features(x), num_labels=get_num_labels(y))
+        num_examples = x.shape[0]
+        num_features = x.shape[1]
+        num_labels = y.shape[1]
+        return Stats(num_examples=num_examples, num_features=num_features, num_labels=num_labels)
