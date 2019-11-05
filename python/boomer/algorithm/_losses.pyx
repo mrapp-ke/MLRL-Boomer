@@ -69,15 +69,16 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef Py_ssize_t num_cols = gradients.shape[1]
         cdef float64[::1] scores = np.empty((num_cols), dtype=DTYPE_SCORES)
         cdef Py_ssize_t r, c
-        cdef float64 sum
+        cdef float64 sum_of_gradients
+        cdef float64 sum_of_hessians = 2 * num_rows 
 
         for c in range(num_cols):
-            sum = 0
+            sum_of_gradients = 0
 
             for r in range(num_rows):
-                sum += gradients[r, c]
+                sum_of_gradients += gradients[r, c]
 
-            scores[c] = -sum / (2 * num_rows)
+            scores[c] = -sum_of_gradients / sum_of_hessians
 
         return scores
 
@@ -86,12 +87,13 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef Py_ssize_t num_cols = gradients.shape[1]
         cdef float64 h = 0
         cdef Py_ssize_t r, c
-        cdef float64 score
+        cdef float64 score, score_pow
 
         for c in range(num_cols):
             score = scores[c]
+            score_pow = pow(score, 2)
 
             for r in range(num_rows):
-                h += gradients[r, c] * score + pow(score, 2)
+                h += (gradients[r, c] * score) + score_pow
 
         return h
