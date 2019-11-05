@@ -11,7 +11,7 @@ import numpy as np
 from boomer.algorithm._model import DTYPE_SCORES, DTYPE_FEATURES
 
 from boomer.algorithm.model import Theory
-from boomer.algorithm.stats import Stats, get_num_examples
+from boomer.algorithm.stats import Stats
 from boomer.learners import Module
 
 
@@ -51,7 +51,7 @@ class LinearCombination(Bipartition):
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
         x = np.asfortranarray(x, dtype=DTYPE_FEATURES)
-        prediction = np.asfortranarray(np.zeros((get_num_examples(x), stats.num_labels), dtype=DTYPE_SCORES))
+        prediction = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_SCORES))
 
         for rule in theory:
             rule.predict(x, prediction)
