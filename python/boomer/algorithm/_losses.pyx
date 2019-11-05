@@ -43,7 +43,15 @@ cdef class DecomposableLoss(Loss):
         pass
 
     cpdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
-        # TODO comment
+        """
+        Calculates a single score that measures the quality of predictions.
+
+        :param scores:      An array of dtype float, shape `(num_labels)`, representing the scores predicted for each
+                            label
+        :param gradients:   An array of dtype float, shape `(num_examples, num_labels)`, representing the gradient
+                            statistics for individual examples and labels
+        :return:            A scalar of dtype float, representing the calculated score
+        """
         pass
 
 
