@@ -1,5 +1,6 @@
 # cython: boundscheck=False
 # cython: wraparound=False
+# cython: cdivision=False
 import numpy as np
 from libc.math cimport pow
 from boomer.algorithm._model import DTYPE_SCORES
