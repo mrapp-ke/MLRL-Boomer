@@ -133,28 +133,28 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
+    cdef readonly int32[::1] label_indices
+
     cdef readonly float64[::1] scores
 
-    cdef readonly int32[::1] labels
-
-    def __cinit__(self, float64[::1] scores, int32[::1] labels):
+    def __cinit__(self, int32[::1] label_indices, float64[::1] scores):
         """
-        :param labels:  An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the labels
-                        for which the rule predicts
-        :param scores:  An array of dtype float, shape `(num_predicted_labels)`, representing the scores that are
-                        predicted by the rule
+        :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
+                                labels for which the rule predicts
+        :param scores:          An array of dtype float, shape `(num_predicted_labels)`, representing the scores that
+                                are predicted by the rule
                 """
         self.scores = scores
-        self.labels = labels
+        self.label_indices = label_indices
 
     cdef predict(self, float64[:] predictions):
-        cdef int32[::1] labels = self.labels
+        cdef int32[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
-        cdef Py_ssize_t num_labels = labels.shape[0]
+        cdef Py_ssize_t num_labels = label_indices.shape[0]
         cdef Py_ssize_t c, label
 
         for c in range(num_labels):
-            label = labels[c]
+            label = label_indices[c]
             predictions[label] += scores[c]
 
 

@@ -102,6 +102,6 @@ class SingleLabelHeadRefinement(HeadRefinement):
         """
         gradients = loss.calculate_gradients(expected_scores, predicted_scores)
         scores = loss.calculate_optimal_scores(gradients)
-        labels = np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES)
+        label_indices = np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES)
         h = loss.evaluate_predictions(scores, gradients)
-        return PartialHead(scores, labels), h
+        return PartialHead(label_indices, scores), h
