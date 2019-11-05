@@ -187,7 +187,7 @@ cdef class Rule:
         cdef Body body = self.body
         cdef Head head = self.head
         cdef Py_ssize_t num_examples = x.shape[0]
-        cdef Py_ssize_t c
+        cdef Py_ssize_t r
 
         for r in range(num_examples):
             if body.covers(x[r, :]):
