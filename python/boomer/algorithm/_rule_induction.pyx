@@ -1,5 +1,3 @@
-# cython: boundscheck=False
-# cython: wraparound=False
 from boomer.algorithm._model cimport float64, Rule, FullHead, EmptyBody
 from boomer.algorithm._head_refinement cimport HeadRefinement
 from boomer.algorithm._losses cimport Loss
