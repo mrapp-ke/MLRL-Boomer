@@ -42,13 +42,13 @@ cdef class ConjunctiveBody(Body):
     A body that consists of a conjunction of numerical conditions using <= and > operators.
     """
 
-    cdef int32[::1] leq_features
+    cdef readonly int32[::1] leq_features
 
-    cdef float32[::1] leq_thresholds
+    cdef readonly float32[::1] leq_thresholds
 
-    cdef int32[::1] gr_features
+    cdef readonly int32[::1] gr_features
 
-    cdef float32[::1] gr_thresholds
+    cdef readonly float32[::1] gr_thresholds
 
     def __cinit__(self, int32[::1] leq_features, float32[::1] leq_thresholds, int32[::1] gr_features,
                   float32[::1] gr_thresholds):
