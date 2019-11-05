@@ -23,7 +23,7 @@ cdef class Body:
         Returns whether a certain example is covered by the body, or not.
 
         :param example: An array of dtype float, shape `(num_features)`, representing the features of an example
-        :return:        0, if the example is not covered, 1 otherwise
+        :return:        1, if the example is covered, 0 otherwise
         """
         pass
 
@@ -39,7 +39,7 @@ cdef class EmptyBody(Body):
 
 cdef class ConjunctiveBody(Body):
     """
-    A body that given as a conjunction of numerical conditions using <= and > operators.
+    A body that consists of a conjunction of numerical conditions using <= and > operators.
     """
 
     cdef int32[::1] leq_features
