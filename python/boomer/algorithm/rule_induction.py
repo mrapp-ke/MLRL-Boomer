@@ -146,24 +146,23 @@ class GradientBoosting(RuleInduction):
         self.presorted_indices = None
         self.__validate()
 
-        # Convert feature matrix into Fortran array for efficiency
+        # Convert feature matrix into Fortran-contiguous array
         x = np.asfortranarray(x, dtype=DTYPE_FEATURES)
 
         # Convert binary ground truth labeling into expected confidence scores {-1, 1}
         expected_scores = np.asfortranarray(np.where(y > 0, y, -1), dtype=DTYPE_SCORES)
 
-        # Initialize the confidence scores that are initially predicted for each example and label
-        predicted_scores = np.asfortranarray(np.zeros(expected_scores.shape, dtype=DTYPE_SCORES))
-
         # Induce default rule
         log.info('Learning rule 1 / %s (default rule)...', self.num_rules)
-        default_rule = self.__induce_default_rule(expected_scores, predicted_scores)
+        default_rule = self.__induce_default_rule(expected_scores)
 
-        # Apply prediction of the default rule to the matrix of predicted scores
-        default_rule.predict(x, predicted_scores)
+        # Initialize the confidence scores that are predicted by the default rule for each example and label
+        predicted_scores = np.asfortranarray(np.tile(default_rule.head.scores, (expected_scores.shape[0], 1)))
 
         # Create initial theory
         theory = [default_rule]
+
+        # TODO Induce more rules
 
         self.presorted_indices = None
         return theory
@@ -178,18 +177,16 @@ class GradientBoosting(RuleInduction):
         if self.head_refinement is None:
             raise ValueError('Parameter \'head_refinement\' may not be None')
 
-    def __induce_default_rule(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:
+    def __induce_default_rule(self, expected_scores: np.ndarray) -> Rule:
         """
         Induces the default rule.
 
         :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
                                     expected confidence scores according to the ground truth
-        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
-                                    currently predicted confidence scores
         :return:                    The default rule
         """
         self.head_refinement.random_state = self.random_state
-        head = self.head_refinement.find_default_head(expected_scores, predicted_scores)
+        head = self.head_refinement.find_default_head(expected_scores)
         return Rule(EmptyBody(), head)
 
     def __induce_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:

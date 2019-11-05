@@ -39,38 +39,32 @@ class HeadRefinement(Randomized):
         """
         pass
 
-    def find_default_head(self, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Head:
+    def find_default_head(self, expected_scores: np.ndarray) -> Head:
         """
         Finds and returns the head of the default rule that minimizes the loss function given expected and predicted
         scores.
 
         :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
                                     expected confidence scores according to the ground truth
-        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
-                                    currently predicted confidence scores
         :return:                    The full head of the default rule
         """
         if isinstance(self.loss, DecomposableLoss):
-            return HeadRefinement.__find_default_head_minimizing_decomposable_loss(expected_scores, predicted_scores,
-                                                                                   self.loss)
+            return HeadRefinement.__find_default_head_minimizing_decomposable_loss(expected_scores, self.loss)
         else:
             raise NotImplementedError("Non-decomposable loss functions not supported yet")
 
     @staticmethod
-    def __find_default_head_minimizing_decomposable_loss(expected_scores: np.ndarray, predicted_scores: np.ndarray,
-                                                         loss: DecomposableLoss) -> Head:
+    def __find_default_head_minimizing_decomposable_loss(expected_scores: np.ndarray, loss: DecomposableLoss) -> Head:
         """
         Finds and returns the head of the default rule that minimizes a decomposable loss function given expected and
         predicted scores.
 
         :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
                                     expected confidence scores according to the ground truth
-        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
-                                    currently predicted confidence scores
         :param loss:                The (decomposable) loss function
         :return:
         """
-        gradients = loss.calculate_gradients(expected_scores, predicted_scores)
+        gradients = loss.calculate_initial_gradients(expected_scores)
         scores = loss.calculate_optimal_scores(gradients)
         return FullHead(scores)
 
