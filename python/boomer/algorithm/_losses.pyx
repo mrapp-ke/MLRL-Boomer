@@ -17,6 +17,18 @@ cdef class DecomposableLoss(Loss):
     A base class for all decomposable loss functions.
     """
 
+    cpdef float64[::1, :] calculate_initial_gradients(self, float64[::1, :] expected_scores):
+        """
+        Calculates the initial gradient statistics, i.e, the first derivative of the loss function, when always
+        predicting 0, given expected scores for individual examples and labels.
+
+        :param expected_scores: An array of dtype float, shape `(num_examples, num_labels)`, representing the expected
+                                confidence scores according to the ground truth
+        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the initial
+                                gradient statistics for each examples and label
+        """
+        pass
+
     cpdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
         """
         Calculates the gradient statistics, i.e., the first derivative of the loss function, given expected and
@@ -59,6 +71,19 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     """
     A multi-label variant of the squared error loss.
     """
+
+    cpdef float64[::1, :] calculate_initial_gradients(self, float64[::1, :] expected_scores):
+        cdef Py_ssize_t num_rows = expected_scores.shape[0]
+        cdef Py_ssize_t num_cols = expected_scores.shape[1]
+        cdef float64[::1, :] gradients = np.empty((num_rows, num_cols), dtype=DTYPE_SCORES, order='F')
+        cdef Py_ssize_t r, c
+
+        for c in range(num_cols):
+            for r in range(num_rows):
+                gradients[r, c] = -2 * expected_scores[r, c]
+
+        return gradients
+
 
     cpdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
         cdef Py_ssize_t num_rows = expected_scores.shape[0]
