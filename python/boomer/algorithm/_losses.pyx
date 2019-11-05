@@ -1,16 +1,62 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 import numpy as np
-cimport numpy as np
 from libc.math cimport pow
 from boomer.algorithm._model import DTYPE_SCORES
-ctypedef np.float64_t float64
 
 cdef class Loss:
     """
     A base class for all loss functions.
     """
 
+    cpdef float64[::1, :] calculate_initial_gradients(self, float64[::1, :] expected_scores):
+        """
+        Calculates the initial gradient statistics, i.e, the first derivative of the loss function, when always
+        predicting 0, given expected scores for individual examples and labels.
+
+        :param expected_scores: An array of dtype float, shape `(num_examples, num_labels)`, representing the expected
+                                confidence scores according to the ground truth
+        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the initial
+                                gradient statistics for each examples and label
+        """
+        pass
+
+    cpdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
+        """
+        Calculates the gradient statistics, i.e., the first derivative of the loss function, given expected and
+        predicted scores for individual examples and labels.
+
+        :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                    expected confidence scores according to the ground truth
+        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
+                                    currently predicted confidence scores
+        :return:                    An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                    gradient statistics for each example and label
+        """
+        pass
+
+    cpdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
+        """
+        Calculates the optimal scores to be predicted for each label.
+
+        :param gradients:   An array of dtype float, shape `(num_examples, num_labels)`, representing the gradient
+                            statistics for individual examples and labels
+        :return:            An array of dtype float, shape `(num_labels)', representing the optimal scores to be
+                            predicted for each label
+        """
+        pass
+
+    cpdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
+        """
+        Calculates a single score that measures the quality of predictions.
+
+        :param scores:      An array of dtype float, shape `(num_labels)`, representing the scores predicted for each
+                            label
+        :param gradients:   An array of dtype float, shape `(num_examples, num_labels)`, representing the gradient
+                            statistics for individual examples and labels
+        :return:            A scalar of dtype float, representing the calculated score
+        """
+        pass
 
 cdef class DecomposableLoss(Loss):
     """
