@@ -42,48 +42,48 @@ cdef class ConjunctiveBody(Body):
     A body that consists of a conjunction of numerical conditions using <= and > operators.
     """
 
-    cdef readonly int32[::1] leq_features
+    cdef readonly int32[::1] leq_feature_indices
 
     cdef readonly float32[::1] leq_thresholds
 
-    cdef readonly int32[::1] gr_features
+    cdef readonly int32[::1] gr_feature_indices
 
     cdef readonly float32[::1] gr_thresholds
 
-    def __cinit__(self, int32[::1] leq_features, float32[::1] leq_thresholds, int32[::1] gr_features,
+    def __cinit__(self, int32[::1] leq_feature_indices, float32[::1] leq_thresholds, int32[::1] gr_feature_indices,
                   float32[::1] gr_thresholds):
         """
-        :param leq_features:    An array of dtype int, shape `(num_leq_conditions)`, representing the features of the
-                                conditions that use the <= operator
-        :param leq_thresholds:  An array of dtype float, shape `(num_leq_condition)`, representing the thresholds of the
-                                conditions that use the <= operator
-        :param gr_features:     An array of dtype int, shape `(num_gr_conditions)`, representing the features of the
-                                conditions that use the > operator
-        :param gr_thresholds:   An array of dtype float, shape `(num_gr_conditions)`, representing the thresholds of the
-                                conditions that use the > operator
+        :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the features of 
+                                    the conditions that use the <= operator
+        :param leq_thresholds:      An array of dtype float, shape `(num_leq_condition)`, representing the thresholds of
+                                    the conditions that use the <= operator
+        :param gr_feature_indices:  An array of dtype int, shape `(num_gr_conditions)`, representing the features of the
+                                    conditions that use the > operator
+        :param gr_thresholds:       An array of dtype float, shape `(num_gr_conditions)`, representing the thresholds of
+                                    the conditions that use the > operator
         """
-        self.leq_features = leq_features
+        self.leq_feature_indices = leq_feature_indices
         self.leq_thresholds = leq_thresholds
-        self.gr_features = gr_features
+        self.gr_feature_indices = gr_feature_indices
         self.gr_thresholds = gr_thresholds
 
     cdef bint covers(self, float32[:] example):
-        cdef int32[::1] leq_features = self.leq_features
+        cdef int32[::1] leq_feature_indices = self.leq_feature_indices
         cdef float32[::1] leq_thresholds = self.leq_thresholds
-        cdef int32[::1] gr_features = self.gr_features
+        cdef int32[::1] gr_feature_indices = self.gr_feature_indices
         cdef float32[::1] gr_thresholds = self.gr_thresholds
-        cdef Py_ssize_t num_leq_conditions = leq_features.shape[0]
-        cdef Py_ssize_t num_gr_conditions = gr_features.shape[0]
+        cdef Py_ssize_t num_leq_conditions = leq_feature_indices.shape[0]
+        cdef Py_ssize_t num_gr_conditions = gr_feature_indices.shape[0]
         cdef Py_ssize_t i, c
 
         for i in range(num_leq_conditions):
-            c = leq_features[i]
+            c = leq_feature_indices[i]
 
             if example[c] > leq_thresholds[i]:
                 return 0
 
         for i in range(num_gr_conditions):
-            c = gr_features[i]
+            c = gr_feature_indices[i]
 
             if example[c] <= gr_thresholds[i]:
                 return 0
