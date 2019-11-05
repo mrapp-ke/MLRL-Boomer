@@ -1,6 +1,7 @@
 # Build files
-*.so
-*.c
+python/**/*.so
+python/**/*.c
+python/**/*.html
 python/build/
 
 # Virtual Environment
