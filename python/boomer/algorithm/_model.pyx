@@ -1,10 +1,6 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 import numpy as np
-cimport numpy as np
-ctypedef np.int32_t int32
-ctypedef np.float32_t float32
-ctypedef np.float64_t float64
 
 DTYPE_INDICES = np.int32
 
@@ -42,18 +38,10 @@ cdef class ConjunctiveBody(Body):
     A body that consists of a conjunction of numerical conditions using <= and > operators.
     """
 
-    cdef readonly int32[::1] leq_feature_indices
-
-    cdef readonly float32[::1] leq_thresholds
-
-    cdef readonly int32[::1] gr_feature_indices
-
-    cdef readonly float32[::1] gr_thresholds
-
     def __cinit__(self, int32[::1] leq_feature_indices, float32[::1] leq_thresholds, int32[::1] gr_feature_indices,
                   float32[::1] gr_thresholds):
         """
-        :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the features of 
+        :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the features of
                                     the conditions that use the <= operator
         :param leq_thresholds:      An array of dtype float, shape `(num_leq_condition)`, representing the thresholds of
                                     the conditions that use the <= operator
@@ -110,8 +98,6 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    cdef readonly float64[::1] scores
-
     def __cinit__(self, float64[::1] scores):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
@@ -132,10 +118,6 @@ cdef class PartialHead(Head):
     """
     A partial head that assigns a numerical score to one or several labels.
     """
-
-    cdef readonly int32[::1] label_indices
-
-    cdef readonly float64[::1] scores
 
     def __cinit__(self, int32[::1] label_indices, float64[::1] scores):
         """
@@ -162,10 +144,6 @@ cdef class Rule:
     """
     A rule consisting of a body and head.
     """
-
-    cdef readonly Body body
-
-    cdef readonly Head head
 
     def __cinit__(self, body: Body, head: Head):
         """
