@@ -14,7 +14,6 @@ import numpy as np
 from sklearn.utils import check_random_state
 from sklearn.utils.random import sample_without_replacement
 
-from boomer.algorithm.stats import get_num_examples, get_num_features
 from boomer.learners import Randomized
 
 
@@ -92,7 +91,7 @@ class RandomFeatureSubSampling(FeatureSubSampling):
         self.__validate()
 
         # Calculate number of features to be included in the sample
-        num_features = get_num_features(x)
+        num_features = x.shape[1]
 
         if self.sample_size is None:
             num_samples = int(math.log(num_features - 1, base=2) + 1)
@@ -142,7 +141,7 @@ class Bagging(InstanceSubSampling):
         self.__validate()
 
         # Calculate number of examples to be included in the sample
-        num_examples = get_num_examples(x)
+        num_examples = x.shape[0]
         num_samples = int(self.sample_size * num_examples)
 
         log.debug('Drawing %s out of %s examples %s replacement...', num_samples, num_examples,

@@ -16,7 +16,7 @@ from boomer.algorithm._model import Rule, ConjunctiveBody, Head, DTYPE_FEATURES,
 from boomer.algorithm._rule_induction import induce_default_rule
 
 from boomer.algorithm.model import Theory
-from boomer.algorithm.stats import Stats, get_num_examples, get_num_features
+from boomer.algorithm.stats import Stats
 from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
 from boomer.learners import Module
 
@@ -243,7 +243,7 @@ class GradientBoosting(RuleInduction):
         sorted_indices = presorted_indices if presorted_indices is not None else GradientBoosting.presort_features(x)
         best_refinement = None
 
-        for feature_index in range(0, get_num_features(sorted_indices)):
+        for feature_index in range(0, sorted_indices.shape[1]):
             indices = sorted_indices[:, feature_index]
             new_refinement = self.__find_best_condition(x, indices, expected_scores[indices], predicted_scores[indices],
                                                         feature_index)
@@ -258,7 +258,7 @@ class GradientBoosting(RuleInduction):
         best_refinement = None
         previous_threshold = x[sorted_indices[0], feature_index]
 
-        for r in range(1, get_num_examples(sorted_indices) - 1):
+        for r in range(1, sorted_indices.shape[0] - 1):
             threshold = x[sorted_indices[r], feature_index]
 
             # TODO Check if the second part of the if-condition is a good idea
