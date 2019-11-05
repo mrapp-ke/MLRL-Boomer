@@ -10,10 +10,11 @@ from abc import abstractmethod
 from typing import Dict
 
 import numpy as np
-from boomer.algorithm._losses import SquaredErrorLoss
+from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement
+from boomer.algorithm._losses import Loss, SquaredErrorLoss
 from boomer.algorithm._model import Rule, EmptyBody, ConjunctiveBody, Head, DTYPE_FEATURES, DTYPE_INDICES, DTYPE_SCORES
+from boomer.algorithm._rule_induction import induce_default_rule
 
-from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement
 from boomer.algorithm.model import Theory
 from boomer.algorithm.stats import Stats, get_num_examples, get_num_features
 from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling
@@ -127,11 +128,12 @@ class GradientBoosting(RuleInduction):
     rule_builder = RuleBuilder()
 
     def __init__(self, num_rules: int = 100,
-                 head_refinement: HeadRefinement = SingleLabelHeadRefinement(SquaredErrorLoss()),
+                 head_refinement: HeadRefinement = SingleLabelHeadRefinement(), loss: Loss = SquaredErrorLoss(),
                  instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param head_refinement:         The strategy that is used to find the heads of rules
+        :param loss:                    The loss function to be minimized
         :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
                                         classification rule is learned
         :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
@@ -139,6 +141,7 @@ class GradientBoosting(RuleInduction):
         """
         self.num_rules = num_rules
         self.head_refinement = head_refinement
+        self.loss = loss
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
 
@@ -147,6 +150,8 @@ class GradientBoosting(RuleInduction):
         self.presorted_indices = None
         num_rules = self.num_rules
         random_state = self.random_state
+        head_refinement = self.head_refinement
+        loss = self.loss
 
         # Convert feature matrix into Fortran-contiguous array
         x = np.asfortranarray(x, dtype=DTYPE_FEATURES)
@@ -156,7 +161,7 @@ class GradientBoosting(RuleInduction):
 
         # Induce default rule
         log.info('Learning rule 1 / %s (default rule)...', num_rules)
-        default_rule = self.__induce_default_rule(expected_scores)
+        default_rule = induce_default_rule(expected_scores, head_refinement, loss)
 
         # Initialize the confidence scores that are predicted by the default rule for each example and label
         predicted_scores = np.asfortranarray(np.tile(default_rule.head.scores, (expected_scores.shape[0], 1)))
