@@ -1,5 +1,4 @@
 from boomer.algorithm import boomer
-from boomer.algorithm import head_refinement
 from boomer.algorithm import model
 from boomer.algorithm import persistence
 from boomer.algorithm import prediction
