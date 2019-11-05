@@ -143,8 +143,10 @@ class GradientBoosting(RuleInduction):
         self.feature_sub_sampling = feature_sub_sampling
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
-        self.presorted_indices = None
         self.__validate()
+        self.presorted_indices = None
+        num_rules = self.num_rules
+        random_state = self.random_state
 
         # Convert feature matrix into Fortran-contiguous array
         x = np.asfortranarray(x, dtype=DTYPE_FEATURES)
@@ -153,7 +155,7 @@ class GradientBoosting(RuleInduction):
         expected_scores = np.asfortranarray(np.where(y > 0, y, -1), dtype=DTYPE_SCORES)
 
         # Induce default rule
-        log.info('Learning rule 1 / %s (default rule)...', self.num_rules)
+        log.info('Learning rule 1 / %s (default rule)...', num_rules)
         default_rule = self.__induce_default_rule(expected_scores)
 
         # Initialize the confidence scores that are predicted by the default rule for each example and label
@@ -162,7 +164,14 @@ class GradientBoosting(RuleInduction):
         # Create initial theory
         theory = [default_rule]
 
-        # TODO Induce more rules
+        for i in range(1, num_rules):
+            log.info('Learning rule %s / %s...', i + 1, num_rules)
+            # TODO Induce rule
+
+            # TODO Apply prediction of the new rule to the matrix of predicted scores
+
+            # TODO Add new rule to theory
+            random_state += 1
 
         self.presorted_indices = None
         return theory
