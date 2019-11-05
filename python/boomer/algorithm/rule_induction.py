@@ -12,7 +12,7 @@ from typing import Dict
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement
 from boomer.algorithm._losses import Loss, SquaredErrorLoss
-from boomer.algorithm._model import Rule, EmptyBody, ConjunctiveBody, Head, DTYPE_FEATURES, DTYPE_INDICES, DTYPE_SCORES
+from boomer.algorithm._model import Rule, ConjunctiveBody, Head, DTYPE_FEATURES, DTYPE_INDICES, DTYPE_SCORES
 from boomer.algorithm._rule_induction import induce_default_rule
 
 from boomer.algorithm.model import Theory
@@ -190,18 +190,6 @@ class GradientBoosting(RuleInduction):
             raise ValueError('Parameter \'num_rules\' must be at least 1, got {0}'.format(self.num_rules))
         if self.head_refinement is None:
             raise ValueError('Parameter \'head_refinement\' may not be None')
-
-    def __induce_default_rule(self, expected_scores: np.ndarray) -> Rule:
-        """
-        Induces the default rule.
-
-        :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    expected confidence scores according to the ground truth
-        :return:                    The default rule
-        """
-        self.head_refinement.random_state = self.random_state
-        head = self.head_refinement.find_default_head(expected_scores)
-        return Rule(EmptyBody(), head)
 
     def __induce_rule(self, x: np.ndarray, expected_scores: np.ndarray, predicted_scores: np.ndarray) -> Rule:
         """
