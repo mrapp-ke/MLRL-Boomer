@@ -94,11 +94,12 @@ class RandomFeatureSubSampling(FeatureSubSampling):
 
         # Calculate number of features to be included in the sample
         num_features = x.shape[1]
+        sample_size = self.sample_size
 
-        if self.sample_size is None:
+        if sample_size is None:
             num_samples = int(math.log(num_features - 1, base=2) + 1)
         else:
-            num_samples = int(self.sample_size * num_features)
+            num_samples = int(sample_size * num_features)
 
         log.debug('Randomly selecting %s out of %s features...', num_samples, num_features)
 
@@ -145,10 +146,11 @@ class Bagging(InstanceSubSampling):
         # Calculate number of examples to be included in the sample
         num_examples = x.shape[0]
         num_samples = int(self.sample_size * num_examples)
+        with_replacement = self.with_replacement
 
         log.debug('Drawing %s out of %s examples %s replacement...', num_samples, num_examples,
-                  'with' if self.with_replacement else 'without')
+                  'with' if with_replacement else 'without')
 
         # Get indices of examples to be included in the sample
         return self._get_sample_indices(num_total=num_examples, num_samples=num_samples,
-                                        with_replacement=self.with_replacement)
+                                        with_replacement=with_replacement)
