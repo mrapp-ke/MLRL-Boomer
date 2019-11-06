@@ -11,6 +11,7 @@ import math
 from abc import abstractmethod
 
 import numpy as np
+from boomer.algorithm._model import DTYPE_INDICES
 from sklearn.utils import check_random_state
 from sklearn.utils.random import sample_without_replacement
 
@@ -35,9 +36,10 @@ class SubSampling(Randomized):
         rng = check_random_state(self.random_state)
 
         if with_replacement:
-            return rng.randint(0, num_total, num_samples)
+            return np.ascontiguousarray(rng.randint(0, num_total, num_samples), dtype=DTYPE_INDICES)
         else:
-            return sample_without_replacement(num_total, num_samples, random_state=rng)
+            return np.ascontiguousarray(sample_without_replacement(num_total, num_samples, random_state=rng),
+                                        dtype=DTYPE_INDICES)
 
     @abstractmethod
     def sub_sample(self, x: np.ndarray) -> np.ndarray:
