@@ -125,7 +125,7 @@ cdef class PartialHead(Head):
                                 labels for which the rule predicts
         :param scores:          An array of dtype float, shape `(num_predicted_labels)`, representing the scores that
                                 are predicted by the rule
-                """
+        """
         self.scores = scores
         self.label_indices = label_indices
 
