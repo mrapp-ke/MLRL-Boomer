@@ -1,7 +1,7 @@
-cimport numpy as np
-ctypedef np.int32_t int32
-ctypedef np.float32_t float32
-ctypedef np.float64_t float64
+cimport numpy as npc
+ctypedef npc.int32_t int32
+ctypedef npc.float32_t float32
+ctypedef npc.float64_t float64
 
 
 cdef class Body:
