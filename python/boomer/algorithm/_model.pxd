@@ -1,5 +1,6 @@
 cimport numpy as npc
-ctypedef npc.int32_t int32
+ctypedef npc.uint8_t uint8
+ctypedef Py_ssize_t intp
 ctypedef npc.float32_t float32
 ctypedef npc.float64_t float64
 
@@ -22,11 +23,11 @@ cdef class ConjunctiveBody(Body):
 
     # Attributes:
 
-    cdef readonly int32[::1] leq_feature_indices
+    cdef readonly intp[::1] leq_feature_indices
 
     cdef readonly float32[::1] leq_thresholds
 
-    cdef readonly int32[::1] gr_feature_indices
+    cdef readonly intp[::1] gr_feature_indices
 
     cdef readonly float32[::1] gr_thresholds
 
@@ -57,7 +58,7 @@ cdef class PartialHead(Head):
 
     # Attributes:
 
-    cdef readonly int32[::1] label_indices
+    cdef readonly intp[::1] label_indices
 
     cdef readonly float64[::1] scores
 

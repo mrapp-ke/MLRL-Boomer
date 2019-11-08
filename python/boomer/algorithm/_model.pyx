@@ -1,12 +1,5 @@
 # cython: boundscheck=False
 # cython: wraparound=False
-import numpy as np
-
-DTYPE_INDICES = np.int32
-
-DTYPE_FEATURES = np.float32
-
-DTYPE_SCORES = np.float64
 
 
 cdef class Body:
@@ -38,7 +31,7 @@ cdef class ConjunctiveBody(Body):
     A body that consists of a conjunction of numerical conditions using <= and > operators.
     """
 
-    def __cinit__(self, int32[::1] leq_feature_indices, float32[::1] leq_thresholds, int32[::1] gr_feature_indices,
+    def __cinit__(self, intp[::1] leq_feature_indices, float32[::1] leq_thresholds, intp[::1] gr_feature_indices,
                   float32[::1] gr_thresholds):
         """
         :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the features of
@@ -56,13 +49,13 @@ cdef class ConjunctiveBody(Body):
         self.gr_thresholds = gr_thresholds
 
     cdef bint covers(self, float32[:] example):
-        cdef int32[::1] leq_feature_indices = self.leq_feature_indices
+        cdef intp[::1] leq_feature_indices = self.leq_feature_indices
         cdef float32[::1] leq_thresholds = self.leq_thresholds
-        cdef int32[::1] gr_feature_indices = self.gr_feature_indices
+        cdef intp[::1] gr_feature_indices = self.gr_feature_indices
         cdef float32[::1] gr_thresholds = self.gr_thresholds
-        cdef Py_ssize_t num_leq_conditions = leq_feature_indices.shape[0]
-        cdef Py_ssize_t num_gr_conditions = gr_feature_indices.shape[0]
-        cdef Py_ssize_t i, c
+        cdef intp num_leq_conditions = leq_feature_indices.shape[0]
+        cdef intp num_gr_conditions = gr_feature_indices.shape[0]
+        cdef intp i, c
 
         for i in range(num_leq_conditions):
             c = leq_feature_indices[i]
@@ -107,8 +100,8 @@ cdef class FullHead(Head):
 
     cdef predict(self, float64[:] predictions):
         cdef float64[::1] scores = self.scores
-        cdef Py_ssize_t num_cols = predictions.shape[1]
-        cdef Py_ssize_t c
+        cdef intp num_cols = predictions.shape[1]
+        cdef intp c
 
         for c in range(num_cols):
             predictions[c] += scores[c]
@@ -119,7 +112,7 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    def __cinit__(self, int32[::1] label_indices, float64[::1] scores):
+    def __cinit__(self, intp[::1] label_indices, float64[::1] scores):
         """
         :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
                                 labels for which the rule predicts
@@ -130,10 +123,10 @@ cdef class PartialHead(Head):
         self.label_indices = label_indices
 
     cdef predict(self, float64[:] predictions):
-        cdef int32[::1] label_indices = self.label_indices
+        cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
-        cdef Py_ssize_t num_labels = label_indices.shape[0]
-        cdef Py_ssize_t c, label
+        cdef intp num_labels = label_indices.shape[0]
+        cdef intp c, label
 
         for c in range(num_labels):
             label = label_indices[c]
@@ -164,8 +157,8 @@ cdef class Rule:
         """
         cdef Body body = self.body
         cdef Head head = self.head
-        cdef Py_ssize_t num_examples = x.shape[0]
-        cdef Py_ssize_t r
+        cdef intp num_examples = x.shape[0]
+        cdef intp r
 
         for r in range(num_examples):
             if body.covers(x[r, :]):
