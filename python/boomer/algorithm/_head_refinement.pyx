@@ -1,21 +1,21 @@
 # cython: boundscheck=False
 # cython: wraparound=False
-from boomer.algorithm._model import DTYPE_INDICES
-import numpy as np
+from cython.view cimport array as cvarray
+from boomer.algorithm._model cimport intp
 
 
 cdef class HeadCandidate:
     """
-    Represent a candidate head.
+    Represents a candidate head.
     """
 
-    def __cinit__(self, PartialHead head, float64 h):
+    def __cinit__(self, PartialHead head, float64 quality_score):
         """
-        :param head:    The partial head
-        :param h:       The score that measures the quality of the head
+        :param head:            The partial head
+        :param quality_score:   A score that measures the quality of the head
         """
         self.head = head
-        self.h = h
+        self.quality_score = quality_score
 
 
 cdef class HeadRefinement:
@@ -24,34 +24,15 @@ cdef class HeadRefinement:
     region of the instance space covered by a rule.
     """
 
-    cdef FullHead find_default_head(self, float64[::1, :] expected_scores, DecomposableLoss loss):
+    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss):
         """
-        Finds and returns the head of the default rule that minimizes a decomposable loss function with respect to the
-        expected confidence scores according to the ground truth.
+        Finds and returns the head of a rule that minimizes a loss function with respect to the current gradient
+        statistics.
 
-        :param expected_scores: An array of dtype float, shape `(num_examples, num_labels)`, representing the expected
-                                confidence scores according to the ground truth
-        :param loss:            A decomposable loss function
-        :return:                The full head that has been found
-        """
-        cdef float64[::1, :] gradients = loss.calculate_initial_gradients(expected_scores)
-        cdef float64[::1] scores = loss.calculate_optimal_scores(gradients)
-        cdef FullHead head = FullHead(scores)
-        return head
-
-    cdef HeadCandidate find_head(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores,
-                                 DecomposableLoss loss):
-        """
-        Finds and returns the head of a rule that minimizes a decomposable loss function with respect to the expected
-        confidence scores for the examples covered by the rule according to the ground truth.
-
-        :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    expected confidence scores for the examples covered by the rule according to the
-                                    ground truth
-        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    currently predicted confidence scores
-        :param loss:                A decomposable loss function
-        :return:                    The partial head that has been found, as well as a score that measures its quality
+        :param current_head:    The current head of the rule or None, if no head has been found yet
+        :param loss:            The loss function to be minimized
+        :return:                A 'HeadCandidate' consisting of the partial head that has been found, as well as its
+                                quality score
         """
         pass
 
@@ -61,12 +42,31 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     Allows to find single-label heads that minimize a certain loss function.
     """
 
-    cdef HeadCandidate find_head(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores,
-                                 DecomposableLoss loss):
-        cdef float64[::1, :] gradients = loss.calculate_gradients(expected_scores, predicted_scores)
-        cdef float64[::1] scores = loss.calculate_optimal_scores(gradients)
-        cdef label_indices = np.linspace(0, scores.size, num=scores.size, endpoint=False, dtype=DTYPE_INDICES)
-        cdef float64 h = loss.evaluate_predictions(scores, gradients)
-        cdef PartialHead head = PartialHead(label_indices, scores)
-        cdef HeadCandidate result = HeadCandidate(head, h)
-        return result
+    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss):
+        cdef float64[::1] scores = loss.calculate_scores()
+        cdef float64[::1] quality_scores = loss.calculate_quality_scores()
+        cdef intp best_c = 0
+        cdef float64 best_quality_score = quality_scores[best_c]
+        cdef intp[::1] label_indices = cvarray(shape=(1,), itemsize=sizeof(intp), format='i', mode='c')
+        cdef float64[::1] predicted_scores = cvarray(shape=(1,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64 quality_score
+        cdef intp num_labels, c
+
+        if current_head is None:
+            num_labels = quality_scores.shape[0]
+
+            for c in range(1, num_labels):
+                quality_score = quality_scores[c]
+
+                if quality_score < best_quality_score:
+                    best_quality_score = quality_score
+                    best_c = c
+
+            label_indices[0] = best_c
+        else:
+            label_indices[0] = current_head.label_indices[0]
+
+        predicted_scores[0] = scores[best_c]
+        cdef PartialHead best_head = PartialHead(label_indices, predicted_scores)
+        cdef HeadCandidate candidate = HeadCandidate(best_head, best_quality_score)
+        return candidate

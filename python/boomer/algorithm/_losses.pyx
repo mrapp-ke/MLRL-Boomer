@@ -1,116 +1,102 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=False
-import numpy as np
+from cython.view cimport array as cvarray
 from libc.math cimport pow
-from boomer.algorithm._model import DTYPE_SCORES
 
 cdef class Loss:
     """
-    A base class for all loss functions.
+    A base class for all decomposable or non-decomposable loss functions. A loss function can be used to calculate the
+    optimal scores to be predicted by rules for individual labels and covered examples.
     """
 
-    cdef float64[::1, :] calculate_initial_gradients(self, float64[::1, :] expected_scores):
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         """
-        Calculates the initial gradient statistics, i.e, the first derivative of the loss function, when always
-        predicting 0, given expected scores for individual examples and labels.
+        Calculates the optimal scores to be predicted by the default rule for each label and example.
 
-        :param expected_scores: An array of dtype float, shape `(num_examples, num_labels)`, representing the expected
-                                confidence scores according to the ground truth
-        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the initial
-                                gradient statistics for each examples and label
+        This function must be called prior to calling any other function provided by this class. It calculates and
+        caches the gradients (and hessians in case of a non-decomposable loss function) based on the expected confidence
+        scores and the scores predicted by the default rule.
+
+        :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
+                    examples
+        :return:    An array of dtype float, shape `(num_labels)`, representing the optimal scores to be predicted by
+                    the default rule for each label and example
         """
         pass
 
-    cdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
+    cdef begin_search(self, intp[::1] label_indices):
         """
-        Calculates the gradient statistics, i.e., the first derivative of the loss function, given expected and
-        predicted scores for individual examples and labels.
+        Begins a new search to find the optimal scores to be predicted by candidate rules for individual labels.
 
-        :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    expected confidence scores according to the ground truth
-        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
-                                    currently predicted confidence scores
-        :return:                    An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    gradient statistics for each example and label
+        This function must be called prior to searching for the best refinement with respect to a certain attribute in
+        order to reset the sums of gradients (and hessians in case of a non-decomposable loss function) cached
+        internally to calculate the optimal scores more efficiently. Subsequent invocations of the function
+        `update_search` can be used to update the cached values afterwards based on a single, newly covered example.
+        Invoking the function `calculate_scores` at any point of the search (`update_search` must be called at least
+        once before!) will yield the optimal scores to be predicted by a rule that covers all examples given so far.
+        Accordingly, the function `calculate_quality_score` allows to retrieve scores for each label that measure the
+        quality of such a rule's predictions.
+
+        :param label_indices: An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
+                              labels for which the rule should predict or None, if the rule may predict for all labels
         """
         pass
 
-    cdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
+    cdef update_search(self, intp r, uint8 weight):
         """
-        Calculates the optimal scores to be predicted for each label.
+        Updates the cached sums of gradients (and hessians in case of a non-decomposable loss function) based on a
+        single, newly covered example.
 
-        :param gradients:   An array of dtype float, shape `(num_examples, num_labels)`, representing the gradient
-                            statistics for individual examples and labels
-        :return:            An array of dtype float, shape `(num_labels)', representing the optimal scores to be
-                            predicted for each label
+        Subsequent invocations of the function `calculate_scores` will yield the optimal scores to predicted by a rule
+        that covers all examples given so far. Accordingly, the function `calculate_quality_score` allows to retrieve
+        scores for each label that measure the quality of such a rule's predictions.
+
+        :param r:       The index of the newly-covered example in the entire training data set
+        :param weight:  The weight of the newly covered example
         """
         pass
 
-    cdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
+    cdef float64[::1] calculate_scores(self):
         """
-        Calculates a single score that measures the quality of predictions.
+        Calculates the optimal scores to be predicted by a rule that covers all examples provided so far via the
+        function `update_search`. The calculated scores correspond to the label indices provided to the `begin_search`
+        function. If no label indices were provided, scores for all labels are calculated.
 
-        :param scores:      An array of dtype float, shape `(num_labels)`, representing the scores predicted for each
-                            label
-        :param gradients:   An array of dtype float, shape `(num_examples, num_labels)`, representing the gradient
-                            statistics for individual examples and labels
-        :return:            A scalar of dtype float, representing the calculated score
+        :return: An array of dtype float, shape `(num_predicted_labels)`, representing the optimal scores to be
+                 predicted by a rule that covers all examples provided so far.
         """
         pass
+
+    cdef float64[::1] calculate_quality_scores(self):
+        """
+        Calculates a score for each label that measures the quality of the corresponding predicted score as provided by
+        the function `calculate_scores` (which must always be invoked before!) at any point of a search.
+
+        :return: An array of dtype float, shape `(num_predicted_labels)`, representing the calculated quality scores for
+                 each label
+        """
+        pass
+
 
 cdef class DecomposableLoss(Loss):
     """
     A base class for all decomposable loss functions.
     """
 
-    cdef float64[::1, :] calculate_initial_gradients(self, float64[::1, :] expected_scores):
-        """
-        Calculates the initial gradient statistics, i.e, the first derivative of the loss function, when always
-        predicting 0, given expected scores for individual examples and labels.
-
-        :param expected_scores: An array of dtype float, shape `(num_examples, num_labels)`, representing the expected
-                                confidence scores according to the ground truth
-        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the initial
-                                gradient statistics for each examples and label
-        """
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
-    cdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
-        """
-        Calculates the gradient statistics, i.e., the first derivative of the loss function, given expected and
-        predicted scores for individual examples and labels.
-
-        :param expected_scores:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    expected confidence scores according to the ground truth
-        :param predicted_scores:    An array of dtype float, shape `(num_examples, num_labels`, representing the
-                                    currently predicted confidence scores
-        :return:                    An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                    gradient statistics for each example and label
-        """
+    cdef begin_search(self, intp[::1] label_indices):
         pass
 
-    cdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
-        """
-        Calculates the optimal scores to be predicted for each label.
-
-        :param gradients:   An array of dtype float, shape `(num_examples, num_labels)`, representing the gradient
-                            statistics for individual examples and labels
-        :return:            An array of dtype float, shape `(num_labels)', representing the optimal scores to be
-                            predicted for each label
-        """
+    cdef update_search(self, intp r, uint8 weight):
         pass
 
-    cdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
-        """
-        Calculates a single score that measures the quality of predictions.
+    cdef float64[::1] calculate_scores(self):
+        pass
 
-        :param scores:      An array of dtype float, shape `(num_labels)`, representing the scores predicted for each
-                            label
-        :param gradients:   An array of dtype float, shape `(num_examples, num_labels)`, representing the gradient
-                            statistics for individual examples and labels
-        :return:            A scalar of dtype float, representing the calculated score
-        """
+    cdef float64[::1] calculate_quality_scores(self):
         pass
 
 
@@ -119,61 +105,106 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     A multi-label variant of the squared error loss.
     """
 
-    cdef float64[::1, :] calculate_initial_gradients(self, float64[::1, :] expected_scores):
-        cdef Py_ssize_t num_rows = expected_scores.shape[0]
-        cdef Py_ssize_t num_cols = expected_scores.shape[1]
-        cdef float64[::1, :] gradients = np.empty((num_rows, num_cols), dtype=DTYPE_SCORES, order='F')
-        cdef Py_ssize_t r, c
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        cdef intp num_rows = y.shape[0]
+        cdef intp num_cols = y.shape[1]
+        cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d', mode='fortran')
+        cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64 sum_of_hessians = 2 * num_rows
+        cdef float64 sum_of_gradients, expected_score, score
+        cdef float64[::1] expected_scores = cvarray(shape=(num_rows,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef intp r, c
 
         for c in range(num_cols):
-            for r in range(num_rows):
-                gradients[r, c] = -2 * expected_scores[r, c]
-
-        return gradients
-
-
-    cdef float64[::1, :] calculate_gradients(self, float64[::1, :] expected_scores, float64[::1, :] predicted_scores):
-        cdef Py_ssize_t num_rows = expected_scores.shape[0]
-        cdef Py_ssize_t num_cols = expected_scores.shape[1]
-        cdef float64[::1, :] gradients = np.empty((num_rows, num_cols), dtype=DTYPE_SCORES, order='F')
-        cdef Py_ssize_t r, c
-
-        for c in range(num_cols):
-            for r in range(num_rows):
-                gradients[r, c] = (2 * predicted_scores[r, c]) - (2 * expected_scores[r, c])
-
-        return gradients
-
-    cdef float64[::1] calculate_optimal_scores(self, float64[::1, :] gradients):
-        cdef Py_ssize_t num_rows = gradients.shape[0]
-        cdef Py_ssize_t num_cols = gradients.shape[1]
-        cdef float64[::1] scores = np.empty((num_cols), dtype=DTYPE_SCORES)
-        cdef Py_ssize_t r, c
-        cdef float64 sum_of_gradients
-        cdef float64 sum_of_hessians = 2 * num_rows 
-
-        for c in range(num_cols):
+            # Column-wise sum up gradients for the current label...
             sum_of_gradients = 0
 
             for r in range(num_rows):
-                sum_of_gradients += gradients[r, c]
+                expected_score = 2 * __convert_label_into_score(y[r, c])
+                expected_scores[r] = expected_score
+                sum_of_gradients -= expected_score
 
-            scores[c] = -sum_of_gradients / sum_of_hessians
+            # Calculate optimal score to be predicted by the default rule for the current label...
+            score = -sum_of_gradients / sum_of_hessians
+            scores[c] = score
+
+            # Traverse column again to calculate updated gradients based on the calculated score...
+            score = 2 * score
+
+            for r in range(num_rows):
+                gradients[r, c] = score - expected_scores[r]
+
+        # Cache the matrix of gradients...
+        self.gradients = gradients
+        return scores
+
+    cdef begin_search(self, intp[::1] label_indices):
+        # Reset sum of hessians to 0...
+        cdef float64 sum_of_hessians = 0
+        self.sum_of_hessians = sum_of_hessians
+
+        # Reset sums of gradients to 0...
+        cdef intp num_labels
+        cdef float64[::1, :] gradients
+
+        if label_indices is None:
+            gradients = self.gradients
+            num_labels = gradients.shape[1]
+        else:
+            num_labels = label_indices.shape[0]
+
+        cdef float64[::1] sums_of_gradients = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+        sums_of_gradients[:] = 0
+        self.sums_of_gradients = sums_of_gradients
+        self.label_indices = label_indices
+
+        # Initialize vector of optimal scores once to avoid array-recreation at each update...
+        cdef float64[::1] scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+        self.scores = scores
+
+    cdef update_search(self, intp r, uint8 weight):
+        # Update sum of hessians...
+        cdef float64 sum_of_hessians = self.sum_of_hessians
+        sum_of_hessians += weight * 2
+        self.sum_of_hessians = sum_of_hessians
+
+        # Column-wise update sums of gradients...
+        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        cdef intp[::1] label_indices = self.label_indices
+        cdef intp c, l
+
+        for c in range(num_labels):
+            if label_indices is not None:
+                l = label_indices[c]
+            else:
+                l = c
+
+            sums_of_gradients[c] += weight * gradients[r, l]
+
+    cdef float64[::1] calculate_scores(self):
+        cdef float64[::1] scores = self.scores
+        cdef float64 sum_of_hessians = self.sum_of_hessians
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        cdef intp c
+
+        for c in range(num_labels):
+            scores[c] = -sums_of_gradients[c] / sum_of_hessians
 
         return scores
 
-    cdef float64 evaluate_predictions(self, float64[::1] scores, float64[::1, :] gradients):
-        cdef Py_ssize_t num_rows = gradients.shape[0]
-        cdef Py_ssize_t num_cols = gradients.shape[1]
-        cdef float64 h = 0
-        cdef Py_ssize_t r, c
-        cdef float64 score, score_pow
+    cdef float64[::1] calculate_quality_scores(self):
+        cdef float64[::1] scores = self.scores
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        cdef float64[::1] quality_scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64 score
+        cdef intp c
 
-        for c in range(num_cols):
+        for c in range(num_labels):
             score = scores[c]
-            score_pow = pow(score, 2)
+            quality_scores[c] = (sums_of_gradients[c] * score) + pow(score, 2)
 
-            for r in range(num_rows):
-                h += (gradients[r, c] * score) + score_pow
-
-        return h
+        return quality_scores
