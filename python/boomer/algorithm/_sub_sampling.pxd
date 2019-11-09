@@ -20,6 +20,10 @@ cdef class Bagging(InstanceSubSampling):
 
     cdef uint8[::1] sub_sample(self, float32[::1, :] x, int random_state)
 
+    cdef __sub_sample_with_replacement(self, uint8[::1] weights, bint num_examples, bint num_samples, rng_randint)
+
+    cdef __sub_sample_without_replacement(self, uint8[::1] weights, bint num_examples, bint num_samples, rng_randint)
+
 
 cdef class FeatureSubSampling:
 
