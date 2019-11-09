@@ -43,7 +43,7 @@ cdef class Loss:
         """
         pass
 
-    cdef update_search(self, intp r, uint8 weight):
+    cdef update_search(self, intp r, uint32 weight):
         """
         Updates the cached sums of gradients (and hessians in case of a non-decomposable loss function) based on a
         single, newly covered example.
@@ -90,7 +90,7 @@ cdef class DecomposableLoss(Loss):
     cdef begin_search(self, intp[::1] label_indices):
         pass
 
-    cdef update_search(self, intp r, uint8 weight):
+    cdef update_search(self, intp r, uint32 weight):
         pass
 
     cdef float64[::1] calculate_scores(self):
@@ -162,7 +162,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef float64[::1] scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
         self.scores = scores
 
-    cdef update_search(self, intp r, uint8 weight):
+    cdef update_search(self, intp r, uint32 weight):
         # Update sum of hessians...
         cdef float64 sum_of_hessians = self.sum_of_hessians
         sum_of_hessians += weight * 2

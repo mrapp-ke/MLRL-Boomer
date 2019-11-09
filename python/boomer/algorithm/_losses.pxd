@@ -1,4 +1,4 @@
-from boomer.algorithm._model cimport uint8, intp, float64
+from boomer.algorithm._model cimport uint8, uint32, intp, float64
 
 
 # Utility functions:
@@ -24,7 +24,7 @@ cdef class Loss:
 
     cdef begin_search(self, intp[::1] label_indices)
 
-    cdef update_search(self, intp r, uint8 weight)
+    cdef update_search(self, intp r, uint32 weight)
 
     cdef float64[::1] calculate_scores(self)
 
@@ -39,7 +39,7 @@ cdef class DecomposableLoss(Loss):
 
     cdef begin_search(self, intp[::1] label_indices)
 
-    cdef update_search(self, intp r, uint8 weight)
+    cdef update_search(self, intp r, uint32 weight)
 
     cdef float64[::1] calculate_scores(self)
 
@@ -66,7 +66,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef begin_search(self, intp[::1] label_indices)
 
-    cdef update_search(self, intp r, uint8 weight)
+    cdef update_search(self, intp r, uint32 weight)
 
     cdef float64[::1] calculate_scores(self)
 
