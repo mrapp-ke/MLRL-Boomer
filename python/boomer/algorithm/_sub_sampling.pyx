@@ -2,6 +2,12 @@
 # cython: wraparound=False
 from cython.view cimport array as cvarray
 from libc.math cimport log2
+from sklearn.utils._random import sample_without_replacement
+cimport numpy as npc
+
+import numpy as np
+from boomer.algorithm.model import DTYPE_INTP
+from sklearn.utils import check_random_state
 
 
 cdef class InstanceSubSampling:
@@ -42,10 +48,45 @@ cdef class Bagging(InstanceSubSampling):
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
         cdef uint8[::1] weights = cvarray(shape=(num_examples,), itemsize=sizeof(uint8), format='H', mode='c')
-        weights[:] = 0
         cdef bint with_replacement = self.with_replacement
-        # TODO Random part
+        rng = check_random_state(random_state)
+        rng_randint = rng.randint
+
+        if with_replacement:
+            self.__sub_sample_with_replacement(weights, num_examples, num_samples, rng_randint)
+        else:
+            self.__sub_sample_without_replacement(weights, num_examples, num_samples, rng_randint)
+
         return weights
+
+    cdef __sub_sample_with_replacement(self, uint8[::1] weights, bint num_examples, bint num_samples, rng_randint):
+        weights[:] = 0
+        cdef npc.int_t rand
+        cdef intp i
+
+        for i in range(num_samples):
+             rand = rng_randint(num_examples)
+             weights[rand] += 1
+
+    cdef __sub_sample_without_replacement(self, uint8[::1] weights, bint num_examples, bint num_samples, rng_randint):
+        cdef npc.ndarray[npc.int_t, ndim=1] pool = np.empty((num_examples,), dtype=np.int)
+        cdef intp i
+
+        for i in range(num_examples):
+            pool[i] = i
+
+        cdef npc.int_t rand
+        cdef intp j
+
+        for i in range(num_samples):
+            rand = rng_randint(num_examples - i)
+            j = pool[rand]
+            weights[j] += 1
+            pool[rand] = pool[num_examples - i - 1]
+
+        for i in range(num_examples - num_samples, num_examples):
+            j = pool[i]
+            weights[j] = 0
 
 
 cdef class FeatureSubSampling:
@@ -89,6 +130,5 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
          else:
             num_samples = <int>(log2(num_features - 1) + 1)
 
-         cdef intp[::1] feature_indices = cvarray(shape=(num_samples,), itemsize=sizeof(intp), format='n', mode='c')
-         # TODO random part
-         return feature_indices
+         return np.ascontiguousarray(sample_without_replacement(num_features, num_samples, 'auto', random_state),
+                                     dtype=DTYPE_INTP)
