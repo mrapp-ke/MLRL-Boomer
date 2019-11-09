@@ -74,7 +74,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
         """
         :param sample_size: The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available features) or 0, if the default sample size
-                            floor(log2(num_features) - 1) + 1 should be used
+                            floor(log2(num_features - 1) + 1) should be used
         """
         self.sample_size = sample_size
 
