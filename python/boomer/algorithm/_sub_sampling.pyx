@@ -42,6 +42,7 @@ cdef class Bagging(InstanceSubSampling):
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
         cdef uint8[::1] weights = cvarray(shape=(num_samples,), itemsize=sizeof(uint8), format='H', mode='c')
+        weights[:] = 0
         cdef bint with_replacement = self.with_replacement
         # TODO Random part
         return weights
