@@ -1,11 +1,12 @@
 from boomer.algorithm._model cimport uint32, intp, float32
+from boomer.algorithm._losses cimport Loss
 
 
 cdef class InstanceSubSampling:
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, int random_state)
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state)
 
 
 cdef class Bagging(InstanceSubSampling):
@@ -16,7 +17,7 @@ cdef class Bagging(InstanceSubSampling):
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, int random_state)
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state)
 
 
 cdef class FeatureSubSampling:

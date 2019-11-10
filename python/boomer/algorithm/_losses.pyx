@@ -18,10 +18,38 @@ cdef class Loss:
         caches the gradients (and hessians in case of a non-decomposable loss function) based on the expected confidence
         scores and the scores predicted by the default rule.
 
+        Furthermore, this function also computes and caches an array storing the total sum of gradients for each label.
+        This is necessary to later be able to search for the optimal scores to be predicted by rules that cover all
+        examples provided to the search, as well as by rules that do not cover these instances (but all other ones) at
+        the same time instead of requiring two passes through the examples. When using instance sub-sampling, before
+        invoking the function `begin_search`, the function `reset_total_sums_of_gradients` must be called, followed by
+        invocations of the function `update_total_sums_of_gradients` for each of the examples contained in the sample.
+
         :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
                     examples
         :return:    An array of dtype float, shape `(num_labels)`, representing the optimal scores to be predicted by
                     the default rule for each label and example
+        """
+        pass
+
+    cdef reset_total_sums_of_gradients(self):
+        """
+        Resets the cached sum of gradients for each label to 0.
+
+        This function must be invoked before the function `begin_search` if any type of instance sub-sampling, e.g.
+        bagging, is used.
+        """
+        pass
+
+    cdef update_total_sums_of_gradients(self, intp r):
+        """
+        Updates the total sum of gradients for each label based on an example that has been chosen to be included in the
+        sub-sample.
+
+        This function must be invoked for each example included in the sample after the function
+        `reset_total_sums_of_gradients' and before `begin_search`.
+
+        :param r: The index of an example that has been chosen to be included in the sample
         """
         pass
 
@@ -87,6 +115,12 @@ cdef class DecomposableLoss(Loss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
+    cdef reset_total_sums_of_gradients(self):
+        pass
+
+    cdef update_total_sums_of_gradients(self, intp r):
+        pass
+
     cdef begin_search(self, intp[::1] label_indices):
         pass
 
@@ -108,10 +142,13 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
-        cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d', mode='fortran')
+        cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
+                                                 mode='fortran')
+        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
+                                                            mode='c')
         cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
         cdef float64 sum_of_hessians = 2 * num_rows
-        cdef float64 sum_of_gradients, expected_score, score
+        cdef float64 sum_of_gradients, expected_score, score, gradient
         cdef float64[::1] expected_scores = cvarray(shape=(num_rows,), itemsize=sizeof(float64), format='d', mode='c')
         cdef intp r, c
 
@@ -129,14 +166,40 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             scores[c] = score
 
             # Traverse column again to calculate updated gradients based on the calculated score...
+            sum_of_gradients = 0
             score = 2 * score
 
             for r in range(num_rows):
-                gradients[r, c] = score - expected_scores[r]
+                gradient = score - expected_scores[r]
+                gradients[r, c] = gradient
+                sum_of_gradients += gradient
+
+            total_sums_of_gradients[c] = sum_of_gradients
 
         # Cache the matrix of gradients...
         self.gradients = gradients
+
+        # Cache the total sums of gradients for each label...
+        self.total_sums_of_gradients = total_sums_of_gradients
+
         return scores
+
+    cdef reset_total_sums_of_gradients(self):
+        cdef float64[::1, :] gradients = self.gradients
+        cdef intp num_cols = gradients.shape[1]
+        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
+                                                            mode='c')
+        total_sums_of_gradients[:] = 0
+        self.total_sums_of_gradients = total_sums_of_gradients
+
+    cdef update_total_sums_of_gradients(self, intp r):
+        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef intp num_cols = gradients.shape[1]
+        cdef intp c
+
+        for c in range(num_cols):
+            total_sums_of_gradients[c] += gradients[r, c]
 
     cdef begin_search(self, intp[::1] label_indices):
         # Reset sum of hessians to 0...
@@ -153,7 +216,8 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         else:
             num_labels = label_indices.shape[0]
 
-        cdef float64[::1] sums_of_gradients = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64[::1] sums_of_gradients = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
+                                                      mode='c')
         sums_of_gradients[:] = 0
         self.sums_of_gradients = sums_of_gradients
         self.label_indices = label_indices
