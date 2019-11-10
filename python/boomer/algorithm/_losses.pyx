@@ -42,7 +42,7 @@ cdef class Loss:
         """
         pass
 
-    cdef update_sub_sample(self, intp r):
+    cdef update_sub_sample(self, intp example_index):
         """
         Updates the total sum of gradients (and hessians in case of a non-decomposable loss function) for each label
         based on an example that has been chosen to be included in the sub-sample.
@@ -50,7 +50,7 @@ cdef class Loss:
         This function must be invoked for each example included in the sample after the function
         `begin_instance_sub_sampling' and before `begin_search`.
 
-        :param r: The index of an example that has been chosen to be included in the sample
+        :param example_index: The index of an example that has been chosen to be included in the sample
         """
         pass
 
@@ -72,7 +72,7 @@ cdef class Loss:
         """
         pass
 
-    cdef update_search(self, intp r, uint32 weight):
+    cdef update_search(self, intp example_index, uint32 weight):
         """
         Updates the cached sums of gradients (and hessians in case of a non-decomposable loss function) based on a
         single, newly covered example.
@@ -81,8 +81,8 @@ cdef class Loss:
         that covers all examples given so far. Accordingly, the function `calculate_quality_score` allows to retrieve
         scores for each label that measure the quality of such a rule's predictions.
 
-        :param r:       The index of the newly-covered example in the entire training data set
-        :param weight:  The weight of the newly covered example
+        :param example_index:   The index of the newly-covered example in the entire training data set
+        :param weight:          The weight of the newly covered example
         """
         pass
 
@@ -124,13 +124,13 @@ cdef class DecomposableLoss(Loss):
     cdef begin_instance_sub_sampling(self):
         pass
 
-    cdef update_sub_sample(self, intp r):
+    cdef update_sub_sample(self, intp example_index):
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
         pass
 
-    cdef update_search(self, intp r, uint32 weight):
+    cdef update_search(self, intp example_index, uint32 weight):
         pass
 
     cdef float64[::1] calculate_scores(self, bint covered):
@@ -206,7 +206,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         total_sums_of_gradients[:] = 0
         self.total_sums_of_gradients = total_sums_of_gradients
 
-    cdef update_sub_sample(self, intp r):
+    cdef update_sub_sample(self, intp example_index):
         # Update total sum of hessians...
         cdef float64 total_sum_of_hessians = self.total_sum_of_hessians
         total_sum_of_hessians += 2
@@ -219,7 +219,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef intp c
 
         for c in range(num_cols):
-            total_sums_of_gradients[c] += gradients[r, c]
+            total_sums_of_gradients[c] += gradients[example_index, c]
 
     cdef begin_search(self, intp[::1] label_indices):
         # Reset sum of hessians to 0...
@@ -251,7 +251,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         self.quality_scores = quality_scores
 
 
-    cdef update_search(self, intp r, uint32 weight):
+    cdef update_search(self, intp example_index, uint32 weight):
         # Update sum of hessians...
         cdef float64 sum_of_hessians = self.sum_of_hessians
         sum_of_hessians += weight * 2
@@ -266,7 +266,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         for c in range(num_labels):
             l = __get_label_index(c, label_indices)
-            sums_of_gradients[c] += weight * gradients[r, l]
+            sums_of_gradients[c] += weight * gradients[example_index, l]
 
     cdef float64[::1] calculate_scores(self, bint covered):
         cdef float64[::1] scores = self.scores
