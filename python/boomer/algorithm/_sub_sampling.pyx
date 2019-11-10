@@ -52,8 +52,8 @@ cdef class Bagging(InstanceSubSampling):
         rng_randint = rng.randint
         cdef intp n, i
 
-        # Reset the sums of gradients cached by the given loss function...
-        loss.reset_total_sums_of_gradients()
+        # Tell the given loss function that instance sub-sampling is used...
+        loss.begin_instance_sub_sampling()
 
         for n in range(num_samples):
             # Select the index of an example randomly...
@@ -62,8 +62,8 @@ cdef class Bagging(InstanceSubSampling):
              # Update weight at the selected index...
              weights[i] += 1
 
-             # Update sums of gradients cached by the given loss function...
-             loss.update_total_sums_of_gradients(i)
+             # Tell the given loss function that a new example has been chosen to be included in the sample...
+             loss.update_sub_sample(i)
 
         return weights
 

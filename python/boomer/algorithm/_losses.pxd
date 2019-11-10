@@ -22,9 +22,9 @@ cdef class Loss:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef reset_total_sums_of_gradients(self)
+    cdef begin_instance_sub_sampling(self)
 
-    cdef update_total_sums_of_gradients(self, intp r)
+    cdef update_sub_sample(self, intp r)
 
     cdef begin_search(self, intp[::1] label_indices)
 
@@ -41,9 +41,9 @@ cdef class DecomposableLoss(Loss):
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef reset_total_sums_of_gradients(self)
+    cdef begin_instance_sub_sampling(self)
 
-    cdef update_total_sums_of_gradients(self, intp r)
+    cdef update_sub_sample(self, intp r)
 
     cdef begin_search(self, intp[::1] label_indices)
 
@@ -76,9 +76,9 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef reset_total_sums_of_gradients(self)
+    cdef begin_instance_sub_sampling(self)
 
-    cdef update_total_sums_of_gradients(self, intp r)
+    cdef update_sub_sample(self, intp r)
 
     cdef begin_search(self, intp[::1] label_indices)
 
