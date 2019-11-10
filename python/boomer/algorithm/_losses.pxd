@@ -22,6 +22,10 @@ cdef class Loss:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
+    cdef reset_total_sums_of_gradients(self)
+
+    cdef update_total_sums_of_gradients(self, intp r)
+
     cdef begin_search(self, intp[::1] label_indices)
 
     cdef update_search(self, intp r, uint32 weight)
@@ -36,6 +40,10 @@ cdef class DecomposableLoss(Loss):
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+
+    cdef reset_total_sums_of_gradients(self)
+
+    cdef update_total_sums_of_gradients(self, intp r)
 
     cdef begin_search(self, intp[::1] label_indices)
 
@@ -52,6 +60,8 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef float64[::1, :] gradients
 
+    cdef float64[::1] total_sums_of_gradients
+
     cdef float64[::1] sums_of_gradients
 
     cdef float64 sum_of_hessians
@@ -63,6 +73,10 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+
+    cdef reset_total_sums_of_gradients(self)
+
+    cdef update_total_sums_of_gradients(self, intp r)
 
     cdef begin_search(self, intp[::1] label_indices)
 

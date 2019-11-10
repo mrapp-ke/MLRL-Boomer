@@ -15,12 +15,13 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, int random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state):
         """
         Creates a sub-sample of the available training examples.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
+        :param loss:            A loss function that should be updated based on the examples included in the sub-sample
         :param random_state:    The seed to be used by RNGs
         :return:                An array of dtype uint, shape `(num_examples)`, representing the weights of the given
                                 training examples, i.e., how many times each of the examples is contained in the sample
@@ -41,7 +42,7 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, int random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state):
         cdef intp num_examples = x.shape[0]
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
@@ -49,12 +50,20 @@ cdef class Bagging(InstanceSubSampling):
         weights[:] = 0
         rng = check_random_state(random_state)
         rng_randint = rng.randint
-        cdef npc.int_t rand
-        cdef intp i
+        cdef intp n, i
 
-        for i in range(num_samples):
-             rand = rng_randint(num_examples)
-             weights[rand] += 1
+        # Reset the sums of gradients cached by the given loss function...
+        loss.reset_total_sums_of_gradients()
+
+        for n in range(num_samples):
+            # Select the index of an example randomly...
+             i = rng_randint(num_examples)
+
+             # Update weight at the selected index...
+             weights[i] += 1
+
+             # Update sums of gradients cached by the given loss function...
+             loss.update_total_sums_of_gradients(i)
 
         return weights
 
