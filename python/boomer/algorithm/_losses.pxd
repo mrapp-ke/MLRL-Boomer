@@ -38,11 +38,11 @@ cdef class Loss:
 
     cdef begin_instance_sub_sampling(self)
 
-    cdef update_sub_sample(self, intp r)
+    cdef update_sub_sample(self, intp example_index)
 
     cdef begin_search(self, intp[::1] label_indices)
 
-    cdef update_search(self, intp r, uint32 weight)
+    cdef update_search(self, intp example_index, uint32 weight)
 
     cdef float64[::1] calculate_scores(self, bint covered)
 
@@ -57,11 +57,11 @@ cdef class DecomposableLoss(Loss):
 
     cdef begin_instance_sub_sampling(self)
 
-    cdef update_sub_sample(self, intp r)
+    cdef update_sub_sample(self, intp example_index)
 
     cdef begin_search(self, intp[::1] label_indices)
 
-    cdef update_search(self, intp r, uint32 weight)
+    cdef update_search(self, intp example_index, uint32 weight)
 
     cdef float64[::1] calculate_scores(self, bint covered)
 
@@ -94,11 +94,11 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef begin_instance_sub_sampling(self)
 
-    cdef update_sub_sample(self, intp r)
+    cdef update_sub_sample(self, intp example_index)
 
     cdef begin_search(self, intp[::1] label_indices)
 
-    cdef update_search(self, intp r, uint32 weight)
+    cdef update_search(self, intp example_index, uint32 weight)
 
     cdef float64[::1] calculate_scores(self, bint covered)
 
