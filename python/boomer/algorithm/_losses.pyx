@@ -34,7 +34,8 @@ cdef class Loss:
 
     cdef reset_total_sums_of_gradients(self):
         """
-        Resets the cached sum of gradients for each label to 0.
+        Resets the cached sum of gradients (and hessians in case of a non-decomposable loss function) for each label to
+        0.
 
         This function must be invoked before the function `begin_search` if any type of instance sub-sampling, e.g.
         bagging, is used.
@@ -43,8 +44,8 @@ cdef class Loss:
 
     cdef update_total_sums_of_gradients(self, intp r):
         """
-        Updates the total sum of gradients for each label based on an example that has been chosen to be included in the
-        sub-sample.
+        Updates the total sum of gradients (and hessians in case of a non-decomposable loss function) for each label
+        based on an example that has been chosen to be included in the sub-sample.
 
         This function must be invoked for each example included in the sample after the function
         `reset_total_sums_of_gradients' and before `begin_search`.
