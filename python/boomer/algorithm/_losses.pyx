@@ -22,8 +22,8 @@ cdef class Loss:
         This is necessary to later be able to search for the optimal scores to be predicted by rules that cover all
         examples provided to the search, as well as by rules that do not cover these instances (but all other ones) at
         the same time instead of requiring two passes through the examples. When using instance sub-sampling, before
-        invoking the function `begin_search`, the function `reset_total_sums_of_gradients` must be called, followed by
-        invocations of the function `update_total_sums_of_gradients` for each of the examples contained in the sample.
+        invoking the function `begin_search`, the function `begin_instance_sub_sampling` must be called, followed by
+        invocations of the function `update_sub_sample` for each of the examples contained in the sample.
 
         :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
                     examples
@@ -32,7 +32,7 @@ cdef class Loss:
         """
         pass
 
-    cdef reset_total_sums_of_gradients(self):
+    cdef begin_instance_sub_sampling(self):
         """
         Resets the cached sum of gradients (and hessians in case of a non-decomposable loss function) for each label to
         0.
@@ -42,13 +42,13 @@ cdef class Loss:
         """
         pass
 
-    cdef update_total_sums_of_gradients(self, intp r):
+    cdef update_sub_sample(self, intp r):
         """
         Updates the total sum of gradients (and hessians in case of a non-decomposable loss function) for each label
         based on an example that has been chosen to be included in the sub-sample.
 
         This function must be invoked for each example included in the sample after the function
-        `reset_total_sums_of_gradients' and before `begin_search`.
+        `begin_instance_sub_sampling' and before `begin_search`.
 
         :param r: The index of an example that has been chosen to be included in the sample
         """
@@ -116,10 +116,10 @@ cdef class DecomposableLoss(Loss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
-    cdef reset_total_sums_of_gradients(self):
+    cdef begin_instance_sub_sampling(self):
         pass
 
-    cdef update_total_sums_of_gradients(self, intp r):
+    cdef update_sub_sample(self, intp r):
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
@@ -188,7 +188,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         return scores
 
-    cdef reset_total_sums_of_gradients(self):
+    cdef begin_instance_sub_sampling(self):
         # Reset total sum of hessians to 0...
         cdef float64 total_sum_of_hessians = 0
         self.total_sum_of_hessians = total_sum_of_hessians
@@ -201,7 +201,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         total_sums_of_gradients[:] = 0
         self.total_sums_of_gradients = total_sums_of_gradients
 
-    cdef update_total_sums_of_gradients(self, intp r):
+    cdef update_sub_sample(self, intp r):
         # Update total sum of hessians...
         cdef float64 total_sum_of_hessians = self.total_sum_of_hessians
         total_sum_of_hessians += 2
