@@ -182,9 +182,17 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         # Cache the total sums of gradients for each label...
         self.total_sums_of_gradients = total_sums_of_gradients
 
+        # Cache total sum of hessians...
+        self.total_sum_of_hessians = sum_of_hessians
+
         return scores
 
     cdef reset_total_sums_of_gradients(self):
+        # Reset total sum of hessians to 0...
+        cdef float64 total_sum_of_hessians = 0
+        self.total_sum_of_hessians = total_sum_of_hessians
+
+        # Reset total sums of gradients to 0...
         cdef float64[::1, :] gradients = self.gradients
         cdef intp num_cols = gradients.shape[1]
         cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
@@ -193,6 +201,12 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         self.total_sums_of_gradients = total_sums_of_gradients
 
     cdef update_total_sums_of_gradients(self, intp r):
+        # Update total sum of hessians...
+        cdef float64 total_sum_of_hessians = self.total_sum_of_hessians
+        total_sum_of_hessians += 2
+        self.total_sum_of_hessians = total_sum_of_hessians
+
+        # Update total sums of gradients...
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef intp num_cols = gradients.shape[1]

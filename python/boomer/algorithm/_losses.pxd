@@ -62,6 +62,8 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef float64[::1] total_sums_of_gradients
 
+    cdef float64 total_sum_of_hessians
+
     cdef float64[::1] sums_of_gradients
 
     cdef float64 sum_of_hessians
