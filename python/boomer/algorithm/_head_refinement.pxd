@@ -1,4 +1,4 @@
-from boomer.algorithm._model cimport float64, PartialHead
+from boomer.algorithm._model cimport intp, float64, PartialHead
 from boomer.algorithm._losses cimport Loss
 
 
@@ -6,7 +6,9 @@ cdef class HeadCandidate:
 
     # Attributes:
 
-    cdef readonly PartialHead head
+    cdef readonly intp[::1] label_indices
+
+    cdef readonly float64[::1] predicted_scores
 
     cdef readonly float64 quality_score
 

@@ -6,15 +6,19 @@ from boomer.algorithm._model cimport intp
 
 cdef class HeadCandidate:
     """
-    Represents a candidate head.
+    Stores information about a potential 'PartialHead'.
     """
 
-    def __cinit__(self, PartialHead head, float64 quality_score):
+    def __cinit__(self, intp[::1] label_indices, float64[::1] predicted_scores, float64 quality_score):
         """
-        :param head:            The partial head
-        :param quality_score:   A score that measures the quality of the head
+        :param label_indices:       An array of dtype int, shape `(num_predicted_labels)`, representing the indices of
+                                    the labels for which the head predicts
+        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
+                                    that are predicted by the head
+        :param quality_score:       A score that measures the quality of the head
         """
-        self.head = head
+        self.label_indices = label_indices
+        self.predicted_scores = predicted_scores
         self.quality_score = quality_score
 
 
@@ -69,6 +73,5 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
             label_indices[0] = current_head.label_indices[0]
 
         predicted_scores[0] = scores[best_c]
-        cdef PartialHead best_head = PartialHead(label_indices, predicted_scores)
-        cdef HeadCandidate candidate = HeadCandidate(best_head, best_quality_score)
+        cdef HeadCandidate candidate = HeadCandidate(label_indices, predicted_scores, best_quality_score)
         return candidate
