@@ -86,24 +86,29 @@ cdef class Loss:
         """
         pass
 
-    cdef float64[::1] calculate_scores(self):
+    cdef float64[::1] calculate_scores(self, bint covered):
         """
         Calculates the optimal scores to be predicted by a rule that covers all examples provided so far via the
         function `update_search`. The calculated scores correspond to the label indices provided to the `begin_search`
         function. If no label indices were provided, scores for all labels are calculated.
 
-        :return: An array of dtype float, shape `(num_predicted_labels)`, representing the optimal scores to be
-                 predicted by a rule that covers all examples provided so far.
+        :param covered: 1, if the rule for which the optimal scores should be computed covers the examples that have
+                        been provided to the search or 0, if the rule covers all other examples
+        :return:        An array of dtype float, shape `(num_predicted_labels)`, representing the optimal scores to be
+                        predicted by a rule that covers all examples provided so far.
         """
         pass
 
-    cdef float64[::1] calculate_quality_scores(self):
+    cdef float64[::1] calculate_quality_scores(self, bint covered):
         """
         Calculates a score for each label that measures the quality of the corresponding predicted score as provided by
-        the function `calculate_scores` (which must always be invoked before!) at any point of a search.
+        the function `calculate_scores` (which must always be invoked before using the same value for the argument
+        'covered!) at any point of a search.
 
-        :return: An array of dtype float, shape `(num_predicted_labels)`, representing the calculated quality scores for
-                 each label
+        :param covered: 1, if the rule for which the quality scores should be computed covers the examples that have
+                        been provided to the search or 0, if the rule covers all other examples
+        :return:        An array of dtype float, shape `(num_predicted_labels)`, representing the calculated quality
+                        scores for each label
         """
         pass
 
@@ -128,10 +133,10 @@ cdef class DecomposableLoss(Loss):
     cdef update_search(self, intp r, uint32 weight):
         pass
 
-    cdef float64[::1] calculate_scores(self):
+    cdef float64[::1] calculate_scores(self, bint covered):
         pass
 
-    cdef float64[::1] calculate_quality_scores(self):
+    cdef float64[::1] calculate_quality_scores(self, bint covered):
         pass
 
 
@@ -237,9 +242,14 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         self.sums_of_gradients = sums_of_gradients
         self.label_indices = label_indices
 
-        # Initialize vector of optimal scores once to avoid array-recreation at each update...
+        # Initialize array of optimal scores once to avoid array-recreation at each update...
         cdef float64[::1] scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
         self.scores = scores
+
+        # Initialize array of quality scores once to avoid array-recreation at each update...
+        cdef float64[::1] quality_scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+        self.quality_scores = quality_scores
+
 
     cdef update_search(self, intp r, uint32 weight):
         # Update sum of hessians...
@@ -255,35 +265,55 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef intp c, l
 
         for c in range(num_labels):
-            if label_indices is not None:
-                l = label_indices[c]
-            else:
-                l = c
-
+            l = __get_label_index(c, label_indices)
             sums_of_gradients[c] += weight * gradients[r, l]
 
-    cdef float64[::1] calculate_scores(self):
+    cdef float64[::1] calculate_scores(self, bint covered):
         cdef float64[::1] scores = self.scores
-        cdef float64 sum_of_hessians = self.sum_of_hessians
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef intp c
+        cdef float64[::1] total_sums_of_gradients
+        cdef float64 sum_of_hessians
+        cdef intp[::1] label_indices
+        cdef intp c, l
 
-        for c in range(num_labels):
-            scores[c] = -sums_of_gradients[c] / sum_of_hessians
+        if covered:
+            sum_of_hessians = self.sum_of_hessians
+
+            for c in range(num_labels):
+                scores[c] = -sums_of_gradients[c] / sum_of_hessians
+        else:
+            sum_of_hessians = self.total_sum_of_hessians
+            total_sums_of_gradients = self.total_sums_of_gradients
+            label_indices = self.label_indices
+
+            for c in range(num_labels):
+                l = __get_label_index(c, label_indices)
+                scores[c] = -(total_sums_of_gradients[l] - sums_of_gradients[c]) / sum_of_hessians
 
         return scores
 
-    cdef float64[::1] calculate_quality_scores(self):
+    cdef float64[::1] calculate_quality_scores(self, bint covered):
         cdef float64[::1] scores = self.scores
+        cdef float64[::1] quality_scores = self.quality_scores
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef float64[::1] quality_scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64[::1] total_sums_of_gradients
+        cdef intp[::1] label_indices
         cdef float64 score
-        cdef intp c
+        cdef intp c, l
 
-        for c in range(num_labels):
-            score = scores[c]
-            quality_scores[c] = (sums_of_gradients[c] * score) + pow(score, 2)
+        if covered:
+            for c in range(num_labels):
+                score = scores[c]
+                quality_scores[c] = (sums_of_gradients[c] * score) + pow(score, 2)
+        else:
+            total_sums_of_gradients = self.total_sums_of_gradients
+            label_indices = self.label_indices
+
+            for c in range(num_labels):
+                l = __get_label_index(c, label_indices)
+                score = scores[c]
+                quality_scores[c] = ((total_sums_of_gradients[l] - sums_of_gradients[c]) * score) + pow(score, 2)
 
         return quality_scores

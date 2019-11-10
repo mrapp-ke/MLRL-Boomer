@@ -24,13 +24,15 @@ cdef class HeadRefinement:
     region of the instance space covered by a rule.
     """
 
-    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss):
+    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss, bint covered):
         """
         Finds and returns the head of a rule that minimizes a loss function with respect to the current gradient
         statistics.
 
         :param current_head:    The current head of the rule or None, if no head has been found yet
         :param loss:            The loss function to be minimized
+        :param covered:         1, if the rule for which the head should be found covers the examples that have been
+                                provided to the loss function or 0, if the rule covers all other examples
         :return:                A 'HeadCandidate' consisting of the partial head that has been found, as well as its
                                 quality score
         """
@@ -42,9 +44,9 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     Allows to find single-label heads that minimize a certain loss function.
     """
 
-    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss):
-        cdef float64[::1] scores = loss.calculate_scores()
-        cdef float64[::1] quality_scores = loss.calculate_quality_scores()
+    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss, bint covered):
+        cdef float64[::1] scores = loss.calculate_scores(covered)
+        cdef float64[::1] quality_scores = loss.calculate_quality_scores(covered)
         cdef intp best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
         cdef intp[::1] label_indices = cvarray(shape=(1,), itemsize=sizeof(intp), format='i', mode='c')
