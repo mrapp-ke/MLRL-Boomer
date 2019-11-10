@@ -15,6 +15,20 @@ cdef inline float64 __convert_label_into_score(uint8 label):
     else:
         return -1
 
+cdef inline intp __get_label_index(intp i, intp[::1] label_indices):
+    """
+    Retrieves and returns the index of the i-th label from an array of label indices, if such an array is available.
+    Otherwise i is returned.
+
+    :param i:               The position of the label whose index should be retrieved
+    :param label_indices:   An array of the dtype int, shape `(num_labels)`, representing the indices of labels
+    :return:                A scalar of dtype int, representing the index of the i-th label
+    """
+    if label_indices is None:
+        return i
+    else:
+        return label_indices[i]
+
 
 cdef class Loss:
 
@@ -30,9 +44,9 @@ cdef class Loss:
 
     cdef update_search(self, intp r, uint32 weight)
 
-    cdef float64[::1] calculate_scores(self)
+    cdef float64[::1] calculate_scores(self, bint covered)
 
-    cdef float64[::1] calculate_quality_scores(self)
+    cdef float64[::1] calculate_quality_scores(self, bint covered)
 
 
 cdef class DecomposableLoss(Loss):
@@ -49,9 +63,9 @@ cdef class DecomposableLoss(Loss):
 
     cdef update_search(self, intp r, uint32 weight)
 
-    cdef float64[::1] calculate_scores(self)
+    cdef float64[::1] calculate_scores(self, bint covered)
 
-    cdef float64[::1] calculate_quality_scores(self)
+    cdef float64[::1] calculate_quality_scores(self, bint covered)
 
 
 cdef class SquaredErrorLoss(DecomposableLoss):
@@ -72,6 +86,8 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef float64[::1] scores
 
+    cdef float64[::1] quality_scores
+
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
@@ -84,6 +100,6 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef update_search(self, intp r, uint32 weight)
 
-    cdef float64[::1] calculate_scores(self)
+    cdef float64[::1] calculate_scores(self, bint covered)
 
-    cdef float64[::1] calculate_quality_scores(self)
+    cdef float64[::1] calculate_quality_scores(self, bint covered)

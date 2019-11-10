@@ -15,11 +15,11 @@ cdef class HeadRefinement:
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss)
+    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss, bint covered)
 
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss)
+    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss, bint covered)
