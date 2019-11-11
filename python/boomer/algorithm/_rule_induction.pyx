@@ -52,7 +52,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         weights = instance_sub_sampling.sub_sample(x, loss, current_random_state)
 
     # The head of the induced rule
-    cdef HeadCandidate head = None
+    cdef HeadCandidate best_head = None
     # A map containing the feature indices of the rule's conditions that use the <= operator as keys and their
     # thresholds as values
     cdef map[intp, float32] leq_conditions
@@ -66,6 +66,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     cdef intp num_features
     cdef intp[::1] feature_indices
     cdef float32 previous_threshold, current_threshold
+    cdef HeadCandidate head_candidate
     cdef intp c, f, r, i
     cdef uint32 weight
 
@@ -105,10 +106,16 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
 
                     if previous_threshold != current_threshold:
                         # Evaluate condition using <= operator...
-                        head_refinement.find_head(head, loss, 1)
+                        head_candidate = head_refinement.find_head(best_head, loss, 1)
+
+                        if head_candidate is not None:
+                            best_head = head_candidate
 
                         # Evaluate condition using > operator...
-                        head_refinement.find_head(head, loss, 0)
+                        head_candidate = head_refinement.find_head(best_head, loss, 0)
+
+                        if head_candidate is not None:
+                            best_head = head_candidate
 
             previous_threshold = current_threshold
 
