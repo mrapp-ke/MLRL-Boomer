@@ -1,6 +1,7 @@
 # Build files
 python/**/*.so
 python/**/*.c
+python/**/*.cpp
 python/**/*.html
 python/build/
 
