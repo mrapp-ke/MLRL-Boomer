@@ -53,7 +53,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         cdef float64[::1] quality_scores = loss.calculate_quality_scores(covered)
         cdef intp best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
-        cdef intp[::1] label_indices = cvarray(shape=(1,), itemsize=sizeof(intp), format='i', mode='c')
+        cdef intp[::1] label_indices = cvarray(shape=(1,), itemsize=sizeof(intp), format='l', mode='c')
         cdef float64[::1] predicted_scores = cvarray(shape=(1,), itemsize=sizeof(float64), format='d', mode='c')
         cdef float64 quality_score
         cdef intp num_labels, c
