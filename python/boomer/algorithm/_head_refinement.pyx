@@ -28,12 +28,12 @@ cdef class HeadRefinement:
     region of the instance space covered by a rule.
     """
 
-    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss, bint covered):
+    cdef HeadCandidate find_head(self, HeadCandidate current_head, Loss loss, bint covered):
         """
         Finds and returns the head of a rule that minimizes a loss function with respect to the current gradient
         statistics.
 
-        :param current_head:    The current head of the rule or None, if no head has been found yet
+        :param current_head:    The best 'HeadCandidate' currently known or None, if no head has been found yet
         :param loss:            The loss function to be minimized
         :param covered:         1, if the rule for which the head should be found covers the examples that have been
                                 provided to the loss function or 0, if the rule covers all other examples
@@ -48,13 +48,14 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     Allows to find single-label heads that minimize a certain loss function.
     """
 
-    cdef HeadCandidate find_head(self, PartialHead current_head, Loss loss, bint covered):
+    cdef HeadCandidate find_head(self, HeadCandidate current_head, Loss loss, bint covered):
         cdef float64[::1] scores = loss.calculate_scores(covered)
         cdef float64[::1] quality_scores = loss.calculate_quality_scores(covered)
         cdef intp best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
-        cdef intp[::1] label_indices = cvarray(shape=(1,), itemsize=sizeof(intp), format='l', mode='c')
-        cdef float64[::1] predicted_scores = cvarray(shape=(1,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef intp[::1] label_indices
+        cdef float64[::1] predicted_scores
+        cdef HeadCandidate candidate
         cdef float64 quality_score
         cdef intp num_labels, c
 
@@ -68,10 +69,16 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
                     best_quality_score = quality_score
                     best_c = c
 
+            label_indices = cvarray(shape=(1,), itemsize=sizeof(intp), format='l', mode='c')
             label_indices[0] = best_c
+            predicted_scores = cvarray(shape=(1,), itemsize=sizeof(float64), format='d', mode='c')
+            predicted_scores[0] = scores[best_c]
+            candidate = HeadCandidate(label_indices, predicted_scores, best_quality_score)
+            return candidate
+        elif best_quality_score < current_head.quality_score:
+            best_c = current_head.label_indices[0]
+            current_head.predicted_scores[0] = scores[best_c]
+            current_head.quality_score = best_quality_score
+            return current_head
         else:
-            label_indices[0] = current_head.label_indices[0]
-
-        predicted_scores[0] = scores[best_c]
-        cdef HeadCandidate candidate = HeadCandidate(label_indices, predicted_scores, best_quality_score)
-        return candidate
+            return None
