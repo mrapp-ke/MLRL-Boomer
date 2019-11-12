@@ -22,6 +22,7 @@ cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
     cdef Rule rule = Rule(body, head)
     return rule
 
+
 cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRefinement head_refinement, Loss loss,
                        InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                        random_state: int):
@@ -61,16 +62,20 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     cdef map[intp, float32] gr_conditions
 
     cdef int num_refinements = 1
-    cdef intp[::1] label_indices = None
     cdef intp num_examples = x.shape[0]
-    cdef intp num_features
+    cdef intp[::1] label_indices = None
+    cdef HeadCandidate best_candidate
+    cdef HeadCandidate current_candidate
     cdef intp[::1] feature_indices
+    cdef intp num_features
     cdef float32 previous_threshold, current_threshold
-    cdef HeadCandidate head_candidate
-    cdef intp c, f, r, i
     cdef uint32 weight
+    cdef intp c, f, r, i
 
+    # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
     while True:
+        best_candidate = None
+
         # Sub-sample features, if necessary...
         if feature_sub_sampling is None:
             feature_indices = None
@@ -79,9 +84,14 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
             num_features = feature_indices.shape[0]
 
+        # Search for the best condition among all available features to be added to the current rule...
         for c in range(num_features):
-            loss.begin_search(label_indices)
+            # For each feature, the examples are traversed in increasing order of their respective feature values and
+            # the loss function is updated accordingly.
             f = __get_feature_index(c, feature_indices)
+
+            # Reset the loss function when processing a new feature...
+            loss.begin_search(label_indices)
 
             # Find first example with weight > 0...
             weight = 0
@@ -104,26 +114,34 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                     loss.update_search(i, weight)
                     current_threshold = x[i, f]
 
+                    # Split points between examples with the same feature value must not be considered...
                     if previous_threshold != current_threshold:
-                        # Evaluate condition using <= operator...
-                        head_candidate = head_refinement.find_head(best_head, loss, 1)
+                        # Evaluate potential condition using <= operator...
+                        current_candidate = head_refinement.find_head(best_head, best_candidate, loss, 1)
 
-                        if head_candidate is not None:
-                            best_head = head_candidate
+                        if current_candidate is not None:
+                            best_candidate = current_candidate
 
-                        # Evaluate condition using > operator...
-                        head_candidate = head_refinement.find_head(best_head, loss, 0)
+                        # Evaluate potential condition using > operator...
+                        current_candidate = head_refinement.find_head(best_head, best_candidate, loss, 0)
 
-                        if head_candidate is not None:
-                            best_head = head_candidate
+                        if current_candidate is not None:
+                            best_candidate = current_candidate
 
             previous_threshold = current_threshold
 
-        num_refinements += 1
-        current_random_state *= num_refinements
-        break # TODO Use proper stopping criterion
+        if best_candidate is None:
+            break
+        else:
+            best_head = best_candidate
+            label_indices = best_head.label_indices
+            # TODO Reduce sorted indices to the covered ones
+            num_refinements += 1
+            current_random_state *= num_refinements
 
+    # TODO: Build and return rule
     return None
+
 
 cdef inline intp __get_feature_index(intp i, intp[::1] feature_indices):
     """
@@ -138,6 +156,7 @@ cdef inline intp __get_feature_index(intp i, intp[::1] feature_indices):
         return i
     else:
         return feature_indices[i]
+
 
 cdef inline uint32 __get_weight(intp example_index, uint32[::1] weights):
     """
