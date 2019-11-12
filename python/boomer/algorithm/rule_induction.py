@@ -92,10 +92,8 @@ class GradientBoosting(RuleInduction):
             rule = induce_rule(x, x_sorted_indices, head_refinement, loss, instance_sub_sampling, feature_sub_sampling,
                                random_state)
 
-            # TODO Apply prediction of the new rule to the matrix of predicted scores
-
             # Add new rule to theory
-            # TODO theory.append(rule)
+            theory.append(rule)
 
             # Alter random state for inducing the next rule
             random_state += 1

@@ -1,9 +1,18 @@
-from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64, Rule, FullHead, EmptyBody
+# distutils: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+from cython.view cimport array as cvarray
+from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
+from boomer.algorithm._model cimport Rule, FullHead, EmptyBody, ConjunctiveBody, PartialHead
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 
 from libcpp.unordered_map cimport unordered_map as map
+from cython.operator cimport dereference, postincrement
+
+import numpy as np
+from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
 
 
 cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
@@ -53,7 +62,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         weights = instance_sub_sampling.sub_sample(x, loss, current_random_state)
 
     # The head of the induced rule
-    cdef HeadCandidate best_head = None
+    cdef HeadCandidate head = None
     # A map containing the feature indices of the rule's conditions that use the <= operator as keys and their
     # thresholds as values
     cdef map[intp, float32] leq_conditions
@@ -61,20 +70,34 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     # as values
     cdef map[intp, float32] gr_conditions
 
+    # The current refinement iteration (starting at 1)
     cdef int num_refinements = 1
-    cdef intp num_examples = x.shape[0]
+
+    # Variables for representing the best refinement
+    cdef HeadCandidate best_head
+    cdef bint best_condition_leq
+    cdef intp best_condition_r, best_condition_index
+    cdef float32 best_condition_threshold
+
+    # Variables for specifying the examples and labels that should be used for finding the best refinement
     cdef intp[::1] label_indices = None
-    cdef HeadCandidate best_candidate
-    cdef HeadCandidate current_candidate
+    cdef intp[::1, :] sorted_indices = x_sorted_indices
+    cdef intp num_examples
+
+    # Variables for specifying the features used for finding the best refinement
     cdef intp[::1] feature_indices
     cdef intp num_features
+
+    # Temporary variables
+    cdef HeadCandidate current_head
     cdef float32 previous_threshold, current_threshold
     cdef uint32 weight
     cdef intp c, f, r, i
 
     # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
     while True:
-        best_candidate = None
+        num_examples = sorted_indices.shape[0]
+        best_head = None
 
         # Sub-sample features, if necessary...
         if feature_sub_sampling is None:
@@ -97,50 +120,190 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             weight = 0
 
             for r in range(0, num_examples - 1):
-                i = x_sorted_indices[r, f]
+                i = sorted_indices[r, f]
                 weight = __get_weight(i, weights)
 
                 if weight > 0:
+                    # Mark the example as covered by potential conditions...
                     loss.update_search(i, weight)
                     previous_threshold = x[i, f]
                     break
 
-            # Traverse remaining instances (except for the last one)...
-            for r in range(r + 1, num_examples - 1):
-                i = x_sorted_indices[r, f]
+            # Traverse remaining instances...
+            for r in range(r + 1, num_examples):
+                i = sorted_indices[r, f]
                 weight = __get_weight(i, weights)
 
                 if weight > 0:
-                    loss.update_search(i, weight)
                     current_threshold = x[i, f]
 
                     # Split points between examples with the same feature value must not be considered...
                     if previous_threshold != current_threshold:
                         # Evaluate potential condition using <= operator...
-                        current_candidate = head_refinement.find_head(best_head, best_candidate, loss, 1)
+                        current_head = head_refinement.find_head(head, best_head, loss, 1)
 
-                        if current_candidate is not None:
-                            best_candidate = current_candidate
+                        if current_head is not None:
+                            best_head = current_head
+                            best_condition_leq = 1
+                            best_condition_r = r
+                            best_condition_index = f
+                            best_condition_threshold = __calculate_threshold(previous_threshold, current_threshold)
 
                         # Evaluate potential condition using > operator...
-                        current_candidate = head_refinement.find_head(best_head, best_candidate, loss, 0)
+                        current_head = head_refinement.find_head(head, best_head, loss, 0)
 
-                        if current_candidate is not None:
-                            best_candidate = current_candidate
+                        if current_head is not None:
+                            best_head = current_head
+                            best_condition_leq = 0
+                            best_condition_r = r
+                            best_condition_index = f
+                            best_condition_threshold = __calculate_threshold(previous_threshold, current_threshold)
 
-            previous_threshold = current_threshold
+                    # Mark the examples as covered by potential conditions...
+                    loss.update_search(i, weight)
+                    previous_threshold = current_threshold
 
-        if best_candidate is None:
+        if best_head is None:
             break
         else:
-            best_head = best_candidate
-            label_indices = best_head.label_indices
-            # TODO Reduce sorted indices to the covered ones
-            num_refinements += 1
-            current_random_state *= num_refinements
+            # Apply refinement to the current rule...
+            head = best_head
 
-    # TODO: Build and return rule
-    return None
+            if best_condition_leq:
+                leq_conditions[best_condition_index] = best_condition_threshold
+            else:
+                gr_conditions[best_condition_index] = best_condition_threshold
+
+            if num_examples <= 1:
+                # Abort refinement process if rule covers a single instance...
+                break
+            else:
+                # Otherwise, prepare next refinement iteration by updating the examples and labels that should be used
+                # for finding the next refinement...
+                label_indices = head.label_indices
+                sorted_indices = __filter_sorted_indices(x, sorted_indices, best_condition_r, best_condition_index,
+                                                         best_condition_leq, best_condition_threshold)
+                num_examples = sorted_indices.shape[0]
+
+                # TODO Update gradients/hessians of the loss function based on the new rule
+
+                # Alter seed to be used by RNGs for the next refinement...
+                num_refinements += 1
+                current_random_state *= num_refinements
+
+    # Build and return the induced rule...
+    return __build_rule(head, leq_conditions, gr_conditions)
+
+cdef Rule __build_rule(HeadCandidate head, map[intp, float32] leq_conditions, map[intp, float32] gr_conditions):
+    """
+    Builds and returns a rule.
+
+    :param head:            A 'HeadCandidate' representing the head of the rule
+    :param leq_conditions:  A map that contains the feature indices of the rule's conditions that use the <= operator as
+                            keys and their thresholds as values
+    :param gr_conditions:   A map that contains the feature indices of the rule's conditions that use the > operator as
+                            keys and their thresholds as values
+    :return:                The rule that has been built
+    """
+    cdef intp num_leq_conditions = leq_conditions.size()
+    cdef intp[::1] leq_feature_indices = np.empty((num_leq_conditions,), DTYPE_INTP, 'C')
+    cdef float32[::1] leq_thresholds = np.empty((num_leq_conditions,), DTYPE_FLOAT32, 'C')
+    cdef intp num_gr_conditions = gr_conditions.size()
+    cdef intp[::1] gr_feature_indices = np.empty((num_gr_conditions,), DTYPE_INTP, 'C')
+    cdef float32[::1] gr_thresholds = np.empty((num_gr_conditions,), DTYPE_FLOAT32, 'C')
+
+    cdef map[intp, float32].iterator iterator = leq_conditions.begin()
+    cdef intp index
+    cdef float32 threshold
+    cdef intp i = 0
+
+    while iterator != leq_conditions.end():
+        index = dereference(iterator).first
+        threshold = dereference(iterator).second
+        leq_feature_indices[i] = index
+        leq_thresholds[i] = threshold
+        postincrement(iterator)
+        i += 1
+
+    iterator = gr_conditions.begin()
+    i = 0
+
+    while iterator != gr_conditions.end():
+        index = dereference(iterator).first
+        threshold = dereference(iterator).second
+        gr_feature_indices[i] = index
+        gr_thresholds[i] = threshold
+        postincrement(iterator)
+        i += 1
+
+    cdef ConjunctiveBody rule_body = ConjunctiveBody(leq_feature_indices, leq_thresholds, gr_feature_indices,
+                                                     gr_thresholds)
+    cdef PartialHead rule_head = PartialHead(head.label_indices, head.predicted_scores)
+    cdef Rule rule = Rule(rule_body, rule_head)
+    return rule
+
+cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted_indices, intp condition_r,
+                                          intp condition_index, bint condition_leq, float32 condition_threshold):
+    """
+    Filters the matrix of example indices after a new condition has been added to a rule, such that the filtered matrix
+    does only contain the indices of examples that are covered by the new rule.
+
+    :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the features
+                                of the training examples
+    :param x_sorted_indices:    An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
+                                the examples that are covered by the previous rule when sorting column-wise
+    :param condition_r:         The index of the example from which the threshold of the condition that has been added
+                                to the previous rule has been chosen
+    :param condition_index:     The the feature index of the condition that has been added to the previous rule
+    :param condition_leq:       1, if the condition that has been added to the previous rule uses the <= operator, 0, if
+                                the condition uses the > operator
+    :param condition_threshold: The threshold of the condition that has been added to the previous rule
+    :return:                    An array of dtype int, shape `(num_covered_examples, num_features)`, representing the
+                                indices of the examples that are covered by the new rule when sorting column-wise
+    """
+    cdef intp num_features = x.shape[1]
+    cdef intp num_examples = sorted_indices.shape[0]
+    cdef intp num_covered
+
+    if condition_leq:
+        num_covered = condition_r
+    else:
+        num_covered = num_examples - condition_r
+
+    cdef intp[::1, :] filtered_sorted_indices = cvarray(shape=(num_covered, num_features), itemsize=sizeof(intp),
+                                                        format='l', mode='fortran')
+    cdef float32 feature_value
+    cdef intp c, r, i, index
+
+    for c in range(num_features):
+        i = 0
+
+        if c == condition_index:
+            # For the feature used by the new condition we know the indices of the covered examples...
+            if condition_leq:
+                offset = 0
+            else:
+                offset = condition_r
+
+            for r in range(offset, offset + num_covered):
+                index = sorted_indices[r, c]
+                filtered_sorted_indices[i, c] = index
+                i += 1
+        else:
+            # For the other features we need to filter out the indices that correspond to examples that do not satisfy
+            # the new condition...
+            for r in range(num_examples):
+                index = sorted_indices[r, c]
+                feature_value = x[index, condition_index]
+
+                if __test_condition(condition_threshold, condition_leq, feature_value):
+                    filtered_sorted_indices[i, c] = index
+                    i += 1
+
+                    if i >= num_covered:
+                        break
+
+    return filtered_sorted_indices
 
 
 cdef inline intp __get_feature_index(intp i, intp[::1] feature_indices):
@@ -171,3 +334,31 @@ cdef inline uint32 __get_weight(intp example_index, uint32[::1] weights):
         return 1
     else:
         return weights[example_index]
+
+
+cdef inline float32 __calculate_threshold(float32 previous_threshold, float32 current_threshold):
+    """
+    Calculates and returns the threshold to be used by a rule's condition, given the largest feature value of the
+    covered examples and the smallest feature value of the uncovered examples.
+
+    :param previous_threshold:  A scalar of dtype float, representing the largest feature value of the covered examples
+    :param current_threshold:   A scalar of dtype float, representing the smallest feature value of the uncovered
+                                examples
+    :return:                    A scalar of dtype float, representing the calculated threshold
+    """
+    return previous_threshold + ((current_threshold - previous_threshold) / 2)
+
+
+cdef inline bint __test_condition(float32 threshold, bint leq, float32 feature_value):
+    """
+    Returns whether a given feature value satisfies a certain condition.
+
+    :param threshold:       The threshold of the condition
+    :param leq:             1, if the condition uses the <= operator, 0, if it uses the > operator
+    :param feature_value:   The feature value
+    :return:                1, if the feature value satisfies the condition, 0 otherwise
+    """
+    if leq:
+        return feature_value <= threshold
+    else:
+        return feature_value > threshold
