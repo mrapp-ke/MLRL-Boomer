@@ -245,8 +245,8 @@ cdef Rule __build_rule(HeadCandidate head, map[intp, float32] leq_conditions, ma
 cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted_indices, intp condition_r,
                                           intp condition_index, bint condition_leq, float32 condition_threshold):
     """
-    Filters the matrix of example indices after a new condition has been added to a rule, such that the filtered matrix
-    does only contain the indices of examples that are covered by the new rule.
+    Filters the matrix of example indices after a new condition has been added to a previous rule, such that the
+    filtered matrix does only contain the indices of examples that are covered by the new rule.
 
     :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
