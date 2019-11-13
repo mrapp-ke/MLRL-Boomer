@@ -8,6 +8,7 @@ Provides classes for training and evaluating multi-label classifiers using eithe
 and test sets.
 """
 import logging as log
+import os.path as path
 from abc import abstractmethod
 
 from sklearn.model_selection import KFold
@@ -78,13 +79,28 @@ class CrossValidation(Randomized):
         log.info('Using separate training and test sets...')
 
         # Load training data
-        train_x, train_y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + '-train.arff',
+        train_arff_file_name = self.data_set + '-train.arff'
+        train_arff_file = path.join(self.data_dir, train_arff_file_name)
+        test_data_exists = True
+
+        if not path.isfile(train_arff_file):
+            train_arff_file_name = self.data_set + '.arff'
+            log.warning('File \'' + train_arff_file + '\' does not exist. Using \'' +
+                        path.join(self.data_dir, train_arff_file_name) + '\' instead!')
+            test_data_exists = False
+
+        train_x, train_y, meta_data = load_data_set_and_meta_data(self.data_dir, train_arff_file_name,
                                                                   self.data_set + '.xml')
         train_x, encoder = one_hot_encode(train_x, train_y, meta_data.nominal_attributes)
 
         # Load test data
-        test_x, test_y = load_data_set(self.data_dir, self.data_set + '-test.arff', meta_data)
-        test_x, _ = one_hot_encode(test_x, test_y, meta_data.nominal_attributes, encoder=encoder)
+        if test_data_exists:
+            test_x, test_y = load_data_set(self.data_dir, self.data_set + '-test.arff', meta_data)
+            test_x, _ = one_hot_encode(test_x, test_y, meta_data.nominal_attributes, encoder=encoder)
+        else:
+            log.warning('No test data set available. Model will be evaluated on the training data!')
+            test_x = train_x
+            test_y = train_y
 
         # Train and evaluate classifier
         self._train_and_evaluate(train_x, train_y, test_x, test_y, current_fold=0, total_folds=1)
