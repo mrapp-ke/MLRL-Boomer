@@ -61,7 +61,8 @@ class MetaData:
         self.nominal_attributes = nominal_attributes
 
 
-def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_name: str) -> (np.ndarray, np.ndarray, MetaData):
+def load_data_set_and_meta_data(data_dir: str, arff_file_name: str,
+                                xml_file_name: str) -> (np.ndarray, np.ndarray, MetaData):
     """
     Loads a multi-label data set from an ARFF file and the corresponding Mulan XML file..
 
