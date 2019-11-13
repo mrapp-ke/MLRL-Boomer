@@ -5,7 +5,8 @@ import logging as log
 
 from boomer.algorithm.boomer import Boomer
 from boomer.algorithm.persistence import ModelPersistence
-from boomer.evaluation import ClassificationEvaluation, LogOutput, CsvOutput
+from boomer.algorithm.prediction import LinearCombination
+from boomer.evaluation import SquaredErrorLossEvaluation, LogOutput, CsvOutput
 from boomer.experiments import Experiment
 
 
@@ -32,14 +33,14 @@ if __name__ == '__main__':
     log.info('Configuration: %s', args)
 
     experiment_name = args.dataset
-    learner = Boomer()
+    learner = Boomer(prediction=LinearCombination())
     learner.random_state = args.random_state
 
     if args.model_dir is not None:
         learner.persistence = ModelPersistence(model_dir=args.model_dir, model_name=args.dataset)
 
-    evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
-                                                                 output_predictions=args.store_predictions))
+    evaluation = SquaredErrorLossEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
+                                                                   output_predictions=args.store_predictions))
 
     experiment = Experiment(experiment_name, learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
                             folds=args.folds)
