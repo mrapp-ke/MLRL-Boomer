@@ -48,6 +48,9 @@ cdef class Loss:
 
     cdef float64[::1] calculate_quality_scores(self, bint covered)
 
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores)
+
 
 cdef class DecomposableLoss(Loss):
 
@@ -66,6 +69,9 @@ cdef class DecomposableLoss(Loss):
     cdef float64[::1] calculate_scores(self, bint covered)
 
     cdef float64[::1] calculate_quality_scores(self, bint covered)
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores)
 
 
 cdef class SquaredErrorLoss(DecomposableLoss):
@@ -103,3 +109,6 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     cdef float64[::1] calculate_scores(self, bint covered)
 
     cdef float64[::1] calculate_quality_scores(self, bint covered)
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores)
