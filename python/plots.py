@@ -12,7 +12,7 @@ from boomer.algorithm.model import Theory
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import LinearCombination
 from boomer.algorithm.stats import Stats
-from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS
+from boomer.evaluation import SquaredErrorLossEvaluation, SQUARED_ERROR_LOSS
 from boomer.experiments import CrossValidation
 
 
@@ -21,9 +21,9 @@ class Plotter(CrossValidation, MLClassifierBase):
     Plots the performance of a model at each iteration.
     """
 
-    MEASURES = [HAMMING_LOSS]
+    MEASURES = [SQUARED_ERROR_LOSS]
 
-    evaluation = ClassificationEvaluation()
+    evaluation = SquaredErrorLossEvaluation()
 
     prediction = LinearCombination()
 
