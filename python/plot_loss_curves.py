@@ -70,9 +70,11 @@ class Plotter(CrossValidation, MLClassifierBase):
         return theory
 
     def __plot(self, num_iterations: int):
-        log.info('Creating plot...')
+        log.info('Creating plots...')
 
         for measure in Plotter.MEASURES:
+            plt.title(measure)
+
             for prefix in ['train', 'test']:
                 x = []
                 y = []
@@ -87,7 +89,8 @@ class Plotter(CrossValidation, MLClassifierBase):
                 plt.plot(x, y, label=prefix)
 
             plt.legend()
-            output_file = path.join(self.output_dir, self.data_set + '.pdf')
+            output_file = path.join(self.output_dir, 'loss_curves_' + self.data_set + '_' + measure + '.pdf')
+            log.info('Saving plot to file \'' + output_file + '\'...')
             plt.savefig(output_file)
 
     def fit(self, x, y):
