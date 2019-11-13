@@ -111,9 +111,10 @@ if __name__ == '__main__':
     parser.add_argument('--output-dir', type=str, help='The path of the directory into which plots should be written')
     parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be saved')
     parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
+    parser.add_argument('--folds', type=int, default=1, help='Number of folds to be used by cross validation')
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
-                      data_set=args.dataset, folds=10)
+                      data_set=args.dataset, folds=args.folds)
     plotter.run()
