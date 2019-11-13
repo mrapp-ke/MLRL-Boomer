@@ -1,11 +1,18 @@
 # cython: boundscheck=False
 # cython: wraparound=False
+import numpy as np
 
 
 cdef class Body:
     """
     A base class for the body of a rule.
     """
+
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
 
     cdef bint covers(self, float32[:] example):
         """
@@ -22,6 +29,12 @@ cdef class EmptyBody(Body):
     An empty body that matches all examples.
     """
 
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
     cdef bint covers(self, float32[:] example):
         return 1
 
@@ -31,8 +44,8 @@ cdef class ConjunctiveBody(Body):
     A body that consists of a conjunction of numerical conditions using <= and > operators.
     """
 
-    def __cinit__(self, intp[::1] leq_feature_indices, float32[::1] leq_thresholds, intp[::1] gr_feature_indices,
-                  float32[::1] gr_thresholds):
+    def __cinit__(self, intp[::1] leq_feature_indices = None, float32[::1] leq_thresholds = None,
+                  intp[::1] gr_feature_indices = None, float32[::1] gr_thresholds = None):
         """
         :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the features of
                                     the conditions that use the <= operator
@@ -43,6 +56,19 @@ cdef class ConjunctiveBody(Body):
         :param gr_thresholds:       An array of dtype float, shape `(num_gr_conditions)`, representing the thresholds of
                                     the conditions that use the > operator
         """
+        self.leq_feature_indices = leq_feature_indices
+        self.leq_thresholds = leq_thresholds
+        self.gr_feature_indices = gr_feature_indices
+        self.gr_thresholds = gr_thresholds
+
+    def __getstate__(self):
+        return (np.asarray(self.leq_feature_indices),
+                np.asarray(self.leq_thresholds),
+                np.asarray(self.gr_feature_indices),
+                np.asarray(self.gr_thresholds))
+
+    def __setstate__(self, state):
+        leq_feature_indices, leq_thresholds, gr_feature_indices, gr_thresholds = state
         self.leq_feature_indices = leq_feature_indices
         self.leq_thresholds = leq_thresholds
         self.gr_feature_indices = gr_feature_indices
@@ -77,6 +103,12 @@ cdef class Head:
     A base class for the head of a rule.
     """
 
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
     cdef predict(self, float64[:] predictions):
         """
         Applies the head's prediction to a given vector of predictions.
@@ -91,11 +123,18 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    def __cinit__(self, float64[::1] scores):
+    def __cinit__(self, float64[::1] scores = None):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                         rule for each label
         """
+        self.scores = scores
+
+    def __getstate__(self):
+        return (np.asarray(self.scores))
+
+    def __setstate__(self, state):
+        scores = state
         self.scores = scores
 
     cdef predict(self, float64[:] predictions):
@@ -112,7 +151,7 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    def __cinit__(self, intp[::1] label_indices, float64[::1] scores):
+    def __cinit__(self, intp[::1] label_indices = None, float64[::1] scores = None):
         """
         :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
                                 labels for which the rule predicts
@@ -121,6 +160,14 @@ cdef class PartialHead(Head):
         """
         self.scores = scores
         self.label_indices = label_indices
+
+    def __getstate__(self):
+        return (np.asarray(self.label_indices), np.asarray(self.scores))
+
+    def __setstate__(self, state):
+        label_indices, scores = state
+        self.label_indices = label_indices
+        self.scores = scores
 
     cdef predict(self, float64[:] predictions):
         cdef intp[::1] label_indices = self.label_indices
@@ -138,11 +185,19 @@ cdef class Rule:
     A rule consisting of a body and head.
     """
 
-    def __cinit__(self, body: Body, head: Head):
+    def __cinit__(self, body: Body = None, head: Head = None):
         """
         :param body:    The body of the rule
         :param head:    The head of the rule
         """
+        self.body = body
+        self.head = head
+
+    def __getstate__(self):
+        return (self.body, self.head)
+
+    def __setstate__(self, state):
+        body, head = state
         self.body = body
         self.head = head
 
