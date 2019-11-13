@@ -33,6 +33,31 @@ class Prediction(Module):
         pass
 
 
+class Ranking(Prediction):
+    """
+    A base class for all subclasses of the class 'Prediction' that predict numerical scores.
+    """
+
+    @abstractmethod
+    def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
+        pass
+
+
+class LinearCombination(Ranking):
+    """
+    Predicts the linear combination of rules, i.e., the sum of the scores provided by all covering rules for each label.
+    """
+
+    def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
+        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
+        predictions = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64))
+
+        for rule in theory:
+            rule.predict(x, predictions)
+
+        return predictions
+
+
 class Bipartition(Prediction):
     """
     A base class for all subclasses of the class 'Prediction' that predict binary label vectors.
@@ -43,16 +68,18 @@ class Bipartition(Prediction):
         pass
 
 
-class LinearCombination(Bipartition):
+class Sign(Bipartition):
     """
-    Predicts the linear combination of rules, i.e., the sum of the scores provided by all covering rules for each label.
+    Turns numerical scores into a binary label vector according to the sign function, i.e., 1, if a score is greater
+    than zero, 1 otherwise.
     """
+
+    def __init__(self, ranking: Ranking):
+        """
+        :param ranking: The ranking whose prediction should be turned into a binary label vector
+        """
+        self.ranking = ranking
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
-        prediction = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64))
-
-        for rule in theory:
-            rule.predict(x, prediction)
-
-        return np.where(prediction > 0, 1, 0)
+        predictions = self.ranking.predict(stats, theory, x)
+        return np.where(predictions > 0, 1, 0)
