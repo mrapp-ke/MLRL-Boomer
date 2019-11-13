@@ -139,7 +139,7 @@ cdef class FullHead(Head):
 
     cdef predict(self, float64[:] predictions):
         cdef float64[::1] scores = self.scores
-        cdef intp num_cols = predictions.shape[1]
+        cdef intp num_cols = predictions.shape[0]
         cdef intp c
 
         for c in range(num_cols):
