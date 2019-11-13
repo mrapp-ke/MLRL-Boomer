@@ -1,6 +1,7 @@
 # distutils: language=c++
 # cython: boundscheck=False
 # cython: wraparound=False
+# cython: cdivision=False
 from cython.view cimport array as cvarray
 from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
 from boomer.algorithm._model cimport Rule, FullHead, EmptyBody, ConjunctiveBody, PartialHead
