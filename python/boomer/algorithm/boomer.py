@@ -13,7 +13,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm.model import Theory
 from boomer.algorithm.persistence import ModelPersistence
-from boomer.algorithm.prediction import Prediction, LinearCombination
+from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
 from boomer.algorithm.stats import Stats
 from boomer.learners import MLLearner
@@ -43,7 +43,7 @@ class Boomer(MLLearner):
     persistence: ModelPersistence = None
 
     def __init__(self, rule_induction: RuleInduction = GradientBoosting(),
-                 prediction: Prediction = LinearCombination()):
+                 prediction: Prediction = Sign(LinearCombination())):
         """
         :param rule_induction:  The module that is used to induce classification rules
         :param prediction:      The module that is used to make a prediction
