@@ -125,7 +125,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                 weight = __get_weight(i, weights)
 
                 if weight > 0:
-                    # Mark the example as covered by potential conditions...
+                    # Tell the loss function that the example will be covered by upcoming conditions...
                     loss.update_search(i, weight)
                     previous_threshold = x[i, f]
                     break
@@ -160,7 +160,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                             best_condition_index = f
                             best_condition_threshold = __calculate_threshold(previous_threshold, current_threshold)
 
-                    # Mark the examples as covered by potential conditions...
+                    # Tell the loss function that the example will be covered by upcoming conditions...
                     loss.update_search(i, weight)
                     previous_threshold = current_threshold
 
@@ -186,7 +186,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                                          best_condition_leq, best_condition_threshold)
                 num_examples = sorted_indices.shape[0]
 
-                # TODO Update gradients/hessians of the loss function based on the new rule
+                # Tell the loss function that a new rule has been induced...
+                loss.apply_predictions(sorted_indices[:, 0], label_indices, head.predicted_scores)
 
                 # Alter seed to be used by RNGs for the next refinement...
                 num_refinements += 1
