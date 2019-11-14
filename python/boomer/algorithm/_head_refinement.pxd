@@ -17,13 +17,13 @@ cdef class HeadRefinement:
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, float64[::1, :] scores,
-                                 float64[::1, :] quality_scores, Loss loss, intp row_index)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, Loss loss,
+                                 float64[::1, :] predicted_and_quality_scores, intp row_index)
 
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, float64[::1, :] scores,
-                                 float64[::1, :] quality_scores, Loss loss, intp row_index)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, Loss loss,
+                                 float64[::1, :] predicted_and_quality_scores, intp row_index)

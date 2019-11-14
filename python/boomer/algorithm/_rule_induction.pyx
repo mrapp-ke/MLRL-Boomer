@@ -92,7 +92,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     # Temporary variables
     cdef HeadCandidate current_head
     cdef float32 previous_threshold, current_threshold
-    cdef float64[::1, :] scores, quality_scores
+    cdef float64[::1, :] predicted_and_quality_scores
     cdef uint32 weight
     cdef intp c, f, r, i, offset
 
@@ -141,12 +141,12 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
 
                     # Split points between examples with the same feature value must not be considered...
                     if previous_threshold != current_threshold:
-                        # TODO: Merge the following function calls into one
-                        scores = loss.calculate_scores()
-                        quality_scores = loss.calculate_quality_scores()
+                        # Calculate optimal scores to be predicted by the current refinement, as well as the
+                        # corresponding quality scores
+                        predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores()
 
                         # Evaluate potential condition using <= operator...
-                        current_head = head_refinement.find_head(head, best_head, scores, quality_scores, loss, 0)
+                        current_head = head_refinement.find_head(head, best_head, loss, predicted_and_quality_scores, 0)
 
                         if current_head is not None:
                             best_head = current_head
@@ -156,7 +156,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                             best_condition_threshold = __calculate_threshold(previous_threshold, current_threshold)
 
                         # Evaluate potential condition using > operator...
-                        current_head = head_refinement.find_head(head, best_head, scores, quality_scores, loss, 1)
+                        current_head = head_refinement.find_head(head, best_head, loss, predicted_and_quality_scores, 2)
 
                         if current_head is not None:
                             best_head = current_head
