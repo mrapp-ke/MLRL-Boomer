@@ -318,8 +318,10 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef float64[::1] scores = self.scores
         cdef float64[::1] quality_scores = self.quality_scores
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64 sum_of_hessians = self.sum_of_hessians
         cdef intp num_labels = sums_of_gradients.shape[0]
         cdef float64[::1] total_sums_of_gradients
+        cdef float64 total_sum_of_hessians
         cdef intp[::1] label_indices
         cdef float64 score
         cdef intp c, l
@@ -327,15 +329,17 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         if covered:
             for c in range(num_labels):
                 score = scores[c]
-                quality_scores[c] = (sums_of_gradients[c] * score) + pow(score, 2)
+                quality_scores[c] = (sums_of_gradients[c] * score) + ((score / 2) * sum_of_hessians * score)
         else:
+            total_sum_of_hessians = self.total_sum_of_hessians
+            sum_of_hessians = total_sum_of_hessians - sum_of_hessians
             total_sums_of_gradients = self.total_sums_of_gradients
             label_indices = self.label_indices
 
             for c in range(num_labels):
                 l = __get_label_index(c, label_indices)
                 score = scores[c]
-                quality_scores[c] = ((total_sums_of_gradients[l] - sums_of_gradients[c]) * score) + pow(score, 2)
+                quality_scores[c] = ((total_sums_of_gradients[l] - sums_of_gradients[c]) * score) + ((score / 2) * sum_of_hessians * score)
 
         return quality_scores
 
