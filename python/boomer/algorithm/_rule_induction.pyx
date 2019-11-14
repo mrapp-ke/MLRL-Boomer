@@ -119,9 +119,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             loss.begin_search(label_indices)
 
             # Find first example with weight > 0...
-            weight = 0
-
-            for r in range(0, num_examples - 1):
+            for r in range(0, num_examples):
                 i = sorted_indices[r, f]
                 weight = __get_weight(i, weights)
 
