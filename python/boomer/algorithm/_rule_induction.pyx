@@ -94,7 +94,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     cdef float32 previous_threshold, current_threshold
     cdef float64[::1, :] scores, quality_scores
     cdef uint32 weight
-    cdef intp c, f, r, i
+    cdef intp c, f, r, i, offset
 
     # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
     while True:
@@ -132,7 +132,9 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                     break
 
             # Traverse remaining instances...
-            for r in range(r + 1, num_examples):
+            offset = r + 1
+
+            for r in range(offset, num_examples):
                 i = sorted_indices[r, f]
                 weight = __get_weight(i, weights)
 
