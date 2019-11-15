@@ -7,6 +7,7 @@ Provides a scikit-multilearn implementation of "BOOMER" -- an algorithm for lear
 classification rules. The classifier is composed of several modules, e.g., for rule induction and prediction.
 """
 import logging as log
+from timeit import default_timer as timer
 
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
@@ -119,9 +120,12 @@ class Boomer(MLLearner):
 
         if step == Boomer.STEP_INITIALIZATION:
             log.info('Inducing classification rules...')
+            start_time = timer()
             model = self.__induce_rules(x, y)
+            end_time = timer()
+            run_time = end_time - start_time
             num_candidates = len(model)
-            log.info('%s classification rules induced in total', num_candidates)
+            log.info('%s classification rules induced in %s seconds', num_candidates, run_time)
 
         self.theory = model
         return self
