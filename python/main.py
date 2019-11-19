@@ -8,9 +8,9 @@ from boomer.algorithm._sub_sampling import Bagging, RandomFeatureSubsetSelection
 
 from boomer.algorithm.boomer import Boomer
 from boomer.algorithm.persistence import ModelPersistence
-from boomer.algorithm.prediction import LinearCombination
+from boomer.algorithm.prediction import Sign, LinearCombination
 from boomer.algorithm.rule_induction import GradientBoosting
-from boomer.evaluation import SquaredErrorLossEvaluation, LogOutput, CsvOutput
+from boomer.evaluation import ClassificationEvaluation, LogOutput, CsvOutput
 from boomer.experiments import Experiment
 
 
@@ -56,14 +56,14 @@ if __name__ == '__main__':
     rule_induction = GradientBoosting(num_rules=args.num_rules, loss=args.loss,
                                       instance_sub_sampling=instance_sub_sampling,
                                       feature_sub_sampling=feature_sub_sampling)
-    learner = Boomer(prediction=LinearCombination())
+    learner = Boomer(rule_induction=rule_induction, prediction=Sign(LinearCombination()))
     learner.random_state = args.random_state
 
     if args.model_dir is not None:
         learner.persistence = ModelPersistence(model_dir=args.model_dir, model_name=args.dataset)
 
-    evaluation = SquaredErrorLossEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
-                                                                   output_predictions=args.store_predictions))
+    evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
+                                                                 output_predictions=args.store_predictions))
 
     experiment = Experiment(experiment_name, learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
                             folds=args.folds)
