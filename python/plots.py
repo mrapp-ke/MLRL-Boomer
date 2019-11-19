@@ -5,6 +5,7 @@ import logging as log
 import os.path as path
 
 import matplotlib.pyplot as plt
+from boomer.algorithm._losses import Loss
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.boomer import Boomer
@@ -14,6 +15,7 @@ from boomer.algorithm.prediction import Sign, LinearCombination
 from boomer.algorithm.stats import Stats
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS
 from boomer.experiments import CrossValidation
+from main import boolean_string, loss_string
 
 
 class Plotter(CrossValidation, MLClassifierBase):
@@ -27,8 +29,13 @@ class Plotter(CrossValidation, MLClassifierBase):
 
     prediction = Sign(LinearCombination())
 
-    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, folds: int = 1):
+    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, folds: int, bagging: bool,
+                 feature_sampling: bool, loss: Loss, num_rules: int):
         super().__init__(data_dir, data_set, folds)
+        self.bagging = bagging
+        self.feature_sampling = feature_sampling
+        self.loss = loss
+        self.num_rules = num_rules
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
         self.persistence = ModelPersistence(model_dir=model_dir, model_name=data_set)
@@ -89,7 +96,9 @@ class Plotter(CrossValidation, MLClassifierBase):
                 plt.plot(x, y, label=prefix)
 
             plt.legend()
-            output_file = path.join(self.output_dir, 'loss_curves_' + self.data_set + '_' + measure + '.pdf')
+            output_file = path.join(self.output_dir, 'loss_curves_' + self.data_set + '_num-rules=' + str(
+                self.num_rules) + '_bagging=' + str(self.bagging) + '_feature-sampling=' + str(
+                self.feature_sampling) + '_loss=' + type(self.loss).__name__ + '.pdf')
             log.info('Saving plot to file \'' + output_file + '\'...')
             plt.savefig(output_file)
 
@@ -115,9 +124,17 @@ if __name__ == '__main__':
     parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be saved')
     parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
     parser.add_argument('--folds', type=int, default=1, help='Number of folds to be used by cross validation')
+    parser.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced')
+    parser.add_argument('--bagging', type=boolean_string, default=False,
+                        help='True, if bagging should be used, False otherwise')
+    parser.add_argument('--feature-sampling', type=boolean_string, default=False,
+                        help='True, if random feature subset selection should be used, False otherwise')
+    parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
+                        help='The name of the loss function to be used')
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
-                      data_set=args.dataset, folds=args.folds)
+                      data_set=args.dataset, folds=args.folds, bagging=args.bagging,
+                      feature_sampling=args.feature_sampling, loss=args.loss, num_rules=args.num_rules)
     plotter.run()
