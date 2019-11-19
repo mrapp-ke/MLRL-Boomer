@@ -3,9 +3,13 @@
 import argparse
 import logging as log
 
+from boomer.algorithm._losses import SquaredErrorLoss
+from boomer.algorithm._sub_sampling import Bagging, RandomFeatureSubsetSelection
+
 from boomer.algorithm.boomer import Boomer
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import LinearCombination
+from boomer.algorithm.rule_induction import GradientBoosting
 from boomer.evaluation import SquaredErrorLossEvaluation, LogOutput, CsvOutput
 from boomer.experiments import Experiment
 
@@ -14,6 +18,12 @@ def boolean_string(s):
     if s not in {'False', 'True'}:
         raise ValueError('Not a valid boolean string')
     return s == 'True'
+
+
+def loss_string(s):
+    if s == 'squared-error-loss':
+        return SquaredErrorLoss()
+    raise ValueError('Not a valid Loss string')
 
 
 if __name__ == '__main__':
@@ -29,10 +39,23 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
+    parser.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced')
+    parser.add_argument('--bagging', type=boolean_string, default=False,
+                        help='True, if bagging should be used, False otherwise')
+    parser.add_argument('--feature-sampling', type=boolean_string, default=False,
+                        help='True, if random feature subset selection should be used, False otherwise')
+    parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
+                        help='The name of the loss function to be used')
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
     experiment_name = args.dataset
+
+    instance_sub_sampling = Bagging() if args.bagging else None
+    feature_sub_sampling = RandomFeatureSubsetSelection() if args.feature_sampling else None
+    rule_induction = GradientBoosting(num_rules=args.num_rules, loss=args.loss,
+                                      instance_sub_sampling=instance_sub_sampling,
+                                      feature_sub_sampling=feature_sub_sampling)
     learner = Boomer(prediction=LinearCombination())
     learner.random_state = args.random_state
 
