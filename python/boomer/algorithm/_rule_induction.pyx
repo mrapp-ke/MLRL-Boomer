@@ -10,6 +10,7 @@ from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 
 from libcpp.unordered_map cimport unordered_map as map
+from libcpp.unordered_set cimport unordered_set as set
 from cython.operator cimport dereference, postincrement
 
 import numpy as np
@@ -279,31 +280,33 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
 
     cdef intp[::1, :] filtered_sorted_indices = cvarray(shape=(num_covered, num_features), itemsize=sizeof(intp),
                                                         format='l', mode='fortran')
-    cdef float32 feature_value
-    cdef intp c, r, i, index
+    cdef intp c, r, i, index, offset
+    cdef set[intp] indices
 
+    # For the feature used by the new condition we know the indices of the covered examples...
+    i = 0
+
+    if condition_leq:
+        offset = 0
+    else:
+        offset = condition_r
+
+    for r in range(offset, offset + num_covered):
+        index = sorted_indices[r, condition_index]
+        filtered_sorted_indices[i, condition_index] = index
+        indices.insert(index)
+        i += 1
+
+    # For the other features we need to filter out the indices that correspond to examples that do not satisfy the new
+    # condition...
     for c in range(num_features):
-        i = 0
+        if c != condition_index:
+            i = 0
 
-        if c == condition_index:
-            # For the feature used by the new condition we know the indices of the covered examples...
-            if condition_leq:
-                offset = 0
-            else:
-                offset = condition_r
-
-            for r in range(offset, offset + num_covered):
-                index = sorted_indices[r, c]
-                filtered_sorted_indices[i, c] = index
-                i += 1
-        else:
-            # For the other features we need to filter out the indices that correspond to examples that do not satisfy
-            # the new condition...
             for r in range(num_examples):
                 index = sorted_indices[r, c]
-                feature_value = x[index, condition_index]
 
-                if __test_condition(condition_threshold, condition_leq, feature_value):
+                if indices.find(index) != indices.end():
                     filtered_sorted_indices[i, c] = index
                     i += 1
 
