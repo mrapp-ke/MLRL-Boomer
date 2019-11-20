@@ -10,6 +10,7 @@ and test sets.
 import logging as log
 import os.path as path
 from abc import abstractmethod
+from timeit import default_timer as timer
 
 from sklearn.model_selection import KFold
 
@@ -36,10 +37,16 @@ class CrossValidation(Randomized):
         self.folds = folds
 
     def run(self):
+        start_time = timer()
+
         if self.folds > 1:
             self.__cross_validate()
         else:
             self.__train_test_split()
+
+        end_time = timer()
+        run_time = end_time - start_time
+        log.info('Successfully finished after %s seconds', run_time)
 
     def __cross_validate(self):
         """
