@@ -190,7 +190,6 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                 label_indices = head.label_indices
                 sorted_indices = __filter_sorted_indices(x, sorted_indices, best_condition_r, best_condition_index,
                                                          best_condition_leq, best_condition_threshold)
-                num_examples = sorted_indices.shape[0]
 
                 # Tell the loss function that a new rule has been induced...
                 loss.apply_predictions(sorted_indices[:, 0], label_indices, head.predicted_scores)
