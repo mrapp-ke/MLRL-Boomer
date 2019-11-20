@@ -53,14 +53,13 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     :param random_state:            The seed to be used by RNGs
     :return:                        The rule that has been induced
     """
-    cdef int current_random_state = random_state
+    # Sub-sample examples, if necessary...
     cdef uint32[::1] weights
 
-    # Sub-sample examples, if necessary...
     if instance_sub_sampling is None:
         weights = None
     else:
-        weights = instance_sub_sampling.sub_sample(x, loss, current_random_state)
+        weights = instance_sub_sampling.sub_sample(x, loss, random_state)
 
     # The head of the induced rule
     cdef HeadCandidate head = None
@@ -71,7 +70,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     # as values
     cdef map[intp, float32] gr_conditions
 
-    # The current refinement iteration (starting at 1)
+    # Variables used to update the seed used by RNGs, depending on the refinement iteration (starting at 1)
+    cdef int current_random_state = random_state
     cdef int num_refinements = 1
 
     # Variables for representing the best refinement
@@ -196,7 +196,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
 
                 # Alter seed to be used by RNGs for the next refinement...
                 num_refinements += 1
-                current_random_state *= num_refinements
+                current_random_state = random_state * num_refinements
 
     # Build and return the induced rule...
     return __build_rule(head, leq_conditions, gr_conditions)
