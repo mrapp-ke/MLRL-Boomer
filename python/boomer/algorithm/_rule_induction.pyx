@@ -357,18 +357,3 @@ cdef inline float32 __calculate_threshold(float32 previous_threshold, float32 cu
     :return:                    A scalar of dtype float, representing the calculated threshold
     """
     return previous_threshold + ((current_threshold - previous_threshold) / 2)
-
-
-cdef inline bint __test_condition(float32 threshold, bint leq, float32 feature_value):
-    """
-    Returns whether a given feature value satisfies a certain condition.
-
-    :param threshold:       The threshold of the condition
-    :param leq:             1, if the condition uses the <= operator, 0, if it uses the > operator
-    :param feature_value:   The feature value
-    :return:                1, if the feature value satisfies the condition, 0 otherwise
-    """
-    if leq:
-        return feature_value <= threshold
-    else:
-        return feature_value > threshold
