@@ -46,6 +46,7 @@ if __name__ == '__main__':
                         help='True, if random feature subset selection should be used, False otherwise')
     parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
                         help='The name of the loss function to be used')
+    parser.add_argument('--shrinkage', type=float, default=1, help='The shrinkage parameter to be used')
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     feature_sub_sampling = RandomFeatureSubsetSelection() if args.feature_sampling else None
     rule_induction = GradientBoosting(num_rules=args.num_rules, loss=args.loss,
                                       instance_sub_sampling=instance_sub_sampling,
-                                      feature_sub_sampling=feature_sub_sampling)
+                                      feature_sub_sampling=feature_sub_sampling, shrinkage=args.shrinkage)
     learner = Boomer(rule_induction=rule_induction, prediction=Sign(LinearCombination()))
     learner.random_state = args.random_state
 
