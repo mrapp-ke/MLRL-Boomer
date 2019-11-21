@@ -46,7 +46,8 @@ class GradientBoosting(RuleInduction):
 
     def __init__(self, num_rules: int = 100,
                  head_refinement: HeadRefinement = SingleLabelHeadRefinement(), loss: Loss = SquaredErrorLoss(),
-                 instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None):
+                 instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None,
+                 shrinkage: float = 1):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param head_refinement:         The strategy that is used to find the heads of rules
@@ -55,12 +56,15 @@ class GradientBoosting(RuleInduction):
                                         classification rule is learned
         :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
                                         classification rule is refined
+        :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
+                                        induced rules to reduce their effect on the entire model. Must be in (0, 1]
         """
         self.num_rules = num_rules
         self.head_refinement = head_refinement
         self.loss = loss
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
+        self.shrinkage = shrinkage
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         self.__validate()
@@ -70,6 +74,7 @@ class GradientBoosting(RuleInduction):
         loss = self.loss
         instance_sub_sampling = self.instance_sub_sampling
         feature_sub_sampling = self.feature_sub_sampling
+        shrinkage = self.shrinkage
 
         # Convert feature and label matrices into Fortran-contiguous arrays
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
@@ -90,7 +95,7 @@ class GradientBoosting(RuleInduction):
 
             # Induce a new rule
             rule = induce_rule(x, x_sorted_indices, head_refinement, loss, instance_sub_sampling, feature_sub_sampling,
-                               random_state)
+                               shrinkage, random_state)
 
             # Add new rule to theory
             theory.append(rule)
@@ -109,3 +114,7 @@ class GradientBoosting(RuleInduction):
             raise ValueError('Parameter \'num_rules\' must be at least 1, got {0}'.format(self.num_rules))
         if self.head_refinement is None:
             raise ValueError('Parameter \'head_refinement\' may not be None')
+        if self.shrinkage <= 0:
+            raise ValueError('Parameter \'shrinkage\' must be greater than 0, got {0}'.format(self.shrinkage))
+        if self.shrinkage > 1:
+            raise ValueError('Parameter \'shrinkage\' must be at maximum 1, got {0}'.format(self.shrinkage))
