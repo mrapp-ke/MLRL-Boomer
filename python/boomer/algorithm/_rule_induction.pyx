@@ -329,7 +329,7 @@ cdef __apply_shrinkage(HeadCandidate head, float64 shrinkage):
     :param head:        The head, the shrinkage parameter should be applied to
     :param shrinkage:   The shrinkage parameter. Must be in (0, 1]
     """
-    cdef float64[::1] scores = head.scores
+    cdef float64[::1] scores = head.predicted_scores
     cdef intp num_labels = scores.shape[0]
     cdef intp c
 
