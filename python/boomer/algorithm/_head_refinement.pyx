@@ -86,7 +86,6 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
                 candidate = HeadCandidate(label_indices, predicted_scores, best_quality_score)
                 return candidate
         elif (best_candidate is not None and best_quality_score < best_candidate.quality_score) or best_quality_score < best_head.quality_score:
-            best_c = best_head.label_indices[0]
             best_head.predicted_scores[0] = predicted_and_quality_scores[row_index, best_c]
             best_head.quality_score = best_quality_score
             return best_head
