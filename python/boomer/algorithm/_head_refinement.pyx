@@ -51,6 +51,45 @@ cdef class HeadRefinement:
         pass
 
 
+cdef class FullHeadRefinement(HeadRefinement):
+    """
+    Allows to find multi-label heads that predict for all labels.
+    """
+
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
+                                 float64[::1, :] predicted_and_quality_scores, intp row_index):
+        cdef intp quality_score_index = row_index + 1
+        cdef float64 quality_score = 0
+        cdef intp num_labels = predicted_and_quality_scores.shape[1]
+        cdef intp[::1] label_indices
+        cdef float64[::1] predicted_scores
+        cdef HeadCandidate candidate
+        cdef intp c
+
+        for c in range(num_labels):
+            quality_score += predicted_and_quality_scores[quality_score_index, c]
+
+        if best_head is None:
+            if best_candidate is None or quality_score < best_candidate.quality_score:
+                label_indices = cvarray(shape=(num_labels,), itemsize=sizeof(intp), format='l', mode='c')
+                predicted_scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+
+                for c in range(num_labels):
+                    label_indices[c] = c
+                    predicted_scores[c] = predicted_and_quality_scores[row_index, c]
+
+                candidate = HeadCandidate(label_indices, predicted_scores, quality_score)
+                return candidate
+        elif (best_candidate is not None and quality_score < best_candidate.quality_score) or quality_score < best_head.quality_score:
+            for c in range(num_labels):
+                best_head.predicted_scores[c] = predicted_and_quality_scores[row_index, c]
+
+            best_head.quality_score = quality_score
+            return best_head
+
+        return None
+
+
 cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
     Allows to find single-label heads that evaluate to the best quality scores.
