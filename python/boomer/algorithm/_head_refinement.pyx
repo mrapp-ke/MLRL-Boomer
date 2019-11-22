@@ -24,11 +24,11 @@ cdef class HeadCandidate:
 
 cdef class HeadRefinement:
     """
-    A base class for all classes that allow to find optimal heads that minimize a certain loss functions for a given
-    region of the instance space covered by a rule.
+    A base class for all classes that allow to find single- or multi-label heads that evaluate to the best quality
+    scores.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, Loss loss,
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index):
         """
         Finds and returns the head of a rule that minimizes a loss function with respect to the current gradient
@@ -39,7 +39,6 @@ cdef class HeadRefinement:
         :param best_candidate:                  The head of the best refinement candidate or None, if no refinement
                                                 candidates are available yet. The new head must be better than the best
                                                 refinement candidate
-        :param loss:                            The loss function to be minimized
         :param predicted_and_quality_scores:    An array of dtype float, shape `(num_rules * 2, num_labels)`, where the
                                                 i-th row (starting at 0) represents the optimal scores to be predicted
                                                 by a rule for the individual labels and the i+1-th row represents the
@@ -54,10 +53,10 @@ cdef class HeadRefinement:
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
-    Allows to find single-label heads that minimize a certain loss function.
+    Allows to find single-label heads that evaluate to the best quality scores.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, Loss loss,
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index):
         cdef intp best_c = 0
         cdef intp quality_score_index = row_index + 1
