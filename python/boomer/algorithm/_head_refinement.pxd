@@ -1,5 +1,4 @@
 from boomer.algorithm._model cimport intp, float64
-from boomer.algorithm._losses cimport Loss
 
 
 cdef class HeadCandidate:
@@ -17,7 +16,7 @@ cdef class HeadRefinement:
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, Loss loss,
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index)
 
 
@@ -25,5 +24,5 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate, Loss loss,
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index)

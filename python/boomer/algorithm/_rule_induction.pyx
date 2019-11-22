@@ -150,7 +150,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                         predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores()
 
                         # Evaluate potential condition using <= operator...
-                        current_head = head_refinement.find_head(head, best_head, loss, predicted_and_quality_scores, 0)
+                        current_head = head_refinement.find_head(head, best_head, predicted_and_quality_scores, 0)
 
                         if current_head is not None:
                             best_head = current_head
@@ -160,7 +160,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                             best_condition_threshold = __calculate_threshold(previous_threshold, current_threshold)
 
                         # Evaluate potential condition using > operator...
-                        current_head = head_refinement.find_head(head, best_head, loss, predicted_and_quality_scores, 2)
+                        current_head = head_refinement.find_head(head, best_head, predicted_and_quality_scores, 2)
 
                         if current_head is not None:
                             best_head = current_head
