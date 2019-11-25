@@ -112,10 +112,11 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
             num_features = feature_indices.shape[0]
 
-        # Search for the best condition among all available features to be added to the current rule...
+        # Search for the best condition among all available features to be added to the current rule. For each feature,
+        # the examples are traversed in increasing order of their respective feature values and the loss function is
+        # updated accordingly. For each potential condition, a quality score is calculated to keep track of the best
+        # possible refinement.
         for c in range(num_features):
-            # For each feature, the examples are traversed in increasing order of their respective feature values and
-            # the loss function is updated accordingly.
             f = __get_feature_index(c, feature_indices)
 
             # Reset the loss function when processing a new feature...
@@ -127,7 +128,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                 weight = __get_weight(i, weights)
 
                 if weight > 0:
-                    # Tell the loss function that the example will be covered by upcoming conditions...
+                    # Tell the loss function that the example will be covered by upcoming refinements...
                     loss.update_search(i, weight)
                     previous_threshold = x[i, f]
                     break
@@ -152,6 +153,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                         # Evaluate potential condition using <= operator...
                         current_head = head_refinement.find_head(head, best_head, predicted_and_quality_scores, 0)
 
+                        # If refinement is better than the current rule...
                         if current_head is not None:
                             best_head = current_head
                             best_condition_leq = 1
@@ -162,6 +164,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                         # Evaluate potential condition using > operator...
                         current_head = head_refinement.find_head(head, best_head, predicted_and_quality_scores, 2)
 
+                        # If refinement is better than the current rule...
                         if current_head is not None:
                             best_head = current_head
                             best_condition_leq = 0
@@ -174,9 +177,10 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                     previous_threshold = current_threshold
 
         if best_head is None:
+            # If no refinement results in an improvement...
             break
         else:
-            # Apply refinement to the current rule...
+            # If a refinement has been found, replace the head of the current rule and add the new condition...
             head = best_head
 
             if best_condition_leq:
