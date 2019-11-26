@@ -245,7 +245,7 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
     :param position_start:      The position that separates the covered from the uncovered examples (when only taking
                                 into account the examples that are contained in the sample). This is the position to
                                 start at
-    :param position_end:        The position to stop at (must be smaller than `position_start`)
+    :param position_end:        The position to stop at (exclusive, must be smaller than `position_start`)
     :param feature_index:       The index of the feature used by the condition
     :param leq:                 1, if the condition uses the <= operator, 0 if it uses the > operator
     :param threshold:           The threshold of the condition
@@ -257,7 +257,7 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
     cdef intp r, i
 
     # Go back until the latest example that is contained in the sample...
-    for r in range(position_start, position_end, -1):
+    for r in range(position_start - 1, position_end, -1):
         i = sorted_indices[r, feature_index]
         feature_value = x[i, feature_index]
 
