@@ -16,8 +16,6 @@ from typing import List, Dict, Set
 import numpy as np
 import sklearn.metrics as metrics
 
-import boomer.losses as losses
-
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
 
@@ -414,16 +412,3 @@ class RankingEvaluation(AbstractEvaluation):
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int,
                          total_folds: int):
         result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, total_folds)
-
-
-class SquaredErrorLossEvaluation(AbstractEvaluation):
-    """
-    Evaluates the predictions of a ranker according to the squared error loss.
-    """
-
-    def __init__(self, *args: Output):
-        super().__init__(*args)
-
-    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int,
-                         total_folds: int):
-        result.put(SQUARED_ERROR_LOSS, losses.squared_error_loss(ground_truth, predictions), current_fold, total_folds)
