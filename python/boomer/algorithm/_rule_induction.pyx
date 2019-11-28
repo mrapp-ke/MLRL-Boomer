@@ -207,26 +207,25 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             else:
                 gr_conditions[best_condition_index] = best_condition_threshold
 
-            if num_examples <= 1:
-                # Abort refinement process if rule covers a single instance...
-                break
-            else:
-                # Otherwise, prepare next refinement iteration by updating the examples and labels that should be used
-                # for finding the next refinement...
-                label_indices = head.label_indices
-                sorted_indices = __filter_sorted_indices(x, sorted_indices, best_condition_r, best_condition_index,
-                                                         best_condition_leq, best_condition_threshold)
+            # Update the examples and labels for which the rule predicts...
+            label_indices = head.label_indices
+            sorted_indices = __filter_sorted_indices(x, sorted_indices, best_condition_r, best_condition_index,
+                                                     best_condition_leq, best_condition_threshold)
 
-                # Apply shrinkage, if necessary...
-                if shrinkage < 1:
-                    __apply_shrinkage(head, shrinkage)
-
-                # Tell the loss function that a new rule has been induced...
-                loss.apply_predictions(sorted_indices[:, 0], label_indices, head.predicted_scores)
-
+            if num_examples > 1:
                 # Alter seed to be used by RNGs for the next refinement...
                 num_refinements += 1
                 current_random_state = random_state * num_refinements
+            else:
+                # Abort refinement process if rule covers a single instance...
+                break
+
+    # Apply shrinkage, if necessary...
+    if shrinkage < 1:
+        __apply_shrinkage(head, shrinkage)
+
+    # Tell the loss function that a new rule has been induced...
+    loss.apply_predictions(sorted_indices[:, 0], label_indices, head.predicted_scores)
 
     # Build and return the induced rule...
     return __build_rule(head, leq_conditions, gr_conditions)
