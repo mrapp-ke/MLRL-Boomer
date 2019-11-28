@@ -46,9 +46,6 @@ MACRO_F1 = 'Ma. F1'
 # The name of the rank loss metric
 RANK_LOSS = 'Rank Loss'
 
-# The name of the squared error loss metric
-SQUARED_ERROR_LOSS = 'Squared Error Loss'
-
 
 class Evaluation(ABC):
     """
