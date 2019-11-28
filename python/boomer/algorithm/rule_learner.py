@@ -10,6 +10,9 @@ import logging as log
 from timeit import default_timer as timer
 
 import numpy as np
+from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.algorithm._losses import Loss, DecomposableLoss, SquaredErrorLoss
+from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
 from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm.model import Theory
@@ -20,10 +23,9 @@ from boomer.algorithm.stats import Stats
 from boomer.learners import MLLearner
 
 
-class Boomer(MLLearner):
+class RuleLearner(MLLearner):
     """
-    A scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
-    classification rules.
+    A scikit-multilearn implementation of a rule learner algorithm for multi-label classification or ranking.
 
     Attributes
         stats           Statistics about the training data set
@@ -43,8 +45,7 @@ class Boomer(MLLearner):
 
     persistence: ModelPersistence = None
 
-    def __init__(self, rule_induction: RuleInduction = GradientBoosting(),
-                 prediction: Prediction = Sign(LinearCombination())):
+    def __init__(self, rule_induction: RuleInduction, prediction: Prediction):
         """
         :param rule_induction:  The module that is used to induce classification rules
         :param prediction:      The module that is used to make a prediction
@@ -71,17 +72,17 @@ class Boomer(MLLearner):
 
         :return: The loaded model, as well as the next step to proceed with
         """
-        step = Boomer.STEP_RULE_INDUCTION
+        step = RuleLearner.STEP_RULE_INDUCTION
         model = self.__load_rules()
 
         if model is None:
-            step = Boomer.STEP_INITIALIZATION
+            step = RuleLearner.STEP_INITIALIZATION
 
         return model, step
 
     def __load_rules(self):
         if self.persistence is not None:
-            return self.persistence.load_model(file_name_suffix=Boomer.PREFIX_RULES, fold=self.fold)
+            return self.persistence.load_model(file_name_suffix=RuleLearner.PREFIX_RULES, fold=self.fold)
         else:
             return None
 
@@ -103,7 +104,7 @@ class Boomer(MLLearner):
 
     def __save_rules(self, model: Theory):
         if self.persistence is not None:
-            self.persistence.save_model(model, Boomer.PREFIX_RULES, fold=self.fold)
+            self.persistence.save_model(model, RuleLearner.PREFIX_RULES, fold=self.fold)
 
     def fit(self, x, y):
         self.__validate()
@@ -118,7 +119,7 @@ class Boomer(MLLearner):
         # Load model from disk, if possible
         model, step = self.__load_model()
 
-        if step == Boomer.STEP_INITIALIZATION:
+        if step == RuleLearner.STEP_INITIALIZATION:
             log.info('Inducing classification rules...')
             start_time = timer()
             model = self.__induce_rules(x, y)
@@ -140,3 +141,37 @@ class Boomer(MLLearner):
         self.prediction.random_state = self.random_state
         prediction = self.prediction.predict(self.stats, self.theory, x)
         return prediction
+
+
+class Boomer(RuleLearner):
+    """
+    A scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
+    classification rules.
+    """
+
+    def __init__(self, num_rules: int = 100, head_refinement: HeadRefinement = None,
+                 loss: Loss = SquaredErrorLoss(), instance_sub_sampling: InstanceSubSampling = None,
+                 feature_sub_sampling: FeatureSubSampling = None, shrinkage: float = 1):
+        """
+        :param num_rules:               The number of rules to be induced (including the default rule)
+        :param head_refinement:         The strategy that is used to find the heads of rules or None, if the default
+                                        strategy should be used
+        :param loss:                    The loss function to be minimized
+        :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
+                                        classification rule is learned
+        :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
+                                        classification rule is refined
+        :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
+                                        induced rules to reduce their effect on the entire model. Must be in (0, 1]
+        """
+
+        super().__init__(rule_induction=GradientBoosting(num_rules=num_rules,
+                                                         head_refinement=
+                                                         (FullHeadRefinement() if isinstance(loss, DecomposableLoss)
+                                                          else SingleLabelHeadRefinement()) if head_refinement is None
+                                                         else head_refinement,
+                                                         loss=loss,
+                                                         instance_sub_sampling=instance_sub_sampling,
+                                                         feature_sub_sampling=feature_sub_sampling,
+                                                         shrinkage=shrinkage),
+                         prediction=Sign(LinearCombination()))

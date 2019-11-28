@@ -3,13 +3,12 @@
 import argparse
 import logging as log
 
+from boomer.algorithm._head_refinement import SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import SquaredErrorLoss
 from boomer.algorithm._sub_sampling import Bagging, RandomFeatureSubsetSelection
 
-from boomer.algorithm.boomer import Boomer
 from boomer.algorithm.persistence import ModelPersistence
-from boomer.algorithm.prediction import Sign, LinearCombination
-from boomer.algorithm.rule_induction import GradientBoosting
+from boomer.algorithm.rule_learner import Boomer
 from boomer.evaluation import ClassificationEvaluation, LogOutput, CsvOutput
 from boomer.experiments import Experiment
 
@@ -24,6 +23,14 @@ def loss_string(s):
     if s == 'squared-error-loss':
         return SquaredErrorLoss()
     raise ValueError('Not a valid Loss string')
+
+
+def head_refinement_string(s):
+    if s == 'single-label':
+        return SingleLabelHeadRefinement()
+    elif s == 'full':
+        return FullHeadRefinement()
+    return None
 
 
 if __name__ == '__main__':
@@ -46,6 +53,7 @@ if __name__ == '__main__':
                         help='True, if random feature subset selection should be used, False otherwise')
     parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
                         help='The name of the loss function to be used')
+    parser.add_argument('--head-refinement', type=head_refinement_string, default=None)
     parser.add_argument('--shrinkage', type=float, default=1, help='The shrinkage parameter to be used')
     args = parser.parse_args()
     log.info('Configuration: %s', args)
@@ -54,10 +62,8 @@ if __name__ == '__main__':
 
     instance_sub_sampling = Bagging() if args.bagging else None
     feature_sub_sampling = RandomFeatureSubsetSelection() if args.feature_sampling else None
-    rule_induction = GradientBoosting(num_rules=args.num_rules, loss=args.loss,
-                                      instance_sub_sampling=instance_sub_sampling,
-                                      feature_sub_sampling=feature_sub_sampling, shrinkage=args.shrinkage)
-    learner = Boomer(rule_induction=rule_induction, prediction=Sign(LinearCombination()))
+    learner = Boomer(num_rules=args.num_rules, loss=args.loss, instance_sub_sampling=instance_sub_sampling,
+                     feature_sub_sampling=feature_sub_sampling, shrinkage=args.shrinkage)
     learner.random_state = args.random_state
 
     if args.model_dir is not None:
