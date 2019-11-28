@@ -9,8 +9,8 @@ import logging as log
 from abc import abstractmethod
 
 import numpy as np
-from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement
-from boomer.algorithm._losses import Loss, SquaredErrorLoss
+from boomer.algorithm._head_refinement import HeadRefinement
+from boomer.algorithm._losses import Loss
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
 
@@ -44,10 +44,9 @@ class GradientBoosting(RuleInduction):
     Implements the induction of (multi-label) classification rules using gradient boosting.
     """
 
-    def __init__(self, num_rules: int = 100,
-                 head_refinement: HeadRefinement = SingleLabelHeadRefinement(), loss: Loss = SquaredErrorLoss(),
-                 instance_sub_sampling: InstanceSubSampling = None, feature_sub_sampling: FeatureSubSampling = None,
-                 shrinkage: float = 1):
+    def __init__(self, num_rules, head_refinement: HeadRefinement, loss: Loss,
+                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling,
+                 shrinkage: float):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param head_refinement:         The strategy that is used to find the heads of rules
