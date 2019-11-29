@@ -58,7 +58,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
-    experiment_name = args.dataset
+    experiment_name = args.dataset + '_num-rules=' + str(args.num_rules) + '_bagging=' + str(
+        args.bagging) + '_feature-sampling=' + str(args.feature_sampling) + '_loss=' + type(
+        args.loss).__name__ + '_shrinkage=' + str(args.shrinkage)
 
     instance_sub_sampling = Bagging() if args.bagging else None
     feature_sub_sampling = RandomFeatureSubsetSelection() if args.feature_sampling else None
