@@ -8,7 +8,7 @@ from boomer.algorithm._losses import SquaredErrorLoss
 from boomer.algorithm._sub_sampling import Bagging, RandomFeatureSubsetSelection
 
 from boomer.algorithm.persistence import ModelPersistence
-from boomer.algorithm.rule_learner import Boomer
+from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, LogOutput, CsvOutput
 from boomer.experiments import Experiment
 
