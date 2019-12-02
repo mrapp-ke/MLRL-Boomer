@@ -10,11 +10,34 @@ from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
 
-from libcpp.unordered_map cimport unordered_map as map
+from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
 
 import numpy as np
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
+
+
+# A struct that represents a condition of a rule. It consists of the index of the feature that is used by the condition,
+# whether it uses the <= or > operator, as well as a threshold.
+cdef struct s_condition:
+    intp feature_index
+    bint leq
+    float32 threshold
+
+
+cdef inline s_condition __make_condition(intp feature_index, bint leq, float32 threshold):
+    """
+    Creates and returns a new condition.
+
+    :param feature_index:   The index of the feature that is used by the condition
+    :param leq:             Whether the <= operator, or the > operator is used by the condition
+    :param threshold:       The threshold that is used by the condition
+    """
+    cdef s_condition condition
+    condition.feature_index = feature_index
+    condition.leq = leq
+    condition.threshold = threshold
+    return condition
 
 
 cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
@@ -68,12 +91,11 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
 
     # The head of the induced rule
     cdef HeadCandidate head = None
-    # A map containing the feature indices of the rule's conditions that use the <= operator as keys and their
-    # thresholds as values
-    cdef map[intp, float32] leq_conditions
-    # A map containing the feature indices of the rule's conditions that use the > operator as keys and their thresholds
-    # as values
-    cdef map[intp, float32] gr_conditions
+    # A list that contains the rule's conditions (in the order they have been learned)
+    cdef list[s_condition] conditions
+    # The number of conditions that use the <=, respectively the >, operator.
+    cdef intp num_leq_conditions = 0
+    cdef intp num_gr_conditions = 0
 
     # Variables used to update the seed used by RNGs, depending on the refinement iteration (starting at 1)
     cdef int current_random_state = random_state
@@ -204,11 +226,12 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         else:
             # If a refinement has been found, replace the head of the current rule and add the new condition...
             head = best_head
+            conditions.push_back(__make_condition(best_condition_index, best_condition_leq, best_condition_threshold))
 
             if best_condition_leq:
-                leq_conditions[best_condition_index] = best_condition_threshold
+                num_leq_conditions += 1
             else:
-                gr_conditions[best_condition_index] = best_condition_threshold
+                num_gr_conditions += 1
 
             # Update the examples and labels for which the rule predicts...
             label_indices = head.label_indices
@@ -233,7 +256,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     loss.apply_predictions(sorted_indices[:, 0], label_indices, head.predicted_scores)
 
     # Build and return the induced rule...
-    return __build_rule(head, leq_conditions, gr_conditions)
+    return __build_rule(head, conditions, num_leq_conditions, num_gr_conditions)
 
 cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp position_start, intp position_end,
                          intp feature_index, bint leq, float32 threshold):
@@ -276,47 +299,40 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
     return adjusted_position
 
 
-cdef Rule __build_rule(HeadCandidate head, map[intp, float32] leq_conditions, map[intp, float32] gr_conditions):
+cdef Rule __build_rule(HeadCandidate head, list[s_condition] conditions,  intp num_leq_conditions,
+                       intp num_gr_conditions):
     """
     Builds and returns a rule.
 
-    :param head:            A 'HeadCandidate' representing the head of the rule
-    :param leq_conditions:  A map that contains the feature indices of the rule's conditions that use the <= operator as
-                            keys and their thresholds as values
-    :param gr_conditions:   A map that contains the feature indices of the rule's conditions that use the > operator as
-                            keys and their thresholds as values
-    :return:                The rule that has been built
+    :param head:                A 'HeadCandidate' representing the head of the rule
+    :param conditions:          A list that contains the rule's conditions
+    :param num_leq_conditions:  The number of conditions that use the <= operator
+    :param num_gr_conditions:   The number of conditions that use the > operator
+    :return:                    The rule that has been built
     """
-    cdef intp num_leq_conditions = leq_conditions.size()
     cdef intp[::1] leq_feature_indices = np.empty((num_leq_conditions,), DTYPE_INTP, 'C')
     cdef float32[::1] leq_thresholds = np.empty((num_leq_conditions,), DTYPE_FLOAT32, 'C')
-    cdef intp num_gr_conditions = gr_conditions.size()
     cdef intp[::1] gr_feature_indices = np.empty((num_gr_conditions,), DTYPE_INTP, 'C')
     cdef float32[::1] gr_thresholds = np.empty((num_gr_conditions,), DTYPE_FLOAT32, 'C')
 
-    cdef map[intp, float32].iterator iterator = leq_conditions.begin()
-    cdef intp index
-    cdef float32 threshold
-    cdef intp i = 0
+    cdef list[s_condition].iterator iterator = conditions.begin()
+    cdef s_condition condition
+    cdef intp leq_i = 0
+    cdef intp gr_i = 0
 
-    while iterator != leq_conditions.end():
-        index = dereference(iterator).first
-        threshold = dereference(iterator).second
-        leq_feature_indices[i] = index
-        leq_thresholds[i] = threshold
+    while iterator != conditions.end():
+        condition = dereference(iterator)
+
+        if condition.leq:
+            leq_feature_indices[leq_i] = condition.feature_index
+            leq_thresholds[leq_i] = condition.threshold
+            leq_i += 1
+        else:
+            gr_feature_indices[leq_i] = condition.feature_index
+            gr_thresholds[leq_i] = condition.threshold
+            gr_i += 1
+
         postincrement(iterator)
-        i += 1
-
-    iterator = gr_conditions.begin()
-    i = 0
-
-    while iterator != gr_conditions.end():
-        index = dereference(iterator).first
-        threshold = dereference(iterator).second
-        gr_feature_indices[i] = index
-        gr_thresholds[i] = threshold
-        postincrement(iterator)
-        i += 1
 
     cdef ConjunctiveBody rule_body = ConjunctiveBody(leq_feature_indices, leq_thresholds, gr_feature_indices,
                                                      gr_thresholds)
