@@ -4,7 +4,7 @@
 
 cdef class Pruning:
     """
-    TODO
+    A base class for all classes that implement a strategy for pruning classification rules.
     """
 
     cdef prune(self):
@@ -16,7 +16,7 @@ cdef class Pruning:
 
 cdef class IREP(Pruning):
     """
-    TODO
+    Implements incremental reduced error pruning (IREP) for pruning classification rules.
     """
 
     cdef prune(self):
