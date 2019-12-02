@@ -63,3 +63,34 @@ class MLLearner(MLClassifierBase, Randomized):
                     the given test examples
         """
         pass
+
+
+class BatchMLLearner(MLLearner):
+    """
+    A base class for all multi-label classifiers or rankers that allow to train variants with varying hyper-parameters
+    without requiring to retrain the entire model.
+    """
+
+    @abstractmethod
+    def partial_fit(self, x, y) -> 'BatchMLLearner':
+        """
+        Trains the classifier or ranker in an incremental way, i.e., the existing model is modified instead of
+        retraining it entirely.
+
+        :param x:   An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
+                    training examples
+        :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
+                    examples
+        :return:    The classifier or ranker that has been (partially) trained
+        """
+        pass
+
+    @abstractmethod
+    def copy_classifier(self, **kwargs) -> 'BatchMLLearner':
+        """
+        Copies the classifier or ranker.
+
+        :param kwargs:  The arguments to be passed to the copy
+        :return:        The copied classifier or ranker
+        """
+        pass

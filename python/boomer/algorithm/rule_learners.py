@@ -7,12 +7,14 @@ Provides a scikit-multilearn implementation of "BOOMER" -- an algorithm for lear
 classification rules. The classifier is composed of several modules, e.g., for rule induction and prediction.
 """
 import logging as log
+from copy import copy
 from timeit import default_timer as timer
 
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
+from sklearn.exceptions import NotFittedError
 from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm.model import Theory
@@ -20,10 +22,10 @@ from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
 from boomer.algorithm.stats import Stats
-from boomer.learners import MLLearner
+from boomer.learners import MLLearner, BatchMLLearner
 
 
-class RuleLearner(MLLearner):
+class MLRuleLearner(MLLearner):
     """
     A scikit-multilearn implementation of a rule learner algorithm for multi-label classification or ranking.
 
@@ -66,27 +68,25 @@ class RuleLearner(MLLearner):
         if self.prediction is None:
             raise ValueError('Module \'prediction\' may not be None')
 
-    def __load_model(self):
-        """
-        Loads the model from disk, if available.
-
-        :return: The loaded model, as well as the next step to proceed with
-        """
-        step = RuleLearner.STEP_RULE_INDUCTION
-        model = self.__load_rules()
-
-        if model is None:
-            step = RuleLearner.STEP_INITIALIZATION
-
-        return model, step
-
     def __load_rules(self):
-        if self.persistence is not None:
-            return self.persistence.load_model(file_name_suffix=RuleLearner.PREFIX_RULES, fold=self.fold)
-        else:
-            return None
+        """
+        Loads the theory from disk, if available.
 
-    def __induce_rules(self, x: np.ndarray, y: np.ndarray) -> Theory:
+        :return: The loaded theory, as well as the next step to proceed with
+        """
+        step = MLRuleLearner.STEP_RULE_INDUCTION
+
+        if self.persistence is not None:
+            theory = self.persistence.load_model(file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
+        else:
+            theory = None
+
+        if theory is None:
+            step = MLRuleLearner.STEP_INITIALIZATION
+
+        return theory, step
+
+    def _induce_rules(self, x: np.ndarray, y: np.ndarray, theory: Theory = None) -> Theory:
         """
         Induces classification rules.
 
@@ -94,19 +94,10 @@ class RuleLearner(MLLearner):
                         training examples
         :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the
                         training examples
+        :param theory:  An existing theory, the induced classification rules should be added to, or None if a new theory
+                        should be created
         :return:        A 'Theory' that contains the induced classification rules
         """
-
-        self.rule_induction.random_state = self.random_state
-        model = self.rule_induction.induce_rules(self.stats, x, y)
-        self.__save_rules(model)
-        return model
-
-    def __save_rules(self, model: Theory):
-        if self.persistence is not None:
-            self.persistence.save_model(model, RuleLearner.PREFIX_RULES, fold=self.fold)
-
-    def fit(self, x, y):
         self.__validate()
 
         # Create a dense representation of the training data
@@ -116,22 +107,45 @@ class RuleLearner(MLLearner):
         # Obtain information about the training data
         self.stats = Stats.create_stats(x, y)
 
-        # Load model from disk, if possible
-        model, step = self.__load_model()
+        # Load theory from disk, if possible
+        model, step = self.__load_rules()
 
-        if step == RuleLearner.STEP_INITIALIZATION:
+        if model is not None:
+            theory = model
+
+        if step == MLRuleLearner.STEP_INITIALIZATION:
             log.info('Inducing classification rules...')
             start_time = timer()
-            model = self.__induce_rules(x, y)
+
+            # Induce rules
+            self.rule_induction.random_state = self.random_state
+            theory = self.rule_induction.induce_rules(self.stats, x, y, theory)
+
+            # Save theory to disk
+            self.__save_rules(theory)
+
             end_time = timer()
             run_time = end_time - start_time
-            num_candidates = len(model)
+            num_candidates = len(theory)
             log.info('%s classification rules induced in %s seconds', num_candidates, run_time)
 
-        self.theory = model
+        return theory
+
+    def __save_rules(self, theory: Theory):
+        """
+        Saves a theory to disk.
+
+        :param theory:  The theory to be saved
+        """
+
+        if self.persistence is not None:
+            self.persistence.save_model(theory, MLRuleLearner.PREFIX_RULES, fold=self.fold)
+
+    def fit(self, x: np.ndarray, y: np.ndarray) -> MLLearner:
+        self.theory = self._induce_rules(x, y)
         return self
 
-    def predict(self, x):
+    def predict(self, x: np.ndarray) -> np.ndarray:
         check_is_fitted(self, ('theory', 'stats'))
 
         # Create a dense representation of the given examples
@@ -143,7 +157,7 @@ class RuleLearner(MLLearner):
         return prediction
 
 
-class Boomer(RuleLearner):
+class Boomer(MLRuleLearner, BatchMLLearner):
     """
     A scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
     classification rules.
@@ -164,7 +178,6 @@ class Boomer(RuleLearner):
         :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
                                         induced rules to reduce their effect on the entire model. Must be in (0, 1]
         """
-
         super().__init__(rule_induction=GradientBoosting(num_rules=num_rules,
                                                          head_refinement=
                                                          (FullHeadRefinement() if isinstance(loss, DecomposableLoss)
@@ -175,3 +188,29 @@ class Boomer(RuleLearner):
                                                          feature_sub_sampling=feature_sub_sampling,
                                                          shrinkage=shrinkage),
                          prediction=Sign(LinearCombination()))
+
+    def partial_fit(self, x: np.ndarray, y: np.ndarray) -> BatchMLLearner:
+        check_is_fitted(self, ('theory', 'stats'))
+        self.theory = self._induce_rules(x, y, theory=self.theory)
+        return self
+
+    # noinspection PyUnresolvedReferences
+    def predict(self, x: np.ndarray) -> np.ndarray:
+        if hasattr(self, 'theory') and len(self.theory) < self.rule_induction.num_rules:
+            raise NotFittedError('Not enough rules contained by theory')
+
+        return super().predict(x)
+
+    # noinspection PyTypeChecker,PyUnresolvedReferences
+    def copy_classifier(self, **kwargs) -> BatchMLLearner:
+        copied_classifier = copy(self)
+        copied_classifier.rule_induction = copy(self.rule_induction)
+        copied_classifier.rule_induction.num_rules = kwargs.get('num_rules', self.rule_induction.num_rules)
+        copied_classifier.persistence = kwargs.get('persistence', self.persistence)
+
+        if hasattr(self, 'theory') and hasattr(self, 'stats'):
+            if copied_classifier.rule_induction.num_rules >= self.rule_induction.num_rules:
+                copied_classifier.theory = self.theory
+                copied_classifier.stats = self.stats
+
+        return copied_classifier
