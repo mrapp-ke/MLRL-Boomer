@@ -11,6 +11,7 @@ from abc import abstractmethod
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
+from boomer.algorithm._pruning import Pruning
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
 
@@ -47,7 +48,7 @@ class GradientBoosting(RuleInduction):
     """
 
     def __init__(self, num_rules, head_refinement: HeadRefinement, loss: Loss,
-                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling,
+                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
                  shrinkage: float):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
@@ -57,6 +58,7 @@ class GradientBoosting(RuleInduction):
                                         classification rule is learned
         :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
                                         classification rule is refined
+        :param pruning:                 The strategy that is used for pruning rules
         :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
                                         induced rules to reduce their effect on the entire model. Must be in (0, 1]
         """
@@ -65,6 +67,7 @@ class GradientBoosting(RuleInduction):
         self.loss = loss
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
+        self.pruning = pruning
         self.shrinkage = shrinkage
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
@@ -75,6 +78,7 @@ class GradientBoosting(RuleInduction):
         loss = self.loss
         instance_sub_sampling = self.instance_sub_sampling
         feature_sub_sampling = self.feature_sub_sampling
+        pruning = self.pruning
         shrinkage = self.shrinkage
 
         # Convert feature and label matrices into Fortran-contiguous arrays
@@ -99,7 +103,7 @@ class GradientBoosting(RuleInduction):
 
             # Induce a new rule
             rule = induce_rule(x, x_sorted_indices, head_refinement, loss, instance_sub_sampling, feature_sub_sampling,
-                               shrinkage, random_state)
+                               pruning, shrinkage, random_state)
 
             # Add new rule to theory
             theory.append(rule)

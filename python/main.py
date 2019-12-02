@@ -5,6 +5,7 @@ import logging as log
 
 from boomer.algorithm._head_refinement import SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import SquaredErrorLoss
+from boomer.algorithm._pruning import IREP
 from boomer.algorithm._sub_sampling import Bagging, RandomFeatureSubsetSelection
 
 from boomer.algorithm.persistence import ModelPersistence
@@ -51,6 +52,8 @@ if __name__ == '__main__':
                         help='True, if bagging should be used, False otherwise')
     parser.add_argument('--feature-sampling', type=boolean_string, default=False,
                         help='True, if random feature subset selection should be used, False otherwise')
+    parser.add_argument('--irep', type=boolean_string, default=False,
+                        help='True, if the rules should be pruned according to IREP, False otherwise')
     parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
                         help='The name of the loss function to be used')
     parser.add_argument('--head-refinement', type=head_refinement_string, default=None)
@@ -60,6 +63,7 @@ if __name__ == '__main__':
 
     instance_sub_sampling = Bagging() if args.bagging else None
     feature_sub_sampling = RandomFeatureSubsetSelection() if args.feature_sampling else None
+    pruning = IREP() if args.irep else None
     evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
                                                                  output_predictions=args.store_predictions))
     experiment = None

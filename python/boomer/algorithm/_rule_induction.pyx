@@ -8,6 +8,7 @@ from boomer.algorithm._model cimport Rule, FullHead, EmptyBody, ConjunctiveBody,
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
+from boomer.algorithm._pruning cimport Pruning
 
 from libcpp.unordered_map cimport unordered_map as map
 from cython.operator cimport dereference, postincrement
@@ -35,7 +36,7 @@ cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
 
 cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRefinement head_refinement, Loss loss,
                        InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                       float64 shrinkage, random_state: int):
+                       Pruning pruning, float64 shrinkage, random_state: int):
     """
     Induces a single- or multi-label classification rule that minimizes a certain loss function with respect to the
     expected and currently predicted confidence scores.
@@ -50,6 +51,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                     instance sub-sampling should be used
     :param feature_sub_sampling:    The strategy that should be used to sub-sample the available features or None, if no
                                     feature sub-sampling should be used
+    :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
+                                    used
     :param shrinkage:               The shrinkage parameter that should be applied to the induced rule's predictions.
                                     Must be in (0, 1]
     :param random_state:            The seed to be used by RNGs
