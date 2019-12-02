@@ -5,6 +5,7 @@
 from cython.view cimport array as cvarray
 from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
 from boomer.algorithm._model cimport Rule, FullHead, EmptyBody, ConjunctiveBody, PartialHead
+from boomer.algorithm._model cimport s_condition, make_condition
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
@@ -15,29 +16,6 @@ from cython.operator cimport dereference, postincrement
 
 import numpy as np
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
-
-
-# A struct that represents a condition of a rule. It consists of the index of the feature that is used by the condition,
-# whether it uses the <= or > operator, as well as a threshold.
-cdef struct s_condition:
-    intp feature_index
-    bint leq
-    float32 threshold
-
-
-cdef inline s_condition __make_condition(intp feature_index, bint leq, float32 threshold):
-    """
-    Creates and returns a new condition.
-
-    :param feature_index:   The index of the feature that is used by the condition
-    :param leq:             Whether the <= operator, or the > operator is used by the condition
-    :param threshold:       The threshold that is used by the condition
-    """
-    cdef s_condition condition
-    condition.feature_index = feature_index
-    condition.leq = leq
-    condition.threshold = threshold
-    return condition
 
 
 cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
@@ -67,7 +45,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
                                     features of the training examples
     :param x_sorted_indices:        An array of dtype int, shape `(num_examples, num_features)`, representing the
-                                    indices of the examples when sorting column-wise
+                                    indices of the training examples when sorting column-wise
     :param head_refinement:         The strategy that is used to find the heads of rules
     :param loss:                    The loss function to be minimized
     :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if no
@@ -226,7 +204,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         else:
             # If a refinement has been found, replace the head of the current rule and add the new condition...
             head = best_head
-            conditions.push_back(__make_condition(best_condition_index, best_condition_leq, best_condition_threshold))
+            conditions.push_back(make_condition(best_condition_index, best_condition_leq, best_condition_threshold))
 
             if best_condition_leq:
                 num_leq_conditions += 1
@@ -350,7 +328,7 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
     :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
     :param x_sorted_indices:    An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
-                                the examples that are covered by the previous rule when sorting column-wise
+                                the training examples that are covered by the previous rule when sorting column-wise
     :param condition_r:         The index of the example from which the threshold of the condition that has been added
                                 to the previous rule has been chosen
     :param condition_index:     The the feature index of the condition that has been added to the previous rule
