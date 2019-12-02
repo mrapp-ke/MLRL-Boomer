@@ -10,7 +10,7 @@ from boomer.algorithm._sub_sampling import Bagging, RandomFeatureSubsetSelection
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, LogOutput, CsvOutput
-from boomer.experiments import Experiment
+from boomer.experiments import BatchExperiment
 
 
 def boolean_string(s):
@@ -58,22 +58,32 @@ if __name__ == '__main__':
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
-    experiment_name = args.dataset + '_num-rules=' + str(args.num_rules) + '_bagging=' + str(
-        args.bagging) + '_feature-sampling=' + str(args.feature_sampling) + '_loss=' + type(
-        args.loss).__name__ + '_shrinkage=' + str(args.shrinkage)
-
     instance_sub_sampling = Bagging() if args.bagging else None
     feature_sub_sampling = RandomFeatureSubsetSelection() if args.feature_sampling else None
-    learner = Boomer(num_rules=args.num_rules, loss=args.loss, instance_sub_sampling=instance_sub_sampling,
-                     feature_sub_sampling=feature_sub_sampling, shrinkage=args.shrinkage)
-    learner.random_state = args.random_state
-
-    if args.model_dir is not None:
-        learner.persistence = ModelPersistence(model_dir=args.model_dir, model_name=args.dataset)
-
     evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
                                                                  output_predictions=args.store_predictions))
+    experiment = None
 
-    experiment = Experiment(experiment_name, learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
-                            folds=args.folds)
+    for i in range(1, 5):
+        num_rules = args.num_rules * i
+        experiment_name = args.dataset + '_num-rules=' + str(num_rules) + '_bagging=' + str(
+            args.bagging) + '_feature-sampling=' + str(args.feature_sampling) + '_loss=' + type(
+            args.loss).__name__ + '_shrinkage=' + str(args.shrinkage)
+        model_dir = args.model_dir
+        model_name = args.dataset + '_num_rules=' + str(num_rules)
+
+        if experiment is None:
+            default_learner = Boomer(num_rules=num_rules, loss=args.loss, instance_sub_sampling=instance_sub_sampling,
+                                     feature_sub_sampling=feature_sub_sampling, shrinkage=args.shrinkage)
+            default_learner.random_state = args.random_state
+
+            if model_dir is not None:
+                default_learner.persistence = ModelPersistence(model_dir=model_dir, model_name=model_name)
+
+            experiment = BatchExperiment(experiment_name, default_learner, evaluation, data_dir=args.data_dir,
+                                         data_set=args.dataset, folds=args.folds)
+        else:
+            persistence = None if model_dir is None else ModelPersistence(model_dir=model_dir, model_name=model_name)
+            experiment.add_variant(experiment_name, num_rules=num_rules, persistence=persistence)
+
     experiment.run()

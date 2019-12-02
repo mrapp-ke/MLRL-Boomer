@@ -12,11 +12,12 @@ import os.path as path
 from abc import abstractmethod
 from timeit import default_timer as timer
 
+from sklearn.exceptions import NotFittedError
 from sklearn.model_selection import KFold
 
 from boomer.data import load_data_set_and_meta_data, load_data_set, one_hot_encode
 from boomer.evaluation import Evaluation
-from boomer.learners import Randomized, MLLearner
+from boomer.learners import Randomized, MLLearner, BatchMLLearner
 
 
 class CrossValidation(Randomized):
@@ -174,3 +175,56 @@ class Experiment(AbstractExperiment):
         # Obtain and evaluate predictions for test data
         predictions = self.learner.predict(test_x)
         self.evaluation.evaluate(self.name, predictions, test_y, current_fold=current_fold, total_folds=self.folds)
+
+
+class BatchExperiment(AbstractExperiment):
+    """
+    An experiment that trains and evaluates several variants of a multi-label classifier or ranker on the same data set
+    using cross validation or separate training and test sets.
+    """
+
+    def __init__(self, name: str, learner: BatchMLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
+                 folds: int = 1):
+        """
+        :param name:    The name of the experiment that uses the default variant
+        :param learner: The default variant of the scikit-learn classifier to be trained
+        """
+        super().__init__(evaluation, data_dir, data_set, folds)
+        self.variants = [({}, name)]
+        self.learner = learner
+
+    def add_variant(self, name: str, **kwargs):
+        """
+        Adds a new variant to the batch experiment.
+
+        :param name:    The name of the variant
+        :param kwargs:  The arguments to be passed to the classifier when creating a copy of the current variant
+        """
+        self.variants.append((kwargs, name))
+
+    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
+        next_variant = self.learner
+
+        for args, name in self.variants:
+            log.info('Starting experiment \"' + name + '\"...')
+            next_variant = next_variant.copy_classifier(**args)
+            next_variant.random_state = self.random_state
+            next_variant.fold = current_fold
+
+            try:
+                # Obtain predictions without re-training the classifier, if possible
+                predictions = next_variant.predict(test_x)
+            except NotFittedError:
+                # Train classifier and obtain predictions
+                if next_variant.fold == current_fold:
+                    try:
+                        next_variant.partial_fit(train_x, train_y)
+                    except NotFittedError:
+                        next_variant.fit(train_x, train_y)
+                else:
+                    next_variant.fit(train_x, train_y)
+
+                predictions = next_variant.predict(test_x)
+
+            # Evaluate predictions
+            self.evaluation.evaluate(name, predictions, test_y, current_fold=current_fold, total_folds=self.folds)

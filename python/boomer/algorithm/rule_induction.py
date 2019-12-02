@@ -25,7 +25,7 @@ class RuleInduction(Module):
     """
 
     @abstractmethod
-    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
         """
         Creates and returns a 'Theory' that contains several candidate rules.
 
@@ -34,7 +34,9 @@ class RuleInduction(Module):
                         training examples
         :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the
                         training examples
-        :return:        A 'Theory' that contains the generated candidate rules
+        :param theory:  An existing theory, the induced classification rules should be added to, or None if a new theory
+                        should be created
+        :return:        A 'Theory' that contains the induced classification rules
         """
         pass
 
@@ -65,7 +67,7 @@ class GradientBoosting(RuleInduction):
         self.feature_sub_sampling = feature_sub_sampling
         self.shrinkage = shrinkage
 
-    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
         self.__validate()
         num_rules = self.num_rules
         random_state = self.random_state
@@ -79,17 +81,20 @@ class GradientBoosting(RuleInduction):
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
         y = np.asfortranarray(y, dtype=DTYPE_UINT8)
 
-        # Induce default rule
-        log.info('Learning rule 1 / %s (default rule)...', num_rules)
-        default_rule = induce_default_rule(y, loss)
-
-        # Create initial theory
-        theory = [default_rule]
-
         # Sort feature matrix once
         x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
 
-        for i in range(2, num_rules + 1):
+        # Create a new theory, if necessary
+        if theory is None:
+            theory = []
+
+        # Induce default rule, if necessary
+        if len(theory) == 0:
+            log.info('Learning rule 1 / %s (default rule)...', num_rules)
+            default_rule = induce_default_rule(y, loss)
+            theory.append(default_rule)
+
+        for i in range(len(theory) + 1, num_rules + 1):
             log.info('Learning rule %s / %s...', i, num_rules)
 
             # Induce a new rule
