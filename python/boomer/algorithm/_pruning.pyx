@@ -11,26 +11,24 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, list[s_condition] conditions,
-                       intp[::1] covered_example_indices, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices, intp[::1] label_indices,
+                       float64[::1] predicted_scores):
         """
-        Calculates the quality score of a rule, based on the examples that are contained in the prune set, i.e., based
-        on all examples whose weight is 0.
+        Calculates the quality score of an existing rule, based on the examples that are contained in the prune set,
+        i.e., based on all examples whose weight is 0.
 
         This function must be called prior to calling any other function provided by this class. It calculates and
-        caches the quality score of the original rule to be pruned. When invoking the function `prune` afterwards, the
-        rule is pruned by removing individual conditions in a way that improves over the original quality score, if
-        possible.
+        caches the original quality score of the existing rule before it is pruned. When invoking the function `prune`
+        afterwards, the rule is pruned by removing individual conditions in a way that improves over the original
+        quality score, if possible.
 
         :param weights:                 An array of dtype int, shape `(num_examples)`, representing the weights of all
                                         training examples, regardless of whether they are included in the prune set or
                                         grow set
         :param loss:                    The loss function to be minimized
-        :param conditions:              A list that contains the conditions of the rule to be pruned
-        :param head:                    The head of the rule to be pruned
         :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
-                                        of all training examples that are covered by the rule to be pruned, regardless
-                                        of whether they are included in the prune set or grow set
+                                        of all training examples that are covered by the rule, regardless of whether
+                                        they are included in the prune set or grow set
         :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
                                         of the labels for which the rule predicts
         :param predicted_scores:        An array of dtype int, shape `(num_predicted_labels)`, representing the scores
@@ -66,8 +64,8 @@ cdef class IREP(Pruning):
     Implements incremental reduced error pruning (IREP) for pruning classification rules based on a "prune set".
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, list[s_condition] conditions,
-                       intp[::1] covered_example_indices, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices, intp[::1] label_indices,
+                       float64[::1] predicted_scores):
         cdef uint32 weight
         cdef intp i
 
