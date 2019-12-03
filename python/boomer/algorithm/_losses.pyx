@@ -37,8 +37,8 @@ cdef class Loss:
         Resets the cached sum of gradients (and hessians in case of a non-decomposable loss function) for each label to
         0.
 
-        This function must be invoked before the function `begin_search` if any type of instance sub-sampling, e.g.
-        bagging, is used.
+        This function must be invoked before the functions `begin_instance_sub_sampling` and `begin_search` if any type
+        of instance sub-sampling, e.g. bagging, is used.
         """
         pass
 
