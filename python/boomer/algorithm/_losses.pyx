@@ -287,7 +287,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         for c in range(num_labels):
             sum_of_gradients = sums_of_gradients[c]
 
-            # Calculate score for a rule that covers the examples that have been provided so far...
+            # Calculate score to be predicted by a rule that covers the examples that have been provided so far...
             score = -sum_of_gradients / sum_of_hessians
             predicted_and_quality_scores[0, c] = score
 
@@ -295,7 +295,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             score_halved = score / 2
             predicted_and_quality_scores[1, c] = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
 
-            # Calculate score for a rule that covers the examples that have not been provided yet...
+            # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
             l = __get_label_index(c, label_indices)
             score = -(total_sums_of_gradients[l] - sum_of_gradients) / sum_of_hessians_uncovered
             predicted_and_quality_scores[2, c] = score
