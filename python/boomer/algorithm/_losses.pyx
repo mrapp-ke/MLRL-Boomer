@@ -123,17 +123,18 @@ cdef class Loss:
         """
         pass
 
-    cdef apply_predictions(self, intp[::1] example_indices, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores):
         """
         Updates the cached gradients (and hessians in case of a non-decomposable loss function) based on the predictions
         provided by newly induced rules.
 
-        :param example_indices:     An array of dtype int, shape `(num_covered)`, representing the indices of the
-                                    examples that are covered by the newly induced rule
-        :param label_indices:       An array of dtype int, shape `(num_predicted_labels)`, representing the indices of
-                                    the labels for which the new induced rule predicts
-        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                    that are predicted by the newly induced rule
+        :param covered_example_indices: An array of dtype int, shape `(num_covered)`, representing the indices of the
+                                        examples that are covered by the newly induced rule
+        :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
+                                        of the labels for which the newly induced rule predicts
+        :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
+                                        that are predicted by the newly induced rule
         """
         pass
 
@@ -163,7 +164,8 @@ cdef class DecomposableLoss(Loss):
     cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
         pass
 
-    cdef apply_predictions(self, intp[::1] example_indices, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores):
         pass
 
 
@@ -344,7 +346,8 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         return quality_score
 
-    cdef apply_predictions(self, intp[::1] example_indices, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores):
         cdef intp num_labels = label_indices.shape[0]
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -358,7 +361,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             total_sum_of_gradients = total_sums_of_gradients[l]
 
             # Only the examples that are covered by the new rule must be considered...
-            for i in example_indices:
+            for i in covered_example_indices:
                 gradient = gradients[i, l]
 
                 # Update the sum of gradients by subtracting the old gradient and adding the new one...
