@@ -74,6 +74,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     # The number of conditions that use the <=, respectively the >, operator.
     cdef intp num_leq_conditions = 0
     cdef intp num_gr_conditions = 0
+    # The indices of the examples that are covered by the induced rule
+    cdef intp[::1] covered_example_indices
 
     # Variables used to update the seed used by RNGs, depending on the refinement iteration (starting at 1)
     cdef int current_random_state = random_state
@@ -224,14 +226,22 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                 # Abort refinement process if rule covers a single instance...
                 break
 
-    # TODO Prune rule, if necessary...
+    # Obtain the indices of all examples that are covered by the new rule, regardless of whether they are included in
+    # the sub-sample or not...
+    covered_example_indices = sorted_indices[:, 0]
+
+    # Prune rule, if necessary...
+    if pruning is not None and weights is not None:
+        pruning.begin_pruning(weights, loss, conditions, covered_example_indices, head.label_indices,
+                              head.predicted_scores)
+        # TODO Prune rule...
 
     # Apply shrinkage, if necessary...
     if shrinkage < 1:
         __apply_shrinkage(head, shrinkage)
 
     # Tell the loss function that a new rule has been induced...
-    loss.apply_predictions(sorted_indices[:, 0], label_indices, head.predicted_scores)
+    loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
 
     # Build and return the induced rule...
     return __build_rule(head, conditions, num_leq_conditions, num_gr_conditions)
