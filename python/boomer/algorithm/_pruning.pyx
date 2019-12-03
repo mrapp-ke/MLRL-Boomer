@@ -62,6 +62,10 @@ cdef class Pruning:
 cdef class IREP(Pruning):
     """
     Implements incremental reduced error pruning (IREP) for pruning classification rules based on a "prune set".
+
+    Given a rule with n conditions, IREP allows to remove up to n - 1 trailing conditions, depending on which of the
+    pruning candidates improves over the overall quality score of the original rule (calculated on the prune set) the
+    most.
     """
 
     cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices, intp[::1] label_indices,
