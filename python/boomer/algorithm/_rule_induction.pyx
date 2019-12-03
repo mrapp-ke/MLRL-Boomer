@@ -223,7 +223,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                 num_refinements += 1
                 current_random_state = random_state * num_refinements
             else:
-                # Abort refinement process if rule covers a single instance...
+                # Abort refinement process if rule covers a single example...
                 break
 
     # Obtain the indices of all examples that are covered by the new rule, regardless of whether they are included in
