@@ -74,14 +74,14 @@ cdef class IREP(Pruning):
         # Reset the loss function...
         loss.begin_search(label_indices)
 
-        # Tell the loss function about all examples in the prune set that are covered by the rule to be pruned...
+        # Tell the loss function about all examples in the prune set that are covered by the given rule...
         for i in covered_example_indices:
             weight = weights[i]
 
             if weight == 0:
                 loss.update_search(i, 1)
 
-        # Calculate the overall quality score of the rule to be pruned based on the prune set...
+        # Calculate the overall quality score of the given rule based on the prune set...
         cdef float64 original_quality_score = loss.calculate_quality_score(predicted_scores)
         self.original_quality_score = original_quality_score
 
