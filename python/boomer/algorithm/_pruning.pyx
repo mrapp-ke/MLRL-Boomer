@@ -19,7 +19,8 @@ cdef class Pruning:
 
         This function must be called prior to calling any other function provided by this class. It calculates and
         caches the quality score of the original rule to be pruned. When invoking the function `prune` afterwards, the
-        rule is pruned by removing individual conditions in a way that improves over the original quality score
+        rule is pruned by removing individual conditions in a way that improves over the original quality score, if
+        possible.
 
         :param weights:                 An array of dtype int, shape `(num_examples)`, representing the weights of all
                                         training examples, regardless of whether they are included in the prune set or
