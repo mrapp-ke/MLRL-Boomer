@@ -2,7 +2,6 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=False
-from cython.view cimport array as cvarray
 from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
 from boomer.algorithm._model cimport Rule, FullHead, EmptyBody, ConjunctiveBody, PartialHead
 from boomer.algorithm._model cimport s_condition, make_condition
@@ -13,6 +12,7 @@ from boomer.algorithm._pruning cimport Pruning
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
+from cython.view cimport array as cvarray
 
 import numpy as np
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
