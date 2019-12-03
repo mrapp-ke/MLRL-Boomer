@@ -10,8 +10,8 @@ cdef class Pruning:
 
     # Functions:
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, list[s_condition] conditions,
-                       intp[::1] covered_example_indices, intp[::1] label_indices, float64[::1] predicted_scores)
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices, intp[::1] label_indices,
+                       float64[::1] predicted_scores)
 
     cdef prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, uint32[::1] weights, Loss loss,
                list[s_condition] conditions, intp[::1] covered_indices)
@@ -25,8 +25,8 @@ cdef class IREP(Pruning):
 
     # Functions:
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, list[s_condition] conditions,
-                       intp[::1] covered_example_indices, intp[::1] label_indices, float64[::1] predicted_scores)
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices, intp[::1] label_indices,
+                       float64[::1] predicted_scores)
 
     cdef prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, uint32[::1] weights, Loss loss,
                list[s_condition] conditions, intp[::1] covered_indices)
