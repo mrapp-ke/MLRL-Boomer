@@ -7,6 +7,7 @@ Provides a scikit-multilearn implementation of "BOOMER" -- an algorithm for lear
 classification rules. The classifier is composed of several modules, e.g., for rule induction and prediction.
 """
 import logging as log
+from abc import abstractmethod
 from copy import copy
 from timeit import default_timer as timer
 
@@ -157,6 +158,10 @@ class MLRuleLearner(MLLearner):
         prediction = self.prediction.predict(self.stats, self.theory, x)
         return prediction
 
+    @abstractmethod
+    def get_name(self) -> str:
+        pass
+
 
 class Boomer(MLRuleLearner, BatchMLLearner):
     """
@@ -217,3 +222,17 @@ class Boomer(MLRuleLearner, BatchMLLearner):
                 copied_classifier.stats = self.stats
 
         return copied_classifier
+
+    # noinspection PyUnresolvedReferences
+    def get_name(self) -> str:
+        num_rules = str(self.rule_induction.num_rules)
+        head_refinement = str(type(self.rule_induction.head_refinement).__name__)
+        loss = str(type(self.rule_induction.loss).__name__)
+        instance_sub_sampling = 'None' if self.rule_induction.instance_sub_sampling is None else str(
+            type(self.rule_induction.instance_sub_sampling).__name__)
+        feature_sub_sampling = 'None' if self.rule_induction.feature_sub_sampling is None else str(
+            type(self.rule_induction.feature_sub_sampling).__name__)
+        pruning = 'None' if self.rule_induction.pruning is None else str(type(self.rule_induction.pruning).__name__)
+        return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
+               + '_instance-sub-sampling' + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling \
+               + '_pruning=' + pruning + '_shrinkage=' + shrinkage
