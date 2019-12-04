@@ -20,6 +20,24 @@ def boolean_string(s):
     return s == 'True'
 
 
+def instance_sub_sampling_string(s):
+    if s == 'bagging':
+        return Bagging()
+    return None
+
+
+def feature_sub_sampling_string(s):
+    if s == 'random-feature-selection':
+        return RandomFeatureSubsetSelection()
+    return None
+
+
+def pruning_string(s):
+    if s == 'irep':
+        return IREP()
+    return None
+
+
 def loss_string(s):
     if s == 'squared-error-loss':
         return SquaredErrorLoss()
@@ -49,12 +67,12 @@ if __name__ == '__main__':
                         help='True, if the predictions should be stored as CSV files, False otherwise')
     parser.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced per iteration')
     parser.add_argument('--iterations', type=int, default=1, help='The number of iterations')
-    parser.add_argument('--bagging', type=boolean_string, default=False,
-                        help='True, if bagging should be used, False otherwise')
-    parser.add_argument('--feature-sampling', type=boolean_string, default=False,
-                        help='True, if random feature subset selection should be used, False otherwise')
-    parser.add_argument('--irep', type=boolean_string, default=False,
-                        help='True, if the rules should be pruned according to IREP, False otherwise')
+    parser.add_argument('--instance-sub-sampling', type=instance_sub_sampling_string, default=None,
+                        help='The name of the strategy to be used for instance sub-sampling or None')
+    parser.add_argument('--feature-sub-sampling', type=feature_sub_sampling_string, default=None,
+                        help='The name of the strategy to be used for feature sub-sampling or None')
+    parser.add_argument('--pruning', type=pruning_string, default=None,
+                        help='The name of the strategy to be used for pruning or None')
     parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
                         help='The name of the loss function to be used')
     parser.add_argument('--head-refinement', type=head_refinement_string, default=None)
@@ -62,34 +80,28 @@ if __name__ == '__main__':
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
-    instance_sub_sampling = Bagging() if args.bagging else None
-    feature_sub_sampling = RandomFeatureSubsetSelection() if args.feature_sampling else None
-    pruning = IREP() if args.irep else None
-    evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
-                                                                 output_predictions=args.store_predictions))
     experiment = None
 
     for i in range(1, args.iterations + 1):
         num_rules = args.num_rules * i
-        experiment_name = args.dataset + '_num-rules=' + str(num_rules) + '_bagging=' + str(
-            args.bagging) + '_feature-sampling=' + str(args.feature_sampling) + '_loss=' + type(
-            args.loss).__name__ + '_shrinkage=' + str(args.shrinkage)
         model_dir = args.model_dir
         model_name = args.dataset + '_num_rules=' + str(num_rules)
 
         if experiment is None:
-            default_learner = Boomer(num_rules=num_rules, loss=args.loss, instance_sub_sampling=instance_sub_sampling,
-                                     feature_sub_sampling=feature_sub_sampling, pruning=pruning,
-                                     shrinkage=args.shrinkage)
+            default_learner = Boomer(num_rules=num_rules, loss=args.loss, pruning=args.pruning,
+                                     instance_sub_sampling=args.instance_sub_sampling, shrinkage=args.shrinkage,
+                                     feature_sub_sampling=args.feature_sub_sampling)
             default_learner.random_state = args.random_state
 
             if model_dir is not None:
                 default_learner.persistence = ModelPersistence(model_dir=model_dir, model_name=model_name)
 
-            experiment = BatchExperiment(experiment_name, default_learner, evaluation, data_dir=args.data_dir,
-                                         data_set=args.dataset, folds=args.folds)
+            evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
+                                                                         output_predictions=args.store_predictions))
+            experiment = BatchExperiment(default_learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
+                                         folds=args.folds)
         else:
             persistence = None if model_dir is None else ModelPersistence(model_dir=model_dir, model_name=model_name)
-            experiment.add_variant(experiment_name, num_rules=num_rules, persistence=persistence)
+            experiment.add_variant(num_rules=num_rules, persistence=persistence)
 
     experiment.run()
