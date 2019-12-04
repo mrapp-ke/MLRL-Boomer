@@ -47,7 +47,8 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
-    parser.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced')
+    parser.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced per iteration')
+    parser.add_argument('--iterations', type=int, default=1, help='The number of iterations')
     parser.add_argument('--bagging', type=boolean_string, default=False,
                         help='True, if bagging should be used, False otherwise')
     parser.add_argument('--feature-sampling', type=boolean_string, default=False,
@@ -68,7 +69,7 @@ if __name__ == '__main__':
                                                                  output_predictions=args.store_predictions))
     experiment = None
 
-    for i in range(1, 5):
+    for i in range(1, args.iterations + 1):
         num_rules = args.num_rules * i
         experiment_name = args.dataset + '_num-rules=' + str(num_rules) + '_bagging=' + str(
             args.bagging) + '_feature-sampling=' + str(args.feature_sampling) + '_loss=' + type(
