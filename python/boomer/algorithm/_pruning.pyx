@@ -88,6 +88,7 @@ cdef class IREP(Pruning):
 
         # Cache arguments that will be used in the `prune` function...
         self.label_indices = label_indices
+        self.covered_example_indices = covered_example_indices
         self.loss = loss
         self.weights = weights
         self.predicted_scores = predicted_scores
@@ -100,6 +101,8 @@ cdef class IREP(Pruning):
         cdef intp num_conditions = conditions.size()
         cdef intp num_examples = x_sorted_indices.shape[0]
         cdef float64 best_quality_score = self.original_quality_score
+        cdef intp[::1] best_covered_example_indices = self.covered_example_indices
+        cdef intp best_num_examples = best_covered_example_indices.shape[0]
         cdef intp num_pruned_conditions = 0
         cdef list[s_condition].iterator iterator = conditions.begin()
         cdef s_condition condition
@@ -173,18 +176,20 @@ cdef class IREP(Pruning):
                         if weight == 0:
                             loss.update_search(index, 1)
 
+            # Update the number of covered examples (this is important, because otherwise we don't know how many of the
+            # leading elements in `covered_example_indices` are set)...
+            num_examples = i
+            covered_example_indices = new_covered_example_indices
+
             # Calculate the overall quality score of a rule that only contains the conditions processed so far to see if
             # it's better than the best quality score known so far...
             quality_score = loss.calculate_quality_score(predicted_scores)
 
             if quality_score < best_quality_score or (num_pruned_conditions == 0 and quality_score <= best_quality_score):
                 best_quality_score = quality_score
+                best_covered_example_indices = covered_example_indices
+                best_num_examples = num_examples
                 num_pruned_conditions = num_conditions - (n + 1)
-
-            # Update the number of covered examples (this is important, because otherwise we don't know how many of the
-            # leading elements in `covered_example_indices` are set)...
-            num_examples = i
-            covered_example_indices = new_covered_example_indices
 
             postincrement(iterator)
 
@@ -193,4 +198,4 @@ cdef class IREP(Pruning):
             conditions.pop_back()
             num_pruned_conditions -= 1
 
-        return covered_example_indices[0:num_examples]
+        return best_covered_example_indices[0:best_num_examples]
