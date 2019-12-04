@@ -153,29 +153,28 @@ class Experiment(AbstractExperiment):
     validation or separate training and test sets.
     """
 
-    def __init__(self, name: str, learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
-                 folds: int = 1):
+    def __init__(self, learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
         """
-        :param name:    The name of the experiment to be written to output files
         :param learner: The classifier or ranker to be trained
         """
         super().__init__(evaluation, data_dir, data_set, folds)
-        self.name = name
         self.learner = learner
 
     def run(self):
-        log.info('Starting experiment \"' + self.name + '\"...')
+        log.info('Starting experiment \"' + self.learner.get_name() + '\"...')
         super().run()
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         # Train classifier
-        self.learner.random_state = self.random_state
-        self.learner.fold = current_fold
-        self.learner.fit(train_x, train_y)
+        learner = self.learner
+        learner.random_state = self.random_state
+        learner.fold = current_fold
+        learner.fit(train_x, train_y)
 
         # Obtain and evaluate predictions for test data
-        predictions = self.learner.predict(test_x)
-        self.evaluation.evaluate(self.name, predictions, test_y, current_fold=current_fold, total_folds=self.folds)
+        predictions = learner.predict(test_x)
+        self.evaluation.evaluate(learner.get_name(), predictions, test_y, current_fold=current_fold,
+                                 total_folds=self.folds)
 
 
 class BatchExperiment(AbstractExperiment):
@@ -184,33 +183,32 @@ class BatchExperiment(AbstractExperiment):
     using cross validation or separate training and test sets.
     """
 
-    def __init__(self, name: str, learner: BatchMLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
-                 folds: int = 1):
+    def __init__(self, learner: BatchMLLearner, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
         """
-        :param name:    The name of the experiment that uses the default variant
-        :param learner: The default variant of the scikit-learn classifier to be trained
+        :param learner: The default variant of the classifier or ranker to be trained
         """
         super().__init__(evaluation, data_dir, data_set, folds)
-        self.variants = [({}, name)]
+        self.variants = [{}]
         self.learner = learner
 
-    def add_variant(self, name: str, **kwargs):
+    def add_variant(self, **kwargs):
         """
         Adds a new variant to the batch experiment.
 
-        :param name:    The name of the variant
-        :param kwargs:  The arguments to be passed to the classifier when creating a copy of the current variant
+        :param kwargs: The arguments to be passed to the classifier or ranker when creating a copy of the current
+                       variant
         """
-        self.variants.append((kwargs, name))
+        self.variants.append(kwargs)
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         next_variant = self.learner
 
-        for args, name in self.variants:
-            log.info('Starting experiment \"' + name + '\"...')
+        for args in self.variants:
             next_variant = next_variant.copy_classifier(**args)
             next_variant.random_state = self.random_state
             next_variant.fold = current_fold
+            name = next_variant.get_name()
+            log.info('Starting experiment \"' + name + '\"...')
 
             try:
                 # Obtain predictions without re-training the classifier, if possible
