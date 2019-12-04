@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 from boomer.algorithm._losses import Loss
 from skmultilearn.base import MLClassifierBase
 
-from boomer.algorithm.boomer import Boomer
 from boomer.algorithm.model import Theory
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Sign, LinearCombination
+from boomer.algorithm.rule_learners import Boomer
 from boomer.algorithm.stats import Stats
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS
 from boomer.experiments import CrossValidation
