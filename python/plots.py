@@ -30,12 +30,13 @@ class Plotter(CrossValidation, MLClassifierBase):
     prediction = Sign(LinearCombination())
 
     def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, folds: int, bagging: bool,
-                 feature_sampling: bool, loss: Loss, num_rules: int, shrinkage: float):
+                 feature_sampling: bool, loss: Loss, num_rules: int, irep: bool, shrinkage: float):
         super().__init__(data_dir, data_set, folds)
         self.bagging = bagging
         self.feature_sampling = feature_sampling
         self.loss = loss
         self.num_rules = num_rules
+        self.irep = irep
         self.shrinkage = shrinkage
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
@@ -100,8 +101,8 @@ class Plotter(CrossValidation, MLClassifierBase):
             plt.legend()
             output_file = path.join(self.output_dir, 'loss_curves_' + self.data_set + '_num-rules=' + str(
                 self.num_rules) + '_bagging=' + str(self.bagging) + '_feature-sampling=' + str(
-                self.feature_sampling) + '_loss=' + type(self.loss).__name__ + '_shrinkage=' + str(
-                self.shrinkage) + '.pdf')
+                self.feature_sampling) + '_loss=' + type(self.loss).__name__ + '_irep=' + str(
+                self.irep) + '_shrinkage=' + str(self.shrinkage) + '.pdf')
             log.info('Saving plot to file \'' + output_file + '\'...')
             plt.savefig(output_file)
 
@@ -134,12 +135,14 @@ if __name__ == '__main__':
                         help='True, if random feature subset selection should be used, False otherwise')
     parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
                         help='The name of the loss function to be used')
+    parser.add_argument('--irep', type=boolean_string, default=False,
+                        help='True, if the rules should be pruned according to IREP, False otherwise')
     parser.add_argument('--shrinkage', type=float, default=1, help='The shrinkage parameter to be used')
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
                       data_set=args.dataset, folds=args.folds, bagging=args.bagging,
-                      feature_sampling=args.feature_sampling, loss=args.loss, num_rules=args.num_rules,
+                      feature_sampling=args.feature_sampling, loss=args.loss, num_rules=args.num_rules, irep=args.irep,
                       shrinkage=args.shrinkage)
     plotter.run()
