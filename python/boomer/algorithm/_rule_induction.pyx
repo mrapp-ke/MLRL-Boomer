@@ -9,6 +9,7 @@ from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
+from boomer.algorithm._utils cimport test_condition
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
@@ -275,7 +276,7 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
         i = sorted_indices[r, feature_index]
         feature_value = x[i, feature_index]
 
-        if __test_condition(threshold, leq, feature_value) == leq:
+        if test_condition(threshold, leq, feature_value) == leq:
             # If we have found the first example that is separated from the example at the position we started at, we
             # are done...
             break
@@ -382,7 +383,7 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
                 index = sorted_indices[r, c]
                 feature_value = x[index, condition_index]
 
-                if __test_condition(condition_threshold, condition_leq, feature_value):
+                if test_condition(condition_threshold, condition_leq, feature_value):
                     filtered_sorted_indices[i, c] = index
                     i += 1
 
@@ -448,18 +449,3 @@ cdef inline float32 __calculate_threshold(float32 previous_threshold, float32 cu
     :return:                    A scalar of dtype float, representing the calculated threshold
     """
     return previous_threshold + ((current_threshold - previous_threshold) / 2)
-
-
-cdef inline bint __test_condition(float32 threshold, bint leq, float32 feature_value):
-    """
-    Returns whether a given feature value satisfies a certain condition.
-
-    :param threshold:       The threshold of the condition
-    :param leq:             1, if the condition uses the <= operator, 0, if it uses the > operator
-    :param feature_value:   The feature value
-    :return:                1, if the feature value satisfies the condition, 0 otherwise
-    """
-    if leq:
-        return feature_value <= threshold
-    else:
-        return feature_value > threshold
