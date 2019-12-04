@@ -315,8 +315,8 @@ cdef Rule __build_rule(HeadCandidate head, list[s_condition] conditions,  intp n
             leq_thresholds[leq_i] = condition.threshold
             leq_i += 1
         else:
-            gr_feature_indices[leq_i] = condition.feature_index
-            gr_thresholds[leq_i] = condition.threshold
+            gr_feature_indices[gr_i] = condition.feature_index
+            gr_thresholds[gr_i] = condition.threshold
             gr_i += 1
 
         postincrement(iterator)
