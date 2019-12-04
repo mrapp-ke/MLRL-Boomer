@@ -1,7 +1,8 @@
 # distutils: language=c++
 from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
 from boomer.algorithm._losses cimport Loss
-from boomer.algorithm._model cimport s_condition, PartialHead
+from boomer.algorithm._model cimport PartialHead
+from boomer.algorithm._utils cimport s_condition
 
 from libcpp.list cimport list as list
 

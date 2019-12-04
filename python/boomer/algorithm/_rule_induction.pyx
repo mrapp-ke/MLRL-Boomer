@@ -4,12 +4,11 @@
 # cython: cdivision=False
 from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
 from boomer.algorithm._model cimport Rule, FullHead, EmptyBody, ConjunctiveBody, PartialHead
-from boomer.algorithm._model cimport s_condition, make_condition
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
-from boomer.algorithm._utils cimport test_condition
+from boomer.algorithm._utils cimport s_condition, make_condition, test_condition
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
