@@ -39,7 +39,8 @@ class Plotter(CrossValidation, MLClassifierBase):
         self.shrinkage = shrinkage
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
-        self.persistence = ModelPersistence(model_dir=model_dir, model_name=data_set)
+        model_name = data_set + '_num_rules=' + str(num_rules)
+        self.persistence = ModelPersistence(model_dir=model_dir, model_name=model_name)
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         # Create a dense representation of the training data
