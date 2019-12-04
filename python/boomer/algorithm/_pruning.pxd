@@ -25,6 +25,8 @@ cdef class IREP(Pruning):
 
     cdef intp[::1] label_indices
 
+    cdef intp[::1] covered_example_indices
+
     cdef Loss loss
 
     cdef uint32[::1] weights
