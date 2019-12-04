@@ -142,6 +142,7 @@ class AbstractExperiment(CrossValidation):
         super().__init__(data_dir, data_set, folds)
         self.evaluation = evaluation
 
+    @abstractmethod
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         pass
 
