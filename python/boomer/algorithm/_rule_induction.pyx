@@ -232,9 +232,9 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     covered_example_indices = sorted_indices[:, 0]
 
     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-    if pruning is not None and weights is not None and num_refinements > 1:
+    if pruning is not None and weights is not None and conditions.size() > 1:
         pruning.begin_pruning(weights, loss, covered_example_indices, head.label_indices, head.predicted_scores)
-        # TODO Prune rule...
+        covered_example_indices = pruning.prune(x, x_sorted_indices, conditions)
 
     # Apply shrinkage, if necessary...
     if shrinkage < 1:
