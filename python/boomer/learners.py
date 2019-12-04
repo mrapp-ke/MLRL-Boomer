@@ -40,6 +40,15 @@ class MLLearner(MLClassifierBase, Randomized):
     fold: int = None
 
     @abstractmethod
+    def get_name(self) -> str:
+        """
+        Returns a human-readable name that allows to identify the configuration used by the classifier or ranker.
+
+        :return: The name of the classifier or ranker
+        """
+        pass
+
+    @abstractmethod
     def fit(self, x: np.ndarray, y: np.ndarray) -> 'MLLearner':
         """
         Trains the classifier or ranker on the given training data.
