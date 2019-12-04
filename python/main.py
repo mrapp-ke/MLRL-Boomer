@@ -78,7 +78,8 @@ if __name__ == '__main__':
 
         if experiment is None:
             default_learner = Boomer(num_rules=num_rules, loss=args.loss, instance_sub_sampling=instance_sub_sampling,
-                                     feature_sub_sampling=feature_sub_sampling, shrinkage=args.shrinkage)
+                                     feature_sub_sampling=feature_sub_sampling, pruning=pruning,
+                                     shrinkage=args.shrinkage)
             default_learner.random_state = args.random_state
 
             if model_dir is not None:
