@@ -229,16 +229,11 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef begin_instance_sub_sampling(self):
         # Reset total sum of hessians to 0...
-        cdef float64 total_sum_of_hessians = 0
-        self.total_sum_of_hessians = total_sum_of_hessians
+        self.total_sum_of_hessians = 0
 
         # Reset total sums of gradients to 0...
-        cdef float64[::1, :] gradients = self.gradients
-        cdef intp num_cols = gradients.shape[1]
-        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
-                                                            mode='c')
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         total_sums_of_gradients[:] = 0
-        self.total_sums_of_gradients = total_sums_of_gradients
 
     cdef update_sub_sample(self, intp example_index):
         # Update total sum of hessians...
