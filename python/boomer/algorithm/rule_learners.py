@@ -233,6 +233,7 @@ class Boomer(MLRuleLearner, BatchMLLearner):
         feature_sub_sampling = 'None' if self.rule_induction.feature_sub_sampling is None else str(
             type(self.rule_induction.feature_sub_sampling).__name__)
         pruning = 'None' if self.rule_induction.pruning is None else str(type(self.rule_induction.pruning).__name__)
+        shrinkage = str(self.rule_induction.shrinkage)
         return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
                + '_instance-sub-sampling' + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling \
                + '_pruning=' + pruning + '_shrinkage=' + shrinkage
