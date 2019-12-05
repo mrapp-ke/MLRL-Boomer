@@ -1,4 +1,4 @@
-from boomer.algorithm._model cimport intp, uint32, float32
+from boomer.algorithm._model cimport intp, float32
 
 
 # A struct that represents a condition of a rule. It consists of the index of the feature that is used by the condition,
@@ -37,18 +37,3 @@ cdef inline bint test_condition(float32 threshold, bint leq, float32 feature_val
         return feature_value <= threshold
     else:
         return feature_value > threshold
-
-
-cdef inline uint32 get_weight(intp example_index, uint32[::1] weights):
-    """
-    Retrieves and returns the weight of the example at a specific index from an array of weights, if such an array is
-    available.
-
-    :param example_index:   The index of the example whose weight should be retrieved
-    :param weights:         An array of dtype int, shape `(num_examples)`, representing the weights of examples
-    :return:                A scalar of dtype int, representing the weight of the example at the given index
-    """
-    if weights is None:
-        return 1
-    else:
-        return weights[example_index]

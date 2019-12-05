@@ -1,8 +1,6 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=False
-from boomer.algorithm._utils cimport get_weight
-
 from cython.view cimport array as cvarray
 from libc.math cimport pow
 
@@ -125,7 +123,7 @@ cdef class Loss:
         """
         pass
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, uint32[::1] weights, intp[::1] label_indices,
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         """
         Updates the cached gradients (and hessians in case of a non-decomposable loss function) based on the predictions
@@ -134,8 +132,6 @@ cdef class Loss:
         :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
                                         of the examples that are covered by the newly induced rule, regardless of
                                         whether they are contained in the sub-sample or not
-        :param weights:                 An array of dtype int, shape `(num_examples)`, representing the weights of all
-                                        training examples
         :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
                                         of the labels for which the newly induced rule predicts
         :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
@@ -169,7 +165,7 @@ cdef class DecomposableLoss(Loss):
     cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
         pass
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, uint32[::1] weights, intp[::1] label_indices,
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         pass
 
@@ -346,13 +342,12 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         return quality_score
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, uint32[::1] weights, intp[::1] label_indices,
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         cdef intp num_labels = label_indices.shape[0]
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64 total_sum_of_gradients, predicted_score, old_gradient, new_gradient
-        cdef uint32 weight
+        cdef float64 total_sum_of_gradients, predicted_score, gradient
         cdef intp c, l, i
 
         # Only the labels that are predicted by the new rule must be considered...
@@ -363,17 +358,18 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
             # Only the examples that are covered by the new rule must be considered...
             for i in covered_example_indices:
-                # Update the old gradient by adding the predicted score...
-                old_gradient = gradients[i, l]
-                new_gradient = old_gradient + predicted_score
-                gradients[i, l] = new_gradient
+                gradient = gradients[i, l]
 
-                # If the current example is contained in the sub-sample, update the total sum of gradients by
-                # subtracting the old gradient and adding the new one...
-                weight = get_weight(i, weights)
+                # Update the total sum of gradients by subtracting the old gradient and adding the new one...
+                # If instance sub-sampling is used, this will cause the total sum of gradients to become incorrect.
+                # However, this doesn't matter, because it will be recalculated when re-sampling for learning the next
+                # rule anyway.
+                total_sum_of_gradients -= gradient
+                gradient += predicted_score
+                total_sum_of_gradients += gradient
 
-                if weight > 0:
-                    total_sum_of_gradients = total_sum_of_gradients - old_gradient + new_gradient
+                # Update the gradient for the current label and example...
+                gradients[i, l] = gradient
 
             # Update the sum of gradients for the current label...
             total_sums_of_gradients[l] = total_sum_of_gradients
