@@ -8,7 +8,7 @@ from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
-from boomer.algorithm._utils cimport s_condition, make_condition, test_condition
+from boomer.algorithm._utils cimport s_condition, make_condition, test_condition, get_weight
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
@@ -129,7 +129,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             # Find first example with weight > 0...
             for r in range(0, num_examples):
                 i = sorted_indices[r, f]
-                weight = __get_weight(i, weights)
+                weight = get_weight(i, weights)
 
                 if weight > 0:
                     # Tell the loss function that the example will be covered by upcoming refinements...
@@ -141,7 +141,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             # Traverse remaining instances...
             for r in range(r + 1, num_examples):
                 i = sorted_indices[r, f]
-                weight = __get_weight(i, weights)
+                weight = get_weight(i, weights)
 
                 # Do only consider examples that are included in the sub-sample...
                 if weight > 0:
@@ -240,7 +240,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         __apply_shrinkage(head, shrinkage)
 
     # Tell the loss function that a new rule has been induced...
-    loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
+    loss.apply_predictions(covered_example_indices, weights, label_indices, head.predicted_scores)
 
     # Build and return the induced rule...
     return __build_rule(head, conditions, num_leq_conditions, num_gr_conditions)
@@ -420,21 +420,6 @@ cdef inline intp __get_feature_index(intp i, intp[::1] feature_indices):
         return i
     else:
         return feature_indices[i]
-
-
-cdef inline uint32 __get_weight(intp example_index, uint32[::1] weights):
-    """
-    Retrieves and returns the weight of the example at a specific index from an array of weights, if such an array is
-    available.
-
-    :param example_index:   The index of the example whose weight should be retrieved
-    :param weights:         An array of dtype int, shape `(num_examples)`, representing the weights of examples
-    :return:                A scalar of dtype int, representing the weight of the example at the given index
-    """
-    if weights is None:
-        return 1
-    else:
-        return weights[example_index]
 
 
 cdef inline float32 __calculate_threshold(float32 previous_threshold, float32 current_threshold):
