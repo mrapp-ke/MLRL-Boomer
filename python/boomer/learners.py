@@ -39,6 +39,17 @@ class MLLearner(MLClassifierBase, Randomized):
 
     fold: int = None
 
+    def get_model_name(self) -> str:
+        """
+        Returns the name that should be used to save the model of the classifier or ranker to a file.
+
+        By default, the model's name is equal to the learner's name as returned by the function `get_name`. This method
+        may be overridden if varying names for models should be used.
+
+        :return: The name that should be used to save the model to a file
+        """
+        return self.get_name()
+
     @abstractmethod
     def get_name(self) -> str:
         """
