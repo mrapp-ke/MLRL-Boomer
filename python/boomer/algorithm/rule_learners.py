@@ -79,7 +79,8 @@ class MLRuleLearner(MLLearner):
         step = MLRuleLearner.STEP_RULE_INDUCTION
 
         if self.persistence is not None:
-            theory = self.persistence.load_model(file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
+            theory = self.persistence.load_model(model_name=self.get_model_name(),
+                                                 file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
         else:
             theory = None
 
@@ -141,7 +142,8 @@ class MLRuleLearner(MLLearner):
         """
 
         if self.persistence is not None:
-            self.persistence.save_model(theory, MLRuleLearner.PREFIX_RULES, fold=self.fold)
+            self.persistence.save_model(theory, model_name=self.get_model_name(),
+                                        file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
 
     def fit(self, x: np.ndarray, y: np.ndarray) -> MLLearner:
         self.theory = self._induce_rules(x, y)

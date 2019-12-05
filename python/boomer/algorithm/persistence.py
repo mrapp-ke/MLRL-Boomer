@@ -6,8 +6,8 @@
 Provides classes for saving/loading models to/from disk.
 """
 import _pickle as pickle
-import os.path as path
 import logging as log
+import os.path as path
 
 
 class ModelPersistence:
@@ -15,24 +15,23 @@ class ModelPersistence:
     Allows to save a model in a file and load it later.
     """
 
-    def __init__(self, model_dir: str, model_name: str):
+    def __init__(self, model_dir: str):
         """
-        :param model_dir:   The path of the directory where models should be saved
-        :param model_name:  The name of the model
+        :param model_dir: The path of the directory where models should be saved
         """
         self.model_dir = model_dir
-        self.model_name = model_name
 
-    def save_model(self, model, file_name_suffix: str = None, fold: int = None):
+    def save_model(self, model, model_name: str, file_name_suffix: str = None, fold: int = None):
         """
         Saves a model to a file.
 
-        :param file_name_suffix:    A suffix to be added to the name of the file
         :param model:               The model to be persisted
-        :param fold:                The fold the model corresponds to or None, if no cross validation is used
+        :param model_name:          The name of the model to be persisted
+        :param file_name_suffix:    A suffix to be added to the name of the file
+        :param fold:                The fold, the model corresponds to, or None if no cross validation is used
         """
 
-        file_path = path.join(self.model_dir, self.__get_file_name(file_name_suffix, fold))
+        file_path = path.join(self.model_dir, ModelPersistence.__get_file_name(model_name, file_name_suffix, fold))
         log.debug('Saving model to file \"%s\"...', file_path)
 
         try:
@@ -42,16 +41,17 @@ class ModelPersistence:
         except IOError:
             log.error('Failed to save model to file \"%s\"', file_path)
 
-    def load_model(self, file_name_suffix: str = None, fold: int = None):
+    def load_model(self, model_name: str, file_name_suffix: str = None, fold: int = None):
         """
         Loads a model from a file.
 
-        :param file_name_suffix:    A suffix to be added to the name of the file
-        :param fold:        The fold the model corresponds to or None, if no cross validation is used
+        :param model_name:          The name of the model to be loaded
+        :param file_name_suffix:    The suffix that has been added to the name of the file
+        :param fold:                The fold, the model corresponds to, or None if no cross validation is used
         :return:                    The loaded model
         """
 
-        file_path = path.join(self.model_dir, self.__get_file_name(file_name_suffix, fold))
+        file_path = path.join(self.model_dir, ModelPersistence.__get_file_name(model_name, file_name_suffix, fold))
         log.debug("Loading model from file \"%s\"...", file_path)
 
         try:
@@ -63,8 +63,17 @@ class ModelPersistence:
             log.error('Failed to load model from file \"%s\"', file_path)
             return None
 
-    def __get_file_name(self, file_name_suffix: str, fold: int):
-        file_name = self.model_name
+    @staticmethod
+    def __get_file_name(model_name: str, file_name_suffix: str, fold: int):
+        """
+        Returns the name of the file that is used to persist a model.
+
+        :param model_name:          The name of the model to be persisted
+        :param file_name_suffix:    A suffix to be added to the name of the file
+        :param fold:                The fold, the model corresponds to, or None if no cross validation is used
+        :return:                    The name of the file
+        """
+        file_name = model_name
 
         if file_name_suffix is not None:
             file_name += ('_' + file_name_suffix)

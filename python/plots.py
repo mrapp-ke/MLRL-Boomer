@@ -5,7 +5,6 @@ import logging as log
 import os.path as path
 
 import matplotlib.pyplot as plt
-from boomer.algorithm._losses import Loss
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import Theory
@@ -15,7 +14,7 @@ from boomer.algorithm.rule_learners import Boomer
 from boomer.algorithm.stats import Stats
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS
 from boomer.experiments import CrossValidation
-from main import boolean_string, loss_string
+from main import configure_argument_parser, create_learner
 
 
 class Plotter(CrossValidation, MLClassifierBase):
@@ -29,19 +28,14 @@ class Plotter(CrossValidation, MLClassifierBase):
 
     prediction = Sign(LinearCombination())
 
-    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, folds: int, bagging: bool,
-                 feature_sampling: bool, loss: Loss, num_rules: int, irep: bool, shrinkage: float):
+    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, folds: int, learner_name: str,
+                 model_name: str):
         super().__init__(data_dir, data_set, folds)
-        self.bagging = bagging
-        self.feature_sampling = feature_sampling
-        self.loss = loss
-        self.num_rules = num_rules
-        self.irep = irep
-        self.shrinkage = shrinkage
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
-        model_name = data_set + '_num_rules=' + str(num_rules)
-        self.persistence = ModelPersistence(model_dir=model_dir, model_name=model_name)
+        self.persistence = ModelPersistence(model_dir=model_dir)
+        self.learner_name = learner_name
+        self.model_name = model_name
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         # Create a dense representation of the training data
@@ -72,7 +66,8 @@ class Plotter(CrossValidation, MLClassifierBase):
             self.__plot(num_iterations=num_iterations)
 
     def __load_theory(self, fold: int):
-        theory = self.persistence.load_model(file_name_suffix=Boomer.PREFIX_RULES, fold=fold)
+        theory = self.persistence.load_model(model_name=self.model_name, file_name_suffix=Boomer.PREFIX_RULES,
+                                             fold=fold)
 
         if theory is None:
             raise IOError('Unable to load model')
@@ -99,10 +94,8 @@ class Plotter(CrossValidation, MLClassifierBase):
                 plt.plot(x, y, label=prefix)
 
             plt.legend()
-            output_file = path.join(self.output_dir, 'loss_curves_' + self.data_set + '_num-rules=' + str(
-                self.num_rules) + '_bagging=' + str(self.bagging) + '_feature-sampling=' + str(
-                self.feature_sampling) + '_loss=' + type(self.loss).__name__ + '_irep=' + str(
-                self.irep) + '_shrinkage=' + str(self.shrinkage) + '.pdf')
+            file_name = self.learner_name + '.pdf'
+            output_file = path.join(self.output_dir, file_name)
             log.info('Saving plot to file \'' + output_file + '\'...')
             plt.savefig(output_file)
 
@@ -122,27 +115,13 @@ class Plotter(CrossValidation, MLClassifierBase):
 if __name__ == '__main__':
     log.basicConfig(level=log.INFO)
 
-    parser = argparse.ArgumentParser(description='An multi-label classification experiment using BOOMER')
-    parser.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
-    parser.add_argument('--output-dir', type=str, help='The path of the directory into which plots should be written')
-    parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be saved')
-    parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
-    parser.add_argument('--folds', type=int, default=1, help='Number of folds to be used by cross validation')
-    parser.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced')
-    parser.add_argument('--bagging', type=boolean_string, default=False,
-                        help='True, if bagging should be used, False otherwise')
-    parser.add_argument('--feature-sampling', type=boolean_string, default=False,
-                        help='True, if random feature subset selection should be used, False otherwise')
-    parser.add_argument('--loss', type=loss_string, default='squared-error-loss',
-                        help='The name of the loss function to be used')
-    parser.add_argument('--irep', type=boolean_string, default=False,
-                        help='True, if the rules should be pruned according to IREP, False otherwise')
-    parser.add_argument('--shrinkage', type=float, default=1, help='The shrinkage parameter to be used')
+    parser = argparse.ArgumentParser(description='Plots the performance of a BOOMER model')
+    configure_argument_parser(parser)
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
+    learner = create_learner(args.num_rules, args)
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
-                      data_set=args.dataset, folds=args.folds, bagging=args.bagging,
-                      feature_sampling=args.feature_sampling, loss=args.loss, num_rules=args.num_rules, irep=args.irep,
-                      shrinkage=args.shrinkage)
+                      data_set=args.dataset, folds=args.folds, model_name=learner.get_model_name(),
+                      learner_name=learner.get_name())
     plotter.run()
