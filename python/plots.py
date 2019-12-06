@@ -5,13 +5,12 @@ import logging as log
 import os.path as path
 
 import matplotlib.pyplot as plt
+import numpy as np
 from skmultilearn.base import MLClassifierBase
 
-from boomer.algorithm.model import Theory
+from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.persistence import ModelPersistence
-from boomer.algorithm.prediction import Sign, LinearCombination
 from boomer.algorithm.rule_learners import Boomer
-from boomer.algorithm.stats import Stats
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS
 from boomer.experiments import CrossValidation
 from main import configure_argument_parser, create_learner
@@ -26,8 +25,6 @@ class Plotter(CrossValidation, MLClassifierBase):
 
     evaluation = ClassificationEvaluation()
 
-    prediction = Sign(LinearCombination())
-
     def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, folds: int, learner_name: str,
                  model_name: str):
         super().__init__(data_dir, data_set, folds)
@@ -39,32 +36,31 @@ class Plotter(CrossValidation, MLClassifierBase):
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         # Create a dense representation of the training data
-        train_x = self._ensure_input_format(train_x)
+        train_x = np.asfortranarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)
-        test_x = self._ensure_input_format(test_x)
+        test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
         test_y = self._ensure_input_format(test_y)
 
-        # Create statistics for the training and test set
-        train_stats = Stats.create_stats(train_x, train_y)
-        test_stats = Stats.create_stats(test_x, test_y)
-
         theory: Theory = self.__load_theory(current_fold)
-        current_model = []
         num_iterations = len(theory)
+
+        train_predictions = np.asfortranarray(np.zeros((train_x.shape[0], train_y.shape[1]), dtype=DTYPE_FLOAT64))
+        test_predictions = np.asfortranarray(np.zeros((test_x.shape[0], test_y.shape[1]), dtype=DTYPE_FLOAT64))
 
         for i in range(0, num_iterations):
             log.info("Evaluating model at iteration %s / %s...", i + 1, num_iterations)
 
             rule = theory.pop(0)
-            current_model.append(rule)
 
-            predictions = self.prediction.predict(train_stats, current_model, train_x)
+            rule.predict(train_x, train_predictions)
             name = Plotter.__get_experiment_name(prefix='train', iteration=i)
-            self.evaluation.evaluate(name, predictions, train_y, current_fold=current_fold, total_folds=total_folds)
+            self.evaluation.evaluate(name, np.where(train_predictions > 0, 1, 0), train_y, current_fold=current_fold,
+                                     total_folds=total_folds)
 
-            predictions = self.prediction.predict(test_stats, current_model, test_x)
+            rule.predict(test_x, test_predictions)
             name = Plotter.__get_experiment_name(prefix='test', iteration=i)
-            self.evaluation.evaluate(name, predictions, test_y, current_fold=current_fold, total_folds=total_folds)
+            self.evaluation.evaluate(name, np.where(test_predictions > 0, 1, 0), test_y, current_fold=current_fold,
+                                     total_folds=total_folds)
 
         if total_folds < 1 or current_fold == total_folds - 1:
             self.__plot(num_iterations=num_iterations)
