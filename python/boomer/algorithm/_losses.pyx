@@ -106,6 +106,19 @@ cdef class Loss:
         """
         pass
 
+    cdef float64[::1] calculate_predicted_scores(self):
+        """
+        Calculates the scores to be predicted by a rule that covers all examples that have been provided so far via the
+        function `update_search`.
+
+        The calculated scores correspond to the label indices provided to the `begin_search` function. If no label
+        indices were provided, scores for all labels are calculated.
+
+        :return: An array of dtype float, shape `(num_predicted_labels)`, representing the optimal scores to be
+                 predicted by a rule that covers all examples provided so far
+        """
+        pass
+
     cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
         """
         Calculates an overall quality score that measures the quality of the scores that are predicted by a rule for one
@@ -160,6 +173,9 @@ cdef class DecomposableLoss(Loss):
         pass
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self):
+        pass
+
+    cdef float64[::1] calculate_predicted_scores(self):
         pass
 
     cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
@@ -276,7 +292,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     cdef update_search(self, intp example_index, uint32 weight):
         # Update sum of hessians...
         cdef float64 sum_of_hessians = self.sum_of_hessians
-        sum_of_hessians += weight * 2
+        sum_of_hessians += (weight * 2)
         self.sum_of_hessians = sum_of_hessians
 
         # Column-wise update sums of gradients...
@@ -288,7 +304,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         for c in range(num_labels):
             l = __get_label_index(c, label_indices)
-            sums_of_gradients[c] += weight * gradients[example_index, l]
+            sums_of_gradients[c] += (weight * gradients[example_index, l])
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self):
         cdef float64[::1, :] predicted_and_quality_scores = self.predicted_and_quality_scores
@@ -323,6 +339,23 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             predicted_and_quality_scores[3, c] = ((total_sums_of_gradients[l] - sum_of_gradients) * score) + (score_halved * sum_of_hessians_uncovered * score)
 
         return predicted_and_quality_scores
+
+    cdef float64[::1] calculate_predicted_scores(self):
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64 sum_of_hessians = self.sum_of_hessians
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        cdef float64[::1] predicted_scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
+                                                     mode='c')
+        cdef float64 sum_of_gradients, score
+
+        for c in range(num_labels):
+            sum_of_gradients = sums_of_gradients[c]
+
+            # Calculate score to be predicted by a rule that covers the examples that have been provided so far...
+            score = -sum_of_gradients / sum_of_hessians
+            predicted_scores[c] = score
+
+        return predicted_scores
 
     cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
         cdef float64 quality_score = 0
