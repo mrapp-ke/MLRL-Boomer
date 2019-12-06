@@ -126,23 +126,6 @@ cdef class Loss:
         """
         pass
 
-    cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
-        """
-        Calculates an overall quality score that measures the quality of the scores that are predicted by a rule for one
-        or several labels of the examples that have been provided so far via the function `update_search`.
-
-        This function may be used instead of the function `calculate_predicted_and_quality_scores` to evaluate the
-        quality of a previously induced rule based on new examples that have not been used to grow the rule.
-
-        The given predicted scores must correspond to the label indices provided to the `begin_search` function. If no
-        label indices were provided, predicted scores for all labels must be provided.
-
-        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                    that are predicted by the rule
-        :return:                    An overall quality score that measures the quality of the rule
-        """
-        pass
-
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         """
@@ -183,9 +166,6 @@ cdef class DecomposableLoss(Loss):
         pass
 
     cdef float64[::1] calculate_predicted_scores(self):
-        pass
-
-    cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
         pass
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
@@ -367,24 +347,6 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             predicted_scores[c] = score
 
         return predicted_scores
-
-    cdef float64 calculate_quality_score(self, float64[::1] predicted_scores):
-        cdef float64 quality_score = 0
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64 sum_of_hessians = self.sum_of_hessians
-        cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef float64 score, score_halved
-        cdef intp c
-
-        # For each of the labels, calculate a quality score based on the score that is predicted by the rule for the
-        # respective label and the examples that have been provided so far and add it to the overall quality score...
-        for c in range(num_labels):
-            sum_of_gradients = sums_of_gradients[c]
-            score = predicted_scores[c]
-            score_halved = score / 2
-            quality_score += (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
-
-        return quality_score
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
