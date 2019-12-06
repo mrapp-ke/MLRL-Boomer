@@ -151,7 +151,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                     if previous_threshold != current_threshold:
                         # Calculate optimal scores to be predicted by the current refinement, as well as the
                         # corresponding quality scores
-                        predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores()
+                        predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(1)
 
                         # Evaluate potential condition using <= operator...
                         current_head = head_refinement.find_head(head, best_head, predicted_and_quality_scores, 0)

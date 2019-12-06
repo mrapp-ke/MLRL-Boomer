@@ -44,7 +44,7 @@ cdef class Loss:
 
     cdef update_search(self, intp example_index, uint32 weight)
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self)
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered)
 
     cdef float64[::1] calculate_predicted_scores(self)
 
@@ -68,7 +68,7 @@ cdef class DecomposableLoss(Loss):
 
     cdef update_search(self, intp example_index, uint32 weight)
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self)
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered)
 
     cdef float64[::1] calculate_predicted_scores(self)
 
@@ -108,7 +108,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef update_search(self, intp example_index, uint32 weight)
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self)
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered)
 
     cdef float64[::1] calculate_predicted_scores(self)
 

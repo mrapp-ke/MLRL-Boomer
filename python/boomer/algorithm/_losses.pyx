@@ -89,20 +89,25 @@ cdef class Loss:
         """
         pass
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self):
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
         """
-        Calculates the optimal scores to be predicted by rules that cover all examples that have been provided so far
-        via the function `update_search`, respectively that cover all examples that have not been provided yet, as well
-        as corresponding quality scores that measure the quality of the predicted scores.
+        Calculates the optimal scores to be predicted by a rule that covers all examples that have been provided so far
+        via the function `update_search`, as well as (optionally) by a rule that covers all examples that have not been
+        provided yet. Additionally, for each label, quality scores that measure the quality of the predicted scores are
+        calculated.
 
         The calculated scores correspond to the label indices provided to the `begin_search` function. If no label
         indices were provided, scores for all labels are calculated.
 
-        :return: An array of dtype float, shape `(4, num_predicted_labels)`, representing the optimal scores to be
-                 predicted by a rule that covers all examples provided so far in the 1st row, as well as the
-                 corresponding quality scores in the 2nd row. Accordingly, the 3rd row represents the optimal scores to
-                 be predicted by a rule that covers all examples that have not been not provided yet, and the 4th row
-                 contains the corresponding quality scores.
+        :param include_uncovered:   1, if the scores for a rule that covers all examples that have not been provided
+                                    should be calculated, 0 otherwise
+        :return:                    An array of dtype float, shape `(4, num_predicted_labels)`, representing the optimal
+                                    scores to be predicted by a rule that covers all examples provided so far in the 1st
+                                    row, as well as the corresponding quality scores in the 2nd row. Accordingly, the
+                                    3rd row represents the optimal scores to be predicted by a rule that covers all
+                                    examples that have not been not provided yet, and the 4th row contains the
+                                    corresponding quality scores. If `include_uncovered` is 0, the elements in the 3rd
+                                    and 4th row are undefined
         """
         pass
 
@@ -172,7 +177,7 @@ cdef class DecomposableLoss(Loss):
     cdef update_search(self, intp example_index, uint32 weight):
         pass
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self):
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
         pass
 
     cdef float64[::1] calculate_predicted_scores(self):
@@ -306,17 +311,20 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             l = __get_label_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self):
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
         cdef float64[::1, :] predicted_and_quality_scores = self.predicted_and_quality_scores
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64 sum_of_hessians = self.sum_of_hessians
-        cdef float64 total_sum_of_hessians = self.total_sum_of_hessians
-        cdef float64 sum_of_hessians_uncovered = total_sum_of_hessians - sum_of_hessians
         cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef intp[::1] label_indices = self.label_indices
-        cdef float64 sum_of_gradients, score, score_halved
+        cdef float64 sum_of_gradients, score, score_halved, sum_of_hessians_uncovered
+        cdef float64[::1] total_sums_of_gradients
+        cdef intp[::1] label_indices
         cdef intp c, l
+
+        if include_uncovered:
+            sum_of_hessians_uncovered = self.total_sum_of_hessians - sum_of_hessians
+            total_sums_of_gradients = self.total_sums_of_gradients
+            label_indices = self.label_indices
 
         for c in range(num_labels):
             sum_of_gradients = sums_of_gradients[c]
@@ -329,14 +337,15 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             score_halved = score / 2
             predicted_and_quality_scores[1, c] = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
 
-            # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
-            l = __get_label_index(c, label_indices)
-            score = -(total_sums_of_gradients[l] - sum_of_gradients) / sum_of_hessians_uncovered
-            predicted_and_quality_scores[2, c] = score
+            if include_uncovered:
+                # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
+                l = __get_label_index(c, label_indices)
+                score = -(total_sums_of_gradients[l] - sum_of_gradients) / sum_of_hessians_uncovered
+                predicted_and_quality_scores[2, c] = score
 
-            # Calculate quality score for a rule that covers the examples that have not been provided yet...
-            score_halved = score / 2
-            predicted_and_quality_scores[3, c] = ((total_sums_of_gradients[l] - sum_of_gradients) * score) + (score_halved * sum_of_hessians_uncovered * score)
+                # Calculate quality score for a rule that covers the examples that have not been provided yet...
+                score_halved = score / 2
+                predicted_and_quality_scores[3, c] = ((total_sums_of_gradients[l] - sum_of_gradients) * score) + (score_halved * sum_of_hessians_uncovered * score)
 
         return predicted_and_quality_scores
 
