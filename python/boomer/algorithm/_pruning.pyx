@@ -15,8 +15,8 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices, intp[::1] label_indices,
-                       float64[::1] predicted_scores):
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices,
+                       intp[::1] label_indices):
         """
         Calculates the quality score of an existing rule, based on the examples that are contained in the prune set,
         i.e., based on all examples whose weight is 0.
@@ -35,8 +35,6 @@ cdef class Pruning:
                                         they are included in the prune set or grow set
         :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
                                         of the labels for which the rule predicts
-        :param predicted_scores:        An array of dtype int, shape `(num_predicted_labels)`, representing the scores
-                                        that are predicted by the rule for the labels in `label_indices`
         """
         pass
 
@@ -67,8 +65,8 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices, intp[::1] label_indices,
-                       float64[::1] predicted_scores):
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices,
+                       intp[::1] label_indices):
         cdef uint32 weight
         cdef intp i
 
@@ -82,8 +80,17 @@ cdef class IREP(Pruning):
             if weight == 0:
                 loss.update_search(i, 1)
 
+        # Calculate the optimal scores to be predicted by the given rule based, as well as the corresponding quality
+        # scores, based on the prune set...
+        cdef float64[::1, :] predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(0)
+
         # Calculate and cache the overall quality score of the given rule based on the prune set...
-        cdef float64 original_quality_score = loss.calculate_quality_score(predicted_scores)
+        cdef float64 original_quality_score = 0
+        cdef intp num_labels = label_indices.shape[0]
+
+        for i in range(num_labels):
+            original_quality_score += predicted_and_quality_scores[1, i]
+
         self.original_quality_score = original_quality_score
 
         # Cache arguments that will be used in the `prune` function...
@@ -91,13 +98,12 @@ cdef class IREP(Pruning):
         self.covered_example_indices = covered_example_indices
         self.loss = loss
         self.weights = weights
-        self.predicted_scores = predicted_scores
 
     cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[s_condition] conditions):
         cdef intp[::1] label_indices = self.label_indices
+        cdef intp num_labels = label_indices.shape[0]
         cdef Loss loss = self.loss
         cdef uint32[::1] weights = self.weights
-        cdef float64[::1] predicted_scores = self.predicted_scores
         cdef intp num_conditions = conditions.size()
         cdef intp num_examples = x_sorted_indices.shape[0]
         cdef float64 best_quality_score = self.original_quality_score
@@ -111,10 +117,11 @@ cdef class IREP(Pruning):
         cdef intp[::1] covered_example_indices, new_covered_example_indices
         cdef uint32 weight
         cdef float64 quality_score
+        cdef float64[::1, :] predicted_and_quality_scores
         cdef intp n, c, r, i, index
 
-        # We process original rule's conditions (except for the last one) in the order they have been learned. At each
-        # iteration we calculate the overall quality score of a rule that only contains the conditions processed so
+        # We process the original rule's conditions (except for the last one) in the order they have been learned. At
+        # each iteration we calculate the overall quality score of a rule that only contains the conditions processed so
         # far and keep track of the best one...
         for n in range(num_conditions - 1):
             condition = dereference(iterator)
@@ -181,9 +188,17 @@ cdef class IREP(Pruning):
             num_examples = i
             covered_example_indices = new_covered_example_indices
 
-            # Calculate the overall quality score of a rule that only contains the conditions processed so far to see if
-            # it's better than the best quality score known so far...
-            quality_score = loss.calculate_quality_score(predicted_scores)
+            # Calculate the optimal scores to be predicted by a rule that only contains the conditions processed so far,
+            # as well as the corresponding quality scores, based on the prune set...
+            predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(0)
+
+            # Calculate the overall quality score of the current rule based on the prune set and check if it's better
+            # than the best quality score known so far (reaching the same quality score with fewer conditions is also
+            # considered an improvement)...
+            quality_score = 0
+
+            for c in range(num_labels):
+                quality_score += predicted_and_quality_scores[1, c]
 
             if quality_score < best_quality_score or (num_pruned_conditions == 0 and quality_score <= best_quality_score):
                 best_quality_score = quality_score
