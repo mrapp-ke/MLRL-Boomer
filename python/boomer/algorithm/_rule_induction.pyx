@@ -230,13 +230,14 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     # the sub-sample or not...
     covered_example_indices = sorted_indices[:, 0]
 
-    # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-    if pruning is not None and weights is not None and conditions.size() > 1:
-        pruning.begin_pruning(weights, loss, covered_example_indices, head.label_indices, head.predicted_scores)
-        covered_example_indices = pruning.prune(x, x_sorted_indices, conditions)
-
-    # Recalculate scores in the head based on the entire training data, if instance sub-sampling has been used...
     if weights is not None:
+        # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
+        if pruning is not None and conditions.size() > 1:
+            pruning.begin_pruning(weights, loss, covered_example_indices, head.label_indices)
+            covered_example_indices = pruning.prune(x, x_sorted_indices, conditions)
+
+        # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire training
+        # data...
         loss.begin_search(label_indices)
 
         for i in covered_example_indices:

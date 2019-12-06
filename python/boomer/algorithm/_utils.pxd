@@ -1,4 +1,4 @@
-from boomer.algorithm._model cimport intp, float32
+from boomer.algorithm._model cimport intp, float32, float64
 
 
 # A struct that represents a condition of a rule. It consists of the index of the feature that is used by the condition,
@@ -37,3 +37,17 @@ cdef inline bint test_condition(float32 threshold, bint leq, float32 feature_val
         return feature_value <= threshold
     else:
         return feature_value > threshold
+
+
+cdef inline float64 divide(float64 a, float64 b):
+    """
+    Divides a floating point number by another one with the division by zero evaluating to 0 per definition.
+
+    :param a: The number to be divided
+    :param b: The divisor
+    :return:  a divided by b or 0, if b is 0
+    """
+    if b != 0:
+        return a / b
+    else:
+        return 0

@@ -1,6 +1,8 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=False
+from boomer.algorithm._utils cimport divide
+
 from cython.view cimport array as cvarray
 from libc.math cimport pow
 
@@ -330,7 +332,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             sum_of_gradients = sums_of_gradients[c]
 
             # Calculate score to be predicted by a rule that covers the examples that have been provided so far...
-            score = -sum_of_gradients / sum_of_hessians
+            score = divide(-sum_of_gradients, sum_of_hessians)
             predicted_and_quality_scores[0, c] = score
 
             # Calculate quality score for a rule that covers the examples that have been provided so far..
@@ -340,7 +342,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             if include_uncovered:
                 # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
                 l = __get_label_index(c, label_indices)
-                score = -(total_sums_of_gradients[l] - sum_of_gradients) / sum_of_hessians_uncovered
+                score = divide(-(total_sums_of_gradients[l] - sum_of_gradients), sum_of_hessians_uncovered)
                 predicted_and_quality_scores[2, c] = score
 
                 # Calculate quality score for a rule that covers the examples that have not been provided yet...
