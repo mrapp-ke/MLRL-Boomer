@@ -235,6 +235,15 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         pruning.begin_pruning(weights, loss, covered_example_indices, head.label_indices, head.predicted_scores)
         covered_example_indices = pruning.prune(x, x_sorted_indices, conditions)
 
+    # Recalculate scores in the head based on the entire training data, if instance sub-sampling has been used...
+    if weights is not None:
+        loss.begin_search(label_indices)
+
+        for i in covered_example_indices:
+            loss.update_search(i, 1)
+
+        head.predicted_scores = loss.calculate_predicted_scores()
+
     # Apply shrinkage, if necessary...
     if shrinkage < 1:
         __apply_shrinkage(head, shrinkage)
