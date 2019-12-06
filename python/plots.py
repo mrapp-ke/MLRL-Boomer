@@ -80,6 +80,38 @@ class Plotter(CrossValidation, MLClassifierBase):
         for measure in Plotter.MEASURES:
             plt.title(measure)
 
+            # Customize x axis
+            plt.xlim(left=0, right=num_iterations)
+            x_ticks = np.arange(0, num_iterations + 100, 100)
+            plt.xticks(ticks=x_ticks)
+
+            # Draw vertical lines
+            prev_x = None
+            for x in x_ticks:
+                if prev_x is not None:
+                    new_x = prev_x + ((x - prev_x) / 2)
+                    plt.plot([new_x, new_x], [0, 0.5], color='0.5', linestyle='dotted', linewidth=1)
+                if 0 < x < num_iterations:
+                    plt.plot([x, x], [0, 0.5], color='0.5', linestyle='dotted', linewidth=1)
+                prev_x = x
+
+            # Customize y axis
+            plt.ylim(bottom=0, top=0.5)
+            y_labels = [str(i * 10) + '%' for i in range(6)]
+            y_ticks = np.arange(0, 0.6, 0.1)
+            plt.yticks(ticks=y_ticks, labels=y_labels)
+
+            # Draw horizontal lines
+            prev_y = None
+            for y in y_ticks:
+                if prev_y is not None:
+                    new_y = prev_y + ((y - prev_y) / 2)
+                    plt.plot([0, num_iterations], [new_y, new_y], color='0.5', linestyle='dotted', linewidth=1)
+                if 0 < y < 0.5:
+                    plt.plot([0, num_iterations], [y, y], color='0.5', linestyle='dotted', linewidth=1)
+                prev_y = y
+
+            # Draw curves
             for prefix in ['train', 'test']:
                 x = []
                 y = []
