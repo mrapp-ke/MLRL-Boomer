@@ -6,7 +6,7 @@ import logging as log
 from boomer.algorithm._head_refinement import SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import SquaredErrorLoss
 from boomer.algorithm._pruning import IREP
-from boomer.algorithm._sub_sampling import Bagging, RandomFeatureSubsetSelection
+from boomer.algorithm._sub_sampling import Bagging, RandomInstanceSubsetSelection, RandomFeatureSubsetSelection
 
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
@@ -23,6 +23,8 @@ def __boolean_string(s):
 def __instance_sub_sampling_string(s):
     if s == 'bagging':
         return Bagging()
+    elif s == 'random-instance-selection':
+        return RandomInstanceSubsetSelection()
     return None
 
 
