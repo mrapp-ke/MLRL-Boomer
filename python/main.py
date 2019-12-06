@@ -15,43 +15,53 @@ from boomer.experiments import BatchExperiment
 
 
 def __boolean_string(s):
-    if s not in {'False', 'True'}:
-        raise ValueError('Not a valid boolean string')
-    return s == 'True'
+    if s.lower() == 'false':
+        return False
+    if s.lower() == 'true':
+        return True
+    raise ValueError('Invalid boolean argument given: ' + str(s))
 
 
 def __instance_sub_sampling_string(s):
-    if s == 'bagging':
+    if s is None or s.lower() == 'none':
+        return None
+    if s.lower() == 'bagging':
         return Bagging()
-    elif s == 'random-instance-selection':
+    elif s.lower() == 'random-instance-selection':
         return RandomInstanceSubsetSelection()
-    return None
+    raise ValueError('Invalid argument given for parameter \'--instance-sub-sampling\': ' + str(s))
 
 
 def __feature_sub_sampling_string(s):
-    if s == 'random-feature-selection':
+    if s is None or s.lower() == 'none':
+        return None
+    if s.lower() == 'random-feature-selection':
         return RandomFeatureSubsetSelection()
-    return None
+    raise ValueError('Invalid argument given for parameter \'--feature-sub-sampling\': ' + str(s))
 
 
 def __pruning_string(s):
-    if s == 'irep':
+    if s is None or s.lower() == 'none':
+        return None
+    if s.lower() == 'irep':
         return IREP()
-    return None
+    raise ValueError('Invalid argument given for parameter \'--pruning\': ' + str(s))
 
 
 def __loss_string(s):
-    if s == 'squared-error-loss':
+    if s.lower() == 'squared-error-loss':
         return SquaredErrorLoss()
-    raise ValueError('Not a valid Loss string')
+    raise ValueError('Invalid argument given for parameter \'--loss\': ' + str(s))
 
 
 def __head_refinement_string(s):
-    if s == 'single-label':
+    if s is None or s.lower() == 'none':
+        return None
+    if s.lower() == 'single-label':
         return SingleLabelHeadRefinement()
-    elif s == 'full':
+    elif s.lower() == 'full':
         return FullHeadRefinement()
-    return None
+    raise ValueError('Invalid argument given for parameter \'--head-refinement\': ' + str(s))
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
