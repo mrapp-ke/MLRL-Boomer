@@ -44,6 +44,10 @@ class Plotter(CrossValidation, MLClassifierBase):
         test_x = self._ensure_input_format(test_x)
         test_y = self._ensure_input_format(test_y)
 
+        # Create statistics for the training and test set
+        train_stats = Stats.create_stats(train_x, train_y)
+        test_stats = Stats.create_stats(test_x, test_y)
+
         theory: Theory = self.__load_theory(current_fold)
         current_model = []
         num_iterations = len(theory)
@@ -54,11 +58,11 @@ class Plotter(CrossValidation, MLClassifierBase):
             rule = theory.pop(0)
             current_model.append(rule)
 
-            predictions = self.prediction.predict(Stats.create_stats(train_x, train_y), current_model, train_x)
+            predictions = self.prediction.predict(train_stats, current_model, train_x)
             name = Plotter.__get_experiment_name(prefix='train', iteration=i)
             self.evaluation.evaluate(name, predictions, train_y, current_fold=current_fold, total_folds=total_folds)
 
-            predictions = self.prediction.predict(Stats.create_stats(test_x, test_y), current_model, test_x)
+            predictions = self.prediction.predict(test_stats, current_model, test_x)
             name = Plotter.__get_experiment_name(prefix='test', iteration=i)
             self.evaluation.evaluate(name, predictions, test_y, current_fold=current_fold, total_folds=total_folds)
 
