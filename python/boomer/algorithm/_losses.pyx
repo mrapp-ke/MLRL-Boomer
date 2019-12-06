@@ -64,10 +64,10 @@ cdef class Loss:
         order to reset the sums of gradients (and hessians in case of a non-decomposable loss function) cached
         internally to calculate the optimal scores more efficiently. Subsequent invocations of the function
         `update_search` can be used to update the cached values afterwards based on a single, newly covered example.
-        Invoking the function `calculate_scores` at any point of the search (`update_search` must be called at least
-        once before!) will yield the optimal scores to be predicted by a rule that covers all examples given so far.
-        Accordingly, the function `calculate_quality_score` allows to retrieve scores for each label that measure the
-        quality of such a rule's predictions.
+        Invoking the function `calculate_predicted_and_quality_scores` at any point of the search (`update_search` must
+        be called at least once before!) will yield the optimal scores to be predicted by a rule that covers all
+        examples given so far, as well as corresponding quality scores that measure the quality of such a rule's
+        predictions.
 
         When a new rule has been induced, the function `apply_predictions` must be invoked in order to update the cached
         gradients (and hessians in case of a non-decomposable loss function).
@@ -82,9 +82,9 @@ cdef class Loss:
         Updates the cached sums of gradients (and hessians in case of a non-decomposable loss function) based on a
         single, newly covered example.
 
-        Subsequent invocations of the function `calculate_scores` will yield the optimal scores to predicted by a rule
-        that covers all examples given so far. Accordingly, the function `calculate_quality_score` allows to retrieve
-        scores for each label that measure the quality of such a rule's predictions.
+        Subsequent invocations of the function `calculate_predicted_and_quality_scores` will yield the optimal scores to
+        be predicted by a rule that covers all examples given so far, as well as corresponding quality scores that
+        measure the quality of such a rule's predictions.
 
         :param example_index:   The index of the newly-covered example in the entire training data set
         :param weight:          The weight of the newly covered example
