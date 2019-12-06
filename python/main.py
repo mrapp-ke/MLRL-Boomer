@@ -74,7 +74,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 def create_learner(rules: int, params) -> Boomer:
     return Boomer(num_rules=rules, loss=params.loss, pruning=params.pruning,
                   instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
-                  feature_sub_sampling=params.feature_sub_sampling)
+                  feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement)
 
 
 if __name__ == '__main__':
