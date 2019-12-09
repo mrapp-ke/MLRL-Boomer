@@ -33,6 +33,7 @@ class Plotter(CrossValidation, MLClassifierBase):
         self.persistence = ModelPersistence(model_dir=model_dir)
         self.learner_name = learner_name
         self.model_name = model_name
+        self.data_set = data_set
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
         # Create a dense representation of the training data
@@ -78,9 +79,10 @@ class Plotter(CrossValidation, MLClassifierBase):
         log.info('Creating plots...')
 
         for measure in Plotter.MEASURES:
-            plt.title(measure)
+            plt.title(self.data_set)
 
             # Customize x axis
+            plt.xlabel('# rules')
             plt.xlim(left=0, right=num_iterations)
             x_ticks = np.arange(0, num_iterations + 100, 100)
             plt.xticks(ticks=x_ticks)
@@ -96,6 +98,7 @@ class Plotter(CrossValidation, MLClassifierBase):
                 prev_x = x
 
             # Customize y axis
+            plt.ylabel(measure)
             plt.ylim(bottom=0, top=0.5)
             y_labels = [str(i * 10) + '%' for i in range(6)]
             y_ticks = np.arange(0, 0.6, 0.1)
