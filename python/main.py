@@ -79,7 +79,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The name of the strategy to be used for pruning or None')
     p.add_argument('--loss', type=__loss_string, default='squared-error-loss',
                    help='The name of the loss function to be used')
-    p.add_argument('--head-refinement', type=__head_refinement_string, default=None)
+    p.add_argument('--head-refinement', type=__head_refinement_string, default=None,
+                   help='The name of the strategy to be used for finding the heads of rules')
     p.add_argument('--shrinkage', type=float, default=1, help='The shrinkage parameter to be used')
 
 
