@@ -52,3 +52,9 @@ In order to run an experiment, the following command line arguments must be prov
 | `--pruning`               | Yes       | `None`               | The name of the strategy to be used for pruning rules. Must be `irep` or `None`.                                                                                                                                  |
 | `--head-refinement`       | Yes       | `None`               | The name of the strategy to be used for finding the heads of rules. Must be `single-label`, `full` or `None`. If `None` is used, the most suitable strategy is chose automatically based on the loss function.    |
 | `--shrinkage`             | Yes       | `1.0`                | The shrinkage parameter to be used. Must be greater than `0` and less or equal to `1`.                                                                                                                            |
+
+An exemplary configuration can be found in the following:
+
+```
+python python/main.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --num-rules 1000 --instance-sub-sampling bagging --feature-sub-sampling random-feature-selection --loss squared-error-loss --shrinkage 0.25 --pruning None --head-refinement single-label
+```
