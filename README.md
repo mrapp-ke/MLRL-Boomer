@@ -7,14 +7,17 @@ This project implements "BOOMER" - an algorithm for learning gradient boosted mu
 ```
 |-- data                Directory that contains several benchmark data sets
     |-- ...
-|-- python              Directory that contains the project's Python code
-    |-- boomer          Directory that contains the Python code of the actual library
-        |-- ...
+|-- python              Directory that contains the project's source code
+    |-- boomer          Directory that contains the code for loading data sets and running experiments
+        |-- algorithm   Directory that contains the actual implementation of the learning algorithm 
+            | ...
+        | ...
     |-- setup.py        Distutil definition of the library for installation via pip
     |-- main.py         Implements a main function that can be used to start an experiment, i.e., to train a model
     |-- plots.py        Implements another main function that can be used to create various plots for an existing model
 |-- Makefile            Makefile for compiling the Cython source files and installing a Python virtual environment
 |-- README.md           This file
+|-- settings.zip        PyCharm settings for syntax highlighting of Cython code
 ```
 
 ## Project setup
@@ -25,4 +28,4 @@ make compile
 ```
 This should result in `.c` files, as well as `.so` files (on Linux) or `.pyd` files (on Windows) be placed in the directory `python/boomer/algorithm/`.
 
-**Syntax highlighting in PyCharm:** Unfortunately, the Community Edition of PyCharm does not come with Cython support. To enable proper syntax highlighting of Cython source files, the file `settings.jar` in the project's root directory can be imported via `File -> Import Settings`.
+**Syntax highlighting in PyCharm:** Unfortunately, the Community Edition of PyCharm does not come with Cython support. To enable proper syntax highlighting of Cython code, the file `settings.jar` in the project's root directory can be imported via `File -> Import Settings`.
