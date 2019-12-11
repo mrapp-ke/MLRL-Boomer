@@ -1,24 +1,32 @@
 default_target: compile
-.PHONY: clean_venv clean_cython clean install
-
-clean: clean_cython clean_venv
-
-clean_cython:
-	@echo "Removing compiled C/C++ files..."
-	find python/ -type f -name "*.so" -delete
-	find python/ -type f -name "p*.c" -delete
-	find python/ -type f -name "*.pyd" -delete
-	find python/ -type f -name "*.cpp" -delete
-	find python/ -type f -name "*.html" -delete
+.PHONY: clean_venv clean_compile clean compile install
 
 clean_venv:
 	@echo "Removing virtual Python environment..."
 	rm -rf venv/
 
-compile:
-	@echo "Compiling Cython code..."
-	cd python/ && python setup.py build_ext --inplace
+clean_compile:
+	@echo "Removing compiled C/C++ files..."
+	find python/ -type f -name "*.so" -delete
+	find python/ -type f -name "*.c" -delete
+	find python/ -type f -name "*.pyd" -delete
+	find python/ -type f -name "*.cpp" -delete
+	find python/ -type f -name "*.html" -delete
 
-install: clean_venv
+clean: clean_compile clean_venv
+
+venv:
 	@echo "Creating virtual Python environment..."
-	python3.7 -m venv venv && venv/bin/pip3.7 install python/
+	python3.7 -m venv venv
+	@echo "Installing compile-time dependency \"numpy\" into virtual enviroment..."
+	venv/bin/pip3.7 install numpy
+	@echo "Installing compile-time dependency \"Cython\" into virtual enviroment..."
+	venv/bin/pip3.7 install Cython
+
+compile: venv
+	@echo "Compiling Cython code..."
+	cd python/ && ../venv/bin/python3.7 setup.py build_ext --inplace
+
+install: compile
+	@echo "Installing package into virtual environment..."
+	venv/bin/pip3.7 install python/
