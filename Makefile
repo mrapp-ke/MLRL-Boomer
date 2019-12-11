@@ -5,9 +5,11 @@ clean: clean_cython clean_venv
 
 clean_cython:
 	@echo "Removing compiled C/C++ files..."
-	find -type f -name "*.so" -delete
-	find -type f -name "*.c" -delete
-	find -type f -name "*.cpp" -delete
+	find python/ -type f -name "*.so" -delete
+	find python/ -type f -name "p*.c" -delete
+	find python/ -type f -name "*.pyd" -delete
+	find python/ -type f -name "*.cpp" -delete
+	find python/ -type f -name "*.html" -delete
 
 clean_venv:
 	@echo "Removing virtual Python environment..."
