@@ -23,6 +23,6 @@ setup(name='boomer',
           'Cython'
       ],
       python_requires='>=3.7',
-      ext_modules=cythonize('boomer/algorithm/*.pyx', language_level='3', annotate=True),
+      ext_modules=cythonize('**/*.pyx', language_level='3', annotate=True),
       include_dirs=[numpy.get_include()],
       zip_safe=False)
