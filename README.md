@@ -46,7 +46,7 @@ make install
 ```
 make clean
 ``` 
-For more fine-grained control, the `make clean_venv` (for deleting the virtual environment) or `make clean_compile` (for deleting the compiled files) can be used.
+For more fine-grained control, the command `make clean_venv` (for deleting the virtual environment) or `make clean_compile` (for deleting the compiled files) can be used.
 
 
 **Syntax highlighting in PyCharm:** Unfortunately, the Community Edition of PyCharm does not come with Cython support. To enable proper syntax highlighting of Cython code, the file `settings.zip` in the project's root directory can be imported via `File -> Import Settings`.
