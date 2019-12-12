@@ -173,6 +173,37 @@ cdef class DecomposableLoss(Loss):
         pass
 
 
+cdef class NonDecomposableLoss(Loss):
+    """
+    A base class for all non-decomposable loss functions.
+    """
+
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        pass
+
+    cdef begin_instance_sub_sampling(self):
+        pass
+
+    cdef update_sub_sample(self, intp example_index):
+        pass
+
+    cdef begin_search(self, intp[::1] label_indices):
+        pass
+
+    cdef update_search(self, intp example_index, uint32 weight):
+        pass
+
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
+        pass
+
+    cdef float64[::1] calculate_predicted_scores(self):
+        pass
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores):
+        pass
+
+
 cdef class SquaredErrorLoss(DecomposableLoss):
     """
     A multi-label variant of the squared error loss.
@@ -379,3 +410,42 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
             # Update the sum of gradients for the current label...
             total_sums_of_gradients[l] = total_sum_of_gradients
+
+
+cdef class LogisticLoss(NonDecomposableLoss):
+    """
+    A multi-label variant of the logistic loss.
+    """
+
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        # TODO
+        pass
+
+    cdef begin_instance_sub_sampling(self):
+        # TODO
+        pass
+
+    cdef update_sub_sample(self, intp example_index):
+        # TODO
+        pass
+
+    cdef begin_search(self, intp[::1] label_indices):
+        # TODO
+        pass
+
+    cdef update_search(self, intp example_index, uint32 weight):
+        # TODO
+        pass
+
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
+        # TODO
+        pass
+
+    cdef float64[::1] calculate_predicted_scores(self):
+        # TODO
+        pass
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores):
+        # TODO
+        pass

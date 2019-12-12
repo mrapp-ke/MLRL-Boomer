@@ -73,6 +73,7 @@ In order to run an experiment, the following command line arguments must be prov
 | `--pruning`               | Yes       | `None`               | The name of the strategy to be used for pruning rules. Must be `irep` or `None`.                                                                                                                                  |
 | `--head-refinement`       | Yes       | `None`               | The name of the strategy to be used for finding the heads of rules. Must be `single-label`, `full` or `None`. If `None` is used, the most suitable strategy is chosen automatically based on the loss function.   |
 | `--shrinkage`             | Yes       | `1.0`                | The shrinkage parameter to be used. Must be greater than `0` and less or equal to `1`.                                                                                                                            |
+| `--loss`                  | Yes       | `squared-error-loss` | The name of the loss function to be minimized during training. Must be `squared-error-loss` or `logistic-loss`.                                                                                                   |
 
 In the following, the command for running an experiment using an exemplary configuration can be seen. It uses a virtual environment as discussed in section "Project setup". 
 

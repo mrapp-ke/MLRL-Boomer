@@ -74,6 +74,28 @@ cdef class DecomposableLoss(Loss):
                            float64[::1] predicted_scores)
 
 
+cdef class NonDecomposableLoss(Loss):
+
+    # Functions:
+
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+
+    cdef begin_instance_sub_sampling(self)
+
+    cdef update_sub_sample(self, intp example_index)
+
+    cdef begin_search(self, intp[::1] label_indices)
+
+    cdef update_search(self, intp example_index, uint32 weight)
+
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered)
+
+    cdef float64[::1] calculate_predicted_scores(self)
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores)
+
+
 cdef class SquaredErrorLoss(DecomposableLoss):
 
     # Attributes:
@@ -91,6 +113,28 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     cdef intp[::1] label_indices
 
     cdef float64[::1, :] predicted_and_quality_scores
+
+    # Functions:
+
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+
+    cdef begin_instance_sub_sampling(self)
+
+    cdef update_sub_sample(self, intp example_index)
+
+    cdef begin_search(self, intp[::1] label_indices)
+
+    cdef update_search(self, intp example_index, uint32 weight)
+
+    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered)
+
+    cdef float64[::1] calculate_predicted_scores(self)
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores)
+
+
+cdef class LogisticLoss(NonDecomposableLoss):
 
     # Functions:
 
