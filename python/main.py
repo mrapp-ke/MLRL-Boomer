@@ -4,7 +4,7 @@ import argparse
 import logging as log
 
 from boomer.algorithm._head_refinement import SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._losses import SquaredErrorLoss
+from boomer.algorithm._losses import SquaredErrorLoss, LogisticLoss
 from boomer.algorithm._pruning import IREP
 from boomer.algorithm._sub_sampling import Bagging, RandomInstanceSubsetSelection, RandomFeatureSubsetSelection
 
@@ -51,6 +51,8 @@ def __pruning_string(s):
 def __loss_string(s):
     if s.lower() == 'squared-error-loss':
         return SquaredErrorLoss()
+    if s.lower() == 'logistic-loss':
+        return LogisticLoss()
     raise ValueError('Invalid argument given for parameter \'--loss\': ' + str(s))
 
 
