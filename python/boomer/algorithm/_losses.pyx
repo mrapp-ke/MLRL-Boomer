@@ -418,8 +418,31 @@ cdef class LogisticLoss(NonDecomposableLoss):
     """
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
-        # TODO
-        pass
+        cdef intp num_rows = y.shape[0]
+        cdef intp num_cols = y.shape[1]
+        cdef float64 denominator = num_cols + 1
+        cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, score
+        cdef intp r, c
+
+        for c in range(num_cols):
+            # Column-wise sum up gradients and hessians for the current label...
+            sum_of_gradients = 0
+            sum_of_hessians = 0
+
+            for r in range(num_rows):
+                expected_score = __convert_label_into_score(y[r, c])
+                sum_of_gradients -= (expected_score / denominator)
+                sum_of_hessians += ((pow(expected_score, 2) * num_cols) / denominator)
+
+            # Calculate optimal score to be predicted by the default rule for the current label...
+            score = -sum_of_gradients / sum_of_hessians
+            scores[c] = score
+
+        # TODO Calculate matrix of gradients/hessians
+        # TODO Cache the matrix of gradients and the matrix of hessians
+        # TODO Cache the total sums of gradients and hessians for each label...
+        return scores
 
     cdef begin_instance_sub_sampling(self):
         # TODO
