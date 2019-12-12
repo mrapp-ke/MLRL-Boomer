@@ -43,9 +43,9 @@ class MLRuleLearner(MLLearner):
 
     PREFIX_RULES = 'rules'
 
-    stats: Stats
+    _stats: Stats
 
-    theory: Theory
+    _theory: Theory
 
     persistence: ModelPersistence = None
 
@@ -146,18 +146,18 @@ class MLRuleLearner(MLLearner):
                                         file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
 
     def fit(self, x: np.ndarray, y: np.ndarray) -> MLLearner:
-        self.theory = self._induce_rules(x, y)
+        self._theory = self._induce_rules(x, y)
         return self
 
     def predict(self, x: np.ndarray) -> np.ndarray:
-        check_is_fitted(self, ('theory', 'stats'))
+        check_is_fitted(self)
 
         # Create a dense representation of the given examples
         x = self._ensure_input_format(x)
 
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
         self.prediction.random_state = self.random_state
-        prediction = self.prediction.predict(self.stats, self.theory, x)
+        prediction = self.prediction.predict(self.stats, self._theory, x)
         return prediction
 
     @abstractmethod
@@ -200,13 +200,13 @@ class Boomer(MLRuleLearner, BatchMLLearner):
                          prediction=Sign(LinearCombination()))
 
     def partial_fit(self, x: np.ndarray, y: np.ndarray) -> BatchMLLearner:
-        check_is_fitted(self, ('theory', 'stats'))
-        self.theory = self._induce_rules(x, y, theory=self.theory)
+        check_is_fitted(self)
+        self._theory = self._induce_rules(x, y, theory=self._theory)
         return self
 
     # noinspection PyUnresolvedReferences
     def predict(self, x: np.ndarray) -> np.ndarray:
-        if hasattr(self, 'theory') and len(self.theory) < self.rule_induction.num_rules:
+        if hasattr(self, '_theory') and len(self._theory) < self.rule_induction.num_rules:
             raise NotFittedError('Not enough rules contained by theory')
 
         return super().predict(x)
@@ -218,10 +218,10 @@ class Boomer(MLRuleLearner, BatchMLLearner):
         copied_classifier.rule_induction.num_rules = kwargs.get('num_rules', self.rule_induction.num_rules)
         copied_classifier.persistence = kwargs.get('persistence', self.persistence)
 
-        if hasattr(self, 'theory') and hasattr(self, 'stats'):
+        if hasattr(self, '_theory') and hasattr(self, '_stats'):
             if copied_classifier.rule_induction.num_rules >= self.rule_induction.num_rules:
-                copied_classifier.theory = self.theory
-                copied_classifier.stats = self.stats
+                copied_classifier._theory = self._theory
+                copied_classifier._stats = self._stats
 
         return copied_classifier
 
