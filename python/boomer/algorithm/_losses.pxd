@@ -136,6 +136,12 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
 cdef class LogisticLoss(NonDecomposableLoss):
 
+    # Attributes:
+
+    cdef float64[::1, :] gradients
+
+    cdef float64[::1, :] hessians
+
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
