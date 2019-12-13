@@ -481,11 +481,11 @@ cdef class LogisticLoss(NonDecomposableLoss):
         return scores
 
     cdef begin_instance_sub_sampling(self):
-        # TODO
+        # TODO Implement, if the total sums of gradients and hessians for each label is cached...
         pass
 
     cdef update_sub_sample(self, intp example_index):
-        # TODO
+        # TODO Implement, if the total sums of gradients and hessians for each label is cached...
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
