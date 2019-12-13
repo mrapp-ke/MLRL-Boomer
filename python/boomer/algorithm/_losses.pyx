@@ -543,8 +543,18 @@ cdef class LogisticLoss(NonDecomposableLoss):
         # TODO Initialize array of scores once to avoid array-recreation at each update...
 
     cdef update_search(self, intp example_index, uint32 weight):
-        # TODO
-        pass
+        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[::1, :] hessians = self.hessians
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        cdef intp[::1] label_indices = self.label_indices
+        cdef intp c, l
+
+        for c in range(num_labels):
+            l = __get_label_index(c, label_indices)
+            sums_of_gradients[c] += (weight * gradients[example_index, l])
+            sums_of_hessians[c] += (weight * hessians[example_index, l])
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
         # TODO
