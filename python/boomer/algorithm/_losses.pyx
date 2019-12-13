@@ -542,7 +542,9 @@ cdef class LogisticLoss(NonDecomposableLoss):
         self.sums_of_hessians = sums_of_hessians
         self.label_indices = label_indices
 
-        # TODO Initialize array of scores once to avoid array-recreation at each update...
+        cdef float64[::1, :] predicted_and_quality_scores = cvarray(shape=(4, num_labels), itemsize=sizeof(float64),
+                                                                    format='d', mode='fortran')
+        self.predicted_and_quality_scores = predicted_and_quality_scores
 
     cdef update_search(self, intp example_index, uint32 weight):
         cdef float64[::1, :] gradients = self.gradients
