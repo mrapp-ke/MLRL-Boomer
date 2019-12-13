@@ -489,8 +489,27 @@ cdef class LogisticLoss(NonDecomposableLoss):
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
-        # TODO
-        pass
+        # Reset sums of gradients and hessians to 0...
+        cdef intp num_labels
+        cdef float64[::1, :] gradients
+
+        if label_indices is None:
+            gradients = self.gradients
+            num_labels = gradients.shape[1]
+        else:
+            num_labels = label_indices.shape[0]
+
+        cdef float64[::1] sums_of_gradients = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
+                                                      mode='c')
+        sums_of_gradients[:] = 0
+        cdef float64[::1] sums_of_hessians = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
+                                                     mode='c')
+        sums_of_hessians[:] = 0
+        self.sums_of_gradients = sums_of_gradients
+        self.sums_of_hessians = sums_of_hessians
+        self.label_indices = label_indices
+
+        # TODO Initialize array of scores once to avoid array-recreation at each update...
 
     cdef update_search(self, intp example_index, uint32 weight):
         # TODO

@@ -142,6 +142,12 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
     cdef float64[::1, :] hessians
 
+    cdef float64[::1] sums_of_gradients
+
+    cdef float64[::1] sums_of_hessians
+
+    cdef intp[::1] label_indices
+
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
