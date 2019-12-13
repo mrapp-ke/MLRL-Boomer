@@ -152,6 +152,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
     cdef intp[::1] label_indices
 
+    cdef float64[::1, :] predicted_and_quality_scores
+
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
