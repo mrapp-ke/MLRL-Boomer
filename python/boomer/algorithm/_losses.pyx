@@ -331,7 +331,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64 sum_of_hessians = self.sum_of_hessians
         cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef float64 sum_of_gradients, score, score_halved, sum_of_hessians_uncovered
+        cdef float64 sum_of_gradients, sum_of_gradients_uncovered, sum_of_hessians_uncovered, score, score_halved
         cdef float64[::1] total_sums_of_gradients
         cdef intp[::1] label_indices
         cdef intp c, l
@@ -353,14 +353,16 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             predicted_and_quality_scores[1, c] = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
 
             if include_uncovered:
-                # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
                 l = __get_label_index(c, label_indices)
-                score = divide(-(total_sums_of_gradients[l] - sum_of_gradients), sum_of_hessians_uncovered)
+                sum_of_gradients_uncovered = total_sums_of_gradients[l] - sum_of_gradients
+
+                # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
+                score = divide(-sum_of_gradients_uncovered, sum_of_hessians_uncovered)
                 predicted_and_quality_scores[2, c] = score
 
                 # Calculate quality score for a rule that covers the examples that have not been provided yet...
                 score_halved = score / 2
-                predicted_and_quality_scores[3, c] = ((total_sums_of_gradients[l] - sum_of_gradients) * score) + (score_halved * sum_of_hessians_uncovered * score)
+                predicted_and_quality_scores[3, c] = (sum_of_gradients_uncovered * score) + (score_halved * sum_of_hessians_uncovered * score)
 
         return predicted_and_quality_scores
 
