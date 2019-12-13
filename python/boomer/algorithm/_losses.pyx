@@ -309,7 +309,6 @@ cdef class SquaredErrorLoss(DecomposableLoss):
                                                                     format='d', mode='fortran')
         self.predicted_and_quality_scores = predicted_and_quality_scores
 
-
     cdef update_search(self, intp example_index, uint32 weight):
         # Update sum of hessians...
         cdef float64 sum_of_hessians = self.sum_of_hessians
