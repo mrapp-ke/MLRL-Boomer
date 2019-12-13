@@ -495,12 +495,29 @@ cdef class LogisticLoss(NonDecomposableLoss):
         return scores
 
     cdef begin_instance_sub_sampling(self):
-        # TODO Implement, if the total sums of gradients and hessians for each label is cached...
-        pass
+        # Reset total sums of gradients and hessians to 0...
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        cdef intp num_labels = total_sums_of_gradients.shape[0]
+        cdef intp c
+
+        for c in range(num_labels):
+            total_sums_of_gradients[c] = 0
+            total_sums_of_hessians[c] = 0
+
 
     cdef update_sub_sample(self, intp example_index):
-        # TODO Implement, if the total sums of gradients and hessians for each label is cached...
-        pass
+        # Update total sums of gradients and hessians...
+        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[::1, :] hessians = self.hessians
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        cdef intp num_cols = gradients.shape[1]
+        cdef intp c
+
+        for c in range(num_cols):
+            total_sums_of_gradients[c] += gradients[example_index, c]
+            total_sums_of_hessians[c] += hessians[example_index, c]
 
     cdef begin_search(self, intp[::1] label_indices):
         # Reset sums of gradients and hessians to 0...
