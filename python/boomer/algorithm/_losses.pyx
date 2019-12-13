@@ -420,7 +420,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
-        cdef float64 denominator = num_cols + 1
+        cdef float64 sum_of_exponentials = num_cols + 1
+        cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
         cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
                                                  mode='fortran')
         cdef float64[::1, :] hessians = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
@@ -428,7 +429,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
         cdef expected_scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
         cdef exponentials = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
-        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, exponential, sum_of_exponentials
+        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, exponential
         cdef intp r, c
 
         for c in range(num_cols):
@@ -439,8 +440,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
             for r in range(num_rows):
                 expected_score = __convert_label_into_score(y[r, c])
-                sum_of_gradients -= (expected_score / denominator)
-                sum_of_hessians += ((pow(expected_score, 2) * num_cols) / denominator)
+                sum_of_gradients -= (expected_score / sum_of_exponentials)
+                sum_of_hessians += ((pow(expected_score, 2) * num_cols) / sum_of_exponentials_pow)
 
             # Calculate optimal score to be predicted by the default rule for the current label...
             scores[c] = -sum_of_gradients / sum_of_hessians
@@ -459,14 +460,14 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 exponentials[c] = exponential
                 sum_of_exponentials += exponential
 
-            denominator = pow(sum_of_exponentials, 2)
+            sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
 
             # Calculate updated gradients and hessians for each label of the current example...
             for c in range(num_cols):
                 expected_score = expected_scores[c]
                 exponential = exponentials[c]
                 gradients[r, c] = (-expected_score * exponential) / sum_of_exponentials
-                hessians[r, c] = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / denominator
+                hessians[r, c] = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
 
         # Cache the matrix of gradients and the matrix of hessians...
         self.gradients = gradients
