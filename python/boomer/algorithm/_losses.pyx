@@ -428,10 +428,14 @@ cdef class LogisticLoss(NonDecomposableLoss):
                                                  mode='fortran')
         cdef float64[::1, :] hessians = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
                                                 mode='fortran')
+        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
+                                                            mode='c')
+        cdef float64[::1] total_sums_of_hessians = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
+                                                           mode='c')
         cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
         cdef expected_scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
         cdef exponentials = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
-        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, exponential
+        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, exponential, tmp
         cdef intp r, c
 
         for c in range(num_cols):
@@ -447,6 +451,11 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
             # Calculate optimal score to be predicted by the default rule for the current label...
             scores[c] = -sum_of_gradients / sum_of_hessians
+
+        # Initialize arrays that will be used to store the total sums of gradients and hessians for each label...
+        for c in range(num_cols):
+            total_sums_of_gradients[c] = 0
+            total_sums_of_hessians[c] = 0
 
         # Traverse each row and column again to calculate the updated gradients and hessians (unlike before, they must
         # be calculated row-wise, because the loss function is applied example-wise)...
@@ -468,14 +477,20 @@ cdef class LogisticLoss(NonDecomposableLoss):
             for c in range(num_cols):
                 expected_score = expected_scores[c]
                 exponential = exponentials[c]
-                gradients[r, c] = (-expected_score * exponential) / sum_of_exponentials
-                hessians[r, c] = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
+                tmp = (-expected_score * exponential) / sum_of_exponentials
+                gradients[r, c] = tmp
+                total_sums_of_gradients[c] += tmp
+                tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
+                hessians[r, c] = tmp
+                total_sums_of_hessians[c] += tmp
 
         # Cache the matrix of gradients and the matrix of hessians...
         self.gradients = gradients
         self.hessians = hessians
 
-        # TODO Cache the total sums of gradients and hessians for each label (if we can make use of it)...
+        # Cache the total sums of gradients and hessians for each label...
+        self.total_sums_of_gradients = total_sums_of_gradients
+        self.total_sums_of_hessians = total_sums_of_hessians
 
         return scores
 
