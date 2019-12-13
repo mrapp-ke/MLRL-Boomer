@@ -281,11 +281,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             total_sums_of_gradients[c] += gradients[example_index, c]
 
     cdef begin_search(self, intp[::1] label_indices):
-        # Reset sum of hessians to 0...
-        cdef float64 sum_of_hessians = 0
-        self.sum_of_hessians = sum_of_hessians
-
-        # Reset sums of gradients to 0...
+        # Determine the number of labels considered by the upcoming search...
         cdef intp num_labels
         cdef float64[::1, :] gradients
 
@@ -295,10 +291,17 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         else:
             num_labels = label_indices.shape[0]
 
+        # Reset sums of gradients to 0...
         cdef float64[::1] sums_of_gradients = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
                                                       mode='c')
         sums_of_gradients[:] = 0
         self.sums_of_gradients = sums_of_gradients
+
+        # Reset sum of hessians to 0...
+        cdef float64 sum_of_hessians = 0
+        self.sum_of_hessians = sum_of_hessians
+
+        # Cache the given label indices...
         self.label_indices = label_indices
 
         # Initialize array of scores once to avoid array-recreation at each update...
