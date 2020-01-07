@@ -6,15 +6,17 @@ from boomer.algorithm._model cimport intp
 
 cdef class HeadCandidate:
     """
-    Stores information about a potential 'PartialHead'.
+    Stores information about a potential head of a rule.
     """
 
     def __cinit__(self, intp[::1] label_indices, float64[::1] predicted_scores, float64 quality_score):
         """
         :param label_indices:       An array of dtype int, shape `(num_predicted_labels)`, representing the indices of
-                                    the labels for which the head predicts
+                                    the labels for which the head predicts or None, if the head predicts for all labels
         :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                    that are predicted by the head
+                                    that are predicted by the head. The predicted scores correspond to the indices in
+                                    the array `label_indices`.  If `label_indices` is None, the scores correspond to all
+                                    labels in the training data
         :param quality_score:       A score that measures the quality of the head
         """
         self.label_indices = label_indices
@@ -24,29 +26,35 @@ cdef class HeadCandidate:
 
 cdef class HeadRefinement:
     """
-    A base class for all classes that allow to find single- or multi-label heads that evaluate to the best quality
-    scores.
+    A base class for all classes that allow to find the best single- or multi-label head for a rule.
     """
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index):
         """
-        Finds and returns the head of a rule that minimizes a loss function with respect to the current gradient
-        statistics.
+        Finds and returns the best head for a rule, given the predicted scores and quality scores for each label.
 
-        :param best_head:                       The head of the best known rule so far or None, if no rule exists yet.
-                                                If the new head is better, this head will be overwritten
-        :param best_candidate:                  The head of the best refinement candidate or None, if no refinement
-                                                candidates are available yet. The new head must be better than the best
-                                                refinement candidate
+        :param best_head:                       The `HeadCandidate` that corresponds to the best rule known so far (as
+                                                found in the current refinement iteration or the previous one) or None,
+                                                if no such rule is available yet. The new head must be better than
+                                                `best_head`, otherwise it is discarded. If the new head is better, this
+                                                `HeadCandidate` will be modified accordingly instead of creating a new
+                                                instance to avoid unnecessary memory allocations
+        :param best_candidate:                  The `HeadCandidate` that corresponds to the best refinement candidate
+                                                known so far (as found in the current refinement iteration; may be
+                                                worse and must not be better than the rule with `best_head`) or  None,
+                                                if no such refinement candidate is available yet. As the new head must
+                                                be better than `best_candidate` (and `best_head`), this allows to
+                                                discard unpromising candidates
         :param predicted_and_quality_scores:    An array of dtype float, shape `(num_rules * 2, num_labels)`, where the
                                                 i-th row (starting at 0) represents the optimal scores to be predicted
                                                 by a rule for the individual labels and the i+1-th row represents the
                                                 corresponding quality scores
         :param row_index:                       The index of the row in 'predicted_and_quality_scores' that contains the
                                                 optimal predictions of the rule for which the best head should be found
-        :return:                                A 'HeadCandidate' consisting of the partial head that has been found, as
-                                                well as its quality score
+        :return:                                A 'HeadCandidate' that stores information about the head that has been
+                                                found, if the head is better than `best_head` and `best_candidate`, None
+                                                otherwise
         """
         pass
 
@@ -92,7 +100,7 @@ cdef class FullHeadRefinement(HeadRefinement):
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
-    Allows to find single-label heads that evaluate to the best quality scores.
+    Allows to find single-label heads that predict for a single label.
     """
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
