@@ -32,8 +32,8 @@ class MLRuleLearner(MLLearner):
     A scikit-multilearn implementation of a rule learner algorithm for multi-label classification or ranking.
 
     Attributes
-        stats           Statistics about the training data set
-        theory          The theory that contains the classification rules
+        stats_          Statistics about the training data set
+        theory_         The theory that contains the classification rules
         persistence     The 'ModelPersistence' to be used to load/save the theory
     """
 
@@ -43,9 +43,9 @@ class MLRuleLearner(MLLearner):
 
     PREFIX_RULES = 'rules'
 
-    _stats: Stats
+    stats_: Stats
 
-    _theory: Theory
+    theory_: Theory
 
     persistence: ModelPersistence = None
 
@@ -108,7 +108,8 @@ class MLRuleLearner(MLLearner):
         y = self._ensure_input_format(y)
 
         # Obtain information about the training data
-        self.stats = Stats.create_stats(x, y)
+        stats = Stats.create_stats(x, y)
+        self.stats_ = stats
 
         # Load theory from disk, if possible
         model, step = self.__load_rules()
@@ -122,7 +123,7 @@ class MLRuleLearner(MLLearner):
 
             # Induce rules
             self.rule_induction.random_state = self.random_state
-            theory = self.rule_induction.induce_rules(self.stats, x, y, theory)
+            theory = self.rule_induction.induce_rules(stats, x, y, theory)
 
             # Save theory to disk
             self.__save_rules(theory)
@@ -146,7 +147,7 @@ class MLRuleLearner(MLLearner):
                                         file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
 
     def fit(self, x: np.ndarray, y: np.ndarray) -> MLLearner:
-        self._theory = self._induce_rules(x, y)
+        self.theory_ = self._induce_rules(x, y)
         return self
 
     def predict(self, x: np.ndarray) -> np.ndarray:
@@ -157,7 +158,7 @@ class MLRuleLearner(MLLearner):
 
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
         self.prediction.random_state = self.random_state
-        prediction = self.prediction.predict(self.stats, self._theory, x)
+        prediction = self.prediction.predict(self.stats_, self.theory_, x)
         return prediction
 
     @abstractmethod
@@ -201,12 +202,12 @@ class Boomer(MLRuleLearner, BatchMLLearner):
 
     def partial_fit(self, x: np.ndarray, y: np.ndarray) -> BatchMLLearner:
         check_is_fitted(self)
-        self._theory = self._induce_rules(x, y, theory=self._theory)
+        self.theory_ = self._induce_rules(x, y, theory=self.theory_)
         return self
 
     # noinspection PyUnresolvedReferences
     def predict(self, x: np.ndarray) -> np.ndarray:
-        if hasattr(self, '_theory') and len(self._theory) < self.rule_induction.num_rules:
+        if hasattr(self, 'theory_') and len(self.theory_) < self.rule_induction.num_rules:
             raise NotFittedError('Not enough rules contained by theory')
 
         return super().predict(x)
@@ -218,10 +219,10 @@ class Boomer(MLRuleLearner, BatchMLLearner):
         copied_classifier.rule_induction.num_rules = kwargs.get('num_rules', self.rule_induction.num_rules)
         copied_classifier.persistence = kwargs.get('persistence', self.persistence)
 
-        if hasattr(self, '_theory') and hasattr(self, '_stats'):
+        if hasattr(self, 'theory_') and hasattr(self, 'stats_'):
             if copied_classifier.rule_induction.num_rules >= self.rule_induction.num_rules:
-                copied_classifier._theory = self._theory
-                copied_classifier._stats = self._stats
+                copied_classifier.theory_ = self._theory_
+                copied_classifier.stats_ = self._stats_
 
         return copied_classifier
 
