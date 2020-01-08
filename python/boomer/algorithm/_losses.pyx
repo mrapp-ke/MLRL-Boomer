@@ -1,6 +1,12 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=False
+
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides classes that implement different loss functions to be minimized during training.
+"""
 from boomer.algorithm._utils cimport get_label_index, divide
 
 from cython.view cimport array as cvarray

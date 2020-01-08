@@ -1,8 +1,15 @@
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides commonly used utility functions and structs.
+"""
 from boomer.algorithm._model cimport intp, float32, float64
 
 
-# A struct that represents a condition of a rule. It consists of the index of the feature that is used by the condition,
-# whether it uses the <= (leq=1) or > (leq=0) operator, as well as a threshold.
+"""
+A struct that represents a condition of a rule. It consists of the index of the feature that is used by the condition,
+whether it uses the <= (leq=1) or > (leq=0) operator, as well as a threshold.
+"""
 cdef struct s_condition:
     intp feature_index
     bint leq

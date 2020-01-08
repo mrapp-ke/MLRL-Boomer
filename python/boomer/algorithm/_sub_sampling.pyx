@@ -1,5 +1,11 @@
 # cython: boundscheck=False
 # cython: wraparound=False
+
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides classes that implement strategies for sub-sampling training examples or features.
+"""
 from cython.view cimport array as cvarray
 from libc.math cimport log2
 from sklearn.utils._random import sample_without_replacement

@@ -2,6 +2,12 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=False
+
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides functions for inducing classification rules.
+"""
 from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
 from boomer.algorithm._model cimport Rule, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
