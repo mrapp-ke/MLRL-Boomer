@@ -220,7 +220,6 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
         cdef float64 sum_of_hessians = 2 * num_rows
         cdef float64 sum_of_gradients, expected_score, score, gradient
-        cdef float64[::1] expected_scores = cvarray(shape=(num_rows,), itemsize=sizeof(float64), format='d', mode='c')
         cdef intp r, c
 
         for c in range(num_cols):
@@ -229,7 +228,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
             for r in range(num_rows):
                 expected_score = 2 * __convert_label_into_score(y[r, c])
-                expected_scores[r] = expected_score
+                gradients[r, c] = expected_score
                 sum_of_gradients -= expected_score
 
             # Calculate optimal score to be predicted by the default rule for the current label...
@@ -241,7 +240,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             score = 2 * score
 
             for r in range(num_rows):
-                gradient = score - expected_scores[r]
+                gradient = score - gradients[r, c]
                 gradients[r, c] = gradient
                 sum_of_gradients += gradient
 
