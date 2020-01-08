@@ -16,7 +16,7 @@ cdef class HeadRefinement:
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index)
 
 
@@ -24,7 +24,7 @@ cdef class FullHeadRefinement(HeadRefinement):
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index)
 
 
@@ -32,5 +32,5 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     # Functions:
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, HeadCandidate best_candidate,
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
                                  float64[::1, :] predicted_and_quality_scores, intp row_index)

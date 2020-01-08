@@ -1,7 +1,7 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=False
-from boomer.algorithm._utils cimport divide
+from boomer.algorithm._utils cimport get_label_index, divide
 
 from cython.view cimport array as cvarray
 from libc.math cimport pow, exp
@@ -136,7 +136,8 @@ cdef class Loss:
                                         of the examples that are covered by the newly induced rule, regardless of
                                         whether they are contained in the sub-sample or not
         :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
-                                        of the labels for which the newly induced rule predicts
+                                        of the labels for which the newly induced rule predicts or None, if the rule
+                                        predicts for all labels
         :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
                                         that are predicted by the newly induced rule
         """
@@ -323,7 +324,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef intp c, l
 
         for c in range(num_labels):
-            l = __get_label_index(c, label_indices)
+            l = get_label_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
@@ -353,7 +354,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             predicted_and_quality_scores[1, c] = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
 
             if include_uncovered:
-                l = __get_label_index(c, label_indices)
+                l = get_label_index(c, label_indices)
                 sum_of_gradients_uncovered = total_sums_of_gradients[l] - sum_of_gradients
 
                 # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
@@ -385,7 +386,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
-        cdef intp num_labels = label_indices.shape[0]
+        cdef intp num_labels = predicted_scores.shape[0]
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64 total_sum_of_gradients, predicted_score, gradient
@@ -393,7 +394,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         # Only the labels that are predicted by the new rule must be considered...
         for c in range(num_labels):
-            l = label_indices[c]
+            l = get_label_index(c, label_indices)
             predicted_score = 2 * predicted_scores[c]
             total_sum_of_gradients = total_sums_of_gradients[l]
 
@@ -556,7 +557,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef intp c, l
 
         for c in range(num_labels):
-            l = __get_label_index(c, label_indices)
+            l = get_label_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
             sums_of_hessians[c] += (weight * hessians[example_index, l])
 
