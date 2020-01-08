@@ -423,143 +423,24 @@ cdef class LogisticLoss(NonDecomposableLoss):
     """
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
-        cdef intp num_rows = y.shape[0]
-        cdef intp num_cols = y.shape[1]
-        cdef float64 sum_of_exponentials = num_cols + 1
-        cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
-        cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
-                                                 mode='fortran')
-        cdef float64[::1, :] hessians = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
-                                                mode='fortran')
-        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
-                                                            mode='c')
-        cdef float64[::1] total_sums_of_hessians = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
-                                                           mode='c')
-        cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
-        cdef expected_scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
-        cdef exponentials = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
-        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, exponential, tmp
-        cdef intp r, c
-
-        for c in range(num_cols):
-            # Column-wise sum up gradients and hessians for the current label (this is possible, because the predicted
-            # scores for each example and label are 0 initially)...
-            sum_of_gradients = 0
-            sum_of_hessians = 0
-
-            for r in range(num_rows):
-                expected_score = __convert_label_into_score(y[r, c])
-                sum_of_gradients -= (expected_score / sum_of_exponentials)
-                sum_of_hessians += ((pow(expected_score, 2) * num_cols) / sum_of_exponentials_pow)
-
-            # Calculate optimal score to be predicted by the default rule for the current label...
-            scores[c] = -sum_of_gradients / sum_of_hessians
-
-        # Initialize arrays that will be used to store the total sums of gradients and hessians for each label...
-        for c in range(num_cols):
-            total_sums_of_gradients[c] = 0
-            total_sums_of_hessians[c] = 0
-
-        # Traverse each row and column again to calculate the updated gradients and hessians (unlike before, they must
-        # be calculated row-wise, because the loss function is applied example-wise)...
-        for r in range(num_rows):
-            sum_of_exponentials = 1
-
-            # Iterate the labels of the current example once to initialize temporary variables that are shared among the
-            # upcoming calculations to avoid redundant calculations...
-            for c in range(num_cols):
-                expected_score = __convert_label_into_score(y[r, c])
-                expected_scores[c] = expected_score
-                exponential = exp(-expected_score * scores[c])
-                exponentials[c] = exponential
-                sum_of_exponentials += exponential
-
-            sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
-
-            # Calculate updated gradients and hessians for each label of the current example...
-            for c in range(num_cols):
-                expected_score = expected_scores[c]
-                exponential = exponentials[c]
-                tmp = (-expected_score * exponential) / sum_of_exponentials
-                gradients[r, c] = tmp
-                total_sums_of_gradients[c] += tmp
-                tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
-                hessians[r, c] = tmp
-                total_sums_of_hessians[c] += tmp
-
-        # Cache the matrix of gradients and the matrix of hessians...
-        self.gradients = gradients
-        self.hessians = hessians
-
-        # Cache the total sums of gradients and hessians for each label...
-        self.total_sums_of_gradients = total_sums_of_gradients
-        self.total_sums_of_hessians = total_sums_of_hessians
-
-        return scores
+        # TODO
+        pass
 
     cdef begin_instance_sub_sampling(self):
-        # Reset total sums of gradients and hessians to 0...
-        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        cdef intp num_labels = total_sums_of_gradients.shape[0]
-        cdef intp c
-
-        for c in range(num_labels):
-            total_sums_of_gradients[c] = 0
-            total_sums_of_hessians[c] = 0
-
+        # TODO
+        pass
 
     cdef update_sub_sample(self, intp example_index):
-        # Update total sums of gradients and hessians...
-        cdef float64[::1, :] gradients = self.gradients
-        cdef float64[::1, :] hessians = self.hessians
-        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        cdef intp num_cols = gradients.shape[1]
-        cdef intp c
-
-        for c in range(num_cols):
-            total_sums_of_gradients[c] += gradients[example_index, c]
-            total_sums_of_hessians[c] += hessians[example_index, c]
+        # TODO
+        pass
 
     cdef begin_search(self, intp[::1] label_indices):
-        # Reset sums of gradients and hessians to 0...
-        cdef intp num_labels
-        cdef float64[::1, :] gradients
-
-        if label_indices is None:
-            gradients = self.gradients
-            num_labels = gradients.shape[1]
-        else:
-            num_labels = label_indices.shape[0]
-
-        cdef float64[::1] sums_of_gradients = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
-                                                      mode='c')
-        sums_of_gradients[:] = 0
-        cdef float64[::1] sums_of_hessians = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
-                                                     mode='c')
-        sums_of_hessians[:] = 0
-        self.sums_of_gradients = sums_of_gradients
-        self.sums_of_hessians = sums_of_hessians
-        self.label_indices = label_indices
-
-        cdef float64[::1, :] predicted_and_quality_scores = cvarray(shape=(4, num_labels), itemsize=sizeof(float64),
-                                                                    format='d', mode='fortran')
-        self.predicted_and_quality_scores = predicted_and_quality_scores
+        # TODO
+        pass
 
     cdef update_search(self, intp example_index, uint32 weight):
-        cdef float64[::1, :] gradients = self.gradients
-        cdef float64[::1, :] hessians = self.hessians
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
-        cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef intp[::1] label_indices = self.label_indices
-        cdef intp c, l
-
-        for c in range(num_labels):
-            l = get_label_index(c, label_indices)
-            sums_of_gradients[c] += (weight * gradients[example_index, l])
-            sums_of_hessians[c] += (weight * hessians[example_index, l])
+        # TODO
+        pass
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
         # TODO
