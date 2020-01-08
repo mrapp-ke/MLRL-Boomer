@@ -1,5 +1,11 @@
 # cython: boundscheck=False
 # cython: wraparound=False
+
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides model classes that are used to build rule-based models.
+"""
 import numpy as np
 
 

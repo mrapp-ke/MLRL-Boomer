@@ -1,6 +1,12 @@
 # distutils: language=c++
 # cython: boundscheck=False
 # cython: wraparound=False
+
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides classes that implement strategies for pruning classification rules.
+"""
 from boomer.algorithm._model cimport float64
 from boomer.algorithm._utils cimport test_condition
 
