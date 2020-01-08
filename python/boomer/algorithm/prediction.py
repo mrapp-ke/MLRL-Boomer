@@ -9,7 +9,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
+from boomer.algorithm.model import Theory, DTYPE_FLOAT64
 from boomer.algorithm.stats import Stats
 from boomer.learners import Module
 
@@ -49,7 +49,6 @@ class LinearCombination(Ranking):
     """
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
         predictions = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64))
 
         for rule in theory:
