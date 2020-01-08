@@ -34,7 +34,8 @@ cdef class Pruning:
                                         of all training examples that are covered by the rule, regardless of whether
                                         they are included in the prune set or grow set
         :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
-                                        of the labels for which the rule predicts
+                                        of the labels for which the rule predicts or None, if the rule predicts for all
+                                        labels
         """
         pass
 
@@ -86,7 +87,7 @@ cdef class IREP(Pruning):
 
         # Calculate and cache the overall quality score of the given rule based on the prune set...
         cdef float64 original_quality_score = 0
-        cdef intp num_labels = label_indices.shape[0]
+        cdef intp num_labels = predicted_and_quality_scores.shape[1]
 
         for i in range(num_labels):
             original_quality_score += predicted_and_quality_scores[1, i]
@@ -101,7 +102,6 @@ cdef class IREP(Pruning):
 
     cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[s_condition] conditions):
         cdef intp[::1] label_indices = self.label_indices
-        cdef intp num_labels = label_indices.shape[0]
         cdef Loss loss = self.loss
         cdef uint32[::1] weights = self.weights
         cdef intp num_conditions = conditions.size()
@@ -118,7 +118,7 @@ cdef class IREP(Pruning):
         cdef uint32 weight
         cdef float64 quality_score
         cdef float64[::1, :] predicted_and_quality_scores
-        cdef intp n, c, r, i, index
+        cdef intp n, c, r, i, index, num_labels
 
         # We process the original rule's conditions (except for the last one) in the order they have been learned. At
         # each iteration we calculate the overall quality score of a rule that only contains the conditions processed so
@@ -196,6 +196,7 @@ cdef class IREP(Pruning):
             # than the best quality score known so far (reaching the same quality score with fewer conditions is also
             # considered an improvement)...
             quality_score = 0
+            num_labels = predicted_and_quality_scores.shape[1]
 
             for c in range(num_labels):
                 quality_score += predicted_and_quality_scores[1, c]

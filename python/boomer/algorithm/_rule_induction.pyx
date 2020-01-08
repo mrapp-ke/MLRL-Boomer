@@ -3,7 +3,7 @@
 # cython: wraparound=False
 # cython: cdivision=False
 from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
-from boomer.algorithm._model cimport Rule, FullHead, EmptyBody, ConjunctiveBody, PartialHead
+from boomer.algorithm._model cimport Rule, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
@@ -82,7 +82,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     cdef int num_refinements = 1
 
     # Variables for representing the best refinement
-    cdef HeadCandidate best_head
+    cdef found_refinement = 1
     cdef bint best_condition_leq
     cdef intp best_condition_r, best_condition_index
     cdef float32 best_condition_threshold
@@ -104,9 +104,9 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     cdef intp c, f, r, i, previous_r
 
     # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
-    while True:
+    while found_refinement:
         num_examples = sorted_indices.shape[0]
-        best_head = None
+        found_refinement = 0
 
         # Sub-sample features, if necessary...
         if feature_sub_sampling is None:
@@ -154,11 +154,12 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                         predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(1)
 
                         # Evaluate potential condition using <= operator...
-                        current_head = head_refinement.find_head(head, best_head, predicted_and_quality_scores, 0)
+                        current_head = head_refinement.find_head(head, label_indices, predicted_and_quality_scores, 0)
 
                         # If refinement is better than the current rule...
                         if current_head is not None:
-                            best_head = current_head
+                            found_refinement = 1
+                            head = current_head
                             best_condition_leq = 1
                             best_condition_r = r
                             best_condition_index = f
@@ -177,11 +178,12 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                                                   best_condition_leq, best_condition_threshold)
 
                         # Evaluate potential condition using > operator...
-                        current_head = head_refinement.find_head(head, best_head, predicted_and_quality_scores, 2)
+                        current_head = head_refinement.find_head(head, label_indices, predicted_and_quality_scores, 2)
 
                         # If refinement is better than the current rule...
                         if current_head is not None:
-                            best_head = current_head
+                            found_refinement = 1
+                            head = current_head
                             best_condition_leq = 0
                             best_condition_r = r
                             best_condition_index = f
@@ -200,12 +202,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                     # Tell the loss function that the example will be covered by upcoming refinements...
                     loss.update_search(i, weight)
 
-        if best_head is None:
-            # Abort, if no refinement resulted in an improvement...
-            break
-        else:
-            # If a refinement has been found, replace the head of the current rule and add the new condition...
-            head = best_head
+        if found_refinement:
+            # If a refinement has been found, add the new condition...
             conditions.push_back(make_condition(best_condition_index, best_condition_leq, best_condition_threshold))
 
             if best_condition_leq:
@@ -233,7 +231,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     if weights is not None:
         # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
         if pruning is not None and conditions.size() > 1:
-            pruning.begin_pruning(weights, loss, covered_example_indices, head.label_indices)
+            pruning.begin_pruning(weights, loss, covered_example_indices, label_indices)
             covered_example_indices = pruning.prune(x, x_sorted_indices, conditions)
 
         # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire training
@@ -333,7 +331,13 @@ cdef Rule __build_rule(HeadCandidate head, list[s_condition] conditions,  intp n
 
     cdef ConjunctiveBody rule_body = ConjunctiveBody(leq_feature_indices, leq_thresholds, gr_feature_indices,
                                                      gr_thresholds)
-    cdef PartialHead rule_head = PartialHead(head.label_indices, head.predicted_scores)
+    cdef Head rule_head
+
+    if head.label_indices is None:
+        rule_head = FullHead(head.predicted_scores)
+    else:
+        rule_head = PartialHead(head.label_indices, head.predicted_scores)
+
     cdef Rule rule = Rule(rule_body, rule_head)
     return rule
 
