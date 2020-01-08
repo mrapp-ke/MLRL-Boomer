@@ -19,7 +19,7 @@ from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampli
 from sklearn.exceptions import NotFittedError
 from sklearn.utils.validation import check_is_fitted
 
-from boomer.algorithm.model import Theory
+from boomer.algorithm.model import Theory, DTYPE_FLOAT32
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
@@ -155,6 +155,9 @@ class MLRuleLearner(MLLearner):
 
         # Create a dense representation of the given examples
         x = self._ensure_input_format(x)
+
+        # Convert feature matrix into Fortran-contiguous array
+        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
 
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
         self.prediction.random_state = self.random_state
