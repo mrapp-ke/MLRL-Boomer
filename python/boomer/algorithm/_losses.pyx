@@ -234,6 +234,9 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
             for r in range(num_rows):
                 expected_score = 2 * __convert_label_into_score(y[r, c])
+                # Note: As the matrix of gradients is unused at this point, we use it for caching the expected scores
+                # instead of allocating a new array. The values in the matrix are overwritten later on with the actual
+                # gradients.
                 gradients[r, c] = expected_score
                 sum_of_gradients -= expected_score
 
