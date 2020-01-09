@@ -7,7 +7,6 @@
 Provides classes that implement strategies for finding the heads of rules.
 """
 from cython.view cimport array as cvarray
-from boomer.algorithm._model cimport intp
 from boomer.algorithm._utils cimport get_label_index
 
 
