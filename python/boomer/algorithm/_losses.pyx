@@ -12,6 +12,11 @@ from boomer.algorithm._utils cimport get_label_index, divide
 from cython.view cimport array as cvarray
 from libc.math cimport pow, exp
 
+import numpy as np
+import scipy.linalg as linalg
+from boomer.algorithm.model import DTYPE_FLOAT64
+
+
 cdef class Loss:
     """
     A base class for all decomposable or non-decomposable loss functions. A loss function can be used to calculate the
@@ -431,8 +436,144 @@ cdef class LogisticLoss(NonDecomposableLoss):
     """
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
-        # TODO
-        pass
+        # We find the optimal scores to be predicted by the default rule for each label by solving a system of linear
+        # equations a * x = b with one equation results per label, where a is a two-dimensional matrix of coefficients,
+        # b is an one-dimensional array of ordinates and x is an one-dimensional array of unknowns to be determined. The
+        # ordinals result from the gradients of the loss function, whereas the coefficients result from the hessians.
+        cdef intp num_rows = y.shape[0]
+        cdef intp num_cols = y.shape[1]
+        cdef float64 sum_of_exponentials = num_rows + 1
+        cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
+        cdef float64[::1] expected_scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64 expected_score
+        cdef intp r, c, c2
+
+        # Initialize the array of ordinals and the matrix of coefficients and set their elements to 0. As the matrix of
+        # coefficients is symmetrical, we only initialize the upper-right triangle of the matrix and leave the remaining
+        # elements unspecified.
+        cdef float64[::1] ordinates = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64[::1, :] coefficients = cvarray(shape=(num_cols, num_cols), itemsize=sizeof(float64), format='d',
+                                                    mode='fortran')
+
+        for c in range(num_cols):
+            ordinates[c] = 0
+
+            for c2 in range(c, num_cols):
+                coefficients[c, c2] = 0
+
+        # Example-wise calculate the gradients and hessians and add them to the array of ordinates and the matrix of
+        # coefficients....
+        for r in range(num_rows):
+            # Traverse the labels of the current example once to create an array of expected scores that is shared among
+            # the upcoming calculations of gradients and hessians...
+            for c in range(num_cols):
+                expected_scores[c] = __convert_label_into_score(y[r, c])
+
+            # Traverse the labels again to calculate the gradients and hessians...
+            for c in range(num_cols):
+                expected_score = expected_scores[c]
+
+                # Calculate the first derivative (gradient) of the loss function with respect to the current label and
+                # add it to the array of ordinates...
+                ordinates[c] += expected_score / sum_of_exponentials
+
+                # Calculate the second derivative (hessian) of the loss function with respect to the current label and
+                # add it to the diagonal of the matrix of coefficients...
+                coefficients[c, c] += (pow(expected_score, 2) * num_cols) / sum_of_exponentials_pow
+
+                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
+                # each of the other labels and add them to the upper-right triangle of the matrix of coefficients...
+                for c2 in range(c + 1, num_cols):
+                    coefficients[c, c2] -= (expected_score * expected_scores[c2]) / sum_of_exponentials_pow
+
+        # Solve the system of linear equations...
+        # FIXME: Do not call scipy's linalg.solve function but the underlying C implementation directly
+        cdef float64[::1] scores = np.ascontiguousarray(linalg.solve(np.asarray(coefficients), np.asarray(ordinates),
+                                                                     overwrite_a=True, overwrite_b=True,
+                                                                     check_finite=False, assume_a='sym'),
+                                                        dtype=DTYPE_FLOAT64)
+
+        print(np.asarray(scores))
+
+        # We must traverse each example again to calculate the updated gradients and hessians based on the calculated
+        # scores. As the gradient for a particular example and label is independent from any other labels, they can be
+        # stored in a matrix with shape `(num_rows, num_cols)`. In case of the hessians, for each example, we must store
+        # the upper-right triangle of the matrix of coefficients as used before. Instead of storing the full matrix of
+        # coefficients for each example (which would result in a three-dimensional matrix with shape
+        # `(num_rows, num_cols, num_cols)` where many elements are unspecified), we flatten the matrices of coefficients
+        # by appending the rows to each other and omitting the unspecified elements. This results in a two-dimensional
+        # matrix with shape `(num_rows, num_hessians)`.
+        cdef float64[::1] exponentials = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
+                                                 mode='fortran')
+        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
+                                                            mode='c')
+        cdef intp num_hessians = (num_cols * (num_cols + 1)) // 2
+        cdef float64[::1, :] hessians = cvarray(shape=(num_rows, num_hessians), itemsize=sizeof(float64), format='d',
+                                                mode='fortran')
+        cdef float64[::1] total_sums_of_hessians = cvarray(shape=(num_hessians,), itemsize=sizeof(float64), format='d',
+                                                           mode='c')
+        cdef float64 exponential, tmp, score
+        cdef intp c3
+
+        for r in range(num_rows):
+            # Traverse the labels of the current example once to create arrays of expected scores and exponentials that
+            # are shared among the upcoming calculations of gradients and hessians...
+            sum_of_exponentials = 1
+
+            for c in range(num_cols):
+                expected_score = __convert_label_into_score(y[r, c])
+                expected_scores[c] = expected_score
+                exponential = exp(-expected_score * scores[c])
+                exponentials[c] = exponential
+                sum_of_exponentials += exponential
+
+            sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
+
+            # Traverse the labels again to calculate the gradients and hessians...
+            c2 = 0
+
+            for c in range(num_cols):
+                expected_score = expected_scores[c]
+                exponential = exponentials[c]
+                score = scores[c]
+
+                # Calculate the first derivative (gradient) of the loss function with respect to the current label and
+                # add it to the matrix of gradients...
+                tmp = (expected_score * exponential) / sum_of_exponentials
+                gradients[r, c] = -tmp
+                total_sums_of_gradients[c] -= tmp
+
+                # Calculate the second derivative (hessian) of the loss function with respect to the current label and
+                # add it to the matrix of hessians...
+                tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
+                hessians[r, c2] = tmp
+                total_sums_of_hessians[c2] += tmp
+
+                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
+                # each of the other labels and add them to the matrix of hessians...
+                for c3 in range(c + 1, num_cols):
+                    c2 += 1
+                    exponential = exp(-expected_score * score - expected_scores[c3] * scores[c3])
+                    tmp = (expected_score * expected_scores[c3] * exponential) / sum_of_exponentials_pow
+                    hessians[r, c2] = -tmp
+                    total_sums_of_hessians[c2] -= tmp
+
+                c2 += 1
+
+        # Cache the matrix of gradients...
+        self.gradients = gradients
+
+        # Cache the column-wise sums of the matrix of gradients...
+        self.total_sums_of_gradients = total_sums_of_gradients
+
+        # Cache the matrix of hessians...
+        self.hessians = hessians
+
+        # Caches the column-wise sums of the matrix of hessians...
+        self.total_sums_of_hessians = total_sums_of_hessians
+
+        return scores
 
     cdef begin_instance_sub_sampling(self):
         # TODO
