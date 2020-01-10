@@ -1,4 +1,4 @@
-from boomer.algorithm._model cimport intp, float64
+from boomer.algorithm._arrays cimport intp, float64
 
 
 cdef class HeadCandidate:
