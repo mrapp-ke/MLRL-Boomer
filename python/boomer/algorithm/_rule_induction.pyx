@@ -1,7 +1,7 @@
 # distutils: language=c++
 # cython: boundscheck=False
 # cython: wraparound=False
-# cython: cdivision=False
+# cython: cdivision=True
 
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
