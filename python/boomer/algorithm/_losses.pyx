@@ -387,7 +387,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             sum_of_gradients = sums_of_gradients[c]
 
             # Calculate score to be predicted by a rule that covers the examples that have been provided so far...
-            score = -sum_of_gradients / sum_of_hessians
+            score = divide_or_zero(-sum_of_gradients, sum_of_hessians)
             predicted_scores[c] = score
 
         return predicted_scores
