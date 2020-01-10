@@ -14,7 +14,7 @@ from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
-from boomer.algorithm._utils cimport s_condition, make_condition, test_condition
+from boomer.algorithm._utils cimport s_condition, make_condition, test_condition, get_index
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
@@ -126,7 +126,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         # updated accordingly. For each potential condition, a quality score is calculated to keep track of the best
         # possible refinement.
         for c in range(num_features):
-            f = __get_feature_index(c, feature_indices)
+            f = get_index(c, feature_indices)
 
             # Reset the loss function when processing a new feature...
             loss.begin_search(label_indices)
@@ -423,21 +423,6 @@ cdef __apply_shrinkage(HeadCandidate head, float64 shrinkage):
 
     for c in range(num_labels):
          scores[c] *= shrinkage
-
-
-cdef inline intp __get_feature_index(intp i, intp[::1] feature_indices):
-    """
-    Retrieves and returns the index of the i-th feature from an array of feature indices, if such an array is available.
-    Otherwise i is returned.
-
-    :param i:               The position of the feature whose index should be retrieved
-    :param label_indices:   An array of the dtype int, shape `(num_features)`, representing the indices of features
-    :return:                A scalar of dtype int, representing the index of the i-th feature
-    """
-    if feature_indices is None:
-        return i
-    else:
-        return feature_indices[i]
 
 
 cdef inline uint32 __get_weight(intp example_index, uint32[::1] weights):
