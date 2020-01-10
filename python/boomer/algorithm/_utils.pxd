@@ -50,20 +50,6 @@ cdef inline bint test_condition(float32 threshold, bint leq, float32 feature_val
         return feature_value > threshold
 
 
-cdef inline float64 divide_or_zero(float64 a, float64 b):
-    """
-    Divides a floating point number by another one. The division by zero evaluates to 0 per definition.
-
-    :param a: The number to be divided
-    :param b: The divisor
-    :return:  The result of a / b or 0, if b = 0
-    """
-    if b != 0:
-        return a / b
-    else:
-        return 0
-
-
 cdef inline intp get_index(intp i, intp[::1] indices):
     """
     Retrieves and returns the i-th index from an array of indices, if such an array is available. Otherwise i is
