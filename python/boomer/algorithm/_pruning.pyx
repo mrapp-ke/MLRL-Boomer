@@ -7,7 +7,6 @@
 
 Provides classes that implement strategies for pruning classification rules.
 """
-from boomer.algorithm._model cimport float64
 from boomer.algorithm._utils cimport test_condition
 
 from cython.view cimport array as cvarray
