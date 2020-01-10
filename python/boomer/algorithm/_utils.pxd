@@ -7,7 +7,7 @@
 
 Provides commonly used utility functions and structs.
 """
-from boomer.algorithm._arrays cimport intp, float32, float64
+from boomer.algorithm._arrays cimport intp, uint32, float32, float64
 
 
 """
@@ -70,10 +70,25 @@ cdef inline intp get_index(intp i, intp[::1] indices):
     returned.
 
     :param i:       The position of the index that should be retrieved
-    :param indices: An array of the dtype int, shape `(num_labels)`, representing the indices, or None
+    :param indices: An array of the dtype int, shape `(num_indices)`, representing the indices, or None
     :return:        A scalar of dtype int, representing the i-th index in the given array or i, if the array is None
     """
     if indices is None:
         return i
     else:
         return indices[i]
+
+
+cdef inline uint32 get_weight(intp i, uint32[::1] weights):
+    """
+    Retrieves and returns the i-th weight from an array of weights, if such an array is available. Otherwise 1 is
+    returned.
+
+    :param i:       The position of the weight that should be retrieved
+    :param weights: An array of dtype int, shape `(num_weights)`, representing the weights, or None
+    :return:        A scalar of dtype int, representing the i-th weight in the given array or 1, if the array is None
+    """
+    if weights is None:
+        return 1
+    else:
+        return weights[i]
