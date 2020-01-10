@@ -8,9 +8,9 @@
 
 Provides classes that implement strategies for pruning classification rules.
 """
+from boomer.algorithm._arrays cimport array_intp
 from boomer.algorithm._utils cimport test_condition
 
-from cython.view cimport array as cvarray
 from cython.operator cimport dereference, postincrement
 
 
@@ -142,7 +142,7 @@ cdef class IREP(Pruning):
             # previously processed conditions). At this point we don't know how many examples are exactly covered. For
             # this reason, the array's size is set to largest possible value, which is `num_examples`. If fewer examples
             # are covered, only the leading elements are set, the remaining ones remain undefined.
-            new_covered_example_indices = cvarray(shape=(num_examples,), itemsize=sizeof(intp), format='l', mode='c')
+            new_covered_example_indices = array_intp(num_examples)
             i = 0
 
             if n == 0:

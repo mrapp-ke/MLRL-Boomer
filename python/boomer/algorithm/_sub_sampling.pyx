@@ -7,12 +7,13 @@
 
 Provides classes that implement strategies for sub-sampling training examples or features.
 """
-from cython.view cimport array as cvarray
+from boomer.algorithm._arrays cimport array_uint32
+
 from libc.math cimport log2
-from sklearn.utils._random import sample_without_replacement
 cimport numpy as npc
 
 import numpy as np
+from sklearn.utils._random import sample_without_replacement
 from boomer.algorithm.model import DTYPE_INTP
 from sklearn.utils import check_random_state
 
@@ -53,7 +54,7 @@ cdef class Bagging(InstanceSubSampling):
         cdef intp num_examples = x.shape[0]
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
-        cdef uint32[::1] weights = cvarray(shape=(num_examples,), itemsize=sizeof(uint32), format='I', mode='c')
+        cdef uint32[::1] weights = array_uint32(num_examples)
         weights[:] = 0
         rng = check_random_state(random_state)
         rng_randint = rng.randint
@@ -93,8 +94,8 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
         cdef int limit = num_examples
-        cdef uint32[::1] weights = cvarray(shape=(num_examples,), itemsize=sizeof(uint32), format='I', mode='c')
-        cdef uint32[::1] indices = cvarray(shape=(num_examples,), itemsize=sizeof(uint32), format='I', mode='c')
+        cdef uint32[::1] weights = array_uint32(num_examples)
+        cdef uint32[::1] indices = array_uint32(num_examples)
         rng = check_random_state(random_state)
         rng_randint = rng.randint
         cdef uint32 tmp

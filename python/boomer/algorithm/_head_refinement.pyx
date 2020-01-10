@@ -7,7 +7,7 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-from cython.view cimport array as cvarray
+from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_label_index
 
 
@@ -82,7 +82,7 @@ cdef class FullHeadRefinement(HeadRefinement):
 
         if best_head is None:
             # Create a new `HeadCandidate` and return it...
-            predicted_scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d', mode='c')
+            predicted_scores = array_float64(num_labels)
 
             for c in range(num_labels):
                 predicted_scores[c] = predicted_and_quality_scores[row_index, c]
@@ -130,9 +130,9 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
 
         if best_head is None:
             # Create a new `HeadCandidate` and return it...
-            predicted_label_indices = cvarray(shape=(1,), itemsize=sizeof(intp), format='l', mode='c')
+            predicted_label_indices = array_intp(1)
             predicted_label_indices[0] = get_label_index(best_c, label_indices)
-            predicted_scores = cvarray(shape=(1,), itemsize=sizeof(float64), format='d', mode='c')
+            predicted_scores = array_float64(1)
             predicted_scores[0] = predicted_and_quality_scores[row_index, best_c]
             candidate = HeadCandidate(predicted_label_indices, predicted_scores, best_quality_score)
             return candidate
