@@ -8,7 +8,7 @@
 Provides classes that implement different loss functions to be minimized during training.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport get_label_index, divide_or_zero
+from boomer.algorithm._utils cimport get_index, divide_or_zero
 
 from libc.math cimport pow, exp
 
@@ -333,7 +333,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef intp c, l
 
         for c in range(num_labels):
-            l = get_label_index(c, label_indices)
+            l = get_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
@@ -363,7 +363,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             predicted_and_quality_scores[1, c] = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
 
             if include_uncovered:
-                l = get_label_index(c, label_indices)
+                l = get_index(c, label_indices)
                 sum_of_gradients_uncovered = total_sums_of_gradients[l] - sum_of_gradients
 
                 # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
@@ -402,7 +402,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
 
         # Only the labels that are predicted by the new rule must be considered...
         for c in range(num_labels):
-            l = get_label_index(c, label_indices)
+            l = get_index(c, label_indices)
             predicted_score = 2 * predicted_scores[c]
             total_sum_of_gradients = total_sums_of_gradients[l]
 
