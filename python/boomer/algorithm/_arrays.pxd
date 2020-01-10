@@ -10,8 +10,9 @@ Provides type definitions and utility functions for creating arrays.
 from cython.view cimport array as cvarray
 from cython.view cimport array_cwrapper as new_array
 
-
 cimport numpy as npc
+
+
 ctypedef Py_ssize_t intp
 ctypedef npc.uint8_t uint8
 ctypedef npc.uint32_t uint32
