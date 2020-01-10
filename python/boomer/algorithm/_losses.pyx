@@ -7,9 +7,9 @@
 
 Provides classes that implement different loss functions to be minimized during training.
 """
+from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_label_index, divide
 
-from cython.view cimport array as cvarray
 from libc.math cimport pow, exp
 
 import numpy as np
@@ -224,11 +224,9 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
-        cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
-                                                 mode='fortran')
-        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
-                                                            mode='c')
-        cdef float64[::1] scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64[::1, :] gradients = matrix_float64(num_rows, num_cols)
+        cdef float64[::1] total_sums_of_gradients = array_float64(num_cols)
+        cdef float64[::1] scores = array_float64(num_cols)
         cdef float64 sum_of_hessians = 2 * num_rows
         cdef float64 sum_of_gradients, expected_score, score, gradient
         cdef intp r, c
@@ -306,8 +304,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             num_labels = label_indices.shape[0]
 
         # Reset sums of gradients to 0...
-        cdef float64[::1] sums_of_gradients = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
-                                                      mode='c')
+        cdef float64[::1] sums_of_gradients = array_float64(num_labels)
         sums_of_gradients[:] = 0
         self.sums_of_gradients = sums_of_gradients
 
@@ -319,8 +316,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         self.label_indices = label_indices
 
         # Initialize array of scores once to avoid array-recreation at each update...
-        cdef float64[::1, :] predicted_and_quality_scores = cvarray(shape=(4, num_labels), itemsize=sizeof(float64),
-                                                                    format='d', mode='fortran')
+        cdef float64[::1, :] predicted_and_quality_scores = matrix_float64(4, num_labels)
         self.predicted_and_quality_scores = predicted_and_quality_scores
 
     cdef update_search(self, intp example_index, uint32 weight):
@@ -384,8 +380,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64 sum_of_hessians = self.sum_of_hessians
         cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef float64[::1] predicted_scores = cvarray(shape=(num_labels,), itemsize=sizeof(float64), format='d',
-                                                     mode='c')
+        cdef float64[::1] predicted_scores = array_float64(num_labels)
         cdef float64 sum_of_gradients, score
 
         for c in range(num_labels):
@@ -444,16 +439,15 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef intp num_cols = y.shape[1]
         cdef float64 sum_of_exponentials = num_rows + 1
         cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
-        cdef float64[::1] expected_scores = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
+        cdef float64[::1] expected_scores = array_float64(num_cols)
         cdef float64 expected_score
         cdef intp r, c, c2
 
         # Initialize the array of ordinals and the matrix of coefficients and set their elements to 0. As the matrix of
         # coefficients is symmetrical, we only initialize the upper-right triangle of the matrix and leave the remaining
         # elements unspecified.
-        cdef float64[::1] ordinates = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
-        cdef float64[::1, :] coefficients = cvarray(shape=(num_cols, num_cols), itemsize=sizeof(float64), format='d',
-                                                    mode='fortran')
+        cdef float64[::1] ordinates = array_float64(num_cols)
+        cdef float64[::1, :] coefficients = matrix_float64(num_cols, num_cols)
 
         for c in range(num_cols):
             ordinates[c] = 0
@@ -503,16 +497,12 @@ cdef class LogisticLoss(NonDecomposableLoss):
         # `(num_rows, num_cols, num_cols)` where many elements are unspecified), we flatten the matrices of coefficients
         # by appending the rows to each other and omitting the unspecified elements. This results in a two-dimensional
         # matrix with shape `(num_rows, num_hessians)`.
-        cdef float64[::1] exponentials = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d', mode='c')
-        cdef float64[::1, :] gradients = cvarray(shape=(num_rows, num_cols), itemsize=sizeof(float64), format='d',
-                                                 mode='fortran')
-        cdef float64[::1] total_sums_of_gradients = cvarray(shape=(num_cols,), itemsize=sizeof(float64), format='d',
-                                                            mode='c')
+        cdef float64[::1] exponentials = array_float64(num_cols)
+        cdef float64[::1, :] gradients = matrix_float64(num_rows, num_cols)
+        cdef float64[::1] total_sums_of_gradients = array_float64(num_cols)
         cdef intp num_hessians = (num_cols * (num_cols + 1)) // 2
-        cdef float64[::1, :] hessians = cvarray(shape=(num_rows, num_hessians), itemsize=sizeof(float64), format='d',
-                                                mode='fortran')
-        cdef float64[::1] total_sums_of_hessians = cvarray(shape=(num_hessians,), itemsize=sizeof(float64), format='d',
-                                                           mode='c')
+        cdef float64[::1, :] hessians = matrix_float64(num_rows, num_hessians)
+        cdef float64[::1] total_sums_of_hessians = array_float64(num_hessians)
         cdef float64 exponential, tmp, score
         cdef intp c3
 

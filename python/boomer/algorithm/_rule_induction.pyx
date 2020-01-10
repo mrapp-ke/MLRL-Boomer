@@ -8,7 +8,7 @@
 
 Provides functions for inducing classification rules.
 """
-from boomer.algorithm._arrays cimport intp, uint8, uint32, float32, float64
+from boomer.algorithm._arrays cimport intp, uint8, uint32, float32, float64, matrix_intp
 from boomer.algorithm._model cimport Rule, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss
@@ -18,7 +18,6 @@ from boomer.algorithm._utils cimport s_condition, make_condition, test_condition
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
-from cython.view cimport array as cvarray
 
 import numpy as np
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
@@ -376,8 +375,7 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
     else:
         num_covered = num_examples - condition_r
 
-    cdef intp[::1, :] filtered_sorted_indices = cvarray(shape=(num_covered, num_features), itemsize=sizeof(intp),
-                                                        format='l', mode='fortran')
+    cdef intp[::1, :] filtered_sorted_indices = matrix_intp(num_covered, num_features)
     cdef float32 feature_value
     cdef intp c, r, i, offset, index
 
