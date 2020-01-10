@@ -64,16 +64,16 @@ cdef inline float64 divide_or_zero(float64 a, float64 b):
         return 0
 
 
-cdef inline intp get_label_index(intp i, intp[::1] label_indices):
+cdef inline intp get_index(intp i, intp[::1] indices):
     """
-    Retrieves and returns the index of the i-th label from an array of label indices, if such an array is available.
-    Otherwise i is returned.
+    Retrieves and returns the i-th index from an array of indices, if such an array is available. Otherwise i is
+    returned.
 
-    :param i:               The position of the label whose index should be retrieved
-    :param label_indices:   An array of the dtype int, shape `(num_labels)`, representing the indices of labels
-    :return:                A scalar of dtype int, representing the index of the i-th label
+    :param i:       The position of the index that should be retrieved
+    :param indices: An array of the dtype int, shape `(num_labels)`, representing the indices, or None
+    :return:        A scalar of dtype int, representing the i-th index in the given array or i, if the array is None
     """
-    if label_indices is None:
+    if indices is None:
         return i
     else:
-        return label_indices[i]
+        return indices[i]
