@@ -437,7 +437,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         # ordinals result from the gradients of the loss function, whereas the coefficients result from the hessians.
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
-        cdef float64 sum_of_exponentials = num_rows + 1
+        cdef float64 sum_of_exponentials = num_cols + 1
         cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
         cdef float64[::1] expected_scores = array_float64(num_cols)
         cdef float64 expected_score
