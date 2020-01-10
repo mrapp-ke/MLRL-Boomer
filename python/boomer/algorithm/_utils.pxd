@@ -48,11 +48,11 @@ cdef inline bint test_condition(float32 threshold, bint leq, float32 feature_val
 
 cdef inline float64 divide(float64 a, float64 b):
     """
-    Divides a floating point number by another one with the division by zero evaluating to 0 per definition.
+    Divides a floating point number by another one. The division by zero evaluates to 0 per definition.
 
     :param a: The number to be divided
     :param b: The divisor
-    :return:  a divided by b or 0, if b is 0
+    :return:  The result of a / b or 0, if b = 0
     """
     if b != 0:
         return a / b
