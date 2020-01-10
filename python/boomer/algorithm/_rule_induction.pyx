@@ -8,7 +8,7 @@
 
 Provides functions for inducing classification rules.
 """
-from boomer.algorithm._model cimport intp, uint8, uint32, float32, float64
+from boomer.algorithm._arrays cimport intp, uint8, uint32, float32, float64
 from boomer.algorithm._model cimport Rule, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss

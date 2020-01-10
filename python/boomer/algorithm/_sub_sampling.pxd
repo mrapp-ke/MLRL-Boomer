@@ -1,4 +1,4 @@
-from boomer.algorithm._model cimport uint32, intp, float32
+from boomer.algorithm._arrays cimport uint32, intp, float32
 from boomer.algorithm._losses cimport Loss
 
 

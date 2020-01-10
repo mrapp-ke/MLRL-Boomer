@@ -7,7 +7,7 @@
 
 Provides commonly used utility functions and structs.
 """
-from boomer.algorithm._model cimport intp, float32, float64
+from boomer.algorithm._arrays cimport intp, float32, float64
 
 
 """

@@ -7,10 +7,16 @@
 
 Provides type definitions and utility functions for creating arrays.
 """
-from boomer.algorithm._model cimport intp, float64
-
 from cython.view cimport array as cvarray
 from cython.view cimport array_cwrapper as new_array
+
+
+cimport numpy as npc
+ctypedef Py_ssize_t intp
+ctypedef npc.uint8_t uint8
+ctypedef npc.uint32_t uint32
+ctypedef npc.float32_t float32
+ctypedef npc.float64_t float64
 
 
 cdef inline cvarray array_float64(intp num_elements):

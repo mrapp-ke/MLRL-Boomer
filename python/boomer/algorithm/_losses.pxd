@@ -1,4 +1,4 @@
-from boomer.algorithm._model cimport uint8, uint32, intp, float64
+from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 
 
 # Utility functions:
