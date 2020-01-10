@@ -50,7 +50,7 @@ cdef inline bint test_condition(float32 threshold, bint leq, float32 feature_val
         return feature_value > threshold
 
 
-cdef inline float64 divide(float64 a, float64 b):
+cdef inline float64 divide_or_zero(float64 a, float64 b):
     """
     Divides a floating point number by another one. The division by zero evaluates to 0 per definition.
 
