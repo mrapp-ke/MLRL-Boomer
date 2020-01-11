@@ -9,13 +9,9 @@ Provides classes that implement different loss functions to be minimized during 
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index
-from boomer.algorithm._math cimport divide_or_zero_float64
+from boomer.algorithm._math cimport divide_or_zero_float64, dsysv_float64
 
 from libc.math cimport pow, exp
-
-import numpy as np
-import scipy.linalg as linalg
-from boomer.algorithm.model import DTYPE_FLOAT64
 
 
 cdef class Loss:
@@ -432,33 +428,29 @@ cdef class LogisticLoss(NonDecomposableLoss):
     """
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
-        # We find the optimal scores to be predicted by the default rule for each label by solving a system of linear
-        # equations A * X = B with one equation results per label, where A is a two-dimensional matrix of coefficients,
-        # B is an one-dimensional array of ordinates, and X is an one-dimensional array of unknowns to be determined.
-        # The ordinates result from the gradients of the loss function, whereas the coefficients result from the
-        # hessians.
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
         cdef float64 sum_of_exponentials = num_cols + 1
         cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
         cdef float64[::1] expected_scores = array_float64(num_cols)
         cdef float64 expected_score
-        cdef intp r, c, c2
+        cdef intp r, c, c2, i
 
-        # Initialize the array of ordinals and the matrix of coefficients and set their elements to 0. As the matrix of
-        # coefficients is symmetrical, we only initialize the upper-right triangle of the matrix and leave the remaining
-        # elements unspecified.
+        # We find the optimal scores to be predicted by the default rule for each label by solving a system of linear
+        # equations A * X = B with one equation per label. A is a two-dimensional (symmetrical) matrix of coefficients,
+        # B is an one-dimensional array of ordinates, and X is an one-dimensional array of unknowns to be determined.
+        # The ordinates result from the gradients of the loss function, whereas the coefficients result from the
+        # hessians. As the matrix of coefficients is symmetrical, we must only compute the hessians that correspond to
+        # the upper-right triangle of the matrix and leave the remaining elements unspecified. For reasons of space
+        # efficiency, we store the hessians in an one-dimensional array by appending the rows of the matrix of
+        # coefficients to each other and omitting the unspecified elements.
         cdef float64[::1] ordinates = array_float64(num_cols)
-        cdef float64[::1, :] coefficients = matrix_float64(num_cols, num_cols)
+        ordinates[:] = 0
+        cdef intp num_hessians = (num_cols * (num_cols + 1)) // 2  # The number of elements in the upper-right triangle
+        cdef float64[::1] coefficients = array_float64(num_hessians)
+        coefficients[:] = 0
 
-        for c in range(num_cols):
-            ordinates[c] = 0
-
-            for c2 in range(c, num_cols):
-                coefficients[c, c2] = 0
-
-        # Example-wise calculate the gradients and hessians and add them to the array of ordinates and the matrix of
-        # coefficients....
+        # Example-wise calculate the gradients and hessians and add them to the arrays of ordinates and coefficients...
         for r in range(num_rows):
             # Traverse the labels of the current example once to create an array of expected scores that is shared among
             # the upcoming calculations of gradients and hessians...
@@ -466,6 +458,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 expected_scores[c] = __convert_label_into_score(y[r, c])
 
             # Traverse the labels again to calculate the gradients and hessians...
+            i = 0
+
             for c in range(num_cols):
                 expected_score = expected_scores[c]
 
@@ -474,39 +468,28 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 ordinates[c] += expected_score / sum_of_exponentials
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
-                # add it to the diagonal of the matrix of coefficients...
-                coefficients[c, c] += (pow(expected_score, 2) * num_cols) / sum_of_exponentials_pow
+                # add it to the array of coefficients...
+                coefficients[i] += (pow(expected_score, 2) * num_cols) / sum_of_exponentials_pow
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-                # each of the other labels and add them to the upper-right triangle of the matrix of coefficients...
+                # each of the other labels and add them to the array of coefficients...
                 for c2 in range(c + 1, num_cols):
-                    coefficients[c, c2] -= (expected_score * expected_scores[c2]) / sum_of_exponentials_pow
+                    i += 1
+                    coefficients[i] -= (expected_score * expected_scores[c2]) / sum_of_exponentials_pow
 
-        # Solve the system of linear equations...
-        # FIXME: Do not call scipy's linalg.solve function but the underlying C implementation directly
-        cdef float64[::1] scores = np.ascontiguousarray(linalg.solve(np.asarray(coefficients), np.asarray(ordinates),
-                                                                     overwrite_a=True, overwrite_b=True,
-                                                                     check_finite=False, assume_a='sym'),
-                                                        dtype=DTYPE_FLOAT64)
+                i += 1
 
-        print(np.asarray(scores))
+        # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
+        cdef float64[::1] scores = dsysv_float64(coefficients, ordinates)
 
         # We must traverse each example again to calculate the updated gradients and hessians based on the calculated
-        # scores. As the gradient for a particular example and label is independent from any other labels, they can be
-        # stored in a matrix with shape `(num_rows, num_cols)`. In case of the hessians, for each example, we must store
-        # the upper-right triangle of the matrix of coefficients as used before. Instead of storing the full matrix of
-        # coefficients for each example (which would result in a three-dimensional matrix with shape
-        # `(num_rows, num_cols, num_cols)` where many elements are unspecified), we flatten the matrices of coefficients
-        # by appending the rows to each other and omitting the unspecified elements. This results in a two-dimensional
-        # matrix with shape `(num_rows, num_hessians)`.
+        # scores...
         cdef float64[::1] exponentials = array_float64(num_cols)
         cdef float64[::1, :] gradients = matrix_float64(num_rows, num_cols)
         cdef float64[::1] total_sums_of_gradients = array_float64(num_cols)
-        cdef intp num_hessians = (num_cols * (num_cols + 1)) // 2
         cdef float64[::1, :] hessians = matrix_float64(num_rows, num_hessians)
         cdef float64[::1] total_sums_of_hessians = array_float64(num_hessians)
         cdef float64 exponential, tmp, score
-        cdef intp c3
 
         for r in range(num_rows):
             # Traverse the labels of the current example once to create arrays of expected scores and exponentials that
@@ -523,7 +506,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
             sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
 
             # Traverse the labels again to calculate the gradients and hessians...
-            c2 = 0
+            i = 0
 
             for c in range(num_cols):
                 expected_score = expected_scores[c]
@@ -539,19 +522,19 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
                 # add it to the matrix of hessians...
                 tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
-                hessians[r, c2] = tmp
-                total_sums_of_hessians[c2] += tmp
+                hessians[r, i] = tmp
+                total_sums_of_hessians[i] += tmp
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
-                for c3 in range(c + 1, num_cols):
-                    c2 += 1
-                    exponential = exp(-expected_score * score - expected_scores[c3] * scores[c3])
-                    tmp = (expected_score * expected_scores[c3] * exponential) / sum_of_exponentials_pow
-                    hessians[r, c2] = -tmp
-                    total_sums_of_hessians[c2] -= tmp
+                for c2 in range(c + 1, num_cols):
+                    i += 1
+                    exponential = exp(-expected_score * score - expected_scores[c2] * scores[c2])
+                    tmp = (expected_score * expected_scores[c2] * exponential) / sum_of_exponentials_pow
+                    hessians[r, i] = -tmp
+                    total_sums_of_hessians[i] -= tmp
 
-                c2 += 1
+                i += 1
 
         # Cache the matrix of gradients...
         self.gradients = gradients
