@@ -15,7 +15,6 @@ from boomer.algorithm._losses cimport Loss
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
 from boomer.algorithm._utils cimport s_condition, make_condition, test_condition, get_index, get_weight
-from boomer.algorithm._math cimport average_float32
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
@@ -169,7 +168,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                             best_condition_leq = 1
                             best_condition_r = r
                             best_condition_index = f
-                            best_condition_threshold = average_float32(previous_threshold, current_threshold)
+                            best_condition_threshold = (previous_threshold + current_threshold) / 2
 
                             # If instance sub-sampling is used, the threshold of the new condition does only depend on
                             # the examples that are contained in the sample. Later on, we need to identify the examples
@@ -193,7 +192,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                             best_condition_leq = 0
                             best_condition_r = r
                             best_condition_index = f
-                            best_condition_threshold = average_float32(previous_threshold, current_threshold)
+                            best_condition_threshold = (previous_threshold + current_threshold) / 2
 
                             # Again, if instance sub-sampling is used, we need to adjust the position that separates the
                             # covered from the uncovered examples, including those that are not contained in the sample
