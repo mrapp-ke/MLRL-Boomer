@@ -551,8 +551,11 @@ cdef class LogisticLoss(NonDecomposableLoss):
         return scores
 
     cdef begin_instance_sub_sampling(self):
-        # TODO
-        pass
+        # Reset the column-wise sums of the matrix of gradients and hessians...
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        total_sums_of_gradients[:] = 0
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        total_sums_of_hessians[:] = 0
 
     cdef update_sub_sample(self, intp example_index):
         # TODO
