@@ -434,8 +434,9 @@ cdef class LogisticLoss(NonDecomposableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         # We find the optimal scores to be predicted by the default rule for each label by solving a system of linear
         # equations A * X = B with one equation results per label, where A is a two-dimensional matrix of coefficients,
-        # B is an one-dimensional array of ordinates and X is an one-dimensional array of unknowns to be determined. The
-        # ordinals result from the gradients of the loss function, whereas the coefficients result from the hessians.
+        # B is an one-dimensional array of ordinates, and X is an one-dimensional array of unknowns to be determined.
+        # The ordinates result from the gradients of the loss function, whereas the coefficients result from the
+        # hessians.
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
         cdef float64 sum_of_exponentials = num_cols + 1
