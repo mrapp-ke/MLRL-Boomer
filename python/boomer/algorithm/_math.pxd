@@ -15,16 +15,26 @@ from libc.stdlib cimport malloc, free
 
 cdef inline divide_or_zero_float64(float64 a, float64 b):
     """
-    Divides a scalar of dtype `float64` by another one. The division by zero evaluates to 0 by definition.
+    Divides a number of dtype `float64` by another one. The division by zero evaluates to 0 by definition.
 
-    :param a:   The scalar to be divided
-    :param b:   The divisor
+    :param a:   A scalar of dtype `float64`, representing the number to be divided
+    :param b:   A scalar of dtype `float64`, representing the divisor
     :return:    A scalar of dtype `float64`, representing the result of a / b or 0, if b = 0
     """
     if b == 0:
         return 0
     else:
         return a / b
+
+
+cdef inline intp triangular_number(intp n):
+    """
+    Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
+
+    :param n:   A scalar of dtype `intp`, representing the order of the triangular number
+    :return:    A scalar of dtype `intp`, representing the n-th triangular number
+    """
+    return (n * (n + 1)) // 2
 
 
 cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] ordinates):

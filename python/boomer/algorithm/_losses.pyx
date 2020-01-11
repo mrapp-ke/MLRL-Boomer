@@ -9,7 +9,7 @@ Provides classes that implement different loss functions to be minimized during 
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index
-from boomer.algorithm._math cimport divide_or_zero_float64, dsysv_float64
+from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64
 
 from libc.math cimport pow, exp
 
@@ -446,7 +446,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         # coefficients to each other and omitting the unspecified elements.
         cdef float64[::1] ordinates = array_float64(num_cols)
         ordinates[:] = 0
-        cdef intp num_hessians = (num_cols * (num_cols + 1)) // 2  # The number of elements in the upper-right triangle
+        cdef intp num_hessians = triangular_number(num_cols)  # The number of elements in the upper-right triangle
         cdef float64[::1] coefficients = array_float64(num_hessians)
         coefficients[:] = 0
 
@@ -576,8 +576,29 @@ cdef class LogisticLoss(NonDecomposableLoss):
             total_sums_of_hessians[c] += hessians[example_index, c]
 
     cdef begin_search(self, intp[::1] label_indices):
-        # TODO
-        pass
+        # Reset sums of gradients and hessians to 0...
+        cdef float64[::1, :] gradients
+        cdef intp num_gradients
+        cdef float64[::1, :] hessians
+        cdef intp num_hessians
+
+        if label_indices is None:
+            gradients = self.gradients
+            num_gradients = gradients.shape[1]
+            hessians = self.hessians
+            num_hessians = hessians.shape[1]
+        else:
+            num_gradients = label_indices.shape[0]
+            num_hessians = triangular_number(num_gradients)
+
+        cdef float64[::1] sums_of_gradients = array_float64(num_gradients)
+        sums_of_gradients[:] = 0
+        cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
+        sums_of_hessians[:] = 0
+        self.sums_of_gradients = sums_of_gradients
+        self.sums_of_hessians = sums_of_hessians
+        self.label_indices = label_indices
+        # TODO Allocate the data structure for storing the predicted scores and quality scores of rules
 
     cdef update_search(self, intp example_index, uint32 weight):
         # TODO
