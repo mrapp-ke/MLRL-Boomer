@@ -601,8 +601,26 @@ cdef class LogisticLoss(NonDecomposableLoss):
         # TODO Allocate the data structure for storing the predicted scores and quality scores of rules
 
     cdef update_search(self, intp example_index, uint32 weight):
-        # TODO
-        pass
+        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[::1, :] hessians = self.hessians
+        cdef intp total_num_gradients = gradients.shape[1]
+        cdef intp total_num_hessians = hessians.shape[1]
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        cdef intp num_hessians = sums_of_hessians.shape[0]
+        cdef intp[::1] label_indices = self.label_indices
+        cdef intp c, c2, l, i, offset
+        i = 0
+
+        for c in range(num_gradients):
+            l = get_index(c, label_indices)
+            sums_of_gradients[c] += (weight * gradients[example_index, l])
+            offset = total_num_hessians - triangular_number(total_num_gradients - l)
+
+            for c2 in range(num_gradients - l):
+                sums_of_hessians[i] += (weight * hessians[example_index, offset  + c2])
+                i += 1
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
         # TODO
