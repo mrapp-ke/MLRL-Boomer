@@ -610,7 +610,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef intp num_gradients = sums_of_gradients.shape[0]
         cdef intp num_hessians = sums_of_hessians.shape[0]
         cdef intp[::1] label_indices = self.label_indices
-        cdef intp c, c2, l, i, offset
+        cdef intp c, c2, l, l2, i, offset
         i = 0
 
         for c in range(num_gradients):
@@ -618,8 +618,9 @@ cdef class LogisticLoss(NonDecomposableLoss):
             sums_of_gradients[c] += (weight * gradients[example_index, l])
             offset = total_num_hessians - triangular_number(total_num_gradients - l)
 
-            for c2 in range(num_gradients - l):
-                sums_of_hessians[i] += (weight * hessians[example_index, offset  + c2])
+            for c2 in range(c, num_gradients):
+                l2 = offset + get_index(c2, label_indices) - l
+                sums_of_hessians[i] += (weight * hessians[example_index, l2])
                 i += 1
 
     cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
