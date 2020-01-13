@@ -11,7 +11,7 @@ Provides functions for inducing classification rules.
 from boomer.algorithm._arrays cimport intp, uint8, uint32, float32, float64, matrix_intp
 from boomer.algorithm._model cimport Rule, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
-from boomer.algorithm._losses cimport Loss
+from boomer.algorithm._losses cimport Loss, Prediction
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
 from boomer.algorithm._utils cimport s_condition, make_condition, test_condition, get_index, get_weight
@@ -103,8 +103,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
 
     # Temporary variables
     cdef HeadCandidate current_head
+    cdef Prediction prediction
     cdef float32 previous_threshold, current_threshold
-    cdef float64[::1, :] predicted_and_quality_scores
     cdef uint32 weight
     cdef intp c, f, r, i, previous_r
 
@@ -154,14 +154,11 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
 
                     # Split points between examples with the same feature value must not be considered...
                     if previous_threshold != current_threshold:
-                        # Calculate optimal scores to be predicted by the current refinement, as well as the
-                        # corresponding quality scores
-                        predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(1)
+                        # Find and evaluate the best head for the current refinement, if a condition that uses the <=
+                        # operator is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, 0)
 
-                        # Evaluate potential condition using <= operator...
-                        current_head = head_refinement.find_head(head, label_indices, predicted_and_quality_scores, 0)
-
-                        # If refinement is better than the current rule...
+                        # If refinement using the <= operator is better than the current rule...
                         if current_head is not None:
                             found_refinement = 1
                             head = current_head
@@ -182,10 +179,11 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                 best_condition_r = __adjust_split(x, sorted_indices, r, previous_r, f,
                                                                   best_condition_leq, best_condition_threshold)
 
-                        # Evaluate potential condition using > operator...
-                        current_head = head_refinement.find_head(head, label_indices, predicted_and_quality_scores, 2)
+                         # Find and evaluate the best head for the current refinement, if a condition that uses the >
+                        # operator is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, 1)
 
-                        # If refinement is better than the current rule...
+                        # If refinement using the > operator is better than the current rule...
                         if current_head is not None:
                             found_refinement = 1
                             head = current_head
@@ -236,7 +234,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     if weights is not None:
         # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
         if pruning is not None and conditions.size() > 1:
-            pruning.begin_pruning(weights, loss, covered_example_indices, label_indices)
+            pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
             covered_example_indices = pruning.prune(x, x_sorted_indices, conditions)
 
         # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire training
@@ -246,7 +244,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         for i in covered_example_indices:
             loss.update_search(i, 1)
 
-        head.predicted_scores = loss.calculate_predicted_scores()
+        prediction = head_refinement.evaluate_predictions(loss, 0)
+        head.predicted_scores = prediction.predicted_scores
 
     # Apply shrinkage, if necessary...
     if shrinkage < 1:
