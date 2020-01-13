@@ -14,6 +14,39 @@ from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, d
 from libc.math cimport pow, exp
 
 
+cdef class Prediction:
+    """
+    Assess the overall quality of a rule's predictions for one or several labels.
+    """
+
+    def __cinit__(self, float64[::1] predicted_scores, float64 overall_quality_score):
+        """
+        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
+                                    that are predicted by the rule
+        :param quality_score:       The overall quality score
+        """
+        self.predicted_scores = predicted_scores
+        self.overall_quality_score = overall_quality_score
+
+
+cdef class LabelIndependentPrediction(Prediction):
+    """
+    Assesses the quality of a rule's predictions for one or several labels independently from each other.
+    """
+
+    def __cinit__(self, float64[::1] predicted_scores, float64[::1] quality_scores, float64 overall_quality_score):
+        """
+        :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
+                                        that are predicted by the rule
+        :param quality_scores:          An array of dtype float, shape `(num_predicted_labels)`, representing the
+                                        quality scores for the individual labels
+        :param overall_quality_score:   The overall quality score
+        """
+        self.predicted_scores = predicted_scores
+        self.quality_scores = quality_scores
+        self.overall_quality_score = overall_quality_score
+
+
 cdef class Loss:
     """
     A base class for all decomposable or non-decomposable loss functions. A loss function can be used to calculate the
@@ -72,10 +105,10 @@ cdef class Loss:
         order to reset the sums of gradients (and hessians in case of a non-decomposable loss function) cached
         internally to calculate the optimal scores more efficiently. Subsequent invocations of the function
         `update_search` can be used to update the cached values afterwards based on a single, newly covered example.
-        Invoking the function `calculate_predicted_and_quality_scores` at any point of the search (`update_search` must
-        be called at least once before!) will yield the optimal scores to be predicted by a rule that covers all
-        examples given so far, as well as corresponding quality scores that measure the quality of such a rule's
-        predictions.
+        Invoking the function `evaluate_label_independent_predictions` or `evaluate_label_dependent_predictions` at any
+        point of the search (`update_search` must be called at least once before!) will yield the optimal scores to be
+        predicted by a rule that covers all examples given so far, as well as corresponding quality scores that measure
+        the quality of such a rule's predictions.
 
         When a new rule has been induced, the function `apply_predictions` must be invoked in order to update the cached
         gradients (and hessians in case of a non-decomposable loss function).
@@ -90,47 +123,56 @@ cdef class Loss:
         Updates the cached sums of gradients (and hessians in case of a non-decomposable loss function) based on a
         single, newly covered example.
 
-        Subsequent invocations of the function `calculate_predicted_and_quality_scores` will yield the optimal scores to
-        be predicted by a rule that covers all examples given so far, as well as corresponding quality scores that
-        measure the quality of such a rule's predictions.
+        Subsequent invocations of the function `evaluate_label_independent_predictions` or
+        `evaluate_label_dependent_predictions` will yield the optimal scores to be predicted by a rule that covers all
+        examples given so far, as well as corresponding quality scores that measure the quality of such a rule's
+        predictions.
 
         :param example_index:   The index of the newly-covered example in the entire training data set
         :param weight:          The weight of the newly covered example
         """
         pass
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         """
         Calculates the optimal scores to be predicted by a rule that covers all examples that have been provided so far
-        via the function `update_search`, as well as (optionally) by a rule that covers all examples that have not been
-        provided yet. Additionally, for each label, quality scores that measure the quality of the predicted scores are
-        calculated.
+        via the function `update_search`, respectively by a rule that covers all examples that have not been provided
+        yet. Additionally, quality scores that measure the quality of the predicted scores are calculated for each
+        label.
+
+        The optimal score to be predicted for an individual label is calculated independently from the other labels. In
+        case of a non-decomposable loss function, it is assumed that the rule will abstain, i.e., predict 0, for the
+        other labels. The same assumption is used to calculate a quality score for each label independently.
 
         The calculated scores correspond to the label indices provided to the `begin_search` function. If no label
         indices were provided, scores for all labels are calculated.
 
-        :param include_uncovered:   1, if the scores for a rule that covers all examples that have not been provided
-                                    should be calculated, 0 otherwise
-        :return:                    An array of dtype float, shape `(4, num_predicted_labels)`, representing the optimal
-                                    scores to be predicted by a rule that covers all examples provided so far in the 1st
-                                    row, as well as the corresponding quality scores in the 2nd row. Accordingly, the
-                                    3rd row represents the optimal scores to be predicted by a rule that covers all
-                                    examples that have not been not provided yet, and the 4th row contains the
-                                    corresponding quality scores. If `include_uncovered` is 0, the elements in the 3rd
-                                    and 4th row are undefined
+        :param uncovered:   0, if the scores for a rule that covers all examples that have been provided so far should
+                            be calculated, 1, if the scores for a rule that covers all examples that have not been
+                            provided yet should be calculated
+        :return:            A `LabelIndependentPrediction` that stores the optimal scores to be predicted by the rule,
+                            as well as the corresponding quality scores for each label
         """
         pass
 
-    cdef float64[::1] calculate_predicted_scores(self):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         """
-        Calculates the scores to be predicted by a rule that covers all examples that have been provided so far via the
-        function `update_search`.
+        Calculates the optimal scores to be predicted by a rule that covers all examples that have been provided so far
+        via the function `update_search`, respectively by a rule that covers all examples that have not been provided
+        yet. Additionally, a single quality score that measures the quality of the predicted scores is calculated.
+
+        The optimal score to be predicted for an individual label is calculated with respect to the predictions for the
+        other labels. In case of a decomposable loss function, i.e., if the labels are independent from each other, the
+        optimal scores provided by the function `evaluate_label_independent_predictions` are the same.
 
         The calculated scores correspond to the label indices provided to the `begin_search` function. If no label
         indices were provided, scores for all labels are calculated.
 
-        :return: An array of dtype float, shape `(num_predicted_labels)`, representing the optimal scores to be
-                 predicted by a rule that covers all examples provided so far
+        :param uncovered:   0, if the scores for a rule that covers all examples that have been provided so far should
+                            be calculated, 1, if the scores for a rule that covers all examples that have not been
+                            provided yet should be calculated
+        :return:            A `Prediction` that stores the optimal scores to be predicted by the rule, as well as its
+                            overall quality score
         """
         pass
 
@@ -171,11 +213,13 @@ cdef class DecomposableLoss(Loss):
     cdef update_search(self, intp example_index, uint32 weight):
         pass
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         pass
 
-    cdef float64[::1] calculate_predicted_scores(self):
-        pass
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+        # In case of a decomposable loss, the label-dependent predictions are the same as the label-independent
+        # predictions...
+        return self.evaluate_label_independent_predictions(uncovered)
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
@@ -202,10 +246,10 @@ cdef class NonDecomposableLoss(Loss):
     cdef update_search(self, intp example_index, uint32 weight):
         pass
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         pass
 
-    cdef float64[::1] calculate_predicted_scores(self):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         pass
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
@@ -312,9 +356,11 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         # Cache the given label indices...
         self.label_indices = label_indices
 
-        # Initialize array of scores once to avoid array-recreation at each update...
-        cdef float64[::1, :] predicted_and_quality_scores = matrix_float64(4, num_labels)
-        self.predicted_and_quality_scores = predicted_and_quality_scores
+        # Initialize object for storing potential predictions once to avoid object-recreation at each update...
+        cdef float64[::1] predicted_scores = array_float64(num_labels)
+        cdef float64[::1] quality_scores = array_float64(num_labels)
+        cdef LabelIndependentPrediction prediction = LabelIndependentPrediction(predicted_scores, quality_scores, 0)
+        self.prediction = prediction
 
     cdef update_search(self, intp example_index, uint32 weight):
         # Update sum of hessians...
@@ -333,61 +379,44 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             l = get_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
-        cdef float64[::1, :] predicted_and_quality_scores = self.predicted_and_quality_scores
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64 sum_of_hessians = self.sum_of_hessians
         cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef float64 sum_of_gradients, sum_of_gradients_uncovered, sum_of_hessians_uncovered, score, score_halved
+        cdef LabelIndependentPrediction prediction = self.prediction
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef float64 sum_of_gradients, score, score_halved, overall_quality_score
         cdef float64[::1] total_sums_of_gradients
         cdef intp[::1] label_indices
         cdef intp c, l
 
-        if include_uncovered:
-            sum_of_hessians_uncovered = self.total_sum_of_hessians - sum_of_hessians
+        if uncovered:
+            sum_of_hessians = self.total_sum_of_hessians - sum_of_hessians
             total_sums_of_gradients = self.total_sums_of_gradients
             label_indices = self.label_indices
 
+        overall_quality_score = 0
+
         for c in range(num_labels):
             sum_of_gradients = sums_of_gradients[c]
 
-            # Calculate score to be predicted by a rule that covers the examples that have been provided so far...
-            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians)
-            predicted_and_quality_scores[0, c] = score
-
-            # Calculate quality score for a rule that covers the examples that have been provided so far..
-            score_halved = score / 2
-            predicted_and_quality_scores[1, c] = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
-
-            if include_uncovered:
+            if uncovered:
                 l = get_index(c, label_indices)
-                sum_of_gradients_uncovered = total_sums_of_gradients[l] - sum_of_gradients
+                sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
 
-                # Calculate score to be predicted by a rule that covers the examples that have not been provided yet...
-                score = divide_or_zero_float64(-sum_of_gradients_uncovered, sum_of_hessians_uncovered)
-                predicted_and_quality_scores[2, c] = score
-
-                # Calculate quality score for a rule that covers the examples that have not been provided yet...
-                score_halved = score / 2
-                predicted_and_quality_scores[3, c] = (sum_of_gradients_uncovered * score) + (score_halved * sum_of_hessians_uncovered * score)
-
-        return predicted_and_quality_scores
-
-    cdef float64[::1] calculate_predicted_scores(self):
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64 sum_of_hessians = self.sum_of_hessians
-        cdef intp num_labels = sums_of_gradients.shape[0]
-        cdef float64[::1] predicted_scores = array_float64(num_labels)
-        cdef float64 sum_of_gradients, score
-
-        for c in range(num_labels):
-            sum_of_gradients = sums_of_gradients[c]
-
-            # Calculate score to be predicted by a rule that covers the examples that have been provided so far...
+            # Calculate predicted score...
             score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians)
             predicted_scores[c] = score
 
-        return predicted_scores
+            # Calculate quality score...
+            score_halved = score / 2
+            score = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
+            quality_scores[c] = score
+            overall_quality_score += score
+
+        prediction.overall_quality_score = overall_quality_score
+        return prediction
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
@@ -623,11 +652,11 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 sums_of_hessians[i] += (weight * hessians[example_index, l2])
                 i += 1
 
-    cdef float64[::1, :] calculate_predicted_and_quality_scores(self, bint include_uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         # TODO
         pass
 
-    cdef float64[::1] calculate_predicted_scores(self):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         # TODO
         pass
 

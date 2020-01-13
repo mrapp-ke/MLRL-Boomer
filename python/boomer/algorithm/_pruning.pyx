@@ -10,6 +10,7 @@ Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.algorithm._arrays cimport array_intp
 from boomer.algorithm._utils cimport test_condition
+from boomer.algorithm._losses cimport Prediction
 
 from cython.operator cimport dereference, postincrement
 
@@ -21,8 +22,8 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices,
-                       intp[::1] label_indices):
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
+                       intp[::1] covered_example_indices, intp[::1] label_indices):
         """
         Calculates the quality score of an existing rule, based on the examples that are contained in the prune set,
         i.e., based on all examples whose weight is 0.
@@ -35,7 +36,8 @@ cdef class Pruning:
         :param weights:                 An array of dtype int, shape `(num_examples)`, representing the weights of all
                                         training examples, regardless of whether they are included in the prune set or
                                         grow set
-        :param loss:                    The loss function to be minimized
+        :param loss:                    The `Loss` to be minimized
+        :param head_refinement:         The strategy that is used to find the heads of rules
         :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
                                         of all training examples that are covered by the rule, regardless of whether
                                         they are included in the prune set or grow set
@@ -72,8 +74,8 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, intp[::1] covered_example_indices,
-                       intp[::1] label_indices):
+    cdef begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
+                       intp[::1] covered_example_indices, intp[::1] label_indices):
         cdef uint32 weight
         cdef intp i
 
@@ -87,28 +89,25 @@ cdef class IREP(Pruning):
             if weight == 0:
                 loss.update_search(i, 1)
 
-        # Calculate the optimal scores to be predicted by the given rule, as well as the corresponding quality scores,
-        # based on the prune set...
-        cdef float64[::1, :] predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(0)
+        # Calculate the optimal scores to be predicted by the given rule, as well as its overall quality score,  based
+        # on the prune set...
+        cdef Prediction prediction = head_refinement.evaluate_predictions(loss, 0)
 
-        # Calculate and cache the overall quality score of the given rule based on the prune set...
-        cdef float64 original_quality_score = 0
-        cdef intp num_labels = predicted_and_quality_scores.shape[1]
-
-        for i in range(num_labels):
-            original_quality_score += predicted_and_quality_scores[1, i]
-
+        # Cache the overall quality score of the given rule based on the prune set...
+        cdef float64 original_quality_score = prediction.overall_quality_score
         self.original_quality_score = original_quality_score
 
         # Cache arguments that will be used in the `prune` function...
         self.label_indices = label_indices
         self.covered_example_indices = covered_example_indices
         self.loss = loss
+        self.head_refinement = head_refinement
         self.weights = weights
 
     cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[s_condition] conditions):
         cdef intp[::1] label_indices = self.label_indices
         cdef Loss loss = self.loss
+        cdef HeadRefinement head_refinement = self.head_refinement
         cdef uint32[::1] weights = self.weights
         cdef intp num_conditions = conditions.size()
         cdef intp num_examples = x_sorted_indices.shape[0]
@@ -123,7 +122,7 @@ cdef class IREP(Pruning):
         cdef intp[::1] covered_example_indices, new_covered_example_indices
         cdef uint32 weight
         cdef float64 quality_score
-        cdef float64[::1, :] predicted_and_quality_scores
+        cdef Prediction prediction
         cdef intp n, c, r, i, index, num_labels
 
         # We process the original rule's conditions (except for the last one) in the order they have been learned. At
@@ -195,17 +194,13 @@ cdef class IREP(Pruning):
             covered_example_indices = new_covered_example_indices
 
             # Calculate the optimal scores to be predicted by a rule that only contains the conditions processed so far,
-            # as well as the corresponding quality scores, based on the prune set...
-            predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(0)
+            # as well as its overall quality score, based on the prune set...
+            prediction = head_refinement.evaluate_predictions(loss, 0)
 
-            # Calculate the overall quality score of the current rule based on the prune set and check if it's better
-            # than the best quality score known so far (reaching the same quality score with fewer conditions is also
-            # considered an improvement)...
-            quality_score = 0
-            num_labels = predicted_and_quality_scores.shape[1]
-
-            for c in range(num_labels):
-                quality_score += predicted_and_quality_scores[1, c]
+            # Check if the overall quality score of the current rule based on the prune set is better than the best
+            # quality score known so far (reaching the same quality score with fewer conditions is also considered an
+            # improvement)...
+            quality_score = prediction.overall_quality_score
 
             if quality_score < best_quality_score or (num_pruned_conditions == 0 and quality_score <= best_quality_score):
                 best_quality_score = quality_score
