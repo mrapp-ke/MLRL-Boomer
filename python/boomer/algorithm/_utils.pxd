@@ -7,7 +7,7 @@
 
 Provides commonly used utility functions and structs.
 """
-from boomer.algorithm._arrays cimport intp, uint32, float32, float64
+from boomer.algorithm._arrays cimport intp, uint8, uint32, float32, float64
 
 
 """
@@ -78,3 +78,16 @@ cdef inline uint32 get_weight(intp i, uint32[::1] weights):
         return 1
     else:
         return weights[i]
+
+
+cdef inline float64 convert_label_into_score(uint8 label):
+    """
+    Converts a label {0, 1} into an expected score {-1, 1}.
+
+    :param label:   A scalar of dtype `uint8`, representing the label
+    :return:        A scalar of dtype `float64`, representing the expected score
+    """
+    if label > 0:
+        return label
+    else:
+        return -1

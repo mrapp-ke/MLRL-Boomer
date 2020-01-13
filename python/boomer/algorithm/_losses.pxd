@@ -1,21 +1,6 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 
 
-# Utility functions:
-
-cdef inline float64 __convert_label_into_score(uint8 label):
-    """
-    Converts a label in {0, 1} into an expected score {-1, 1}.
-
-    :param label:   A scalar of dtype float, representing the label
-    :return:        A scalar of dtype float, representing the confidence score
-    """
-    if label > 0:
-        return label
-    else:
-        return -1
-
-
 cdef class Prediction:
 
     # Attributes:

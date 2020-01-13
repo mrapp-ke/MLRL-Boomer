@@ -8,7 +8,7 @@
 Provides classes that implement different loss functions to be minimized during training.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport get_index
+from boomer.algorithm._utils cimport get_index, convert_label_into_score
 from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64
 
 from libc.math cimport pow, exp
@@ -277,7 +277,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             sum_of_gradients = 0
 
             for r in range(num_rows):
-                expected_score = 2 * __convert_label_into_score(y[r, c])
+                expected_score = 2 * convert_label_into_score(y[r, c])
                 # Note: As the matrix of gradients is unused at this point, we use it for caching the expected scores
                 # instead of allocating a new array. The values in the matrix are overwritten later on with the actual
                 # gradients.
@@ -484,7 +484,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
             # Traverse the labels of the current example once to create an array of expected scores that is shared among
             # the upcoming calculations of gradients and hessians...
             for c in range(num_cols):
-                expected_scores[c] = __convert_label_into_score(y[r, c])
+                expected_scores[c] = convert_label_into_score(y[r, c])
 
             # Traverse the labels again to calculate the gradients and hessians...
             i = 0
@@ -526,7 +526,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
             sum_of_exponentials = 1
 
             for c in range(num_cols):
-                expected_score = __convert_label_into_score(y[r, c])
+                expected_score = convert_label_into_score(y[r, c])
                 expected_scores[c] = expected_score
                 exponential = exp(-expected_score * scores[c])
                 exponentials[c] = exponential
