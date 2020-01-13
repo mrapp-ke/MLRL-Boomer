@@ -87,8 +87,8 @@ cdef class IREP(Pruning):
             if weight == 0:
                 loss.update_search(i, 1)
 
-        # Calculate the optimal scores to be predicted by the given rule based, as well as the corresponding quality
-        # scores, based on the prune set...
+        # Calculate the optimal scores to be predicted by the given rule, as well as the corresponding quality scores,
+        # based on the prune set...
         cdef float64[::1, :] predicted_and_quality_scores = loss.calculate_predicted_and_quality_scores(0)
 
         # Calculate and cache the overall quality score of the given rule based on the prune set...
