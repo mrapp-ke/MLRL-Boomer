@@ -139,7 +139,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
     cdef intp[::1] label_indices
 
-    cdef Prediction prediction
+    cdef LabelIndependentPrediction prediction
 
     # Functions:
 
