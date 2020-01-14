@@ -621,7 +621,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
         self.sums_of_gradients = sums_of_gradients
         self.sums_of_hessians = sums_of_hessians
         self.label_indices = label_indices
-        # TODO Allocate the data structure for storing the predicted scores and quality scores of rules
+        cdef Prediction prediction = Prediction(num_gradients)
+        self.prediction = prediction
 
     cdef update_search(self, intp example_index, uint32 weight):
         cdef float64[::1, :] gradients = self.gradients
