@@ -646,8 +646,48 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 i += 1
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
-        # TODO
-        pass
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef intp num_hessians = sums_of_hessians.shape[0]
+        cdef LabelIndependentPrediction prediction = self.label_independent_prediction
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef float64 overall_quality_score = 0
+        cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
+        cdef intp[::1] label_indices
+        cdef float64 sum_of_gradients, sum_of_hessians, score
+        cdef intp total_num_gradients, total_num_hessians, c, c2, l, l2
+
+        if uncovered:
+            total_sums_of_gradients = self.total_sums_of_gradients
+            total_num_gradients = total_sums_of_gradients.shape[0]
+            total_sums_of_hessians = self.total_sums_of_hessians
+            total_num_hessians = total_sums_of_hessians.shape[0]
+            label_indices = self.label_indices
+
+        for c in range(num_gradients):
+            sum_of_gradients = sums_of_gradients[c]
+            c2 = num_hessians - triangular_number(num_gradients - c)
+            sum_of_hessians = sums_of_hessians[c2]
+
+            if uncovered:
+                l = get_index(c, label_indices)
+                sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
+                l2 = total_num_hessians - triangular_number(total_num_gradients - l)
+                sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
+
+            # Calculate predicted score...
+            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians)
+            predicted_scores[c] = score
+
+            # Calculate quality score...
+            score = (sum_of_gradients * score) + ((score / 2) * sum_of_hessians * score)
+            quality_scores[c] = score
+            overall_quality_score += score
+
+        prediction.overall_quality_score = overall_quality_score
+        return prediction
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         # TODO
