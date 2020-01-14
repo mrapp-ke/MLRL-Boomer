@@ -380,17 +380,16 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef float64 sum_of_gradients, score, score_halved, overall_quality_score
+        cdef float64 overall_quality_score = 0
         cdef float64[::1] total_sums_of_gradients
         cdef intp[::1] label_indices
+        cdef float64 sum_of_gradients, score
         cdef intp c, l
 
         if uncovered:
             sum_of_hessians = self.total_sum_of_hessians - sum_of_hessians
             total_sums_of_gradients = self.total_sums_of_gradients
             label_indices = self.label_indices
-
-        overall_quality_score = 0
 
         for c in range(num_labels):
             sum_of_gradients = sums_of_gradients[c]
@@ -404,8 +403,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             predicted_scores[c] = score
 
             # Calculate quality score...
-            score_halved = score / 2
-            score = (sum_of_gradients * score) + (score_halved * sum_of_hessians * score)
+            score = (sum_of_gradients * score) + ((score / 2) * sum_of_hessians * score)
             quality_scores[c] = score
             overall_quality_score += score
 
