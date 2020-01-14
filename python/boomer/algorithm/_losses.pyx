@@ -19,14 +19,12 @@ cdef class Prediction:
     Assess the overall quality of a rule's predictions for one or several labels.
     """
 
-    def __cinit__(self, float64[::1] predicted_scores, float64 overall_quality_score):
+    def __cinit__(self, intp num_predicted_labels):
         """
-        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                    that are predicted by the rule
-        :param quality_score:       The overall quality score
+        :param num_predicted_labels: The number of labels for which the rule predicts
         """
-        self.predicted_scores = predicted_scores
-        self.overall_quality_score = overall_quality_score
+        self.predicted_scores = array_float64(num_predicted_labels)
+        self.overall_quality_score = 0
 
 
 cdef class LabelIndependentPrediction(Prediction):
@@ -34,7 +32,7 @@ cdef class LabelIndependentPrediction(Prediction):
     Assesses the quality of a rule's predictions for one or several labels independently from each other.
     """
 
-    def __cinit__(self, float64[::1] predicted_scores, float64[::1] quality_scores, float64 overall_quality_score):
+    def __cinit__(self, intp num_predicted_labels):
         """
         :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
                                         that are predicted by the rule
@@ -42,9 +40,7 @@ cdef class LabelIndependentPrediction(Prediction):
                                         quality scores for the individual labels
         :param overall_quality_score:   The overall quality score
         """
-        self.predicted_scores = predicted_scores
-        self.quality_scores = quality_scores
-        self.overall_quality_score = overall_quality_score
+        self.quality_scores = array_float64(num_predicted_labels)
 
 
 cdef class Loss:
@@ -357,9 +353,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         self.label_indices = label_indices
 
         # Initialize object for storing potential predictions once to avoid object-recreation at each update...
-        cdef float64[::1] predicted_scores = array_float64(num_labels)
-        cdef float64[::1] quality_scores = array_float64(num_labels)
-        cdef LabelIndependentPrediction prediction = LabelIndependentPrediction(predicted_scores, quality_scores, 0)
+        cdef LabelIndependentPrediction prediction = LabelIndependentPrediction(num_labels)
         self.prediction = prediction
 
     cdef update_search(self, intp example_index, uint32 weight):
