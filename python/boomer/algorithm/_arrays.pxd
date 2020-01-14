@@ -45,7 +45,7 @@ cdef inline cvarray array_uint32(intp num_elements):
     """
     cdef tuple shape = tuple([num_elements])
     cdef intp itemsize = sizeof(uint32)
-    cdef char* format='l'
+    cdef char* format='I'
     cdef char* mode = 'c'
     cdef char* buf = NULL
     cdef cvarray array = new_array(shape, itemsize, format, mode, buf)
