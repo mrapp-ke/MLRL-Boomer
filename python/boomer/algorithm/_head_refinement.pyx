@@ -10,6 +10,15 @@ Provides classes that implement strategies for finding the heads of rules.
 from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._losses cimport LabelIndependentPrediction
+from boomer.algorithm._arrays cimport
+
+array_intp, array_float64
+from boomer.algorithm._losses cimport
+
+LabelIndependentPrediction
+from boomer.algorithm._utils cimport
+
+get_index
 
 
 cdef class HeadCandidate:
@@ -69,7 +78,7 @@ cdef class HeadRefinement:
         `update_search`.
 
         :param loss:            The `Loss` to be minimized
-        :param covered:         0, if the rule for which the optimal scores should be calculated covers all examples
+        :param uncovered:       0, if the rule for which the optimal scores should be calculated covers all examples
                                 that have been provided to the loss function so far, 1, if the rule covers all examples
                                 that have not been provided yet
         :return:                A `Prediction` that stores the optimal scores to be predicted by the rule, as well as
