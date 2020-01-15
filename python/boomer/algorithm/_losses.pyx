@@ -646,7 +646,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef intp num_gradients = sums_of_gradients.shape[0]
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         cdef intp num_hessians = sums_of_hessians.shape[0]
-        cdef LabelIndependentPrediction prediction = self.label_independent_prediction
+        cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64 overall_quality_score = 0
