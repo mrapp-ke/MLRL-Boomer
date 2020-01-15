@@ -7,9 +7,10 @@
 
 Provides utility functions for common mathematical operations.
 """
-from boomer.algorithm._arrays cimport intp, float32, float64, matrix_float64
+from boomer.algorithm._arrays cimport intp, float64, array_float64, matrix_float64
 
 from scipy.linalg.cython_lapack cimport dsysv
+from scipy.linalg.cython_blas cimport dspmv, ddot
 from libc.stdlib cimport malloc, free
 
 
@@ -35,6 +36,59 @@ cdef inline intp triangular_number(intp n):
     :return:    A scalar of dtype `intp`, representing the n-th triangular number
     """
     return (n * (n + 1)) // 2
+
+
+cdef inline float64 ddot_float64(float64[::1] x, float64[::1] y):
+    """
+    Computes and returns the dot product x * y of two vectors using BLAS' DDOT routine (see 
+    http://www.netlib.org/lapack/explore-html/de/da4/group__double__blas__level1_ga75066c4825cb6ff1c8ec4403ef8c843a.html).
+    
+    :param x:   An array of dtype `float64`, shape (n), representing the first vector x
+    :param y:   An array of dtype `float64`, shape (n), representing the second vector y
+    :return:    A scalar of dtype `float64`, representing the result of the dot product x * y
+    """
+    # The number of elements in the arrays x and y
+    cdef int n = x.shape[0]
+    # Storage spacing between the elements of the arrays x and y
+    cdef int incx, incy = 0
+    # Invoke the DDOT routine...
+    cdef float64 result = ddot(&n, &x[0], &incx, &y[0], &incy)
+    return result
+
+
+cdef inline float64[::1] dspmv_float64(float64[::1] a, float64[::1] x):
+    """
+    Computes and returns the solution to the matrix-vector operation A * x using BLAS' DSPMV routine (see
+    http://www.netlib.org/lapack/explore-html/d7/d15/group__double__blas__level2_gab746575c4f7dd4eec72e8110d42cefe9.html).
+    This function expects A to be a double-precision symmetric matrix with shape `(n, n)` and x a double-precision array 
+    with shape `(n)`.
+    
+    DSPMV expects the matrix A to be supplied in packed form, i.e., as an array with shape `(n * (n + 1) // 2 )` that 
+    contains the elements in the upper-right triangle of A appended to each other, column by column, and omitting all 
+    unspecified elements.
+    
+    :param a:   An array of dtype `float64`, shape `(n * (n + 1) // 2)`, representing the elements in the upper-right 
+                triangle of the matrix A in a packed form
+    :param x:   An array of dtype `float64`, shape `(n)`, representing the elements in the array x
+    :return:    An array of dtype `float64`, shape `(n)`, representing the result of the matrix-vector operation A * x
+    """
+    # 'U' if the upper-right triangle of A should be used, 'L' if the lower-left triangle should be used
+    cdef char* uplo = 'U'
+    # The number of rows and columns of the matrix A
+    cdef int n = x.shape[0]
+    # A scalar to be multiplied with the matrix A
+    cdef float64 alpha = 1
+    # The increment for the elements of x
+    cdef int incx = 1
+    # A scalar to be multiplied with vector y
+    cdef float64 beta = 0
+    # An array of dtype `float64`, shape `(n)`. Will contain the result of A * x
+    cdef float64[::1] y = array_float64(n)
+    # The increment for the elements of y
+    cdef int incy = 1
+    # Invoke the DSPMV routine...
+    dspmv(uplo, &n, &alpha, &a[0], &x[0], &incx, &beta, &y[0], &incy)
+    return y
 
 
 cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] ordinates):
