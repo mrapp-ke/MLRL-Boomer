@@ -64,8 +64,7 @@ cdef inline float64[::1] dspmv_float64(float64[::1] a, float64[::1] x):
     with shape `(n)`.
     
     DSPMV expects the matrix A to be supplied in packed form, i.e., as an array with shape `(n * (n + 1) // 2 )` that 
-    contains the elements in the upper-right triangle of A appended to each other, column by column, and omitting all 
-    unspecified elements.
+    consists of the columns of A appended to each other and omitting all unspecified elements.
     
     :param a:   An array of dtype `float64`, shape `(n * (n + 1) // 2)`, representing the elements in the upper-right 
                 triangle of the matrix A in a packed form
@@ -105,7 +104,7 @@ cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] o
     Furthermore, DSYSV assumes the matrix of coefficients A to be symmetrical, i.e., it will only use the upper-right
     triangle of A, whereas the remaining elements are ignored. For reasons of space efficiency, this function expects
     the coefficients to be given as an array with shape `(num_equations * (num_equations + 1)) // 2`, representing the
-    elements of the upper-right triangle of A, where the rows are appended to each other and unspecified elements are
+    elements of the upper-right triangle of A, where the columns are appended to each other and unspecified elements are
     omitted. This function will implicitly convert the given array into a matrix that is suited for DSYSV.
 
     :param coefficients:    An array of dtype `float64`, shape `(num_equations * (num_equations + 1)) // 2)`,
@@ -122,8 +121,8 @@ cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] o
     cdef float64[::1, :] a = matrix_float64(n, n)
     i = 0
 
-    for r in range(n):
-        for c in range(r, n):
+    for c in range(n):
+        for r in range(c + 1):
             a[r, c] = coefficients[i]
             i += 1
 
