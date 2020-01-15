@@ -7,12 +7,18 @@
 
 Provides classes that implement different loss functions to be minimized during training.
 """
-from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport get_index, convert_label_into_score
-from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64
+from boomer.algorithm._arrays cimport
 
-from libc.math cimport pow, exp
+array_float64, matrix_float64
+from boomer.algorithm._math cimport
 
+divide_or_zero_float64, triangular_number, dsysv_float64
+from boomer.algorithm._utils cimport
+
+get_index, convert_label_into_score
+from libc.math cimport
+
+pow, exp
 
 cdef class Prediction:
     """
@@ -34,11 +40,7 @@ cdef class LabelIndependentPrediction(Prediction):
 
     def __cinit__(self, intp num_predicted_labels):
         """
-        :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                        that are predicted by the rule
-        :param quality_scores:          An array of dtype float, shape `(num_predicted_labels)`, representing the
-                                        quality scores for the individual labels
-        :param overall_quality_score:   The overall quality score
+        :param num_predicted_labels: The number of labels for which the rule predicts
         """
         self.quality_scores = array_float64(num_predicted_labels)
 
