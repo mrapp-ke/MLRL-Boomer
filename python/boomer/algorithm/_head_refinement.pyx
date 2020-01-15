@@ -10,15 +10,6 @@ Provides classes that implement strategies for finding the heads of rules.
 from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._losses cimport LabelIndependentPrediction
-from boomer.algorithm._arrays cimport
-
-array_intp, array_float64
-from boomer.algorithm._losses cimport
-
-LabelIndependentPrediction
-from boomer.algorithm._utils cimport
-
-get_index
 
 
 cdef class HeadCandidate:

@@ -7,18 +7,12 @@
 
 Provides classes that implement different loss functions to be minimized during training.
 """
-from boomer.algorithm._arrays cimport
+from boomer.algorithm._arrays cimport array_float64, matrix_float64
+from boomer.algorithm._utils cimport get_index, convert_label_into_score
+from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64
 
-array_float64, matrix_float64
-from boomer.algorithm._math cimport
+from libc.math cimport pow, exp
 
-divide_or_zero_float64, triangular_number, dsysv_float64
-from boomer.algorithm._utils cimport
-
-get_index, convert_label_into_score
-from libc.math cimport
-
-pow, exp
 
 cdef class Prediction:
     """
