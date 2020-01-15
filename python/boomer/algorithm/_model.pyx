@@ -138,7 +138,7 @@ cdef class FullHead(Head):
         self.scores = scores
 
     def __getstate__(self):
-        return (np.asarray(self.scores))
+        return np.asarray(self.scores)
 
     def __setstate__(self, state):
         scores = state
@@ -169,7 +169,7 @@ cdef class PartialHead(Head):
         self.label_indices = label_indices
 
     def __getstate__(self):
-        return (np.asarray(self.label_indices), np.asarray(self.scores))
+        return np.asarray(self.label_indices), np.asarray(self.scores)
 
     def __setstate__(self, state):
         label_indices, scores = state
@@ -201,7 +201,7 @@ cdef class Rule:
         self.head = head
 
     def __getstate__(self):
-        return (self.body, self.head)
+        return self.body, self.head
 
     def __setstate__(self, state):
         body, head = state
