@@ -459,7 +459,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         # The ordinates result from the gradients of the loss function, whereas the coefficients result from the
         # hessians. As the matrix of coefficients is symmetrical, we must only compute the hessians that correspond to
         # the upper-right triangle of the matrix and leave the remaining elements unspecified. For reasons of space
-        # efficiency, we store the hessians in an one-dimensional array by appending the rows of the matrix of
+        # efficiency, we store the hessians in an one-dimensional array by appending the columns of the matrix of
         # coefficients to each other and omitting the unspecified elements.
         cdef float64[::1] ordinates = array_float64(num_cols)
         ordinates[:] = 0
@@ -484,16 +484,15 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 # add it to the array of ordinates...
                 ordinates[c] += expected_score / sum_of_exponentials
 
+                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
+                # each of the other labels and add it to the array of coefficients...
+                for c2 in range(c):
+                    coefficients[i] -= (expected_scores[c2] * expected_score) / sum_of_exponentials_pow
+                    i += 1
+
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
                 # add it to the array of coefficients...
                 coefficients[i] += (pow(expected_score, 2) * num_cols) / sum_of_exponentials_pow
-
-                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-                # each of the other labels and add them to the array of coefficients...
-                for c2 in range(c + 1, num_cols):
-                    i += 1
-                    coefficients[i] -= (expected_score * expected_scores[c2]) / sum_of_exponentials_pow
-
                 i += 1
 
         # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
@@ -536,21 +535,20 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 gradients[r, c] = -tmp
                 total_sums_of_gradients[c] -= tmp
 
+                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
+                # each of the other labels and add them to the matrix of hessians...
+                for c2 in range(c):
+                    exponential = exp(-expected_scores[c2] * scores[c2] - expected_score * score)
+                    tmp = (expected_scores[c2] * expected_score * exponential) / sum_of_exponentials_pow
+                    hessians[r, i] = -tmp
+                    total_sums_of_hessians[i] -= tmp
+                    i += 1
+
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
                 # add it to the matrix of hessians...
                 tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
                 hessians[r, i] = tmp
                 total_sums_of_hessians[i] += tmp
-
-                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-                # each of the other labels and add them to the matrix of hessians...
-                for c2 in range(c + 1, num_cols):
-                    i += 1
-                    exponential = exp(-expected_score * score - expected_scores[c2] * scores[c2])
-                    tmp = (expected_score * expected_scores[c2] * exponential) / sum_of_exponentials_pow
-                    hessians[r, i] = -tmp
-                    total_sums_of_hessians[i] -= tmp
-
                 i += 1
 
         # Cache the matrix of gradients...
@@ -621,12 +619,9 @@ cdef class LogisticLoss(NonDecomposableLoss):
     cdef update_search(self, intp example_index, uint32 weight):
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1, :] hessians = self.hessians
-        cdef intp total_num_gradients = gradients.shape[1]
-        cdef intp total_num_hessians = hessians.shape[1]
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         cdef intp num_gradients = sums_of_gradients.shape[0]
-        cdef intp num_hessians = sums_of_hessians.shape[0]
         cdef intp[::1] label_indices = self.label_indices
         cdef intp c, c2, l, l2, i, offset
         i = 0
@@ -634,10 +629,10 @@ cdef class LogisticLoss(NonDecomposableLoss):
         for c in range(num_gradients):
             l = get_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
-            offset = total_num_hessians - triangular_number(total_num_gradients - l)
+            offset = triangular_number(l)
 
-            for c2 in range(c, num_gradients):
-                l2 = offset + get_index(c2, label_indices) - l
+            for c2 in range(c + 1):
+                l2 = offset + get_index(c2, label_indices)
                 sums_of_hessians[i] += (weight * hessians[example_index, l2])
                 i += 1
 
@@ -645,7 +640,6 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef intp num_gradients = sums_of_gradients.shape[0]
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
-        cdef intp num_hessians = sums_of_hessians.shape[0]
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
@@ -653,24 +647,22 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
         cdef intp[::1] label_indices
         cdef float64 sum_of_gradients, sum_of_hessians, score
-        cdef intp total_num_gradients, total_num_hessians, c, c2, l, l2
+        cdef intp c, c2, l, l2
 
         if uncovered:
             total_sums_of_gradients = self.total_sums_of_gradients
-            total_num_gradients = total_sums_of_gradients.shape[0]
             total_sums_of_hessians = self.total_sums_of_hessians
-            total_num_hessians = total_sums_of_hessians.shape[0]
             label_indices = self.label_indices
 
         for c in range(num_gradients):
             sum_of_gradients = sums_of_gradients[c]
-            c2 = num_hessians - triangular_number(num_gradients - c)
+            c2 = triangular_number(c + 1) - 1
             sum_of_hessians = sums_of_hessians[c2]
 
             if uncovered:
                 l = get_index(c, label_indices)
                 sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
-                l2 = total_num_hessians - triangular_number(total_num_gradients - l)
+                l2 = triangular_number(l + 1) - 1
                 sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
 
             # Calculate predicted score...
