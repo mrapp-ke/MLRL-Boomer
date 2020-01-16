@@ -87,7 +87,7 @@ cdef class FullHeadRefinement(HeadRefinement):
         cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64 overall_quality_score = prediction.overall_quality_score
-        cdef intp num_labels = predicted_scores.shape[1]
+        cdef intp num_labels = predicted_scores.shape[0]
         cdef float64[::1] candidate_predicted_scores
         cdef HeadCandidate candidate
         cdef intp c
@@ -128,7 +128,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef intp num_labels = predicted_scores.shape[1]
+        cdef intp num_labels = predicted_scores.shape[0]
         cdef intp best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
         cdef HeadCandidate candidate
