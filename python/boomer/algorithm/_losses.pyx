@@ -19,11 +19,8 @@ cdef class Prediction:
     Assess the overall quality of a rule's predictions for one or several labels.
     """
 
-    def __cinit__(self, intp num_predicted_labels):
-        """
-        :param num_predicted_labels: The number of labels for which the rule predicts
-        """
-        self.predicted_scores = array_float64(num_predicted_labels)
+    def __cinit__(self):
+        self.predicted_scores = None
         self.overall_quality_score = 0
 
 
@@ -32,11 +29,8 @@ cdef class LabelIndependentPrediction(Prediction):
     Assesses the quality of a rule's predictions for one or several labels independently from each other.
     """
 
-    def __cinit__(self, intp num_predicted_labels):
-        """
-        :param num_predicted_labels: The number of labels for which the rule predicts
-        """
-        self.quality_scores = array_float64(num_predicted_labels)
+    def __cinit__(self):
+        self.quality_scores = None
 
 
 cdef class Loss:
@@ -254,6 +248,9 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     A multi-label variant of the squared error loss.
     """
 
+    def __cinit__(self):
+        self.prediction = LabelIndependentPrediction()
+
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
@@ -348,9 +345,16 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         # Cache the given label indices...
         self.label_indices = label_indices
 
-        # Initialize object for storing potential predictions once to avoid object-recreation at each update...
-        cdef LabelIndependentPrediction prediction = LabelIndependentPrediction(num_labels)
-        self.prediction = prediction
+        # Initialize object for storing potential predictions once to avoid array-recreation at each update...
+        cdef LabelIndependentPrediction prediction = self.prediction
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores
+
+        if predicted_scores is None or num_labels != predicted_scores.shape[0]:
+            predicted_scores = array_float64(num_labels)
+            prediction.predicted_scores = predicted_scores
+            quality_scores = array_float64(num_labels)
+            prediction.quality_scores = quality_scores
 
     cdef update_search(self, intp example_index, uint32 weight):
         # Update sum of hessians...
@@ -443,6 +447,9 @@ cdef class LogisticLoss(NonDecomposableLoss):
     """
     A multi-label variant of the logistic loss that is applied example-wise.
     """
+
+    def __cinit__(self):
+        self.prediction = LabelIndependentPrediction()
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_rows = y.shape[0]
@@ -616,8 +623,6 @@ cdef class LogisticLoss(NonDecomposableLoss):
         self.sums_of_gradients = sums_of_gradients
         self.sums_of_hessians = sums_of_hessians
         self.label_indices = label_indices
-        cdef LabelIndependentPrediction prediction = LabelIndependentPrediction(num_gradients)
-        self.prediction = prediction
 
     cdef update_search(self, intp example_index, uint32 weight):
         cdef float64[::1, :] gradients = self.gradients
@@ -646,6 +651,15 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
+
+        if predicted_scores is None or num_gradients != predicted_scores.shape[0]:
+            predicted_scores = array_float64(num_gradients)
+            prediction.predicted_scores = predicted_scores
+
+        if quality_scores is None or num_gradients != quality_scores.shape[0]:
+            quality_scores = array_float64(num_gradients)
+            prediction.quality_scores = quality_scores
+
         cdef float64 overall_quality_score = 0
         cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
         cdef intp[::1] label_indices
