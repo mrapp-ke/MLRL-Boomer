@@ -50,9 +50,9 @@ cdef inline float64 ddot_float64(float64[::1] x, float64[::1] y):
     # The number of elements in the arrays x and y
     cdef int n = x.shape[0]
     # Storage spacing between the elements of the arrays x and y
-    cdef int incx, incy = 0
+    cdef int inc = sizeof(float64)
     # Invoke the DDOT routine...
-    cdef float64 result = ddot(&n, &x[0], &incx, &y[0], &incy)
+    cdef float64 result = ddot(&n, &x[0], &inc, &y[0], &inc)
     return result
 
 
