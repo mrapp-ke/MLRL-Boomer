@@ -9,7 +9,7 @@ Provides classes that implement different loss functions to be minimized during 
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index, convert_label_into_score
-from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64
+from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64, dspmv_float64, ddot_float64
 
 from libc.math cimport pow, exp
 
@@ -530,10 +530,13 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 score = scores[c]
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
-                # add it to the matrix of gradients...
+                # add it to the matrix of gradients.
                 tmp = (expected_score * exponential) / sum_of_exponentials
-                gradients[r, c] = -tmp
-                total_sums_of_gradients[c] -= tmp
+                # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
+                # the sums of gradients as the ordinates for solving a system of linear equations in the function
+                # `evaluate_label_dependent_predictions`, the sign must be inverted again...
+                gradients[r, c] = tmp
+                total_sums_of_gradients[c] += tmp
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
@@ -623,8 +626,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         cdef intp num_gradients = sums_of_gradients.shape[0]
         cdef intp[::1] label_indices = self.label_indices
-        cdef intp c, c2, l, l2, i, offset
-        i = 0
+        cdef intp i = 0
+        cdef intp c, c2, l, l2, offset
 
         for c in range(num_gradients):
             l = get_index(c, label_indices)
@@ -666,11 +669,13 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
 
             # Calculate predicted score...
-            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians)
+            # Note: As the sign of the gradients was inverted in the function `calculate_default_scores`, it must be
+            # reverted again in the following.
+            score = divide_or_zero_float64(sum_of_gradients, sum_of_hessians)
             predicted_scores[c] = score
 
             # Calculate quality score...
-            score = (sum_of_gradients * score) + ((score / 2) * sum_of_hessians * score)
+            score = (-sum_of_gradients * score) + ((score / 2) * sum_of_hessians * score)
             quality_scores[c] = score
             overall_quality_score += score
 
@@ -678,8 +683,46 @@ cdef class LogisticLoss(NonDecomposableLoss):
         return prediction
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
-        # TODO
-        pass
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        cdef Prediction prediction = self.prediction
+        cdef float64[::1] gradients, hessians, total_sums_of_gradients, total_sums_of_hessians
+        cdef intp[::1] label_indices
+        cdef intp num_hessians, c, c2, l, l2, i, offset
+
+        if uncovered:
+            label_indices = self.label_indices
+            num_hessians = sums_of_hessians.shape[0]
+            gradients = array_float64(num_gradients)
+            hessians = array_float64(num_hessians)
+            total_sums_of_gradients = self.total_sums_of_gradients
+            total_sums_of_hessians = self.total_sums_of_hessians
+            i = 0
+
+            for c in range(num_gradients):
+                l = get_index(c, label_indices)
+                gradients[c] = total_sums_of_gradients[l] - sums_of_gradients[c]
+                offset = triangular_number(l)
+
+                for c2 in range(c + 1):
+                    l2 = offset + get_index(c2, label_indices)
+                    hessians[i] = total_sums_of_hessians[l2] - sums_of_hessians[i]
+                    i += 1
+        else:
+            gradients = sums_of_gradients
+            hessians = sums_of_hessians
+
+        # Calculate the optimal scores by solving a system of linear equations...
+        cdef float64[::1] scores = dsysv_float64(hessians, gradients)
+        prediction.predicted_scores = scores
+
+        # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
+        cdef float64 overall_quality_score = ddot_float64(scores, gradients)
+        cdef float64[::1] tmp = dspmv_float64(hessians, scores)
+        overall_quality_score += 0.5 * ddot_float64(scores, tmp)
+        prediction.overall_quality_score = overall_quality_score
+        return prediction
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
