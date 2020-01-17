@@ -504,11 +504,11 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
         # We must traverse each example again to calculate the updated gradients and hessians based on the calculated
         # scores...
-        cdef float64[::1] exponentials = array_float64(num_cols)
+        cdef float64[::1] exponentials = ordinates # Reuse existing array instead of allocating a new one
         cdef float64[::1, :] gradients = matrix_float64(num_rows, num_cols)
         cdef float64[::1] total_sums_of_gradients = array_float64(num_cols)
         cdef float64[::1, :] hessians = matrix_float64(num_rows, num_hessians)
-        cdef float64[::1] total_sums_of_hessians = array_float64(num_hessians)
+        cdef float64[::1] total_sums_of_hessians = coefficients # Reuse existing array instead of allocating a new one
         cdef float64 exponential, tmp, score
 
         for r in range(num_rows):
