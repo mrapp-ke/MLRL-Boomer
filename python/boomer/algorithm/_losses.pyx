@@ -258,7 +258,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef float64[::1] total_sums_of_gradients = array_float64(num_cols)
         cdef float64[::1] scores = array_float64(num_cols)
         cdef float64 sum_of_hessians = 2 * num_rows
-        cdef float64 sum_of_gradients, expected_score, score, gradient
+        cdef float64 sum_of_gradients, tmp, score
         cdef intp r, c
 
         for c in range(num_cols):
@@ -266,12 +266,9 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             sum_of_gradients = 0
 
             for r in range(num_rows):
-                expected_score = 2 * convert_label_into_score(y[r, c])
-                # Note: As the matrix of gradients is unused at this point, we use it for caching the expected scores
-                # instead of allocating a new array. The values in the matrix are overwritten later on with the actual
-                # gradients.
-                gradients[r, c] = expected_score
-                sum_of_gradients -= expected_score
+                tmp = 2 * convert_label_into_score(y[r, c])
+                gradients[r, c] = -tmp
+                sum_of_gradients -= tmp
 
             # Calculate optimal score to be predicted by the default rule for the current label...
             score = -sum_of_gradients / sum_of_hessians
@@ -282,9 +279,9 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             score = 2 * score
 
             for r in range(num_rows):
-                gradient = score - gradients[r, c]
-                gradients[r, c] = gradient
-                sum_of_gradients += gradient
+                tmp = gradients[r, c] + score
+                gradients[r, c] = tmp
+                sum_of_gradients += tmp
 
             total_sums_of_gradients[c] = sum_of_gradients
 
