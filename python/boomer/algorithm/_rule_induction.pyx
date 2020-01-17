@@ -245,7 +245,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             loss.update_search(i, 1)
 
         prediction = head_refinement.evaluate_predictions(loss, 0)
-        head.predicted_scores = prediction.predicted_scores
+        __copy_array(prediction.predicted_scores, head.predicted_scores)
 
     # Apply shrinkage, if necessary...
     if shrinkage < 1:
@@ -256,6 +256,23 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
 
     # Build and return the induced rule...
     return __build_rule(head, conditions, num_leq_conditions, num_gr_conditions)
+
+
+cdef inline __copy_array(float64[::1] from_array, float64[::1] to_array):
+    """
+    Copies the elements from one array to another.
+
+    :param from_array:  An array of dtype float, shape `(num_elements)`, representing the array from which the elements
+                        should be copied
+    :param to_array:    An array of dtype float, shape `(num_elements)`, representing the array to which the elements
+                        should be copied
+    """
+    cdef intp num_elements = from_array.shape[0]
+    cdef intp i
+
+    for i in range(num_elements):
+        to_array[i] = from_array[i]
+
 
 cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp position_start, intp position_end,
                          intp feature_index, bint leq, float32 threshold):
