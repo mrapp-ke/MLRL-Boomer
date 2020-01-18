@@ -22,6 +22,9 @@ HAMMING_LOSS = 'Hamm. Loss'
 # The name of the hamming accuracy metric
 HAMMING_ACCURACY = 'Hamm. Acc.'
 
+# The name of the subset 0/1 loss metric
+SUBSET_01_LOSS = 'Subs. 0/1 Loss'
+
 # The name of the subset accuracy metric
 SUBSET_ACCURACY = 'Subs. Acc.'
 
@@ -383,9 +386,12 @@ class ClassificationEvaluation(AbstractEvaluation):
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int,
                          total_folds: int):
-        result.put(HAMMING_LOSS, metrics.hamming_loss(ground_truth, predictions), current_fold, total_folds)
+        hamming_loss = metrics.hamming_loss(ground_truth, predictions)
+        result.put(HAMMING_LOSS, hamming_loss, current_fold, total_folds)
         result.put(HAMMING_ACCURACY, 1 - metrics.hamming_loss(ground_truth, predictions), current_fold, total_folds)
-        result.put(SUBSET_ACCURACY, metrics.accuracy_score(ground_truth, predictions), current_fold, total_folds)
+        subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
+        result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, total_folds)
+        result.put(SUBSET_01_LOSS, 1 - subset_accuracy, current_fold, total_folds)
         result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro'), current_fold,
                    total_folds)
         result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro'), current_fold,
