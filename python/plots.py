@@ -11,7 +11,7 @@ from skmultilearn.base import MLClassifierBase
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
-from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS
+from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS, SUBSET_01_LOSS
 from boomer.experiments import CrossValidation
 from main import configure_argument_parser, create_learner
 
@@ -21,7 +21,7 @@ class Plotter(CrossValidation, MLClassifierBase):
     Plots the performance of a model at each iteration.
     """
 
-    MEASURES = [HAMMING_LOSS]
+    MEASURES = [HAMMING_LOSS, SUBSET_01_LOSS]
 
     evaluation = ClassificationEvaluation()
 
@@ -92,16 +92,15 @@ class Plotter(CrossValidation, MLClassifierBase):
             for x in x_ticks:
                 if prev_x is not None:
                     new_x = prev_x + ((x - prev_x) / 2)
-                    plt.plot([new_x, new_x], [0, 0.5], color='0.5', linestyle='dotted', linewidth=1)
+                    plt.plot([new_x, new_x], [0, 1.0], color='0.5', linestyle='dotted', linewidth=1)
                 if 0 < x < num_iterations:
-                    plt.plot([x, x], [0, 0.5], color='0.5', linestyle='dotted', linewidth=1)
+                    plt.plot([x, x], [0, 1.0], color='0.5', linestyle='dotted', linewidth=1)
                 prev_x = x
 
             # Customize y axis
-            plt.ylabel(measure)
-            plt.ylim(bottom=0, top=0.5)
-            y_labels = [str(i * 10) + '%' for i in range(6)]
-            y_ticks = np.arange(0, 0.6, 0.1)
+            plt.ylim(bottom=0, top=1)
+            y_labels = [str(i * 10) + '%' for i in range(11)]
+            y_ticks = np.arange(0, 1.1, 0.1)
             plt.yticks(ticks=y_ticks, labels=y_labels)
 
             # Draw horizontal lines
@@ -110,7 +109,7 @@ class Plotter(CrossValidation, MLClassifierBase):
                 if prev_y is not None:
                     new_y = prev_y + ((y - prev_y) / 2)
                     plt.plot([0, num_iterations], [new_y, new_y], color='0.5', linestyle='dotted', linewidth=1)
-                if 0 < y < 0.5:
+                if 0 < y < 1.0:
                     plt.plot([0, num_iterations], [y, y], color='0.5', linestyle='dotted', linewidth=1)
                 prev_y = y
 
@@ -126,7 +125,7 @@ class Plotter(CrossValidation, MLClassifierBase):
                     x.append(i + 1)
                     y.append(score)
 
-                plt.plot(x, y, label=prefix)
+                plt.plot(x, y, label=(measure + ' (' + prefix + ')'))
 
             plt.legend()
             file_name = self.learner_name + '.pdf'
