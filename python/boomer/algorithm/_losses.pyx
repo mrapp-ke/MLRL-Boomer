@@ -747,9 +747,11 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
+        cdef intp num_predicted_labels = predicted_scores.shape[0]
         cdef uint8[::1, :] ground_truth = self.ground_truth
         cdef float64[::1, :] current_scores = self.current_scores
         cdef float64[::1, :] gradients = self.gradients
+        cdef intp num_labels = gradients.shape[1]
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         total_sums_of_gradients[:] = 0
         cdef float64[::1, :] hessians = self.hessians
@@ -757,8 +759,6 @@ cdef class LogisticLoss(NonDecomposableLoss):
         total_sums_of_hessians[:] = 0
         cdef float64[::1] exponentials = array_float64(num_labels)
         cdef float64[::1] expected_scores = array_float64(num_labels)
-        cdef intp num_predicted_labels = predicted_scores.shape[0]
-        cdef intp num_labels = gradients.shape[1]
         cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow
         cdef intp r, c, c2, l, i
 
