@@ -507,8 +507,11 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef float64[::1] exponentials = ordinates # Reuse existing array instead of allocating a new one
         cdef float64[::1, :] gradients = matrix_float64(num_rows, num_cols)
         cdef float64[::1] total_sums_of_gradients = array_float64(num_cols)
+        total_sums_of_gradients[:] = 0
         cdef float64[::1, :] hessians = matrix_float64(num_rows, num_hessians)
         cdef float64[::1] total_sums_of_hessians = coefficients # Reuse existing array instead of allocating a new one
+        total_sums_of_hessians[:] = 0
+        cdef float64[::1, :] current_scores = matrix_float64(num_rows, num_cols)
         cdef float64 exponential, tmp, score
 
         for r in range(num_rows):
@@ -532,9 +535,10 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 expected_score = expected_scores[c]
                 exponential = exponentials[c]
                 score = scores[c]
+                current_scores[r, c] = score
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
-                # add it to the matrix of gradients.
+                # add it to the matrix of gradients...
                 tmp = (expected_score * exponential) / sum_of_exponentials
                 # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
                 # the sums of gradients as the ordinates for solving a system of linear equations in the function
@@ -557,6 +561,12 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 hessians[r, i] = tmp
                 total_sums_of_hessians[i] += tmp
                 i += 1
+
+        # Cache the ground truth label matrix...
+        self.ground_truth = y
+
+        # Cache the matrix of currently predicted scores...
+        self.current_scores = current_scores
 
         # Cache the matrix of gradients...
         self.gradients = gradients
@@ -737,5 +747,70 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
-        # TODO
-        pass
+        cdef uint8[::1, :] ground_truth = self.ground_truth
+        cdef float64[::1, :] current_scores = self.current_scores
+        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        total_sums_of_gradients[:] = 0
+        cdef float64[::1, :] hessians = self.hessians
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        total_sums_of_hessians[:] = 0
+        cdef float64[::1] exponentials = array_float64(num_labels)
+        cdef float64[::1] expected_scores = array_float64(num_labels)
+        cdef intp num_predicted_labels = predicted_scores.shape[0]
+        cdef intp num_labels = gradients.shape[1]
+        cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow
+        cdef intp r, c, c2, l, i
+
+        # Only the examples that are covered by the new rule must be considered...
+        for r in covered_example_indices:
+            # Traverse the labels for which the new rule predicts to update the currently predicted scores...
+            for c in range(num_predicted_labels):
+                l = get_index(c, label_indices)
+                current_scores[r, l] += predicted_scores[c]
+
+            # Traverse the labels of the current example to create arrays of expected scores and exponentials that are
+            # shared among the upcoming calculations of gradients and hessians...
+            sum_of_exponentials = 1
+
+            for c in range(num_labels):
+                expected_score = convert_label_into_score(ground_truth[r, c])
+                expected_scores[c] = expected_score
+                exponential = exp(-expected_score * current_scores[r, c])
+                exponentials[c] = exponential
+                sum_of_exponentials += exponential
+
+            sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
+
+            # Traverse the labels again to update the gradients and hessians...
+            i = 0
+
+            for c in range(num_labels):
+                expected_score = expected_scores[c]
+                exponential = exponentials[c]
+                score = current_scores[r, c]
+
+                # Calculate the first derivative (gradient) of the loss function with respect to the current label and
+                # add it to the matrix of gradients...
+                tmp = (expected_score * exponential) / sum_of_exponentials
+                # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
+                # the sums of gradients as the ordinates for solving a system of linear equations in the function
+                # `evaluate_label_dependent_predictions`, the sign must be inverted again...
+                gradients[r, c] = tmp
+                total_sums_of_gradients[c] += tmp
+
+                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
+                # each of the other labels and add them to the matrix of hessians...
+                for c2 in range(c):
+                    exponential = exp(-expected_scores[c2] * current_scores[r, c2] - expected_score * score)
+                    tmp = (expected_scores[c2] * expected_score * exponential) / sum_of_exponentials_pow
+                    hessians[r, i] = -tmp
+                    total_sums_of_hessians[i] -= tmp
+                    i += 1
+
+                # Calculate the second derivative (hessian) of the loss function with respect to the current label and
+                # add it to the matrix of hessians...
+                tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
+                hessians[r, i] = tmp
+                total_sums_of_hessians[i] += tmp
+                i += 1

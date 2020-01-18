@@ -125,6 +125,10 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
     # Attributes:
 
+    cdef uint8[::1, :] ground_truth
+
+    cdef float64[::1, :] current_scores
+
     cdef float64[::1, :] gradients
 
     cdef float64[::1] sums_of_gradients
