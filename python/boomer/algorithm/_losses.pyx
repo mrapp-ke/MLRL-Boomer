@@ -753,10 +753,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef float64[::1, :] gradients = self.gradients
         cdef intp num_labels = gradients.shape[1]
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        total_sums_of_gradients[:] = 0
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        total_sums_of_hessians[:] = 0
         cdef float64[::1] exponentials = array_float64(num_labels)
         cdef float64[::1] expected_scores = array_float64(num_labels)
         cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow
@@ -792,6 +790,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
                 # add it to the matrix of gradients...
+                tmp = gradients[r, c]
+                total_sums_of_gradients[c] -= tmp
                 tmp = (expected_score * exponential) / sum_of_exponentials
                 # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
                 # the sums of gradients as the ordinates for solving a system of linear equations in the function
@@ -802,6 +802,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
                 for c2 in range(c):
+                    tmp = hessians[r, i]
+                    total_sums_of_hessians[i] -= tmp
                     tmp = exp(-expected_scores[c2] * current_scores[r, c2] - expected_score * score)
                     tmp = (expected_scores[c2] * expected_score * tmp) / sum_of_exponentials_pow
                     hessians[r, i] = -tmp
@@ -810,6 +812,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
                 # add it to the matrix of hessians...
+                tmp = hessians[r, i]
+                total_sums_of_hessians[i] -= tmp
                 tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
                 hessians[r, i] = tmp
                 total_sums_of_hessians[i] += tmp
