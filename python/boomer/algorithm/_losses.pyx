@@ -11,7 +11,7 @@ from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index, convert_label_into_score
 from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64, dspmv_float64, ddot_float64
 
-from libc.math cimport pow, exp
+from libc.math cimport pow, exp, fabs
 
 
 cdef class Prediction:
@@ -496,7 +496,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
                 # add it to the array of coefficients...
-                coefficients[i] += (pow(expected_score, 2) * num_cols) / sum_of_exponentials_pow
+                coefficients[i] += (fabs(expected_score) * num_cols) / sum_of_exponentials_pow
                 i += 1
 
         # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
@@ -549,15 +549,15 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
                 for c2 in range(c):
-                    exponential = exp(-expected_scores[c2] * scores[c2] - expected_score * score)
-                    tmp = (expected_scores[c2] * expected_score * exponential) / sum_of_exponentials_pow
+                    tmp = exp(-expected_scores[c2] * scores[c2] - expected_score * score)
+                    tmp = (expected_scores[c2] * expected_score * tmp) / sum_of_exponentials_pow
                     hessians[r, i] = -tmp
                     total_sums_of_hessians[i] -= tmp
                     i += 1
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
                 # add it to the matrix of hessians...
-                tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
+                tmp = (fabs(expected_score) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
                 hessians[r, i] = tmp
                 total_sums_of_hessians[i] += tmp
                 i += 1
@@ -802,8 +802,8 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
                 for c2 in range(c):
-                    exponential = exp(-expected_scores[c2] * current_scores[r, c2] - expected_score * score)
-                    tmp = (expected_scores[c2] * expected_score * exponential) / sum_of_exponentials_pow
+                    tmp = exp(-expected_scores[c2] * current_scores[r, c2] - expected_score * score)
+                    tmp = (expected_scores[c2] * expected_score * tmp) / sum_of_exponentials_pow
                     hessians[r, i] = -tmp
                     total_sums_of_hessians[i] -= tmp
                     i += 1
