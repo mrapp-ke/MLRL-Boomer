@@ -84,7 +84,7 @@ class Plotter(CrossValidation, MLClassifierBase):
             # Customize x axis
             plt.xlabel('# rules')
             plt.xlim(left=0, right=num_iterations)
-            x_ticks = np.arange(0, num_iterations + 100, 100)
+            x_ticks = np.arange(0, num_iterations + 200, 200)
             plt.xticks(ticks=x_ticks)
 
             # Draw vertical lines
