@@ -739,7 +739,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         prediction.predicted_scores = scores
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-        cdef float64 overall_quality_score = ddot_float64(scores, gradients)
+        cdef float64 overall_quality_score = -ddot_float64(scores, gradients)
         cdef float64[::1] tmp = dspmv_float64(hessians, scores)
         overall_quality_score += 0.5 * ddot_float64(scores, tmp)
         prediction.overall_quality_score = overall_quality_score
