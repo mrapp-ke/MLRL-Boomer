@@ -226,7 +226,7 @@ class Boomer(MLRuleLearner):
             return SquaredErrorLoss()
         elif loss == 'logistic-loss':
             return LogisticLoss()
-        raise ValueError('Invalid value given for argument \'loss\': ' + str(loss))
+        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
         head_refinement = self.head_refinement
@@ -237,7 +237,7 @@ class Boomer(MLRuleLearner):
             return SingleLabelHeadRefinement()
         elif head_refinement == 'full':
             return FullHeadRefinement()
-        raise ValueError('Invalid value given for argument \'head_refinement\': ' + str(head_refinement))
+        raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def __create_instance_sub_sampling(self) -> InstanceSubSampling:
         instance_sub_sampling = self.instance_sub_sampling
@@ -248,7 +248,7 @@ class Boomer(MLRuleLearner):
             return Bagging()
         elif instance_sub_sampling == 'random-instance-selection':
             return RandomInstanceSubsetSelection()
-        raise ValueError('Invalid value given for argument \'instance_sub_sampling\': ' + str(instance_sub_sampling))
+        raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
     def __create_feature_sub_sampling(self) -> FeatureSubSampling:
         feature_sub_sampling = self.feature_sub_sampling
@@ -257,7 +257,7 @@ class Boomer(MLRuleLearner):
             return None
         elif feature_sub_sampling == 'random-feature-selection':
             return RandomFeatureSubsetSelection()
-        raise ValueError('Invalid value given for argument \'feature_sub_sampling\': ' + str(feature_sub_sampling))
+        raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
     def __create_pruning(self) -> Pruning:
         pruning = self.pruning
@@ -266,7 +266,7 @@ class Boomer(MLRuleLearner):
             return None
         if pruning == 'irep':
             return IREP()
-        raise ValueError('Invalid value given for argument \'pruning\': ' + str(pruning))
+        raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
     def __create_shrinkage(self) -> Shrinkage:
         shrinkage = self.shrinkage
@@ -275,7 +275,7 @@ class Boomer(MLRuleLearner):
             return ConstantShrinkage(shrinkage)
         if shrinkage == 1.0:
             return None
-        raise ValueError('Invalid value given for argument \'shrinkage\': ' + str(shrinkage))
+        raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
 
     def get_name(self) -> str:
         num_rules = str(self.num_rules)
