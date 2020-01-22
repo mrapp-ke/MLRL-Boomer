@@ -12,9 +12,10 @@ import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
 from boomer.algorithm._pruning import Pruning
-from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
-from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
 
+from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
+from boomer.algorithm._shrinkage import Shrinkage
+from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stats import Stats
 from boomer.learners import Module
@@ -49,7 +50,7 @@ class GradientBoosting(RuleInduction):
 
     def __init__(self, num_rules, head_refinement: HeadRefinement, loss: Loss,
                  instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
-                 shrinkage: float):
+                 shrinkage: Shrinkage):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param head_refinement:         The strategy that is used to find the heads of rules
@@ -122,7 +123,3 @@ class GradientBoosting(RuleInduction):
             raise ValueError('Parameter \'num_rules\' must be at least 1, got {0}'.format(self.num_rules))
         if self.head_refinement is None:
             raise ValueError('Parameter \'head_refinement\' may not be None')
-        if self.shrinkage <= 0:
-            raise ValueError('Parameter \'shrinkage\' must be greater than 0, got {0}'.format(self.shrinkage))
-        if self.shrinkage > 1:
-            raise ValueError('Parameter \'shrinkage\' must be at maximum 1, got {0}'.format(self.shrinkage))
