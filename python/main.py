@@ -7,6 +7,7 @@ from boomer.algorithm._head_refinement import SingleLabelHeadRefinement, FullHea
 from boomer.algorithm._losses import SquaredErrorLoss, LogisticLoss
 from boomer.algorithm._pruning import IREP
 
+from boomer.algorithm._shrinkage import ConstantShrinkage
 from boomer.algorithm._sub_sampling import Bagging, RandomInstanceSubsetSelection, RandomFeatureSubsetSelection
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
@@ -99,7 +100,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 
 def create_learner(rules: int, params) -> Boomer:
     return Boomer(num_rules=rules, loss=params.loss, pruning=params.pruning,
-                  instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
+                  instance_sub_sampling=params.instance_sub_sampling, shrinkage=ConstantShrinkage(params.shrinkage),
                   feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement)
 
 

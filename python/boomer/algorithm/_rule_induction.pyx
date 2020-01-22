@@ -14,6 +14,7 @@ from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss, Prediction
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
 from boomer.algorithm._pruning cimport Pruning
+from boomer.algorithm._shrinkage cimport Shrinkage
 from boomer.algorithm._utils cimport s_condition, make_condition, test_condition, get_index, get_weight
 
 from libcpp.list cimport list as list
@@ -42,7 +43,7 @@ cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
 
 cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRefinement head_refinement, Loss loss,
                        InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                       Pruning pruning, float64 shrinkage, random_state: int):
+                       Pruning pruning, Shrinkage shrinkage, random_state: int):
     """
     Induces a single- or multi-label classification rule that minimizes a certain loss function with respect to the
     expected and currently predicted confidence scores.
@@ -59,8 +60,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                     feature sub-sampling should be used
     :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
                                     used
-    :param shrinkage:               The shrinkage parameter that should be applied to the induced rule's predictions.
-                                    Must be in (0, 1]
+    :param shrinkage:               The strategy that should be used to shrink the weights of rules or None, if no 
+                                    shrinkage should be used
     :param random_state:            The seed to be used by RNGs
     :return:                        The rule that has been induced
     """
@@ -248,8 +249,8 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         __copy_array(prediction.predicted_scores, head.predicted_scores)
 
     # Apply shrinkage, if necessary...
-    if shrinkage < 1:
-        __apply_shrinkage(head, shrinkage)
+    if shrinkage is not None:
+        shrinkage.apply_shrinkage(head.predicted_scores)
 
     # Tell the loss function that a new rule has been induced...
     loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
@@ -423,18 +424,3 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
                         break
 
     return filtered_sorted_indices
-
-
-cdef __apply_shrinkage(HeadCandidate head, float64 shrinkage):
-    """
-    Applies a specific shrinkage parameter to the scores that are predicted by a rule's head.
-
-    :param head:        The head, the shrinkage parameter should be applied to
-    :param shrinkage:   The shrinkage parameter. Must be in (0, 1]
-    """
-    cdef float64[::1] scores = head.predicted_scores
-    cdef intp num_labels = scores.shape[0]
-    cdef intp c
-
-    for c in range(num_labels):
-         scores[c] *= shrinkage

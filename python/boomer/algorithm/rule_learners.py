@@ -15,6 +15,7 @@ import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import Loss, DecomposableLoss, SquaredErrorLoss
 from boomer.algorithm._pruning import Pruning
+from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
 from sklearn.exceptions import NotFittedError
 from sklearn.utils.validation import check_is_fitted
@@ -177,7 +178,7 @@ class Boomer(MLRuleLearner, BatchMLLearner):
 
     def __init__(self, num_rules: int = 100, head_refinement: HeadRefinement = None,
                  loss: Loss = SquaredErrorLoss(), instance_sub_sampling: InstanceSubSampling = None,
-                 feature_sub_sampling: FeatureSubSampling = None, pruning: Pruning = None, shrinkage: float = 1):
+                 feature_sub_sampling: FeatureSubSampling = None, pruning: Pruning = None, shrinkage: Shrinkage = None):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param head_refinement:         The strategy that is used to find the heads of rules or None, if the default
