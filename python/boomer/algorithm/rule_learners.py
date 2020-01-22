@@ -192,17 +192,16 @@ class Boomer(MLRuleLearner, BatchMLLearner):
         :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
                                         induced rules to reduce their effect on the entire model. Must be in (0, 1]
         """
-        super().__init__(rule_induction=GradientBoosting(num_rules=num_rules,
-                                                         head_refinement=
-                                                         (FullHeadRefinement() if isinstance(loss, DecomposableLoss)
-                                                          else SingleLabelHeadRefinement()) if head_refinement is None
-                                                         else head_refinement,
-                                                         loss=loss,
-                                                         instance_sub_sampling=instance_sub_sampling,
-                                                         feature_sub_sampling=feature_sub_sampling,
-                                                         pruning=pruning,
-                                                         shrinkage=shrinkage),
-                         prediction=Sign(LinearCombination()))
+        super().__init__(rule_induction=GradientBoosting(
+            num_rules=num_rules,
+            head_refinement=head_refinement if head_refinement is not None else
+            (SingleLabelHeadRefinement() if isinstance(loss, DecomposableLoss) else FullHeadRefinement()),
+            loss=loss,
+            instance_sub_sampling=instance_sub_sampling,
+            feature_sub_sampling=feature_sub_sampling,
+            pruning=pruning,
+            shrinkage=shrinkage
+        ), prediction=Sign(LinearCombination()))
 
     def partial_fit(self, x: np.ndarray, y: np.ndarray) -> BatchMLLearner:
         check_is_fitted(self)
