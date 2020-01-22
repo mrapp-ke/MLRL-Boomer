@@ -288,3 +288,23 @@ class Boomer(MLRuleLearner):
         return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
                + '_instance-sub-sampling=' + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling \
                + '_pruning=' + pruning + '_shrinkage=' + shrinkage
+
+    def get_params(self, deep=True):
+        return {
+            'num_rules': self.num_rules,
+            'head_refinement': self.head_refinement,
+            'loss': self.loss,
+            'instance_sub_sampling': self.instance_sub_sampling,
+            'feature_sub_sampling': self.feature_sub_sampling,
+            'pruning': self.pruning,
+            'shrinkage': self.shrinkage
+        }
+
+    def set_params(self, **parameters):
+        params = self.get_params()
+        for parameter, value in parameters.items():
+            if parameter in params.keys():
+                setattr(self, parameter, value)
+            else:
+                raise ValueError('Invalid parameter: ' + str(parameter))
+        return self
