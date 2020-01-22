@@ -6,8 +6,8 @@ import logging as log
 from boomer.algorithm._head_refinement import SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import SquaredErrorLoss, LogisticLoss
 from boomer.algorithm._pruning import IREP
-from boomer.algorithm._sub_sampling import Bagging, RandomInstanceSubsetSelection, RandomFeatureSubsetSelection
 
+from boomer.algorithm._sub_sampling import Bagging, RandomInstanceSubsetSelection, RandomFeatureSubsetSelection
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, LogOutput, CsvOutput
@@ -66,12 +66,23 @@ def __head_refinement_string(s):
     raise ValueError('Invalid argument given for parameter \'--head-refinement\': ' + str(s))
 
 
+def __current_fold_int(s):
+    n = int(s)
+    if n > 0:
+        return n - 1
+    elif n == -1:
+        return -1
+    raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
+
+
 def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
     p.add_argument('--output-dir', type=str, help='The path of the directory into which results should be written')
     p.add_argument('--model-dir', type=str, default=None, help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
-    p.add_argument('--folds', type=int, default=1, help='Number of folds to be used by cross validation')
+    p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
+    p.add_argument('--current-fold', type=__current_fold_int, default=-1,
+                   help='The cross validation fold to be performed')
     p.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced per iteration')
     p.add_argument('--instance-sub-sampling', type=__instance_sub_sampling_string, default=None,
                    help='The name of the strategy to be used for instance sub-sampling or None')
@@ -117,7 +128,7 @@ if __name__ == '__main__':
             evaluation = ClassificationEvaluation(LogOutput(), CsvOutput(output_dir=args.output_dir,
                                                                          output_predictions=args.store_predictions))
             experiment = BatchExperiment(default_learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
-                                         folds=args.folds)
+                                         num_folds=args.folds, current_fold=args.current_fold)
         else:
             experiment.add_variant(num_rules=num_rules, persistence=persistence)
 

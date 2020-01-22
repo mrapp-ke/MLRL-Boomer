@@ -56,15 +56,18 @@ class Evaluation(ABC):
     """
 
     @abstractmethod
-    def evaluate(self, experiment_name: str, predictions, ground_truth, current_fold: int, total_folds: int):
+    def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
+                 last_fold: int, num_folds: int):
         """
         Evaluates the predictions provided by a classifier or ranker.
 
         :param experiment_name: The name of the experiment
         :param predictions:     The predictions provided by the classifier
         :param ground_truth:    The true labels
-        :param current_fold:    The number of the current fold, starting at 0, or 0 if no cross validation is used
-        :param total_folds:     The total number of folds or 1, if no cross validation is used
+        :param first_fold:      The first cross validation fold or 0, if no cross validation is used
+        :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
+        :param last_fold:       The last cross validation fold or 0, if no cross validation is used
+        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
         pass
 
@@ -82,19 +85,19 @@ class EvaluationResult:
 
     results: List[Dict[str, float]] = None
 
-    def put(self, name: str, score: float, fold: int, total_folds: int):
+    def put(self, name: str, score: float, fold: int, num_folds: int):
         """
         Adds a new score according to a specific measure to the evaluation result.
 
         :param name:        The name of the measure
         :param score:       The score according to the measure
         :param fold:        The fold the score corresponds to
-        :param total_folds: The total number of folds
+        :param num_folds:   The total number of cross validation folds
         """
 
         if self.results is None:
-            self.results = [dict()] * total_folds
-        elif len(self.results) != total_folds:
+            self.results = [dict()] * num_folds
+        elif len(self.results) != num_folds:
             raise AssertionError('Inconsistent number of total folds given')
 
         self.measures.add(name)
@@ -327,53 +330,55 @@ class AbstractEvaluation(Evaluation):
         """
         self.outputs = args
 
-    def evaluate(self, experiment_name: str, predictions, ground_truth, current_fold: int, total_folds: int):
+    def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
+                 last_fold: int, num_folds: int):
         result = self.results[experiment_name] if experiment_name in self.results else EvaluationResult()
         self.results[experiment_name] = result
-        self._populate_result(result, predictions, ground_truth, current_fold, total_folds)
-        self.__write_predictions(experiment_name, predictions, ground_truth, current_fold, total_folds)
-        self.__write_evaluation_result(experiment_name, result, current_fold, total_folds)
+        self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
+        self.__write_predictions(experiment_name, predictions, ground_truth, current_fold=current_fold,
+                                 num_folds=num_folds)
+        self.__write_evaluation_result(experiment_name, result, first_fold=first_fold, current_fold=current_fold,
+                                       last_fold=last_fold, num_folds=num_folds)
 
     @abstractmethod
-    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int,
-                         total_folds: int):
+    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         pass
 
-    def __write_predictions(self, experiment_name: str, predictions, ground_truth, current_fold: int, total_folds: int):
+    def __write_predictions(self, experiment_name: str, predictions, ground_truth, current_fold: int, num_folds: int):
         """
         Writes predictions to the outputs.
 
         :param experiment_name: The name of the experiment
         :param predictions:     The predictions
         :param ground_truth:    The ground truth
-        :param current_fold:    The fold for which the predictions should be written or None, if no cross validation is
-                                used
-        :param total_folds:     The total number of folds
+        :param current_fold:    The current cross validation fold or 0, if no cross validation is used
+        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
 
         for output in self.outputs:
-            output.write_predictions(experiment_name, predictions, ground_truth, total_folds,
-                                     current_fold if total_folds > 0 else None)
+            output.write_predictions(experiment_name, predictions, ground_truth, num_folds,
+                                     current_fold if num_folds > 1 else None)
 
-    def __write_evaluation_result(self, experiment_name: str, result: EvaluationResult, current_fold: int,
-                                  total_folds: int):
+    def __write_evaluation_result(self, experiment_name: str, result: EvaluationResult, first_fold: int,
+                                  current_fold: int, last_fold: int, num_folds: int):
         """
         Writes an evaluation result to the outputs.
 
         :param experiment_name: The name of the experiment
         :param result:          The evaluation result
-        :param current_fold:    The fold for which the results should be written or None, if no cross validation is used
-                                or if the overall results, averaged over all folds, should be written
-        :param total_folds:     The total number of folds
+        :param first_fold:      The first cross validation fold or 0, if no cross validation is used
+        :param current_fold:    The current cross validation fold or 0, if no cross validation is used
+        :param last_fold        The last cross validation fold or 0, if no cross validation is used
+        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
 
-        if total_folds > 1:
+        if num_folds > 1:
             for output in self.outputs:
-                output.write_evaluation_results(experiment_name, result, total_folds, current_fold)
+                output.write_evaluation_results(experiment_name, result, num_folds, current_fold)
 
-        if (current_fold + 1) == total_folds:
+        if current_fold == last_fold and abs(last_fold - first_fold) > 0:
             for output in self.outputs:
-                output.write_evaluation_results(experiment_name, result, total_folds)
+                output.write_evaluation_results(experiment_name, result, num_folds)
 
 
 class ClassificationEvaluation(AbstractEvaluation):
@@ -384,24 +389,23 @@ class ClassificationEvaluation(AbstractEvaluation):
     def __init__(self, *args: Output):
         super().__init__(*args)
 
-    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int,
-                         total_folds: int):
+    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         hamming_loss = metrics.hamming_loss(ground_truth, predictions)
-        result.put(HAMMING_LOSS, hamming_loss, current_fold, total_folds)
-        result.put(HAMMING_ACCURACY, 1 - metrics.hamming_loss(ground_truth, predictions), current_fold, total_folds)
+        result.put(HAMMING_LOSS, hamming_loss, current_fold, num_folds)
+        result.put(HAMMING_ACCURACY, 1 - metrics.hamming_loss(ground_truth, predictions), current_fold, num_folds)
         subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
-        result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, total_folds)
-        result.put(SUBSET_01_LOSS, 1 - subset_accuracy, current_fold, total_folds)
+        result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, num_folds)
+        result.put(SUBSET_01_LOSS, 1 - subset_accuracy, current_fold, num_folds)
         result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro'), current_fold,
-                   total_folds)
+                   num_folds)
         result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro'), current_fold,
-                   total_folds)
-        result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro'), current_fold, total_folds)
+                   num_folds)
+        result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro'), current_fold, num_folds)
         result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro'), current_fold,
-                   total_folds)
+                   num_folds)
         result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro'), current_fold,
-                   total_folds)
-        result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro'), current_fold, total_folds)
+                   num_folds)
+        result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro'), current_fold, num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):
@@ -412,6 +416,5 @@ class RankingEvaluation(AbstractEvaluation):
     def __init__(self, *args: Output):
         super().__init__(*args)
 
-    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int,
-                         total_folds: int):
-        result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, total_folds)
+    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
+        result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
