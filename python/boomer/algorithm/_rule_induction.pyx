@@ -281,19 +281,18 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
     not contained in the sample by looking back a certain number of examples (that are not contained in the sample) to
     see if they satisfy a condition or not.
 
-    :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the training examples
-    :param x_sorted_indices:    An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
-                                the examples that are covered by the previous rule when sorting column-wise
-    :param position_start:      The position that separates the covered from the uncovered examples (when only taking
-                                into account the examples that are contained in the sample). This is the position to
-                                start at
-    :param position_end:        The position to stop at (exclusive, must be smaller than `position_start`)
-    :param feature_index:       The index of the feature used by the condition
-    :param leq:                 1, if the condition uses the <= operator, 0 if it uses the > operator
-    :param threshold:           The threshold of the condition
-    :return:                    The adjusted position that separates the covered from the uncovered examples with
-                                respect to the examples that are not contained in the sample
+    :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features of 
+                            the training examples
+    :param sorted_indices:  An array of dtype int, shape `(num_examples, num_features)`, representing the indices of the 
+                            examples that are covered by the previous rule when sorting column-wise
+    :param position_start:  The position that separates the covered from the uncovered examples (when only taking into 
+                            account the examples that are contained in the sample). This is the position to start at
+    :param position_end:    The position to stop at (exclusive, must be smaller than `position_start`)
+    :param feature_index:   The index of the feature used by the condition
+    :param leq:             1, if the condition uses the <= operator, 0 if it uses the > operator
+    :param threshold:       The threshold of the condition
+    :return:                The adjusted position that separates the covered from the uncovered examples with respect to 
+                            the examples that are not contained in the sample
     """
     cdef intp adjusted_position = position_start
     cdef float32 feature_value
@@ -371,7 +370,7 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
 
     :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
-    :param x_sorted_indices:    An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
+    :param sorted_indices:      An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
                                 the training examples that are covered by the previous rule when sorting column-wise
     :param condition_r:         The index of the example from which the threshold of the condition that has been added
                                 to the previous rule has been chosen
