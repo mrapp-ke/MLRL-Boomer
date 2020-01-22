@@ -26,22 +26,25 @@ class CrossValidation(Randomized):
     classifier or ranker.
     """
 
-    def __init__(self, data_dir: str, data_set: str, folds: int):
+    def __init__(self, data_dir: str, data_set: str, num_folds: int, current_fold: int):
         """
-        :param data_dir:    The path of the directory that contains the .arff file(s)
-        :param data_set:    Name of the data set, e.g. "emotions"
-        :param folds:       Number of folds to be used by cross validation or 1, if separate training and test sets
-                            should be used
+        :param data_dir:        The path of the directory that contains the .arff file(s)
+        :param data_set:        Name of the data set, e.g. "emotions"
+        :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
+                                test sets should be used
+        :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
         """
         self.data_dir = data_dir
         self.data_set = data_set
-        self.folds = folds
+        self.num_folds = num_folds
+        self.current_fold = current_fold
 
     def run(self):
         start_time = timer()
+        num_folds = self.num_folds
 
-        if self.folds > 1:
-            self.__cross_validate()
+        if num_folds > 1:
+            self.__cross_validate(num_folds)
         else:
             self.__train_test_split()
 
@@ -49,35 +52,47 @@ class CrossValidation(Randomized):
         run_time = end_time - start_time
         log.info('Successfully finished after %s seconds', run_time)
 
-    def __cross_validate(self):
+    def __cross_validate(self, num_folds: int):
         """
         Performs n-fold cross validation.
-        """
 
-        log.info('Performing %s-fold cross validation...', self.folds)
+        :param num_folds: The total number of cross validation folds
+        """
+        current_fold = self.current_fold
+        log.info('Performing ' + (
+            'full' if current_fold < 0 else ('fold ' + str(current_fold) + ' of')) + ' %s-fold cross validation...',
+                 num_folds)
         x, y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + ".arff", self.data_set + ".xml")
         x, _ = one_hot_encode(x, y, meta_data.nominal_attributes)
 
         # Cross validate
-        k_fold = KFold(n_splits=self.folds, random_state=self.random_state, shuffle=True)
-        current_fold = 0
+        if current_fold < 0:
+            first_fold = 0
+            last_fold = num_folds - 1
+        else:
+            first_fold = current_fold
+            last_fold = current_fold
+
+        i = 0
+        k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
 
         for train, test in k_fold.split(x, y):
-            log.info('Fold %s / %s:', (current_fold + 1), self.folds)
+            if current_fold < 0 or i == current_fold:
+                log.info('Fold %s / %s:', (i + 1), num_folds)
 
-            # Create training set for current fold
-            train_x = x[train]
-            train_y = y[train]
+                # Create training set for current fold
+                train_x = x[train]
+                train_y = y[train]
 
-            # Create test set for current fold
-            test_x = x[test]
-            test_y = y[test]
+                # Create test set for current fold
+                test_x = x[test]
+                test_y = y[test]
 
-            # Train & evaluate classifier
-            self._train_and_evaluate(train_x, train_y, test_x, test_y, current_fold=current_fold,
-                                     total_folds=self.folds)
+                # Train & evaluate classifier
+                self._train_and_evaluate(train_x, train_y, test_x, test_y, first_fold=first_fold, current_fold=i,
+                                         last_fold=last_fold, num_folds=num_folds)
 
-            current_fold += 1
+            i += 1
 
     def __train_test_split(self):
         """
@@ -111,10 +126,12 @@ class CrossValidation(Randomized):
             test_y = train_y
 
         # Train and evaluate classifier
-        self._train_and_evaluate(train_x, train_y, test_x, test_y, current_fold=0, total_folds=1)
+        self._train_and_evaluate(train_x, train_y, test_x, test_y, first_fold=0, current_fold=0, last_fold=0,
+                                 num_folds=1)
 
     @abstractmethod
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
+    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
+                            num_folds: int):
         """
         The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
         test set.
@@ -123,8 +140,10 @@ class CrossValidation(Randomized):
         :param train_y:         The label matrix of the training examples
         :param test_x:          The feature matrix of the test examples
         :param test_y:          The label matrix of the test examples
-        :param current_fold:    The current fold starting at 0
-        :param total_folds:     The total number of folds or 0, if no cross validation is used
+        :param first_fold:      The first fold or 0, if no cross validation is used
+        :param current_fold:    The current fold starting at 0, or 0 if no cross validation is used
+        :param last_fold:       The last fold or 0, if no cross validation is used
+        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
         pass
 
@@ -134,16 +153,17 @@ class AbstractExperiment(CrossValidation):
     An abstract base class for all experiments. It automatically encodes nominal attributes using one-hot encoding.
     """
 
-    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
+    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, num_folds: int, current_fold: int):
         """
         :param evaluation:      The evaluation to be used
         """
 
-        super().__init__(data_dir, data_set, folds)
+        super().__init__(data_dir, data_set, num_folds, current_fold)
         self.evaluation = evaluation
 
     @abstractmethod
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
+    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
+                            num_folds: int):
         pass
 
 
@@ -153,18 +173,20 @@ class Experiment(AbstractExperiment):
     validation or separate training and test sets.
     """
 
-    def __init__(self, learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
+    def __init__(self, learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str, num_folds: int = 1,
+                 current_fold: int = -1):
         """
         :param learner: The classifier or ranker to be trained
         """
-        super().__init__(evaluation, data_dir, data_set, folds)
+        super().__init__(evaluation, data_dir, data_set, num_folds, current_fold)
         self.learner = learner
 
     def run(self):
         log.info('Starting experiment \"' + self.learner.get_name() + '\"...')
         super().run()
 
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
+    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
+                            num_folds: int):
         # Train classifier
         learner = self.learner
         learner.random_state = self.random_state
@@ -173,8 +195,8 @@ class Experiment(AbstractExperiment):
 
         # Obtain and evaluate predictions for test data
         predictions = learner.predict(test_x)
-        self.evaluation.evaluate(learner.get_name(), predictions, test_y, current_fold=current_fold,
-                                 total_folds=self.folds)
+        self.evaluation.evaluate(learner.get_name(), predictions, test_y, first_fold=first_fold,
+                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds)
 
 
 class BatchExperiment(AbstractExperiment):
@@ -183,11 +205,12 @@ class BatchExperiment(AbstractExperiment):
     using cross validation or separate training and test sets.
     """
 
-    def __init__(self, learner: BatchMLLearner, evaluation: Evaluation, data_dir: str, data_set: str, folds: int = 1):
+    def __init__(self, learner: BatchMLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
+                 num_folds: int = 1, current_fold: int = -1):
         """
         :param learner: The default variant of the classifier or ranker to be trained
         """
-        super().__init__(evaluation, data_dir, data_set, folds)
+        super().__init__(evaluation, data_dir, data_set, num_folds, current_fold)
         self.variants = [{}]
         self.learner = learner
 
@@ -200,7 +223,8 @@ class BatchExperiment(AbstractExperiment):
         """
         self.variants.append(kwargs)
 
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
+    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
+                            num_folds: int):
         next_variant = self.learner
 
         for args in self.variants:
@@ -226,4 +250,5 @@ class BatchExperiment(AbstractExperiment):
                 predictions = next_variant.predict(test_x)
 
             # Evaluate predictions
-            self.evaluation.evaluate(name, predictions, test_y, current_fold=current_fold, total_folds=self.folds)
+            self.evaluation.evaluate(name, predictions, test_y, first_fold=first_fold, current_fold=current_fold,
+                                     last_fold=last_fold, num_folds=num_folds)
