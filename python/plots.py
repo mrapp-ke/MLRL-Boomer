@@ -64,7 +64,7 @@ class Plotter(CrossValidation, MLClassifierBase):
             self.evaluation.evaluate(name, np.where(test_predictions > 0, 1, 0), test_y, first_fold=first_fold,
                                      current_fold=current_fold, last_fold=last_fold, num_folds=num_folds)
 
-        if last_fold < 1 or current_fold == last_fold - 1:
+        if current_fold == last_fold:
             self.__plot(num_iterations=num_iterations)
 
     def __load_theory(self, fold: int):
