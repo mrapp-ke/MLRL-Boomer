@@ -155,7 +155,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
-    learner = create_learner(args.num_rules, args)
+    learner = create_learner(args)
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
                       data_set=args.dataset, num_folds=args.folds, current_fold=args.current_fold,
                       model_name=learner.get_model_name(), learner_name=learner.get_name())

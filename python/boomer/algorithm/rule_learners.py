@@ -8,16 +8,15 @@ classification rules. The classifier is composed of several modules, e.g., for r
 """
 import logging as log
 from abc import abstractmethod
-from copy import copy
 from timeit import default_timer as timer
 
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._losses import Loss, DecomposableLoss, SquaredErrorLoss
-from boomer.algorithm._pruning import Pruning
-from boomer.algorithm._shrinkage import Shrinkage
-from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
-from sklearn.exceptions import NotFittedError
+from boomer.algorithm._losses import Loss, DecomposableLoss, SquaredErrorLoss, LogisticLoss
+from boomer.algorithm._pruning import Pruning, IREP
+from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
+from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
+from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32
@@ -25,7 +24,7 @@ from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
 from boomer.algorithm.stats import Stats
-from boomer.learners import MLLearner, BatchMLLearner
+from boomer.learners import MLLearner
 
 
 class MLRuleLearner(MLLearner):
@@ -50,26 +49,27 @@ class MLRuleLearner(MLLearner):
 
     persistence: ModelPersistence = None
 
-    def __init__(self, rule_induction: RuleInduction, prediction: Prediction):
-        """
-        :param rule_induction:  The module that is used to induce classification rules
-        :param prediction:      The module that is used to make a prediction
-        """
-
+    def __init__(self):
         super().__init__()
         self.require_dense = [True, True]  # We need a dense representation of the training data
-        self.rule_induction = rule_induction
-        self.prediction = prediction
 
-    def __validate(self):
+    @abstractmethod
+    def _create_prediction(self) -> Prediction:
         """
-        Raises exceptions if the algorithm is not configured properly.
-        """
+        Must be implemented by subclasses in order to create the `Prediction` to be used for making predictions.
 
-        if self.rule_induction is None:
-            raise ValueError('Module \'rule_induction\' may not be None')
-        if self.prediction is None:
-            raise ValueError('Module \'prediction\' may not be None')
+        :return: The `Prediction` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_rule_induction(self) -> RuleInduction:
+        """
+        Must be implemented by subclasses in order to create the `RuleInduction` to be used for inducing rules.
+
+        :return: The `RuleInduction` that has been created
+        """
+        pass
 
     def __load_rules(self):
         """
@@ -102,8 +102,6 @@ class MLRuleLearner(MLLearner):
                         should be created
         :return:        A 'Theory' that contains the induced classification rules
         """
-        self.__validate()
-
         # Create a dense representation of the training data
         x = self._ensure_input_format(x)
         y = self._ensure_input_format(y)
@@ -123,8 +121,9 @@ class MLRuleLearner(MLLearner):
             start_time = timer()
 
             # Induce rules
-            self.rule_induction.random_state = self.random_state
-            theory = self.rule_induction.induce_rules(stats, x, y, theory)
+            rule_induction = self._create_rule_induction()
+            rule_induction.random_state = self.random_state
+            theory = rule_induction.induce_rules(stats, x, y, theory)
 
             # Save theory to disk
             self.__save_rules(theory)
@@ -161,85 +160,131 @@ class MLRuleLearner(MLLearner):
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
 
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
-        self.prediction.random_state = self.random_state
-        prediction = self.prediction.predict(self.stats_, self.theory_, x)
-        return prediction
+        prediction = self._create_prediction()
+        prediction.random_state = self.random_state
+        return prediction.predict(self.stats_, self.theory_, x)
 
     @abstractmethod
     def get_name(self) -> str:
         pass
 
 
-class Boomer(MLRuleLearner, BatchMLLearner):
+class Boomer(MLRuleLearner):
     """
     A scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
     classification rules.
     """
 
-    def __init__(self, num_rules: int = 100, head_refinement: HeadRefinement = None,
-                 loss: Loss = SquaredErrorLoss(), instance_sub_sampling: InstanceSubSampling = None,
-                 feature_sub_sampling: FeatureSubSampling = None, pruning: Pruning = None, shrinkage: Shrinkage = None):
+    def __init__(self, num_rules: int = 100, head_refinement: str = None, loss: str = 'squared-error-loss',
+                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
+                 shrinkage: float = 1.0):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
-        :param head_refinement:         The strategy that is used to find the heads of rules or None, if the default
-                                        strategy should be used
-        :param loss:                    The loss function to be minimized
+        :param head_refinement:         The strategy that is used to find the heads of rules. Must be `single-label`,
+                                        `full` or None, if the default strategy should be used
+        :param loss:                    The loss function to be minimized. Must be `squared-error-loss` or
+                                        `logistic-loss`
         :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
-                                        classification rule is learned
+                                        classification rule is learned. Must be `bagging`, `random-instance-selection`
+                                        or None, if no sub-sampling should be used
         :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
-                                        classification rule is refined
-        :param pruning:                 The strategy that is used for pruning rules
+                                        classification rule is refined. Must be `random-feature-selection` or None, if
+                                        no sub-sampling should be used
+        :param pruning:                 The strategy that is used for pruning rules. Must be `irep` or None, if no
+                                        pruning should be used
         :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
                                         induced rules to reduce their effect on the entire model. Must be in (0, 1]
         """
-        super().__init__(rule_induction=GradientBoosting(
-            num_rules=num_rules,
-            head_refinement=head_refinement if head_refinement is not None else
-            (SingleLabelHeadRefinement() if isinstance(loss, DecomposableLoss) else FullHeadRefinement()),
-            loss=loss,
-            instance_sub_sampling=instance_sub_sampling,
-            feature_sub_sampling=feature_sub_sampling,
-            pruning=pruning,
-            shrinkage=shrinkage
-        ), prediction=Sign(LinearCombination()))
+        super().__init__()
+        self.num_rules = num_rules
+        self.head_refinement = head_refinement
+        self.loss = loss
+        self.instance_sub_sampling = instance_sub_sampling
+        self.feature_sub_sampling = feature_sub_sampling
+        self.pruning = pruning
+        self.shrinkage = shrinkage
 
-    def partial_fit(self, x: np.ndarray, y: np.ndarray) -> BatchMLLearner:
-        check_is_fitted(self)
-        self.theory_ = self._induce_rules(x, y, theory=self.theory_)
-        return self
+    def _create_prediction(self) -> Prediction:
+        return Sign(LinearCombination())
 
-    # noinspection PyUnresolvedReferences
-    def predict(self, x: np.ndarray) -> np.ndarray:
-        if hasattr(self, 'theory_') and len(self.theory_) < self.rule_induction.num_rules:
-            raise NotFittedError('Not enough rules contained by theory')
+    def _create_rule_induction(self) -> RuleInduction:
+        num_rules = self.num_rules
+        loss = self.__create_loss()
+        head_refinement = self.__create_head_refinement(loss)
+        instance_sub_sampling = self.__create_instance_sub_sampling()
+        feature_sub_sampling = self.__create_feature_sub_sampling()
+        pruning = self.__create_pruning()
+        shrinkage = self.__create_shrinkage()
+        return GradientBoosting(num_rules=num_rules, head_refinement=head_refinement, loss=loss,
+                                instance_sub_sampling=instance_sub_sampling, feature_sub_sampling=feature_sub_sampling,
+                                pruning=pruning, shrinkage=shrinkage)
 
-        return super().predict(x)
+    def __create_loss(self) -> Loss:
+        loss = self.loss
 
-    # noinspection PyTypeChecker,PyUnresolvedReferences
-    def copy_classifier(self, **kwargs) -> BatchMLLearner:
-        copied_classifier = copy(self)
-        copied_classifier.rule_induction = copy(self.rule_induction)
-        copied_classifier.rule_induction.num_rules = kwargs.get('num_rules', self.rule_induction.num_rules)
-        copied_classifier.persistence = kwargs.get('persistence', self.persistence)
+        if loss == 'squared-error-loss':
+            return SquaredErrorLoss()
+        elif loss == 'logistic-loss':
+            return LogisticLoss()
+        raise ValueError('Invalid value given for argument \'loss\': ' + str(loss))
 
-        if hasattr(self, 'theory_') and hasattr(self, 'stats_'):
-            if copied_classifier.rule_induction.num_rules >= self.rule_induction.num_rules:
-                copied_classifier.theory_ = self._theory_
-                copied_classifier.stats_ = self._stats_
+    def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
+        head_refinement = self.head_refinement
 
-        return copied_classifier
+        if head_refinement is None:
+            return SingleLabelHeadRefinement() if isinstance(loss, DecomposableLoss) else FullHeadRefinement()
+        elif head_refinement == 'single-label':
+            return SingleLabelHeadRefinement()
+        elif head_refinement == 'full':
+            return FullHeadRefinement()
+        raise ValueError('Invalid value given for argument \'head_refinement\': ' + str(head_refinement))
 
-    # noinspection PyUnresolvedReferences
+    def __create_instance_sub_sampling(self) -> InstanceSubSampling:
+        instance_sub_sampling = self.instance_sub_sampling
+
+        if instance_sub_sampling is None:
+            return None
+        elif instance_sub_sampling == 'bagging':
+            return Bagging()
+        elif instance_sub_sampling == 'random-instance-selection':
+            return RandomInstanceSubsetSelection()
+        raise ValueError('Invalid value given for argument \'instance_sub_sampling\': ' + str(instance_sub_sampling))
+
+    def __create_feature_sub_sampling(self) -> FeatureSubSampling:
+        feature_sub_sampling = self.feature_sub_sampling
+
+        if feature_sub_sampling is None:
+            return None
+        elif feature_sub_sampling == 'random-feature-selection':
+            return RandomFeatureSubsetSelection()
+        raise ValueError('Invalid value given for argument \'feature_sub_sampling\': ' + str(feature_sub_sampling))
+
+    def __create_pruning(self) -> Pruning:
+        pruning = self.pruning
+
+        if pruning is None:
+            return None
+        if pruning == 'irep':
+            return IREP()
+        raise ValueError('Invalid value given for argument \'pruning\': ' + str(pruning))
+
+    def __create_shrinkage(self) -> Shrinkage:
+        shrinkage = self.shrinkage
+
+        if 0.0 < shrinkage < 1.0:
+            return ConstantShrinkage(shrinkage)
+        if shrinkage == 1.0:
+            return None
+        raise ValueError('Invalid value given for argument \'shrinkage\': ' + str(shrinkage))
+
     def get_name(self) -> str:
-        num_rules = str(self.rule_induction.num_rules)
-        head_refinement = str(type(self.rule_induction.head_refinement).__name__)
-        loss = str(type(self.rule_induction.loss).__name__)
-        instance_sub_sampling = 'None' if self.rule_induction.instance_sub_sampling is None else str(
-            type(self.rule_induction.instance_sub_sampling).__name__)
-        feature_sub_sampling = 'None' if self.rule_induction.feature_sub_sampling is None else str(
-            type(self.rule_induction.feature_sub_sampling).__name__)
-        pruning = 'None' if self.rule_induction.pruning is None else str(type(self.rule_induction.pruning).__name__)
-        shrinkage = str(self.rule_induction.shrinkage)
+        num_rules = str(self.num_rules)
+        head_refinement = str(self.head_refinement)
+        loss = str(self.loss)
+        instance_sub_sampling = str(self.instance_sub_sampling)
+        feature_sub_sampling = str(self.feature_sub_sampling)
+        pruning = str(self.pruning)
+        shrinkage = str(self.shrinkage)
         return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
                + '_instance-sub-sampling=' + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling \
                + '_pruning=' + pruning + '_shrinkage=' + shrinkage
