@@ -208,7 +208,7 @@ class Boomer(MLRuleLearner):
         return Sign(LinearCombination())
 
     def _create_rule_induction(self) -> RuleInduction:
-        num_rules = self.num_rules
+        num_rules = int(self.num_rules)
         loss = self.__create_loss()
         head_refinement = self.__create_head_refinement(loss)
         instance_sub_sampling = self.__create_instance_sub_sampling()
@@ -269,7 +269,7 @@ class Boomer(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
     def __create_shrinkage(self) -> Shrinkage:
-        shrinkage = self.shrinkage
+        shrinkage = float(self.shrinkage)
 
         if 0.0 < shrinkage < 1.0:
             return ConstantShrinkage(shrinkage)
