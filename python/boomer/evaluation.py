@@ -277,7 +277,6 @@ class EvaluationCsvOutput(EvaluationOutput):
         """
         Clears the output directory, if necessary.
         """
-
         if self.clear_dir:
             clear_directory(self.output_dir)
             self.clear_dir = False
