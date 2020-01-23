@@ -76,7 +76,8 @@ if __name__ == '__main__':
     learner.persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
     evaluation = ClassificationEvaluation(EvaluationLogOutput(),
                                           EvaluationCsvOutput(output_dir=args.output_dir,
-                                                              output_predictions=args.store_predictions))
+                                                              output_predictions=args.store_predictions,
+                                                              clear_dir=args.current_fold == -1))
     experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                             current_fold=args.current_fold)
     experiment.run()
