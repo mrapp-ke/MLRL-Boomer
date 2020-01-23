@@ -16,20 +16,48 @@ CSV_DELIMITER = ','
 CSV_QUOTE_CHAR = '"'
 
 
-def open_writable_csv_file(output_dir: str, file_name: str, fold: int, append: bool = False):
+def open_readable_csv_file(directory: str, file_name: str, fold: int):
+    """
+    Opens a CSV file to be read from.
+
+    :param directory:   The directory where the file is located
+    :param file_name:   The name of the file to be opened (without suffix)
+    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
+                        a specific fold
+    :return:            The file that has been opened
+    """
+    file = __get_csv_file(directory, file_name, fold)
+    return open(file, mode='r')
+
+
+def open_writable_csv_file(directory: str, file_name: str, fold: int, append: bool = False):
     """
     Opens a CSV file to be written to.
 
-    :param output_dir:  The directory where the file is located
+    :param directory:   The directory where the file is located
     :param file_name:   The name of the file to be opened (without suffix)
-    :param fold:        The cross validation fold, the file corresponds to, or None, if no cross validation is used
+    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
+                        a specific fold
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    output_file_name = file_name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)) + '.csv'
-    output_file = path.join(output_dir, output_file_name)
-    write_mode = 'a' if append and path.isfile(output_file) else 'w'
-    return open(output_file, mode=write_mode)
+    file = __get_csv_file(directory, file_name, fold)
+    write_mode = 'a' if append and path.isfile(file) else 'w'
+    return open(file, mode=write_mode)
+
+
+def __get_csv_file(directory: str, file_name: str, fold: int):
+    """
+    Returns the CSV file with a specific name that corresponds to a certain fold.
+
+    :param directory:   The directory where the file is located
+    :param file_name:   The name of the file (without suffix)
+    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
+                        a specific fold
+    :return:            The file
+    """
+    full_file_name = file_name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)) + '.csv'
+    return path.join(directory, full_file_name)
 
 
 def create_csv_writer(csv_file):
