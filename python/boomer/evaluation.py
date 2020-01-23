@@ -192,7 +192,7 @@ class EvaluationOutput(ABC):
         pass
 
 
-class LogOutput(EvaluationOutput):
+class EvaluationLogOutput(EvaluationOutput):
     """
     Outputs evaluation result using the logger.
     """
