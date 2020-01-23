@@ -41,7 +41,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
     p.add_argument('--current-fold', type=__current_fold_string, default=-1,
                    help='The cross validation fold to be performed')
-    p.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced per iteration')
+    p.add_argument('--num-rules', type=int, default=100, help='The number of rules to be induced')
     p.add_argument('--instance-sub-sampling', type=__optional_string, default=None,
                    help='The name of the strategy to be used for instance sub-sampling or None')
     p.add_argument('--feature-sub-sampling', type=__optional_string, default=None,
