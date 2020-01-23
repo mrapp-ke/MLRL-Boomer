@@ -93,6 +93,10 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
         pass
 
 
+def __float_list(s):
+    return [float(x.strip()) for x in s.split(',')]
+
+
 if __name__ == '__main__':
     log.basicConfig(level=log.INFO)
 
@@ -100,14 +104,16 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--nested-folds', type=int, default=5,
                         help='Total number of folds to be used by nested cross validation')
-    parser.add_argument('--min-rules', type=int, default=100, help='The minimum number of rules')
+    parser.add_argument('--min-rules', type=int, default=100,
+                        help='The minimum value of the parameter \'num_rules\' to be tested')
+    parser.add_argument('--shrinkage-parameters', type=__float_list, default='0.25',
+                        help='The parameters \'shrinkage\' to be tested as a comma-separated list')
     configure_argument_parser(parser)
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
     learner = create_learner(args)
-    shrinkage_parameters = [0.25]
-    parameter_search = ShrinkageNumRulesParameterSearch(args.nested_folds, args.min_rules, shrinkage_parameters,
+    parameter_search = ShrinkageNumRulesParameterSearch(args.nested_folds, args.min_rules, args.shrinkage_parameters,
                                                         learner)
     parameter_tuning = ParameterTuning(args.data_dir, args.dataset, args.folds, args.current_fold, parameter_search,
                                        ParameterLogOutput(), ParameterCsvOutput(output_dir=args.output_dir,
