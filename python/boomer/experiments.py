@@ -12,6 +12,7 @@ import os.path as path
 from abc import abstractmethod
 from timeit import default_timer as timer
 
+from sklearn.base import clone
 from sklearn.model_selection import KFold
 
 from boomer.data import load_data_set_and_meta_data, load_data_set, one_hot_encode
@@ -172,27 +173,28 @@ class Experiment(AbstractExperiment):
     validation or separate training and test sets.
     """
 
-    def __init__(self, learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str, num_folds: int = 1,
-                 current_fold: int = -1):
+    def __init__(self, base_learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
+                 num_folds: int = 1, current_fold: int = -1):
         """
-        :param learner: The classifier or ranker to be trained
+        :param base_learner: The classifier or ranker to be trained
         """
         super().__init__(evaluation, data_dir, data_set, num_folds, current_fold)
-        self.learner = learner
+        self.base_learner = base_learner
 
     def run(self):
-        log.info('Starting experiment \"' + self.learner.get_name() + '\"...')
+        log.info('Starting experiment \"' + self.base_learner.get_name() + '\"...')
         super().run()
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
                             num_folds: int):
         # Train classifier
-        learner = self.learner
-        learner.random_state = self.random_state
-        learner.fold = current_fold
-        learner.fit(train_x, train_y)
+        base_learner = self.base_learner
+        current_learner = clone(base_learner)
+        current_learner.random_state = self.random_state
+        current_learner.fold = current_fold
+        current_learner.fit(train_x, train_y)
 
         # Obtain and evaluate predictions for test data
-        predictions = learner.predict(test_x)
-        self.evaluation.evaluate(learner.get_name(), predictions, test_y, first_fold=first_fold,
+        predictions = current_learner.predict(test_x)
+        self.evaluation.evaluate(current_learner.get_name(), predictions, test_y, first_fold=first_fold,
                                  current_fold=current_fold, last_fold=last_fold, num_folds=num_folds)
