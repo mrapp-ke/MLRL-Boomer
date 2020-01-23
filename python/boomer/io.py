@@ -7,7 +7,6 @@ Provides functions for writing and reading files.
 """
 import os.path as path
 from csv import writer, DictWriter, QUOTE_MINIMAL
-from typing import List
 
 # The delimiter used to separate the columns in a CSV file
 CSV_DELIMITER = ','
@@ -42,7 +41,7 @@ def create_csv_writer(csv_file):
     return writer(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR, quoting=QUOTE_MINIMAL)
 
 
-def create_csv_dict_writer(csv_file, header: List[str]) -> DictWriter:
+def create_csv_dict_writer(csv_file, header) -> DictWriter:
     """
     Creates and returns a `DictWriter` that allows to write a dictionary to a CSV file.
 
