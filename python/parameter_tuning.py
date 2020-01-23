@@ -110,6 +110,7 @@ if __name__ == '__main__':
     parameter_search = ShrinkageNumRulesParameterSearch(args.nested_folds, args.min_rules, shrinkage_parameters,
                                                         learner)
     parameter_tuning = ParameterTuning(args.data_dir, args.dataset, args.folds, args.current_fold, parameter_search,
-                                       ParameterLogOutput(), ParameterCsvOutput(args.output_dir))
+                                       ParameterLogOutput(), ParameterCsvOutput(output_dir=args.output_dir,
+                                                                                clear_dir=args.current_fold == -1))
     parameter_tuning.random_state = args.random_state
     parameter_tuning.run()
