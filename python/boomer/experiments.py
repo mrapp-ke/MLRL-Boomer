@@ -4,151 +4,20 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes for training and evaluating multi-label classifiers using either cross validation or separate training
-and test sets.
+Provides classes for performing experiments.
 """
 import logging as log
-import os.path as path
-from abc import abstractmethod
-from timeit import default_timer as timer
+from abc import ABC, abstractmethod
 
 from sklearn.base import clone
-from sklearn.model_selection import KFold
 
-from boomer.data import load_data_set_and_meta_data, load_data_set, one_hot_encode
 from boomer.evaluation import Evaluation
-from boomer.learners import Randomized, MLLearner
+from boomer.learners import MLLearner
+from boomer.parameters import ParameterInput
+from boomer.training import CrossValidation
 
 
-class CrossValidation(Randomized):
-    """
-    A base class for all classes that use cross validation or a train-test split to train and evaluate a multi-label
-    classifier or ranker.
-    """
-
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, current_fold: int):
-        """
-        :param data_dir:        The path of the directory that contains the .arff file(s)
-        :param data_set:        Name of the data set, e.g. "emotions"
-        :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
-                                test sets should be used
-        :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
-        """
-        self.data_dir = data_dir
-        self.data_set = data_set
-        self.num_folds = num_folds
-        self.current_fold = current_fold
-
-    def run(self):
-        start_time = timer()
-        num_folds = self.num_folds
-
-        if num_folds > 1:
-            self.__cross_validate(num_folds)
-        else:
-            self.__train_test_split()
-
-        end_time = timer()
-        run_time = end_time - start_time
-        log.info('Successfully finished after %s seconds', run_time)
-
-    def __cross_validate(self, num_folds: int):
-        """
-        Performs n-fold cross validation.
-
-        :param num_folds: The total number of cross validation folds
-        """
-        current_fold = self.current_fold
-        log.info('Performing ' + (
-            'full' if current_fold < 0 else ('fold ' + str(current_fold) + ' of')) + ' %s-fold cross validation...',
-                 num_folds)
-        x, y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + ".arff", self.data_set + ".xml")
-        x, _ = one_hot_encode(x, y, meta_data.nominal_attributes)
-
-        # Cross validate
-        if current_fold < 0:
-            first_fold = 0
-            last_fold = num_folds - 1
-        else:
-            first_fold = current_fold
-            last_fold = current_fold
-
-        i = 0
-        k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
-
-        for train, test in k_fold.split(x, y):
-            if current_fold < 0 or i == current_fold:
-                log.info('Fold %s / %s:', (i + 1), num_folds)
-
-                # Create training set for current fold
-                train_x = x[train]
-                train_y = y[train]
-
-                # Create test set for current fold
-                test_x = x[test]
-                test_y = y[test]
-
-                # Train & evaluate classifier
-                self._train_and_evaluate(train_x, train_y, test_x, test_y, first_fold=first_fold, current_fold=i,
-                                         last_fold=last_fold, num_folds=num_folds)
-
-            i += 1
-
-    def __train_test_split(self):
-        """
-        Trains the classifier used in the experiment on a training set and validates it on a test set.
-        """
-
-        log.info('Using separate training and test sets...')
-
-        # Load training data
-        train_arff_file_name = self.data_set + '-train.arff'
-        train_arff_file = path.join(self.data_dir, train_arff_file_name)
-        test_data_exists = True
-
-        if not path.isfile(train_arff_file):
-            train_arff_file_name = self.data_set + '.arff'
-            log.warning('File \'' + train_arff_file + '\' does not exist. Using \'' +
-                        path.join(self.data_dir, train_arff_file_name) + '\' instead!')
-            test_data_exists = False
-
-        train_x, train_y, meta_data = load_data_set_and_meta_data(self.data_dir, train_arff_file_name,
-                                                                  self.data_set + '.xml')
-        train_x, encoder = one_hot_encode(train_x, train_y, meta_data.nominal_attributes)
-
-        # Load test data
-        if test_data_exists:
-            test_x, test_y = load_data_set(self.data_dir, self.data_set + '-test.arff', meta_data)
-            test_x, _ = one_hot_encode(test_x, test_y, meta_data.nominal_attributes, encoder=encoder)
-        else:
-            log.warning('No test data set available. Model will be evaluated on the training data!')
-            test_x = train_x
-            test_y = train_y
-
-        # Train and evaluate classifier
-        self._train_and_evaluate(train_x, train_y, test_x, test_y, first_fold=0, current_fold=0, last_fold=0,
-                                 num_folds=1)
-
-    @abstractmethod
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
-                            num_folds: int):
-        """
-        The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
-        test set.
-
-        :param train_x:         The feature matrix of the training examples
-        :param train_y:         The label matrix of the training examples
-        :param test_x:          The feature matrix of the test examples
-        :param test_y:          The label matrix of the test examples
-        :param first_fold:      The first fold or 0, if no cross validation is used
-        :param current_fold:    The current fold starting at 0, or 0 if no cross validation is used
-        :param last_fold:       The last fold or 0, if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
-        """
-        pass
-
-
-class AbstractExperiment(CrossValidation):
+class AbstractExperiment(CrossValidation, ABC):
     """
     An abstract base class for all experiments. It automatically encodes nominal attributes using one-hot encoding.
     """
@@ -174,12 +43,14 @@ class Experiment(AbstractExperiment):
     """
 
     def __init__(self, base_learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
-                 num_folds: int = 1, current_fold: int = -1):
+                 num_folds: int = 1, current_fold: int = -1, parameter_input: ParameterInput = None):
         """
-        :param base_learner: The classifier or ranker to be trained
+        :param base_learner:    The classifier or ranker to be trained
+        :param parameter_input: The input that should be used to read the parameter settings
         """
         super().__init__(evaluation, data_dir, data_set, num_folds, current_fold)
         self.base_learner = base_learner
+        self.parameter_input = parameter_input
 
     def run(self):
         log.info('Starting experiment \"' + self.base_learner.get_name() + '\"...')
@@ -187,9 +58,18 @@ class Experiment(AbstractExperiment):
 
     def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
                             num_folds: int):
-        # Train classifier
         base_learner = self.base_learner
+        parameter_input = self.parameter_input
+
+        # Apply parameter setting, if necessary
         current_learner = clone(base_learner)
+
+        if parameter_input is not None:
+            params = parameter_input.read_parameters(current_fold)
+            current_learner.set_params(**params)
+            log.info('Successfully applied parameter setting: %s', params)
+
+        # Train classifier
         current_learner.random_state = self.random_state
         current_learner.fold = current_fold
         current_learner.fit(train_x, train_y)

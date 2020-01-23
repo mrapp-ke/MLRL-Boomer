@@ -7,7 +7,7 @@ Provides functions for writing and reading files.
 """
 import os
 import os.path as path
-from csv import writer, DictWriter, QUOTE_MINIMAL
+from csv import DictReader, writer, DictWriter, QUOTE_MINIMAL
 
 # The delimiter used to separate the columns in a CSV file
 CSV_DELIMITER = ','
@@ -27,7 +27,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: int):
     :return:            The file that has been opened
     """
     file = __get_csv_file(directory, file_name, fold)
-    return open(file, mode='r')
+    return open(file, mode='r', newline='')
 
 
 def open_writable_csv_file(directory: str, file_name: str, fold: int, append: bool = False):
@@ -58,6 +58,16 @@ def __get_csv_file(directory: str, file_name: str, fold: int):
     """
     full_file_name = file_name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)) + '.csv'
     return path.join(directory, full_file_name)
+
+
+def create_csv_dict_reader(csv_file) -> DictReader:
+    """
+    Creates and return a `DictReader` that allows to read from a CSV file.
+
+    :param csv_file:    The CSV file
+    :return:            The 'DictReader' that has been created
+    """
+    return DictReader(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
 
 
 def create_csv_writer(csv_file):
