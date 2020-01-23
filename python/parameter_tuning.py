@@ -17,7 +17,7 @@ from main import configure_argument_parser, create_learner
 
 
 class GridSearch(MLClassifierBase, Randomized):
-    PARAMETERS = [0.25]  # [0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.5]
+    SHRINKAGE_PARAMETERS = [0.25]  # [0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.5]
 
     def __init__(self, base_learner: MLRuleLearner, num_folds: int, min_rules: int):
         super().__init__()
@@ -32,7 +32,7 @@ class GridSearch(MLClassifierBase, Randomized):
         random_state = self.random_state
         min_rules = self.min_rules
         avg_performances = None
-        num_parameters = len(GridSearch.PARAMETERS)
+        num_parameters = len(GridSearch.SHRINKAGE_PARAMETERS)
         i = 0
         k_fold = KFold(n_splits=num_folds, random_state=random_state, shuffle=True)
 
@@ -52,7 +52,7 @@ class GridSearch(MLClassifierBase, Randomized):
 
                 # Train classifier
                 current_learner = clone(base_learner)
-                current_learner.set_params(**{'shrinkage': GridSearch.PARAMETERS[g]})
+                current_learner.set_params(**{'shrinkage': GridSearch.SHRINKAGE_PARAMETERS[g]})
                 current_learner.random_state = random_state
                 current_learner.fold = i
                 current_learner.fit(train_x, train_y)
@@ -63,7 +63,7 @@ class GridSearch(MLClassifierBase, Randomized):
                 predictions = np.asfortranarray(np.zeros((test_x.shape[0], test_y.shape[1])), dtype=DTYPE_FLOAT64)
 
                 if avg_performances is None:
-                    avg_performances = np.zeros((len(GridSearch.PARAMETERS), num_rules - min_rules + 1), dtype=float)
+                    avg_performances = np.zeros((num_parameters, num_rules - min_rules + 1), dtype=float)
 
                 for j in range(num_rules):
                     rule = theory.pop(0)
@@ -78,7 +78,7 @@ class GridSearch(MLClassifierBase, Randomized):
         avg_performances = np.divide(avg_performances, num_folds)
         min_row, min_col = np.divmod(avg_performances.argmin(), avg_performances.shape[1])
 
-        best_shrinkage = GridSearch.PARAMETERS[min_row.item()]
+        best_shrinkage = GridSearch.SHRINKAGE_PARAMETERS[min_row.item()]
         best_num_rules = min_col + min_rules
         best_performance = avg_performances[min_row, min_col]
         print('best_shrinkage=' + str(best_shrinkage) + ', best_num_rules=' + str(
