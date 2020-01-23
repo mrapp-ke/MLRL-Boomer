@@ -122,16 +122,17 @@ class ParameterLogOutput(ParameterOutput):
     """
 
     def write_parameters(self, parameters: dict, score: float, total_folds: int, fold: int = None):
-        text = ''
+        param_text = ''
 
         for parameter, value in parameters.items():
-            if len(text) > 0:
-                text += '\n'
+            if len(param_text) > 0:
+                param_text += '\n'
 
-            text += (parameter + ': ' + str(value))
+            param_text += (parameter + ': ' + str(value))
 
-        msg = 'Optimal parameter setting (reaching evaluation score ' + str(score) + '):\n\n%s\n'
-        log.info(msg, text)
+        score_text = 'Evaluation score: ' + str(score)
+        msg = 'Optimal parameter setting' + ('' if fold is None else ' (Fold ' + str(fold + 1) + ')') + ':\n\n%s\n%s\n'
+        log.info(msg, param_text, score_text)
 
 
 class ParameterCsvOutput(ParameterOutput):
