@@ -151,7 +151,7 @@ class EvaluationResult:
         return result
 
 
-class Output(ABC):
+class EvaluationOutput(ABC):
     """
     An abstract base class for all outputs, evaluation results may be written to.
     """
@@ -192,7 +192,7 @@ class Output(ABC):
         pass
 
 
-class LogOutput(Output):
+class LogOutput(EvaluationOutput):
     """
     Outputs evaluation result using the logger.
     """
@@ -232,7 +232,7 @@ class LogOutput(Output):
             log.info(msg, text)
 
 
-class CsvOutput(Output):
+class CsvOutput(EvaluationOutput):
     """
     Writes evaluation results to CSV files.
     """
@@ -310,7 +310,7 @@ class AbstractEvaluation(Evaluation):
 
     results: Dict[str, EvaluationResult] = {}
 
-    def __init__(self, *args: Output):
+    def __init__(self, *args: EvaluationOutput):
         """
         :param outputs: The outputs the evaluation results should be written to
         """
@@ -372,7 +372,7 @@ class ClassificationEvaluation(AbstractEvaluation):
     Evaluates the predictions of a classifier according to commonly used bipartition measures.
     """
 
-    def __init__(self, *args: Output):
+    def __init__(self, *args: EvaluationOutput):
         super().__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
@@ -399,7 +399,7 @@ class RankingEvaluation(AbstractEvaluation):
     Evaluates the predictions of a ranker according to commonly used ranking measures.
     """
 
-    def __init__(self, *args: Output):
+    def __init__(self, *args: EvaluationOutput):
         super().__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
