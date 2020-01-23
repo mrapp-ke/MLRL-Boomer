@@ -232,7 +232,7 @@ class EvaluationLogOutput(EvaluationOutput):
             log.info(msg, text)
 
 
-class CsvOutput(EvaluationOutput):
+class EvaluationCsvOutput(EvaluationOutput):
     """
     Writes evaluation results to CSV files.
     """
@@ -281,7 +281,7 @@ class CsvOutput(EvaluationOutput):
         """
 
         if self.clear_dir:
-            CsvOutput.__clear_dir(self.output_dir)
+            EvaluationCsvOutput.__clear_dir(self.output_dir)
             self.clear_dir = False
 
     @staticmethod
