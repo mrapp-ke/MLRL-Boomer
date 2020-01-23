@@ -7,6 +7,7 @@ from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
+from boomer.parameters import ParameterCsvInput
 
 
 def __boolean_string(s):
@@ -68,16 +69,19 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=__boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
+    parser.add_argument('--parameter-dir', type=__optional_string, default=None,
+                        help='The path of the directory, parameter settings should be loaded from')
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
     learner = create_learner(args)
     learner.random_state = args.random_state
     learner.persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
+    parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
     evaluation = ClassificationEvaluation(EvaluationLogOutput(),
                                           EvaluationCsvOutput(output_dir=args.output_dir,
                                                               output_predictions=args.store_predictions,
                                                               clear_dir=args.current_fold == -1))
     experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
-                            current_fold=args.current_fold)
+                            current_fold=args.current_fold, parameter_input=parameter_input)
     experiment.run()

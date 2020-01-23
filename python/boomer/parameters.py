@@ -11,9 +11,11 @@ from abc import abstractmethod
 
 from sklearn.model_selection import KFold
 
-from boomer.experiments import CrossValidation
-from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory
+from boomer.io import clear_directory
+from boomer.io import open_readable_csv_file, create_csv_dict_writer
+from boomer.io import open_writable_csv_file, create_csv_dict_reader
 from boomer.learners import Randomized
+from boomer.training import CrossValidation
 
 
 class ParameterSearch(Randomized, ABC):
@@ -95,6 +97,37 @@ class NestedCrossValidation(ParameterSearch):
         :param num_folds:       The total number of cross validation folds
         """
         pass
+
+
+class ParameterInput(ABC):
+
+    @abstractmethod
+    def read_parameters(self, fold: int = None) -> dict:
+        """
+        Reads a parameter setting from the input.
+
+        :param fold:    The fold, the parameter setting corresponds to, or None, if the parameter setting does not
+                        correspond to a specific fold
+        :return:        A dictionary that stores the parameters
+        """
+        pass
+
+
+class ParameterCsvInput(ParameterInput):
+    """
+    Reads parameter settings from CSV files.
+    """
+
+    def __init__(self, input_dir: str):
+        """
+        :param input_dir: The path of the directory, the CSV files should be read from
+        """
+        self.input_dir = input_dir
+
+    def read_parameters(self, fold: int = None) -> dict:
+        with open_readable_csv_file(self.input_dir, 'parameters', fold) as csv_file:
+            csv_reader = create_csv_dict_reader(csv_file)
+            return dict(next(csv_reader))
 
 
 class ParameterOutput(ABC):

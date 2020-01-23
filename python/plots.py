@@ -12,7 +12,7 @@ from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS, SUBSET_01_LOSS
-from boomer.experiments import CrossValidation
+from boomer.training import CrossValidation
 from main import configure_argument_parser, create_learner
 
 
