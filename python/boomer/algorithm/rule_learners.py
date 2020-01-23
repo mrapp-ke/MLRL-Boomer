@@ -175,7 +175,7 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, num_rules: int = 100, head_refinement: str = None, loss: str = 'squared-error-loss',
+    def __init__(self, num_rules: int = 500, head_refinement: str = None, loss: str = 'squared-error-loss',
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
                  shrinkage: float = 1.0):
         """
