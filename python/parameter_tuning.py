@@ -76,12 +76,9 @@ class GridSearch(MLClassifierBase, Randomized):
             i += 1
 
         avg_performances = np.divide(avg_performances, num_folds)
-        min_index = np.argmin(avg_performances)
-        num_cols = avg_performances.shape[1]
-        min_row = min_index // num_cols
-        min_col = min_index % ((min_row + 1) * num_cols)
+        min_row, min_col = np.divmod(avg_performances.argmin(), avg_performances.shape[1])
 
-        best_shrinkage = GridSearch.PARAMETERS[min_row]
+        best_shrinkage = GridSearch.PARAMETERS[min_row.item()]
         best_num_rules = min_col + min_rules
         best_performance = avg_performances[min_row, min_col]
         print('best_shrinkage=' + str(best_shrinkage) + ', best_num_rules=' + str(
