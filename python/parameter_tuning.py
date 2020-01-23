@@ -100,7 +100,7 @@ def __float_list(s):
 if __name__ == '__main__':
     log.basicConfig(level=log.INFO)
 
-    parser = argparse.ArgumentParser(description='Tunes the parameters of a BOOMER model using nested cross validation')
+    parser = argparse.ArgumentParser(description='Tunes the hyper-parameters of BOOMER using nested cross validation')
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--nested-folds', type=int, default=5,
                         help='Total number of folds to be used by nested cross validation')
