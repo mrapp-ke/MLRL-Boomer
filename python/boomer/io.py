@@ -16,9 +16,9 @@ CSV_DELIMITER = ','
 CSV_QUOTE_CHAR = '"'
 
 
-def open_csv_file(output_dir: str, file_name: str, fold: int, append: bool = False):
+def open_writable_csv_file(output_dir: str, file_name: str, fold: int, append: bool = False):
     """
-    Opens a CSV file.
+    Opens a CSV file to be written to.
 
     :param output_dir:  The directory where the file is located
     :param file_name:   The name of the file to be opened (without suffix)

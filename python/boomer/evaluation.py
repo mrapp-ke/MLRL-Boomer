@@ -13,7 +13,7 @@ from typing import List, Dict, Set
 import numpy as np
 import sklearn.metrics as metrics
 
-from boomer.io import open_csv_file, create_csv_dict_writer, create_csv_writer, clear_directory
+from boomer.io import open_writable_csv_file, create_csv_dict_writer, create_csv_writer, clear_directory
 
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
@@ -252,7 +252,7 @@ class EvaluationCsvOutput(EvaluationOutput):
         header.insert(0, 'Approach')
         columns['Approach'] = experiment_name
 
-        with open_csv_file(self.output_dir, 'evaluation', fold, append=True) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'evaluation', fold, append=True) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -264,7 +264,7 @@ class EvaluationCsvOutput(EvaluationOutput):
             header = ['Ground Truth L' + str(i + 1) for i in range(num_labels)]
             header.extend(['Prediction L' + str(i + 1) for i in range(num_labels)])
 
-            with open_csv_file(self.output_dir, 'predictions_' + experiment_name, fold) as csv_file:
+            with open_writable_csv_file(self.output_dir, 'predictions_' + experiment_name, fold) as csv_file:
                 csv_writer = create_csv_writer(csv_file)
                 csv_writer.writerow(header)
 

@@ -12,7 +12,7 @@ from abc import abstractmethod
 from sklearn.model_selection import KFold
 
 from boomer.experiments import CrossValidation
-from boomer.io import open_csv_file, create_csv_dict_writer, clear_directory
+from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory
 from boomer.learners import Randomized
 
 
@@ -149,7 +149,7 @@ class ParameterCsvOutput(ParameterOutput):
     def write_parameters(self, parameters: dict, score: float, total_folds: int, fold: int = None):
         header = parameters.keys()
 
-        with open_csv_file(self.output_dir, 'parameters', fold) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'parameters', fold) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(parameters)
 
