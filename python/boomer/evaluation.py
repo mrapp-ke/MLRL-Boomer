@@ -7,15 +7,13 @@ Provides classes for evaluating the predictions or rankings provided by a multi-
 measures. The evaluation results can be written to one or several outputs, i.e., to the console or to a file.
 """
 import logging as log
-import os
-import os.path as path
 from abc import ABC, abstractmethod
 from typing import List, Dict, Set
 
 import numpy as np
 import sklearn.metrics as metrics
 
-from boomer.io import open_csv_file, create_csv_dict_writer, create_csv_writer
+from boomer.io import open_csv_file, create_csv_dict_writer, create_csv_writer, clear_directory
 
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
@@ -277,26 +275,12 @@ class EvaluationCsvOutput(EvaluationOutput):
 
     def __clear_dir_if_necessary(self):
         """
-        Clears the output dir, if necessary.
+        Clears the output directory, if necessary.
         """
 
         if self.clear_dir:
-            EvaluationCsvOutput.__clear_dir(self.output_dir)
+            clear_directory(self.output_dir)
             self.clear_dir = False
-
-    @staticmethod
-    def __clear_dir(directory: str):
-        """
-        Deletes all files contained in a directory (excluding subdirectories).
-
-        :param directory: The directory to be cleared
-        """
-
-        for file in os.listdir(directory):
-            file_path = path.join(directory, file)
-
-            if path.isfile(file_path):
-                os.unlink(file_path)
 
 
 class AbstractEvaluation(Evaluation):
