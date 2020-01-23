@@ -312,7 +312,7 @@ class AbstractEvaluation(Evaluation):
 
     def __init__(self, *args: Output):
         """
-        :param outputs:             The outputs the evaluation results should be written to
+        :param outputs: The outputs the evaluation results should be written to
         """
         self.outputs = args
 
