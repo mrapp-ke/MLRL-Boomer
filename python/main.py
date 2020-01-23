@@ -5,7 +5,7 @@ import logging as log
 
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
-from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, CsvOutput
+from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 
 
@@ -74,8 +74,9 @@ if __name__ == '__main__':
     learner = create_learner(args)
     learner.random_state = args.random_state
     learner.persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
-    evaluation = ClassificationEvaluation(EvaluationLogOutput(), CsvOutput(output_dir=args.output_dir,
-                                                                           output_predictions=args.store_predictions))
+    evaluation = ClassificationEvaluation(EvaluationLogOutput(),
+                                          EvaluationCsvOutput(output_dir=args.output_dir,
+                                                              output_predictions=args.store_predictions))
     experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                             current_fold=args.current_fold)
     experiment.run()
