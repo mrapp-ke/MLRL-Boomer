@@ -6,7 +6,6 @@
 Provides classes for evaluating the predictions or rankings provided by a multi-label learner according to different
 measures. The evaluation results can be written to one or several outputs, i.e., to the console or to a file.
 """
-import csv
 import logging as log
 import os
 import os.path as path
@@ -15,6 +14,8 @@ from typing import List, Dict, Set
 
 import numpy as np
 import sklearn.metrics as metrics
+
+from boomer.io import open_csv_file, create_csv_dict_writer, create_csv_writer
 
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
@@ -248,46 +249,31 @@ class CsvOutput(Output):
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
         self.__clear_dir_if_necessary()
-        file_name = 'evaluation_overall.csv' if fold is None else ('evaluation_fold_' + str(fold + 1) + '.csv')
-        output_file = path.join(self.output_dir, file_name)
-        write_mode = 'a' if path.isfile(output_file) else 'w'
+        columns = evaluation_result.avg_dict() if fold is None else evaluation_result.dict(fold)
+        header = sorted(columns.keys())
+        header.insert(0, 'Approach')
+        columns['Approach'] = experiment_name
 
-        with open(output_file, mode=write_mode) as csv_file:
-            columns = evaluation_result.avg_dict() if fold is None else evaluation_result.dict(fold)
-            header = sorted(columns.keys())
-            header.insert(0, 'Approach')
-            columns['Approach'] = experiment_name
-            writer = csv.DictWriter(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL,
-                                    fieldnames=header)
-
-            if write_mode == 'w':
-                writer.writeheader()
-
-            writer.writerow(columns)
+        with open_csv_file(self.output_dir, 'evaluation', fold, append=True) as csv_file:
+            csv_writer = create_csv_dict_writer(csv_file, header)
+            csv_writer.writerow(columns)
 
     def write_predictions(self, experiment_name: str, predictions, ground_truth, total_folds: int, fold: int = None):
         if self.output_predictions:
             self.__clear_dir_if_necessary()
+            num_examples = predictions.shape[0]
+            num_labels = predictions.shape[1]
+            header = ['Ground Truth L' + str(i + 1) for i in range(num_labels)]
+            header.extend(['Prediction L' + str(i + 1) for i in range(num_labels)])
 
-            if fold is None:
-                file_name = 'predictions_' + experiment_name + '.csv'
-            else:
-                file_name = 'predictions_' + experiment_name + '_fold_' + str(fold + 1) + '.csv'
-
-            output_file = path.join(self.output_dir, file_name)
-
-            with open(output_file, mode='w') as csv_file:
-                writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                num_examples = predictions.shape[0]
-                num_labels = predictions.shape[1]
-                header = ['Ground Truth L' + str(i + 1) for i in range(num_labels)]
-                header.extend(['Prediction L' + str(i + 1) for i in range(num_labels)])
-                writer.writerow(header)
+            with open_csv_file(self.output_dir, 'predictions_' + experiment_name, fold) as csv_file:
+                csv_writer = create_csv_writer(csv_file)
+                csv_writer.writerow(header)
 
                 for n in range(num_examples):
                     columns = [ground_truth[n, i] for i in range(num_labels)]
                     columns.extend([predictions[n, i] for i in range(num_labels)])
-                    writer.writerow(columns)
+                    csv_writer.writerow(columns)
 
     def __clear_dir_if_necessary(self):
         """
@@ -376,7 +362,7 @@ class AbstractEvaluation(Evaluation):
             for output in self.outputs:
                 output.write_evaluation_results(experiment_name, result, num_folds, current_fold)
 
-        if current_fold == last_fold and abs(last_fold - first_fold) > 0:
+        if num_folds == 1 or (current_fold == last_fold and abs(last_fold - first_fold) > 0):
             for output in self.outputs:
                 output.write_evaluation_results(experiment_name, result, num_folds)
 
