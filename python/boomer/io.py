@@ -5,6 +5,7 @@
 
 Provides functions for writing and reading files.
 """
+import os
 import os.path as path
 from csv import writer, DictWriter, QUOTE_MINIMAL
 
@@ -57,3 +58,16 @@ def create_csv_dict_writer(csv_file, header) -> DictWriter:
         csv_writer.writeheader()
 
     return csv_writer
+
+
+def clear_directory(directory: str):
+    """
+    Deletes all files contained in a directory (excluding subdirectories).
+
+    :param directory: The directory to be cleared
+    """
+    for file in os.listdir(directory):
+        file_path = path.join(directory, file)
+
+        if path.isfile(file_path):
+            os.unlink(file_path)
