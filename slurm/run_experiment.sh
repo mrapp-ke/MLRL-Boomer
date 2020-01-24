@@ -20,18 +20,19 @@ DATA_DIR="${ROOT_DIR}/data/"
 
 MEMORY=4096
 
-FILE="${DATASET}_${LOSS}_${HEAD_REFINEMENT}.sh"
+JOB_NAME="${DATASET}_${LOSS}_${HEAD_REFINEMENT}"
+FILE="${JOB_NAME}.sh"
 PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --output-dir ${WORK_DIR} --model-dir ${MODEL_DIR} --folds ${FOLDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${NUM_RULES} --shrinkage ${SHRINKAGE} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT}"
 
 echo "$FILE"
 echo "#!/bin/sh" >> "$FILE"
+echo "#SBATCH -J ${JOB_NAME}" >> "$FILE"
 echo "#SBATCH -D ${WORK_DIR}" >> "$FILE"
-echo "#SBATCH --mem=${MEMORY}" >> "$FILE"
-echo "#SBATCH --time=24:00:00" >> "$FILE"
+echo "#SBATCH -t 24:00:00" >> "$FILE"
 echo "#SBATCH -c 1" >> "$FILE"
-echo "#SBATCH -N 1-1" >> "$FILE"
 echo "#SBATCH -o logs/%J.out" >> "$FILE"
 echo "#SBATCH -e logs/%J.err" >> "$FILE"
+echo "#SBATCH --mem-per-cpu=${MEMORY}" >> "$FILE"
 echo "${ROOT_DIR}/venv/bin/python3.7 ${ROOT_DIR}/python/main.py ${PARAMETERS}" >> "$FILE"
 chmod +x "$FILE"
 mkdir -p "${WORK_DIR}/logs"
