@@ -13,10 +13,11 @@ NUM_RULES=5000
 SHRINKAGE=0.1
 
 # Paths
-ROOT_DIR="$(dirname "$PWD")"
-WORK_DIR="${ROOT_DIR}/results/${DATASET}/${LOSS}/${HEAD_REFINEMENT}/"
-MODEL_DIR="${ROOT_DIR}/models/${DATASET}/"
-DATA_DIR="${ROOT_DIR}/data/"
+ROOT_DIR="${PWD}"
+WORK_DIR="${ROOT_DIR}/results/${DATASET}/${LOSS}/${HEAD_REFINEMENT}"
+LOG_DIR="${WORK_DIR}/logs"
+MODEL_DIR="${ROOT_DIR}/models/${DATASET}"
+DATA_DIR="${ROOT_DIR}/data"
 
 MEMORY=4096
 
@@ -36,8 +37,14 @@ echo "#SBATCH --mem-per-cpu=${MEMORY}" >> "$FILE"
 echo "#SBATCH --ntasks=1" >> "$FILE"
 echo "${ROOT_DIR}/venv/bin/python3.7 ${ROOT_DIR}/python/main.py ${PARAMETERS}" >> "$FILE"
 chmod +x "$FILE"
-mkdir -p "${WORK_DIR}/logs"
+
+# Create directories
+echo "Creating directory ${LOG_DIR}"
+mkdir -p "${LOG_DIR}"
+echo "Creating directory ${MODEL_DIR}"
 mkdir -p "${MODEL_DIR}"
+
+# Run SLURM job
 sbatch "$FILE"
 rm "$FILE"
 echo "Started experiment with parameters ${PARAMETERS}"
