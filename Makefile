@@ -18,9 +18,9 @@ clean: clean_compile clean_venv
 venv:
 	@echo "Creating virtual Python environment..."
 	python3.7 -m venv venv
-	@echo "Installing compile-time dependency \"numpy\" into virtual enviroment..."
+	@echo "Installing compile-time dependency \"numpy\" into virtual environment..."
 	venv/bin/pip3.7 install numpy
-	@echo "Installing compile-time dependency \"Cython\" into virtual enviroment..."
+	@echo "Installing compile-time dependency \"Cython\" into virtual environment..."
 	venv/bin/pip3.7 install Cython
 
 compile: venv
