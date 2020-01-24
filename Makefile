@@ -20,6 +20,8 @@ venv:
 	python3.7 -m venv venv
 	@echo "Installing compile-time dependency \"numpy\" into virtual environment..."
 	venv/bin/pip3.7 install numpy
+	@echo "Installing compile-time dependency \"scipy\" into virtual environment..."
+	venv/bin/pip3.7 install scipy
 	@echo "Installing compile-time dependency \"Cython\" into virtual environment..."
 	venv/bin/pip3.7 install Cython
 
