@@ -5,12 +5,12 @@ import logging as log
 from typing import List
 
 import numpy as np
-import sklearn.metrics as metrics
 from sklearn.base import clone
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
+from boomer.measures import squared_error_loss
 from boomer.parameters import NestedCrossValidation, ParameterTuning, ParameterLogOutput, ParameterCsvOutput
 from main import configure_argument_parser, create_learner
 
@@ -47,10 +47,11 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
         train_x = np.asfortranarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)
         test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
-        test_y = self._ensure_input_format(test_y)
+        test_y = np.where(self._ensure_input_format(test_y))
 
         for g in range(num_parameters):
-            log.info('Testing parameter setting %s / %s:', (g + 1), num_parameters)
+            log.info('Testing parameter setting %s / %s (Fold %s / %s):', (g + 1), num_parameters, (current_fold + 1),
+                     num_folds)
 
             # Train classifier
             current_learner = clone(base_learner)
@@ -69,7 +70,7 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
                 rule.predict(test_x, predictions)
 
                 if j + 1 >= min_rules:
-                    score = metrics.hamming_loss(test_y, np.where(predictions > 0, 1, 0))
+                    score = squared_error_loss(test_y, predictions)
                     scores[g, j - min_rules + 1] += score
 
         if current_fold == num_folds - 1:
