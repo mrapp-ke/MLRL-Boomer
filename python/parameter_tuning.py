@@ -11,7 +11,7 @@ from skmultilearn.base import MLClassifierBase
 from boomer.algorithm.model import DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
-from boomer.measures import squared_error_loss
+from boomer.measures import squared_error_loss, logistic_loss
 from boomer.parameters import NestedCrossValidation, ParameterTuning, ParameterLogOutput, ParameterCsvOutput
 from main import configure_argument_parser, create_learner
 
@@ -30,6 +30,13 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
         self.best_params = None
         self.best_score = None
         self.require_dense = [True, True]  # We need a dense representation of the training data
+
+        if base_learner.loss == 'squared-error-loss':
+            self.target_measure = squared_error_loss
+        elif base_learner.loss == 'logistic-loss':
+            self.target_measure = logistic_loss
+        else:
+            raise ValueError('Unknown loss function used')
 
     def _test_parameters(self, train_x, train_y, test_x, test_y, current_outer_fold: int, num_outer_folds: int,
                          current_nested_fold: int, num_nested_folds: int):
@@ -73,7 +80,7 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
                 rule.predict(test_x, predictions)
 
                 if j + 1 >= min_rules:
-                    score = squared_error_loss(test_y, predictions)
+                    score = logistic_loss(test_y, predictions)
                     scores[g, j - min_rules + 1] += score
 
         if current_nested_fold == num_nested_folds - 1:
