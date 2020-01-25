@@ -24,7 +24,7 @@ MEMORY=4096
 
 JOB_NAME="${DATASET}_${LOSS}_${HEAD_REFINEMENT}"
 FILE="${JOB_NAME}.sh"
-PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} parameter-dir ${PARAM_DIR} --output-dir ${WORK_DIR} --model-dir ${MODEL_DIR} --folds ${FOLDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${NUM_RULES} --shrinkage ${SHRINKAGE} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT}"
+PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --parameter-dir ${PARAM_DIR} --output-dir ${WORK_DIR} --model-dir ${MODEL_DIR} --folds ${FOLDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${NUM_RULES} --shrinkage ${SHRINKAGE} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT}"
 
 echo "$FILE"
 echo "#!/bin/sh" >> "$FILE"
