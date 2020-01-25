@@ -29,11 +29,11 @@ mkdir -p "${LOG_DIR}"
 echo "Creating directory ${MODEL_DIR}"
 mkdir -p "${MODEL_DIR}"
 
-for CURRENT_FOLD in {1..$NESTED_FOLDS}
+for CURRENT_FOLD in $(seq 1 $FOLDS)
 do
   JOB_NAME="${DATASET}_${LOSS}_${HEAD_REFINEMENT}_parameter_tuning"
   FILE="${JOB_NAME}.sh"
-  PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --output-dir ${WORK_DIR} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${MAX_RULES} --min-rules ${MIN_RULES} --shrinkage-parameters ${SHRINKAGE_PARAMETERS} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT}"
+  PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --output-dir ${WORK_DIR} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --nested-folds ${NESTED_FOLDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${MAX_RULES} --min-rules ${MIN_RULES} --shrinkage-parameters ${SHRINKAGE_PARAMETERS} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT}"
 
   echo "$FILE"
   echo "#!/bin/sh" >> "$FILE"
