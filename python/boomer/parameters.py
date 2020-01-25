@@ -24,12 +24,14 @@ class ParameterSearch(Randomized, ABC):
     """
 
     @abstractmethod
-    def search(self, x, y):
+    def search(self, x, y, current_fold: int, num_folds: int):
         """
         Tests different parameter settings given a training data set.
 
-        :param x:   The feature matrix of the training examples
-        :param y:   The label matrix of the training examples
+        :param x:               The feature matrix of the training examples
+        :param y:               The label matrix of the training examples
+        :param current_fold:    The current fold starting at 0
+        :param num_folds:       The total number of cross validation folds
         """
         pass
 
@@ -57,20 +59,20 @@ class NestedCrossValidation(ParameterSearch):
 
     """
 
-    def __init__(self, num_folds: int):
+    def __init__(self, num_nested_folds: int):
         """
-        :param num_folds: The total number of folds to be used by the (nested) cross validation
+        :param num_nested_folds: The total number of folds to be used by the (nested) cross validation
         """
-        self.num_folds = num_folds
+        self.num_nested_folds = num_nested_folds
 
-    def search(self, x, y):
-        num_folds = self.num_folds
+    def search(self, x, y, current_fold: int, num_folds: int):
+        num_nested_folds = self.num_nested_folds
         random_state = self.random_state
         i = 0
-        k_fold = KFold(n_splits=num_folds, random_state=random_state, shuffle=True)
+        k_fold = KFold(n_splits=num_nested_folds, random_state=random_state, shuffle=True)
 
         for train, test in k_fold.split(x, y):
-            log.info('Nested fold %s / %s:', (i + 1), num_folds)
+            log.info('Nested fold %s / %s:', (i + 1), num_nested_folds)
 
             # Create training set for current fold
             train_x = x[train]
@@ -80,21 +82,25 @@ class NestedCrossValidation(ParameterSearch):
             test_x = x[test]
             test_y = y[test]
 
-            self._test_parameters(train_x, train_y, test_x, test_y, current_fold=i, num_folds=num_folds)
+            self._test_parameters(train_x, train_y, test_x, test_y, current_outer_fold=current_fold,
+                                  num_outer_folds=num_folds, current_nested_fold=i, num_nested_folds=num_nested_folds)
             i += 1
 
     @abstractmethod
-    def _test_parameters(self, train_x, train_y, test_x, test_y, current_fold: int, num_folds: int):
+    def _test_parameters(self, train_x, train_y, test_x, test_y, current_outer_fold: int, num_outer_folds: int,
+                         current_nested_fold: int, num_nested_folds: int):
         """
         Must be implemented by subclasses in order to test different parameter settings on a given training data set and
         evaluate them on a test data set.
 
-        :param train_x:         The feature matrix of the training examples
-        :param train_y:         The label matrix of the training examples
-        :param test_x:          The feature matrix of the test examples
-        :param test_y:          The label matrix of the test examples
-        :param current_fold:    The current fold starting at 0
-        :param num_folds:       The total number of cross validation folds
+        :param train_x:                The feature matrix of the training examples
+        :param train_y:                The label matrix of the training examples
+        :param test_x:                 The feature matrix of the test examples
+        :param test_y:                 The label matrix of the test examples
+        :param current_outer_fold:     The current (outer) fold starting at 0
+        :param num_outer_folds:        The total number of (outer) cross validation folds
+        :param current_nested_fold:    The current (nested) fold starting at 0
+        :param num_nested_folds:       The total number of (nested) cross validation folds
         """
         pass
 
@@ -216,7 +222,7 @@ class ParameterTuning(CrossValidation):
                             num_folds: int):
         parameter_search = self.parameter_search
         parameter_search.random_state = self.random_state
-        parameter_search.search(train_x, train_y)
+        parameter_search.search(train_x, train_y, current_fold=current_fold, num_folds=num_folds)
         parameters = parameter_search.get_params()
         score = parameter_search.get_score()
 
