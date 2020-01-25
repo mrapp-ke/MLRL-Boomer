@@ -9,6 +9,7 @@ from sklearn.base import clone
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import DTYPE_FLOAT32, DTYPE_FLOAT64
+from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.measures import squared_error_loss
 from boomer.parameters import NestedCrossValidation, ParameterTuning, ParameterLogOutput, ParameterCsvOutput
@@ -30,7 +31,8 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
         self.best_score = None
         self.require_dense = [True, True]  # We need a dense representation of the training data
 
-    def _test_parameters(self, train_x, train_y, test_x, test_y, current_fold: int, num_folds: int):
+    def _test_parameters(self, train_x, train_y, test_x, test_y, current_outer_fold: int, num_outer_folds: int,
+                         current_nested_fold: int, num_nested_folds: int):
         random_state = self.random_state
         base_learner = self.base_learner
         num_rules = base_learner.num_rules
@@ -38,7 +40,7 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
         parameters = self.parameters
         num_parameters = len(parameters)
 
-        if current_fold == 0:
+        if current_nested_fold == 0:
             scores = np.zeros((num_parameters, num_rules - min_rules + 1), dtype=float)
             self.scores = scores
         else:
@@ -47,17 +49,18 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
         train_x = np.asfortranarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)
         test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
-        test_y = np.where(self._ensure_input_format(test_y))
+        test_y = self._ensure_input_format(test_y)
 
         for g in range(num_parameters):
-            log.info('Testing parameter setting %s / %s (Fold %s / %s):', (g + 1), num_parameters, (current_fold + 1),
-                     num_folds)
+            log.info('Testing parameter setting %s / %s (Fold %s / %s):', (g + 1), num_parameters,
+                     (current_nested_fold + 1), num_nested_folds)
 
             # Train classifier
             current_learner = clone(base_learner)
+            current_learner.persistence = persistence
             current_learner.set_params(**{'shrinkage': parameters[g]})
             current_learner.random_state = random_state
-            current_learner.fold = current_fold
+            current_learner.fold = (current_outer_fold * num_nested_folds) + current_nested_fold
             current_learner.fit(train_x, train_y)
 
             # Evaluate classifier
@@ -73,8 +76,8 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
                     score = squared_error_loss(test_y, predictions)
                     scores[g, j - min_rules + 1] += score
 
-        if current_fold == num_folds - 1:
-            scores = np.divide(scores, self.num_folds)
+        if current_nested_fold == num_nested_folds - 1:
+            scores = np.divide(scores, self.num_nested_folds)
             row, col = np.divmod(scores.argmin(), scores.shape[1])
             best_shrinkage = self.parameters[row.item()]
             best_num_rules = col + self.min_rules
@@ -113,7 +116,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
+    persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
     learner = create_learner(args)
+    learner.persistence = persistence
+
     parameter_search = ShrinkageNumRulesParameterSearch(args.nested_folds, args.min_rules, args.shrinkage_parameters,
                                                         learner)
     parameter_tuning = ParameterTuning(args.data_dir, args.dataset, args.folds, args.current_fold, parameter_search,
