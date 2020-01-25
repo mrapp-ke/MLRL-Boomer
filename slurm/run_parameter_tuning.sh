@@ -45,7 +45,7 @@ do
   echo "#SBATCH -e logs/%J.log" >> "$FILE"
   echo "#SBATCH --mem-per-cpu=${MEMORY}" >> "$FILE"
   echo "#SBATCH --ntasks=1" >> "$FILE"
-  echo "${ROOT_DIR}/venv/bin/python3.7 ${ROOT_DIR}/python/main.py ${PARAMETERS}" >> "$FILE"
+  echo "${ROOT_DIR}/venv/bin/python3.7 ${ROOT_DIR}/python/parameter_tuning.py ${PARAMETERS}" >> "$FILE"
   chmod +x "$FILE"
 
   # Run SLURM job
