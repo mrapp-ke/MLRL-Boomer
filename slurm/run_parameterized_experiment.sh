@@ -14,7 +14,7 @@ SHRINKAGE=0.1
 
 # Paths
 ROOT_DIR="${PWD}"
-WORK_DIR="${ROOT_DIR}/results/${DATASET}/${LOSS}/${HEAD_REFINEMENT}"
+WORK_DIR="${ROOT_DIR}/results-parameterized/${DATASET}/${LOSS}/${HEAD_REFINEMENT}"
 LOG_DIR="${WORK_DIR}/logs"
 MODEL_DIR="${ROOT_DIR}/models/${DATASET}"
 DATA_DIR="${ROOT_DIR}/data"
