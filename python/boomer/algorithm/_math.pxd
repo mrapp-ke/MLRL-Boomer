@@ -159,7 +159,7 @@ cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] o
             return result
         else:
             # An error occurred...
-            raise ArithmeticError('DSYSV terminated with non-zero info code')
+            raise ArithmeticError('DSYSV terminated with non-zero info code: ' + str(info))
     finally:
         # Free the allocated memory...
         free(<void*>ipiv)
