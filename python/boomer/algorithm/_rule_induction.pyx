@@ -180,7 +180,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                 best_condition_r = __adjust_split(x, sorted_indices, r, previous_r, f,
                                                                   best_condition_leq, best_condition_threshold)
 
-                         # Find and evaluate the best head for the current refinement, if a condition that uses the >
+                        # Find and evaluate the best head for the current refinement, if a condition that uses the >
                         # operator is used...
                         current_head = head_refinement.find_head(head, label_indices, loss, 1)
 
