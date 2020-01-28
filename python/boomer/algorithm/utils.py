@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides function for printing rules.
+Provides commonly used utility functions.
 """
 import numpy as np
 from boomer.algorithm._model import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
