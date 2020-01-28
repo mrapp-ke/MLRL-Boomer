@@ -228,6 +228,9 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                 # Abort refinement process if rule covers a single example...
                 break
 
+    if head is None:
+        raise RuntimeError('Failed to find an useful condition for the new rule! Please remove any constants features from the training data')
+
     # Obtain the indices of all examples that are covered by the new rule, regardless of whether they are included in
     # the sub-sample or not...
     covered_example_indices = sorted_indices[:, 0]
