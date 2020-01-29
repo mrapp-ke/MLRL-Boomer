@@ -696,7 +696,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
             predicted_scores[c] = score
 
             # Calculate quality score...
-            score = (-sum_of_gradients * score) + ((score / 2) * sum_of_hessians * score)
+            score = (-sum_of_gradients * score) + (0.5 * pow(score, 2) * sum_of_hessians)
             quality_scores[c] = score
             overall_quality_score += score
 
