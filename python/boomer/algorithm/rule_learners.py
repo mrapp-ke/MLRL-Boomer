@@ -22,7 +22,7 @@ from sklearn.utils.validation import check_is_fitted
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
-from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
+from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
 from boomer.algorithm.stats import Stats
 from boomer.learners import MLLearner, BatchMLLearner
 
@@ -243,3 +243,26 @@ class Boomer(MLRuleLearner, BatchMLLearner):
         return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
                + '_instance-sub-sampling=' + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling \
                + '_pruning=' + pruning + '_shrinkage=' + shrinkage
+
+
+class SeparateAndConquerRuleLearner(MLRuleLearner, BatchMLLearner):
+    """
+    A scikit-multilearn implementation of an Separate-and-Conquer algorithm for learning multi-label
+    classification rules.
+    """
+
+    def __init__(self):
+        """
+        """
+        super().__init__(rule_induction=SeparateAndConquer())
+
+    def partial_fit(self, x: np.ndarray, y: np.ndarray) -> BatchMLLearner:
+        check_is_fitted(self)
+        self.theory_ = self._induce_rules(x, y, theory=self.theory_)
+        return self
+
+    def get_name(self) -> str:
+        return 'SeparateAndConquerRuleLearner'
+
+    def copy_classifier(self, **kwargs) -> 'BatchMLLearner':
+        return copy(self)

@@ -126,3 +126,24 @@ class GradientBoosting(RuleInduction):
             raise ValueError('Parameter \'shrinkage\' must be greater than 0, got {0}'.format(self.shrinkage))
         if self.shrinkage > 1:
             raise ValueError('Parameter \'shrinkage\' must be at maximum 1, got {0}'.format(self.shrinkage))
+
+
+class SeparateAndConquer(RuleInduction):
+    """
+    Implements the induction of (multi-label) classification rules using a separate and conquer algorithm.
+    """
+
+    def __init__(self):
+        """
+        """
+        pass
+
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
+        self.__validate()
+        raise NotImplementedError
+
+    def __validate(self):
+        """
+        Raises exceptions if the module is not configured properly.
+        """
+        pass
