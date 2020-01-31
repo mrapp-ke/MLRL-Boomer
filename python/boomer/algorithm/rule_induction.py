@@ -15,7 +15,7 @@ from boomer.algorithm._pruning import Pruning
 
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._shrinkage import Shrinkage
-from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
+from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.stopping_criteria import StoppingCriterion
@@ -49,12 +49,14 @@ class GradientBoosting(RuleInduction):
     Implements the induction of (multi-label) classification rules using gradient boosting.
     """
 
-    def __init__(self, head_refinement: HeadRefinement, loss: Loss, instance_sub_sampling: InstanceSubSampling,
-                 feature_sub_sampling: FeatureSubSampling, pruning: Pruning, shrinkage: Shrinkage,
-                 *stopping_criteria: StoppingCriterion):
+    def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
+                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
+                 shrinkage: Shrinkage, *stopping_criteria: StoppingCriterion):
         """
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param loss:                    The loss function to be minimized
+        :param label_sub_sampling:      The strategy that is used for sub-sampling the labels each time a new
+                                        classification rule is learned
         :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
                                         classification rule is learned
         :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
@@ -67,6 +69,7 @@ class GradientBoosting(RuleInduction):
         """
         self.head_refinement = head_refinement
         self.loss = loss
+        self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
@@ -79,6 +82,7 @@ class GradientBoosting(RuleInduction):
         random_state = self.random_state
         head_refinement = self.head_refinement
         loss = self.loss
+        label_sub_sampling = self.label_sub_sampling
         instance_sub_sampling = self.instance_sub_sampling
         feature_sub_sampling = self.feature_sub_sampling
         pruning = self.pruning
@@ -105,8 +109,8 @@ class GradientBoosting(RuleInduction):
             log.info('Learning rule %s...', len(theory) + 1)
 
             # Induce a new rule
-            rule = induce_rule(x, x_sorted_indices, head_refinement, loss, instance_sub_sampling, feature_sub_sampling,
-                               pruning, shrinkage, random_state)
+            rule = induce_rule(x, x_sorted_indices, y, head_refinement, loss, label_sub_sampling, instance_sub_sampling,
+                               feature_sub_sampling, pruning, shrinkage, random_state)
 
             # Add new rule to theory
             theory.append(rule)
