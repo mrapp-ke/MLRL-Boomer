@@ -14,16 +14,17 @@ import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import Loss, DecomposableLoss, SquaredErrorLoss, LogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
+from sklearn.utils.validation import check_is_fitted
+
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
-from sklearn.utils.validation import check_is_fitted
-
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
 from boomer.algorithm.stats import Stats
+from boomer.algorithm.stopping_criteria import SizeStoppingCriterion
 from boomer.learners import MLLearner
 
 
@@ -209,15 +210,15 @@ class Boomer(MLRuleLearner):
 
     def _create_rule_induction(self) -> RuleInduction:
         num_rules = int(self.num_rules)
+        stopping_criteria = [ SizeStoppingCriterion(num_rules)]
         loss = self.__create_loss()
         head_refinement = self.__create_head_refinement(loss)
         instance_sub_sampling = self.__create_instance_sub_sampling()
         feature_sub_sampling = self.__create_feature_sub_sampling()
         pruning = self.__create_pruning()
         shrinkage = self.__create_shrinkage()
-        return GradientBoosting(num_rules=num_rules, head_refinement=head_refinement, loss=loss,
-                                instance_sub_sampling=instance_sub_sampling, feature_sub_sampling=feature_sub_sampling,
-                                pruning=pruning, shrinkage=shrinkage)
+        return GradientBoosting(head_refinement, loss, instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
+                                *stopping_criteria)
 
     def __create_loss(self) -> Loss:
         loss = self.loss
