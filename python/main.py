@@ -35,7 +35,8 @@ def __current_fold_string(s):
 
 def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
-    p.add_argument('--output-dir', type=str, help='The path of the directory into which results should be written')
+    p.add_argument('--output-dir', type=__optional_string, default=None,
+                   help='The path of the directory into which results should be written')
     p.add_argument('--model-dir', type=__optional_string, default=None,
                    help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
@@ -74,14 +75,20 @@ if __name__ == '__main__':
     args = parser.parse_args()
     log.info('Configuration: %s', args)
 
+    model_persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
+    parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
+    evaluation_outputs = [EvaluationLogOutput()]
+
+    if args.output_dir is not None:
+        evaluation_outputs.append(EvaluationCsvOutput(output_dir=args.output_dir,
+                                                      output_predictions=args.store_predictions,
+                                                      clear_dir=args.current_fold == -1))
+
     learner = create_learner(args)
     learner.random_state = args.random_state
-    learner.persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
-    parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
-    evaluation = ClassificationEvaluation(EvaluationLogOutput(),
-                                          EvaluationCsvOutput(output_dir=args.output_dir,
-                                                              output_predictions=args.store_predictions,
-                                                              clear_dir=args.current_fold == -1))
+    learner.persistence = model_persistence
+    parameter_input = parameter_input
+    evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
     experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                             current_fold=args.current_fold, parameter_input=parameter_input)
     experiment.run()

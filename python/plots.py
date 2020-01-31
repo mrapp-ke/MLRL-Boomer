@@ -129,10 +129,14 @@ class Plotter(CrossValidation, MLClassifierBase):
                 plt.plot(x, y, label=(measure + ' (' + prefix + ')'))
 
             plt.legend()
-            file_name = self.learner_name + '.pdf'
-            output_file = path.join(self.output_dir, file_name)
-            log.info('Saving plot to file \'' + output_file + '\'...')
-            plt.savefig(output_file)
+
+            if self.output_dir is not None:
+                file_name = self.learner_name + '.pdf'
+                output_file = path.join(self.output_dir, file_name)
+                log.info('Saving plot to file \'' + output_file + '\'...')
+                plt.savefig(output_file)
+            else:
+                plt.show()
 
     def fit(self, x, y):
         pass

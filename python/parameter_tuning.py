@@ -124,13 +124,18 @@ if __name__ == '__main__':
     log.info('Configuration: %s', args)
 
     persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
+    parameter_outputs = [ParameterLogOutput()]
+
+    if args.output_dir is not None:
+        parameter_outputs.append(ParameterCsvOutput(output_dir=args.output_dir,
+                                                    clear_dir=args.current_fold == -1))
+
     learner = create_learner(args)
     learner.persistence = persistence
 
     parameter_search = ShrinkageNumRulesParameterSearch(args.nested_folds, args.min_rules, args.shrinkage_parameters,
                                                         learner)
     parameter_tuning = ParameterTuning(args.data_dir, args.dataset, args.folds, args.current_fold, parameter_search,
-                                       ParameterLogOutput(), ParameterCsvOutput(output_dir=args.output_dir,
-                                                                                clear_dir=args.current_fold == -1))
+                                       *parameter_outputs)
     parameter_tuning.random_state = args.random_state
     parameter_tuning.run()
