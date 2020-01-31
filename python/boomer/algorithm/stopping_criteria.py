@@ -8,6 +8,7 @@ added to a theory or not.
 """
 from abc import abstractmethod, ABC
 from boomer.algorithm.model import Theory
+from timeit import default_timer as timer
 
 
 class StoppingCriterion(ABC):
@@ -27,7 +28,7 @@ class StoppingCriterion(ABC):
         pass
 
 
-class SizeStoppingCriterion:
+class SizeStoppingCriterion(StoppingCriterion):
     """
     A stopping criterion that ensures that the number of rules in a theory does not exceed a certain maximum.
     """
@@ -40,3 +41,27 @@ class SizeStoppingCriterion:
 
     def should_continue(self, theory: Theory) -> bool:
         return len(theory) < self.num_rules
+
+
+class TimeStoppingCriterion(StoppingCriterion):
+    """
+    A stopping criterion that ensures that a time limit is not exceeded.
+    """
+
+    def __init__(self, time_limit: int):
+        """
+        :param time_limit: The time limit in seconds
+        """
+        self.time_limit = time_limit
+
+    def should_continue(self, theory: Theory) -> bool:
+        start_time = self.start_time
+
+        if start_time is None:
+            start_time = timer()
+            self.start_time = start_time
+            return True
+        else:
+            current_time = timer()
+            run_time = current_time - start_time
+            return run_time < self.time_limit
