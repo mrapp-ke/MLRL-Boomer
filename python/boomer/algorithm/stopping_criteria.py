@@ -33,6 +33,9 @@ class SizeStoppingCriterion:
     """
 
     def __init__(self, num_rules: int):
+        """
+        :param num_rules: The maximum number of rules
+        """
         self.num_rules = num_rules
 
     def should_continue(self, theory: Theory) -> bool:
