@@ -12,7 +12,7 @@ from boomer.algorithm._arrays cimport intp, uint8, uint32, float32, float64, mat
 from boomer.algorithm._model cimport Rule, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss, Prediction
-from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
+from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.algorithm._pruning cimport Pruning
 from boomer.algorithm._shrinkage cimport Shrinkage
 from boomer.algorithm._utils cimport s_condition, make_condition, test_condition, get_index, get_weight
@@ -41,7 +41,8 @@ cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
     return rule
 
 
-cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRefinement head_refinement, Loss loss,
+cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, uint8[::1, :] y,
+                       HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                        InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                        Pruning pruning, Shrinkage shrinkage, random_state: int):
     """
@@ -52,8 +53,12 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                     features of the training examples
     :param x_sorted_indices:        An array of dtype int, shape `(num_examples, num_features)`, representing the
                                     indices of the training examples when sorting column-wise
+    :param y:                       An array of dtype int, shape `(num_examples, num_labels)`, representing the labels 
+                                    of the training examples
     :param head_refinement:         The strategy that is used to find the heads of rules
     :param loss:                    The loss function to be minimized
+    :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label 
+                                    sub-sampling should be used
     :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if no
                                     instance sub-sampling should be used
     :param feature_sub_sampling:    The strategy that should be used to sub-sample the available features or None, if no
@@ -72,6 +77,14 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         weights = None
     else:
         weights = instance_sub_sampling.sub_sample(x, loss, random_state)
+
+    # Sub-sample labels, if necessary...
+    cdef intp[::1] label_indices
+
+    if label_sub_sampling is None:
+        label_indices = None
+    else:
+        label_indices = label_sub_sampling.sub_sample(y, random_state)
 
     # The head of the induced rule
     cdef HeadCandidate head = None
@@ -94,7 +107,6 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     cdef float32 best_condition_threshold
 
     # Variables for specifying the examples and labels that should be used for finding the best refinement
-    cdef intp[::1] label_indices = None
     cdef intp[::1, :] sorted_indices = x_sorted_indices
     cdef intp num_examples
 

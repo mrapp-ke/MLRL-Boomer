@@ -19,6 +19,7 @@ from sklearn.utils.validation import check_is_fitted
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
+from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
@@ -177,8 +178,8 @@ class Boomer(MLRuleLearner):
     """
 
     def __init__(self, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = 'squared-error-loss', instance_sub_sampling: str = None, feature_sub_sampling: str = None,
-                 pruning: str = None, shrinkage: float = 1.0):
+                 loss: str = 'squared-error-loss', label_sub_sampling: int = -1, instance_sub_sampling: str = None,
+                 feature_sub_sampling: str = None, pruning: str = None, shrinkage: float = 1.0):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
         :param time_limit:              The duration in seconds after which the induction of rules should be canceled
@@ -186,6 +187,9 @@ class Boomer(MLRuleLearner):
                                         `full` or None, if the default strategy should be used
         :param loss:                    The loss function to be minimized. Must be `squared-error-loss` or
                                         `logistic-loss`
+        :param label_sub_sampling:      The number of samples to be used for sub-sampling the labels each time a new
+                                        classification rule is learned. Must be at least 1 or -1, if no sub-sampling
+                                        should be used
         :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
                                         classification rule is learned. Must be `bagging`, `random-instance-selection`
                                         or None, if no sub-sampling should be used
@@ -202,6 +206,7 @@ class Boomer(MLRuleLearner):
         self.time_limit = time_limit
         self.head_refinement = head_refinement
         self.loss = loss
+        self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
@@ -229,12 +234,13 @@ class Boomer(MLRuleLearner):
 
         loss = self.__create_loss()
         head_refinement = self.__create_head_refinement(loss)
+        label_sub_sampling = self.__create_label_sub_sampling()
         instance_sub_sampling = self.__create_instance_sub_sampling()
         feature_sub_sampling = self.__create_feature_sub_sampling()
         pruning = self.__create_pruning()
         shrinkage = self.__create_shrinkage()
-        return GradientBoosting(head_refinement, loss, instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
-                                *stopping_criteria)
+        return GradientBoosting(head_refinement, loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                pruning, shrinkage, *stopping_criteria)
 
     def __create_loss(self) -> Loss:
         loss = self.loss
@@ -255,6 +261,15 @@ class Boomer(MLRuleLearner):
         elif head_refinement == 'full':
             return FullHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
+
+    def __create_label_sub_sampling(self) -> LabelSubSampling:
+        label_sub_sampling = int(self.label_sub_sampling)
+
+        if label_sub_sampling == -1:
+            return None
+        elif label_sub_sampling > 0:
+            return RandomLabelSubsetSelection(label_sub_sampling)
+        raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
     def __create_instance_sub_sampling(self) -> InstanceSubSampling:
         instance_sub_sampling = self.instance_sub_sampling
@@ -299,13 +314,15 @@ class Boomer(MLRuleLearner):
         time_limit = str(self.time_limit)
         head_refinement = str(self.head_refinement)
         loss = str(self.loss)
+        label_sub_sampling = str(self.label_sub_sampling)
         instance_sub_sampling = str(self.instance_sub_sampling)
         feature_sub_sampling = str(self.feature_sub_sampling)
         pruning = str(self.pruning)
         shrinkage = str(self.shrinkage)
         return 'num-rules=' + num_rules + '_time-limit=' + time_limit + '_head-refinement=' + head_refinement \
-               + '_loss=' + loss + '_instance-sub-sampling=' + instance_sub_sampling + '_feature-sub-sampling=' \
-               + feature_sub_sampling + '_pruning=' + pruning + '_shrinkage=' + shrinkage
+               + '_loss=' + loss + '_label-sub-sampling=' + label_sub_sampling + '_instance-sub-sampling=' \
+               + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling + '_pruning=' + pruning \
+               + '_shrinkage=' + shrinkage
 
     def get_params(self, deep=True):
         return {
@@ -313,6 +330,7 @@ class Boomer(MLRuleLearner):
             'time_limit': self.time_limit,
             'head_refinement': self.head_refinement,
             'loss': self.loss,
+            'label_sub_sampling': self.label_sub_sampling,
             'instance_sub_sampling': self.instance_sub_sampling,
             'feature_sub_sampling': self.feature_sub_sampling,
             'pruning': self.pruning,
