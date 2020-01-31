@@ -24,7 +24,7 @@ cdef class InstanceSubSampling:
 
     cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state):
         """
-        Creates a sub-sample of the available training examples.
+        Creates and returns a sub-sample of the available training examples.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
@@ -135,7 +135,7 @@ cdef class FeatureSubSampling:
 
     cdef intp[::1] sub_sample(self, float32[::1, :] x, int random_state):
         """
-        Creates a sub-sample of the available features.
+        Creates and returns a sub-sample of the available features.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
