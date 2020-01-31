@@ -24,7 +24,7 @@ from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
 from boomer.algorithm.stats import Stats
-from boomer.algorithm.stopping_criteria import SizeStoppingCriterion
+from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.learners import MLLearner
 
 
@@ -176,11 +176,12 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, num_rules: int = 500, head_refinement: str = None, loss: str = 'squared-error-loss',
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
-                 shrinkage: float = 1.0):
+    def __init__(self, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
+                 loss: str = 'squared-error-loss', instance_sub_sampling: str = None, feature_sub_sampling: str = None,
+                 pruning: str = None, shrinkage: float = 1.0):
         """
         :param num_rules:               The number of rules to be induced (including the default rule)
+        :param time_limit:              The duration in seconds after which the induction of rules should be canceled
         :param head_refinement:         The strategy that is used to find the heads of rules. Must be `single-label`,
                                         `full` or None, if the default strategy should be used
         :param loss:                    The loss function to be minimized. Must be `squared-error-loss` or
@@ -198,6 +199,7 @@ class Boomer(MLRuleLearner):
         """
         super().__init__()
         self.num_rules = num_rules
+        self.time_limit = time_limit
         self.head_refinement = head_refinement
         self.loss = loss
         self.instance_sub_sampling = instance_sub_sampling
@@ -210,7 +212,21 @@ class Boomer(MLRuleLearner):
 
     def _create_rule_induction(self) -> RuleInduction:
         num_rules = int(self.num_rules)
-        stopping_criteria = [ SizeStoppingCriterion(num_rules)]
+        time_limit = int(self.time_limit)
+        stopping_criteria = []
+
+        if num_rules != -1:
+            if num_rules > 0:
+                stopping_criteria.append(SizeStoppingCriterion(num_rules))
+            else:
+                raise ValueError('Invalid value given for parameter \'num_rules\': ' + str(num_rules))
+
+        if time_limit != -1:
+            if time_limit > 0:
+                stopping_criteria.append(TimeStoppingCriterion(time_limit))
+            else:
+                raise ValueError('Invalid value given for parameter \'time_limit\': ' + str(time_limit))
+
         loss = self.__create_loss()
         head_refinement = self.__create_head_refinement(loss)
         instance_sub_sampling = self.__create_instance_sub_sampling()
@@ -280,19 +296,21 @@ class Boomer(MLRuleLearner):
 
     def get_name(self) -> str:
         num_rules = str(self.num_rules)
+        time_limit = str(self.time_limit)
         head_refinement = str(self.head_refinement)
         loss = str(self.loss)
         instance_sub_sampling = str(self.instance_sub_sampling)
         feature_sub_sampling = str(self.feature_sub_sampling)
         pruning = str(self.pruning)
         shrinkage = str(self.shrinkage)
-        return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
-               + '_instance-sub-sampling=' + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling \
-               + '_pruning=' + pruning + '_shrinkage=' + shrinkage
+        return 'num-rules=' + num_rules + '_time-limit=' + time_limit + '_head-refinement=' + head_refinement \
+               + '_loss=' + loss + '_instance-sub-sampling=' + instance_sub_sampling + '_feature-sub-sampling=' \
+               + feature_sub_sampling + '_pruning=' + pruning + '_shrinkage=' + shrinkage
 
     def get_params(self, deep=True):
         return {
             'num_rules': self.num_rules,
+            'time_limit': self.time_limit,
             'head_refinement': self.head_refinement,
             'loss': self.loss,
             'instance_sub_sampling': self.instance_sub_sampling,

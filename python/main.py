@@ -44,6 +44,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--current-fold', type=__current_fold_string, default=-1,
                    help='The cross validation fold to be performed')
     p.add_argument('--num-rules', type=int, default=500, help='The number of rules to be induced')
+    p.add_argument('--time-limit', type=int, default=-1,
+                   help='The duration in seconds after which the induction of rules should be canceled')
     p.add_argument('--instance-sub-sampling', type=__optional_string, default=None,
                    help='The name of the strategy to be used for instance sub-sampling or None')
     p.add_argument('--feature-sub-sampling', type=__optional_string, default=None,
@@ -57,7 +59,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 
 
 def create_learner(params) -> Boomer:
-    return Boomer(num_rules=params.num_rules, loss=params.loss, pruning=params.pruning,
+    return Boomer(num_rules=params.num_rules, time_limit=params.time_limit, loss=params.loss, pruning=params.pruning,
                   instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
                   feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement)
 
