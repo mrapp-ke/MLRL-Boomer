@@ -55,6 +55,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--pruning', type=__optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
     p.add_argument('--loss', type=str, default='squared-error-loss', help='The name of the loss function to be used')
+    p.add_argument('--l2-regularization-weight', type=float, default=0,
+                   help='The weight of the L2 regularization to be used')
     p.add_argument('--head-refinement', type=__optional_string, default=None,
                    help='The name of the strategy to be used for finding the heads of rules')
     p.add_argument('--shrinkage', type=float, default=1.0, help='The shrinkage parameter to be used')
@@ -64,7 +66,7 @@ def create_learner(params) -> Boomer:
     return Boomer(num_rules=params.num_rules, time_limit=params.time_limit, loss=params.loss, pruning=params.pruning,
                   label_sub_sampling=params.label_sub_sampling, instance_sub_sampling=params.instance_sub_sampling,
                   shrinkage=params.shrinkage, feature_sub_sampling=params.feature_sub_sampling,
-                  head_refinement=params.head_refinement)
+                  head_refinement=params.head_refinement, l2_regularization_weight=params.l2_regularization_weight)
 
 
 if __name__ == '__main__':

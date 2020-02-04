@@ -179,27 +179,31 @@ class Boomer(MLRuleLearner):
 
     def __init__(self, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  loss: str = 'squared-error-loss', label_sub_sampling: int = -1, instance_sub_sampling: str = None,
-                 feature_sub_sampling: str = None, pruning: str = None, shrinkage: float = 1.0):
+                 feature_sub_sampling: str = None, pruning: str = None, shrinkage: float = 1.0,
+                 l2_regularization_weight: float = 0.0):
         """
-        :param num_rules:               The number of rules to be induced (including the default rule)
-        :param time_limit:              The duration in seconds after which the induction of rules should be canceled
-        :param head_refinement:         The strategy that is used to find the heads of rules. Must be `single-label`,
-                                        `full` or None, if the default strategy should be used
-        :param loss:                    The loss function to be minimized. Must be `squared-error-loss` or
-                                        `logistic-loss`
-        :param label_sub_sampling:      The number of samples to be used for sub-sampling the labels each time a new
-                                        classification rule is learned. Must be at least 1 or -1, if no sub-sampling
-                                        should be used
-        :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
-                                        classification rule is learned. Must be `bagging`, `random-instance-selection`
-                                        or None, if no sub-sampling should be used
-        :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
-                                        classification rule is refined. Must be `random-feature-selection` or None, if
-                                        no sub-sampling should be used
-        :param pruning:                 The strategy that is used for pruning rules. Must be `irep` or None, if no
-                                        pruning should be used
-        :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
-                                        induced rules to reduce their effect on the entire model. Must be in (0, 1]
+        :param num_rules:                   The number of rules to be induced (including the default rule)
+        :param time_limit:                  The duration in seconds after which the induction of rules should be
+                                            canceled
+        :param head_refinement:             The strategy that is used to find the heads of rules. Must be
+                                            `single-label`, `full` or None, if the default strategy should be used
+        :param loss:                        The loss function to be minimized. Must be `squared-error-loss` or
+                                            `logistic-loss`
+        :param label_sub_sampling:          The number of samples to be used for sub-sampling the labels each time a new
+                                            classification rule is learned. Must be at least 1 or -1, if no sub-sampling
+                                            should be used
+        :param instance_sub_sampling:       The strategy that is used for sub-sampling the training examples each time a
+                                            new classification rule is learned. Must be `bagging`,
+                                            `random-instance-selection` or None, if no sub-sampling should be used
+        :param feature_sub_sampling:        The strategy that is used for sub-sampling the features each time a
+                                            classification rule is refined. Must be `random-feature-selection` or None,
+                                            if no sub-sampling should be used
+        :param pruning:                     The strategy that is used for pruning rules. Must be `irep` or None, if no
+                                            pruning should be used
+        :param shrinkage:                   The shrinkage parameter that should be applied to the predictions of newly
+                                            induced rules to reduce their effect on the entire model. Must be in (0, 1]
+        :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
+                                            scores that are predicted by rules. Must be at least 0
         """
         super().__init__()
         self.num_rules = num_rules
@@ -211,6 +215,7 @@ class Boomer(MLRuleLearner):
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
         self.shrinkage = shrinkage
+        self.l2_regularization_weight = l2_regularization_weight
 
     def _create_prediction(self) -> Prediction:
         return Sign(LinearCombination())
@@ -232,7 +237,13 @@ class Boomer(MLRuleLearner):
             else:
                 raise ValueError('Invalid value given for parameter \'time_limit\': ' + str(time_limit))
 
-        loss = self.__create_loss()
+        l2_regularization_weight = float(self.l2_regularization_weight)
+
+        if l2_regularization_weight < 0:
+            raise ValueError(
+                'Invalid value given for parameter \'l2_regularization_weight\': ' + str(l2_regularization_weight))
+
+        loss = self.__create_loss(l2_regularization_weight)
         head_refinement = self.__create_head_refinement(loss)
         label_sub_sampling = self.__create_label_sub_sampling()
         instance_sub_sampling = self.__create_instance_sub_sampling()
@@ -242,13 +253,13 @@ class Boomer(MLRuleLearner):
         return GradientBoosting(head_refinement, loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                 pruning, shrinkage, *stopping_criteria)
 
-    def __create_loss(self) -> Loss:
+    def __create_loss(self, l2_regularization_weight: float) -> Loss:
         loss = self.loss
 
         if loss == 'squared-error-loss':
-            return SquaredErrorLoss()
+            return SquaredErrorLoss(l2_regularization_weight)
         elif loss == 'logistic-loss':
-            return LogisticLoss()
+            return LogisticLoss(l2_regularization_weight)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
@@ -319,10 +330,11 @@ class Boomer(MLRuleLearner):
         feature_sub_sampling = str(self.feature_sub_sampling)
         pruning = str(self.pruning)
         shrinkage = str(self.shrinkage)
+        l2_regularization_weight = str(self.l2_regularization_weight)
         return 'num-rules=' + num_rules + '_time-limit=' + time_limit + '_head-refinement=' + head_refinement \
                + '_loss=' + loss + '_label-sub-sampling=' + label_sub_sampling + '_instance-sub-sampling=' \
                + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling + '_pruning=' + pruning \
-               + '_shrinkage=' + shrinkage
+               + '_shrinkage=' + shrinkage + '_l2_regularization_weight=' + l2_regularization_weight
 
     def get_params(self, deep=True):
         return {
@@ -334,7 +346,8 @@ class Boomer(MLRuleLearner):
             'instance_sub_sampling': self.instance_sub_sampling,
             'feature_sub_sampling': self.feature_sub_sampling,
             'pruning': self.pruning,
-            'shrinkage': self.shrinkage
+            'shrinkage': self.shrinkage,
+            'l2_regularization_weight': self.l2_regularization_weight
         }
 
     def set_params(self, **parameters):

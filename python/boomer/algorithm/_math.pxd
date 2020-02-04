@@ -12,6 +12,7 @@ from boomer.algorithm._arrays cimport intp, float64, array_float64, matrix_float
 from scipy.linalg.cython_lapack cimport dsysv
 from scipy.linalg.cython_blas cimport dspmv, ddot
 from libc.stdlib cimport malloc, free
+from libc.math cimport pow
 
 
 cdef inline divide_or_zero_float64(float64 a, float64 b):
@@ -30,12 +31,33 @@ cdef inline divide_or_zero_float64(float64 a, float64 b):
 
 cdef inline intp triangular_number(intp n):
     """
-    Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
+    Computes and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
 
     :param n:   A scalar of dtype `intp`, representing the order of the triangular number
     :return:    A scalar of dtype `intp`, representing the n-th triangular number
     """
     return (n * (n + 1)) // 2
+
+
+cdef inline l2_norm_pow(float64[::1] a):
+    """
+    Computes and returns the square of the L2 norm of a specific vector, i.e. the sum of the squares of its elements. To 
+    obtain the actual L2 norm, the square-root of the result provided by this function must be computed.
+    
+    :param a:   An array of dtype `float64`, shape (n), representing a vector
+    :return:    A scalar of dtype `float64`, representing the square of the L2 of the given vector
+    """
+    cdef float64 result = 0
+    cdef intp n = a.shape[0]
+    cdef float64 tmp
+    cdef intp i
+
+    for i in range(n):
+        tmp = a[i]
+        tmp = pow(tmp, 2)
+        result += tmp
+
+    return result
 
 
 cdef inline float64 ddot_float64(float64[::1] x, float64[::1] y):
@@ -90,7 +112,8 @@ cdef inline float64[::1] dspmv_float64(float64[::1] a, float64[::1] x):
     return y
 
 
-cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] ordinates):
+cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] ordinates,
+                                       float64 l2_regularization_weight):
     """
     Computes and returns the solution to a system of linear equations A * X = B using LAPACK's DSYSV solver (see
     http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve_ga9995c47692c9885ed5d6a6b431686f41.html).
@@ -103,17 +126,22 @@ cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] o
 
     Furthermore, DSYSV assumes the matrix of coefficients A to be symmetrical, i.e., it will only use the upper-right
     triangle of A, whereas the remaining elements are ignored. For reasons of space efficiency, this function expects
-    the coefficients to be given as an array with shape `(num_equations * (num_equations + 1)) // 2`, representing the
+    the coefficients to be given as an array with shape `num_equations * (num_equations + 1) // 2`, representing the
     elements of the upper-right triangle of A, where the columns are appended to each other and unspecified elements are
     omitted. This function will implicitly convert the given array into a matrix that is suited for DSYSV.
+    
+    Optionally, this function allows to specify a weight to be used for L2 regularization. The given weight is added to 
+    each element on the diagonal of the matrix of coefficients A.
 
-    :param coefficients:    An array of dtype `float64`, shape `(num_equations * (num_equations + 1)) // 2)`,
-                            representing coefficients
-    :param ordinates:       An array of dtype `float64`, shape `(num_equations)`, representing the ordinates
-    :return:                An array of dtype `float64`, shape `(num_equations)`, representing the solution to the
-                            system of linear equations
+    :param coefficients:                An array of dtype `float64`, shape `num_equations * (num_equations + 1) // 2)`,
+                                        representing coefficients
+    :param ordinates:                   An array of dtype `float64`, shape `(num_equations)`, representing the ordinates
+    :param l2_regularization_weight:    A scalar of dtype `float64`, representing the weight of the L2 regularization
+    :return:                            An array of dtype `float64`, shape `(num_equations)`, representing the solution 
+                                        to the system of linear equations
     """
     cdef float64[::1] result
+    cdef float64 tmp
     cdef intp r, c, i
     # The number of linear equations
     cdef int n = ordinates.shape[0]
@@ -123,7 +151,12 @@ cdef inline float64[::1] dsysv_float64(float64[::1] coefficients, float64[::1] o
 
     for c in range(n):
         for r in range(c + 1):
-            a[r, c] = coefficients[i]
+            tmp = coefficients[i]
+
+            if r == c:
+                tmp += l2_regularization_weight
+
+            a[r, c] = tmp
             i += 1
 
     # Create the array B by copying the array `ordinates`. It will be overwritten with the solution to the system of
