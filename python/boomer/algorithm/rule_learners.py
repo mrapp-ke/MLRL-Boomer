@@ -318,8 +318,8 @@ class Boomer(MLRuleLearner):
                 return RandomLabelSubsetSelection(label_sub_sampling)
             else:
                 raise ValueError('Value given for parameter \'label_sub_sampling\' (' + str(label_sub_sampling)
-                                 + ') exceeds number of labels in the training data set (' + str(stats.num_labels)
-                                 + ')')
+                                 + ') must be less that the number of labels in the training data set ('
+                                 + str(stats.num_labels) + ')')
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
     def __create_instance_sub_sampling(self) -> InstanceSubSampling:
