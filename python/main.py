@@ -10,10 +10,29 @@ from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
 
 
+def __log_level(s):
+    s = s.lower()
+    if s == 'debug':
+        return log.DEBUG
+    elif s == 'info':
+        return log.INFO
+    elif s == 'warn' or s == 'warning':
+        return log.WARN
+    elif s == 'error':
+        return log.ERROR
+    elif s == 'critical' or s == 'fatal':
+        return log.CRITICAL
+    elif s == 'notset':
+        return log.NOTSET
+    raise ValueError('Invalid argument given for parameter \'--log-level\': ' + str(s))
+
+
 def __boolean_string(s):
-    if s.lower() == 'false':
+    s = s.lower()
+
+    if s == 'false':
         return False
-    if s.lower() == 'true':
+    if s == 'true':
         return True
     raise ValueError('Invalid boolean argument given: ' + str(s))
 
@@ -34,6 +53,7 @@ def __current_fold_string(s):
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
+    p.add_argument('--log-level', type=__log_level, default='info', help='The log level to be used')
     p.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
     p.add_argument('--output-dir', type=__optional_string, default=None,
                    help='The path of the directory into which results should be written')
@@ -70,8 +90,6 @@ def create_learner(params) -> Boomer:
 
 
 if __name__ == '__main__':
-    log.basicConfig(level=log.INFO)
-
     parser = argparse.ArgumentParser(description='An multi-label classification experiment using BOOMER')
     configure_argument_parser(parser)
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
@@ -80,6 +98,7 @@ if __name__ == '__main__':
     parser.add_argument('--parameter-dir', type=__optional_string, default=None,
                         help='The path of the directory, parameter settings should be loaded from')
     args = parser.parse_args()
+    log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
     model_persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
