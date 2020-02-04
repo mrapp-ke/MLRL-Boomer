@@ -53,6 +53,7 @@ class TimeStoppingCriterion(StoppingCriterion):
         :param time_limit: The time limit in seconds
         """
         self.time_limit = time_limit
+        self.start_time = None
 
     def should_continue(self, theory: Theory) -> bool:
         start_time = self.start_time
