@@ -8,6 +8,7 @@ classification rules. The classifier is composed of several modules, e.g., for r
 """
 import logging as log
 from abc import abstractmethod
+from os.path import isdir
 from timeit import default_timer as timer
 
 import numpy as np
@@ -49,10 +50,12 @@ class MLRuleLearner(MLLearner):
 
     theory_: Theory
 
-    persistence: ModelPersistence = None
-
-    def __init__(self):
+    def __init__(self, model_dir: str):
+        """
+        :param model_dir: The path of the directory where models should be stored / loaded from
+        """
         super().__init__()
+        self.model_dir = model_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
 
     @abstractmethod
@@ -73,17 +76,32 @@ class MLRuleLearner(MLLearner):
         """
         pass
 
-    def __load_rules(self):
+    def __create_persistence(self) -> ModelPersistence:
+        """
+        Creates and returns the [ModelPersistence] that is used to store / load models.
+
+        :return: The [ModelPersistence] that has been created
+        """
+        model_dir = str(self.model_dir)
+
+        if model_dir is None:
+            return None
+        elif isdir(model_dir):
+            return ModelPersistence(model_dir=model_dir)
+        raise ValueError('Invalid value given for parameter \'model_dir\': ' + str(model_dir))
+
+    def __load_rules(self, persistence: ModelPersistence):
         """
         Loads the theory from disk, if available.
 
+        :param persistence: The [ModelPersistence] that should be used
         :return: The loaded theory, as well as the next step to proceed with
         """
         step = MLRuleLearner.STEP_RULE_INDUCTION
 
-        if self.persistence is not None:
-            theory = self.persistence.load_model(model_name=self.get_model_name(),
-                                                 file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
+        if persistence is not None:
+            theory = persistence.load_model(model_name=self.get_model_name(),
+                                            file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
         else:
             theory = None
 
@@ -113,7 +131,8 @@ class MLRuleLearner(MLLearner):
         self.stats_ = stats
 
         # Load theory from disk, if possible
-        model, step = self.__load_rules()
+        persistence = self.__create_persistence()
+        model, step = self.__load_rules(persistence)
 
         if model is not None:
             theory = model
@@ -128,7 +147,7 @@ class MLRuleLearner(MLLearner):
             theory = rule_induction.induce_rules(stats, x, y, theory)
 
             # Save theory to disk
-            self.__save_rules(theory)
+            self.__save_rules(persistence, theory)
 
             end_time = timer()
             run_time = end_time - start_time
@@ -137,16 +156,17 @@ class MLRuleLearner(MLLearner):
 
         return theory
 
-    def __save_rules(self, theory: Theory):
+    def __save_rules(self, persistence: ModelPersistence, theory: Theory):
         """
         Saves a theory to disk.
 
-        :param theory:  The theory to be saved
+        :param persistence: The [ModelPersistence] that should be used
+        :param theory:      The theory to be saved
         """
 
-        if self.persistence is not None:
-            self.persistence.save_model(theory, model_name=self.get_model_name(),
-                                        file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
+        if persistence is not None:
+            persistence.save_model(theory, model_name=self.get_model_name(),
+                                   file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
 
     def fit(self, x: np.ndarray, y: np.ndarray) -> MLLearner:
         self.theory_ = self._induce_rules(x, y)
@@ -166,6 +186,20 @@ class MLRuleLearner(MLLearner):
         prediction.random_state = self.random_state
         return prediction.predict(self.stats_, self.theory_, x)
 
+    def get_params(self, deep=True):
+        return {
+            'model_dir': self.model_dir
+        }
+
+    def set_params(self, **parameters):
+        params = self.get_params()
+        for parameter, value in parameters.items():
+            if parameter in params.keys():
+                setattr(self, parameter, value)
+            else:
+                raise ValueError('Invalid parameter: ' + str(parameter))
+        return self
+
     @abstractmethod
     def get_name(self) -> str:
         pass
@@ -177,7 +211,7 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
+    def __init__(self, model_dir: str = None, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  loss: str = 'squared-error-loss', label_sub_sampling: int = -1, instance_sub_sampling: str = None,
                  feature_sub_sampling: str = None, pruning: str = None, shrinkage: float = 1.0,
                  l2_regularization_weight: float = 0.0):
@@ -205,7 +239,7 @@ class Boomer(MLRuleLearner):
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores that are predicted by rules. Must be at least 0
         """
-        super().__init__()
+        super().__init__(model_dir)
         self.num_rules = num_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
@@ -337,7 +371,8 @@ class Boomer(MLRuleLearner):
                + '_shrinkage=' + shrinkage + '_l2_regularization_weight=' + l2_regularization_weight
 
     def get_params(self, deep=True):
-        return {
+        params = super().get_params()
+        params.update({
             'num_rules': self.num_rules,
             'time_limit': self.time_limit,
             'head_refinement': self.head_refinement,
@@ -348,13 +383,5 @@ class Boomer(MLRuleLearner):
             'pruning': self.pruning,
             'shrinkage': self.shrinkage,
             'l2_regularization_weight': self.l2_regularization_weight
-        }
-
-    def set_params(self, **parameters):
-        params = self.get_params()
-        for parameter, value in parameters.items():
-            if parameter in params.keys():
-                setattr(self, parameter, value)
-            else:
-                raise ValueError('Invalid parameter: ' + str(parameter))
-        return self
+        })
+        return params

@@ -9,7 +9,6 @@ from sklearn.base import clone
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import DTYPE_FLOAT32, DTYPE_FLOAT64
-from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.measures import squared_error_loss, logistic_loss
 from boomer.parameters import NestedCrossValidation, ParameterTuning, ParameterLogOutput, ParameterCsvOutput
@@ -64,7 +63,6 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
 
             # Train classifier
             current_learner = clone(base_learner)
-            current_learner.persistence = persistence
             current_learner.set_params(**{'shrinkage': parameters[g]})
             current_learner.random_state = random_state
             current_learner.fold = (current_outer_fold * num_nested_folds) + current_nested_fold
@@ -122,7 +120,6 @@ if __name__ == '__main__':
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
-    persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
     parameter_outputs = [ParameterLogOutput()]
 
     if args.output_dir is not None:
@@ -130,8 +127,6 @@ if __name__ == '__main__':
                                                     clear_dir=args.current_fold == -1))
 
     learner = create_learner(args)
-    learner.persistence = persistence
-
     parameter_search = ShrinkageNumRulesParameterSearch(args.nested_folds, args.min_rules, args.shrinkage_parameters,
                                                         learner)
     parameter_tuning = ParameterTuning(args.data_dir, args.dataset, args.folds, args.current_fold, parameter_search,

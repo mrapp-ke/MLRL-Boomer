@@ -3,7 +3,6 @@
 import argparse
 import logging as log
 
-from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
@@ -83,10 +82,11 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 
 
 def create_learner(params) -> Boomer:
-    return Boomer(num_rules=params.num_rules, time_limit=params.time_limit, loss=params.loss, pruning=params.pruning,
-                  label_sub_sampling=params.label_sub_sampling, instance_sub_sampling=params.instance_sub_sampling,
-                  shrinkage=params.shrinkage, feature_sub_sampling=params.feature_sub_sampling,
-                  head_refinement=params.head_refinement, l2_regularization_weight=params.l2_regularization_weight)
+    return Boomer(model_dir=params.model_dir, num_rules=params.num_rules, time_limit=params.time_limit,
+                  loss=params.loss, pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
+                  instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
+                  feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement,
+                  l2_regularization_weight=params.l2_regularization_weight)
 
 
 if __name__ == '__main__':
@@ -101,7 +101,6 @@ if __name__ == '__main__':
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
-    model_persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
     parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
     evaluation_outputs = [EvaluationLogOutput()]
 
@@ -111,8 +110,6 @@ if __name__ == '__main__':
                                                       clear_dir=args.current_fold == -1))
 
     learner = create_learner(args)
-    learner.random_state = args.random_state
-    learner.persistence = model_persistence
     parameter_input = parameter_input
     evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
     experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
