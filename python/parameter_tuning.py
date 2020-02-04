@@ -109,8 +109,6 @@ def __float_list(s):
 
 
 if __name__ == '__main__':
-    log.basicConfig(level=log.INFO)
-
     parser = argparse.ArgumentParser(description='Tunes the hyper-parameters of BOOMER using nested cross validation')
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--nested-folds', type=int, default=5,
@@ -121,6 +119,7 @@ if __name__ == '__main__':
                         help='The parameters \'shrinkage\' to be tested as a comma-separated list')
     configure_argument_parser(parser)
     args = parser.parse_args()
+    log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
     persistence = None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)

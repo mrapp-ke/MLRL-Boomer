@@ -152,11 +152,10 @@ class Plotter(CrossValidation, MLClassifierBase):
 
 
 if __name__ == '__main__':
-    log.basicConfig(level=log.INFO)
-
     parser = argparse.ArgumentParser(description='Plots the performance of a BOOMER model')
     configure_argument_parser(parser)
     args = parser.parse_args()
+    log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
     learner = create_learner(args)
