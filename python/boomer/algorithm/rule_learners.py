@@ -68,11 +68,12 @@ class MLRuleLearner(MLLearner):
         pass
 
     @abstractmethod
-    def _create_rule_induction(self) -> RuleInduction:
+    def _create_rule_induction(self, stats: Stats) -> RuleInduction:
         """
         Must be implemented by subclasses in order to create the `RuleInduction` to be used for inducing rules.
 
-        :return: The `RuleInduction` that has been created
+        :param stats:   Statistics about the training data set
+        :return:        The `RuleInduction` that has been created
         """
         pass
 
@@ -142,7 +143,7 @@ class MLRuleLearner(MLLearner):
             start_time = timer()
 
             # Induce rules
-            rule_induction = self._create_rule_induction()
+            rule_induction = self._create_rule_induction(stats)
             rule_induction.random_state = self.random_state
             theory = rule_induction.induce_rules(stats, x, y, theory)
 
@@ -254,7 +255,7 @@ class Boomer(MLRuleLearner):
     def _create_prediction(self) -> Prediction:
         return Sign(LinearCombination())
 
-    def _create_rule_induction(self) -> RuleInduction:
+    def _create_rule_induction(self, stats: Stats) -> RuleInduction:
         num_rules = int(self.num_rules)
         time_limit = int(self.time_limit)
         stopping_criteria = []
@@ -279,7 +280,7 @@ class Boomer(MLRuleLearner):
 
         loss = self.__create_loss(l2_regularization_weight)
         head_refinement = self.__create_head_refinement(loss)
-        label_sub_sampling = self.__create_label_sub_sampling()
+        label_sub_sampling = self.__create_label_sub_sampling(stats)
         instance_sub_sampling = self.__create_instance_sub_sampling()
         feature_sub_sampling = self.__create_feature_sub_sampling()
         pruning = self.__create_pruning()
@@ -307,13 +308,18 @@ class Boomer(MLRuleLearner):
             return FullHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
-    def __create_label_sub_sampling(self) -> LabelSubSampling:
+    def __create_label_sub_sampling(self, stats: Stats) -> LabelSubSampling:
         label_sub_sampling = int(self.label_sub_sampling)
 
         if label_sub_sampling == -1:
             return None
         elif label_sub_sampling > 0:
-            return RandomLabelSubsetSelection(label_sub_sampling)
+            if label_sub_sampling < stats.num_labels:
+                return RandomLabelSubsetSelection(label_sub_sampling)
+            else:
+                raise ValueError('Value given for parameter \'label_sub_sampling\' (' + str(label_sub_sampling)
+                                 + ') exceeds number of labels in the training data set (' + str(stats.num_labels)
+                                 + ')')
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
     def __create_instance_sub_sampling(self) -> InstanceSubSampling:
