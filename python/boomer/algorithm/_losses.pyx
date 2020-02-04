@@ -9,7 +9,8 @@ Provides classes that implement different loss functions to be minimized during 
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index, convert_label_into_score
-from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, dsysv_float64, dspmv_float64, ddot_float64
+from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, l2_norm_pow
+from boomer.algorithm._math cimport dsysv_float64, dspmv_float64, ddot_float64
 
 from libc.math cimport pow, exp, fabs
 
@@ -248,10 +249,17 @@ cdef class SquaredErrorLoss(DecomposableLoss):
     A multi-label variant of the squared error loss.
     """
 
-    def __cinit__(self):
+    def __cinit__(self, float64 l2_regularization_weight):
+        """
+        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the optimal
+                                         scores to be predicted by rules. Increasing this value causes the model to be
+                                         more conservative, setting it to 0 turns of L2 regularization entirely
+        """
+        self.l2_regularization_weight = l2_regularization_weight
         self.prediction = LabelIndependentPrediction()
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
         cdef float64[::1, :] gradients = matrix_float64(num_rows, num_cols)
@@ -271,7 +279,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
                 sum_of_gradients -= tmp
 
             # Calculate optimal score to be predicted by the default rule for the current label...
-            score = -sum_of_gradients / sum_of_hessians
+            score = -sum_of_gradients / (sum_of_hessians + l2_regularization_weight)
             scores[c] = score
 
             # Traverse column again to calculate updated gradients based on the calculated score...
@@ -371,6 +379,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             sums_of_gradients[c] += (weight * gradients[example_index, l])
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64 sum_of_hessians = self.sum_of_hessians
         cdef intp num_labels = sums_of_gradients.shape[0]
@@ -380,7 +389,7 @@ cdef class SquaredErrorLoss(DecomposableLoss):
         cdef float64 overall_quality_score = 0
         cdef float64[::1] total_sums_of_gradients
         cdef intp[::1] label_indices
-        cdef float64 sum_of_gradients, score
+        cdef float64 sum_of_gradients, score, score_pow
         cdef intp c, l
 
         if uncovered:
@@ -396,14 +405,16 @@ cdef class SquaredErrorLoss(DecomposableLoss):
                 sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
 
             # Calculate predicted score...
-            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians)
+            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians + l2_regularization_weight)
             predicted_scores[c] = score
 
             # Calculate quality score...
-            score = (sum_of_gradients * score) + (0.5 * pow(score, 2) * sum_of_hessians)
-            quality_scores[c] = score
+            score_pow = pow(score, 2)
+            score = (sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
+            quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
             overall_quality_score += score
 
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
         return prediction
 
@@ -445,10 +456,17 @@ cdef class LogisticLoss(NonDecomposableLoss):
     A multi-label variant of the logistic loss that is applied example-wise.
     """
 
-    def __cinit__(self):
+    def __cinit__(self, float64 l2_regularization_weight):
+        """
+        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the optimal
+                                         scores to be predicted by rules. Increasing this value causes the model to be
+                                         more conservative, setting it to 0 turns of L2 regularization entirely
+        """
+        self.l2_regularization_weight = l2_regularization_weight
         self.prediction = LabelIndependentPrediction()
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef intp num_rows = y.shape[0]
         cdef intp num_cols = y.shape[1]
         cdef float64 sum_of_exponentials = num_cols + 1
@@ -489,18 +507,18 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 ordinates[c] += expected_score / sum_of_exponentials
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-                # each of the other labels and add it to the array of coefficients...
+                # each of the other labels and add it to the matrix of coefficients...
                 for c2 in range(c):
                     coefficients[i] -= (expected_scores[c2] * expected_score) / sum_of_exponentials_pow
                     i += 1
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
-                # add it to the array of coefficients...
+                # add it to the diagonal of the matrix of coefficients...
                 coefficients[i] += (fabs(expected_score) * num_cols) / sum_of_exponentials_pow
                 i += 1
 
         # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
-        cdef float64[::1] scores = dsysv_float64(coefficients, ordinates)
+        cdef float64[::1] scores = dsysv_float64(coefficients, ordinates, l2_regularization_weight)
 
         # We must traverse each example again to calculate the updated gradients and hessians based on the calculated
         # scores...
@@ -556,7 +574,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
                     i += 1
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
-                # add it to the matrix of hessians...
+                # add it to the diagonal of the matrix of hessians...
                 tmp = (fabs(expected_score) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
                 hessians[r, i] = tmp
                 total_sums_of_hessians[i] += tmp
@@ -652,6 +670,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
                 i += 1
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef intp num_gradients = sums_of_gradients.shape[0]
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
@@ -670,7 +689,7 @@ cdef class LogisticLoss(NonDecomposableLoss):
         cdef float64 overall_quality_score = 0
         cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
         cdef intp[::1] label_indices
-        cdef float64 sum_of_gradients, sum_of_hessians, score
+        cdef float64 sum_of_gradients, sum_of_hessians, score, score_pow
         cdef intp c, c2, l, l2
 
         if uncovered:
@@ -692,18 +711,21 @@ cdef class LogisticLoss(NonDecomposableLoss):
             # Calculate predicted score...
             # Note: As the sign of the gradients was inverted in the function `calculate_default_scores`, it must be
             # reverted again in the following.
-            score = divide_or_zero_float64(sum_of_gradients, sum_of_hessians)
+            score = divide_or_zero_float64(sum_of_gradients, sum_of_hessians + l2_regularization_weight)
             predicted_scores[c] = score
 
             # Calculate quality score...
-            score = (-sum_of_gradients * score) + (0.5 * pow(score, 2) * sum_of_hessians)
-            quality_scores[c] = score
+            score_pow = pow(score, 2)
+            score = (-sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
+            quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
             overall_quality_score += score
 
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
         return prediction
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         cdef intp num_gradients = sums_of_gradients.shape[0]
@@ -735,13 +757,14 @@ cdef class LogisticLoss(NonDecomposableLoss):
             hessians = sums_of_hessians
 
         # Calculate the optimal scores by solving a system of linear equations...
-        cdef float64[::1] scores = dsysv_float64(hessians, gradients)
+        cdef float64[::1] scores = dsysv_float64(hessians, gradients, l2_regularization_weight)
         prediction.predicted_scores = scores
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
         cdef float64 overall_quality_score = -ddot_float64(scores, gradients)
         cdef float64[::1] tmp = dspmv_float64(hessians, scores)
         overall_quality_score += 0.5 * ddot_float64(scores, tmp)
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(scores)
         prediction.overall_quality_score = overall_quality_score
         return prediction
 
