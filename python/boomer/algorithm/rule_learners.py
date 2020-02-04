@@ -368,7 +368,7 @@ class Boomer(MLRuleLearner):
         return 'num-rules=' + num_rules + '_time-limit=' + time_limit + '_head-refinement=' + head_refinement \
                + '_loss=' + loss + '_label-sub-sampling=' + label_sub_sampling + '_instance-sub-sampling=' \
                + instance_sub_sampling + '_feature-sub-sampling=' + feature_sub_sampling + '_pruning=' + pruning \
-               + '_shrinkage=' + shrinkage + '_l2_regularization_weight=' + l2_regularization_weight
+               + '_shrinkage=' + shrinkage + '_l2-regularization-weight=' + l2_regularization_weight
 
     def get_params(self, deep=True):
         params = super().get_params()
