@@ -12,7 +12,7 @@ from boomer.algorithm.model import DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
 from boomer.measures import squared_error_loss, logistic_loss
 from boomer.parameters import NestedCrossValidation, ParameterTuning, ParameterLogOutput, ParameterCsvOutput
-from main import configure_argument_parser, create_learner
+from boomer import configure_argument_parser, create_learner
 
 
 class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
