@@ -41,13 +41,16 @@ class ModelPersistence:
         except IOError:
             log.error('Failed to save model to file \"%s\"', file_path)
 
-    def load_model(self, model_name: str, file_name_suffix: str = None, fold: int = None):
+    def load_model(self, model_name: str, file_name_suffix: str = None, fold: int = None,
+                   raise_exception: bool = False):
         """
         Loads a model from a file.
 
         :param model_name:          The name of the model to be loaded
         :param file_name_suffix:    The suffix that has been added to the name of the file
         :param fold:                The fold, the model corresponds to, or None if no cross validation is used
+        :param raise_exception:     True, if an exception should be raised if an error occurs, False, if None should be
+                                    returned in such case
         :return:                    The loaded model
         """
 
@@ -59,9 +62,13 @@ class ModelPersistence:
                 model = pickle.load(input_stream)
                 log.info('Successfully loaded model from file \"%s\"', file_path)
                 return model
-        except IOError:
+        except IOError as e:
             log.error('Failed to load model from file \"%s\"', file_path)
-            return None
+
+            if raise_exception:
+                raise e
+            else:
+                return None
 
     @staticmethod
     def __get_file_name(model_name: str, file_name_suffix: str, fold: int):
