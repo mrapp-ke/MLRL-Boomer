@@ -87,8 +87,9 @@ class CrossValidation(Randomized, ABC):
                 test_y = y[test_indices]
 
                 # Train & evaluate classifier
-                self._train_and_evaluate(train_x, train_y, test_x, test_y, first_fold=first_fold, current_fold=i,
-                                         last_fold=last_fold, num_folds=num_folds)
+                self._train_and_evaluate(train_indices, train_x, train_y, test_indices, test_x, test_y,
+                                         first_fold=first_fold, current_fold=i, last_fold=last_fold,
+                                         num_folds=num_folds)
 
             i += 1
 
@@ -124,18 +125,20 @@ class CrossValidation(Randomized, ABC):
             test_y = train_y
 
         # Train and evaluate classifier
-        self._train_and_evaluate(train_x, train_y, test_x, test_y, first_fold=0, current_fold=0, last_fold=0,
-                                 num_folds=1)
+        self._train_and_evaluate(None, train_x, train_y, None, test_x, test_y, first_fold=0,
+                                 current_fold=0, last_fold=0, num_folds=1)
 
     @abstractmethod
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
-                            num_folds: int):
+    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
+                            current_fold: int, last_fold: int, num_folds: int):
         """
         The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
         test set.
 
+        :param train_indices:   The indices of the training examples or None, if no cross validation is used
         :param train_x:         The feature matrix of the training examples
         :param train_y:         The label matrix of the training examples
+        :param test_indices:    The indices of the test examples or None, if no cross validation is used
         :param test_x:          The feature matrix of the test examples
         :param test_y:          The label matrix of the test examples
         :param first_fold:      The first fold or 0, if no cross validation is used
