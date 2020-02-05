@@ -35,8 +35,8 @@ class Plotter(CrossValidation, MLClassifierBase):
         self.model_name = model_name
         self.data_set = data_set
 
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
-                            num_folds: int):
+    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
+                            current_fold: int, last_fold: int, num_folds: int):
         # Create a dense representation of the training data
         train_x = np.asfortranarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)

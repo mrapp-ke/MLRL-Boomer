@@ -218,8 +218,8 @@ class ParameterTuning(CrossValidation):
         self.parameter_search = parameter_search
         self.outputs = args
 
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, first_fold: int, current_fold: int, last_fold: int,
-                            num_folds: int):
+    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
+                            current_fold: int, last_fold: int, num_folds: int):
         parameter_search = self.parameter_search
         parameter_search.random_state = self.random_state
         parameter_search.search(train_x, train_y, current_fold=current_fold, num_folds=num_folds)
