@@ -43,7 +43,8 @@ class Plotter(CrossValidation, MLClassifierBase):
         test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
         test_y = self._ensure_input_format(test_y)
 
-        theory: Theory = self.__load_theory(current_fold)
+        theory: Theory = self.persistence.load_model(model_name=self.model_name, file_name_suffix=Boomer.PREFIX_RULES,
+                                                     fold=current_fold, raise_exception=True)
         num_iterations = len(theory)
 
         train_predictions = np.asfortranarray(np.zeros((train_x.shape[0], train_y.shape[1]), dtype=DTYPE_FLOAT64))
@@ -66,15 +67,6 @@ class Plotter(CrossValidation, MLClassifierBase):
 
         if current_fold == last_fold:
             self.__plot(num_iterations=num_iterations)
-
-    def __load_theory(self, fold: int):
-        theory = self.persistence.load_model(model_name=self.model_name, file_name_suffix=Boomer.PREFIX_RULES,
-                                             fold=fold)
-
-        if theory is None:
-            raise IOError('Unable to load model')
-
-        return theory
 
     def __plot(self, num_iterations: int):
         log.info('Creating plots...')
