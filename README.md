@@ -13,8 +13,10 @@ This project provides a scikit-learn implementation of "BOOMER" - an algorithm f
             | ...
         | ...
     |-- setup.py        Distutil definition of the library for installation via pip
-    |-- main.py         Implements a main function that can be used to start an experiment, i.e., to train a model
+    |-- boomer.py       Implements a main function that can be used to start an experiment, i.e., to train a model
     |-- plots.py        Implements another main function that can be used to create various plots for an existing model
+|-- slurm               Directory that contains bash scripts for running jobs using the Slurm workload manager
+    |-- ...
 |-- Makefile            Makefile for compiling the Cython source files and installing a Python virtual environment
 |-- README.md           This file
 |-- settings.zip        PyCharm settings for syntax highlighting of Cython code
@@ -53,7 +55,7 @@ For more fine-grained control, the command `make clean_venv` (for deleting the v
 
 ## Running experiments
 
-The file `main.py` allows to run experiments on a specific data set using different configurations of the learning algorithm. The implementation takes care of writing the experimental results into `.csv` files and the learned model can (optionally) be stored on disk to reuse it later. 
+The file `boomer.py` allows to run experiments on a specific data set using different configurations of the learning algorithm. The implementation takes care of writing the experimental results into `.csv` files and the learned model can (optionally) be stored on disk to reuse it later. 
 
 In order to run an experiment, the following command line arguments must be provided (most of them are optional):
 
@@ -83,5 +85,5 @@ In order to run an experiment, the following command line arguments must be prov
 In the following, the command for running an experiment using an exemplary configuration can be seen. It uses a virtual environment as discussed in section "Project setup". 
 
 ```
-venv/bin/python3.7 python/main.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --num-rules 1000 --instance-sub-sampling bagging --feature-sub-sampling random-feature-selection --loss squared-error-loss --shrinkage 0.25 --pruning None --head-refinement single-label
+venv/bin/python3.7 python/boomer.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --num-rules 1000 --instance-sub-sampling bagging --feature-sub-sampling random-feature-selection --loss squared-error-loss --shrinkage 0.25 --pruning None --head-refinement single-label
 ```
