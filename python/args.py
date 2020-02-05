@@ -29,3 +29,11 @@ def optional_string(s):
     if s is None or s.lower() == 'none':
         return None
     return s
+
+
+def string_list(s):
+    return [x.strip() for x in s.split(',')]
+
+
+def float_list(s):
+    return [float(x) for x in string_list(s)]
