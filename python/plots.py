@@ -13,7 +13,7 @@ from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS, SUBSET_01_LOSS
 from boomer.training import CrossValidation
-from boomer import configure_argument_parser, create_learner
+from main_boomer import configure_argument_parser, create_learner
 
 
 class Plotter(CrossValidation, MLClassifierBase):
