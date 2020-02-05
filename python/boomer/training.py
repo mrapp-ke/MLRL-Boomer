@@ -74,17 +74,17 @@ class CrossValidation(Randomized, ABC):
         i = 0
         k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
 
-        for train, test in k_fold.split(x, y):
+        for train_indices, test_indices in k_fold.split(x, y):
             if current_fold < 0 or i == current_fold:
                 log.info('Fold %s / %s:', (i + 1), num_folds)
 
                 # Create training set for current fold
-                train_x = x[train]
-                train_y = y[train]
+                train_x = x[train_indices]
+                train_y = y[train_indices]
 
                 # Create test set for current fold
-                test_x = x[test]
-                test_y = y[test]
+                test_x = x[test_indices]
+                test_y = y[test_indices]
 
                 # Train & evaluate classifier
                 self._train_and_evaluate(train_x, train_y, test_x, test_y, first_fold=first_fold, current_fold=i,
