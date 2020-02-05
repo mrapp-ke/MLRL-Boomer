@@ -3,27 +3,11 @@
 import argparse
 import logging as log
 
+from args import optional_string, log_level
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
-
-
-def __log_level(s):
-    s = s.lower()
-    if s == 'debug':
-        return log.DEBUG
-    elif s == 'info':
-        return log.INFO
-    elif s == 'warn' or s == 'warning':
-        return log.WARN
-    elif s == 'error':
-        return log.ERROR
-    elif s == 'critical' or s == 'fatal':
-        return log.CRITICAL
-    elif s == 'notset':
-        return log.NOTSET
-    raise ValueError('Invalid argument given for parameter \'--log-level\': ' + str(s))
 
 
 def __boolean_string(s):
@@ -36,12 +20,6 @@ def __boolean_string(s):
     raise ValueError('Invalid boolean argument given: ' + str(s))
 
 
-def __optional_string(s):
-    if s is None or s.lower() == 'none':
-        return None
-    return s
-
-
 def __current_fold_string(s):
     n = int(s)
     if n > 0:
@@ -52,11 +30,11 @@ def __current_fold_string(s):
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
-    p.add_argument('--log-level', type=__log_level, default='info', help='The log level to be used')
+    p.add_argument('--log-level', type=log_level, default='info', help='The log level to be used')
     p.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
-    p.add_argument('--output-dir', type=__optional_string, default=None,
+    p.add_argument('--output-dir', type=optional_string, default=None,
                    help='The path of the directory into which results should be written')
-    p.add_argument('--model-dir', type=__optional_string, default=None,
+    p.add_argument('--model-dir', type=optional_string, default=None,
                    help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
@@ -67,16 +45,16 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The duration in seconds after which the induction of rules should be canceled or -1')
     p.add_argument('--label-sub-sampling', type=int, default=-1,
                    help='The number of samples to be used for label sub-sampling or -1')
-    p.add_argument('--instance-sub-sampling', type=__optional_string, default=None,
+    p.add_argument('--instance-sub-sampling', type=optional_string, default=None,
                    help='The name of the strategy to be used for instance sub-sampling or None')
-    p.add_argument('--feature-sub-sampling', type=__optional_string, default=None,
+    p.add_argument('--feature-sub-sampling', type=optional_string, default=None,
                    help='The name of the strategy to be used for feature sub-sampling or None')
-    p.add_argument('--pruning', type=__optional_string, default=None,
+    p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
     p.add_argument('--loss', type=str, default='squared-error-loss', help='The name of the loss function to be used')
     p.add_argument('--l2-regularization-weight', type=float, default=0,
                    help='The weight of the L2 regularization to be used')
-    p.add_argument('--head-refinement', type=__optional_string, default=None,
+    p.add_argument('--head-refinement', type=optional_string, default=None,
                    help='The name of the strategy to be used for finding the heads of rules')
     p.add_argument('--shrinkage', type=float, default=1.0, help='The shrinkage parameter to be used')
 
@@ -95,7 +73,7 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=__boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
-    parser.add_argument('--parameter-dir', type=__optional_string, default=None,
+    parser.add_argument('--parameter-dir', type=optional_string, default=None,
                         help='The path of the directory, parameter settings should be loaded from')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
