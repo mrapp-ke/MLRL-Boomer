@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.base import clone
 from skmultilearn.base import MLClassifierBase
 
+from args import float_list
 from boomer.algorithm.model import DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
 from boomer.measures import squared_error_loss, logistic_loss
@@ -102,10 +103,6 @@ class ShrinkageNumRulesParameterSearch(NestedCrossValidation, MLClassifierBase):
         pass
 
 
-def __float_list(s):
-    return [float(x.strip()) for x in s.split(',')]
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tunes the hyper-parameters of BOOMER using nested cross validation')
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
@@ -113,7 +110,7 @@ if __name__ == '__main__':
                         help='Total number of folds to be used by nested cross validation')
     parser.add_argument('--min-rules', type=int, default=100,
                         help='The minimum value of the parameter \'num_rules\' to be tested')
-    parser.add_argument('--shrinkage-parameters', type=__float_list, default='0.25',
+    parser.add_argument('--shrinkage-parameters', type=float_list, default='0.25',
                         help='The parameters \'shrinkage\' to be tested as a comma-separated list')
     configure_argument_parser(parser)
     args = parser.parse_args()
