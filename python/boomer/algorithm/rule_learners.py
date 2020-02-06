@@ -83,7 +83,7 @@ class MLRuleLearner(MLLearner):
 
         :return: The [ModelPersistence] that has been created
         """
-        model_dir = str(self.model_dir)
+        model_dir = self.model_dir
 
         if model_dir is None:
             return None
