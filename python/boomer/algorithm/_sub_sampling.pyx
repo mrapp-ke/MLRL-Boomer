@@ -202,8 +202,6 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
     cdef intp[::1] sub_sample(self, uint8[::1, :] y, int random_state):
         cdef intp num_labels = y.shape[1]
         cdef intp num_samples = self.num_samples
-        print('sub-sampling labels...')
         cdef intp[::1] result = np.ascontiguousarray(sample_without_replacement(num_labels, num_samples, 'auto', random_state),
                                     dtype=DTYPE_INTP)
-        print('sub-sampling labels...DONE')
         return result
