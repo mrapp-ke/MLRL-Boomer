@@ -30,7 +30,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: int):
     return open(file, mode='r', newline='')
 
 
-def open_writable_csv_file(directory: str, file_name: str, fold: int, append: bool = False):
+def open_writable_csv_file(directory: str, file_name: str, fold: int = None, append: bool = False):
     """
     Opens a CSV file to be written to.
 
