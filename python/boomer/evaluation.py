@@ -154,12 +154,16 @@ class EvaluationOutput(ABC):
     An abstract base class for all outputs, evaluation results may be written to.
     """
 
-    def __init__(self, output_predictions: bool):
+    def __init__(self, output_predictions: bool, output_individual_folds: bool):
         """
         :param output_predictions: True, if predictions provided by a classifier or ranker should be written to the
                                    output, False otherwise
+        :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
+                                        written to the outputs, False, if only the overall evaluation results, i.e.,
+                                        averaged over all folds, should be written to the outputs
         """
         self.output_predictions = output_predictions
+        self.output_individual_folds = output_individual_folds
 
     @abstractmethod
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
@@ -195,31 +199,32 @@ class EvaluationLogOutput(EvaluationOutput):
     Outputs evaluation result using the logger.
     """
 
-    def __init__(self, output_predictions: bool = False):
-        super().__init__(output_predictions)
+    def __init__(self, output_predictions: bool = False, output_individual_folds: bool = True):
+        super().__init__(output_predictions, output_individual_folds)
 
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
-        text = ''
+        if fold is None or self.output_individual_folds:
+            text = ''
 
-        for measure in evaluation_result.measures:
-            if len(text) > 0:
-                text += '\n'
+            for measure in evaluation_result.measures:
+                if len(text) > 0:
+                    text += '\n'
 
-            if fold is None:
-                score, std_dev = evaluation_result.avg(measure)
-                text += (measure + ': ' + str(score))
+                if fold is None:
+                    score, std_dev = evaluation_result.avg(measure)
+                    text += (measure + ': ' + str(score))
 
-                if total_folds > 1:
-                    text += (' ±' + str(std_dev))
-            else:
-                score = evaluation_result.get(measure, fold)
-                text += (measure + ': ' + str(score))
+                    if total_folds > 1:
+                        text += (' ±' + str(std_dev))
+                else:
+                    score = evaluation_result.get(measure, fold)
+                    text += (measure + ': ' + str(score))
 
-        msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
-               'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
-                   fold + 1) + ')') + ':\n\n%s\n'
-        log.info(msg, text)
+            msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
+                   'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
+                       fold + 1) + ')') + ':\n\n%s\n'
+            log.info(msg, text)
 
     def write_predictions(self, experiment_name: str, predictions, ground_truth, total_folds: int, fold: int = None):
         if self.output_predictions:
@@ -235,26 +240,28 @@ class EvaluationCsvOutput(EvaluationOutput):
     Writes evaluation results to CSV files.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True, output_predictions: bool = False):
+    def __init__(self, output_dir: str, clear_dir: bool = True, output_predictions: bool = False,
+                 output_individual_folds: bool = True):
         """
         :param output_dir:  The path of the directory, the CSV files should be written to
         :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
         """
-        super().__init__(output_predictions)
+        super().__init__(output_predictions, output_individual_folds)
         self.output_dir = output_dir
         self.clear_dir = clear_dir
 
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
-        self.__clear_dir_if_necessary()
-        columns = evaluation_result.avg_dict() if fold is None else evaluation_result.dict(fold)
-        header = sorted(columns.keys())
-        header.insert(0, 'Approach')
-        columns['Approach'] = experiment_name
+        if fold is None or self.output_individual_folds:
+            self.__clear_dir_if_necessary()
+            columns = evaluation_result.avg_dict() if fold is None else evaluation_result.dict(fold)
+            header = sorted(columns.keys())
+            header.insert(0, 'Approach')
+            columns['Approach'] = experiment_name
 
-        with open_writable_csv_file(self.output_dir, 'evaluation', fold, append=True) as csv_file:
-            csv_writer = create_csv_dict_writer(csv_file, header)
-            csv_writer.writerow(columns)
+            with open_writable_csv_file(self.output_dir, 'evaluation', fold, append=True) as csv_file:
+                csv_writer = create_csv_dict_writer(csv_file, header)
+                csv_writer.writerow(columns)
 
     def write_predictions(self, experiment_name: str, predictions, ground_truth, total_folds: int, fold: int = None):
         if self.output_predictions:
