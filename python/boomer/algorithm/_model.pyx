@@ -208,7 +208,7 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cpdef predict(self, float32[::1, :] x, float64[::1, :] predictions):
+    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions):
         """
         Applies the rule's prediction to all examples it covers.
 
