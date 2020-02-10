@@ -11,6 +11,7 @@ from abc import abstractmethod
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
+from boomer.algorithm._model import Rule, EmptyBody
 from boomer.algorithm._pruning import Pruning
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
@@ -140,10 +141,61 @@ class SeparateAndConquer(RuleInduction):
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
         self.__validate()
-        raise NotImplementedError
+        i = 0
+
+        decision_list = []
+        examples = []
+
+        num_rules = len(examples)
+        while len(examples) / num_rules >= 0.05:
+            log.info('Learning rule %s...', i)
+            rule = self.find_best_global_rule(examples, meta_data)
+
+            format_rule(stats, rule, meta_data, _)
+
+            # Add new rule to decision list
+            decision_list.append(rule)
+
+            examples, examples_partially_covered, examples_fully_covered = self.get_covered_sets(rule, examples)
+
+            t_add = self.get_readd_set(examples_partially_covered, examples_fully_covered)
+
+            if len(t_add) == 0:
+                rule.mark_as_stopping_rule()
+            else:
+                examples = examples + t_add
+
+            i += 1
+            break
+
+        return decision_list
 
     def __validate(self):
         """
         Raises exceptions if the module is not configured properly.
         """
         pass
+
+    def find_best_global_rule(self, examples, meta_data: MetaData):
+        best_rule = EmptyRule()
+        for label in meta_data.labels:
+            filtered_examples = self.filter_examples(examples)
+            rule, covered_examples = self.find_best_rule(filtered_examples)
+            if self.evaluate_rule(rule, filtered_examples, evaluation_function) > self.evaluate_rule(rule, filtered_examples, evaluation_function):
+                best_rule = rule
+        raise NotImplementedError
+
+    def get_covered_sets(self, rule, examples_left):
+        raise NotImplementedError
+
+    def get_readd_set(self, t_part, t_full):
+        raise NotImplementedError
+
+    def filter_examples(self, examples):
+        raise NotImplementedError
+
+    def find_best_rule(self, filtered_examples):
+        raise NotImplementedError
+
+    def evaluate_rule(self, rule, filtered_examples, evaluation_function):
+        raise NotImplementedError
