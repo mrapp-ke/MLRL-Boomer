@@ -35,5 +35,9 @@ def string_list(s):
     return [x.strip() for x in s.split(',')]
 
 
+def int_list(s):
+    return [int(x) for x in string_list(s)]
+
+
 def float_list(s):
     return [float(x) for x in string_list(s)]
