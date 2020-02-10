@@ -237,32 +237,33 @@ def __write_tuning_scores_per_num_labels(output_dir: str, evaluation_scores: np.
         key = (current_config['head_refinement'], current_config['label_sub_sampling'])
         parameter_values.add(key)
 
-    num_rows = evaluation_scores_tuning.shape[1]
-    header = ['head-refinement=' + str(x[0]) + '_label-sub-sampling=' + str(x[1]) for x in parameter_values]
+    if len(parameter_values) > 0:
+        num_rows = evaluation_scores_tuning.shape[1]
+        header = ['head-refinement=' + str(x[0]) + '_label-sub-sampling=' + str(x[1]) for x in parameter_values]
+    
+        with open_writable_csv_file(output_dir, 'tuning_scores_per_num_labels', fold=None, append=False) as csv_file:
+            csv_writer = create_csv_dict_writer(csv_file, header)
+            indices_dict = dict()
 
-    with open_writable_csv_file(output_dir, 'tuning_scores_per_num_labels', fold=None, append=False) as csv_file:
-        csv_writer = create_csv_dict_writer(csv_file, header)
-        indices_dict = dict()
+            for key in parameter_values:
+                indices = indices_dict[key] if key in indices_dict else []
 
-        for key in parameter_values:
-            indices = indices_dict[key] if key in indices_dict else []
+                for config_index, current_config in enumerate(configurations):
+                    if current_config['head_refinement'] == key[0] and current_config['label_sub_sampling'] == key[1]:
+                        indices.append(config_index)
 
-            for config_index, current_config in enumerate(configurations):
-                if current_config['head_refinement'] == key[0] and current_config['label_sub_sampling'] == key[1]:
-                    indices.append(config_index)
+                indices_dict[key] = indices
 
-            indices_dict[key] = indices
+            for row in range(num_rows):
+                columns = {}
 
-        for row in range(num_rows):
-            columns = {}
+                for key_index, key in enumerate(parameter_values):
+                    indices = indices_dict[key]
+                    scores = evaluation_scores[np.asarray(indices), row]
+                    best_score = np.max(scores) if is_gain_metric else np.min(scores)
+                    columns[header[key_index]] = best_score
 
-            for key_index, key in enumerate(parameter_values):
-                indices = indices_dict[key]
-                scores = evaluation_scores[np.asarray(indices), row]
-                best_score = np.max(scores) if is_gain_metric else np.min(scores)
-                columns[header[key_index]] = best_score
-
-            csv_writer.writerow(columns)
+                csv_writer.writerow(columns)
 
 
 if __name__ == '__main__':
