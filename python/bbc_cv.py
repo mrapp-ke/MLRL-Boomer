@@ -8,7 +8,7 @@ estimating unbiased performance estimations (see https://link.springer.com/artic
 """
 import argparse
 import logging as log
-from typing import List, Set
+from typing import List, Set, Tuple
 
 import numpy as np
 import sklearn.metrics as metrics
@@ -160,7 +160,7 @@ def __create_configurations(arguments) -> List[dict]:
     return result
 
 
-def __write_evaluation_scores(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict]):
+def __write_tuning_scores(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict]):
     parameters = sorted(configurations[0].keys())
     header = list(parameters)
     num_rows = evaluation_scores.shape[0]
@@ -185,8 +185,8 @@ def __write_evaluation_scores(output_dir: str, evaluation_scores: np.ndarray, co
             csv_writer.writerow(columns)
 
 
-def __write_per_parameter_evaluation_scores(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict],
-                                            is_gain_metric: bool):
+def __write_tuning_scores_per_parameter(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict],
+                                        is_gain_metric: bool):
     parameters = sorted(configurations[0].keys())
     parameter_values: dict = {}
 
@@ -197,9 +197,7 @@ def __write_per_parameter_evaluation_scores(output_dir: str, evaluation_scores: 
             parameter_values[parameter] = values
 
     for parameter in parameters:
-        values: Set[str] = parameter_values[parameter]
-
-        if len(values) < 2:
+        if parameter == 'head_refinement' or parameter == 'label_sub_sampling' or len(parameter_values[parameter]) < 2:
             del parameter_values[parameter]
 
     num_rows = evaluation_scores_tuning.shape[1]
@@ -215,7 +213,8 @@ def __write_per_parameter_evaluation_scores(output_dir: str, evaluation_scores: 
                     indices.append(config_index)
                     indices_dict[value] = indices
 
-        with open_writable_csv_file(output_dir, 'tuning_scores_' + str(parameter), fold=None, append=False) as csv_file:
+        with open_writable_csv_file(output_dir, 'tuning_scores_per_' + str(parameter), fold=None,
+                                    append=False) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
 
             for row in range(num_rows):
@@ -228,6 +227,42 @@ def __write_per_parameter_evaluation_scores(output_dir: str, evaluation_scores: 
                     columns[value] = best_score
 
                 csv_writer.writerow(columns)
+
+
+def __write_tuning_scores_per_num_labels(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict],
+                                         is_gain_metric: bool):
+    parameter_values: Set[Tuple] = set()
+
+    for current_config in configurations:
+        key = (current_config['head_refinement'], current_config['label_sub_sampling'])
+        parameter_values.add(key)
+
+    num_rows = evaluation_scores_tuning.shape[1]
+    header = ['head-refinement=' + str(x[0]) + '_label-sub-sampling=' + str(x[1]) for x in parameter_values]
+
+    with open_writable_csv_file(output_dir, 'tuning_scores_per_num_labels', fold=None, append=False) as csv_file:
+        csv_writer = create_csv_dict_writer(csv_file, header)
+        indices_dict = dict()
+
+        for key in parameter_values:
+            indices = indices_dict[key] if key in indices_dict else []
+
+            for config_index, current_config in enumerate(configurations):
+                if current_config['head_refinement'] == key[0] and current_config['label_sub_sampling'] == key[1]:
+                    indices.append(config_index)
+
+            indices_dict[key] = indices
+
+        for row in range(num_rows):
+            columns = {}
+
+            for key_index, key in enumerate(parameter_values):
+                indices = indices_dict[key]
+                scores = evaluation_scores[np.asarray(indices), row]
+                best_score = np.max(scores) if is_gain_metric else np.min(scores)
+                columns[header[key_index]] = best_score
+
+            csv_writer.writerow(columns)
 
 
 if __name__ == '__main__':
@@ -330,7 +365,6 @@ if __name__ == '__main__':
 
     for i in range(num_bootstraps):
         mask_test[:] = True
-
         log.info('Sampling bootstrap examples %s / %s...', (i + 1), num_bootstraps)
 
         for j in range(num_examples):
@@ -351,6 +385,8 @@ if __name__ == '__main__':
                             last_fold=num_bootstraps - 1, num_folds=num_bootstraps)
 
     if args.output_dir is not None:
-        __write_evaluation_scores(args.output_dir, evaluation_scores_tuning, list_of_configurations)
-        __write_per_parameter_evaluation_scores(args.output_dir, evaluation_scores_tuning, list_of_configurations,
-                                                gain_metric)
+        __write_tuning_scores(args.output_dir, evaluation_scores_tuning, list_of_configurations)
+        __write_tuning_scores_per_num_labels(args.output_dir, evaluation_scores_tuning, list_of_configurations,
+                                             gain_metric)
+        __write_tuning_scores_per_parameter(args.output_dir, evaluation_scores_tuning, list_of_configurations,
+                                            gain_metric)
