@@ -237,7 +237,7 @@ def __write_tuning_scores_per_num_labels(output_dir: str, evaluation_scores: np.
         key = (current_config['head_refinement'], current_config['label_sub_sampling'])
         parameter_values.add(key)
 
-    if len(parameter_values) > 0:
+    if len(parameter_values) > 1:
         num_rows = evaluation_scores_tuning.shape[1]
         header = ['head-refinement=' + str(x[0]) + '_label-sub-sampling=' + str(x[1]) for x in parameter_values]
     
