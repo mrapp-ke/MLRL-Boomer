@@ -8,7 +8,7 @@ estimating unbiased performance estimations (see https://link.springer.com/artic
 """
 import argparse
 import logging as log
-from typing import List
+from typing import List, Set
 
 import numpy as np
 import sklearn.metrics as metrics
@@ -177,12 +177,57 @@ def __write_evaluation_scores(output_dir: str, evaluation_scores: np.ndarray, co
             current_configuration = list_of_configurations[row]
 
             for param in parameters:
-                columns[param] = str(current_configuration[param])
+                columns[param] = current_configuration[param]
 
             for col in range(num_cols):
                 columns['bootstrap_' + str(col + 1)] = evaluation_scores[row, col]
 
             csv_writer.writerow(columns)
+
+
+def __write_per_parameter_evaluation_scores(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict],
+                                            is_gain_metric: bool):
+    parameters = sorted(configurations[0].keys())
+    parameter_values: dict = {}
+
+    for current_config in configurations:
+        for parameter in parameters:
+            values: Set[str] = parameter_values[parameter] if parameter in parameter_values else set()
+            values.add(current_config[parameter])
+            parameter_values[parameter] = values
+
+    for parameter in parameters:
+        values: Set[str] = parameter_values[parameter]
+
+        if len(values) < 2:
+            del parameter_values[parameter]
+
+    num_rows = evaluation_scores_tuning.shape[1]
+
+    for parameter in parameter_values.keys():
+        header = sorted(parameter_values[parameter])
+        indices_dict = dict()
+
+        for value in header:
+            for config_index, current_config in enumerate(configurations):
+                if current_config[parameter] == value:
+                    indices = indices_dict[value] if value in indices_dict else []
+                    indices.append(config_index)
+                    indices_dict[value] = indices
+
+        with open_writable_csv_file(output_dir, 'tuning_scores_' + str(parameter), fold=None, append=False) as csv_file:
+            csv_writer = create_csv_dict_writer(csv_file, header)
+
+            for row in range(num_rows):
+                columns = {}
+
+                for value in header:
+                    indices = indices_dict[value]
+                    scores = evaluation_scores[np.asarray(indices), row]
+                    best_score = np.max(scores) if is_gain_metric else np.min(scores)
+                    columns[value] = best_score
+
+                csv_writer.writerow(columns)
 
 
 if __name__ == '__main__':
@@ -307,3 +352,5 @@ if __name__ == '__main__':
 
     if args.output_dir is not None:
         __write_evaluation_scores(args.output_dir, evaluation_scores_tuning, list_of_configurations)
+        __write_per_parameter_evaluation_scores(args.output_dir, evaluation_scores_tuning, list_of_configurations,
+                                                gain_metric)
