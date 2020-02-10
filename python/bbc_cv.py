@@ -21,6 +21,7 @@ from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64, DTYPE_I
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, EvaluationCsvOutput, EvaluationLogOutput
+from boomer.io import open_writable_csv_file, create_csv_dict_writer
 from boomer.training import CrossValidation
 
 
@@ -159,6 +160,31 @@ def __create_configurations(arguments) -> List[dict]:
     return result
 
 
+def __write_evaluation_scores(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict]):
+    parameters = sorted(configurations[0].keys())
+    header = list(parameters)
+    num_rows = evaluation_scores.shape[0]
+    num_cols = evaluation_scores.shape[1]
+
+    for col in range(num_cols):
+        header.append('bootstrap_' + str(col + 1))
+
+    with open_writable_csv_file(output_dir, 'tuning_scores', fold=None, append=False) as csv_file:
+        csv_writer = create_csv_dict_writer(csv_file, header)
+
+        for row in range(num_rows):
+            columns: dict = {}
+            current_configuration = list_of_configurations[row]
+
+            for param in parameters:
+                columns[param] = str(current_configuration[param])
+
+            for col in range(num_cols):
+                columns['bootstrap_' + str(col + 1)] = evaluation_scores[row, col]
+
+            csv_writer.writerow(columns)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Performs BBC-CV using models that have been trained using CV')
     parser.add_argument('--log-level', type=log_level, default='info', help='The log level to be used')
@@ -278,3 +304,6 @@ if __name__ == '__main__':
         predictions_test = prediction_matrix[mask_test, best_k, :]
         evaluation.evaluate('best_configuration', predictions_test, ground_truth_test, first_fold=0, current_fold=i,
                             last_fold=num_bootstraps - 1, num_folds=num_bootstraps)
+
+    if args.output_dir is not None:
+        __write_evaluation_scores(args.output_dir, evaluation_scores_tuning, list_of_configurations)
