@@ -9,15 +9,17 @@ import logging as log
 from abc import abstractmethod
 
 import numpy as np
+
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
-from boomer.algorithm._model import Rule, EmptyBody
+from boomer.algorithm._model import Rule
 from boomer.algorithm._pruning import Pruning
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling
-
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stats import Stats
+from boomer.algorithm.utils import format_rule
+from boomer.data import MetaData
 from boomer.learners import Module
 
 
@@ -178,12 +180,15 @@ class SeparateAndConquer(RuleInduction):
 
     def find_best_global_rule(self, examples, meta_data: MetaData):
         best_rule = EmptyRule()
-        for label in meta_data.labels:
-            filtered_examples = self.filter_examples(examples)
-            rule, covered_examples = self.find_best_rule(filtered_examples)
-            if self.evaluate_rule(rule, filtered_examples, evaluation_function) > self.evaluate_rule(rule, filtered_examples, evaluation_function):
+        improved = True
+
+        while improved:
+            rule = self.refine_rule(examples, best_rule, meta_data)
+            if self.evaluate_rule(rule) > self.evaluate_rule(best_rule):
                 best_rule = rule
-        raise NotImplementedError
+            else:
+                improved = False
+        return best_rule
 
     def get_covered_sets(self, rule, examples_left):
         raise NotImplementedError
@@ -197,5 +202,22 @@ class SeparateAndConquer(RuleInduction):
     def find_best_rule(self, filtered_examples):
         raise NotImplementedError
 
-    def evaluate_rule(self, rule, filtered_examples, evaluation_function):
+    def evaluate_rule(self, rule):
+        raise NotImplementedError
+
+    def refine_rule(self, examples, rule: Rule, meta_data):
+        best_rule = rule
+        for condition in self.get_all_possible_conditions(meta_data):
+            if not rule.contains_condition(condition):
+                refined_rule = rule
+                refined_rule.body.add_condition(condition)
+                refined_rule = self.find_best_head(examples, filtered_examples)
+                if self.evaluate_rule(refined_rule) > self.evaluate_rule(best_rule):
+                    best_rule = refined_rule
+        return best_rule
+
+    def find_best_head(self, examples, filtered_examples):
+        raise NotImplementedError
+
+    def get_all_possible_conditions(self, meta_data):
         raise NotImplementedError
