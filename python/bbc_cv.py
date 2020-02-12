@@ -286,7 +286,7 @@ if __name__ == '__main__':
                         help='The target measure to be used for evaluating different configurations on the tuning set')
     parser.add_argument('--num-rules', type=int_list, default='500',
                         help='The values for the parameter \'num_rules\' as a comma-separated list')
-    parser.add_argument('--loss', type=string_list, default='squared-error-loss',
+    parser.add_argument('--loss', type=string_list, default='macro-squared-error-loss',
                         help='The values for the parameter \'loss\' as a comma-separated list')
     parser.add_argument('--head-refinement', type=string_list, default='single-label',
                         help='The values for the parameter \'head_refinement\' as a comma-separated list')

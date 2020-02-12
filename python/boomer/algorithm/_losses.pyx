@@ -244,9 +244,9 @@ cdef class NonDecomposableLoss(Loss):
         pass
 
 
-cdef class SquaredErrorLoss(DecomposableLoss):
+cdef class MacroSquaredErrorLoss(DecomposableLoss):
     """
-    A multi-label variant of the squared error loss.
+    A multi-label variant of the squared error loss that is applied example- and label-wise.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):
@@ -451,7 +451,51 @@ cdef class SquaredErrorLoss(DecomposableLoss):
             total_sums_of_gradients[l] = total_sum_of_gradients
 
 
-cdef class LogisticLoss(NonDecomposableLoss):
+cdef class MacroLogisticLoss(DecomposableLoss):
+    """
+    A multi-label variant of the logistic loss that is applied example- and label-wise.
+    """
+
+    def __cinit__(self, float64 l2_regularization_weight):
+        """
+        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the optimal
+                                         scores to be predicted by rules. Increasing this value causes the model to be
+                                         more conservative, setting it to 0 turns of L2 regularization entirely
+        """
+        self.l2_regularization_weight = l2_regularization_weight
+        self.prediction = LabelIndependentPrediction()
+
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        # TODO
+        pass
+
+    cdef begin_instance_sub_sampling(self):
+        # TODO
+        pass
+
+    cdef update_sub_sample(self, intp example_index):
+        # TODO
+        pass
+
+    cdef begin_search(self, intp[::1] label_indices):
+        # TODO
+        pass
+
+    cdef update_search(self, intp example_index, uint32 weight):
+        # TODO
+        pass
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+        # TODO
+        pass
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores):
+        # TODO
+        pass
+
+
+cdef class ExampleBasedLogisticLoss(NonDecomposableLoss):
     """
     A multi-label variant of the logistic loss that is applied example-wise.
     """
