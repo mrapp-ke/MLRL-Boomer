@@ -87,7 +87,7 @@ cdef class NonDecomposableLoss(Loss):
                            float64[::1] predicted_scores)
 
 
-cdef class SquaredErrorLoss(DecomposableLoss):
+cdef class MacroSquaredErrorLoss(DecomposableLoss):
 
     # Attributes:
 
@@ -125,7 +125,33 @@ cdef class SquaredErrorLoss(DecomposableLoss):
                            float64[::1] predicted_scores)
 
 
-cdef class LogisticLoss(NonDecomposableLoss):
+cdef class MacroLogisticLoss(DecomposableLoss):
+
+    # Attributes:
+
+    cdef LabelIndependentPrediction prediction
+
+    # Functions:
+
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+
+    cdef begin_instance_sub_sampling(self)
+
+    cdef update_sub_sample(self, intp example_index)
+
+    cdef begin_search(self, intp[::1] label_indices)
+
+    cdef update_search(self, intp example_index, uint32 weight)
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
+
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered)
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores)
+
+
+cdef class ExampleBasedLogisticLoss(NonDecomposableLoss):
 
     # Attributes:
 
