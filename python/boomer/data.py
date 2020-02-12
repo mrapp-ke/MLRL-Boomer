@@ -164,6 +164,10 @@ def __parse_attributes(arff_file) -> List[Attribute]:
                     # Numerical attribute
                     attribute_name = attribute_definition[:(len(attribute_definition) - len('numeric'))]
                     attributes.append(Attribute(attribute_name))
+                elif attribute_definition.endswith('real'):
+                    # Numerical attribute
+                    attribute_name = attribute_definition[:(len(attribute_definition) - len('real'))]
+                    attributes.append(Attribute(attribute_name))
                 else:
                     # Nominal attribute
                     attribute_name = attribute_definition[:attribute_definition.find(' {')]
