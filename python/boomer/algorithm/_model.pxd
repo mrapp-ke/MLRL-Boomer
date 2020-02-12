@@ -73,4 +73,4 @@ cdef class Rule:
 
     # Functions:
 
-    cpdef predict(self, float32[::1, :] x, float64[::1, :] predictions)
+    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions)

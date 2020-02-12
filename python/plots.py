@@ -12,8 +12,8 @@ from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS, SUBSET_01_LOSS
-from boomer.experiments import CrossValidation
-from main import configure_argument_parser, create_learner
+from boomer.training import CrossValidation
+from main_boomer import configure_argument_parser, create_learner
 
 
 class Plotter(CrossValidation, MLClassifierBase):
@@ -25,9 +25,9 @@ class Plotter(CrossValidation, MLClassifierBase):
 
     evaluation = ClassificationEvaluation()
 
-    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, folds: int, learner_name: str,
-                 model_name: str):
-        super().__init__(data_dir, data_set, folds)
+    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, num_folds: int, current_fold: int,
+                 learner_name: str, model_name: str):
+        super().__init__(data_dir, data_set, num_folds, current_fold)
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
         self.persistence = ModelPersistence(model_dir=model_dir)
@@ -35,14 +35,16 @@ class Plotter(CrossValidation, MLClassifierBase):
         self.model_name = model_name
         self.data_set = data_set
 
-    def _train_and_evaluate(self, train_x, train_y, test_x, test_y, current_fold: int, total_folds: int):
+    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
+                            current_fold: int, last_fold: int, num_folds: int):
         # Create a dense representation of the training data
         train_x = np.asfortranarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)
         test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
         test_y = self._ensure_input_format(test_y)
 
-        theory: Theory = self.__load_theory(current_fold)
+        theory: Theory = self.persistence.load_model(model_name=self.model_name, file_name_suffix=Boomer.PREFIX_RULES,
+                                                     fold=current_fold, raise_exception=True)
         num_iterations = len(theory)
 
         train_predictions = np.asfortranarray(np.zeros((train_x.shape[0], train_y.shape[1]), dtype=DTYPE_FLOAT64))
@@ -55,25 +57,16 @@ class Plotter(CrossValidation, MLClassifierBase):
 
             rule.predict(train_x, train_predictions)
             name = Plotter.__get_experiment_name(prefix='train', iteration=i)
-            self.evaluation.evaluate(name, np.where(train_predictions > 0, 1, 0), train_y, current_fold=current_fold,
-                                     total_folds=total_folds)
+            self.evaluation.evaluate(name, np.where(train_predictions > 0, 1, 0), train_y, first_fold=first_fold,
+                                     current_fold=current_fold, last_fold=last_fold, num_folds=num_folds)
 
             rule.predict(test_x, test_predictions)
             name = Plotter.__get_experiment_name(prefix='test', iteration=i)
-            self.evaluation.evaluate(name, np.where(test_predictions > 0, 1, 0), test_y, current_fold=current_fold,
-                                     total_folds=total_folds)
+            self.evaluation.evaluate(name, np.where(test_predictions > 0, 1, 0), test_y, first_fold=first_fold,
+                                     current_fold=current_fold, last_fold=last_fold, num_folds=num_folds)
 
-        if total_folds < 1 or current_fold == total_folds - 1:
+        if current_fold == last_fold:
             self.__plot(num_iterations=num_iterations)
-
-    def __load_theory(self, fold: int):
-        theory = self.persistence.load_model(model_name=self.model_name, file_name_suffix=Boomer.PREFIX_RULES,
-                                             fold=fold)
-
-        if theory is None:
-            raise IOError('Unable to load model')
-
-        return theory
 
     def __plot(self, num_iterations: int):
         log.info('Creating plots...')
@@ -84,7 +77,7 @@ class Plotter(CrossValidation, MLClassifierBase):
             # Customize x axis
             plt.xlabel('# rules')
             plt.xlim(left=0, right=num_iterations)
-            x_ticks = np.arange(0, num_iterations + 100, 100)
+            x_ticks = np.arange(0, num_iterations + 200, 200)
             plt.xticks(ticks=x_ticks)
 
             # Draw vertical lines
@@ -128,10 +121,14 @@ class Plotter(CrossValidation, MLClassifierBase):
                 plt.plot(x, y, label=(measure + ' (' + prefix + ')'))
 
             plt.legend()
-            file_name = self.learner_name + '.pdf'
-            output_file = path.join(self.output_dir, file_name)
-            log.info('Saving plot to file \'' + output_file + '\'...')
-            plt.savefig(output_file)
+
+            if self.output_dir is not None:
+                file_name = self.learner_name + '.pdf'
+                output_file = path.join(self.output_dir, file_name)
+                log.info('Saving plot to file \'' + output_file + '\'...')
+                plt.savefig(output_file)
+            else:
+                plt.show()
 
     def fit(self, x, y):
         pass
@@ -147,15 +144,14 @@ class Plotter(CrossValidation, MLClassifierBase):
 
 
 if __name__ == '__main__':
-    log.basicConfig(level=log.INFO)
-
     parser = argparse.ArgumentParser(description='Plots the performance of a BOOMER model')
     configure_argument_parser(parser)
     args = parser.parse_args()
+    log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
-    learner = create_learner(args.num_rules, args)
+    learner = create_learner(args)
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
-                      data_set=args.dataset, folds=args.folds, model_name=learner.get_model_name(),
-                      learner_name=learner.get_name())
+                      data_set=args.dataset, num_folds=args.folds, current_fold=args.current_fold,
+                      model_name=learner.get_model_name(), learner_name=learner.get_name())
     plotter.run()
