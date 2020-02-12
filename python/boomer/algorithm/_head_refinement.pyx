@@ -99,7 +99,7 @@ cdef class FullHeadRefinement(HeadRefinement):
             for c in range(num_labels):
                 candidate_predicted_scores[c] = predicted_scores[c]
 
-            candidate = HeadCandidate(None, candidate_predicted_scores, overall_quality_score)
+            candidate = HeadCandidate(label_indices, candidate_predicted_scores, overall_quality_score)
             return candidate
         else:
             # The quality score must be better than that of `best_head`...
