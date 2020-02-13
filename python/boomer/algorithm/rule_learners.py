@@ -13,7 +13,8 @@ from timeit import default_timer as timer
 
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._losses import Loss, DecomposableLoss, MacroSquaredErrorLoss, MacroLogisticLoss, ExampleBasedLogisticLoss
+from boomer.algorithm._losses import Loss, DecomposableLoss, ExampleBasedLogisticLoss
+from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
 from sklearn.utils.validation import check_is_fitted
 
