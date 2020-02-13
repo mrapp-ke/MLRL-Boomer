@@ -32,6 +32,8 @@ mkdir -p "${LOG_DIR}"
 echo "Creating directory ${MODEL_DIR}"
 mkdir -p "${MODEL_DIR}"
 
+COUNT = 1
+
 for SHRINKAGE in "${SHRINKAGE_ARRAY[@]}"
 do
   for L2_REGULARIZATION_WEIGHT in "${L2_REGULARIZATION_WEIGHT_ARRAY[@]}"
@@ -44,7 +46,7 @@ do
         then
           for CURRENT_FOLD in $(seq 1 $FOLDS)
           do
-            JOB_NAME="${DATASET}-${CURRENT_FOLD}_loss=${LOSS}_head_refinement=${HEAD_REFINEMENT}_shrinkage=${SHRINKAGE}"
+            JOB_NAME="${DATASET}-${CURRENT_FOLD}_loss=${LOSS}_${COUNT}"
             FILE="${JOB_NAME}.sh"
             PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${NUM_RULES} --time-limit ${TIME_LIMIT} --shrinkage ${SHRINKAGE} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT} --label-sub-sampling ${LABEL_SUB_SAMPLING} --l2-regularization-weight ${L2_REGULARIZATION_WEIGHT}"
 
@@ -62,10 +64,12 @@ do
             chmod +x "$FILE"
 
             # Run SLURM job
-            sbatch "$FILE"
+            #sbatch "$FILE"
             rm "$FILE"
-            echo "Started experiment with parameters ${PARAMETERS}"
+            #echo "Started experiment with parameters ${PARAMETERS}"
           done
+
+          COUNT=$((COUNT + 1))
         fi
       done
     done
