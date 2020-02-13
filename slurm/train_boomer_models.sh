@@ -32,7 +32,7 @@ mkdir -p "${LOG_DIR}"
 echo "Creating directory ${MODEL_DIR}"
 mkdir -p "${MODEL_DIR}"
 
-COUNT = 1
+COUNT=1
 
 for SHRINKAGE in "${SHRINKAGE_ARRAY[@]}"
 do
