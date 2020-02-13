@@ -11,6 +11,8 @@ from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport convert_label_into_score, get_index
 from boomer.algorithm._math cimport divide_or_zero_float64, l2_norm_pow
 
+from libc.math cimport pow, exp
+
 
 cdef class MacroLoss(DecomposableLoss):
     """
@@ -347,9 +349,8 @@ cdef class MacroLogisticLoss(MacroLoss):
     """
 
     cdef float64 _gradient(self, float64 expected_score, float64 current_score):
-        # TODO
-        pass
+        return -expected_score / (1 + exp(expected_score * current_score))
 
     cdef float64 _hessian(self, float64 expected_score, float64 current_score):
-        # TODO
-        pass
+        cdef float64 exponential = exp(expected_score * current_score)
+        return (pow(expected_score, 2) * exponential) / pow(1 + exponential, 2)
