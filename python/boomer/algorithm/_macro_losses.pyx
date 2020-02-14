@@ -254,7 +254,7 @@ cdef class MacroLoss(DecomposableLoss):
             total_sums_of_hessians = self.total_sums_of_hessians
             label_indices = self.label_indices
 
-        # For each label calculate the score to be predicted, as well as a quality score...
+        # For each label, calculate the score to be predicted, as well as a quality score...
         for c in range(num_labels):
             sum_of_gradients = sums_of_gradients[c]
             sum_of_hessians = sums_of_hessians[c]
