@@ -241,7 +241,7 @@ cdef class MacroLoss(DecomposableLoss):
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         # The number of labels considered by the current search
         cdef intp num_labels = sums_of_gradients.shape[0]
-        # The overall quality score, i.e., the sum of the quality scores for each label
+        # The overall quality score, i.e., the sum of the quality scores for each label plus the L2 regularization term
         cdef float64 overall_quality_score = 0
         # Temporary variables
         cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
