@@ -274,7 +274,7 @@ cdef class MacroLoss(DecomposableLoss):
             quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
             overall_quality_score += score
 
-        # Add the L2 regularization term to the overall quality score
+        # Add the L2 regularization term to the overall quality score...
         overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
 
