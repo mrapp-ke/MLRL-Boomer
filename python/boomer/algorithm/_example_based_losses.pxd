@@ -6,7 +6,7 @@ cdef class ExampleBasedLogisticLoss(NonDecomposableLoss):
 
     # Attributes:
 
-    cdef uint8[::1, :] ground_truth
+    cdef float64[::1, :] expected_scores
 
     cdef float64[::1, :] current_scores
 
