@@ -402,6 +402,7 @@ cdef class ExampleBasedLogisticLoss(NonDecomposableLoss):
             sum_of_exponentials = 1
 
             for c in range(num_labels):
+                expected_score = expected_scores[r, c]
                 exponential = exp(-expected_score * current_scores[r, c])
                 exponentials[c] = exponential
                 sum_of_exponentials += exponential
