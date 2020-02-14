@@ -184,7 +184,7 @@ cdef class MacroLoss(DecomposableLoss):
         # To avoid array-recreation each time the search will be updated, the arrays for storing the sums of gradients
         # and hessians, as well as the arrays for storing predictions and quality scores, are initialized once at this
         # point. If the arrays from the previous search have the correct size, they are reused.
-        cdef LabelIndependentPrediction prediction = <LabelIndependentPrediction>self.prediction
+        cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
@@ -241,7 +241,7 @@ cdef class MacroLoss(DecomposableLoss):
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         # The number of labels considered by the current search
         cdef intp num_labels = sums_of_gradients.shape[0]
-        # The overall quality score, i.e., the sum of the quality scores for each label
+        # The overall quality score, i.e., the sum of the quality scores for each label plus the L2 regularization term
         cdef float64 overall_quality_score = 0
         # Temporary variables
         cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
@@ -254,7 +254,7 @@ cdef class MacroLoss(DecomposableLoss):
             total_sums_of_hessians = self.total_sums_of_hessians
             label_indices = self.label_indices
 
-        # For each label calculate the score to be predicted, as well as a quality score...
+        # For each label, calculate the score to be predicted, as well as a quality score...
         for c in range(num_labels):
             sum_of_gradients = sums_of_gradients[c]
             sum_of_hessians = sums_of_hessians[c]
@@ -274,9 +274,10 @@ cdef class MacroLoss(DecomposableLoss):
             quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
             overall_quality_score += score
 
-
+        # Add the L2 regularization term to the overall quality score...
         overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
+
         return prediction
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
