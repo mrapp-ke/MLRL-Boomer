@@ -184,7 +184,7 @@ cdef class MacroLoss(DecomposableLoss):
         # To avoid array-recreation each time the search will be updated, the arrays for storing the sums of gradients
         # and hessians, as well as the arrays for storing predictions and quality scores, are initialized once at this
         # point. If the arrays from the previous search have the correct size, they are reused.
-        cdef LabelIndependentPrediction prediction = <LabelIndependentPrediction>self.prediction
+        cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
