@@ -11,6 +11,7 @@ from abc import abstractmethod
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
+from boomer.algorithm._model import Rule
 from boomer.algorithm._pruning import Pruning
 
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
@@ -19,6 +20,7 @@ from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampli
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.stopping_criteria import StoppingCriterion
+from boomer.algorithm.utils import format_rule
 from boomer.learners import Module
 
 
@@ -136,88 +138,72 @@ class SeparateAndConquer(RuleInduction):
     Implements the induction of (multi-label) classification rules using a separate and conquer algorithm.
     """
 
-    def __init__(self):
+    def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
+                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
+                 shrinkage: Shrinkage, *stopping_criteria: StoppingCriterion):
         """
+        :param head_refinement:         The strategy that is used to find the heads of rules
+        :param loss:                    The loss function to be minimized
+        :param label_sub_sampling:      The strategy that is used for sub-sampling the labels each time a new
+                                        classification rule is learned
+        :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
+                                        classification rule is learned
+        :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
+                                        classification rule is refined
+        :param pruning:                 The strategy that is used for pruning rules
+        :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
+                                        induced rules to reduce their effect on the entire model. Must be in (0, 1]
+        :param stopping_criteria        The stopping criteria that should be used to decide whether additional rules
+                                        should be induced or not
         """
-        pass
+        self.head_refinement = head_refinement
+        self.loss = loss
+        self.label_sub_sampling = label_sub_sampling
+        self.instance_sub_sampling = instance_sub_sampling
+        self.feature_sub_sampling = feature_sub_sampling
+        self.pruning = pruning
+        self.shrinkage = shrinkage
+        self.stopping_criteria = stopping_criteria
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
-        self.__validate()
-        i = 0
+        theory = []
 
-        decision_list = []
-        examples = []
+        # Convert feature and label matrices into Fortran-contiguous arrays
+        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
+        y = np.asfortranarray(y, dtype=DTYPE_UINT8)
 
-        num_rules = len(examples)
-        while len(examples) / num_rules >= 0.05:
-            log.info('Learning rule %s...', i)
-            rule = self.find_best_global_rule(examples, meta_data)
+        # Sort feature matrix once
+        x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
 
-            format_rule(stats, rule, meta_data, _)
+        cover_mask = np.ones(shape=y.shape)
+
+        default_rule = induce_default_rule(y, self.loss)
+        theory.append(default_rule)
+
+        learned_rules = 0
+
+        while np.sum(cover_mask) >= 2:
+            log.info('Learning rule %s...', learned_rules + 1)
+            rule = induce_rule(x, x_sorted_indices, y, self.head_refinement, self.loss, self.label_sub_sampling,
+                               self.instance_sub_sampling, self.feature_sub_sampling, self.pruning, self.shrinkage,
+                               self.random_state)
+
+            print(format_rule(stats, rule))
 
             # Add new rule to decision list
-            decision_list.append(rule)
+            theory.append(rule)
 
-            examples, examples_partially_covered, examples_fully_covered = self.get_covered_sets(rule, examples)
+            cover_mask = self.mark_covered(rule, cover_mask, x, y)
 
-            t_add = self.get_readd_set(examples_partially_covered, examples_fully_covered)
+            learned_rules += 1
 
-            if len(t_add) == 0:
-                rule.mark_as_stopping_rule()
-            else:
-                examples = examples + t_add
+        return theory
 
-            i += 1
-            break
+    def mark_covered(self, rule: Rule, cover_mask: np.ndarray, x, y):
+        num_examples = x.shape[0]
 
-        return decision_list
+        for i in range(num_examples):
+            if rule.body.covers(x[i]):
+                cover_mask[i] = np.maximum(cover_mask[i] - np.maximum(rule.head.scores, 0), 0)
 
-    def __validate(self):
-        """
-        Raises exceptions if the module is not configured properly.
-        """
-        pass
-
-    def find_best_global_rule(self, examples, meta_data: MetaData):
-        best_rule = EmptyRule()
-        improved = True
-
-        while improved:
-            rule = self.refine_rule(examples, best_rule, meta_data)
-            if self.evaluate_rule(rule) > self.evaluate_rule(best_rule):
-                best_rule = rule
-            else:
-                improved = False
-        return best_rule
-
-    def get_covered_sets(self, rule, examples_left):
-        raise NotImplementedError
-
-    def get_readd_set(self, t_part, t_full):
-        raise NotImplementedError
-
-    def filter_examples(self, examples):
-        raise NotImplementedError
-
-    def find_best_rule(self, filtered_examples):
-        raise NotImplementedError
-
-    def evaluate_rule(self, rule):
-        raise NotImplementedError
-
-    def refine_rule(self, examples, rule: Rule, meta_data):
-        best_rule = rule
-        for condition in self.get_all_possible_conditions(meta_data):
-            if not rule.contains_condition(condition):
-                refined_rule = rule
-                refined_rule.body.add_condition(condition)
-                refined_rule = self.find_best_head(examples, filtered_examples)
-                if self.evaluate_rule(refined_rule) > self.evaluate_rule(best_rule):
-                    best_rule = refined_rule
-        return best_rule
-
-    def find_best_head(self, examples, filtered_examples):
-        raise NotImplementedError
-
-    def get_all_possible_conditions(self, meta_data):
-        raise NotImplementedError
+        return cover_mask

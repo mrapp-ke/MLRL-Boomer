@@ -12,13 +12,13 @@ from os.path import isdir
 from timeit import default_timer as timer
 
 import numpy as np
+from sklearn.utils.validation import check_is_fitted
+
+from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import Loss, DecomposableLoss
 from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
-from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
-from sklearn.utils.validation import check_is_fitted
-
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
@@ -394,24 +394,31 @@ class Boomer(MLRuleLearner):
         return params
 
 
-class SeparateAndConquerRuleLearner(MLRuleLearner, BatchMLLearner):
+class SeparateAndConquerRuleLearner(MLRuleLearner):
     """
     A scikit-multilearn implementation of an Separate-and-Conquer algorithm for learning multi-label
     classification rules.
     """
 
-    def __init__(self):
+    def __init__(self, model_dir: str = None):
         """
         """
-        super().__init__(rule_induction=SeparateAndConquer())
-
-    def partial_fit(self, x: np.ndarray, y: np.ndarray) -> BatchMLLearner:
-        check_is_fitted(self)
-        self.theory_ = self._induce_rules(x, y, theory=self.theory_)
-        return self
+        super().__init__(model_dir)
 
     def get_name(self) -> str:
         return 'SeparateAndConquerRuleLearner'
 
-    def copy_classifier(self, **kwargs) -> 'BatchMLLearner':
-        return copy(self)
+    def _create_rule_induction(self, stats: Stats) -> RuleInduction:
+        loss = MacroSquaredErrorLoss(0)
+        head_refinement = SingleLabelHeadRefinement()
+        label_sub_sampling = None
+        instance_sub_sampling = None
+        feature_sub_sampling = None
+        pruning = None
+        shrinkage = None
+        return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
+                                  feature_sub_sampling,
+                                  pruning, shrinkage, *[])
+
+    def _create_prediction(self) -> Prediction:
+        return Sign(LinearCombination())
