@@ -12,8 +12,9 @@ from boomer.algorithm._arrays cimport intp, uint8, uint32, float32, float64, mat
 from boomer.algorithm._model cimport Rule, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm._head_refinement cimport HeadCandidate, HeadRefinement
 from boomer.algorithm._losses cimport Loss, Prediction
-from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling
+from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.algorithm._pruning cimport Pruning
+from boomer.algorithm._shrinkage cimport Shrinkage
 from boomer.algorithm._utils cimport s_condition, make_condition, test_condition, get_index, get_weight
 
 from libcpp.list cimport list as list
@@ -40,9 +41,10 @@ cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
     return rule
 
 
-cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRefinement head_refinement, Loss loss,
+cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, uint8[::1, :] y,
+                       HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                        InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                       Pruning pruning, float64 shrinkage, random_state: int):
+                       Pruning pruning, Shrinkage shrinkage, random_state: int):
     """
     Induces a single- or multi-label classification rule that minimizes a certain loss function with respect to the
     expected and currently predicted confidence scores.
@@ -51,16 +53,20 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                     features of the training examples
     :param x_sorted_indices:        An array of dtype int, shape `(num_examples, num_features)`, representing the
                                     indices of the training examples when sorting column-wise
+    :param y:                       An array of dtype int, shape `(num_examples, num_labels)`, representing the labels 
+                                    of the training examples
     :param head_refinement:         The strategy that is used to find the heads of rules
     :param loss:                    The loss function to be minimized
+    :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label 
+                                    sub-sampling should be used
     :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if no
                                     instance sub-sampling should be used
     :param feature_sub_sampling:    The strategy that should be used to sub-sample the available features or None, if no
                                     feature sub-sampling should be used
     :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
                                     used
-    :param shrinkage:               The shrinkage parameter that should be applied to the induced rule's predictions.
-                                    Must be in (0, 1]
+    :param shrinkage:               The strategy that should be used to shrink the weights of rules or None, if no 
+                                    shrinkage should be used
     :param random_state:            The seed to be used by RNGs
     :return:                        The rule that has been induced
     """
@@ -71,6 +77,14 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
         weights = None
     else:
         weights = instance_sub_sampling.sub_sample(x, loss, random_state)
+
+    # Sub-sample labels, if necessary...
+    cdef intp[::1] label_indices
+
+    if label_sub_sampling is None:
+        label_indices = None
+    else:
+        label_indices = label_sub_sampling.sub_sample(y, random_state)
 
     # The head of the induced rule
     cdef HeadCandidate head = None
@@ -93,7 +107,6 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
     cdef float32 best_condition_threshold
 
     # Variables for specifying the examples and labels that should be used for finding the best refinement
-    cdef intp[::1] label_indices = None
     cdef intp[::1, :] sorted_indices = x_sorted_indices
     cdef intp num_examples
 
@@ -132,7 +145,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             loss.begin_search(label_indices)
 
             # Find first example with weight > 0...
-            for r in range(0, num_examples):
+            for r in range(num_examples):
                 i = sorted_indices[r, f]
                 weight = get_weight(i, weights)
 
@@ -179,7 +192,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                                 best_condition_r = __adjust_split(x, sorted_indices, r, previous_r, f,
                                                                   best_condition_leq, best_condition_threshold)
 
-                         # Find and evaluate the best head for the current refinement, if a condition that uses the >
+                        # Find and evaluate the best head for the current refinement, if a condition that uses the >
                         # operator is used...
                         current_head = head_refinement.find_head(head, label_indices, loss, 1)
 
@@ -227,6 +240,9 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
                 # Abort refinement process if rule covers a single example...
                 break
 
+    if head is None:
+        raise RuntimeError('Failed to find an useful condition for the new rule! Please remove any constants features from the training data')
+
     # Obtain the indices of all examples that are covered by the new rule, regardless of whether they are included in
     # the sub-sample or not...
     covered_example_indices = sorted_indices[:, 0]
@@ -245,17 +261,34 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, HeadRef
             loss.update_search(i, 1)
 
         prediction = head_refinement.evaluate_predictions(loss, 0)
-        head.predicted_scores = prediction.predicted_scores
+        __copy_array(prediction.predicted_scores, head.predicted_scores)
 
     # Apply shrinkage, if necessary...
-    if shrinkage < 1:
-        __apply_shrinkage(head, shrinkage)
+    if shrinkage is not None:
+        shrinkage.apply_shrinkage(head.predicted_scores)
 
     # Tell the loss function that a new rule has been induced...
     loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
 
     # Build and return the induced rule...
     return __build_rule(head, conditions, num_leq_conditions, num_gr_conditions)
+
+
+cdef inline __copy_array(float64[::1] from_array, float64[::1] to_array):
+    """
+    Copies the elements from one array to another.
+
+    :param from_array:  An array of dtype float, shape `(num_elements)`, representing the array from which the elements
+                        should be copied
+    :param to_array:    An array of dtype float, shape `(num_elements)`, representing the array to which the elements
+                        should be copied
+    """
+    cdef intp num_elements = from_array.shape[0]
+    cdef intp i
+
+    for i in range(num_elements):
+        to_array[i] = from_array[i]
+
 
 cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp position_start, intp position_end,
                          intp feature_index, bint leq, float32 threshold):
@@ -264,19 +297,18 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
     not contained in the sample by looking back a certain number of examples (that are not contained in the sample) to
     see if they satisfy a condition or not.
 
-    :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the training examples
-    :param x_sorted_indices:    An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
-                                the examples that are covered by the previous rule when sorting column-wise
-    :param position_start:      The position that separates the covered from the uncovered examples (when only taking
-                                into account the examples that are contained in the sample). This is the position to
-                                start at
-    :param position_end:        The position to stop at (exclusive, must be smaller than `position_start`)
-    :param feature_index:       The index of the feature used by the condition
-    :param leq:                 1, if the condition uses the <= operator, 0 if it uses the > operator
-    :param threshold:           The threshold of the condition
-    :return:                    The adjusted position that separates the covered from the uncovered examples with
-                                respect to the examples that are not contained in the sample
+    :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features of 
+                            the training examples
+    :param sorted_indices:  An array of dtype int, shape `(num_examples, num_features)`, representing the indices of the 
+                            examples that are covered by the previous rule when sorting column-wise
+    :param position_start:  The position that separates the covered from the uncovered examples (when only taking into 
+                            account the examples that are contained in the sample). This is the position to start at
+    :param position_end:    The position to stop at (exclusive, must be smaller than `position_start`)
+    :param feature_index:   The index of the feature used by the condition
+    :param leq:             1, if the condition uses the <= operator, 0 if it uses the > operator
+    :param threshold:       The threshold of the condition
+    :return:                The adjusted position that separates the covered from the uncovered examples with respect to 
+                            the examples that are not contained in the sample
     """
     cdef intp adjusted_position = position_start
     cdef float32 feature_value
@@ -354,7 +386,7 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
 
     :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
-    :param x_sorted_indices:    An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
+    :param sorted_indices:      An array of dtype int, shape `(num_examples, num_features)`, representing the indices of
                                 the training examples that are covered by the previous rule when sorting column-wise
     :param condition_r:         The index of the example from which the threshold of the condition that has been added
                                 to the previous rule has been chosen
@@ -407,18 +439,3 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
                         break
 
     return filtered_sorted_indices
-
-
-cdef __apply_shrinkage(HeadCandidate head, float64 shrinkage):
-    """
-    Applies a specific shrinkage parameter to the scores that are predicted by a rule's head.
-
-    :param head:        The head, the shrinkage parameter should be applied to
-    :param shrinkage:   The shrinkage parameter. Must be in (0, 1]
-    """
-    cdef float64[::1] scores = head.predicted_scores
-    cdef intp num_labels = scores.shape[0]
-    cdef intp c
-
-    for c in range(num_labels):
-         scores[c] *= shrinkage
