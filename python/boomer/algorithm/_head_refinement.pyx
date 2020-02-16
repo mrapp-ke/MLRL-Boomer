@@ -69,7 +69,7 @@ cdef class HeadRefinement:
         `update_search`.
 
         :param loss:            The `Loss` to be minimized
-        :param covered:         0, if the rule for which the optimal scores should be calculated covers all examples
+        :param uncovered:       0, if the rule for which the optimal scores should be calculated covers all examples
                                 that have been provided to the loss function so far, 1, if the rule covers all examples
                                 that have not been provided yet
         :return:                A `Prediction` that stores the optimal scores to be predicted by the rule, as well as
@@ -87,7 +87,7 @@ cdef class FullHeadRefinement(HeadRefinement):
         cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64 overall_quality_score = prediction.overall_quality_score
-        cdef intp num_labels = predicted_scores.shape[1]
+        cdef intp num_labels = predicted_scores.shape[0]
         cdef float64[::1] candidate_predicted_scores
         cdef HeadCandidate candidate
         cdef intp c
@@ -99,7 +99,7 @@ cdef class FullHeadRefinement(HeadRefinement):
             for c in range(num_labels):
                 candidate_predicted_scores[c] = predicted_scores[c]
 
-            candidate = HeadCandidate(None, candidate_predicted_scores, overall_quality_score)
+            candidate = HeadCandidate(label_indices, candidate_predicted_scores, overall_quality_score)
             return candidate
         else:
             # The quality score must be better than that of `best_head`...
@@ -128,7 +128,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef intp num_labels = predicted_scores.shape[1]
+        cdef intp num_labels = predicted_scores.shape[0]
         cdef intp best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
         cdef HeadCandidate candidate

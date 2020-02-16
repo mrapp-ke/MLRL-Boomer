@@ -10,7 +10,6 @@ Provides classes that implement strategies for sub-sampling training examples or
 from boomer.algorithm._arrays cimport array_uint32
 
 from libc.math cimport log2
-cimport numpy as npc
 
 import numpy as np
 from sklearn.utils._random import sample_without_replacement
@@ -25,7 +24,7 @@ cdef class InstanceSubSampling:
 
     cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state):
         """
-        Creates a sub-sample of the available training examples.
+        Creates and returns a sub-sample of the available training examples.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
@@ -136,7 +135,7 @@ cdef class FeatureSubSampling:
 
     cdef intp[::1] sub_sample(self, float32[::1, :] x, int random_state):
         """
-        Creates a sub-sample of the available features.
+        Creates and returns a sub-sample of the available features.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
@@ -172,3 +171,37 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
          return np.ascontiguousarray(sample_without_replacement(num_features, num_samples, 'auto', random_state),
                                      dtype=DTYPE_INTP)
+
+
+cdef class LabelSubSampling:
+    """
+    A base class for all classes that implement a strategy for sub-sampling labels.
+    """
+
+    cdef intp[::1] sub_sample(self, uint8[::1, :] y, int random_state):
+        """
+        Creates and returns a sub-sample of the available labels.
+        
+        :param y:               An array of dtype int, shape `(num_examples, num_labels)`, representing the labels of 
+                                the training examples 
+        :param random_state:    The seed to be used by RNGs
+        :return:                An array of dtype int, shape `(num_samples)`, representing the indices of the labels 
+                                contained in the sub-sample
+        """
+        pass
+
+
+cdef class RandomLabelSubsetSelection(LabelSubSampling):
+
+    def __cinit__(self, num_samples: int):
+        """
+        :param num_samples: The number of labels to be included in the sample
+        """
+        self.num_samples = num_samples
+
+    cdef intp[::1] sub_sample(self, uint8[::1, :] y, int random_state):
+        cdef intp num_labels = y.shape[1]
+        cdef intp num_samples = self.num_samples
+        cdef intp[::1] result = np.ascontiguousarray(sample_without_replacement(num_labels, num_samples, 'auto', random_state),
+                                    dtype=DTYPE_INTP)
+        return result
