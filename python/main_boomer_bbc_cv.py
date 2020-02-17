@@ -128,11 +128,13 @@ class Predictor(CrossValidation, MLClassifierBase):
 def __create_configurations(arguments) -> List[dict]:
     num_rules_values: List[int] = arguments.num_rules
     loss_values: List[str] = arguments.loss
-    head_refinement_values: List[str] = arguments.head_refinement
+    head_refinement_values: List[str] = [None if x.lower() == 'none' else x for x in arguments.head_refinement]
     label_sub_sampling_values: List[int] = arguments.label_sub_sampling
-    instance_sub_sampling_values: List[str] = arguments.instance_sub_sampling
-    feature_sub_sampling_values: List[str] = arguments.feature_sub_sampling
-    pruning_values: List[str] = arguments.pruning
+    instance_sub_sampling_values: List[str] = [None if x.lower() == 'none' else x for x in
+                                               arguments.instance_sub_sampling]
+    feature_sub_sampling_values: List[str] = [None if x.lower() == 'none' else x for x in
+                                              arguments.feature_sub_sampling]
+    pruning_values: List[str] = [None if x.lower() == 'none' else x for x in arguments.pruning]
     shrinkage_values: List[float] = arguments.shrinkage
     result: List[dict] = []
 
