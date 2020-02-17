@@ -136,6 +136,7 @@ def __create_configurations(arguments) -> List[dict]:
                                               arguments.feature_sub_sampling]
     pruning_values: List[str] = [None if x.lower() == 'none' else x for x in arguments.pruning]
     shrinkage_values: List[float] = arguments.shrinkage
+    l2_regularization_weight_values: List[float] = arguments.l2_regularization_weight
     result: List[dict] = []
 
     for num_rules in num_rules_values:
@@ -144,20 +145,22 @@ def __create_configurations(arguments) -> List[dict]:
                 for instance_sub_sampling in instance_sub_sampling_values:
                     for feature_sub_sampling in feature_sub_sampling_values:
                         for shrinkage in shrinkage_values:
-                            for head_refinement in head_refinement_values:
-                                for label_sub_sampling in label_sub_sampling_values:
-                                    if head_refinement == 'full' or label_sub_sampling == -1:
-                                        configuration = {
-                                            'num_rules': num_rules,
-                                            'loss': loss,
-                                            'pruning': pruning,
-                                            'instance_sub_sampling': instance_sub_sampling,
-                                            'feature_sub_sampling': feature_sub_sampling,
-                                            'shrinkage': shrinkage,
-                                            'head_refinement': head_refinement,
-                                            'label_sub_sampling': label_sub_sampling
-                                        }
-                                        result.append(configuration)
+                            for l2_regularization_weight in l2_regularization_weight_values:
+                                for head_refinement in head_refinement_values:
+                                    for label_sub_sampling in label_sub_sampling_values:
+                                        if head_refinement == 'full' or label_sub_sampling == -1:
+                                            configuration = {
+                                                'num_rules': num_rules,
+                                                'loss': loss,
+                                                'pruning': pruning,
+                                                'instance_sub_sampling': instance_sub_sampling,
+                                                'feature_sub_sampling': feature_sub_sampling,
+                                                'shrinkage': shrinkage,
+                                                'l2_regularization_weight': l2_regularization_weight,
+                                                'head_refinement': head_refinement,
+                                                'label_sub_sampling': label_sub_sampling
+                                            }
+                                            result.append(configuration)
 
     return result
 
@@ -242,7 +245,7 @@ def __write_tuning_scores_per_num_labels(output_dir: str, evaluation_scores: np.
     if len(parameter_values) > 1:
         num_rows = evaluation_scores_tuning.shape[1]
         header = ['head-refinement=' + str(x[0]) + '_label-sub-sampling=' + str(x[1]) for x in parameter_values]
-    
+
         with open_writable_csv_file(output_dir, 'tuning_scores_per_num_labels', fold=None, append=False) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             indices_dict = dict()
@@ -302,6 +305,8 @@ if __name__ == '__main__':
                         help='The values for the parameter \'pruning\' as a comma-separated list')
     parser.add_argument('--shrinkage', type=float_list, default='1.0',
                         help='The values for the parameter \'shrinkage\' as a comma-separated list')
+    parser.add_argument('--l2-regularization-weight', type=float_list, default='1.0',
+                        help='The values for the parameter \'l2-regularization-weight\' as a comma-separated list')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
