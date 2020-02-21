@@ -157,14 +157,14 @@ def __parse_attributes(arff_file) -> List[Attribute]:
 
     with open(arff_file) as file:
         for line in file:
-            if line.startswith('@attribute'):
+            if line.startswith('@attribute') or line.startswith('@ATTRIBUTE'):
                 attribute_definition = line[len('@attribute'):].strip()
 
-                if attribute_definition.endswith('numeric'):
+                if attribute_definition.endswith('numeric') or attribute_definition.endswith('NUMERIC'):
                     # Numerical attribute
                     attribute_name = attribute_definition[:(len(attribute_definition) - len('numeric'))]
                     attributes.append(Attribute(attribute_name))
-                elif attribute_definition.endswith('real'):
+                elif attribute_definition.endswith('real') or attribute_definition.endswith('REAL'):
                     # Numerical attribute
                     attribute_name = attribute_definition[:(len(attribute_definition) - len('real'))]
                     attributes.append(Attribute(attribute_name))
