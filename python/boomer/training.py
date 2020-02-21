@@ -61,7 +61,7 @@ class CrossValidation(Randomized, ABC):
             'full' if current_fold < 0 else ('fold ' + str(current_fold) + ' of')) + ' %s-fold cross validation...',
                  num_folds)
         x, y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + ".arff", self.data_set + ".xml")
-        x, _ = one_hot_encode(x, y, meta_data.nominal_attributes)
+        x, _ = one_hot_encode(x, y, meta_data)
 
         # Cross validate
         if current_fold < 0:
@@ -113,12 +113,12 @@ class CrossValidation(Randomized, ABC):
 
         train_x, train_y, meta_data = load_data_set_and_meta_data(self.data_dir, train_arff_file_name,
                                                                   self.data_set + '.xml')
-        train_x, encoder = one_hot_encode(train_x, train_y, meta_data.nominal_attributes)
+        train_x, encoder = one_hot_encode(train_x, train_y, meta_data)
 
         # Load test data
         if test_data_exists:
             test_x, test_y = load_data_set(self.data_dir, self.data_set + '-test.arff', meta_data)
-            test_x, _ = one_hot_encode(test_x, test_y, meta_data.nominal_attributes, encoder=encoder)
+            test_x, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
         else:
             log.warning('No test data set available. Model will be evaluated on the training data!')
             test_x = train_x
