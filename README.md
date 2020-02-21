@@ -7,6 +7,8 @@ This project provides a scikit-learn implementation of "BOOMER" - an algorithm f
 ```
 |-- data                                Directory that contains several benchmark data sets
     |-- ...
+|-- data-synthetic                      Directory that contains several synthetic data sets
+    |-- ...
 |-- python                              Directory that contains the project's source code
     |-- boomer                          Directory that contains the code for loading data sets and running experiments
         |-- algorithm                   Directory that contains the actual implementation of the learning algorithm 
