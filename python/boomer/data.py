@@ -268,7 +268,6 @@ def __parse_attributes(arff_file, labels: Set[str]) -> (str, List[Attribute]):
                     # Nominal attribute
                     attribute_name = attribute_definition[:attribute_definition.find(' {')]
                     numeric = False
-                    attributes.append(NominalAttribute(attribute_name))
 
                 if attribute_name not in labels:
                     attribute = Attribute(attribute_name) if numeric else NominalAttribute(attribute_name)
