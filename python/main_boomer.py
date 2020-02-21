@@ -3,21 +3,11 @@
 import argparse
 import logging as log
 
-from args import optional_string, log_level
+from args import optional_string, log_level, boolean_string
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
-
-
-def __boolean_string(s):
-    s = s.lower()
-
-    if s == 'false':
-        return False
-    if s == 'true':
-        return True
-    raise ValueError('Invalid boolean argument given: ' + str(s))
 
 
 def __current_fold_string(s):
@@ -72,7 +62,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='An multi-label classification experiment using BOOMER')
     configure_argument_parser(parser)
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
-    parser.add_argument('--store-predictions', type=__boolean_string, default=False,
+    parser.add_argument('--store-predictions', type=boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
     parser.add_argument('--parameter-dir', type=optional_string, default=None,
                         help='The path of the directory, parameter settings should be loaded from')
