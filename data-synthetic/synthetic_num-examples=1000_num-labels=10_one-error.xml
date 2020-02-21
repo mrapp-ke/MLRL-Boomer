@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <labels xmlns="http://mulan.sourceforge.net/labels">
-	<label name="y4"/>
-	<label name="y6"/>
-	<label name="y3"/>
-	<label name="y1"/>
-	<label name="y9"/>
 	<label name="y2"/>
-	<label name="y5"/>
 	<label name="y8"/>
 	<label name="y7"/>
+	<label name="y9"/>
+	<label name="y3"/>
 	<label name="y0"/>
+	<label name="y5"/>
+	<label name="y6"/>
+	<label name="y1"/>
+	<label name="y4"/>
 </labels>
