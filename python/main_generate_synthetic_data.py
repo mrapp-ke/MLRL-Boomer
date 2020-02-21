@@ -85,7 +85,7 @@ def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float,
             log.warning('Parameter \'marginal-independence\' is True, parameter \'dependent-error\' will be ignored...')
 
         x = np.empty((num_examples, num_labels * 2), dtype=float)
-        y = np.empty((num_examples, num_labels), dtype=float)
+        y = np.empty((num_examples, num_labels), dtype=int)
 
         for k in range(num_labels):
             current_x, current_y = __generate_features_and_labels(num_examples=num_examples, num_labels=1, tau=1, p=p,
@@ -111,7 +111,7 @@ def __generate_features_and_labels(num_examples: int, num_labels: int, tau: floa
     a = tau * r
     a[:, 0] = 1 - a[:, 0]
     a = __normalize(a, axis=1)
-    y = np.empty((num_examples, num_labels), dtype=float)
+    y = np.empty((num_examples, num_labels), dtype=int)
 
     if one_error:
         errors = np.zeros((num_examples, num_labels))
