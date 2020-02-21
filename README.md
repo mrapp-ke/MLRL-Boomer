@@ -5,21 +5,22 @@ This project provides a scikit-learn implementation of "BOOMER" - an algorithm f
 ## Project structure
 
 ```
-|-- data                Directory that contains several benchmark data sets
+|-- data                                Directory that contains several benchmark data sets
     |-- ...
-|-- python              Directory that contains the project's source code
-    |-- boomer          Directory that contains the code for loading data sets and running experiments
-        |-- algorithm   Directory that contains the actual implementation of the learning algorithm 
+|-- python                              Directory that contains the project's source code
+    |-- boomer                          Directory that contains the code for loading data sets and running experiments
+        |-- algorithm                   Directory that contains the actual implementation of the learning algorithm 
             | ...
         | ...
-    |-- setup.py        Distutil definition of the library for installation via pip
-    |-- main_boomer.py  Implements a main function that can be used to start an experiment, i.e., to train a model
-    |-- plots.py        Implements another main function that can be used to create various plots for an existing model
-|-- slurm               Directory that contains bash scripts for running jobs using the Slurm workload manager
+    |-- main_boomer.py                  Can be used to start an experiment, i.e., to train and evaluate a model, using BOOMER
+    |-- main_generate_synthetic_data.py Can be used to generate synthetic data sets
+    |-- plots.py                        Can be used to plot the performance of an existing BOOMER model
+    |-- setup.py                        Distutil definition of the library for installation via pip
+|-- slurm                               Directory that contains bash scripts for running jobs using the Slurm workload manager
     |-- ...
-|-- Makefile            Makefile for compiling the Cython source files and installing a Python virtual environment
-|-- README.md           This file
-|-- settings.zip        PyCharm settings for syntax highlighting of Cython code
+|-- Makefile                            Makefile for compiling the Cython source files and installing a Python virtual environment
+|-- README.md                           This file
+|-- settings.zip                        PyCharm settings for syntax highlighting of Cython code
 ```
 
 ## Project setup
