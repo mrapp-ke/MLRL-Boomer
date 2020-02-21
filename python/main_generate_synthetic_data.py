@@ -13,37 +13,37 @@ command line arguments must be specified:
 
 (1) Marginal independence, conditional independence (Section 7.2):
     --marginal_independence=True
-    --tau=1.0
+    --tau=0.0
     --p=0.1
-    --independent-error=True
+    --dependent-error=False
     --one-error=False
 
 (2) High marginal dependence, conditional independence (Section 7.3):
     --marginal_independence=False
     --tau=0.0
     --p=0.1
-    --independent-error=True
+    --dependent-error=False
     --one-error=False
 
 (3) Low marginal dependence, conditional independence (Section 7.3):
     --marginal_independence=False
     --tau=1.0
     --p=0.1
-    --independent-error=True
+    --dependent-error=False
     --one-error=False
 
 (4) Low marginal dependence, conditional dependence (Section 7.4):
     --marginal_independence=False
     --tau=1.0
     --p=0.1
-    --independent-error=False
+    --dependent-error=True
     --one-error=False
 
 (5) Joint mode (Section 7.5):
     --marginal_independence=False
     --tau=1.0
     --p=0.0
-    --independent-error=False
+    --dependent-error=False
     --one-error=True
 """
 import argparse
@@ -57,7 +57,7 @@ from boomer.data import save_data_set_and_meta_data
 
 
 def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float, marginal_independence: bool,
-                       independent_error: bool, one_error: bool) -> (np.ndarray, np.ndarray):
+                       dependent_error: bool, one_error: bool) -> (np.ndarray, np.ndarray):
     if num_examples < 1:
         raise ValueError('Invalid value given for parameter \'num-examples\': ' + str(num_examples))
     if num_labels < 1:
@@ -77,18 +77,19 @@ def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float,
         # In this case, the features and labels are generated independently (cf. Dembczyński et al. 2012, Section 7.2).
         # This results in num_labels * 2 features.
 
+        if tau > 0.0:
+            log.warning('Parameter \'marginal-independence\' is True, parameter \'tau\' will be ignored...')
         if one_error:
             log.warning('Parameter \'marginal-independence\' is True, parameter \'one-error\' will be ignored...')
-        if independent_error:
-            log.warning(
-                'Parameter \'marginal-independence\' is True, parameter \'independent-error\' will be ignored...')
+        if dependent_error:
+            log.warning('Parameter \'marginal-independence\' is True, parameter \'dependent-error\' will be ignored...')
 
         x = np.empty((num_examples, num_labels * 2), dtype=float)
         y = np.empty((num_examples, num_labels), dtype=float)
 
         for k in range(num_labels):
             current_x, current_y = __generate_features_and_labels(num_examples=num_examples, num_labels=1, tau=1, p=p,
-                                                                  independent_error=False, one_error=False,
+                                                                  dependent_error=False, one_error=False,
                                                                   random_state=random_state)
             x[:, (k * 2, k * 2 + 1)] = current_x[:, :]
             y[:, k] = current_y[:, 0]
@@ -96,14 +97,14 @@ def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float,
             np.random.seed(random_state)
     else:
         x, y = __generate_features_and_labels(num_examples=num_examples, num_labels=num_labels, tau=tau, p=p,
-                                              independent_error=independent_error, one_error=one_error,
+                                              dependent_error=dependent_error, one_error=one_error,
                                               random_state=random_state)
 
     log.info('Successfully generated dataset...')
     return x, y
 
 
-def __generate_features_and_labels(num_examples: int, num_labels: int, tau: float, p: float, independent_error: bool,
+def __generate_features_and_labels(num_examples: int, num_labels: int, tau: float, p: float, dependent_error: bool,
                                    one_error: bool, random_state: int) -> (np.ndarray, np.ndarray):
     x = __disc_point_picking(num_examples)
     r = np.random.uniform(low=0, high=1, size=(num_labels, 2))
@@ -115,14 +116,16 @@ def __generate_features_and_labels(num_examples: int, num_labels: int, tau: floa
     if one_error:
         errors = np.zeros((num_examples, num_labels))
 
-        if independent_error:
-            log.warning('Parameter \'one-error\' is True, parameter \'independent-error\' will be ignored...')
-    elif independent_error:
-        errors = np.asarray(bernoulli.rvs(p, size=num_examples * num_labels, random_state=random_state)).reshape(
-            (num_examples, num_labels))
-    else:
+        if dependent_error:
+            log.warning('Parameter \'one-error\' is True, parameter \'dependent-error\' will be ignored...')
+        if p > 0.0:
+            log.warning('Parameter \'one-error\' is True, parameter \'p\' will be ignored...')
+    elif dependent_error:
         errors = np.tile(bernoulli.rvs(p, size=num_examples, random_state=random_state).reshape(num_examples, 1),
                          num_labels)
+    else:
+        errors = np.asarray(bernoulli.rvs(p, size=num_examples * num_labels, random_state=random_state)).reshape(
+            (num_examples, num_labels))
 
     for r in range(num_examples):
         for c in range(num_labels):
@@ -158,8 +161,8 @@ def __normalize(a: np.ndarray, order=2, axis=-1) -> np.ndarray:
 
 
 def __get_dataset_name(num_examples: int, num_labels: int, tau: float, p: float, marginal_independence: bool,
-                       independent_error: bool, one_error: bool) -> str:
-    name = 'synthetic_num-examples=' + str(num_examples) + '_num-labels=' + str(num_labels) + '_tau=' + str(tau)
+                       dependent_error: bool, one_error: bool) -> str:
+    name = 'synthetic_num-examples=' + str(num_examples) + '_num-labels=' + str(num_labels)
 
     if one_error:
         name += '_one-error'
@@ -168,8 +171,8 @@ def __get_dataset_name(num_examples: int, num_labels: int, tau: float, p: float,
     else:
         name += '_tau=' + str(tau) + '_p=' + str(p)
 
-        if independent_error:
-            name += '_independent-error'
+        if dependent_error:
+            name += '_dependent-error'
 
     return name
 
@@ -200,29 +203,31 @@ if __name__ == '__main__':
               
     When setting the parameter \'marginal-independence\' to True, the produce is performed for each label independently,
     resulting in a data set with 2 * num_labels attributes where the labels are marginally independent from each other.
-    The parameters \'independent-error\' and \'one-error\' will be ignored in such case.
+    The parameters \'tau\', \'dependent-error\' and \'one-error\' will be ignored in such case.
     
-    When setting the parameter \'one-error\' to True, the data set will be first generated without any random errors. 
-    Afterwards, one random label of each example is flicked to the opposite. The parameter \'independent-error\' will be
-    ignored in such case.
+    When setting the parameter \'one-error\' to True, the data set will be first generated without any random errors and
+    afterwards one random label of each example is flicked to the opposite. This results in an extreme form of 
+    conditional dependence between the labels. The parameters \'p\' and \'dependent-error\' will be ignored in such 
+    case.
     
-    When setting the parameter \'independent-error\' to True, the random Bernoulli variables that are used for computing 
-    the error terms to disturb the labels of a certain example are chosen to be the same.
+    When setting the parameter \'dependent-error\' to True, the random Bernoulli variables that are used for computing 
+    the error terms to disturb the labels of a certain example are chosen to be the same. This results in a data set 
+    where the labels are conditionally dependent on each other.
     """
     parser = argparse.ArgumentParser(description='Allows to generate synthetic multi-label datasets')
     parser.add_argument('--log-level', type=log_level, default='info', help='The log level to be used')
     parser.add_argument('--output-dir', type=str,
                         help='The path of the directory into which generated dataset should be written')
     parser.add_argument('--num-examples', type=int, default=1000, help='The number of examples to be generated')
-    parser.add_argument('--num-labels', type=int, default=6, help='The number of labels in the dataset')
+    parser.add_argument('--num-labels', type=int, default=10, help='The number of labels in the dataset')
     parser.add_argument('--marginal-independence', type=boolean_string, default=False,
                         help='True, if the labels should be marginally independent, False otherwise')
     parser.add_argument('--tau', type=float, default=1.0,
                         help='The value of the parameter \'tau\' that controls the degree of marginal dependency')
     parser.add_argument('--p', type=float, default=0.1,
                         help='The value of the Bernoulli parameter \'p\' that controls the Bayes error rate')
-    parser.add_argument('--independent-error', type=boolean_string, default=False,
-                        help='True, if the error for different labels should be sampled independently, False otherwise')
+    parser.add_argument('--dependent-error', type=boolean_string, default=False,
+                        help='True, if the error for the labels of an example should be the same, False otherwise')
     parser.add_argument('--one-error', type=boolean_string, default=False,
                         help='True, if exactly one error should be made per example, False otherwise')
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
@@ -232,9 +237,9 @@ if __name__ == '__main__':
 
     features, labels = __generate_dataset(num_examples=args.num_examples, num_labels=args.num_labels,
                                           marginal_independence=args.marginal_independence, tau=args.tau, p=args.p,
-                                          independent_error=args.independent_error, one_error=args.one_error)
+                                          dependent_error=args.dependent_error, one_error=args.one_error)
     dataset_name = __get_dataset_name(num_examples=args.num_examples, num_labels=args.num_labels, tau=args.tau,
-                                      p=args.p, independent_error=args.independent_error, one_error=args.one_error,
+                                      p=args.p, dependent_error=args.dependent_error, one_error=args.one_error,
                                       marginal_independence=args.marginal_independence)
     meta_data = save_data_set_and_meta_data(args.output_dir, arff_file_name=dataset_name + '.arff',
                                             xml_file_name=dataset_name + '.xml', x=features, y=labels)
