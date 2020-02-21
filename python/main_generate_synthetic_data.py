@@ -39,7 +39,7 @@ command line arguments must be specified:
     --dependent-error=True
     --one-error=False
 
-(5) Joint mode (Section 7.5):
+(5) Low marginal dependency, extreme conditional dependence (Section 7.5):
     --marginal_independence=False
     --tau=1.0
     --p=0.0
