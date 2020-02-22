@@ -25,6 +25,16 @@ def log_level(s):
     raise ValueError('Invalid argument given for parameter \'--log-level\': ' + str(s))
 
 
+def boolean_string(s):
+    s = s.lower()
+
+    if s == 'false':
+        return False
+    if s == 'true':
+        return True
+    raise ValueError('Invalid boolean argument given: ' + str(s))
+
+
 def optional_string(s):
     if s is None or s.lower() == 'none':
         return None
