@@ -8,6 +8,9 @@
 Provides base classes for loss functions to be minimized during training.
 """
 
+import numpy as np
+
+from boomer.algorithm.model import DTYPE_FLOAT64
 
 cdef class Prediction:
     """
@@ -236,3 +239,15 @@ cdef class NonDecomposableLoss(Loss):
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         pass
+
+cdef class HammingLoss(Loss):
+    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        return np.zeros(y.shape[0], DTYPE_FLOAT64)
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+        prediction = LabelIndependentPrediction()
+
+        return prediction
+
+    cdef int evaluate_confustion_matrix(self, tp, tn, fn, fp):
+        return (fn + fp) / (tp + tn + fn + fp)

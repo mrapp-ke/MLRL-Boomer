@@ -9,11 +9,11 @@ import logging as log
 from abc import abstractmethod
 
 import numpy as np
+
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
 from boomer.algorithm._model import Rule
 from boomer.algorithm._pruning import Pruning
-
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
@@ -175,14 +175,14 @@ class SeparateAndConquer(RuleInduction):
         # Sort feature matrix once
         x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
 
-        cover_mask = np.ones(shape=y.shape)
+        uncovered = np.ones(shape=y.shape)
 
         default_rule = induce_default_rule(y, self.loss)
         theory.append(default_rule)
 
         learned_rules = 0
 
-        while np.sum(cover_mask) >= 2:
+        while np.sum(uncovered) >= 2:
             log.info('Learning rule %s...', learned_rules + 1)
             rule = induce_rule(x, x_sorted_indices, y, self.head_refinement, self.loss, self.label_sub_sampling,
                                self.instance_sub_sampling, self.feature_sub_sampling, self.pruning, self.shrinkage,
@@ -193,7 +193,7 @@ class SeparateAndConquer(RuleInduction):
             # Add new rule to decision list
             theory.append(rule)
 
-            cover_mask = self.mark_covered(rule, cover_mask, x, y)
+            uncovered = self.mark_covered(rule, uncovered, x, y)
 
             learned_rules += 1
 

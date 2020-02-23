@@ -16,7 +16,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._losses import Loss, DecomposableLoss
+from boomer.algorithm._losses import Loss, DecomposableLoss, HammingLoss
 from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
@@ -409,7 +409,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return 'SeparateAndConquerRuleLearner'
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
-        loss = MacroSquaredErrorLoss(0)
+        loss = HammingLoss()
         head_refinement = SingleLabelHeadRefinement()
         label_sub_sampling = None
         instance_sub_sampling = None
