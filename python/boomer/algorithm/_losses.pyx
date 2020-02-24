@@ -246,8 +246,45 @@ cdef class HammingLoss(Loss):
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         prediction = LabelIndependentPrediction()
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef float64 overall_quality_score = 0
+
+        for i in range(num_labels):
+            predicted_scores[i] = 1
+
+            tp, tn, fn, fp = self.get_confusion_matrix(i)
+
+            quality_scores[i] = self.evaluate_confustion_matrix(tp, tn, fn , fp)
+            overall_quality_score += quality_scores[i]
+
+        prediction.overall_quality_score = overall_quality_score
 
         return prediction
 
+    cdef begin_instance_sub_sampling(self):
+        pass
+
+    cdef update_sub_sample(self, intp example_index):
+        pass
+
+    cdef begin_search(self, intp[::1] label_indices):
+        pass
+
+    cdef update_search(self, intp example_index, uint32 weight):
+        pass
+
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+        pass
+
+    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                           float64[::1] predicted_scores):
+        pass
+
     cdef int evaluate_confustion_matrix(self, tp, tn, fn, fp):
         return (fn + fp) / (tp + tn + fn + fp)
+
+    cdef get_confusion_matrix(self, predicted_index):
+        tp = tn = fn = fp = 0
+
+        return tp, tn, fn, fp
