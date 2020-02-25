@@ -240,27 +240,26 @@ cdef class NonDecomposableLoss(Loss):
                            float64[::1] predicted_scores):
         pass
 
-cdef class HammingLoss(Loss):
+cdef class LabelWiseMeasure(Loss):
+
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
-        return np.zeros(y.shape[0], DTYPE_FLOAT64)
+        # TODO Initialize weight matrix
+        cdef float64[::1, :] weight_matrix = # Initial nur 1en
+        self.weight_matrix = weight_matrix
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
-        prediction = LabelIndependentPrediction()
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef float64 overall_quality_score = 0
+        for c in num_labels:
+            for r in num_examples:
+                # # TODO Konfusionsmatrix-Elemente aufsummieren
 
-        for i in range(num_labels):
-            predicted_scores[i] = 1
+        default_rule = [ 0, 1, 0 ]
+        self.minority_labels = # default_rule invertieren, also 0en werden 1en und umgekehrt
 
-            tp, tn, fn, fp = self.get_confusion_matrix(i)
+        # Ground truth label-Matrix speichern
+        self.y = y
 
-            quality_scores[i] = self.evaluate_confustion_matrix(tp, tn, fn , fp)
-            overall_quality_score += quality_scores[i]
+        # TODO Speichere Summe von Konfusionmatrix-Elementen
 
-        prediction.overall_quality_score = overall_quality_score
-
-        return prediction
+        return default_rule
 
     cdef begin_instance_sub_sampling(self):
         pass
@@ -269,22 +268,81 @@ cdef class HammingLoss(Loss):
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
-        pass
+        # TODO: Konfusionsmatrix für jedes Label zurücksetzen
+        cdef s_confusion_matrix confusion_matrix
+        cdef intp num_labels = ??
+        cdef intp c
+
+        for c in range(num_labels):
+            confusion_matrix = # Konfusionsmatrix für dieses Label
+            confusion_matrix.cin = 0
+            confusion_matrix.cip = 0
 
     cdef update_search(self, intp example_index, uint32 weight):
-        pass
+        cdef float64[::1, :] weight_matrix = self.weight_matrix
+        cdef float64[::1] minority_labels = self.minority_labels
+        cdef uint8[::1, :] y = self.y
+
+        cdef s_confusion_matrix confusion_matrix
+        cdef intp num_labels = y.shape[1]
+        cdef uint8 true_label, predicted_label
+        cdef intp c
+
+        for c in range(num_labels):
+            confusion_matrix = # Konfusionmatrix für dieses Label
+
+            if weight_matrix[example_index, c] > 0: # Checken ob Label nicht schon gecovert wurde
+                true_label = y[example_index, c]
+                predicted_label = minority_labels[c]
+
+                # Fallunterscheidung zwischen verschiedenen Konfusionsmatrix-Elementen (hängt ab von true_label und predicted_label)
+                if :
+                    confusion_matrix.cin += weight
+                elif:
+                    confusion_matrix.cip += weight
+                elif:
+                    # ...
+                else:
+                    # ...
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+        prediction = LabelIndependentPrediction()
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef float64 overall_quality_score = 0
+        cdef float64[::1] minority_labels = self.minority_labels
+        cdef intp num_labels = ??
+        cdef s_confusion_matrix confusion_matrix
+        cdef intp c
+
+        for i in range(num_labels):
+            predicted_scores[i] = minority_labels[i] # Entspricht dem Gegenteil der Default rule (Default rule sagt 1 -> hier steht eine 0 und andersrum)
+
+            confusion_matrix = # Konfusionsmatrix für dieses Label
+
+            if (uncovered):
+                # TODO Elemente in confusion_matrix invertieren durch Zuhilfenahme der Summen von Konfusionmatrix-Elementen wie sie in der Funktion `calculate_default_scores` gespeichert wurden
+                # confusion_matrix wird noch benötigt und darf nicht verändert werden!!
+
+            quality_scores[i] = self.evaluate_confustion_matrix(confusion_matrix)
+            overall_quality_score += quality_scores[i]
+
+        prediction.overall_quality_score = overall_quality_score / num_labels
+
+        return prediction
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
-        pass
+        # Is the same as `evaluate_label_independent_predictions`
+        return self.evaluate_label_independent_predictions(uncovered)
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
-        pass
+        cdef float64[::1, :] weight_matrix = self.weight_matrix
+
+        for r in covered_example_indices:
+            for c in label_indices:
+                weight_matrix[r, c] = 0
 
     cdef int evaluate_confustion_matrix(self, tp, tn, fn, fp):
+        # TODO: Funkion per Konstruktorparameter o.Ä. konfigurierbar machen
         return (fn + fp) / (tp + tn + fn + fp)
-
-    cdef get_confusion_matrix(self, predicted_index):
-        tp = tn = fn = fp = 0
-
-        return tp, tn, fn, fp

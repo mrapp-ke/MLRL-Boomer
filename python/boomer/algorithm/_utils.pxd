@@ -20,6 +20,11 @@ cdef struct s_condition:
     float32 threshold
 
 
+cdef struct s_confusion_matrix:
+    float64 cin
+    float64 cip
+    # ...
+
 cdef inline s_condition make_condition(intp feature_index, bint leq, float32 threshold):
     """
     Creates and returns a new condition.
