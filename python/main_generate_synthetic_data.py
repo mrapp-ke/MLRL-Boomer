@@ -13,7 +13,7 @@ command line arguments must be specified:
 
 (1) Marginal independence, conditional independence (Section 7.2):
     --marginal_independence=True
-    --tau=0.0
+    --tau=0.0 (actually, the value of tau doesn't matter if marginal_independence=True)
     --p=0.1
     --dependent-error=False
     --one-error=False
