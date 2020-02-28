@@ -365,17 +365,23 @@ class Boomer(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
 
     def get_name(self) -> str:
-        num_rules = str(self.num_rules)
-        head_refinement = str(self.head_refinement)
-        loss = str(self.loss)
-        label_sub_sampling = str(self.label_sub_sampling)
-        instance_sub_sampling = str(self.instance_sub_sampling)
-        feature_sub_sampling = str(self.feature_sub_sampling)
-        pruning = str(self.pruning)
-        shrinkage = str(self.shrinkage)
-        return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
-               + '_label-sub-sampling=' + label_sub_sampling + '_instance-sub-sampling=' + instance_sub_sampling \
-               + '_feature-sub-sampling=' + feature_sub_sampling + '_pruning=' + pruning + '_shrinkage=' + shrinkage
+        name = 'num-rules=' + str(self.num_rules)
+        if self.head_refinement is not None:
+            name += '_head-refinement=' + str(self.head_refinement)
+        name += '_loss=' + str(self.loss)
+        if self.label_sub_sampling is not None:
+            name += '_label-sub-sampling=' + str(self.label_sub_sampling)
+        if self.instance_sub_sampling is not None:
+            name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
+        if self.feature_sub_sampling is not None:
+            name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.pruning is not None:
+            name += '_pruning=' + str(self.pruning)
+        if 0.0 < float(self.shrinkage) < 1.0:
+            name += '_shrinkage=' + str(self.shrinkage)
+        if float(self.l2_regularization_weight) > 0.0:
+            name += '_l2=' + str(self.l2_regularization_weight)
+        return name
 
     def get_params(self, deep=True):
         params = super().get_params()

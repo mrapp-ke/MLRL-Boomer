@@ -128,12 +128,15 @@ class Predictor(CrossValidation, MLClassifierBase):
 def __create_configurations(arguments) -> List[dict]:
     num_rules_values: List[int] = arguments.num_rules
     loss_values: List[str] = arguments.loss
-    head_refinement_values: List[str] = arguments.head_refinement
+    head_refinement_values: List[str] = [None if x.lower() == 'none' else x for x in arguments.head_refinement]
     label_sub_sampling_values: List[int] = arguments.label_sub_sampling
-    instance_sub_sampling_values: List[str] = arguments.instance_sub_sampling
-    feature_sub_sampling_values: List[str] = arguments.feature_sub_sampling
-    pruning_values: List[str] = arguments.pruning
+    instance_sub_sampling_values: List[str] = [None if x.lower() == 'none' else x for x in
+                                               arguments.instance_sub_sampling]
+    feature_sub_sampling_values: List[str] = [None if x.lower() == 'none' else x for x in
+                                              arguments.feature_sub_sampling]
+    pruning_values: List[str] = [None if x.lower() == 'none' else x for x in arguments.pruning]
     shrinkage_values: List[float] = arguments.shrinkage
+    l2_regularization_weight_values: List[float] = arguments.l2_regularization_weight
     result: List[dict] = []
 
     for num_rules in num_rules_values:
@@ -142,20 +145,22 @@ def __create_configurations(arguments) -> List[dict]:
                 for instance_sub_sampling in instance_sub_sampling_values:
                     for feature_sub_sampling in feature_sub_sampling_values:
                         for shrinkage in shrinkage_values:
-                            for head_refinement in head_refinement_values:
-                                for label_sub_sampling in label_sub_sampling_values:
-                                    if head_refinement == 'full' or label_sub_sampling == -1:
-                                        configuration = {
-                                            'num_rules': num_rules,
-                                            'loss': loss,
-                                            'pruning': pruning,
-                                            'instance_sub_sampling': instance_sub_sampling,
-                                            'feature_sub_sampling': feature_sub_sampling,
-                                            'shrinkage': shrinkage,
-                                            'head_refinement': head_refinement,
-                                            'label_sub_sampling': label_sub_sampling
-                                        }
-                                        result.append(configuration)
+                            for l2_regularization_weight in l2_regularization_weight_values:
+                                for head_refinement in head_refinement_values:
+                                    for label_sub_sampling in label_sub_sampling_values:
+                                        if head_refinement == 'full' or label_sub_sampling == -1:
+                                            configuration = {
+                                                'num_rules': num_rules,
+                                                'loss': loss,
+                                                'pruning': pruning,
+                                                'instance_sub_sampling': instance_sub_sampling,
+                                                'feature_sub_sampling': feature_sub_sampling,
+                                                'shrinkage': shrinkage,
+                                                'l2_regularization_weight': l2_regularization_weight,
+                                                'head_refinement': head_refinement,
+                                                'label_sub_sampling': label_sub_sampling
+                                            }
+                                            result.append(configuration)
 
     return result
 
@@ -186,7 +191,7 @@ def __write_tuning_scores(output_dir: str, evaluation_scores: np.ndarray, config
 
 
 def __write_tuning_scores_per_parameter(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict],
-                                        is_gain_metric: bool):
+                                        is_loss: bool):
     parameters = sorted(configurations[0].keys())
     parameter_values: dict = {}
 
@@ -223,14 +228,14 @@ def __write_tuning_scores_per_parameter(output_dir: str, evaluation_scores: np.n
                 for value in header:
                     indices = indices_dict[value]
                     scores = evaluation_scores[np.asarray(indices), row]
-                    best_score = np.max(scores) if is_gain_metric else np.min(scores)
+                    best_score = np.min(scores) if is_loss else np.max(scores)
                     columns[value] = best_score
 
                 csv_writer.writerow(columns)
 
 
 def __write_tuning_scores_per_num_labels(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict],
-                                         is_gain_metric: bool):
+                                         is_loss: bool):
     parameter_values: Set[Tuple] = set()
 
     for current_config in configurations:
@@ -240,7 +245,7 @@ def __write_tuning_scores_per_num_labels(output_dir: str, evaluation_scores: np.
     if len(parameter_values) > 1:
         num_rows = evaluation_scores_tuning.shape[1]
         header = ['head-refinement=' + str(x[0]) + '_label-sub-sampling=' + str(x[1]) for x in parameter_values]
-    
+
         with open_writable_csv_file(output_dir, 'tuning_scores_per_num_labels', fold=None, append=False) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             indices_dict = dict()
@@ -260,7 +265,7 @@ def __write_tuning_scores_per_num_labels(output_dir: str, evaluation_scores: np.
                 for key_index, key in enumerate(parameter_values):
                     indices = indices_dict[key]
                     scores = evaluation_scores[np.asarray(indices), row]
-                    best_score = np.max(scores) if is_gain_metric else np.min(scores)
+                    best_score = np.min(scores) if is_loss else np.max(scores)
                     columns[header[key_index]] = best_score
 
                 csv_writer.writerow(columns)
@@ -300,6 +305,8 @@ if __name__ == '__main__':
                         help='The values for the parameter \'pruning\' as a comma-separated list')
     parser.add_argument('--shrinkage', type=float_list, default='1.0',
                         help='The values for the parameter \'shrinkage\' as a comma-separated list')
+    parser.add_argument('--l2-regularization-weight', type=float_list, default='1.0',
+                        help='The values for the parameter \'l2-regularization-weight\' as a comma-separated list')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
@@ -307,10 +314,10 @@ if __name__ == '__main__':
     # Prepare target measure...
     if args.target_measure == 'hamming-loss':
         target_measure = metrics.hamming_loss
-        gain_metric = False
+        target_measure_is_loss = True
     elif args.target_measure == 'subset-0-1-loss':
         target_measure = metrics.accuracy_score
-        gain_metric = True
+        target_measure_is_loss = False
     else:
         raise ValueError('Invalid target measure given: \'' + str(args.target_measure) + '\'')
 
@@ -379,7 +386,8 @@ if __name__ == '__main__':
             predictions_tuning = prediction_matrix[bootstrapped_indices, k, :]
             evaluation_scores_tuning[k, i] = target_measure(ground_truth_tuning, predictions_tuning)
 
-        best_k = np.argmax(evaluation_scores_tuning[:, i]) if gain_metric else np.argmin(evaluation_scores_tuning[:, i])
+        best_k = np.argmin(evaluation_scores_tuning[:, i]) if target_measure_is_loss else np.argmax(
+            evaluation_scores_tuning[:, i])
         ground_truth_test = ground_truth_matrix[mask_test, :]
         predictions_test = prediction_matrix[mask_test, best_k, :]
         evaluation.evaluate('best_configuration', predictions_test, ground_truth_test, first_fold=0, current_fold=i,
@@ -388,6 +396,6 @@ if __name__ == '__main__':
     if args.output_dir is not None:
         __write_tuning_scores(args.output_dir, evaluation_scores_tuning, list_of_configurations)
         __write_tuning_scores_per_num_labels(args.output_dir, evaluation_scores_tuning, list_of_configurations,
-                                             gain_metric)
+                                             target_measure_is_loss)
         __write_tuning_scores_per_parameter(args.output_dir, evaluation_scores_tuning, list_of_configurations,
-                                            gain_metric)
+                                            target_measure_is_loss)
