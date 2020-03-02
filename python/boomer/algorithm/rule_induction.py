@@ -173,16 +173,11 @@ class SeparateAndConquer(RuleInduction):
 
         x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
 
-        # this stores a matrix which corresponds to the uncovered labels of all examples, where uncovered labels are
-        # represented by a one and covered examples are represented by a zero
-        uncovered_lables = np.ones(shape=y.shape)
-
         default_rule = induce_default_rule(y, self.loss)
-        theory.append(default_rule)
 
         num_learned_rules = 0
 
-        while np.sum(uncovered_lables) >= 2:
+        while all([stopping_criterion.should_continue(theory) for stopping_criterion in self.stopping_criteria]):
             log.info('Learning rule %s...', num_learned_rules + 1)
             rule = induce_rule(x, x_sorted_indices, y, self.head_refinement, self.loss, self.label_sub_sampling,
                                self.instance_sub_sampling, self.feature_sub_sampling, self.pruning, self.shrinkage,
@@ -192,26 +187,8 @@ class SeparateAndConquer(RuleInduction):
 
             theory.append(rule)
 
-            self.mark_covered(rule, uncovered_lables, x, y)
-
             num_learned_rules += 1
 
+        theory.append(default_rule)
+
         return theory
-
-    def mark_covered(self, rule: Rule, uncovered_labels: np.ndarray, x, y):
-        """
-        :param rule:             the rule used to determine which labels should be marked as covered
-        :param uncovered_labels: a matrix which corresponds to the uncovered labels of all examples, where uncovered
-                                 labels are represented by a one and covered examples are represented by a zero
-        :param x:
-        :param y:
-        :return:
-        """
-        num_examples = x.shape[0]
-
-        for i in range(num_examples):
-            if rule.body.covers(x[i]):
-                for j in range(rule.head.label_indices.shape[0]):
-                    label = rule.head.label_indices[j]
-                    uncovered_labels[i][label] = np.maximum(
-                        uncovered_labels[i][label] - np.maximum(rule.head.scores[j], 0), 0)

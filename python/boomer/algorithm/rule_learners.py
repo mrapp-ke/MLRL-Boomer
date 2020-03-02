@@ -16,7 +16,7 @@ from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._losses import Loss, DecomposableLoss, HammingLoss
+from boomer.algorithm._losses import Loss, DecomposableLoss, LabelWiseMeasure
 from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
@@ -28,7 +28,7 @@ from boomer.algorithm.persistence import ModelPersistence
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
 from boomer.algorithm.stats import Stats
-from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion
+from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion, UncoveredLabelsCriterion
 from boomer.learners import MLLearner
 
 
@@ -409,16 +409,17 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return 'SeparateAndConquerRuleLearner'
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
-        loss = HammingLoss()
+        loss = LabelWiseMeasure()
         head_refinement = SingleLabelHeadRefinement()
         label_sub_sampling = None
         instance_sub_sampling = None
         feature_sub_sampling = None
         pruning = None
         shrinkage = None
+        stopping_criteria = [UncoveredLabelsCriterion(loss, 3), SizeStoppingCriterion(100)]
         return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
                                   feature_sub_sampling,
-                                  pruning, shrinkage, *[])
+                                  pruning, shrinkage, *stopping_criteria)
 
     def _create_prediction(self) -> Prediction:
         return Sign(LinearCombination())

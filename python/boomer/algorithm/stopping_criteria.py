@@ -7,8 +7,12 @@ Provides classes that implement different stopping criteria that allow to decide
 added to a theory or not.
 """
 from abc import abstractmethod, ABC
-from boomer.algorithm.model import Theory
 from timeit import default_timer as timer
+
+import numpy as np
+
+from boomer.algorithm._losses import LabelWiseMeasure
+from boomer.algorithm.model import Theory
 
 
 class StoppingCriterion(ABC):
@@ -66,3 +70,20 @@ class TimeStoppingCriterion(StoppingCriterion):
             current_time = timer()
             run_time = current_time - start_time
             return run_time < self.time_limit
+
+
+class UncoveredLabelsCriterion(StoppingCriterion):
+    """
+    A stopping criterion that stops when the weight matrix of a label-wise measure has less than a certain amount of
+    non-zero entries
+    """
+
+    def __init__(self, label_wise_measure: LabelWiseMeasure, treshold: int):
+        """
+        :param label_wise_measure: The label-wise measure
+        """
+        self.label_wise_measure = label_wise_measure
+        self.treshold = treshold
+
+    def should_continue(self, theory: Theory) -> bool:
+        return np.count_nonzero(self.label_wise_measure.get_uncovered_lables()) >= self.treshold
