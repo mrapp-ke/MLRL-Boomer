@@ -9,8 +9,9 @@ Provides base classes for loss functions to be minimized during training.
 """
 
 import numpy as np
+from boomer.algorithm._arrays cimport array_float64
 
-from boomer.algorithm.model import DTYPE_FLOAT64
+from boomer.algorithm.model import DTYPE_FLOAT64, DTYPE_UINT8
 
 cdef class Prediction:
     """
@@ -249,16 +250,28 @@ cdef class HammingLoss(Loss):
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64 overall_quality_score = 0
+        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef intp num_labels = self.labels.shape[1]
+        cdef float64[::1, :] confusion_matrices = self.confusion_matrices
+        cdef intp c
+
+        if predicted_scores is None or predicted_scores.shape[0] != num_labels:
+            predicted_scores = array_float64(num_labels)
+            prediction.predicted_scores = predicted_scores
+            quality_scores = array_float64(num_labels)
+            prediction.quality_scores = quality_scores
 
         for i in range(num_labels):
-            predicted_scores[i] = 1
-
-            tp, tn, fn, fp = self.get_confusion_matrix(i)
-
-            quality_scores[i] = self.evaluate_confustion_matrix(tp, tn, fn , fp)
+            predicted_scores[i] = minority_labels[i]
+            # TODO can we store this as fortran-contiguos?
+            confusion_matrix = np.asfortranarray(confusion_matrices[i])
+            # TODO increase performance by not using numpy?
+            if uncovered:
+                confusion_matrix = np.asfortranarray(1 - np.asarray(confusion_matrices[i]))
+            quality_scores[i] = self.evaluate_confustion_matrix(confusion_matrix)
             overall_quality_score += quality_scores[i]
 
-        prediction.overall_quality_score = overall_quality_score
+        prediction.overall_quality_score = overall_quality_score / num_labels
 
         return prediction
 
@@ -281,10 +294,9 @@ cdef class HammingLoss(Loss):
                            float64[::1] predicted_scores):
         pass
 
-    cdef int evaluate_confustion_matrix(self, tp, tn, fn, fp):
-        return (fn + fp) / (tp + tn + fn + fp)
+    cdef int evaluate_confustion_matrix(self, float64[::1] matrix):
+        # TODO extract logic to new matrix evaluator class
+        return <int> ((matrix[cin] + matrix[crp]) / (matrix[cin] + matrix[cip] + matrix[crn] + matrix[crp]))
 
-    cdef get_confusion_matrix(self, predicted_index):
-        tp = tn = fn = fp = 0
-
-        return tp, tn, fn, fp
+    cpdef float64[::1, :] get_uncovered_lables(self):
+        return self.uncovered_lables
