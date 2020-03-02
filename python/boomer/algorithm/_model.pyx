@@ -9,8 +9,6 @@ Provides model classes that are used to build rule-based models.
 """
 import numpy as np
 
-from boomer.algorithm.utils import __print_body, __print_full_head
-
 cdef class Body:
     """
     A base class for the body of a rule.
@@ -22,7 +20,7 @@ cdef class Body:
     def __setstate__(self, state):
         pass
 
-    cpdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[:] example):
         """
         Returns whether a certain example is covered by the body, or not.
 
@@ -31,8 +29,6 @@ cdef class Body:
         """
         pass
 
-    def __str__(self):
-        return __print_body(self)
 
 cdef class EmptyBody(Body):
     """
@@ -45,7 +41,7 @@ cdef class EmptyBody(Body):
     def __setstate__(self, state):
         pass
 
-    cpdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[:] example):
         return 1
 
 
@@ -84,7 +80,7 @@ cdef class ConjunctiveBody(Body):
         self.gr_feature_indices = gr_feature_indices
         self.gr_thresholds = gr_thresholds
 
-    cpdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[:] example):
         cdef intp[::1] leq_feature_indices = self.leq_feature_indices
         cdef float32[::1] leq_thresholds = self.leq_thresholds
         cdef intp[::1] gr_feature_indices = self.gr_feature_indices
@@ -155,9 +151,6 @@ cdef class FullHead(Head):
         for c in range(num_cols):
             predictions[c] += scores[c]
 
-    def __str__(self):
-        return __print_full_head(self)
-
 
 cdef class PartialHead(Head):
     """
@@ -191,6 +184,7 @@ cdef class PartialHead(Head):
         for c in range(num_labels):
             label = label_indices[c]
             predictions[label] += scores[c]
+
 
 cdef class Rule:
     """

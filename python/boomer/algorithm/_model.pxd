@@ -5,14 +5,14 @@ cdef class Body:
 
     # Functions:
 
-    cpdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[:] example)
 
 
 cdef class EmptyBody(Body):
 
     # Functions:
 
-    cpdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[:] example)
 
 
 cdef class ConjunctiveBody(Body):
@@ -29,7 +29,7 @@ cdef class ConjunctiveBody(Body):
 
     # Functions:
 
-    cpdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[:] example)
 
 
 cdef class Head:
