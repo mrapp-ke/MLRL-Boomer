@@ -9,7 +9,6 @@ import logging as log
 from abc import abstractmethod
 
 import numpy as np
-
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
 from boomer.algorithm._model import Rule
