@@ -110,8 +110,8 @@ class NumRulesDependentEvaluationPlot(EvaluationPlot, ABC):
 
 class LossMinimizationCurve(NumRulesDependentEvaluationPlot):
     """
-    A plot that displays a curve to visualize how certain losses are minimized as more rules are added to a model, i.e.,
-    the y-axis corresponds to the evaluation score and the x-axis corresponds to the number of rules in the model.
+    A plot that uses curves to visualize how certain losses are minimized as more rules are added to a model, i.e., the
+    y-axis corresponds to the evaluation score and the x-axis corresponds to the number of rules in the model.
     """
 
     def __init__(self, data_set: str, *args: str):
@@ -179,4 +179,80 @@ class LossMinimizationCurve(NumRulesDependentEvaluationPlot):
                 plt.plot([0, max_x], [new_y, new_y], color='0.5', linestyle='dotted', linewidth=1)
             if 0 < y < 1.0:
                 plt.plot([0, max_x], [y, y], color='0.5', linestyle='dotted', linewidth=1)
+            prev_y = y
+
+
+class MeasureVsMeasureCurve(NumRulesDependentEvaluationPlot):
+    """
+    A plot that uses a single curve to visualize how the trade-off between two evaluation measures is affected as more
+    rules are added to a model, i.e., the y-axis corresponds to one of the measures and the x-axis corresponds to the
+    other one.
+    """
+
+    def __init__(self, data_set: str, first_measure: str, second_measure: str):
+        super().__init__(first_measure, second_measure)
+        self.data_set = data_set
+
+    def __plot_curves(self) -> (str, str):
+        y_measure = self.measures[0]
+        x_measure = self.measures[1]
+
+        # Draw curves
+        for key, evaluation in self.evaluations.items():
+            evaluation_names = sorted([int(x) for x in evaluation.results.keys()])
+            x = []
+            y = []
+
+            for num_rules in evaluation_names:
+                evaluation_result = evaluation.results[str(num_rules)]
+                score_x, std_dev_x = evaluation_result.avg(x_measure)
+                x.append(score_x)
+                score_y, std_dev_y = evaluation_result.avg(y_measure)
+                y.append(score_y)
+
+            plt.plot(x, y, label=key)
+
+        plt.legend()
+        return x_measure, y_measure
+
+    def _prepare_plot(self):
+        x_measure, y_measure = self.__plot_curves()
+
+        # Set title
+        plt.title(self.data_set)
+
+        # Customize x axis
+        plt.xlabel(x_measure)
+        plt.xlim(left=0, right=1)
+        x_labels = [str(i * 10) + '%' for i in range(11)]
+        x_ticks = np.arange(0, 1.1, 0.1)
+        plt.xticks(ticks=x_ticks, labels=x_labels)
+
+        # Draw vertical lines
+        prev_x = None
+
+        for x in x_ticks:
+            if prev_x is not None:
+                new_x = prev_x + ((x - prev_x) / 2)
+                plt.plot([new_x, new_x], [0, 1.0], color='0.5', linestyle='dotted', linewidth=1)
+            if 0 < x < 1:
+                plt.plot([x, x], [0, 1.0], color='0.5', linestyle='dotted', linewidth=1)
+            prev_x = x
+
+        # Customize y axis
+        plt.ylabel(y_measure)
+        plt.ylim(bottom=0, top=1)
+        y_labels = [str(i * 10) + '%' for i in range(11)]
+        y_ticks = np.arange(0, 1.1, 0.1)
+        plt.yticks(ticks=y_ticks, labels=y_labels)
+
+        # Draw horizontal lines
+        prev_y = None
+
+        for y in y_ticks:
+            if prev_y is not None:
+                new_y = prev_y + ((y - prev_y) / 2)
+                plt.plot([0, 1], [new_y, new_y], color='0.5', linestyle='dotted', linewidth=1)
+            if 0 < y < 1.0:
+                plt.plot([0, 1], [y, y], color='0.5', linestyle='dotted', linewidth=1)
             prev_y = y
