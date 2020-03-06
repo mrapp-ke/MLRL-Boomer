@@ -13,6 +13,15 @@ from boomer.algorithm._arrays cimport array_float64
 
 from boomer.algorithm.model import DTYPE_FLOAT64, DTYPE_UINT8
 
+DEF cin = 0
+DEF cip = 1
+DEF crn = 2
+DEF crp = 3
+DEF uin = 4
+DEF uip = 5
+DEF urn = 6
+DEF urp = 7
+
 cdef class Prediction:
     """
     Assess the overall quality of a rule's predictions for one or several labels.
@@ -242,10 +251,12 @@ cdef class NonDecomposableLoss(Loss):
         pass
 
 cdef class LabelWiseMeasure(Loss):
+    """
+    A class for label-wise evaluation.
+    """
+
     def __cinit__(self):
-        self.uncovered_lables = None
-        self.minority_labels = None
-        self.labels = None
+        self.prediction = LabelIndependentPrediction()
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_examples = y.shape[0]
@@ -261,10 +272,10 @@ cdef class LabelWiseMeasure(Loss):
 
         # this stores a matrix which corresponds to the uncovered labels of all examples, where uncovered labels are
         # represented by a one and covered examples are represented by a zero
-        self.uncovered_lables = np.asfortranarray(np.ones(shape=(num_examples, num_labels)))
+        self.uncovered_labels = np.asfortranarray(np.ones(shape=(num_examples, num_labels)))
 
         self.minority_labels = np.asfortranarray(minority_labels, dtype=DTYPE_UINT8)
-        self.labels = y
+        self.true_labels = y
 
         # this stores the confusion matrices (one per label), which we need to determine the quality of rules
         # the confusion matrices are updated everytime a new example is
@@ -279,48 +290,43 @@ cdef class LabelWiseMeasure(Loss):
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
-        cdef intp num_labels = self.labels.shape[1]
-        cdef intp c
-        cdef confusion_matrices = self.confusion_matrices
+        cdef float64[::1, :] confusion_matrices = self.confusion_matrices
 
-        # self.confusion_matrices.fill(0)
-        for c in range(num_labels):
-            confusion_matrix = confusion_matrices[c]
-            for i in range(8):
-                confusion_matrix[i] = 0
+        confusion_matrices[:,:] = 0
 
     cdef update_search(self, intp example_index, uint32 weight):
-        cdef float64[::1, :] uncovered_labels = self.uncovered_lables
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
-        cdef uint8[::1, :] y = self.labels
-        cdef confusion_matrices = self.confusion_matrices
-        cdef intp num_labels = y.shape[1]
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef float64[::1, :] confusion_matrices = self.confusion_matrices
+        cdef intp num_labels = true_labels.shape[1]
+        cdef intp c
         cdef uint8 true_label, predicted_label
 
         # Update confusion matrices
         for c in range(num_labels):
             confusion_matrix = confusion_matrices[c]
-            true_label = y[example_index, c]
+            true_label = true_labels[example_index, c]
             predicted_label = minority_labels[c]
 
-            if predicted_label == 0:
-                if true_label == 0:
+            if true_label == 0:
+                if predicted_label == 0:
                     confusion_matrix[cin] += weight
-                elif true_label == 1:
+                elif predicted_label == 1:
                     confusion_matrix[cip] += weight
-            elif predicted_label == 1:
-                if true_label == 0:
+            elif true_label == 1:
+                if predicted_label == 0:
                     confusion_matrix[crn] += weight
-                elif true_label == 1:
+                elif predicted_label == 1:
                     confusion_matrix[crp] += weight
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
-        prediction = LabelIndependentPrediction()
+        cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64 overall_quality_score = 0
         cdef uint8[::1] minority_labels = self.minority_labels
-        cdef intp num_labels = self.labels.shape[1]
+        cdef intp num_labels = minority_labels.shape[0]
         cdef float64[::1, :] confusion_matrices = self.confusion_matrices
         cdef intp c
 
@@ -330,15 +336,32 @@ cdef class LabelWiseMeasure(Loss):
             quality_scores = array_float64(num_labels)
             prediction.quality_scores = quality_scores
 
-        for i in range(num_labels):
-            predicted_scores[i] = minority_labels[i]
-            # TODO can we store this as fortran-contiguos?
-            confusion_matrix = np.asfortranarray(confusion_matrices[i])
-            # TODO increase performance by not using numpy?
+        for c in range(num_labels):
+            predicted_scores[c] = minority_labels[c]
             if uncovered:
-                confusion_matrix = np.asfortranarray(1 - np.asarray(confusion_matrices[i]))
-            quality_scores[i] = self.evaluate_confustion_matrix(confusion_matrix)
-            overall_quality_score += quality_scores[i]
+                quality_scores[c] = self.evaluate_confusion_matrix(
+                    confusion_matrices[c, uin],
+                    confusion_matrices[c, uip],
+                    confusion_matrices[c, urn],
+                    confusion_matrices[c, urp],
+                    confusion_matrices[c, cin],
+                    confusion_matrices[c, cip],
+                    confusion_matrices[c, crn],
+                    confusion_matrices[c, crp]
+                )
+            else:
+                quality_scores[c] = self.evaluate_confusion_matrix(
+                    confusion_matrices[c, cin],
+                    confusion_matrices[c, cip],
+                    confusion_matrices[c, crn],
+                    confusion_matrices[c, crp],
+                    confusion_matrices[c, uin],
+                    confusion_matrices[c, uip],
+                    confusion_matrices[c, urn],
+                    confusion_matrices[c, urp]
+                )
+
+            overall_quality_score += quality_scores[c]
 
         prediction.overall_quality_score = overall_quality_score / num_labels
 
@@ -349,15 +372,14 @@ cdef class LabelWiseMeasure(Loss):
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
-        cdef float64[::1, :] uncovered_labels = self.uncovered_lables
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
 
-        for r in covered_example_indices:
-            for c in label_indices:
-                uncovered_labels[r, c] = 0
+        uncovered_labels[:, :] = 0
 
-    cdef int evaluate_confustion_matrix(self, float64[::1] matrix):
-        # TODO extract logic to new matrix evaluator class
-        return <int> ((matrix[cin] + matrix[crp]) / (matrix[cin] + matrix[cip] + matrix[crn] + matrix[crp]))
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        # TODO extract logic to new heuristic class
+        return (cip + crn + uip + urn) / (cin + cip + crn + crp + uin + uip + urn + urp)
 
-    cpdef float64[::1, :] get_uncovered_lables(self):
-        return self.uncovered_lables
+    cpdef float64[::1, :] get_uncovered_labels(self):
+        return self.uncovered_labels

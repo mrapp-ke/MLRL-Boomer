@@ -139,7 +139,7 @@ class SeparateAndConquer(RuleInduction):
 
     def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
                  instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
-                 shrinkage: Shrinkage, *stopping_criteria: StoppingCriterion):
+                 *stopping_criteria: StoppingCriterion):
         """
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param loss:                    The loss function to be minimized
@@ -161,7 +161,6 @@ class SeparateAndConquer(RuleInduction):
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
-        self.shrinkage = shrinkage
         self.stopping_criteria = stopping_criteria
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
@@ -179,7 +178,7 @@ class SeparateAndConquer(RuleInduction):
         while all([stopping_criterion.should_continue(theory) for stopping_criterion in self.stopping_criteria]):
             log.info('Learning rule %s...', num_learned_rules + 1)
             rule = induce_rule(x, x_sorted_indices, y, self.head_refinement, self.loss, self.label_sub_sampling,
-                               self.instance_sub_sampling, self.feature_sub_sampling, self.pruning, self.shrinkage,
+                               self.instance_sub_sampling, self.feature_sub_sampling, self.pruning, None,
                                self.random_state)
 
             print(format_rule(stats, rule))
