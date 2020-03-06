@@ -27,7 +27,7 @@ class XGBoost(Learner):
         self.learning_rate = learning_rate
         self.reg_lambda = reg_lambda
         self.objective = objective
-        self.xgboost = XGBClassifier(booster='gbtree', tree_method='exact', subsample=1.0, colsample_bytree=1.0,
+        self.xgboost = XGBClassifier(booster='gbtree', tree_method='exact', subsample=0.66, colsample_bytree=1.0,
                                      colsample_bylevel=1.0, reg_alpha=0.0, n_jobs=1)
 
     def fit(self, x, y):
