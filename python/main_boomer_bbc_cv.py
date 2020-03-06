@@ -18,7 +18,7 @@ from skmultilearn.base import MLClassifierBase
 
 from args import optional_string, log_level, string_list, float_list, int_list
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64, DTYPE_INTP, DTYPE_UINT8
-from boomer.algorithm.persistence import ModelPersistence
+from boomer.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, EvaluationCsvOutput, EvaluationLogOutput
 from boomer.io import open_writable_csv_file, create_csv_dict_writer
