@@ -264,7 +264,6 @@ cdef class LabelWiseMeasure(Loss):
         cdef float64 treshold = num_examples / 2.0
 
         default_rule[:] = 0
-        minority_labels[:] = 0
 
         # the default rule predicts the majority-class (label-wise)
         for r in range(num_examples):
