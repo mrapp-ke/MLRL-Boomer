@@ -12,6 +12,7 @@ from os.path import isdir
 from timeit import default_timer as timer
 
 import numpy as np
+from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 from skmultilearn.base import MLClassifierBase
 
@@ -20,7 +21,42 @@ from boomer.persistence import ModelPersistence
 from boomer.stats import Stats
 
 
-class MLLearner(MLClassifierBase, Randomized):
+class Learner(BaseEstimator, Randomized):
+    """
+    A base class for all single- or multi-label classifiers or rankers.
+    """
+
+    def set_params(self, **parameters):
+        params = self.get_params()
+        for parameter, value in parameters.items():
+            if parameter in params.keys():
+                setattr(self, parameter, value)
+            else:
+                raise ValueError('Invalid parameter: ' + str(parameter))
+        return self
+
+    def get_model_name(self) -> str:
+        """
+        Returns the name that should be used to save the model of the classifier or ranker to a file.
+
+        By default, the model's name is equal to the learner's name as returned by the function `get_name`. This method
+        may be overridden if varying names for models should be used.
+
+        :return: The name that should be used to save the model to a file
+        """
+        return self.get_name()
+
+    @abstractmethod
+    def get_name(self) -> str:
+        """
+        Returns a human-readable name that allows to identify the configuration used by the classifier or ranker.
+
+        :return: The name of the classifier or ranker
+        """
+        pass
+
+
+class MLLearner(Learner, MLClassifierBase):
     """
     A base class for all multi-label classifiers or rankers.
 
@@ -83,15 +119,6 @@ class MLLearner(MLClassifierBase, Randomized):
             'model_dir': self.model_dir
         }
 
-    def set_params(self, **parameters):
-        params = self.get_params()
-        for parameter, value in parameters.items():
-            if parameter in params.keys():
-                setattr(self, parameter, value)
-            else:
-                raise ValueError('Invalid parameter: ' + str(parameter))
-        return self
-
     def fit(self, x: np.ndarray, y: np.ndarray) -> 'MLLearner':
         # Obtain information about the training data
         stats = Stats.create_stats(x, y)
@@ -122,26 +149,6 @@ class MLLearner(MLClassifierBase, Randomized):
         check_is_fitted(self)
         log.info("Making a prediction for %s query instances...", np.shape(x)[0])
         return self._predict(self.model_, self.stats_, x, self.random_state)
-
-    def get_model_name(self) -> str:
-        """
-        Returns the name that should be used to save the model of the classifier or ranker to a file.
-
-        By default, the model's name is equal to the learner's name as returned by the function `get_name`. This method
-        may be overridden if varying names for models should be used.
-
-        :return: The name that should be used to save the model to a file
-        """
-        return self.get_name()
-
-    @abstractmethod
-    def get_name(self) -> str:
-        """
-        Returns a human-readable name that allows to identify the configuration used by the classifier or ranker.
-
-        :return: The name of the classifier or ranker
-        """
-        pass
 
     @abstractmethod
     def _get_model_prefix(self) -> str:
