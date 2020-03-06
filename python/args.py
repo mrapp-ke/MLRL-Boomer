@@ -25,6 +25,15 @@ def log_level(s):
     raise ValueError('Invalid argument given for parameter \'--log-level\': ' + str(s))
 
 
+def current_fold_string(s):
+    n = int(s)
+    if n > 0:
+        return n - 1
+    elif n == -1:
+        return -1
+    raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
+
+
 def boolean_string(s):
     s = s.lower()
 

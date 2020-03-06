@@ -39,6 +39,15 @@ class MLLearner(MLClassifierBase, Randomized):
 
     fold: int = None
 
+    def set_params(self, **parameters):
+        params = self.get_params()
+        for parameter, value in parameters.items():
+            if parameter in params.keys():
+                setattr(self, parameter, value)
+            else:
+                raise ValueError('Invalid parameter: ' + str(parameter))
+        return self
+
     def get_model_name(self) -> str:
         """
         Returns the name that should be used to save the model of the classifier or ranker to a file.
