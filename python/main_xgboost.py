@@ -7,11 +7,8 @@ from args import optional_string, log_level, boolean_string, current_fold_string
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
-from boomer.baselines.binary_relevance import XGBoost
-
-
-def create_learner(params) -> XGBoost:
-    return XGBoost(model_dir=params.model_dir, learning_rate=params.learning_rate, reg_lambda=params.reg_lambda)
+from boomer.baselines.xgboost import XGBoost
+from boomer.baselines.problem_transformation import BRLearner
 
 
 if __name__ == '__main__':
@@ -45,7 +42,9 @@ if __name__ == '__main__':
                                                       output_predictions=args.store_predictions,
                                                       clear_dir=args.current_fold == -1))
 
-    learner = create_learner(args)
+    base_learner = XGBoost(learning_rate=args.learning_rate, reg_lambda=args.reg_lambda)
+    learner = BRLearner(model_dir=args.model_dir, base_learner=base_learner)
+
     parameter_input = parameter_input
     evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
     experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
