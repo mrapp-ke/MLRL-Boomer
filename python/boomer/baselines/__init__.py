@@ -1,1 +1,1 @@
-from boomer.baselines import xgboost_br
+from boomer.baselines import xgboost
