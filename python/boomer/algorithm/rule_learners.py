@@ -194,15 +194,6 @@ class MLRuleLearner(MLLearner):
             'model_dir': self.model_dir
         }
 
-    def set_params(self, **parameters):
-        params = self.get_params()
-        for parameter, value in parameters.items():
-            if parameter in params.keys():
-                setattr(self, parameter, value)
-            else:
-                raise ValueError('Invalid parameter: ' + str(parameter))
-        return self
-
     @abstractmethod
     def get_name(self) -> str:
         pass
