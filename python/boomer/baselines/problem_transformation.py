@@ -9,7 +9,7 @@ from abc import abstractmethod
 
 import numpy as np
 from skmultilearn.base.problem_transformation import ProblemTransformationBase
-from skmultilearn.problem_transform import BinaryRelevance
+from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset
 
 from boomer.learners import MLLearner, Learner
 from boomer.stats import Stats
@@ -17,7 +17,7 @@ from boomer.stats import Stats
 
 class ProblemTransformationLearner(MLLearner):
     """
-    A base class for all multi-label classifiers or rankers that use a problem transformation method.
+    A base class for all multi-label classifiers that use a problem transformation method.
     """
 
     def __init__(self, model_dir: str, base_learner: Learner):
@@ -58,7 +58,7 @@ class ProblemTransformationLearner(MLLearner):
 
 class BRLearner(ProblemTransformationLearner):
     """
-    A multi-label classifier or ranker that uses the binary relevance method.
+    A multi-label classifier that uses the binary relevance method.
     """
 
     def __init__(self, model_dir: str, base_learner: Learner):
@@ -69,3 +69,18 @@ class BRLearner(ProblemTransformationLearner):
 
     def _get_model_prefix(self) -> str:
         return 'br'
+
+
+class LPLearner(ProblemTransformationLearner):
+    """
+    A multi-label classifier that uses the label powerset method.
+    """
+
+    def __init__(self, model_dir: str, base_learner: Learner):
+        super().__init__(model_dir, base_learner)
+
+    def _create_transformation_method(self, base_learner: Learner) -> ProblemTransformationBase:
+        return LabelPowerset(classifier=base_learner)
+
+    def _get_model_prefix(self) -> str:
+        return 'lp'

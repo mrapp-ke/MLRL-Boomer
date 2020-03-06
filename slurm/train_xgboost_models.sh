@@ -2,6 +2,7 @@
 
 # Command line arguments
 DATASET=$1
+TRANSFORMATION_METHOD=$2
 
 # Constants
 FOLDS=10
@@ -12,9 +13,9 @@ REG_LAMBDA_ARRAY=(0.0 0.25 1.0 4.0 16.0 64.0)
 
 # Paths
 ROOT_DIR="${PWD}"
-WORK_DIR="${ROOT_DIR}/results/xgboost/${DATASET}"
+WORK_DIR="${ROOT_DIR}/results/xgboost/${TRANSFORMATION_METHOD}/${DATASET}"
 LOG_DIR="${WORK_DIR}/logs"
-MODEL_DIR="${ROOT_DIR}/models/xgboost/${DATASET}"
+MODEL_DIR="${ROOT_DIR}/models/xgboost/${TRANSFORMATION_METHOD}/${DATASET}"
 DATA_DIR="${ROOT_DIR}/data"
 
 MEMORY=4096
@@ -33,9 +34,9 @@ do
   do
     for CURRENT_FOLD in $(seq 1 $FOLDS)
     do
-      JOB_NAME="${DATASET}-${CURRENT_FOLD}_xgboost_${COUNT}"
+      JOB_NAME="${DATASET}-${CURRENT_FOLD}_xgboost_${TRANSFORMATION_METHOD}_${COUNT}"
       FILE="${JOB_NAME}.sh"
-      PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --learning-rate ${LEARNING_RATE} --reg-lambda ${REG_LAMBDA}"
+      PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --learning-rate ${LEARNING_RATE} --reg-lambda ${REG_LAMBDA} --transformation-method ${TRANSFORMATION_METHOD}"
 
       echo "$FILE"
       echo "#!/bin/sh" >> "$FILE"
