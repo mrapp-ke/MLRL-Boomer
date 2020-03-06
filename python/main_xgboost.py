@@ -7,7 +7,7 @@ from args import optional_string, log_level, boolean_string, current_fold_string
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
-from boomer.xgboost.xgboost_br import XGBoostBR
+from boomer.baselines.xgboost_br import XGBoostBR
 
 
 def create_learner(params) -> XGBoostBR:
