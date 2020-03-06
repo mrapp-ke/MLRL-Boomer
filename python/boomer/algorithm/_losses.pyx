@@ -493,6 +493,3 @@ cdef class LabelWiseMeasure(Loss):
                                            float64 uip, float64 urn, float64 urp):
         # TODO extract logic to new heuristic class
         return (cip + crn + uip + urn) / (cin + cip + crn + crp + uin + uip + urn + urp)
-
-    cpdef float64[::1, :] get_uncovered_labels(self):
-        return self.uncovered_labels

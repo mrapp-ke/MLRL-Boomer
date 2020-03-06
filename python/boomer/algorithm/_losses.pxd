@@ -92,7 +92,7 @@ cdef class LabelWiseMeasure(Loss):
 
     cdef Prediction prediction
 
-    cdef float64[::1, :] uncovered_labels
+    cdef readonly float64[::1, :] uncovered_labels
 
     cdef float64[::1] minority_labels
 
@@ -125,5 +125,3 @@ cdef class LabelWiseMeasure(Loss):
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp)
-
-    cpdef float64[::1, :] get_uncovered_labels(self)

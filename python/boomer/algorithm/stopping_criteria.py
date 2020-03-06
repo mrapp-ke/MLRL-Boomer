@@ -86,4 +86,4 @@ class UncoveredLabelsCriterion(StoppingCriterion):
         self.threshold = threshold
 
     def should_continue(self, theory: Theory) -> bool:
-        return np.count_nonzero(self.label_wise_measure.get_uncovered_labels()) >= self.threshold
+        return np.count_nonzero(np.asarray(self.label_wise_measure.uncovered_labels)) >= self.threshold
