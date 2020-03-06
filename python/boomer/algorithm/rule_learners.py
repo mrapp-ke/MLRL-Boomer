@@ -401,25 +401,23 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     """
 
     def __init__(self, model_dir: str = None):
-        """
-        """
         super().__init__(model_dir)
 
     def get_name(self) -> str:
         return 'SeparateAndConquerRuleLearner'
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
+        # TODO share parameter logic between learner classes
         loss = LabelWiseMeasure()
         head_refinement = SingleLabelHeadRefinement()
         label_sub_sampling = None
         instance_sub_sampling = None
         feature_sub_sampling = None
         pruning = None
-        shrinkage = None
         stopping_criteria = [UncoveredLabelsCriterion(loss, 3), SizeStoppingCriterion(100)]
         return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
-                                  feature_sub_sampling,
-                                  pruning, shrinkage, *stopping_criteria)
+                                  feature_sub_sampling, pruning, *stopping_criteria)
 
     def _create_prediction(self) -> Prediction:
+        # TODO implement prediction logic
         return Sign(LinearCombination())

@@ -86,22 +86,17 @@ cdef class NonDecomposableLoss(Loss):
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores)
 
-
-cpdef enum:
-    cin = 0
-    cip = 1
-    crn = 2
-    crp = 3
-
 cdef class LabelWiseMeasure(Loss):
 
     # Attributes:
 
-    cpdef float64[::1, :] uncovered_lables
+    cpdef Prediction prediction
+
+    cpdef float64[::1, :] uncovered_labels
 
     cdef uint8[::1] minority_labels
 
-    cdef uint8[::1, :] labels
+    cdef uint8[::1, :] true_labels
 
     cdef float64[::1, :] confusion_matrices
 
@@ -124,6 +119,6 @@ cdef class LabelWiseMeasure(Loss):
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores)
 
-    cdef int evaluate_confustion_matrix(self, float64[::1] matrix)
+    cdef float64 evaluate_confusion_matrix(self, float64[::1] matrix)
 
-    cpdef float64[::1, :] get_uncovered_lables(self)
+    cpdef float64[::1, :] get_uncovered_labels(self)
