@@ -11,7 +11,6 @@ from abc import abstractmethod
 import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
-from boomer.algorithm._model import Rule
 from boomer.algorithm._pruning import Pruning
 from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._shrinkage import Shrinkage
