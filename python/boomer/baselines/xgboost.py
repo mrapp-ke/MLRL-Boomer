@@ -5,8 +5,8 @@ import numpy as np
 from skmultilearn.problem_transform import BinaryRelevance
 from xgboost import XGBClassifier
 
-from boomer.stats import Stats
 from boomer.learners import MLLearner
+from boomer.stats import Stats
 
 
 class XGBoostBR(MLLearner):
