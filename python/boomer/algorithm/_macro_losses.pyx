@@ -49,7 +49,7 @@ cdef class MacroLoss(DecomposableLoss):
         """
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the optimal
                                          scores to be predicted by rules. Increasing this value causes the model to be
-                                         more conservative, setting it to 0 turns of L2 regularization entirely
+                                         more conservative, setting it to 0 turns off L2 regularization entirely
         """
         self.l2_regularization_weight = l2_regularization_weight
         self.prediction = LabelIndependentPrediction()

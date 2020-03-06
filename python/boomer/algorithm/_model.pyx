@@ -9,6 +9,7 @@ Provides model classes that are used to build rule-based models.
 """
 import numpy as np
 
+
 cdef class Body:
     """
     A base class for the body of a rule.
