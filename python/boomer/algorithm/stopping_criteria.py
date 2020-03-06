@@ -78,12 +78,12 @@ class UncoveredLabelsCriterion(StoppingCriterion):
     non-zero entries
     """
 
-    def __init__(self, label_wise_measure: LabelWiseMeasure, treshold: int):
+    def __init__(self, label_wise_measure: LabelWiseMeasure, threshold: int):
         """
         :param label_wise_measure: The label-wise measure
         """
         self.label_wise_measure = label_wise_measure
-        self.treshold = treshold
+        self.threshold = threshold
 
     def should_continue(self, theory: Theory) -> bool:
-        return np.count_nonzero(self.label_wise_measure.get_uncovered_labels()) >= self.treshold
+        return np.count_nonzero(self.label_wise_measure.get_uncovered_labels()) >= self.threshold
