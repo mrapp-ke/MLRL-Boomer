@@ -8,14 +8,15 @@
 Provides base classes for loss functions to be minimized during training.
 """
 
-import numpy as np
-from boomer.algorithm._arrays cimport array_float64, matrix_float64, array_uint32
-from boomer.algorithm.model import DTYPE_FLOAT64, DTYPE_UINT8
+from boomer.algorithm._arrays cimport array_float64, matrix_float64
+from boomer.algorithm._utils cimport get_index
 
-DEF _in = 0
-DEF _ip = 1
-DEF _rn = 2
-DEF _rp = 3
+
+DEF _IN = 0  # The element of a confusion matrix that corresponds to irrelevant labels predicted as negative
+DEF _IP = 1  # The element of a confusion matrix that corresponds to irrelevant labels predicted as positive
+DEF _RN = 2  # The element of a confusion matrix that corresponds to relevant labels predicted as negative
+DEF _RP = 3  # The element of a confusion matrix that corresponds to relevant labels predicted as positive
+
 
 cdef class Prediction:
     """
@@ -252,64 +253,74 @@ cdef class LabelWiseMeasure(Loss):
 
     def __cinit__(self):
         self.prediction = LabelIndependentPrediction()
+        self.confusion_matrices_covered = None
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+        # The number of examples
         cdef intp num_examples = y.shape[0]
+        # The number of labels
         cdef intp num_labels = y.shape[1]
+        # An array that stores the predictions of the default rule
         cdef float64[::1] default_rule = array_float64(num_labels)
-        cdef uint32[::1] minority_labels = array_uint32(num_labels)
+        # An array that store the minority labels (the inverse of the default rule)
+        cdef float64[::1] minority_labels = array_float64(num_labels)
+        # A matrix that stores whether individual labels are covered (0) or not (1)
         cdef float64[::1, :] uncovered_labels = matrix_float64(num_examples, num_labels)
-        cdef float64[::1, :] confusion_matrices_covered = matrix_float64(num_labels, 4)
+        uncovered_labels[:,:] = 1
+        # A matrix that stores the confusion matrices (one per label) of the default rule
         cdef float64[::1, :] confusion_matrices_default = matrix_float64(num_labels, 4)
-        cdef float64 treshold = num_examples / 2.0
+        # The threshold that is used to determine the minority/majority labels
+        cdef float64 threshold = num_examples / 2.0
+        # Temporary variables
+        cdef uint8 true_label
+        cdef float64 predicted_label
+        cdef intp c, r
 
-        default_rule[:] = 0
-
-        # the default rule predicts the majority-class (label-wise)
-        for r in range(num_examples):
-            for c in range(num_labels):
-                default_rule[c] += y[r, c]
-
+        # For each label determine the default prediction and construct the confusion matrix of the default rule...
         for c in range(num_labels):
-            if default_rule[c] > treshold:
-                default_rule[c] = 1
+            predicted_label = 0
+
+            # Iterate the examples to count the number of positive labels...
+            for r in range(num_examples):
+                true_label = y[r, c]
+                predicted_label += true_label
+
+            # Determine the default prediction and minority label...
+            if predicted_label > threshold:
+                predicted_label = 1
+                default_rule[c] = predicted_label
                 minority_labels[c] = 0
             else:
-                default_rule[c] = 0
+                predicted_label = 0
+                default_rule[c] = predicted_label
                 minority_labels[c] = 1
 
-        # the confusion_matrix_default is the confusion matrix of the default rule
-        for r in range(num_examples):
-            for c in range(num_labels):
+            # Iterate the examples again to construct the confusion matrix of the default rule...
+            for r in range(num_examples):
                 true_label = y[r, c]
-                predicted_label = default_rule[c]
 
                 if true_label == 0:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _in] += 1
+                        confusion_matrices_default[c, _IN] += 1
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _ip] += 1
+                        confusion_matrices_default[c, _IP] += 1
                 elif true_label == 1:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _rn] += 1
+                        confusion_matrices_default[c, _RN] += 1
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _rp] += 1
+                        confusion_matrices_default[c, _RP] += 1
 
-
+        # Store confusion matrices of the default rule...
         self.confusion_matrices_default = confusion_matrices_default
 
-        # this stores a matrix which corresponds to the uncovered labels of all examples, where uncovered labels are
-        # represented by a one and covered examples are represented by a zero
-        uncovered_labels[:,:] = 1
+        # Store the matrix of covered/uncovered labels...
         self.uncovered_labels = uncovered_labels
 
+        # Store the minority labels...
         self.minority_labels = minority_labels
-        self.true_labels = y
 
-        # this stores the confusion matrices (one per label) of covered examples, which we need to determine the quality
-        # of rules.
-        confusion_matrices_covered[:,:] = 0
-        self.confusion_matrices_covered = confusion_matrices_covered
+        # Store the ground truth label matrix...
+        self.true_labels = y
 
         return default_rule
 
@@ -320,79 +331,121 @@ cdef class LabelWiseMeasure(Loss):
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
-        cdef float64[::1, :] confusion_matrices = self.confusion_matrices_covered
+        # Determine the number of labels to be considered by the upcoming search...
+        cdef float64[::1] minority_labels
+        cdef intp num_labels
 
-        confusion_matrices[:,:] = 0
+        if label_indices is None:
+            minority_labels = self.minority_labels
+            num_labels = minority_labels.shape[0]
+        else:
+            num_labels = label_indices.shape[0]
 
-    cdef update_search(self, intp example_index, uint32 weight):
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef uint32[::1] minority_labels = self.minority_labels
-        cdef uint8[::1, :] true_labels = self.true_labels
-        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
-        cdef intp num_labels = true_labels.shape[1]
-        cdef intp c
-        cdef uint8 true_label, predicted_label
-
-        # Update confusion matrices
-        for c in range(num_labels):
-            true_label = true_labels[example_index, c]
-            predicted_label = minority_labels[c]
-
-            if true_label == 0:
-                if predicted_label == 0:
-                    confusion_matrices_covered[c, _in] += weight
-                elif predicted_label == 1:
-                    confusion_matrices_covered[c, _ip] += weight
-            elif true_label == 1:
-                if predicted_label == 0:
-                    confusion_matrices_covered[c, _rn] += weight
-                elif predicted_label == 1:
-                    confusion_matrices_covered[c, _rp] += weight
-
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+        # To avoid array-recreation each time the search will be updated, the matrix for storing the confusion matrices
+        # of covered examples, as well as the arrays for storing predictions and quality scores, are initialized once at
+        # this point. If the arrays from the previous search have the correct size, they are reused.
         cdef LabelIndependentPrediction prediction = self.prediction
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef float64 overall_quality_score = 0
-        cdef uint32[::1] minority_labels = self.minority_labels
-        cdef intp num_labels = minority_labels.shape[0]
+        cdef float64[::1] predicted_scores
+        cdef float64[::1] quality_scores
         cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
-        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        cdef intp c
 
-        if predicted_scores is None or predicted_scores.shape[0] != num_labels:
+        if confusion_matrices_covered is None or confusion_matrices_covered.shape[0] != num_labels:
+            confusion_matrices_covered = matrix_float64(num_labels, 4)
+            self.confusion_matrices_covered = confusion_matrices_covered
             predicted_scores = array_float64(num_labels)
             prediction.predicted_scores = predicted_scores
             quality_scores = array_float64(num_labels)
             prediction.quality_scores = quality_scores
 
+        # Reset the confusion matrices of covered examples to 0...
+        confusion_matrices_covered[:, :] = 0
+
+        # Store the given label indices...
+        self.label_indices = label_indices
+
+    cdef update_search(self, intp example_index, uint32 weight):
+        # Class members
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef float64[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef intp[::1] label_indices = self.label_indices
+        # The number of labels considered by the current search
+        cdef intp num_labels = confusion_matrices_covered.shape[0]
+        # Temporary variables
+        cdef uint8 true_label
+        cdef float64 predicted_label
+        cdef intp c, l
+
+        # Update confusion matrix of the covered examples for each label...
+        for c in range(num_labels):
+            l = get_index(c, label_indices)
+
+            # Only labels that are not covered yet should be considered...
+            if uncovered_labels[example_index, l] > 0:
+                true_label = true_labels[example_index, l]
+                predicted_label = minority_labels[l]
+
+                if true_label == 0:
+                    if predicted_label == 0:
+                        confusion_matrices_covered[c, _IN] += weight
+                    elif predicted_label == 1:
+                        confusion_matrices_covered[c, _IP] += weight
+                elif true_label == 1:
+                    if predicted_label == 0:
+                        confusion_matrices_covered[c, _RN] += weight
+                    elif predicted_label == 1:
+                        confusion_matrices_covered[c, _RP] += weight
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+        # Class members
+        cdef LabelIndependentPrediction prediction = self.prediction
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef float64[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef intp[::1] label_indices = self.label_indices
+        # The overall quality score according to the used heuristic
+        cdef float64 overall_quality_score = 0
+        # The number of labels considered by the current search
+        cdef intp num_labels = confusion_matrices_covered.shape[0]
+        # Temporary variables
+        cdef float64 quality_score
+        cdef intp c, l
+
+        # For each label, predict the minority label and determine the calculate a quality score...
         for c in range(num_labels):
             predicted_scores[c] = minority_labels[c]
+            l = get_index(c, label_indices)
+
             if uncovered:
-                quality_scores[c] = self.evaluate_confusion_matrix(
-                    confusion_matrices_default[c, _in] - confusion_matrices_covered[c, _in],
-                    confusion_matrices_default[c, _ip] - confusion_matrices_covered[c, _ip],
-                    confusion_matrices_default[c, _rn] - confusion_matrices_covered[c, _rn],
-                    confusion_matrices_default[c, _rp] - confusion_matrices_covered[c, _rp],
-                    confusion_matrices_covered[c, _in],
-                    confusion_matrices_covered[c, _ip],
-                    confusion_matrices_covered[c, _rn],
-                    confusion_matrices_covered[c, _rp]
+                quality_score = self.evaluate_confusion_matrix(
+                    confusion_matrices_default[l, _IN] - confusion_matrices_covered[c, _IN],
+                    confusion_matrices_default[l, _IP] - confusion_matrices_covered[c, _IP],
+                    confusion_matrices_default[l, _RN] - confusion_matrices_covered[c, _RN],
+                    confusion_matrices_default[l, _RP] - confusion_matrices_covered[c, _RP],
+                    confusion_matrices_covered[c, _IN],
+                    confusion_matrices_covered[c, _IP],
+                    confusion_matrices_covered[c, _RN],
+                    confusion_matrices_covered[c, _RP]
                 )
             else:
-                quality_scores[c] = self.evaluate_confusion_matrix(
-                    confusion_matrices_covered[c, _in],
-                    confusion_matrices_covered[c, _ip],
-                    confusion_matrices_covered[c, _rn],
-                    confusion_matrices_covered[c, _rp],
-                    confusion_matrices_default[c, _in] - confusion_matrices_covered[c, _in],
-                    confusion_matrices_default[c, _ip] - confusion_matrices_covered[c, _ip],
-                    confusion_matrices_default[c, _rn] - confusion_matrices_covered[c, _rn],
-                    confusion_matrices_default[c, _rp] - confusion_matrices_covered[c, _rp],
+                quality_score = self.evaluate_confusion_matrix(
+                    confusion_matrices_covered[c, _IN],
+                    confusion_matrices_covered[c, _IP],
+                    confusion_matrices_covered[c, _RN],
+                    confusion_matrices_covered[c, _RP],
+                    confusion_matrices_default[l, _IN] - confusion_matrices_covered[c, _IN],
+                    confusion_matrices_default[l, _IP] - confusion_matrices_covered[c, _IP],
+                    confusion_matrices_default[l, _RN] - confusion_matrices_covered[c, _RN],
+                    confusion_matrices_default[l, _RP] - confusion_matrices_covered[c, _RP],
                 )
 
-            overall_quality_score += quality_scores[c]
+            overall_quality_score += quality_score
+            quality_scores[c] = quality_score
 
+        # The overall quality score results from averaging the quality scores for the individual labels...
         prediction.overall_quality_score = overall_quality_score / num_labels
 
         return prediction
@@ -402,9 +455,39 @@ cdef class LabelWiseMeasure(Loss):
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
+        # Class members
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64[::1] minority_labels = self.minority_labels
+        # The number of predicted labels
+        cdef intp num_labels = predicted_scores.shape[0]
+        # Temporary variables
+        cdef float64 minority_label
+        cdef intp l, i
 
-        uncovered_labels[:, :] = 0
+        # Only the labels that are predicted by the new rule must be considered...
+        for l in label_indices:
+            minority_label = minority_labels[l]
+
+            # Only the examples that are covered by the new rule must be considered...
+            for i in covered_example_indices:
+                # Mark label as covered...
+                uncovered_labels[i, l] = 0
+
+                # Remove covered labels from the confusion matrices of the default rule...
+                true_label = true_labels[i, l]
+
+                if true_label == 0:
+                    if minority_label == 1:  # i.e., default rule predicts 0
+                        confusion_matrices_default[l, _IN] -= 1
+                    elif minority_label == 0:  # i.e., default rule predicts 1
+                        confusion_matrices_default[l, _IP] -= 1
+                elif true_label == 1:
+                    if minority_label == 1:  # i.e., default rule predicts 0
+                        confusion_matrices_default[l, _RN] -= 1
+                    elif minority_label == 0:  # i.e., default rule predicts 1
+                        confusion_matrices_default[l, _RP] -= 1
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):

@@ -90,17 +90,19 @@ cdef class LabelWiseMeasure(Loss):
 
     # Attributes:
 
-    cpdef Prediction prediction
+    cdef Prediction prediction
 
-    cpdef float64[::1, :] uncovered_labels
+    cdef float64[::1, :] uncovered_labels
 
-    cdef uint32[::1] minority_labels
+    cdef float64[::1] minority_labels
 
     cdef uint8[::1, :] true_labels
 
     cdef float64[::1, :] confusion_matrices_default
 
     cdef float64[::1, :] confusion_matrices_covered
+
+    cdef intp[::1] label_indices
 
     # Functions:
 
