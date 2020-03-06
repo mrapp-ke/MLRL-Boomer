@@ -40,6 +40,12 @@ class MLLearner(MLClassifierBase, Randomized):
     fold: int = None
 
     def set_params(self, **parameters):
+        """
+        Sets the parameters of the classifier or ranker.
+
+        :param parameters:  The parameters to be set
+        :return:            The classifier or ranker for which the parameter have been set
+        """
         params = self.get_params()
         for parameter, value in parameters.items():
             if parameter in params.keys():
