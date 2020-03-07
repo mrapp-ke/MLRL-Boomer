@@ -29,12 +29,7 @@ class Attribute:
         """
         :param name:    The name of the attribute
         """
-        self.name = name.strip()
-        if self.name.startswith('\'') or self.name.startswith('\"'):
-            self.name = self.name[1:]
-        if self.name.endswith('\'') or self.name.endswith('\"'):
-            self.name = self.name[:(len(self.name) - 1)]
-        self.name = self.name.replace('\\\'', '\'').replace('\\\"', '\"')
+        self.name = name
 
 
 class NominalAttribute(Attribute):
@@ -235,7 +230,7 @@ def __parse_labels(metadata_file) -> Set[str]:
 
     xml_doc = minidom.parse(metadata_file)
     tags = xml_doc.getElementsByTagName('label')
-    return set([tag.getAttribute('name') for tag in tags])
+    return set([__parse_attribute_or_label_name(tag.getAttribute('name')) for tag in tags])
 
 
 def __parse_attributes(arff_file, labels: Set[str]) -> (str, List[Attribute]):
@@ -269,6 +264,8 @@ def __parse_attributes(arff_file, labels: Set[str]) -> (str, List[Attribute]):
                     attribute_name = attribute_definition[:attribute_definition.find(' {')]
                     numeric = False
 
+                attribute_name = __parse_attribute_or_label_name(attribute_name)
+
                 if attribute_name not in labels:
                     attribute = Attribute(attribute_name) if numeric else NominalAttribute(attribute_name)
                     attributes.append(attribute)
@@ -276,6 +273,21 @@ def __parse_attributes(arff_file, labels: Set[str]) -> (str, List[Attribute]):
                     label_location = 'start'
 
     return label_location, attributes
+
+
+def __parse_attribute_or_label_name(name: str) -> str:
+    """
+    Parses the name of an attribute or label and removes unallowed characters.
+
+    :param name:    The name of the attribute or label
+    :return:        The parsed name
+    """
+    name = name.strip()
+    if name.startswith('\'') or name.startswith('\"'):
+        name = name[1:]
+    if name.endswith('\'') or name.endswith('\"'):
+        name = name[:(len(name) - 1)]
+    return name.replace('\\\'', '\'').replace('\\\"', '\"')
 
 
 def __parse_meta_data(arff_file, metadata_file) -> MetaData:
