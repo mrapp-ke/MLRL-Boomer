@@ -39,6 +39,7 @@ class MLRuleLearner(MLLearner):
 
     def __init__(self, model_dir: str):
         super().__init__(model_dir)
+        self.require_dense = [True, True]  # We need a dense representation of the training data
 
     def _get_model_prefix(self) -> str:
         return 'rules'
