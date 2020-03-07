@@ -52,7 +52,7 @@ class ProblemTransformationLearner(MLLearner):
         pass
 
     @abstractmethod
-    def _get_model_prefix(self) -> str:
+    def get_model_prefix(self) -> str:
         pass
 
 
@@ -67,7 +67,7 @@ class BRLearner(ProblemTransformationLearner):
     def _create_transformation_method(self, base_learner: Learner) -> ProblemTransformationBase:
         return BinaryRelevance(classifier=base_learner)
 
-    def _get_model_prefix(self) -> str:
+    def get_model_prefix(self) -> str:
         return 'br'
 
 
@@ -82,5 +82,5 @@ class LPLearner(ProblemTransformationLearner):
     def _create_transformation_method(self, base_learner: Learner) -> ProblemTransformationBase:
         return LabelPowerset(classifier=base_learner)
 
-    def _get_model_prefix(self) -> str:
+    def get_model_prefix(self) -> str:
         return 'lp'

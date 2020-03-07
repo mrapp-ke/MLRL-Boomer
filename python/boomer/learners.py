@@ -97,7 +97,7 @@ class MLLearner(Learner, MLClassifierBase):
         :return:            The loaded model
         """
         if persistence is not None:
-            return persistence.load_model(model_name=self.get_model_name(), file_name_suffix=self._get_model_prefix(),
+            return persistence.load_model(model_name=self.get_model_name(), file_name_suffix=self.get_model_prefix(),
                                           fold=self.fold)
 
         return None
@@ -111,7 +111,7 @@ class MLLearner(Learner, MLClassifierBase):
         """
 
         if persistence is not None:
-            persistence.save_model(model, model_name=self.get_model_name(), file_name_suffix=self._get_model_prefix(),
+            persistence.save_model(model, model_name=self.get_model_name(), file_name_suffix=self.get_model_prefix(),
                                    fold=self.fold)
 
     def get_params(self, deep=True):
@@ -151,7 +151,7 @@ class MLLearner(Learner, MLClassifierBase):
         return self._predict(self.model_, self.stats_, x, self.random_state)
 
     @abstractmethod
-    def _get_model_prefix(self) -> str:
+    def get_model_prefix(self) -> str:
         """
         Returns the prefix to be used when storing model on disk.
 

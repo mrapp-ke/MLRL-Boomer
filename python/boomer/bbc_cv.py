@@ -71,7 +71,7 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         current_learner.random_state = self.random_state
         current_learner.fold = current_fold
         model_name = current_learner.get_name()
-        file_name_suffix = current_learner._get_model_prefix()
+        file_name_suffix = current_learner.get_model_prefix()
         model = self.persistence.load_model(model_name=model_name, file_name_suffix=file_name_suffix, fold=current_fold,
                                             raise_exception=True)
 
