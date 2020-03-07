@@ -41,7 +41,7 @@ class MLRuleLearner(MLLearner):
         super().__init__(model_dir)
         self.require_dense = [True, True]  # We need a dense representation of the training data
 
-    def _get_model_prefix(self) -> str:
+    def get_model_prefix(self) -> str:
         return 'rules'
 
     def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
