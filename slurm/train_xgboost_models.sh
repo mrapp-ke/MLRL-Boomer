@@ -36,7 +36,7 @@ do
     do
       JOB_NAME="${DATASET}-${CURRENT_FOLD}_xgboost_${TRANSFORMATION_METHOD}_${COUNT}"
       FILE="${JOB_NAME}.sh"
-      PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --learning-rate ${LEARNING_RATE} --reg-lambda ${REG_LAMBDA} --transformation-method ${TRANSFORMATION_METHOD}"
+      PARAMETERS="--log-level error --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --learning-rate ${LEARNING_RATE} --reg-lambda ${REG_LAMBDA} --transformation-method ${TRANSFORMATION_METHOD}"
 
       echo "$FILE"
       echo "#!/bin/sh" >> "$FILE"
