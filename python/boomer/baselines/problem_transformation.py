@@ -34,6 +34,22 @@ class ProblemTransformationLearner(MLLearner):
         })
         return params
 
+    def set_params(self, **parameters):
+        base_learner = self.base_learner
+        base_learner_params = base_learner.get_params()
+        keys_to_be_set = parameters.keys()
+        base_learner_params_to_be_set = {}
+
+        for key in base_learner_params.keys():
+            if key in keys_to_be_set:
+                value = parameters.pop(key)
+                base_learner_params_to_be_set.update({key: value})
+
+        if len(base_learner_params) > 0:
+            base_learner.set_params(**base_learner_params_to_be_set)
+
+        return super().set_params(**parameters)
+
     def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
         base_learner = self.base_learner
         transformation_method = self._create_transformation_method(base_learner)
