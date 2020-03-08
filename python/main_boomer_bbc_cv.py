@@ -14,9 +14,10 @@ from boomer.bbc_cv import BbcCv, BbcCvAdapter
 
 class BoomerBccCvAdapter(BbcCvAdapter):
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str, max_rules: int,
+    def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str, min_rules:int, max_rules: int,
                  step_size_rules: int):
         super().__init__(data_dir, data_set, num_folds, model_dir)
+        self.min_rules = min_rules
         self.max_rules = max_rules
         self.step_size_rules = step_size_rules
 
@@ -35,6 +36,8 @@ class BoomerBccCvAdapter(BbcCvAdapter):
             configurations.append(current_config)
 
         # Store predictions...
+        min_rules = self.min_rules
+        min_rules = max(min_rules, 1) if min_rules != -1 else 1
         max_rules = self.max_rules
         max_rules = min(num_rules, max_rules) if max_rules != -1 else num_rules
         step_size = min(max(1, self.step_size_rules), max_rules)
@@ -51,7 +54,7 @@ class BoomerBccCvAdapter(BbcCvAdapter):
 
             current_config['num_rules'] = (n + 1)
 
-            if n < max_rules - 1 and (n + 1) % step_size == 0:
+            if min_rules <= n < max_rules - 1 and (n + 1) % step_size == 0:
                 c += 1
 
                 if len(predictions) > c:
@@ -118,6 +121,8 @@ if __name__ == '__main__':
                         help='The path of the directory into which results should be written')
     parser.add_argument('--num-bootstraps', type=int, default=100,
                         help='The number of bootstrap iterations to be performed')
+    parser.add_argument('--min-rules', type=int, default=-1,
+                        help='The minimum number of rules to be used for testing models')
     parser.add_argument('--max-rules', type=int, default=-1,
                         help='The maximum number of rules to be used for testing models')
     parser.add_argument('--step-size-rules', type=int, default=50,
@@ -150,7 +155,7 @@ if __name__ == '__main__':
     base_configurations = __create_configurations(args)
     learner = Boomer()
     bbc_cv_adapter = BoomerBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
-                                        model_dir=args.model_dir, max_rules=args.max_rules,
+                                        model_dir=args.model_dir, min_rules=args.min_rules, max_rules=args.max_rules,
                                         step_size_rules=args.step_size_rules)
     bbc_cv = BbcCv(output_dir=args.output_dir, configurations=base_configurations, adapter=bbc_cv_adapter,
                    learner=learner)
