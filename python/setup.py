@@ -12,7 +12,6 @@ setup(name='boomer',
       license='MIT',
       packages=['boomer'],
       install_requires=[
-          'wheel>=0.34.2',
           'liac-arff>=2.4.0',
           'numpy>=1.18.0',
           'scikit-learn>=0.22.0',
