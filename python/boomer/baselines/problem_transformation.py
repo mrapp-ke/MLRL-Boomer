@@ -9,7 +9,9 @@ from abc import abstractmethod
 
 import numpy as np
 from skmultilearn.base.problem_transformation import ProblemTransformationBase
-from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset
+from skmultilearn.cluster import RandomLabelSpaceClusterer
+from skmultilearn.ensemble import MajorityVotingClassifier
+from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset, ClassifierChain
 
 from boomer.learners import MLLearner, Learner
 from boomer.stats import Stats
@@ -52,8 +54,7 @@ class ProblemTransformationLearner(MLLearner):
 
     def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
         base_learner = self.base_learner
-        transformation_method = self._create_transformation_method(base_learner)
-        transformation_method.classifier = base_learner
+        transformation_method = self._create_transformation_method(base_learner, stats, x, y, random_state)
         transformation_method.fit(x, y)
         return transformation_method
 
@@ -64,7 +65,8 @@ class ProblemTransformationLearner(MLLearner):
         return self.base_learner.get_name()
 
     @abstractmethod
-    def _create_transformation_method(self, base_learner: Learner) -> ProblemTransformationBase:
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+                                      random_state: int) -> ProblemTransformationBase:
         pass
 
     @abstractmethod
@@ -74,13 +76,14 @@ class ProblemTransformationLearner(MLLearner):
 
 class BRLearner(ProblemTransformationLearner):
     """
-    A multi-label classifier that uses the binary relevance method.
+    A multi-label classifier that uses the binary relevance (BR) method.
     """
 
     def __init__(self, model_dir: str, base_learner: Learner):
         super().__init__(model_dir, base_learner)
 
-    def _create_transformation_method(self, base_learner: Learner) -> ProblemTransformationBase:
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+                                      random_state: int) -> ProblemTransformationBase:
         return BinaryRelevance(classifier=base_learner)
 
     def get_model_prefix(self) -> str:
@@ -89,14 +92,45 @@ class BRLearner(ProblemTransformationLearner):
 
 class LPLearner(ProblemTransformationLearner):
     """
-    A multi-label classifier that uses the label powerset method.
+    A multi-label classifier that uses the label powerset (LP) method.
     """
 
     def __init__(self, model_dir: str, base_learner: Learner):
         super().__init__(model_dir, base_learner)
 
-    def _create_transformation_method(self, base_learner: Learner) -> ProblemTransformationBase:
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+                                      random_state: int) -> ProblemTransformationBase:
         return LabelPowerset(classifier=base_learner)
 
     def get_model_prefix(self) -> str:
         return 'lp'
+
+
+class ECCLearner(ProblemTransformationLearner):
+    """
+    A multi-label classifier that uses an ensemble of classifier chains (ECC).
+    """
+
+    def __init__(self, model_dir: str, base_learner: Learner, num_chains: int = 50):
+        super().__init__(model_dir, base_learner)
+        self.num_chains = num_chains
+
+    def get_params(self, deep=True):
+        params = super().get_params()
+        params.update({
+            'num_chains': self.num_chains
+        })
+        return params
+
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+                                      random_state: int) -> ProblemTransformationBase:
+        return MajorityVotingClassifier(classifier=ClassifierChain(classifier=base_learner),
+                                        clusterer=RandomLabelSpaceClusterer(cluster_size=stats.num_labels,
+                                                                            cluster_count=self.num_chains,
+                                                                            allow_overlap=True))
+
+    def get_model_prefix(self) -> str:
+        return 'ecc'
+
+    def get_name(self) -> str:
+        return 'num-chains=' + str(self.num_chains) + '_' + super().get_name()
