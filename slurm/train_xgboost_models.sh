@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Command line arguments
 DATASET=$1
