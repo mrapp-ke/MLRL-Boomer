@@ -8,7 +8,7 @@ from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, Eva
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
 from boomer.baselines.xgboost import XGBoost
-from boomer.baselines.problem_transformation import BRLearner, LPLearner, ECCLearner
+from boomer.baselines.problem_transformation import BRLearner, LPLearner, CCLearner
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='An multi-label classification experiment using BR with XGBoost')
@@ -26,8 +26,8 @@ if __name__ == '__main__':
     parser.add_argument('--reg-lambda', type=float, default=0.0, help='The L2 regularization weight to be used')
     parser.add_argument('--transformation-method', type=str, default='br',
                         help='The name of the problem transformation method to be used')
-    parser.add_argument('--num-chains', type=int, default=50,
-                        help='The number of chains in an ECC (when using the transformation method \'ecc\')')
+    parser.add_argument('--chain-order', type=int, default=1,
+                        help='Seed to randomize the order of chains when using the transformation method \'cc\')')
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
@@ -55,10 +55,10 @@ if __name__ == '__main__':
         base_learner = XGBoost(learning_rate=args.learning_rate, reg_lambda=args.reg_lambda,
                                objective='multi:softmax')
         learner = LPLearner(model_dir=args.model_dir, base_learner=base_learner)
-    elif transformation_method == 'ecc':
+    elif transformation_method == 'cc':
         base_learner = XGBoost(learning_rate=args.learning_rate, reg_lambda=args.reg_lambda,
                                objective='binary:logistic')
-        learner = ECCLearner(model_dir=args.model_dir, base_learner=base_learner, num_chains=args.num_chains)
+        learner = CCLearner(model_dir=args.model_dir, base_learner=base_learner, chain_order=args.chain_order)
     else:
         raise ValueError('Invalid argument given: ' + str(transformation_method))
 

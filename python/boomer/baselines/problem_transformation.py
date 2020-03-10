@@ -9,8 +9,6 @@ from abc import abstractmethod
 
 import numpy as np
 from skmultilearn.base.problem_transformation import ProblemTransformationBase
-from skmultilearn.cluster import RandomLabelSpaceClusterer
-from skmultilearn.ensemble import MajorityVotingClassifier
 from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset, ClassifierChain
 
 from boomer.learners import MLLearner, Learner
@@ -106,31 +104,31 @@ class LPLearner(ProblemTransformationLearner):
         return 'lp'
 
 
-class ECCLearner(ProblemTransformationLearner):
+class CCLearner(ProblemTransformationLearner):
     """
-    A multi-label classifier that uses an ensemble of classifier chains (ECC).
+    A multi-label classifier that uses a classifier chain (CC).
     """
 
-    def __init__(self, model_dir: str, base_learner: Learner, num_chains: int = 50):
+    def __init__(self, model_dir: str, base_learner: Learner, chain_order: int = 1):
         super().__init__(model_dir, base_learner)
-        self.num_chains = num_chains
+        self.chain_order = chain_order
 
     def get_params(self, deep=True):
         params = super().get_params()
         params.update({
-            'num_chains': self.num_chains
+            'chain_order': self.chain_order
         })
         return params
 
     def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
                                       random_state: int) -> ProblemTransformationBase:
-        return MajorityVotingClassifier(classifier=ClassifierChain(classifier=base_learner),
-                                        clusterer=RandomLabelSpaceClusterer(cluster_size=stats.num_labels,
-                                                                            cluster_count=self.num_chains,
-                                                                            allow_overlap=True))
+        num_labels = stats.num_labels
+        np.random.seed(self.chain_order)
+        order = np.random.choice(num_labels, num_labels, replace=False)
+        return ClassifierChain(classifier=base_learner, order=order)
 
     def get_model_prefix(self) -> str:
-        return 'ecc'
+        return 'cc'
 
     def get_name(self) -> str:
-        return 'num-chains=' + str(self.num_chains) + '_' + super().get_name()
+        return super().get_name() + '_chain-order=' + str(self.chain_order)
