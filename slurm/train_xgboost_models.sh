@@ -57,7 +57,7 @@ do
           chmod +x "$FILE"
 
           # Run SLURM job
-          #sbatch "$FILE"
+          sbatch "$FILE"
           rm "$FILE"
           echo "Started experiment with parameters ${PARAMETERS}"
         done
