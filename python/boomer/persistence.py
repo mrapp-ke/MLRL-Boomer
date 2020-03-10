@@ -63,7 +63,7 @@ class ModelPersistence:
                 log.info('Successfully loaded model from file \"%s\"', file_path)
                 return model
         except IOError as e:
-            log.exception('Failed to load model from file \"%s\"', file_path)
+            log.error('Failed to load model from file \"%s\"', file_path)
 
             if raise_exception:
                 raise e
