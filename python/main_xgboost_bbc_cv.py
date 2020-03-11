@@ -81,7 +81,7 @@ class CcBccCvAdapter(BrBccCvAdapter):
             current_config = self.configuration.copy()
             configurations.append(current_config)
 
-        test_y = model.predict(test_x).toarray()
+        test_y = model.predict(test_x)
 
         if test_indices is None:
             current_predictions[:, :] = test_y
