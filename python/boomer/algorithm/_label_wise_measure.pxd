@@ -7,7 +7,7 @@ cdef class LabelWiseMeasure(Loss):
 
     cdef Prediction prediction
 
-    cpdef readonly float64[::1, :] uncovered_labels
+    cdef readonly float64[::1, :] uncovered_labels
 
     cdef uint32[::1] minority_labels
 

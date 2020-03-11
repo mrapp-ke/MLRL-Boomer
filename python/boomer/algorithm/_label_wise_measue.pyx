@@ -46,7 +46,7 @@ cdef class LabelWiseMeasure(Loss):
             # the confusion_matrix_default is the confusion matrix of the default rule
             for r in range(num_examples):
                 true_label = y[r, c]
-                predicted_label = <int> default_rule[c]
+                predicted_label = <uint8> default_rule[c]
 
                 if true_label == 0:
                     if predicted_label == 0:
@@ -94,12 +94,12 @@ cdef class LabelWiseMeasure(Loss):
         cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
 
         if confusion_matrices_covered is None or confusion_matrices_covered.shape[0] != num_labels:
-                    confusion_matrices_covered = matrix_float64(num_labels, 4)
-                    self.confusion_matrices_covered = confusion_matrices_covered
-                    predicted_scores = array_float64(num_labels)
-                    prediction.predicted_scores = predicted_scores
-                    quality_scores = array_float64(num_labels)
-                    prediction.quality_scores = quality_scores
+            confusion_matrices_covered = matrix_float64(num_labels, 4)
+            self.confusion_matrices_covered = confusion_matrices_covered
+            predicted_scores = array_float64(num_labels)
+            prediction.predicted_scores = predicted_scores
+            quality_scores = array_float64(num_labels)
+            prediction.quality_scores = quality_scores
 
         confusion_matrices_covered[:,:] = 0
         self.label_indices = label_indices
