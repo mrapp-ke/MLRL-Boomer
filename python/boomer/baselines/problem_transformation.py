@@ -8,8 +8,9 @@ Implements different problem transformation methods.
 from abc import abstractmethod
 
 import numpy as np
+from sklearn.multioutput import ClassifierChain
 from skmultilearn.base.problem_transformation import ProblemTransformationBase
-from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset, ClassifierChain
+from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset
 
 from boomer.learners import MLLearner, Learner
 from boomer.stats import Stats
@@ -112,6 +113,7 @@ class CCLearner(ProblemTransformationLearner):
     def __init__(self, model_dir: str, base_learner: Learner, chain_order: int = 1):
         super().__init__(model_dir, base_learner)
         self.chain_order = chain_order
+        self.require_dense = [True, True]  # We need a dense representation of the training data
 
     def get_params(self, deep=True):
         params = super().get_params()
@@ -120,12 +122,15 @@ class CCLearner(ProblemTransformationLearner):
         })
         return params
 
+    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+        # Create a dense representation of the training data
+        x = self._ensure_input_format(x)
+        y = self._ensure_input_format(y)
+        return super().fit(stats, x, y, random_state)
+
     def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
                                       random_state: int) -> ProblemTransformationBase:
-        num_labels = stats.num_labels
-        np.random.seed(self.chain_order)
-        order = np.random.choice(num_labels, num_labels, replace=False)
-        return ClassifierChain(classifier=base_learner, order=order)
+        return ClassifierChain(base_learner, order='random', random_state=self.chain_order)
 
     def get_model_prefix(self) -> str:
         return 'cc'

@@ -41,6 +41,7 @@ class XGBoost(Learner):
         xgboost.reg_lambda = float(self.reg_lambda)
         xgboost.colsample_bynode = colsample_bynode
         xgboost.fit(x, y)
+        self.classes_ = xgboost.classes_
         return self
 
     def predict(self, x):
