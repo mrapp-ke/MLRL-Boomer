@@ -39,15 +39,17 @@ cdef class Loss:
         Calculates the optimal scores to be predicted by the default rule for each label and example.
 
         This function must be called prior to calling any other function provided by this class. It calculates and
-        caches the gradients (and hessians in case of a non-decomposable loss function) based on the expected confidence
-        scores and the scores predicted by the default rule.
+        caches the gradients and hessians based on the expected confidence scores and the scores predicted by the 
+        default rule.
 
-        Furthermore, this function also computes and caches an array storing the total sum of gradients for each label.
-        This is necessary to later be able to search for the optimal scores to be predicted by rules that cover all
+        Furthermore, this function also allocates arrays for storing the total sum of gradients or hessians for each 
+        label. These arrays are later used to search for the optimal scores to be predicted by rules that cover all
         examples provided to the search, as well as by rules that do not cover these instances (but all other ones) at
-        the same time instead of requiring two passes through the examples. When using instance sub-sampling, before
-        invoking the function `begin_search`, the function `begin_instance_sub_sampling` must be called, followed by
-        invocations of the function `update_sub_sample` for each of the examples contained in the sample.
+        the same time instead of requiring two passes through the examples. 
+        
+        To initialize the arrays, before invoking the function `begin_search`, the function 
+        `begin_instance_sub_sampling` must be called, followed by invocations of the function `update_sub_sample` for 
+        each of the examples to be considered by the search.
 
         :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
                     examples according to the ground truth
@@ -58,27 +60,24 @@ cdef class Loss:
 
     cdef begin_instance_sub_sampling(self):
         """
-        Resets the cached sum of gradients (and hessians in case of a non-decomposable loss function) for each label to
-        0.
+        Resets the cached sum of gradients and hessians for each label to 0.
         
-        This function must be invoked before the functions `begin_instance_sub_sampling` and `begin_search` if any type
-        of instance sub-sampling, e.g. bagging, is used. It also must be invoked when a rule has been refined, i.e., 
-        when a new condition has been added to its body, because this causes the subset of examples covered by the rule 
-        to be restricted.
+        This function must always be invoked before the functions `begin_instance_sub_sampling` and `begin_search`. It 
+        must also  be invoked when a rule has been refined, i.e., when a new condition has been added to its body, as 
+        this results in less examples being covered by the rule.
         """
         pass
 
     cdef update_sub_sample(self, intp example_index):
         """
-        Updates the total sum of gradients (and hessians in case of a non-decomposable loss function) for each label
-        based on an example that has been chosen to be included in the sub-sample that is considered by the upcoming 
-        search. This should include all examples that have been selected by the type of instance-sub-sampling used and 
-        are covered by the current rule.
+        Updates the total sum of gradients and hessians for each label given an example that should be considered by the 
+        upcoming search. This should include all examples that have been selected via instance-sub-sampling and are 
+        covered by the current rule (if any).
 
-        This function must be invoked for each example included in the sample after the function
-        `begin_instance_sub_sampling' and before `begin_search`.
+        This function must be invoked for each example that should be considered by the upcoming search after the 
+        function `begin_instance_sub_sampling' and before `begin_search`.
 
-        :param example_index: The index of an example that has been chosen to be included in the sample
+        :param example_index: The index of an example that should be considered by the upcoming search
         """
         pass
 
@@ -87,9 +86,10 @@ cdef class Loss:
         Begins a new search to find the optimal scores to be predicted by candidate rules for individual labels.
 
         This function must be called prior to searching for the best refinement with respect to a certain attribute in
-        order to reset the sums of gradients (and hessians in case of a non-decomposable loss function) cached
-        internally to calculate the optimal scores more efficiently. Subsequent invocations of the function
-        `update_search` can be used to update the cached values afterwards based on a single, newly covered example.
+        order to reset the sums of gradients and hessians cached internally to calculate the optimal scores more 
+        efficiently. Subsequent invocations of the function `update_search` can be used to update the cached values 
+        afterwards based on a single, newly covered example.
+        
         Invoking the function `evaluate_label_independent_predictions` or `evaluate_label_dependent_predictions` at any
         point of the search (`update_search` must be called at least once before!) will yield the optimal scores to be
         predicted by a rule that covers all examples given so far, as well as corresponding quality scores that measure
@@ -105,8 +105,7 @@ cdef class Loss:
 
     cdef update_search(self, intp example_index, uint32 weight):
         """
-        Updates the cached sums of gradients (and hessians in case of a non-decomposable loss function) based on a
-        single, newly covered example.
+        Updates the cached sums of gradients and hessians based on a single, newly covered example.
 
         Subsequent invocations of the function `evaluate_label_independent_predictions` or
         `evaluate_label_dependent_predictions` will yield the optimal scores to be predicted by a rule that covers all
@@ -164,8 +163,7 @@ cdef class Loss:
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         """
-        Updates the cached gradients (and hessians in case of a non-decomposable loss function) based on the predictions
-        provided by newly induced rules.
+        Updates the cached gradients and hessians based on the predictions provided by newly induced rules.
 
         :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
                                         of the examples that are covered by the newly induced rule, regardless of
