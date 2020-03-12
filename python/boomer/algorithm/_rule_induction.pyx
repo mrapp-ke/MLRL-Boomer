@@ -70,22 +70,6 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, uint8[:
     :param random_state:            The seed to be used by RNGs
     :return:                        The rule that has been induced
     """
-    # Sub-sample examples, if necessary...
-    cdef uint32[::1] weights
-
-    if instance_sub_sampling is None:
-        weights = None
-    else:
-        weights = instance_sub_sampling.sub_sample(x, loss, random_state)
-
-    # Sub-sample labels, if necessary...
-    cdef intp[::1] label_indices
-
-    if label_sub_sampling is None:
-        label_indices = None
-    else:
-        label_indices = label_sub_sampling.sub_sample(y, random_state)
-
     # The head of the induced rule
     cdef HeadCandidate head = None
     # A list that contains the rule's conditions (in the order they have been learned)
@@ -108,7 +92,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, uint8[:
 
     # Variables for specifying the examples and labels that should be used for finding the best refinement
     cdef intp[::1, :] sorted_indices = x_sorted_indices
-    cdef intp num_examples
+    cdef intp num_examples = x.shape[0]
 
     # Variables for specifying the features used for finding the best refinement
     cdef intp[::1] feature_indices
@@ -120,6 +104,28 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, uint8[:
     cdef float32 previous_threshold, current_threshold
     cdef uint32 weight
     cdef intp c, f, r, i, previous_r
+
+    # Sub-sample examples, if necessary...
+    cdef uint32[::1] weights
+
+    if instance_sub_sampling is None:
+        weights = None
+
+         # Notify the loss that all examples should be considered...
+        loss.begin_instance_sub_sampling()
+
+        for i in range(num_examples):
+            loss.update_sub_sample(i)
+    else:
+        weights = instance_sub_sampling.sub_sample(x, loss, random_state)
+
+    # Sub-sample labels, if necessary...
+    cdef intp[::1] label_indices
+
+    if label_sub_sampling is None:
+        label_indices = None
+    else:
+        label_indices = label_sub_sampling.sub_sample(y, random_state)
 
     # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
     while found_refinement:
