@@ -60,16 +60,20 @@ cdef class Loss:
         """
         Resets the cached sum of gradients (and hessians in case of a non-decomposable loss function) for each label to
         0.
-
+        
         This function must be invoked before the functions `begin_instance_sub_sampling` and `begin_search` if any type
-        of instance sub-sampling, e.g. bagging, is used.
+        of instance sub-sampling, e.g. bagging, is used. It also must be invoked when a rule has been refined, i.e., 
+        when a new condition has been added to its body, because this causes the subset of examples covered by the rule 
+        to be restricted.
         """
         pass
 
     cdef update_sub_sample(self, intp example_index):
         """
         Updates the total sum of gradients (and hessians in case of a non-decomposable loss function) for each label
-        based on an example that has been chosen to be included in the sub-sample.
+        based on an example that has been chosen to be included in the sub-sample that is considered by the upcoming 
+        search. This should include all examples that have been selected by the type of instance-sub-sampling used and 
+        are covered by the current rule.
 
         This function must be invoked for each example included in the sample after the function
         `begin_instance_sub_sampling' and before `begin_search`.
