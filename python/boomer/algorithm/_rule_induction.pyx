@@ -230,7 +230,7 @@ cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, uint8[:
             # Update the examples and labels for which the rule predicts...
             label_indices = head.label_indices
             sorted_indices = __filter_sorted_indices(x, sorted_indices, best_condition_r, best_condition_index,
-                                                     best_condition_leq, best_condition_threshold)
+                                                     best_condition_leq, best_condition_threshold, loss)
 
             if num_examples > 1:
                 # Alter seed to be used by RNGs for the next refinement...
@@ -379,7 +379,8 @@ cdef Rule __build_rule(HeadCandidate head, list[s_condition] conditions,  intp n
 
 
 cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted_indices, intp condition_r,
-                                          intp condition_index, bint condition_leq, float32 condition_threshold):
+                                          intp condition_index, bint condition_leq, float32 condition_threshold,
+                                          Loss loss):
     """
     Filters the matrix of example indices after a new condition has been added to a previous rule, such that the
     filtered matrix does only contain the indices of examples that are covered by the new rule.
@@ -394,6 +395,9 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
     :param condition_leq:       1, if the condition that has been added to the previous rule uses the <= operator, 0, if
                                 the condition uses the > operator
     :param condition_threshold: The threshold of the condition that has been added to the previous rule
+    :param loss:                The loss function to be notified about the examples that must be considered when 
+                                searching for the next refinement, i.e., the examples that are covered by the current 
+                                rule
     :return:                    An array of dtype int, shape `(num_covered_examples, num_features)`, representing the
                                 indices of the examples that are covered by the new rule when sorting column-wise
     """
@@ -410,6 +414,9 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
     cdef float32 feature_value
     cdef intp c, r, i, offset, index
 
+    # Tell the loss function that a new sub-sample of examples will be selected...
+    loss.begin_instance_sub_sampling()
+
     for c in range(num_features):
         i = 0
 
@@ -423,6 +430,10 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
             for r in range(offset, offset + num_covered):
                 index = sorted_indices[r, c]
                 filtered_sorted_indices[i, c] = index
+
+                # Tell the loss function that the example at the current index is covered by the current rule...
+                loss.update_sub_sample(index)
+
                 i += 1
         else:
             # For the other features we need to filter out the indices that correspond to examples that do not satisfy
