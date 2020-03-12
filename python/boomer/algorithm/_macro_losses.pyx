@@ -104,26 +104,19 @@ cdef class MacroLoss(DecomposableLoss):
             scores[c] = score
 
             # Traverse column again to calculate updated gradients based on the calculated score...
-            sum_of_gradients = 0
-
             for r in range(num_examples):
                 expected_score = expected_scores[r, c]
 
                 # Calculate updated gradient for the current example and label...
                 tmp = self._gradient(expected_score, score)
                 gradients[r, c] = tmp
-                sum_of_gradients += tmp
 
                 # Calculate updated gradient for the current example and label...
                 tmp = self._hessian(expected_score, score)
                 hessians[r, c] = tmp
-                sum_of_hessians += tmp
 
                 # Store the score that is currently predicted for the current example and label...
                 current_scores[r, c] = score
-
-            total_sums_of_gradients[c] = sum_of_gradients
-            total_sums_of_hessians[c] = sum_of_hessians
 
         # Store the gradients...
         self.gradients = gradients
@@ -284,23 +277,19 @@ cdef class MacroLoss(DecomposableLoss):
                            float64[::1] predicted_scores):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
-        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
-        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
         cdef float64[::1, :] expected_scores = self.expected_scores
         cdef float64[::1, :] current_scores = self.current_scores
         # The number of predicted labels
         cdef intp num_labels = predicted_scores.shape[0]
         # Temporary variables
-        cdef float64 total_sum_of_gradients, total_sum_of_hessians, predicted_score, expected_score, current_score, tmp
+        cdef float64 predicted_score, expected_score, current_score, tmp
         cdef intp c, l, i
 
         # Only the labels that are predicted by the new rule must be considered...
         for c in range(num_labels):
             l = get_index(c, label_indices)
             predicted_score = predicted_scores[c]
-            total_sum_of_gradients = total_sums_of_gradients[l]
-            total_sum_of_hessians = total_sums_of_hessians[l]
 
             # Only the examples that are covered by the new rule must be considered...
             for i in covered_example_indices:
@@ -311,25 +300,15 @@ cdef class MacroLoss(DecomposableLoss):
                 current_score = current_scores[i, l] + predicted_score
                 current_scores[i, l] = current_score
 
-                # Update the gradient and hessian for the current example and label. The total sum of gradients and
-                # hessians is updated by subtracting the old gradient or hessian and adding the updated one. If instance
-                # sub-sampling is used, this will cause the sums to become incorrect. However, this does not matter,
-                # because the sums will be recalculated when re-sampling for learning the next rule, anyway.
+                # Update the gradient for the current example and label...
                 tmp = gradients[i, l]
-                total_sum_of_gradients -= tmp
                 tmp = self._gradient(expected_score, current_score)
-                total_sum_of_gradients += tmp
                 gradients[i, l] = tmp
 
+                # Update the hessian for the current example and label...
                 tmp = hessians[i, l]
-                total_sum_of_hessians -= tmp
                 tmp = self._hessian(expected_score, current_score)
-                total_sum_of_hessians += tmp
                 hessians[i, l] = tmp
-
-            # Update the total sum of gradients and hessians for the current label...
-            total_sums_of_gradients[l] = total_sum_of_gradients
-            total_sums_of_hessians[l] = total_sum_of_hessians
 
 
 cdef class MacroSquaredErrorLoss(MacroLoss):
