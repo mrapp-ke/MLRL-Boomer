@@ -3,20 +3,11 @@
 import argparse
 import logging as log
 
-from args import optional_string, log_level, boolean_string
+from args import optional_string, log_level, boolean_string, current_fold_string
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
-
-
-def __current_fold_string(s):
-    n = int(s)
-    if n > 0:
-        return n - 1
-    elif n == -1:
-        return -1
-    raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
@@ -28,7 +19,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
-    p.add_argument('--current-fold', type=__current_fold_string, default=-1,
+    p.add_argument('--current-fold', type=current_fold_string, default=-1,
                    help='The cross validation fold to be performed')
     p.add_argument('--num-rules', type=int, default=500, help='The number of rules to be induced or -1')
     p.add_argument('--time-limit', type=int, default=-1,

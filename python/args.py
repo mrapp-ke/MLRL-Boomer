@@ -7,6 +7,8 @@ Provides functions for parsing command line arguments.
 """
 import logging as log
 
+import sklearn.metrics as metrics
+
 
 def log_level(s):
     s = s.lower()
@@ -23,6 +25,23 @@ def log_level(s):
     elif s == 'notset':
         return log.NOTSET
     raise ValueError('Invalid argument given for parameter \'--log-level\': ' + str(s))
+
+
+def current_fold_string(s):
+    n = int(s)
+    if n > 0:
+        return n - 1
+    elif n == -1:
+        return -1
+    raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
+
+
+def target_measure(s):
+    if s == 'hamming-loss':
+        return metrics.hamming_loss, True
+    elif s == 'subset-0-1-loss':
+        return metrics.accuracy_score, False
+    raise ValueError('Invalid argument given for parameter \'--target-measure\': ' + str(s))
 
 
 def boolean_string(s):
