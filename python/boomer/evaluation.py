@@ -45,6 +45,15 @@ MICRO_F1 = 'Mi. F1'
 # The name of the macro-averaged F1 metric
 MACRO_F1 = 'Ma. F1'
 
+# The name of the example-based precision metric
+EX_BASED_PRECISION = 'Ex.-based Prec.'
+
+# The name of the example-based recall metric
+EX_BASED_RECALL = 'Ex.-based Rec.'
+
+# The name of the example-based F1 metric
+EX_BASED_F1 = 'Ex.-based F1'
+
 # The name of the rank loss metric
 RANK_LOSS = 'Rank Loss'
 
@@ -382,6 +391,12 @@ class ClassificationEvaluation(AbstractEvaluation):
         result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro'), current_fold,
                    num_folds)
         result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro'), current_fold, num_folds)
+        result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples'),
+                   current_fold, num_folds)
+        result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples'), current_fold,
+                   num_folds)
+        result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples'), current_fold,
+                   num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):

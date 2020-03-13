@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Command line arguments
 LOSS=$1
@@ -52,7 +52,7 @@ do
             do
               JOB_NAME="${DATASET}-${CURRENT_FOLD}_loss=${LOSS}_${COUNT}"
               FILE="${JOB_NAME}.sh"
-              PARAMETERS="--data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${NUM_RULES} --time-limit ${TIME_LIMIT} --shrinkage ${SHRINKAGE} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT} --label-sub-sampling ${LABEL_SUB_SAMPLING} --l2-regularization-weight ${L2_REGULARIZATION_WEIGHT}"
+              PARAMETERS="--log-level error --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --folds ${FOLDS} --current-fold ${CURRENT_FOLD} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --feature-sub-sampling ${FEATURE_SUB_SAMPLING} --num-rules ${NUM_RULES} --time-limit ${TIME_LIMIT} --shrinkage ${SHRINKAGE} --loss ${LOSS} --head-refinement ${HEAD_REFINEMENT} --label-sub-sampling ${LABEL_SUB_SAMPLING} --l2-regularization-weight ${L2_REGULARIZATION_WEIGHT}"
 
               echo "$FILE"
               echo "#!/bin/sh" >> "$FILE"

@@ -8,7 +8,7 @@ Provides commonly used utility functions.
 import numpy as np
 from boomer.algorithm._model import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
-from boomer.algorithm.stats import Stats
+from boomer.stats import Stats
 
 
 def format_rule(stats: Stats, rule: Rule) -> str:
