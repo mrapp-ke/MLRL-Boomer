@@ -20,7 +20,8 @@ setup(name='boomer',
           'sklearn>=0.0',
           'requests>=2.22.0',
           'matplotlib>=3.1.0',
-          'Cython>=0.29.0'
+          'Cython>=0.29.0',
+          'xgboost>=1.0.2'
       ],
       python_requires='>=3.7',
       ext_modules=cythonize('**/*.pyx', language_level='3', annotate=True),
