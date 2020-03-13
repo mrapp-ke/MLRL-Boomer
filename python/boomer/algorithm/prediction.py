@@ -10,11 +10,11 @@ from abc import abstractmethod
 import numpy as np
 
 from boomer.algorithm.model import Theory, DTYPE_FLOAT64
-from boomer.algorithm.stats import Stats
-from boomer.learners import Module
+from boomer.interfaces import Randomized
+from boomer.stats import Stats
 
 
-class Prediction(Module):
+class Prediction(Randomized):
     """
     A module that allows to make predictions using a 'Theory'.
     """

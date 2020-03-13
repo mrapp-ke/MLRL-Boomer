@@ -17,18 +17,18 @@ from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
 from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
-from boomer.algorithm.stats import Stats
 from boomer.algorithm.stopping_criteria import StoppingCriterion
-from boomer.learners import Module
+from boomer.interfaces import Randomized
+from boomer.stats import Stats
 
 
-class RuleInduction(Module):
+class RuleInduction(Randomized):
     """
     A module that allows to induce a `Theory`, consisting of several classification rules.
     """
 
     @abstractmethod
-    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         """
         Creates and returns a 'Theory' that contains several candidate rules.
 
@@ -37,8 +37,6 @@ class RuleInduction(Module):
                         training examples
         :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the
                         training examples
-        :param theory:  An existing theory, the induced classification rules should be added to, or None if a new theory
-                        should be created
         :return:        A 'Theory' that contains the induced classification rules
         """
         pass
@@ -76,7 +74,7 @@ class GradientBoosting(RuleInduction):
         self.shrinkage = shrinkage
         self.stopping_criteria = stopping_criteria
 
-    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         self.__validate()
         stopping_criteria = self.stopping_criteria
         random_state = self.random_state
@@ -95,9 +93,8 @@ class GradientBoosting(RuleInduction):
         # Sort feature matrix once
         x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
 
-        # Create a new theory, if necessary
-        if theory is None:
-            theory = []
+        # Create a new theory
+        theory = []
 
         # Induce default rule, if necessary
         if len(theory) == 0:
