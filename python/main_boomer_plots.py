@@ -8,9 +8,9 @@ import numpy as np
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
-from boomer.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import HAMMING_LOSS, SUBSET_01_LOSS
+from boomer.persistence import ModelPersistence
 from boomer.plots import LossMinimizationCurve
 from boomer.training import CrossValidation
 from main_boomer import configure_argument_parser, create_learner
@@ -22,13 +22,12 @@ class Plotter(CrossValidation, MLClassifierBase):
     """
 
     def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, num_folds: int, current_fold: int,
-                 learner_name: str, model_name: str):
+                 learner: Boomer):
         super().__init__(data_dir, data_set, num_folds, current_fold)
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
         self.persistence = ModelPersistence(model_dir=model_dir)
-        self.learner_name = learner_name
-        self.model_name = model_name
+        self.learner = learner
         self.plot = LossMinimizationCurve(data_set, HAMMING_LOSS, SUBSET_01_LOSS)
 
     def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
@@ -39,7 +38,9 @@ class Plotter(CrossValidation, MLClassifierBase):
         test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
         test_y = self._ensure_input_format(test_y)
 
-        theory: Theory = self.persistence.load_model(model_name=self.model_name, file_name_suffix=Boomer.PREFIX_RULES,
+        learner = self.learner
+        theory: Theory = self.persistence.load_model(model_name=learner.get_model_name(),
+                                                     file_name_suffix=learner.get_model_prefix(),
                                                      fold=current_fold, raise_exception=True)
         num_iterations = len(theory)
 
@@ -67,7 +68,7 @@ class Plotter(CrossValidation, MLClassifierBase):
         output_dir = self.output_dir
 
         if output_dir is not None:
-            file_name = self.learner_name + '.pdf'
+            file_name = self.learner.get_name() + '.pdf'
             output_file = path.join(self.output_dir, file_name)
         else:
             output_file = None
@@ -94,8 +95,7 @@ if __name__ == '__main__':
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
-    learner = create_learner(args)
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
                       data_set=args.dataset, num_folds=args.folds, current_fold=args.current_fold,
-                      model_name=learner.get_model_name(), learner_name=learner.get_name())
+                      learner=create_learner(args))
     plotter.run()
