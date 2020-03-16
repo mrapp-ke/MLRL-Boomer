@@ -7,7 +7,7 @@ Implements "Bootstrap Bias Corrected Cross Validation" (BBC-CV) for evaluating d
 estimating unbiased performance estimations (see https://link.springer.com/article/10.1007/s10994-018-5714-4).
 """
 import logging as log
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from typing import List
 
 import numpy as np
@@ -18,7 +18,6 @@ from skmultilearn.base import MLClassifierBase
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.interfaces import Randomized
-from boomer.io import open_writable_csv_file, create_csv_dict_writer
 from boomer.learners import MLLearner
 from boomer.persistence import ModelPersistence
 from boomer.training import CrossValidation
@@ -113,54 +112,87 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         pass
 
 
+class BbcCvObserver(ABC):
+    """
+    A base class for all observers that should be notified about the predictions and ground truth labelings that result
+    from applying the BBC-CV method.
+    """
+
+    @abstractmethod
+    def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
+                 ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
+                 num_bootstraps: int):
+        """
+        :param configurations:      The configurations that have been provided to the BBC-CV method
+        :param ground_truth_tuning: The ground truth of the examples that belong to the tuning set
+        :param predictions_tuning:  The predictions for the examples that belong to the tuning set
+        :param ground_truth_test:   The ground truth of the examples that belong to the test set
+        :param predictions_test:    The predictions for the examples that belong to the test set
+        :param current_bootstrap:   The current bootstrap iteration
+        :param num_bootstraps:      The total number of bootstrap iterations
+        """
+        pass
+
+
+class DefaultBbcCvObserver(BbcCvObserver):
+    """
+    An observer that determines the best configuration per bootstrap iteration and computes the evaluation measures
+    averaged over all iterations.
+    """
+
+    def __init__(self, target_measure, target_measure_is_loss: bool, output_dir: str = None):
+        """
+        :param target_measure:          The target measure to be used for parameter tuning
+        :param target_measure_is_loss:  True, if the target measure is a loss, False otherwise
+        :param output_dir:              The path of the directory where the evaluation results should be stored
+        """
+        self.target_measure = target_measure
+        self.target_measure_is_loss = target_measure_is_loss
+        evaluation_outputs = [EvaluationLogOutput(output_individual_folds=False)]
+
+        if output_dir is not None:
+            evaluation_outputs.append(EvaluationCsvOutput(output_dir=output_dir, output_individual_folds=False))
+
+        self.evaluation = ClassificationEvaluation(*evaluation_outputs)
+
+    def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
+                 ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
+                 num_bootstraps: int):
+        target_measure = self.target_measure
+        target_measure_is_loss = self.target_measure_is_loss
+        num_configurations = len(configurations)
+        evaluation_scores_tuning = np.empty(num_configurations, dtype=float)
+
+        for k in range(num_configurations):
+            predictions = predictions_tuning[:, k, :]
+            evaluation_scores_tuning[k] = target_measure(ground_truth_tuning, predictions)
+
+        best_k = np.argmin(evaluation_scores_tuning) if target_measure_is_loss else np.argmax(evaluation_scores_tuning)
+        best_predictions = predictions_test[:, best_k, :]
+        self.evaluation.evaluate('best_configuration', best_predictions, ground_truth_test, first_fold=0,
+                                 current_fold=current_bootstrap, last_fold=num_bootstraps - 1, num_folds=num_bootstraps)
+
+
 class BbcCv(Randomized):
     """
     An implementation of "Bootstrap Bias Corrected Cross Validation" (BBC-CV).
     """
 
-    def __init__(self, output_dir: str, configurations: List[dict], adapter: BbcCvAdapter, learner: MLLearner):
+    def __init__(self, configurations: List[dict], adapter: BbcCvAdapter, learner: MLLearner):
         """
-        :param output_dir:      The path of the directory where output files should be stored
         :param configurations:  A list that contains the configurations to be evaluated
         :param adapter:         The `BbcCvAdapter` to be used
         :param learner:         The learner to be evaluated
         """
         super().__init__()
-        self.output_dir = output_dir
         self.configurations = configurations
         self.adapter = adapter
         self.learner = learner
 
-    @staticmethod
-    def __write_tuning_scores(output_dir: str, evaluation_scores: np.ndarray, configurations: List[dict]):
-        parameters = sorted(configurations[0].keys())
-        header = list(parameters)
-        num_rows = evaluation_scores.shape[0]
-        num_cols = evaluation_scores.shape[1]
-
-        for col in range(num_cols):
-            header.append('bootstrap_' + str(col + 1))
-
-        with open_writable_csv_file(output_dir, 'tuning_scores', fold=None, append=False) as csv_file:
-            csv_writer = create_csv_dict_writer(csv_file, header)
-
-            for row in range(num_rows):
-                columns: dict = {}
-                current_configuration = configurations[row]
-
-                for param in parameters:
-                    columns[param] = current_configuration[param]
-
-                for col in range(num_cols):
-                    columns['bootstrap_' + str(col + 1)] = evaluation_scores[row, col]
-
-                csv_writer.writerow(columns)
-
-    def evaluate(self, num_bootstraps: int, target_measure, target_measure_is_loss: bool):
+    def evaluate(self, num_bootstraps: int, observer: BbcCvObserver):
         """
-        :param num_bootstraps:          The number of bootstrap iterations to be performed
-        :param target_measure:          The target measure to be used for parameter tuning
-        :param target_measure_is_loss:  True, if the target measure is a loss, False otherwise
+        :param num_bootstraps:  The number of bootstrap iterations to be performed
+        :param observer:        The `BbcCvObserver` to be used
         """
         configurations = self.configurations
         num_configurations = len(configurations)
@@ -192,22 +224,12 @@ class BbcCv(Randomized):
         prediction_matrix = np.moveaxis(np.dstack(list_of_predictions), source=1, destination=2)
         prediction_matrix = np.where(prediction_matrix > 0, 1, 0)
 
-        # Prepare evaluation...
-        evaluation_outputs = [EvaluationLogOutput(output_individual_folds=False)]
-        output_dir = self.output_dir
-
-        if output_dir is not None:
-            evaluation_outputs.append(EvaluationCsvOutput(output_dir=output_dir, output_individual_folds=False))
-
-        evaluation = ClassificationEvaluation(*evaluation_outputs)
-
         # Bootstrap sampling...
         num_examples = prediction_matrix.shape[0]
         num_configurations = prediction_matrix.shape[1]
         log.info('%s configurations have been evaluated...', num_configurations)
         bootstrapped_indices = np.empty(num_examples, dtype=DTYPE_INTP)
         mask_test = np.empty(num_examples, dtype=np.bool)
-        evaluation_scores_tuning = np.empty((num_configurations, num_bootstraps), dtype=float)
         rng = check_random_state(random_state)
         rng_randint = rng.randint
 
@@ -221,18 +243,8 @@ class BbcCv(Randomized):
                 mask_test[index] = False
 
             ground_truth_tuning = ground_truth_matrix[bootstrapped_indices, :]
-
-            for k in range(num_configurations):
-                predictions_tuning = prediction_matrix[bootstrapped_indices, k, :]
-                evaluation_scores_tuning[k, i] = target_measure(ground_truth_tuning, predictions_tuning)
-
-            best_k = np.argmin(evaluation_scores_tuning[:, i]) if target_measure_is_loss else np.argmax(
-                evaluation_scores_tuning[:, i])
+            predictions_tuning = prediction_matrix[bootstrapped_indices, :, :]
             ground_truth_test = ground_truth_matrix[mask_test, :]
-            predictions_test = prediction_matrix[mask_test, best_k, :]
-            evaluation.evaluate('best_configuration', predictions_test, ground_truth_test, first_fold=0, current_fold=i,
-                                last_fold=num_bootstraps - 1, num_folds=num_bootstraps)
-
-        # Write output files...
-        if output_dir is not None:
-            BbcCv.__write_tuning_scores(output_dir, evaluation_scores_tuning, list_of_configurations)
+            predictions_test = prediction_matrix[mask_test, :, :]
+            observer.evaluate(list_of_configurations, ground_truth_tuning, predictions_tuning, ground_truth_test,
+                              predictions_test, i, num_bootstraps)
