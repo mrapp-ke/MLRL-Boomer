@@ -51,7 +51,7 @@ class LpBccCvAdapter(BbcCvAdapter):
         if len(predictions) > c:
             current_predictions = predictions[c]
         else:
-            current_predictions = np.zeros((num_total_examples, num_labels), dtype=DTYPE_FLOAT64)
+            current_predictions = np.empty((num_total_examples, num_labels), dtype=DTYPE_FLOAT64)
             predictions.append(current_predictions)
             current_config = self.configuration.copy()
             configurations.append(current_config)
