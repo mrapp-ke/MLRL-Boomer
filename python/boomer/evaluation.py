@@ -83,15 +83,11 @@ class Evaluation(ABC):
 class EvaluationResult:
     """
     Stores the evaluation results according to different measures.
-
-    Attributes
-        measures:   A 'Set' that stores the names of the measures
-        results:    A 'List' that stores a 'Dict', mapping scores to the names of measures, for each fold
     """
 
-    measures: Set[str] = set()
-
-    results: List[Dict[str, float]] = None
+    def __init__(self):
+        self.measures: Set[str] = set()
+        self.results: List[Dict[str, float]] = None
 
     def put(self, name: str, score: float, fold: int, num_folds: int):
         """
@@ -302,18 +298,14 @@ class AbstractEvaluation(Evaluation):
     """
     An abstract base class for all classes that evaluate the predictions provided by a classifier or ranker and allow to
     write the results to one or several outputs.
-
-    Attributes
-        results: A dict that contains the 'EvaluationResult's of different experiments mapped to the experiments' names
     """
-
-    results: Dict[str, EvaluationResult] = {}
 
     def __init__(self, *args: EvaluationOutput):
         """
         :param outputs: The outputs the evaluation results should be written to
         """
         self.outputs = args
+        self.results: Dict[str, EvaluationResult] = {}
 
     def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
                  last_fold: int, num_folds: int):
@@ -381,22 +373,24 @@ class ClassificationEvaluation(AbstractEvaluation):
         subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
         result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, num_folds)
         result.put(SUBSET_01_LOSS, 1 - subset_accuracy, current_fold, num_folds)
-        result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro'), current_fold,
-                   num_folds)
-        result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro'), current_fold,
-                   num_folds)
-        result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro'), current_fold, num_folds)
-        result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro'), current_fold,
-                   num_folds)
-        result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro'), current_fold,
-                   num_folds)
-        result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro'), current_fold, num_folds)
-        result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples'),
+        result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro',
+                                                            zero_division=1), current_fold, num_folds)
+        result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro', zero_division=1),
                    current_fold, num_folds)
-        result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples'), current_fold,
-                   num_folds)
-        result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples'), current_fold,
-                   num_folds)
+        result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro', zero_division=1),
+                   current_fold, num_folds)
+        result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
+                                                            zero_division=1), current_fold, num_folds)
+        result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro', zero_division=1),
+                   current_fold, num_folds)
+        result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro', zero_division=1),
+                   current_fold, num_folds)
+        result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples',
+                                                               zero_division=1), current_fold, num_folds)
+        result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples', zero_division=1),
+                   current_fold, num_folds)
+        result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples', zero_division=1),
+                   current_fold, num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):
