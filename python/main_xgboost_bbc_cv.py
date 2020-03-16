@@ -10,7 +10,7 @@ from args import log_level, optional_string, float_list, int_list, target_measur
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.baselines.problem_transformation import BRLearner, LPLearner, CCLearner
 from boomer.baselines.xgboost import XGBoost
-from boomer.bbc_cv import BbcCv, BbcCvAdapter
+from boomer.bbc_cv import BbcCv, BbcCvAdapter, DefaultBbcCvObserver
 
 
 class BrBccCvAdapter(BbcCvAdapter):
@@ -89,8 +89,7 @@ class CcBccCvAdapter(BrBccCvAdapter):
             current_predictions[test_indices, :] = test_y
 
 
-def __create_configurations(cc: bool, objective_param: str, chain_order_values,
-                            arguments) -> List[dict]:
+def __create_configurations(cc: bool, objective_param: str, chain_order_values, arguments) -> List[dict]:
     learning_rate_values: List[float] = arguments.learning_rate
     reg_lambda_values: List[float] = arguments.reg_lambda
     result: List[dict] = []
@@ -162,8 +161,8 @@ if __name__ == '__main__':
 
     base_configurations = __create_configurations(transformation_method == 'cc', objective, args.chain_order, args)
 
-    bbc_cv = BbcCv(output_dir=args.output_dir, configurations=base_configurations, adapter=bbc_cv_adapter,
-                   learner=learner)
+    bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
     bbc_cv.random_state = args.random_state
-    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, target_measure=target_measure,
-                    target_measure_is_loss=target_measure_is_loss)
+    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
+                    observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
+                                                  target_measure_is_loss=target_measure_is_loss))

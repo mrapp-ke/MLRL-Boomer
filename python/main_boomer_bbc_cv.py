@@ -9,12 +9,12 @@ import numpy as np
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
-from boomer.bbc_cv import BbcCv, BbcCvAdapter
+from boomer.bbc_cv import BbcCv, BbcCvAdapter, DefaultBbcCvObserver
 
 
 class BoomerBccCvAdapter(BbcCvAdapter):
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str, min_rules:int, max_rules: int,
+    def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str, min_rules: int, max_rules: int,
                  step_size_rules: int):
         super().__init__(data_dir, data_set, num_folds, model_dir)
         self.min_rules = min_rules
@@ -157,8 +157,8 @@ if __name__ == '__main__':
     bbc_cv_adapter = BoomerBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                                         model_dir=args.model_dir, min_rules=args.min_rules, max_rules=args.max_rules,
                                         step_size_rules=args.step_size_rules)
-    bbc_cv = BbcCv(output_dir=args.output_dir, configurations=base_configurations, adapter=bbc_cv_adapter,
-                   learner=learner)
+    bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
     bbc_cv.random_state = args.random_state
-    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, target_measure=target_measure,
-                    target_measure_is_loss=target_measure_is_loss)
+    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
+                    observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
+                                                  target_measure_is_loss=target_measure_is_loss))
