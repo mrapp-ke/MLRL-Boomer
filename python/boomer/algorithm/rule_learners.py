@@ -6,30 +6,33 @@
 Provides a scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
 classification rules. The classifier is composed of several modules, e.g., for rule induction and prediction.
 """
-import logging as log
 from abc import abstractmethod
-from os.path import isdir
-from timeit import default_timer as timer
 
 import numpy as np
 from sklearn.utils.validation import check_is_fitted
 
 from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.algorithm._losses import Loss, DecomposableLoss
 from boomer.algorithm._losses import Loss, DecomposableLoss, LabelWiseMeasure
 from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
+
+from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
+from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
-from boomer.algorithm.model import Theory, DTYPE_FLOAT32
-from boomer.algorithm.persistence import ModelPersistence
+from boomer.algorithm.model import DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
+from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
+from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
 from boomer.algorithm.stats import Stats
 from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion, UncoveredLabelsCriterion
 from boomer.learners import MLLearner
+from boomer.stats import Stats
 
 
 class MLRuleLearner(MLLearner):
@@ -42,23 +45,34 @@ class MLRuleLearner(MLLearner):
         persistence     The 'ModelPersistence' to be used to load/save the theory
     """
 
-    STEP_INITIALIZATION = 0
-
-    STEP_RULE_INDUCTION = 1
-
-    PREFIX_RULES = 'rules'
-
-    stats_: Stats
-
-    theory_: Theory
-
     def __init__(self, model_dir: str):
-        """
-        :param model_dir: The path of the directory where models should be stored / loaded from
-        """
-        super().__init__()
-        self.model_dir = model_dir
+        super().__init__(model_dir)
         self.require_dense = [True, True]  # We need a dense representation of the training data
+
+    def get_model_prefix(self) -> str:
+        return 'rules'
+
+    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+        # Create a dense representation of the training data
+        x = self._ensure_input_format(x)
+        y = self._ensure_input_format(y)
+
+        # Induce rules
+        rule_induction = self._create_rule_induction(stats)
+        rule_induction.random_state = random_state
+        theory = rule_induction.induce_rules(stats, x, y)
+        return theory
+
+    def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
+        # Create a dense representation of the given examples
+        x = self._ensure_input_format(x)
+
+        # Convert feature matrix into Fortran-contiguous array
+        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
+
+        prediction = self._create_prediction()
+        prediction.random_state = self.random_state
+        return prediction.predict(stats, model, x)
 
     @abstractmethod
     def _create_prediction(self) -> Prediction:
@@ -77,134 +91,6 @@ class MLRuleLearner(MLLearner):
         :param stats:   Statistics about the training data set
         :return:        The `RuleInduction` that has been created
         """
-        pass
-
-    def __create_persistence(self) -> ModelPersistence:
-        """
-        Creates and returns the [ModelPersistence] that is used to store / load models.
-
-        :return: The [ModelPersistence] that has been created
-        """
-        model_dir = self.model_dir
-
-        if model_dir is None:
-            return None
-        elif isdir(model_dir):
-            return ModelPersistence(model_dir=model_dir)
-        raise ValueError('Invalid value given for parameter \'model_dir\': ' + str(model_dir))
-
-    def __load_rules(self, persistence: ModelPersistence):
-        """
-        Loads the theory from disk, if available.
-
-        :param persistence: The [ModelPersistence] that should be used
-        :return: The loaded theory, as well as the next step to proceed with
-        """
-        step = MLRuleLearner.STEP_RULE_INDUCTION
-
-        if persistence is not None:
-            theory = persistence.load_model(model_name=self.get_model_name(),
-                                            file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
-        else:
-            theory = None
-
-        if theory is None:
-            step = MLRuleLearner.STEP_INITIALIZATION
-
-        return theory, step
-
-    def _induce_rules(self, x: np.ndarray, y: np.ndarray, theory: Theory = None) -> Theory:
-        """
-        Induces classification rules.
-
-        :param x:       An array of dtype float, shape `(num_examples, num_features)`, representing the features of the
-                        training examples
-        :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the
-                        training examples
-        :param theory:  An existing theory, the induced classification rules should be added to, or None if a new theory
-                        should be created
-        :return:        A 'Theory' that contains the induced classification rules
-        """
-        # Create a dense representation of the training data
-        x = self._ensure_input_format(x)
-        y = self._ensure_input_format(y)
-
-        # Obtain information about the training data
-        stats = Stats.create_stats(x, y)
-        self.stats_ = stats
-
-        # Load theory from disk, if possible
-        persistence = self.__create_persistence()
-        model, step = self.__load_rules(persistence)
-
-        if model is not None:
-            theory = model
-
-        if step == MLRuleLearner.STEP_INITIALIZATION:
-            log.info('Inducing classification rules...')
-            start_time = timer()
-
-            # Induce rules
-            rule_induction = self._create_rule_induction(stats)
-            rule_induction.random_state = self.random_state
-            theory = rule_induction.induce_rules(stats, x, y, theory)
-
-            # Save theory to disk
-            self.__save_rules(persistence, theory)
-
-            end_time = timer()
-            run_time = end_time - start_time
-            num_candidates = len(theory)
-            log.info('%s classification rules induced in %s seconds', num_candidates, run_time)
-
-        return theory
-
-    def __save_rules(self, persistence: ModelPersistence, theory: Theory):
-        """
-        Saves a theory to disk.
-
-        :param persistence: The [ModelPersistence] that should be used
-        :param theory:      The theory to be saved
-        """
-
-        if persistence is not None:
-            persistence.save_model(theory, model_name=self.get_model_name(),
-                                   file_name_suffix=MLRuleLearner.PREFIX_RULES, fold=self.fold)
-
-    def fit(self, x: np.ndarray, y: np.ndarray) -> MLLearner:
-        self.theory_ = self._induce_rules(x, y)
-        return self
-
-    def predict(self, x: np.ndarray) -> np.ndarray:
-        check_is_fitted(self)
-
-        # Create a dense representation of the given examples
-        x = self._ensure_input_format(x)
-
-        # Convert feature matrix into Fortran-contiguous array
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
-
-        log.info("Making a prediction for %s query instances...", np.shape(x)[0])
-        prediction = self._create_prediction()
-        prediction.random_state = self.random_state
-        return prediction.predict(self.stats_, self.theory_, x)
-
-    def get_params(self, deep=True):
-        return {
-            'model_dir': self.model_dir
-        }
-
-    def set_params(self, **parameters):
-        params = self.get_params()
-        for parameter, value in parameters.items():
-            if parameter in params.keys():
-                setattr(self, parameter, value)
-            else:
-                raise ValueError('Invalid parameter: ' + str(parameter))
-        return self
-
-    @abstractmethod
-    def get_name(self) -> str:
         pass
 
 
@@ -365,17 +251,23 @@ class Boomer(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
 
     def get_name(self) -> str:
-        num_rules = str(self.num_rules)
-        head_refinement = str(self.head_refinement)
-        loss = str(self.loss)
-        label_sub_sampling = str(self.label_sub_sampling)
-        instance_sub_sampling = str(self.instance_sub_sampling)
-        feature_sub_sampling = str(self.feature_sub_sampling)
-        pruning = str(self.pruning)
-        shrinkage = str(self.shrinkage)
-        return 'num-rules=' + num_rules + '_head-refinement=' + head_refinement + '_loss=' + loss \
-               + '_label-sub-sampling=' + label_sub_sampling + '_instance-sub-sampling=' + instance_sub_sampling \
-               + '_feature-sub-sampling=' + feature_sub_sampling + '_pruning=' + pruning + '_shrinkage=' + shrinkage
+        name = 'num-rules=' + str(self.num_rules)
+        if self.head_refinement is not None:
+            name += '_head-refinement=' + str(self.head_refinement)
+        name += '_loss=' + str(self.loss)
+        if self.label_sub_sampling is not None:
+            name += '_label-sub-sampling=' + str(self.label_sub_sampling)
+        if self.instance_sub_sampling is not None:
+            name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
+        if self.feature_sub_sampling is not None:
+            name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.pruning is not None:
+            name += '_pruning=' + str(self.pruning)
+        if 0.0 < float(self.shrinkage) < 1.0:
+            name += '_shrinkage=' + str(self.shrinkage)
+        if float(self.l2_regularization_weight) > 0.0:
+            name += '_l2=' + str(self.l2_regularization_weight)
+        return name
 
     def get_params(self, deep=True):
         params = super().get_params()

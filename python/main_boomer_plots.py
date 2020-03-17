@@ -9,7 +9,7 @@ import numpy as np
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
-from boomer.algorithm.persistence import ModelPersistence
+from boomer.persistence import ModelPersistence
 from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import ClassificationEvaluation, HAMMING_LOSS, SUBSET_01_LOSS
 from boomer.training import CrossValidation
@@ -18,7 +18,7 @@ from main_boomer import configure_argument_parser, create_learner
 
 class Plotter(CrossValidation, MLClassifierBase):
     """
-    Plots the performance of a model at each iteration.
+    Plots the performance of a BOOMER model at each iteration.
     """
 
     MEASURES = [HAMMING_LOSS, SUBSET_01_LOSS]
@@ -120,15 +120,15 @@ class Plotter(CrossValidation, MLClassifierBase):
 
                 plt.plot(x, y, label=(measure + ' (' + prefix + ')'))
 
-            plt.legend()
+        plt.legend()
 
-            if self.output_dir is not None:
-                file_name = self.learner_name + '.pdf'
-                output_file = path.join(self.output_dir, file_name)
-                log.info('Saving plot to file \'' + output_file + '\'...')
-                plt.savefig(output_file)
-            else:
-                plt.show()
+        if self.output_dir is not None:
+            file_name = self.learner_name + '.pdf'
+            output_file = path.join(self.output_dir, file_name)
+            log.info('Saving plot to file \'' + output_file + '\'...')
+            plt.savefig(output_file)
+        else:
+            plt.show()
 
     def fit(self, x, y):
         pass
