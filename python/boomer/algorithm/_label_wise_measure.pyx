@@ -1,4 +1,6 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64, array_float64, matrix_float64, array_uint32
+
+from boomer.algorithm._heuristics cimport Heuristic
 from boomer.algorithm._losses cimport Loss, LabelIndependentPrediction, Prediction
 from boomer.algorithm._utils cimport get_index
 
@@ -12,10 +14,11 @@ cdef class LabelWiseMeasure(Loss):
     A class for label-wise evaluation.
     """
 
-    def __cinit__(self):
+    def __cinit__(self, Heuristic heuristic):
         self.prediction = LabelIndependentPrediction()
         self.confusion_matrices_covered = None
         self.label_indices = None
+        self.heuristic = heuristic
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_examples = y.shape[0]
@@ -141,6 +144,7 @@ cdef class LabelWiseMeasure(Loss):
         cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef intp c
+        cdef Heuristic heuristic = self.heuristic
 
         if predicted_scores is None or predicted_scores.shape[0] != num_labels:
             predicted_scores = array_float64(num_labels)
@@ -151,7 +155,7 @@ cdef class LabelWiseMeasure(Loss):
         for c in range(num_labels):
             predicted_scores[c] = minority_labels[c]
             if uncovered:
-                quality_scores[c] = self.evaluate_confusion_matrix(
+                quality_scores[c] = heuristic.evaluate_confusion_matrix(
                     confusion_matrices_default[c, _IN] - confusion_matrices_covered[c, _IN],
                     confusion_matrices_default[c, _IP] - confusion_matrices_covered[c, _IP],
                     confusion_matrices_default[c, _RN] - confusion_matrices_covered[c, _RN],
@@ -162,7 +166,7 @@ cdef class LabelWiseMeasure(Loss):
                     confusion_matrices_covered[c, _RP]
                 )
             else:
-                quality_scores[c] = self.evaluate_confusion_matrix(
+                quality_scores[c] = heuristic.evaluate_confusion_matrix(
                     confusion_matrices_covered[c, _IN],
                     confusion_matrices_covered[c, _IP],
                     confusion_matrices_covered[c, _RN],
@@ -213,8 +217,3 @@ cdef class LabelWiseMeasure(Loss):
                         confusion_matrices_default[l, _RN] -= 1
                     elif minority_label == 0:  # i.e., default rule predicts 1
                         confusion_matrices_default[l, _RP] -= 1
-
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp):
-        # TODO extract logic to new heuristic class
-        return (cip + crn + uip + urn) / (cin + cip + crn + crp + uin + uip + urn + urp)
