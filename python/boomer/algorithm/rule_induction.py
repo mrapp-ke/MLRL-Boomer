@@ -21,7 +21,6 @@ from boomer.algorithm.stopping_criteria import StoppingCriterion
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
 from boomer.algorithm.utils import format_rule
-from boomer.learners import Module
 
 
 class RuleInduction(Randomized):
@@ -161,7 +160,7 @@ class SeparateAndConquer(RuleInduction):
         self.pruning = pruning
         self.stopping_criteria = stopping_criteria
 
-    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray, theory: Theory) -> Theory:
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
         theory = []
 
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)

@@ -8,7 +8,7 @@ from boomer.algorithm.rule_learners import Boomer, SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
-from main_boomer import __current_fold_string
+from args import current_fold_string
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
@@ -20,7 +20,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
-    p.add_argument('--current-fold', type=__current_fold_string, default=-1,
+    p.add_argument('--current-fold', type=current_fold_string, default=-1,
                    help='The cross validation fold to be performed')
     p.add_argument('--num-rules', type=int, default=500, help='The number of rules to be induced or -1')
     p.add_argument('--time-limit', type=int, default=-1,

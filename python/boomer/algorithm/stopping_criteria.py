@@ -11,7 +11,7 @@ from timeit import default_timer as timer
 
 import numpy as np
 
-from boomer.algorithm._losses import LabelWiseMeasure
+from boomer.algorithm._label_wise_measure import LabelWiseMeasure
 from boomer.algorithm.model import Theory
 
 
