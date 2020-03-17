@@ -54,7 +54,7 @@ class BoomerBccCvAdapter(BbcCvAdapter):
 
             current_config['num_rules'] = (n + 1)
 
-            if min_rules <= n < max_rules - 1 and (n + 1) % step_size == 0:
+            if min_rules <= (n + 1) < max_rules - 1 and (n + 1) % step_size == 0:
                 c += 1
 
                 if len(predictions) > c:
