@@ -1,11 +1,14 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
-from boomer.algorithm._losses import Loss, Prediction
+from boomer.algorithm._heuristics cimport Heuristic
+from boomer.algorithm._losses cimport Loss, Prediction, LabelIndependentPrediction
 
 cdef class LabelWiseMeasure(Loss):
 
     # Attributes:
 
     cdef Prediction prediction
+
+    cdef Heuristic heuristic
 
     cdef readonly float64[::1, :] uncovered_labels
 
@@ -38,5 +41,3 @@ cdef class LabelWiseMeasure(Loss):
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores)
 
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp)
