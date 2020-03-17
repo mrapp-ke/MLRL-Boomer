@@ -9,13 +9,9 @@ classification rules. The classifier is composed of several modules, e.g., for r
 from abc import abstractmethod
 
 import numpy as np
-from sklearn.utils.validation import check_is_fitted
 
-from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import Loss, DecomposableLoss
-from boomer.algorithm._losses import Loss, DecomposableLoss, LabelWiseMeasure
-from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
 
 from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
@@ -26,10 +22,7 @@ from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomI
 from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
 from boomer.algorithm.model import DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
-from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
-from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
-from boomer.algorithm.stats import Stats
 from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion, UncoveredLabelsCriterion
 from boomer.learners import MLLearner
 from boomer.stats import Stats
