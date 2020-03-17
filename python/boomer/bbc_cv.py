@@ -212,13 +212,18 @@ class BbcCv(Randomized):
 
             adapter.configuration = config
             adapter.store_true_labels = ground_truth_matrix is None
-            adapter.run()
 
-            list_of_predictions.extend(adapter.predictions)
-            list_of_configurations.extend(adapter.configurations)
+            try:
+                adapter.run()
 
-            if ground_truth_matrix is None:
-                ground_truth_matrix = adapter.true_labels
+                list_of_predictions.extend(adapter.predictions)
+                list_of_configurations.extend(adapter.configurations)
+
+                if ground_truth_matrix is None:
+                    ground_truth_matrix = adapter.true_labels
+            except FileNotFoundError:
+                # Ignore configuration if a model file is missing...
+                pass
 
         # Create 3-dimensional prediction matrix....
         prediction_matrix = np.moveaxis(np.dstack(list_of_predictions), source=1, destination=2)
