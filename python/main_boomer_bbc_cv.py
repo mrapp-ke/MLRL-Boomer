@@ -5,11 +5,13 @@ import logging as log
 from typing import List
 
 import numpy as np
+import scipy.stats as stats
 
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
-from boomer.bbc_cv import BbcCv, BbcCvAdapter, DefaultBbcCvObserver
+from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver
+from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 
 
 class BoomerBccCvAdapter(BbcCvAdapter):
@@ -54,7 +56,7 @@ class BoomerBccCvAdapter(BbcCvAdapter):
 
             current_config['num_rules'] = (n + 1)
 
-            if min_rules <= (n + 1) < max_rules - 1 and (n + 1) % step_size == 0:
+            if min_rules <= (n + 1) <= max_rules - 1 and (n + 1) % step_size == 0:
                 c += 1
 
                 if len(predictions) > c:
@@ -67,6 +69,99 @@ class BoomerBccCvAdapter(BbcCvAdapter):
                     predictions.append(current_predictions)
                     current_config = current_config.copy()
                     configurations.append(current_config)
+
+
+class TuningEvaluationBbcCvObserver(BbcCvObserver):
+
+    def __init__(self, measure):
+        """
+        :param measure: The target measure to be used for parameter tuning
+        """
+        self.target_measure = measure
+        self.evaluation_scores_tuning = None
+
+    def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
+                 ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
+                 num_bootstraps: int):
+        measure = self.target_measure
+        evaluation_scores_tuning = self.evaluation_scores_tuning
+        num_configurations = len(configurations)
+
+        if evaluation_scores_tuning is None:
+            evaluation_scores_tuning = np.empty((num_configurations, num_bootstraps), dtype=float)
+            self.evaluation_scores_tuning = evaluation_scores_tuning
+
+        for k in range(num_configurations):
+            predictions = predictions_tuning[:, k, :]
+            evaluation_scores_tuning[k, current_bootstrap] = measure(ground_truth_tuning, predictions)
+
+
+class BestConfigBbcCvObserver(BbcCvObserver):
+
+    def __init__(self, measure, measure_is_loss: bool, best_configuration: dict = None, output_dir: str = None):
+        """
+        :param measure:          The target measure to be used for parameter tuning
+        :param measure_is_loss:  True, if the target measure is a loss, False otherwise
+        :param output_dir:       The path of the directory where the evaluation results should be stored
+        """
+        self.target_measure = measure
+        self.target_measure_is_loss = measure_is_loss
+        self.best_configuration = best_configuration
+        evaluation_outputs = [EvaluationLogOutput(output_individual_folds=False)]
+
+        if output_dir is not None:
+            evaluation_outputs.append(EvaluationCsvOutput(output_dir=output_dir, output_individual_folds=False))
+
+        self.evaluation = ClassificationEvaluation(*evaluation_outputs)
+        self.indices_map = None
+
+    def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
+                 ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
+                 num_bootstraps: int):
+        measure = self.target_measure
+        measure_is_loss = self.target_measure_is_loss
+        best_configuration = self.best_configuration
+        evaluation = self.evaluation
+        indices_map = self.indices_map
+
+        if indices_map is None:
+            indices_map = {}
+
+            for c, config in enumerate(configurations):
+                if best_configuration is None or self.__is_best_config(config, best_configuration):
+                    num_rules = config['num_rules']
+                    indices_list = indices_map[num_rules] if num_rules in indices_map else []
+                    indices_list.append(c)
+                    indices_map[num_rules] = indices_list
+
+            self.indices_map = indices_map
+
+        for num_rules, indices_list in indices_map.items():
+            num_configurations = len(indices_list)
+
+            if num_configurations > 1:
+                evaluation_scores_tuning = np.empty(num_configurations, dtype=float)
+
+                for k, index in enumerate(indices_list):
+                    predictions = predictions_tuning[:, index, :]
+                    evaluation_scores_tuning[k] = measure(ground_truth_tuning, predictions)
+
+                best_k = np.argmin(evaluation_scores_tuning) if measure_is_loss else np.argmax(evaluation_scores_tuning)
+                best_index = indices_list[best_k.item()]
+            else:
+                best_index = indices_list[0]
+
+            best_predictions = predictions_test[:, best_index, :]
+            evaluation_name = 'best_configuration_num-rules=' + str(num_rules)
+            evaluation.evaluate(evaluation_name, best_predictions, ground_truth_test, first_fold=0,
+                                current_fold=current_bootstrap, last_fold=num_bootstraps - 1, num_folds=num_bootstraps)
+
+    @staticmethod
+    def __is_best_config(config: dict, best: dict):
+        for key, value in config.items():
+            if key != 'num_rules' and best[key] != value:
+                return False
+        return True
 
 
 def __create_configurations(arguments) -> List[dict]:
@@ -159,6 +254,27 @@ if __name__ == '__main__':
                                         step_size_rules=args.step_size_rules)
     bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
     bbc_cv.random_state = args.random_state
-    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
-                    observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
-                                                  target_measure_is_loss=target_measure_is_loss))
+    bbc_cv.store_predictions()
+
+    if False:
+        tuning_evaluation_observer = TuningEvaluationBbcCvObserver(measure=target_measure)
+        bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=tuning_evaluation_observer)
+        tuning_scores = tuning_evaluation_observer.evaluation_scores_tuning
+
+        if not target_measure_is_loss:
+            tuning_scores = 1 - tuning_scores
+
+        ranks = np.empty_like(tuning_scores)
+
+        for i in range(tuning_scores.shape[1]):
+            ranks[:, i] = stats.rankdata(tuning_scores[:, i], method='average')
+
+        avg_ranks = np.average(ranks, axis=1)
+        base_configurations = bbc_cv.configurations_
+        best_config = base_configurations[np.argmin(avg_ranks).item()]
+        log.info('Best configuration: %s', str(best_config))
+    else:
+        best_config = None
+        best_config_observer = BestConfigBbcCvObserver(measure=target_measure, measure_is_loss=target_measure_is_loss,
+                                                       best_configuration=best_config, output_dir=args.output_dir)
+        bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=best_config_observer)

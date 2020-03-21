@@ -189,11 +189,7 @@ class BbcCv(Randomized):
         self.adapter = adapter
         self.learner = learner
 
-    def evaluate(self, num_bootstraps: int, observer: BbcCvObserver):
-        """
-        :param num_bootstraps:  The number of bootstrap iterations to be performed
-        :param observer:        The `BbcCvObserver` to be used
-        """
+    def store_predictions(self):
         configurations = self.configurations
         num_configurations = len(configurations)
         log.info('%s configurations have been specified...', num_configurations)
@@ -228,14 +224,65 @@ class BbcCv(Randomized):
         # Create 3-dimensional prediction matrix....
         prediction_matrix = np.moveaxis(np.dstack(list_of_predictions), source=1, destination=2)
         prediction_matrix = np.where(prediction_matrix > 0, 1, 0)
+        self.prediction_matrix_ = prediction_matrix
+        self.ground_truth_matrix_ = ground_truth_matrix
+        self.configurations_ = list_of_configurations
+
+    def evaluate(self, num_bootstraps: int, observer: BbcCvObserver):
+        """
+        :param num_bootstraps:  The number of bootstrap iterations to be performed
+        :param observer:        The `BbcCvObserver` to be used
+        """
+        prediction_matrix = self.prediction_matrix_
+        ground_truth_matrix = self.ground_truth_matrix_
+        configurations = self.configurations_
+        random_state = self.random_state
 
         # Bootstrap sampling...
+        bootstrapping = DefaultBootstrapping(prediction_matrix, ground_truth_matrix, configurations, num_bootstraps)
+        bootstrapping.random_state = random_state
+        bootstrapping.bootstrap(observer)
+
+
+class Bootstrapping(Randomized):
+
+    def __init__(self, prediction_matrix, ground_truth_matrix, configurations: List[dict]):
+        self.prediction_matrix = prediction_matrix
+        self.ground_truth_matrix = ground_truth_matrix
+        self.configurations = configurations
+
+    @abstractmethod
+    def bootstrap(self, observer: BbcCvObserver):
+        pass
+
+
+class CrossValidationBootstrapping(Bootstrapping):
+
+    def __init__(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], num_folds: int):
+        super().__init__(prediction_matrix, ground_truth_matrix, configurations)
+        self.num_folds = num_folds
+
+    def bootstrap(self, observer: BbcCvObserver):
+        pass
+
+
+class DefaultBootstrapping(Bootstrapping):
+
+    def __init__(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], num_bootstraps: int):
+        super().__init__(prediction_matrix, ground_truth_matrix, configurations)
+        self.num_bootstraps = num_bootstraps
+
+    def bootstrap(self, observer: BbcCvObserver):
+        configurations = self.configurations
+        prediction_matrix = self.prediction_matrix
+        ground_truth_matrix = self.ground_truth_matrix
+        num_bootstraps = self.num_bootstraps
         num_examples = prediction_matrix.shape[0]
         num_configurations = prediction_matrix.shape[1]
         log.info('%s configurations have been evaluated...', num_configurations)
         bootstrapped_indices = np.empty(num_examples, dtype=DTYPE_INTP)
         mask_test = np.empty(num_examples, dtype=np.bool)
-        rng = check_random_state(random_state)
+        rng = check_random_state(self.random_state)
         rng_randint = rng.randint
 
         for i in range(num_bootstraps):
@@ -251,5 +298,5 @@ class BbcCv(Randomized):
             predictions_tuning = prediction_matrix[bootstrapped_indices, :, :]
             ground_truth_test = ground_truth_matrix[mask_test, :]
             predictions_test = prediction_matrix[mask_test, :, :]
-            observer.evaluate(list_of_configurations, ground_truth_tuning, predictions_tuning, ground_truth_test,
+            observer.evaluate(configurations, ground_truth_tuning, predictions_tuning, ground_truth_test,
                               predictions_test, i, num_bootstraps)

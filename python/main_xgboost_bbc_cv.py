@@ -163,6 +163,7 @@ if __name__ == '__main__':
 
     bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
     bbc_cv.random_state = args.random_state
+    bbc_cv.store_predictions()
     bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
                     observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
                                                   target_measure_is_loss=target_measure_is_loss))

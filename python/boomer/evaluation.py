@@ -373,22 +373,22 @@ class ClassificationEvaluation(AbstractEvaluation):
         subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
         result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, num_folds)
         result.put(SUBSET_01_LOSS, 1 - subset_accuracy, current_fold, num_folds)
-        result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro',
-                                                            zero_division=1), current_fold, num_folds)
-        result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
-                                                            zero_division=1), current_fold, num_folds)
-        result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples',
-                                                               zero_division=1), current_fold, num_folds)
-        result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples', zero_division=1),
-                   current_fold, num_folds)
+        #result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro',
+        #                                                    zero_division=1), current_fold, num_folds)
+        #result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro', zero_division=1),
+        #           current_fold, num_folds)
+        #result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro', zero_division=1),
+        #           current_fold, num_folds)
+        #result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
+        #                                                    zero_division=1), current_fold, num_folds)
+        #result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro', zero_division=1),
+        #           current_fold, num_folds)
+        #result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro', zero_division=1),
+        #           current_fold, num_folds)
+        #result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples',
+        #                                                       zero_division=1), current_fold, num_folds)
+        #result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples', zero_division=1),
+        #           current_fold, num_folds)
         result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples', zero_division=1),
                    current_fold, num_folds)
 
