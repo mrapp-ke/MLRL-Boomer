@@ -256,16 +256,6 @@ class Bootstrapping(Randomized):
         pass
 
 
-class CrossValidationBootstrapping(Bootstrapping):
-
-    def __init__(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], num_folds: int):
-        super().__init__(prediction_matrix, ground_truth_matrix, configurations)
-        self.num_folds = num_folds
-
-    def bootstrap(self, observer: BbcCvObserver):
-        pass
-
-
 class DefaultBootstrapping(Bootstrapping):
 
     def __init__(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], num_bootstraps: int):
