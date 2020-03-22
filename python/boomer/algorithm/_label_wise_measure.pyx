@@ -33,6 +33,8 @@ cdef class LabelWiseMeasure(Loss):
         cdef intp r, c
 
         default_rule[:] = 0
+        confusion_matrices_default[:,:] = 0
+        confusion_matrices_covered[:,:] = 0
 
         for c in range(num_labels):
             # the default rule predicts the majority-class (label-wise)
