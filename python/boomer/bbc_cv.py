@@ -217,7 +217,7 @@ class BbcCv(Randomized):
 
                 if ground_truth_matrix is None:
                     ground_truth_matrix = adapter.true_labels
-            except FileNotFoundError:
+            except (FileNotFoundError, ArithmeticError):
                 # Ignore configuration if a model file is missing...
                 pass
 
