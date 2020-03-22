@@ -47,12 +47,16 @@ class BoomerBccCvAdapter(BbcCvAdapter):
         for n in range(max_rules):
             rule = model.pop(0)
 
-            if test_indices is None:
-                rule.predict(test_x, current_predictions)
+            if np.isnan(np.asarray(rule.head.scores)).any():
+                log.error("There's something wrong with this rule")
+                raise ArithmeticError()
             else:
-                masked_predictions = current_predictions[test_indices, :]
-                rule.predict(test_x, masked_predictions)
-                current_predictions[test_indices, :] = masked_predictions
+                if test_indices is None:
+                    rule.predict(test_x, current_predictions)
+                else:
+                    masked_predictions = current_predictions[test_indices, :]
+                    rule.predict(test_x, masked_predictions)
+                    current_predictions[test_indices, :] = masked_predictions
 
             current_config['num_rules'] = (n + 1)
 
