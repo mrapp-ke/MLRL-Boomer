@@ -10,7 +10,7 @@ import scipy.stats as stats
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
-from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver
+from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver, DefaultBbcCvObserver
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 
 
@@ -32,7 +32,7 @@ class BoomerBccCvAdapter(BbcCvAdapter):
             current_predictions = predictions[c]
             current_config = configurations[c]
         else:
-            current_predictions = np.empty((num_total_examples, num_labels), dtype=DTYPE_FLOAT64)
+            current_predictions = np.zeros((num_total_examples, num_labels), dtype=DTYPE_FLOAT64)
             predictions.append(current_predictions)
             current_config = self.configuration.copy()
             configurations.append(current_config)
@@ -255,26 +255,30 @@ if __name__ == '__main__':
     bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
     bbc_cv.random_state = args.random_state
     bbc_cv.store_predictions()
+    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
+                    observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
+                                                  target_measure_is_loss=target_measure_is_loss))
 
     if False:
-        tuning_evaluation_observer = TuningEvaluationBbcCvObserver(measure=target_measure)
-        bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=tuning_evaluation_observer)
-        tuning_scores = tuning_evaluation_observer.evaluation_scores_tuning
+        if False:
+            tuning_evaluation_observer = TuningEvaluationBbcCvObserver(measure=target_measure)
+            bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=tuning_evaluation_observer)
+            tuning_scores = tuning_evaluation_observer.evaluation_scores_tuning
 
-        if not target_measure_is_loss:
-            tuning_scores = 1 - tuning_scores
+            if not target_measure_is_loss:
+                tuning_scores = 1 - tuning_scores
 
-        ranks = np.empty_like(tuning_scores)
+            ranks = np.empty_like(tuning_scores)
 
-        for i in range(tuning_scores.shape[1]):
-            ranks[:, i] = stats.rankdata(tuning_scores[:, i], method='average')
+            for i in range(tuning_scores.shape[1]):
+                ranks[:, i] = stats.rankdata(tuning_scores[:, i], method='average')
 
-        avg_ranks = np.average(ranks, axis=1)
-        base_configurations = bbc_cv.configurations_
-        best_config = base_configurations[np.argmin(avg_ranks).item()]
-        log.info('Best configuration: %s', str(best_config))
-    else:
-        best_config = None
-        best_config_observer = BestConfigBbcCvObserver(measure=target_measure, measure_is_loss=target_measure_is_loss,
-                                                       best_configuration=best_config, output_dir=args.output_dir)
-        bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=best_config_observer)
+            avg_ranks = np.average(ranks, axis=1)
+            base_configurations = bbc_cv.configurations_
+            best_config = base_configurations[np.argmin(avg_ranks).item()]
+            log.info('Best configuration: %s', str(best_config))
+        else:
+            best_config = None
+            best_config_observer = BestConfigBbcCvObserver(measure=target_measure, measure_is_loss=target_measure_is_loss,
+                                                           best_configuration=best_config, output_dir=args.output_dir)
+            bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=best_config_observer)
