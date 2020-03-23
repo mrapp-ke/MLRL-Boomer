@@ -1,5 +1,6 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64, array_float64, matrix_float64, array_uint32
 
+from boomer.algorithm._arrays cimport matrix_intp, array_intp
 from boomer.algorithm._heuristics cimport Heuristic
 from boomer.algorithm._losses cimport Loss, LabelIndependentPrediction, Prediction
 from boomer.algorithm._utils cimport get_index
@@ -28,6 +29,7 @@ cdef class LabelWiseMeasure(Loss):
         cdef float64[::1, :] uncovered_labels = matrix_float64(num_examples, num_labels)
         cdef float64[::1, :] confusion_matrices_covered = matrix_float64(num_labels, 4)
         cdef float64[::1, :] confusion_matrices_default = matrix_float64(num_labels, 4)
+        cdef intp[::1] example_weights = array_intp(num_examples)
         cdef float64 threshold = num_examples / 2.0
         cdef uint8 true_label, predicted_label
         cdef intp r, c
@@ -71,17 +73,18 @@ cdef class LabelWiseMeasure(Loss):
         # represented by a one and covered examples are represented by a zero
         uncovered_labels[:,:] = 1
         self.uncovered_labels = uncovered_labels
-
+        self.example_weights = example_weights
         self.minority_labels = minority_labels
         self.true_labels = y
 
         return default_rule
 
     cdef begin_instance_sub_sampling(self):
-        pass
+        cdef intp[::1] example_weights = self.example_weights
+        example_weights[:] = 0
 
     cdef update_sub_sample(self, intp example_index):
-        pass
+        self.example_weights[example_index] = 1
 
     cdef begin_search(self, intp[::1] label_indices):
         cdef uint32[::1] minority_labels
