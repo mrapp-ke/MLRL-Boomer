@@ -22,6 +22,8 @@ cdef class LabelWiseMeasure(Loss):
 
     cdef intp[::1] label_indices
 
+    cdef intp[::1] example_weights
+
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
