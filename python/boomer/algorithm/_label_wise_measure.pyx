@@ -40,7 +40,7 @@ cdef class LabelWiseMeasure(Loss):
         for c in range(num_labels):
             # the default rule predicts the majority-class (label-wise)
             for r in range(num_examples):
-                    default_rule[c] += y[r, c]
+                default_rule[c] += y[r, c]
 
             if default_rule[c] > threshold:
                 default_rule[c] = 1
