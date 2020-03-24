@@ -65,7 +65,12 @@ class BoomerBccCvAdapter(BbcCvAdapter):
                 if len(predictions) > c:
                     old_predictions = current_predictions
                     current_predictions = predictions[c]
-                    current_predictions[test_indices] = old_predictions[test_indices]
+
+                    if test_indices is None:
+                        current_predictions[:, :] = old_predictions[:, :]
+                    else:
+                        current_predictions[test_indices] = old_predictions[test_indices]
+
                     current_config = configurations[c]
                 else:
                     current_predictions = current_predictions.copy()
