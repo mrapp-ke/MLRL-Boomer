@@ -5,7 +5,6 @@ import logging as log
 from typing import List
 
 import numpy as np
-import scipy.stats as stats
 
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure
 from boomer.algorithm.model import DTYPE_FLOAT64
@@ -259,11 +258,12 @@ if __name__ == '__main__':
     bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
     bbc_cv.random_state = args.random_state
     bbc_cv.store_predictions()
-    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
-                    observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
-                                                  target_measure_is_loss=target_measure_is_loss))
 
-    if False:
+    if True:
+        bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
+                        observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
+                                                      target_measure_is_loss=target_measure_is_loss))
+    else:
         if False:
             tuning_evaluation_observer = TuningEvaluationBbcCvObserver(measure=target_measure)
             bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=tuning_evaluation_observer)
@@ -283,6 +283,7 @@ if __name__ == '__main__':
             log.info('Best configuration: %s', str(best_config))
         else:
             best_config = None
-            best_config_observer = BestConfigBbcCvObserver(measure=target_measure, measure_is_loss=target_measure_is_loss,
+            best_config_observer = BestConfigBbcCvObserver(measure=target_measure,
+                                                           measure_is_loss=target_measure_is_loss,
                                                            best_configuration=best_config, output_dir=args.output_dir)
             bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=best_config_observer)
