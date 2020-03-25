@@ -9,6 +9,7 @@ import numpy as np
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
+from skmultilearn.problem_transform import LabelPowerset
 from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver, DefaultBbcCvObserver
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 
@@ -22,8 +23,8 @@ class BoomerBccCvAdapter(BbcCvAdapter):
         self.max_rules = max_rules
         self.step_size_rules = step_size_rules
 
-    def _store_predictions(self, model, test_indices, test_x, num_total_examples: int, num_labels: int,
-                           predictions, configurations):
+    def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
+                           predictions, configurations, current_fold, last_fold, num_folds):
         num_rules = len(model)
         c = 0
 
@@ -77,6 +78,41 @@ class BoomerBccCvAdapter(BbcCvAdapter):
                     predictions.append(current_predictions)
                     current_config = current_config.copy()
                     configurations.append(current_config)
+
+        lp = LabelPowerset()
+        lp.transform(train_y)
+        num_labels = lp._label_count
+        reverse_combinations = lp.reverse_combinations_
+        num_label_sets = len(reverse_combinations)
+        unique_label_sets = np.zeros((num_label_sets, num_labels))
+
+        for n in range(num_label_sets):
+            unique_label_sets[n, reverse_combinations[n]] = 1
+
+        for c in range(len(predictions)):
+            current_predictions = predictions[c]
+
+            if test_indices is None:
+                raise NotImplementedError()
+            else:
+                masked_predictions = current_predictions[test_indices, :]
+                # Apply sigmoid function using exp-normalize-trick
+                # (see https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/)
+                sigmoid_predictions = np.where(masked_predictions < 0,
+                                               np.exp(masked_predictions) / (1 + np.exp(masked_predictions)),
+                                               1 / (1 + np.exp(-masked_predictions)))
+                # Calculate euclidean distance
+                num_predictions = sigmoid_predictions.shape[0]
+                mapped_predictions = np.zeros(sigmoid_predictions.shape)
+
+                for r in range(num_predictions):
+                    pred = sigmoid_predictions[r, :]
+                    distances = np.sqrt(np.sum(np.square(unique_label_sets - pred), axis=1))
+                    index = np.argmin(distances)
+                    mapped_predictions[r, reverse_combinations[index]] = 1
+                    # print('was ' + str(np.where(masked_predictions[r] > 0, 1, 0)) + ', now is ' + str(mapped_predictions[r, ::]))
+
+                current_predictions[test_indices, :] = mapped_predictions
 
 
 class TuningEvaluationBbcCvObserver(BbcCvObserver):
