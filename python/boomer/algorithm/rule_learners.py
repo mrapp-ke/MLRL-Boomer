@@ -289,8 +289,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
     def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  loss: str = 'label-wise-measure', heuristic: str = 'precision', label_sub_sampling: int = -1,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
-                 l2_regularization_weight: float = 0.0):
+                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None):
         """
         :param max_rules:                   The maximum number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be
@@ -321,7 +320,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
-        self.l2_regularization_weight = l2_regularization_weight
 
     def get_name(self) -> str:
         return 'SeparateAndConquerRuleLearner'
