@@ -49,8 +49,7 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
                                          label_sub_sampling=params.label_sub_sampling,
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          feature_sub_sampling=params.feature_sub_sampling,
-                                         head_refinement=params.head_refinement,
-                                         l2_regularization_weight=params.l2_regularization_weight)
+                                         head_refinement=params.head_refinement)
 
 
 if __name__ == '__main__':
