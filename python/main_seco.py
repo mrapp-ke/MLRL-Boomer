@@ -3,12 +3,12 @@
 import argparse
 import logging as log
 
+from args import current_fold_string
 from args import optional_string, log_level, boolean_string
-from boomer.algorithm.rule_learners import Boomer, SeparateAndConquerRuleLearner
+from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
-from args import current_fold_string
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
@@ -22,7 +22,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
     p.add_argument('--current-fold', type=current_fold_string, default=-1,
                    help='The cross validation fold to be performed')
-    p.add_argument('--num-rules', type=int, default=500, help='The number of rules to be induced or -1')
+    p.add_argument('--max-rules', type=int, default=500, help='The maximum number of rules to be induced or -1')
     p.add_argument('--time-limit', type=int, default=-1,
                    help='The duration in seconds after which the induction of rules should be canceled or -1')
     p.add_argument('--label-sub-sampling', type=int, default=-1,
@@ -42,12 +42,15 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--shrinkage', type=float, default=1.0, help='The shrinkage parameter to be used')
 
 
-def create_learner(params) -> Boomer:
-    return Boomer(model_dir=params.model_dir, num_rules=params.num_rules, time_limit=params.time_limit,
-                  loss=params.loss, pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
-                  instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
-                  feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement,
-                  l2_regularization_weight=params.l2_regularization_weight)
+def create_learner(params) -> SeparateAndConquerRuleLearner:
+    return SeparateAndConquerRuleLearner(model_dir=params.model_dir, max_rules=params.max_rules,
+                                         time_limit=params.time_limit,
+                                         loss=params.loss, pruning=params.pruning,
+                                         label_sub_sampling=params.label_sub_sampling,
+                                         instance_sub_sampling=params.instance_sub_sampling,
+                                         feature_sub_sampling=params.feature_sub_sampling,
+                                         head_refinement=params.head_refinement,
+                                         l2_regularization_weight=params.l2_regularization_weight)
 
 
 if __name__ == '__main__':
@@ -70,7 +73,7 @@ if __name__ == '__main__':
                                                       output_predictions=args.store_predictions,
                                                       clear_dir=args.current_fold == -1))
 
-    learner = SeparateAndConquerRuleLearner()
+    learner = create_learner(args)
     parameter_input = parameter_input
     evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
     experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
