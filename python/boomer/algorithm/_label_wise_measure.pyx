@@ -1,3 +1,4 @@
+import numpy
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64, array_float64, matrix_float64, array_uint32
 
 from boomer.algorithm._arrays cimport matrix_intp, array_intp
@@ -27,6 +28,7 @@ cdef class LabelWiseMeasure(Loss):
         cdef float64[::1] default_rule = array_float64(num_labels)
         cdef uint32[::1] minority_labels = array_uint32(num_labels)
         cdef float64[::1, :] uncovered_labels = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] coverable_labels = matrix_float64(num_examples, num_labels)
         cdef float64[::1, :] confusion_matrices_covered = matrix_float64(num_labels, 4)
         cdef float64[::1, :] confusion_matrices_default = matrix_float64(num_labels, 4)
         cdef intp[::1] example_weights = array_intp(num_examples)
@@ -49,13 +51,21 @@ cdef class LabelWiseMeasure(Loss):
                 default_rule[c] = 0
                 minority_labels[c] = 1
 
+            for r in range(num_examples):
+                if default_rule[c] == y[r,c]:
+                    coverable_labels[r,c] = 0
+                else:
+                    coverable_labels[r,c] = 1
+
 
         self.confusion_matrices_default = confusion_matrices_default
 
         # this stores a matrix which corresponds to the uncovered labels of all examples, where uncovered labels are
         # represented by a one and covered examples are represented by a zero
         uncovered_labels[:,:] = 1
+
         self.uncovered_labels = uncovered_labels
+        self.coverable_labels = coverable_labels
         self.example_weights = example_weights
         self.minority_labels = minority_labels
         self.true_labels = y
@@ -74,7 +84,7 @@ cdef class LabelWiseMeasure(Loss):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef intp[::1] example_weights = self.example_weights
         cdef uint8[::1, :] true_labels = self.true_labels
-
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef intp num_examples = true_labels.shape[0]
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
@@ -90,8 +100,9 @@ cdef class LabelWiseMeasure(Loss):
         confusion_matrices_default[:,:] = 0
 
         for c in range(num_labels):
+            l = get_index(c, label_indices)
             for r in range(num_examples):
-                if example_weights[r] == 1:
+                if example_weights[r] == 1 and uncovered_labels[r, l] > 0:
                     true_label = true_labels[r, c]
                     predicted_label = <uint8> minority_labels[c]
 
@@ -217,16 +228,3 @@ cdef class LabelWiseMeasure(Loss):
             for i in covered_example_indices:
                 uncovered_labels[i, l] = 0
 
-                # Remove covered labels from the confusion matrices of the default rule
-                true_label = true_labels[i, l]
-
-                if true_label == 0:
-                    if minority_label == 0:
-                        confusion_matrices_default[l, _IN] -= 1
-                    elif minority_label == 1:
-                        confusion_matrices_default[l, _IP] -= 1
-                elif true_label == 1:
-                    if minority_label == 0:
-                        confusion_matrices_default[l, _RN] -= 1
-                    elif minority_label == 1:
-                        confusion_matrices_default[l, _RP] -= 1
