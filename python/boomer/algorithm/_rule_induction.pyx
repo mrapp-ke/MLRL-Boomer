@@ -397,7 +397,7 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
                                 the training examples that are covered by the previous rule when sorting column-wise
     :param condition_r:         The index of the example from which the threshold of the condition that has been added
                                 to the previous rule has been chosen
-    :param condition_index:     The the feature index of the condition that has been added to the previous rule
+    :param condition_index:     The feature index of the condition that has been added to the previous rule
     :param condition_leq:       1, if the condition that has been added to the previous rule uses the <= operator, 0, if
                                 the condition uses the > operator
     :param condition_threshold: The threshold of the condition that has been added to the previous rule
