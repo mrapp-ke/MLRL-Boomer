@@ -76,8 +76,8 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
 
         predictions = self.predictions
         configurations = self.configurations
-        self._store_predictions(model, test_indices, test_x, num_total_examples, num_labels, predictions,
-                                configurations)
+        self._store_predictions(model, test_indices, test_x, train_y, num_total_examples, num_labels, predictions,
+                                configurations, current_fold, last_fold, num_folds)
 
     def run(self):
         self.predictions = []
@@ -86,8 +86,8 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         super().run()
 
     @abstractmethod
-    def _store_predictions(self, model, test_indices, test_x, num_total_examples: int, num_labels: int, predictions,
-                           configurations):
+    def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int, predictions,
+                           configurations, current_fold: int, last_fold: int, num_folds: int):
         """
         Must be implemented by subclasses to store the predictions provided by a specific model for the given test
         examples. The predictions, together with the corresponding configuration, must be stored in the given lists
@@ -102,6 +102,9 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         :param num_labels:          The number of labels
         :param predictions:         The list that should be used to store predictions
         :param configurations:      The list that should be used to store configurations
+        :param current_fold:        The current fold starting at 0, or 0 if no cross validation is used
+        :param last_fold:           The last fold or 0, if no cross validation is used
+        :param num_folds:           The total number of cross validation folds or 1, if no cross validation is used
         """
         pass
 

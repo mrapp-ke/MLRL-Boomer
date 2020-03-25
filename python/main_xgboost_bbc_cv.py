@@ -18,8 +18,8 @@ class BrBccCvAdapter(BbcCvAdapter):
     def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str):
         super().__init__(data_dir, data_set, num_folds, model_dir)
 
-    def _store_predictions(self, model, test_indices, test_x, num_total_examples: int, num_labels: int, predictions,
-                           configurations):
+    def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
+                           predictions, configurations, current_fold, last_fold, num_folds):
         c = 0
 
         if len(predictions) > c:
@@ -44,8 +44,8 @@ class LpBccCvAdapter(BbcCvAdapter):
     def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str):
         super().__init__(data_dir, data_set, num_folds, model_dir)
 
-    def _store_predictions(self, model, test_indices, test_x, num_total_examples: int, num_labels: int, predictions,
-                           configurations):
+    def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
+                           predictions, configurations, current_fold, last_fold, num_folds):
         c = 0
 
         if len(predictions) > c:
@@ -69,8 +69,8 @@ class CcBccCvAdapter(BrBccCvAdapter):
     def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str):
         super().__init__(data_dir, data_set, num_folds, model_dir)
 
-    def _store_predictions(self, model, test_indices, test_x, num_total_examples: int, num_labels: int, predictions,
-                           configurations):
+    def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
+                           predictions, configurations, current_fold: int, last_fold: int, num_folds: int):
         c = 0
 
         if len(predictions) > c:
