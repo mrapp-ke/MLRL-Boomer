@@ -11,7 +11,7 @@ from abc import abstractmethod
 import numpy as np
 
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._heuristics import HammingLoss
+from boomer.algorithm._heuristics import HammingLoss, Precision
 from boomer.algorithm._label_wise_measure import LabelWiseMeasure
 from boomer.algorithm._losses import Loss, DecomposableLoss
 from boomer.algorithm._pruning import Pruning, IREP
@@ -295,7 +295,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
         # TODO share parameter logic between learner classes
-        heuristic = HammingLoss()
+        heuristic = Precision()
         loss = LabelWiseMeasure(heuristic)
         head_refinement = SingleLabelHeadRefinement()
         label_sub_sampling = None
