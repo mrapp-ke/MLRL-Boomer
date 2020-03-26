@@ -124,6 +124,15 @@ cdef class Head:
         """
         pass
 
+    cdef predict_unpredicted(self, float64[:] predictions, intp[:] predicted):
+        """
+        Applies the head's prediction to a given vector of predictions given that no prediction has yet been made.
+
+        :param predicted:   An array of dtype float, shape `(num_labels)`, representing which labels have already been
+                            predicted.
+        :param predictions: An array of dtype float, shape `(num_labels)`, representing a vector of predictions
+        """
+        pass
 
 cdef class FullHead(Head):
     """
@@ -152,6 +161,15 @@ cdef class FullHead(Head):
         for c in range(num_cols):
             predictions[c] += scores[c]
 
+    cdef predict_unpredicted(self, float64[:] predictions, intp[:] predicted):
+        cdef float64[::1] scores = self.scores
+        cdef intp num_cols = predictions.shape[0]
+        cdef intp c
+
+        for c in range(num_cols):
+            if not predicted[c]:
+                predictions[c] = scores[c]
+                predicted[c] = 1
 
 cdef class PartialHead(Head):
     """
@@ -186,6 +204,17 @@ cdef class PartialHead(Head):
             label = label_indices[c]
             predictions[label] += scores[c]
 
+    cdef predict_unpredicted(self, float64[:] predictions, intp[:] predicted):
+        cdef intp[::1] label_indices = self.label_indices
+        cdef float64[::1] scores = self.scores
+        cdef intp num_labels = label_indices.shape[0]
+        cdef intp c, label
+
+        for c in range(num_labels):
+            label = label_indices[c]
+            if not predicted[label]:
+                predictions[label] = scores[c]
+                predicted[label] = 1
 
 cdef class Rule:
     """
@@ -225,3 +254,24 @@ cdef class Rule:
         for r in range(num_examples):
             if body.covers(x[r, :]):
                 head.predict(predictions[r, :])
+
+
+    cpdef predict_unpredicted(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted):
+        """
+        Applies the rule's prediction to all examples it covers.
+
+        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
+                                of the examples to predict for
+        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
+                                predicted for the given examples
+        :param predicted:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels
+                                per example for which a prediction has already been made
+        """
+        cdef Body body = self.body
+        cdef Head head = self.head
+        cdef intp num_examples = x.shape[0]
+        cdef intp r
+
+        for r in range(num_examples):
+            if body.covers(x[r, :]):
+                head.predict_unpredicted(predictions[r, :], predicted[r, :])
