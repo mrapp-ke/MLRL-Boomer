@@ -23,7 +23,7 @@ from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubs
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
 from boomer.algorithm.model import DTYPE_FLOAT32
-from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
+from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
 from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion, UncoveredLabelsCriterion
 from boomer.learners import MLLearner
@@ -423,5 +423,4 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
     def _create_prediction(self) -> Prediction:
-        # TODO implement prediction logic #25
-        return Sign(LinearCombination())
+        return DecisionList()
