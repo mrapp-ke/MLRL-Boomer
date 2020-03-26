@@ -89,6 +89,8 @@ class BoomerBccCvAdapter(BbcCvAdapter):
         for n in range(num_label_sets):
             unique_label_sets[n, reverse_combinations[n]] = 1
 
+        unique_label_sets = -np.where(unique_label_sets > 0, 1, -1)
+
         for c in range(len(predictions)):
             current_predictions = predictions[c]
 
@@ -96,21 +98,14 @@ class BoomerBccCvAdapter(BbcCvAdapter):
                 raise NotImplementedError()
             else:
                 masked_predictions = current_predictions[test_indices, :]
-                # Apply sigmoid function using exp-normalize-trick
-                # (see https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/)
-                sigmoid_predictions = np.where(masked_predictions < 0,
-                                               np.exp(masked_predictions) / (1 + np.exp(masked_predictions)),
-                                               1 / (1 + np.exp(-masked_predictions)))
-                # Calculate euclidean distance
-                num_predictions = sigmoid_predictions.shape[0]
-                mapped_predictions = np.zeros(sigmoid_predictions.shape)
+                num_predictions = masked_predictions.shape[0]
+                mapped_predictions = np.zeros(masked_predictions.shape)
 
                 for r in range(num_predictions):
-                    pred = sigmoid_predictions[r, :]
-                    distances = np.sqrt(np.sum(np.square(unique_label_sets - pred), axis=1))
+                    pred = masked_predictions[r, :]
+                    distances = np.log(1 + np.sum(np.exp(unique_label_sets * pred), axis=1))
                     index = np.argmin(distances)
                     mapped_predictions[r, reverse_combinations[index]] = 1
-                    # print('was ' + str(np.where(masked_predictions[r] > 0, 1, 0)) + ', now is ' + str(mapped_predictions[r, ::]))
 
                 current_predictions[test_indices, :] = mapped_predictions
 
