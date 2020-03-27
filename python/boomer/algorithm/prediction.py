@@ -94,6 +94,6 @@ class DecisionList(Prediction):
         predicted = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_INTP))
 
         for rule in theory:
-            rule.predict_unpredicted(x, predictions, predicted)
+            rule.predict(x, predictions, predicted)
 
         return predictions
