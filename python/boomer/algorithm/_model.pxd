@@ -36,9 +36,7 @@ cdef class Head:
 
     # Functions:
 
-    cdef predict(self, float64[:] predictions)
-
-    cdef predict_unpredicted(self, float64[:] predictions, intp[:] predicted)
+    cdef predict(self, float64[:] predictions, intp[:] predicted=*)
 
 
 cdef class FullHead(Head):
@@ -49,9 +47,7 @@ cdef class FullHead(Head):
 
     # Functions:
 
-    cdef predict(self, float64[:] predictions)
-
-    cdef predict_unpredicted(self, float64[:] predictions, intp[:] predicted)
+    cdef predict(self, float64[:] predictions, intp[:] predicted=*)
 
 
 cdef class PartialHead(Head):
@@ -64,9 +60,7 @@ cdef class PartialHead(Head):
 
     # Functions:
 
-    cdef predict(self, float64[:] predictions)
-
-    cdef predict_unpredicted(self, float64[:] predictions, intp[:] predicted)
+    cdef predict(self, float64[:] predictions, intp[:] predicted=*)
 
 
 cdef class Rule:
@@ -79,6 +73,4 @@ cdef class Rule:
 
     # Functions:
 
-    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions)
-
-    cpdef predict_unpredicted(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted)
+    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted=*)
