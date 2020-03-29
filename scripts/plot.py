@@ -32,6 +32,8 @@ OUTPUT_DIR = None
 # OUTPUT_DIR = '/home/mrapp/Dropbox/Promotion/Papers/Boomer/Experimente/results_round5/'
 
 if __name__ == '__main__':
+    plt.rc('font', size=12)  # controls default text sizes
+
     dir_macro = path.join(path.join(ROOT_DIR, 'macro-logistic-loss'), DATASET)
     dir_macro_single = path.join(dir_macro, 'single-label')
     dir_macro_full = path.join(dir_macro, 'full')
