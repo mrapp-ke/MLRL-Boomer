@@ -5,6 +5,7 @@ import logging as log
 from typing import List
 
 import numpy as np
+import scipy.stats as stats
 
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure
 from boomer.algorithm.model import DTYPE_FLOAT64
@@ -79,35 +80,36 @@ class BoomerBccCvAdapter(BbcCvAdapter):
                     current_config = current_config.copy()
                     configurations.append(current_config)
 
-        lp = LabelPowerset()
-        lp.transform(train_y)
-        num_labels = lp._label_count
-        reverse_combinations = lp.reverse_combinations_
-        num_label_sets = len(reverse_combinations)
-        unique_label_sets = np.zeros((num_label_sets, num_labels))
+        if True:
+            lp = LabelPowerset()
+            lp.transform(train_y)
+            num_labels = lp._label_count
+            reverse_combinations = lp.reverse_combinations_
+            num_label_sets = len(reverse_combinations)
+            unique_label_sets = np.zeros((num_label_sets, num_labels))
 
-        for n in range(num_label_sets):
-            unique_label_sets[n, reverse_combinations[n]] = 1
+            for n in range(num_label_sets):
+                unique_label_sets[n, reverse_combinations[n]] = 1
 
-        unique_label_sets = -np.where(unique_label_sets > 0, 1, -1)
+            unique_label_sets = -np.where(unique_label_sets > 0, 1, -1)
 
-        for c in range(len(predictions)):
-            current_predictions = predictions[c]
+            for c in range(len(predictions)):
+                current_predictions = predictions[c]
 
-            if test_indices is None:
-                raise NotImplementedError()
-            else:
-                masked_predictions = current_predictions[test_indices, :]
-                num_predictions = masked_predictions.shape[0]
-                mapped_predictions = np.zeros(masked_predictions.shape)
+                if test_indices is None:
+                    raise NotImplementedError()
+                else:
+                    masked_predictions = current_predictions[test_indices, :]
+                    num_predictions = masked_predictions.shape[0]
+                    mapped_predictions = np.zeros(masked_predictions.shape)
 
-                for r in range(num_predictions):
-                    pred = masked_predictions[r, :]
-                    distances = np.log(1 + np.sum(np.exp(unique_label_sets * pred), axis=1))
-                    index = np.argmin(distances)
-                    mapped_predictions[r, reverse_combinations[index]] = 1
+                    for r in range(num_predictions):
+                        pred = masked_predictions[r, :]
+                        distances = np.log(1 + np.sum(np.exp(unique_label_sets * pred), axis=1))
+                        index = np.argmin(distances)
+                        mapped_predictions[r, reverse_combinations[index]] = 1
 
-                current_predictions[test_indices, :] = mapped_predictions
+                    current_predictions[test_indices, :] = mapped_predictions
 
 
 class TuningEvaluationBbcCvObserver(BbcCvObserver):
