@@ -39,10 +39,10 @@ if __name__ == '__main__':
     dir_example_based_single = path.join(dir_example_based, 'single-label')
     dir_example_based_full = path.join(dir_example_based, 'full')
     directories = [
-        (dir_macro_single, 's', 'l.w.-log. single'),
-        (dir_macro_full, 'o', 'l.w.-log. multi'),
-        (dir_example_based_single, '^', 'ex.w.-log. single'),
-        (dir_example_based_full, 'x', 'ex.w.-log. multi')
+        (dir_macro_single, 's', 'l.w.-log. single', MAX_RULES),
+        (dir_macro_full, 'o', 'l.w.-log. multi', MAX_RULES),
+        (dir_example_based_single, '^', 'ex.w.-log. single', MAX_RULES),
+        (dir_example_based_full, 'x', 'ex.w.-log. multi', MAX_RULES)
     ]
 
     x_min = 1.0
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         plt.plot([i, i + 1], [0, 1], linewidth=line_width, linestyle=line_style, color=color)
         plt.plot([0, 1], [i, i + 1], linewidth=line_width, linestyle=line_style, color=color)
 
-    for directory, marker, label in directories:
+    for directory, marker, label, max_rules in directories:
         x = []
         y = []
         cur_x_min = 1.0
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             reader = DictReader(csv_file, delimiter=',', quotechar='"')
 
             for i, row in enumerate(reader):
-                if (MIN_RULES - 1) <= i < MAX_RULES and i % STEP_SIZE == 0:
+                if (MIN_RULES - 1) <= i < max_rules and i % STEP_SIZE == 0:
                     hamming_loss = float(row[HAMMING_LOSS])
                     subset_0_1_loss = float(row[SUBSET_0_1_LOSS])
 
