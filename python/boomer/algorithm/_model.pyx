@@ -116,14 +116,15 @@ cdef class Head:
     def __setstate__(self, state):
         pass
 
-    cdef predict(self, float64[:] predictions):
+    cdef predict(self, float64[:] predictions, intp[:] predicted = None):
         """
-        Applies the head's prediction to a given vector of predictions.
+        Applies the head's prediction to a given vector of predictions given that no prediction has yet been made.
 
+        :param predicted:   An array of dtype float, shape `(num_labels)`, representing which labels have already been
+                            predicted.
         :param predictions: An array of dtype float, shape `(num_labels)`, representing a vector of predictions
         """
         pass
-
 
 cdef class FullHead(Head):
     """
@@ -144,14 +145,18 @@ cdef class FullHead(Head):
         scores = state
         self.scores = scores
 
-    cdef predict(self, float64[:] predictions):
+    cdef predict(self, float64[:] predictions, intp[:] predicted = None):
         cdef float64[::1] scores = self.scores
         cdef intp num_cols = predictions.shape[0]
         cdef intp c
 
         for c in range(num_cols):
-            predictions[c] += scores[c]
-
+            if predicted is not None:
+                if not predicted[c]:
+                    predictions[c] = scores[c]
+                    predicted[c] = 1
+            else:
+                predictions[c] += scores[c]
 
 cdef class PartialHead(Head):
     """
@@ -176,7 +181,7 @@ cdef class PartialHead(Head):
         self.label_indices = label_indices
         self.scores = scores
 
-    cdef predict(self, float64[:] predictions):
+    cdef predict(self, float64[:] predictions, intp[:] predicted = None):
         cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
         cdef intp num_labels = label_indices.shape[0]
@@ -184,8 +189,12 @@ cdef class PartialHead(Head):
 
         for c in range(num_labels):
             label = label_indices[c]
-            predictions[label] += scores[c]
-
+            if predicted is not None:
+                if not predicted[label]:
+                    predictions[label] = scores[c]
+                    predicted[label] = 1
+            else:
+                predictions[label] += scores[c]
 
 cdef class Rule:
     """
@@ -208,7 +217,8 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions):
+
+    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted = None):
         """
         Applies the rule's prediction to all examples it covers.
 
@@ -216,6 +226,8 @@ cdef class Rule:
                                 of the examples to predict for
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
                                 predicted for the given examples
+        :param predicted:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels
+                                per example for which a prediction has already been made
         """
         cdef Body body = self.body
         cdef Head head = self.head
@@ -224,4 +236,7 @@ cdef class Rule:
 
         for r in range(num_examples):
             if body.covers(x[r, :]):
-                head.predict(predictions[r, :])
+                if predicted is not None:
+                    head.predict(predictions[r, :], predicted[r, :])
+                else:
+                    head.predict(predictions[r, :])
