@@ -9,7 +9,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-from boomer.algorithm.model import Theory, DTYPE_FLOAT64
+from boomer.algorithm.model import Theory, DTYPE_FLOAT64, DTYPE_INTP
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
 
@@ -82,3 +82,18 @@ class Sign(Bipartition):
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
         predictions = self.ranking.predict(stats, theory, x)
         return np.where(predictions > 0, 1, 0)
+
+
+class DecisionList(Prediction):
+    """
+    Predicts labels according to a list of rules interpreted as a decision list.
+    """
+
+    def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
+        predictions = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64))
+        predicted = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_INTP))
+
+        for rule in theory:
+            rule.predict(x, predictions, predicted)
+
+        return predictions
