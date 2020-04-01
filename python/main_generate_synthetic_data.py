@@ -88,7 +88,7 @@ def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float,
         y = np.empty((num_examples, num_labels), dtype=int)
 
         for k in range(num_labels):
-            current_x, current_y = __generate_features_and_labels(num_examples=num_examples, num_labels=1, tau=1, p=p,
+            current_x, current_y = __generate_features_and_labels(num_examples=num_examples, num_labels=1, tau=1.0, p=p,
                                                                   dependent_error=False, one_error=False,
                                                                   one_error_ratio=0.0, random_state=random_state)
             x[:, (k * 2, k * 2 + 1)] = current_x[:, :]
@@ -172,7 +172,7 @@ def __get_dataset_name(num_examples: int, num_labels: int, tau: float, p: float,
     if one_error:
         name += '_one-error=' + str(one_error_ratio)
     elif marginal_independence:
-        name += '_marginal-independence'
+        name += '_marginal-independence_p=' + str(p)
     else:
         name += '_tau=' + str(tau) + '_p=' + str(p)
 
