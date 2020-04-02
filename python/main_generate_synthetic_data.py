@@ -57,8 +57,7 @@ from boomer.data import save_data_set_and_meta_data
 
 
 def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float, marginal_independence: bool,
-                       dependent_error: bool, one_error: bool, one_error_ratio: float,
-                       random_state: int) -> (np.ndarray, np.ndarray):
+                       dependent_error: bool, one_error: bool, random_state: int) -> (np.ndarray, np.ndarray):
     if num_examples < 1:
         raise ValueError('Invalid value given for parameter \'num-examples\': ' + str(num_examples))
     if num_labels < 1:
@@ -90,7 +89,7 @@ def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float,
         for k in range(num_labels):
             current_x, current_y = __generate_features_and_labels(num_examples=num_examples, num_labels=1, tau=1.0, p=p,
                                                                   dependent_error=False, one_error=False,
-                                                                  one_error_ratio=0.0, random_state=random_state)
+                                                                  random_state=random_state)
             x[:, (k * 2, k * 2 + 1)] = current_x[:, :]
             y[:, k] = current_y[:, 0]
             random_state += 1
@@ -98,15 +97,14 @@ def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float,
     else:
         x, y = __generate_features_and_labels(num_examples=num_examples, num_labels=num_labels, tau=tau, p=p,
                                               dependent_error=dependent_error, one_error=one_error,
-                                              one_error_ratio=one_error_ratio, random_state=random_state)
+                                              random_state=random_state)
 
     log.info('Successfully generated dataset...')
     return x, y
 
 
 def __generate_features_and_labels(num_examples: int, num_labels: int, tau: float, p: float, dependent_error: bool,
-                                   one_error: bool, one_error_ratio: float,
-                                   random_state: int) -> (np.ndarray, np.ndarray):
+                                   one_error: bool, random_state: int) -> (np.ndarray, np.ndarray):
     x = __disc_point_picking(num_examples)
     r = np.random.uniform(low=0, high=1, size=(num_labels, 2))
     a = tau * r
@@ -139,11 +137,8 @@ def __generate_features_and_labels(num_examples: int, num_labels: int, tau: floa
         # Flick one random label per example
         flicked_label_indices = np.random.choice(np.arange(start=0, stop=num_labels, dtype=int), size=num_examples,
                                                  replace=True)
-        num_flicked_examples = int(round(num_examples * one_error_ratio))
-        flicked_example_indices = np.random.choice(np.arange(start=0, stop=num_examples, dtype=int),
-                                                   size=num_flicked_examples, replace=True)
 
-        for r in flicked_example_indices:
+        for r in range(num_examples):
             c = flicked_label_indices[r]
             y[r, c] = 0 if y[r, c] > 0 else 1
 
@@ -166,11 +161,11 @@ def __normalize(a: np.ndarray, order=2, axis=-1) -> np.ndarray:
 
 
 def __get_dataset_name(num_examples: int, num_labels: int, tau: float, p: float, marginal_independence: bool,
-                       dependent_error: bool, one_error: bool, one_error_ratio: float) -> str:
+                       dependent_error: bool, one_error: bool) -> str:
     name = 'synthetic_num-examples=' + str(num_examples) + '_num-labels=' + str(num_labels)
 
     if one_error:
-        name += '_one-error=' + str(one_error_ratio)
+        name += '_one-error'
     elif marginal_independence:
         name += '_marginal-independence_p=' + str(p)
     else:
@@ -235,8 +230,6 @@ if __name__ == '__main__':
                         help='True, if the error for the labels of an example should be the same, False otherwise')
     parser.add_argument('--one-error', type=boolean_string, default=False,
                         help='True, if exactly one error should be made per example, False otherwise')
-    parser.add_argument('--one-error-ratio', type=float, default=1.0,
-                        help='The percentage of examples for which example one error should be made')
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
@@ -245,10 +238,9 @@ if __name__ == '__main__':
     features, labels = __generate_dataset(num_examples=args.num_examples, num_labels=args.num_labels,
                                           marginal_independence=args.marginal_independence, tau=args.tau, p=args.p,
                                           dependent_error=args.dependent_error, one_error=args.one_error,
-                                          one_error_ratio=args.one_error_ratio, random_state=args.random_state)
+                                          random_state=args.random_state)
     dataset_name = __get_dataset_name(num_examples=args.num_examples, num_labels=args.num_labels, tau=args.tau,
                                       p=args.p, dependent_error=args.dependent_error, one_error=args.one_error,
-                                      one_error_ratio=args.one_error_ratio,
                                       marginal_independence=args.marginal_independence)
     meta_data = save_data_set_and_meta_data(args.output_dir, arff_file_name=dataset_name + '.arff',
                                             xml_file_name=dataset_name + '.xml', x=features, y=labels)
