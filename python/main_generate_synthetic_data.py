@@ -57,7 +57,8 @@ from boomer.data import save_data_set_and_meta_data
 
 
 def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float, marginal_independence: bool,
-                       dependent_error: bool, one_error: bool, one_error_ratio: float) -> (np.ndarray, np.ndarray):
+                       dependent_error: bool, one_error: bool, one_error_ratio: float,
+                       random_state: int) -> (np.ndarray, np.ndarray):
     if num_examples < 1:
         raise ValueError('Invalid value given for parameter \'num-examples\': ' + str(num_examples))
     if num_labels < 1:
@@ -70,7 +71,6 @@ def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float,
     log.debug('Generating dataset...')
 
     # Initialize numpy's seed
-    random_state = args.random_state
     np.random.seed(random_state)
 
     if marginal_independence:
@@ -245,7 +245,7 @@ if __name__ == '__main__':
     features, labels = __generate_dataset(num_examples=args.num_examples, num_labels=args.num_labels,
                                           marginal_independence=args.marginal_independence, tau=args.tau, p=args.p,
                                           dependent_error=args.dependent_error, one_error=args.one_error,
-                                          one_error_ratio=args.one_error_ratio)
+                                          one_error_ratio=args.one_error_ratio, random_state=args.random_state)
     dataset_name = __get_dataset_name(num_examples=args.num_examples, num_labels=args.num_labels, tau=args.tau,
                                       p=args.p, dependent_error=args.dependent_error, one_error=args.one_error,
                                       one_error_ratio=args.one_error_ratio,
