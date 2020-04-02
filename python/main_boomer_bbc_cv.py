@@ -6,23 +6,24 @@ from typing import List
 
 import numpy as np
 import scipy.stats as stats
+from skmultilearn.problem_transform import LabelPowerset
 
-from args import optional_string, log_level, string_list, float_list, int_list, target_measure
+from args import optional_string, log_level, string_list, float_list, int_list, target_measure, boolean_string
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
-from skmultilearn.problem_transform import LabelPowerset
-from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver, DefaultBbcCvObserver
+from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver, DefaultBbcCvObserver, DefaultBootstrapping
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 
 
 class BoomerBccCvAdapter(BbcCvAdapter):
 
     def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str, min_rules: int, max_rules: int,
-                 step_size_rules: int):
+                 step_size_rules: int, subset_correction: bool):
         super().__init__(data_dir, data_set, num_folds, model_dir)
         self.min_rules = min_rules
         self.max_rules = max_rules
         self.step_size_rules = step_size_rules
+        self.subset_correction = subset_correction
 
     def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
                            predictions, configurations, current_fold, last_fold, num_folds):
@@ -80,7 +81,7 @@ class BoomerBccCvAdapter(BbcCvAdapter):
                     current_config = current_config.copy()
                     configurations.append(current_config)
 
-        if True:
+        if self.subset_correction:
             lp = LabelPowerset()
             lp.transform(train_y)
             num_labels = lp._label_count
@@ -283,6 +284,10 @@ if __name__ == '__main__':
                         help='The values for the parameter \'shrinkage\' as a comma-separated list')
     parser.add_argument('--l2-regularization-weight', type=float_list, default='1.0',
                         help='The values for the parameter \'l2-regularization-weight\' as a comma-separated list')
+    parser.add_argument('--subset-correction', type=boolean_string, default='False',
+                        help='True if subset correction should be used, False otherwise')
+    parser.add_argument('--mode', type=str, default='default',
+                        help='The mode to be used. Must be \'evaluate\', \'print-best\' or \'evaluate-best\'')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
@@ -292,36 +297,40 @@ if __name__ == '__main__':
     learner = Boomer()
     bbc_cv_adapter = BoomerBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                                         model_dir=args.model_dir, min_rules=args.min_rules, max_rules=args.max_rules,
-                                        step_size_rules=args.step_size_rules)
-    bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
+                                        step_size_rules=args.step_size_rules, subset_correction=args.subset_correction)
+    # bootstrapping = CVBootstrapping(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds)
+    bootstrapping = DefaultBootstrapping(args.num_bootstraps)
+    bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, bootstrapping=bootstrapping,
+                   learner=learner)
     bbc_cv.random_state = args.random_state
     bbc_cv.store_predictions()
+    mode = args.mode
 
-    if True:
-        bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
-                        observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
+    if mode == 'evaluate':
+        bbc_cv.evaluate(observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
                                                       target_measure_is_loss=target_measure_is_loss))
+    elif mode == 'print-best':
+        tuning_evaluation_observer = TuningEvaluationBbcCvObserver(measure=target_measure)
+        bbc_cv.evaluate(observer=tuning_evaluation_observer)
+        tuning_scores = tuning_evaluation_observer.evaluation_scores_tuning
+
+        if not target_measure_is_loss:
+            tuning_scores = 1 - tuning_scores
+
+        ranks = np.empty_like(tuning_scores)
+
+        for i in range(tuning_scores.shape[1]):
+            ranks[:, i] = stats.rankdata(tuning_scores[:, i], method='average')
+
+        avg_ranks = np.average(ranks, axis=1)
+        base_configurations = bbc_cv.configurations_
+        best_config = base_configurations[np.argmin(avg_ranks).item()]
+        log.info('Best configuration: %s', str(best_config))
+    elif mode == 'evaluate-best':
+        best_config = None
+        best_config_observer = BestConfigBbcCvObserver(measure=target_measure,
+                                                       measure_is_loss=target_measure_is_loss,
+                                                       best_configuration=best_config, output_dir=args.output_dir)
+        bbc_cv.evaluate(observer=best_config_observer)
     else:
-        if False:
-            tuning_evaluation_observer = TuningEvaluationBbcCvObserver(measure=target_measure)
-            bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=tuning_evaluation_observer)
-            tuning_scores = tuning_evaluation_observer.evaluation_scores_tuning
-
-            if not target_measure_is_loss:
-                tuning_scores = 1 - tuning_scores
-
-            ranks = np.empty_like(tuning_scores)
-
-            for i in range(tuning_scores.shape[1]):
-                ranks[:, i] = stats.rankdata(tuning_scores[:, i], method='average')
-
-            avg_ranks = np.average(ranks, axis=1)
-            base_configurations = bbc_cv.configurations_
-            best_config = base_configurations[np.argmin(avg_ranks).item()]
-            log.info('Best configuration: %s', str(best_config))
-        else:
-            best_config = None
-            best_config_observer = BestConfigBbcCvObserver(measure=target_measure,
-                                                           measure_is_loss=target_measure_is_loss,
-                                                           best_configuration=best_config, output_dir=args.output_dir)
-            bbc_cv.evaluate(num_bootstraps=args.num_bootstraps, observer=best_config_observer)
+        raise ValueError('Invalid valu given for argument \'mode\': ' + str(mode))
