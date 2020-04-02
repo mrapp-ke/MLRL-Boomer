@@ -86,7 +86,8 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         super().run()
 
     @abstractmethod
-    def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int, predictions,
+    def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
+                           predictions,
                            configurations, current_fold: int, last_fold: int, num_folds: int):
         """
         Must be implemented by subclasses to store the predictions provided by a specific model for the given test
@@ -137,6 +138,13 @@ class BbcCvObserver(ABC):
         pass
 
 
+class Bootstrapping(Randomized):
+
+    @abstractmethod
+    def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
+        pass
+
+
 class DefaultBbcCvObserver(BbcCvObserver):
     """
     An observer that determines the best configuration per bootstrap iteration and computes the evaluation measures
@@ -181,7 +189,8 @@ class BbcCv(Randomized):
     An implementation of "Bootstrap Bias Corrected Cross Validation" (BBC-CV).
     """
 
-    def __init__(self, configurations: List[dict], adapter: BbcCvAdapter, learner: MLLearner):
+    def __init__(self, configurations: List[dict], adapter: BbcCvAdapter, bootstrapping: Bootstrapping,
+                 learner: MLLearner):
         """
         :param configurations:  A list that contains the configurations to be evaluated
         :param adapter:         The `BbcCvAdapter` to be used
@@ -190,6 +199,7 @@ class BbcCv(Randomized):
         super().__init__()
         self.configurations = configurations
         self.adapter = adapter
+        self.bootstrapping = bootstrapping
         self.learner = learner
 
     def store_predictions(self):
@@ -231,10 +241,9 @@ class BbcCv(Randomized):
         self.ground_truth_matrix_ = ground_truth_matrix
         self.configurations_ = list_of_configurations
 
-    def evaluate(self, num_bootstraps: int, observer: BbcCvObserver):
+    def evaluate(self, observer: BbcCvObserver):
         """
-        :param num_bootstraps:  The number of bootstrap iterations to be performed
-        :param observer:        The `BbcCvObserver` to be used
+        :param observer: The `BbcCvObserver` to be used
         """
         prediction_matrix = self.prediction_matrix_
         ground_truth_matrix = self.ground_truth_matrix_
@@ -242,33 +251,57 @@ class BbcCv(Randomized):
         random_state = self.random_state
 
         # Bootstrap sampling...
-        bootstrapping = DefaultBootstrapping(prediction_matrix, ground_truth_matrix, configurations, num_bootstraps)
+        bootstrapping = self.bootstrapping
         bootstrapping.random_state = random_state
-        bootstrapping.bootstrap(observer)
+        bootstrapping.bootstrap(prediction_matrix, ground_truth_matrix, configurations, observer)
 
 
-class Bootstrapping(Randomized):
+class CV(CrossValidation):
 
-    def __init__(self, prediction_matrix, ground_truth_matrix, configurations: List[dict]):
+    def __init__(self, data_dir: str, data_set: str, num_folds: int, prediction_matrix, ground_truth_matrix,
+                 configurations: List[dict], observer: BbcCvObserver):
+        super().__init__(data_dir, data_set, num_folds, -1)
         self.prediction_matrix = prediction_matrix
         self.ground_truth_matrix = ground_truth_matrix
         self.configurations = configurations
+        self.observer = observer
 
-    @abstractmethod
-    def bootstrap(self, observer: BbcCvObserver):
-        pass
+    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
+                            current_fold: int, last_fold: int, num_folds: int):
+        configurations = self.configurations
+        prediction_matrix = self.prediction_matrix
+        ground_truth_matrix = self.ground_truth_matrix
+        observer = self.observer
+        ground_truth_tuning = ground_truth_matrix[train_indices, :]
+        predictions_tuning = prediction_matrix[train_indices, :, :]
+        ground_truth_test = ground_truth_matrix[test_indices, :]
+        predictions_test = prediction_matrix[test_indices, :, :]
+        observer.evaluate(configurations, ground_truth_tuning, predictions_tuning, ground_truth_test,
+                          predictions_test, current_fold, num_folds)
+
+
+class CVBootstrapping(Bootstrapping):
+
+    def __init__(self, data_dir: str, data_set: str, num_folds: int):
+        self.data_dir = data_dir
+        self.data_set = data_set
+        self.num_folds = num_folds
+
+    def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
+        num_configurations = prediction_matrix.shape[1]
+        log.info('%s configurations have been evaluated...', num_configurations)
+        cv = CV(self.data_dir, self.data_set, self.num_folds, prediction_matrix, ground_truth_matrix, configurations,
+                observer)
+        cv.random_state = self.random_state
+        cv.run()
 
 
 class DefaultBootstrapping(Bootstrapping):
 
-    def __init__(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], num_bootstraps: int):
-        super().__init__(prediction_matrix, ground_truth_matrix, configurations)
+    def __init__(self, num_bootstraps: int):
         self.num_bootstraps = num_bootstraps
 
-    def bootstrap(self, observer: BbcCvObserver):
-        configurations = self.configurations
-        prediction_matrix = self.prediction_matrix
-        ground_truth_matrix = self.ground_truth_matrix
+    def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
         num_bootstraps = self.num_bootstraps
         num_examples = prediction_matrix.shape[0]
         num_configurations = prediction_matrix.shape[1]
