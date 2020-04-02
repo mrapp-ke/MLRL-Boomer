@@ -9,7 +9,7 @@ from matplotlib.ticker import FuncFormatter, FormatStrFormatter, PercentFormatte
 
 ROOT_DIR = '/home/mrapp/Dropbox/Promotion/Papers/Boomer/Experimente/results_round5/evaluation/'
 
-DATASET = 'synthetic_num-examples=10000_num-labels=6_marginal-independence'
+DATASET = 'synthetic_num-examples=10000_num-labels=6_marginal-independence_p=0.1'
 # DATASET = 'synthetic_num-examples=10000_num-labels=6_tau=0.0_p=0.1'
 # DATASET = 'synthetic_num-examples=10000_num-labels=6_tau=1.0_p=0.1_dependent-error'
 # DATASET = 'synthetic_num-examples=10000_num-labels=6_one-error'
@@ -20,7 +20,7 @@ HAMMING_LOSS = 'Hamm. Loss'
 
 SUBSET_0_1_LOSS = 'Subs. 0/1 Loss'
 
-THRESHOLD = 0.001
+THRESHOLD = 0.0
 
 STEP_SIZE = 1
 
@@ -53,11 +53,13 @@ if __name__ == '__main__':
     y_max = 0.0
 
     for i in np.linspace(0, 1, 11):
-        line_width = 1
-        line_style = 'dashed'
-        color = '0.75'
-        plt.plot([i, i + 1], [0, 1], linewidth=line_width, linestyle=line_style, color=color)
-        plt.plot([0, 1], [i, i + 1], linewidth=line_width, linestyle=line_style, color=color)
+        isometrics_line_width = 1
+        isometrics_line_style = 'dashed'
+        isometrics_color = '0.75'
+        plt.plot([i, i + 1], [0, 1], linewidth=isometrics_line_width, linestyle=isometrics_line_style,
+                 color=isometrics_color)
+        plt.plot([0, 1], [i, i + 1], linewidth=isometrics_line_width, linestyle=isometrics_line_style,
+                 color=isometrics_color)
 
     for directory, marker, label, max_rules in directories:
         x = []
@@ -89,9 +91,19 @@ if __name__ == '__main__':
         y_min = min(cur_y_min, y_min)
         y_max = max(cur_y_max, y_max)
 
-        mark_every = len(x) - 1
-        curve = plt.plot(x, y, marker=marker, markevery=mark_every, markersize=7, label=label)
+        marker_size = 7
+        curve = plt.plot(x, y, label=label)
         color = curve[0].get_color()
+
+        next_tick = 1
+
+        for i in range(len(x)):
+            if (i + 1) % next_tick == 0:
+                point_x = x[i]
+                point_y = y[i]
+                plt.plot(point_x, point_y, marker=marker, markersize=marker_size, color=color)
+                next_tick = next_tick * 2
+
         alpha = 0.4
         plt.plot([cur_x_min, cur_x_min], [0, 1], color=color, alpha=alpha)
         plt.plot([0, 1], [cur_y_min, cur_y_min], color=color, alpha=alpha)
