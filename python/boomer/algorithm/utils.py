@@ -35,17 +35,20 @@ def __print_body(body: Body) -> str:
 
 
 def __print_conjunctive_body(body: ConjunctiveBody) -> str:
-    text = __print_conditions(np.asarray(body.leq_feature_indices), np.asarray(body.leq_thresholds))
-    return __print_conditions(np.asarray(body.gr_feature_indices), np.asarray(body.gr_thresholds), text)
+    text = __print_conditions(np.asarray(body.leq_feature_indices), np.asarray(body.leq_thresholds), 1)
+    return __print_conditions(np.asarray(body.gr_feature_indices), np.asarray(body.gr_thresholds), 0, text)
 
 
-def __print_conditions(feature_indices: np.ndarray, thresholds: np.ndarray, text: str = '') -> str:
+def __print_conditions(feature_indices: np.ndarray, thresholds: np.ndarray, leq: int, text: str = '') -> str:
     for i in range(feature_indices.shape[0]):
         if len(text) > 0:
             text += ' & '
 
         text += str(feature_indices[i])
-        text += ' <= '
+        if leq:
+            text += ' <= '
+        else:
+            text += ' > '
         text += str(thresholds[i])
 
     return text
