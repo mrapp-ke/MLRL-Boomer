@@ -20,6 +20,7 @@ from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT3
 from boomer.algorithm.stopping_criteria import StoppingCriterion
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
+from boomer.algorithm.utils import format_rule
 
 
 class RuleInduction(Randomized):
@@ -126,3 +127,63 @@ class GradientBoosting(RuleInduction):
             raise ValueError('Number of \'stopping_criteria\' must be at least 1')
         if self.head_refinement is None:
             raise ValueError('Parameter \'head_refinement\' may not be None')
+
+
+class SeparateAndConquer(RuleInduction):
+    """
+    Implements the induction of (multi-label) classification rules using a separate and conquer algorithm.
+    """
+
+    def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
+                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
+                 *stopping_criteria: StoppingCriterion):
+        """
+        :param head_refinement:         The strategy that is used to find the heads of rules
+        :param loss:                    The loss function to be minimized
+        :param label_sub_sampling:      The strategy that is used for sub-sampling the labels each time a new
+                                        classification rule is learned
+        :param instance_sub_sampling:   The strategy that is used for sub-sampling the training examples each time a new
+                                        classification rule is learned
+        :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
+                                        classification rule is refined
+        :param pruning:                 The strategy that is used for pruning rules
+        :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
+                                        induced rules to reduce their effect on the entire model. Must be in (0, 1]
+        :param stopping_criteria        The stopping criteria that should be used to decide whether additional rules
+                                        should be induced or not
+        """
+        self.head_refinement = head_refinement
+        self.loss = loss
+        self.label_sub_sampling = label_sub_sampling
+        self.instance_sub_sampling = instance_sub_sampling
+        self.feature_sub_sampling = feature_sub_sampling
+        self.pruning = pruning
+        self.stopping_criteria = stopping_criteria
+
+    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+        theory = []
+
+        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
+        y = np.asfortranarray(y, dtype=DTYPE_UINT8)
+
+        x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
+
+        default_rule = induce_default_rule(y, self.loss)
+
+        num_learned_rules = 0
+
+        while all([stopping_criterion.should_continue(theory) for stopping_criterion in self.stopping_criteria]):
+            log.info('Learning rule %s...', num_learned_rules + 1)
+            rule = induce_rule(x, x_sorted_indices, y, self.head_refinement, self.loss, self.label_sub_sampling,
+                               self.instance_sub_sampling, self.feature_sub_sampling, self.pruning, None,
+                               self.random_state)
+
+            print(format_rule(stats, rule))
+
+            theory.append(rule)
+
+            num_learned_rules += 1
+
+        theory.append(default_rule)
+
+        return theory

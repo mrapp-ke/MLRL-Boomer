@@ -1,6 +1,5 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 
-
 cdef class Prediction:
 
     # Attributes:
@@ -85,3 +84,4 @@ cdef class NonDecomposableLoss(Loss):
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores)
+
