@@ -10,7 +10,7 @@ from args import log_level, optional_string, float_list, int_list, target_measur
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.baselines.problem_transformation import BRLearner, LPLearner, CCLearner
 from boomer.baselines.xgboost import XGBoost
-from boomer.bbc_cv import BbcCv, BbcCvAdapter, DefaultBbcCvObserver
+from boomer.bbc_cv import BbcCv, BbcCvAdapter, DefaultBbcCvObserver, DefaultBootstrapping
 
 
 class BrBccCvAdapter(BbcCvAdapter):
@@ -160,10 +160,10 @@ if __name__ == '__main__':
         raise ValueError('Invalid argument given: ' + str(transformation_method))
 
     base_configurations = __create_configurations(transformation_method == 'cc', objective, args.chain_order, args)
-
-    bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, learner=learner)
+    bootstrapping = DefaultBootstrapping(num_bootstraps=args.num_bootstraps)
+    bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, bootstrapping=bootstrapping,
+                   learner=learner)
     bbc_cv.random_state = args.random_state
     bbc_cv.store_predictions()
-    bbc_cv.evaluate(num_bootstraps=args.num_bootstraps,
-                    observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
+    bbc_cv.evaluate(observer=DefaultBbcCvObserver(output_dir=args.output_dir, target_measure=target_measure,
                                                   target_measure_is_loss=target_measure_is_loss))
