@@ -8,10 +8,8 @@
 Provides type definitions and utility functions for creating arrays.
 """
 from cython.view cimport array as cvarray
-from cython.view cimport array_cwrapper as new_array
 
 cimport numpy as npc
-
 
 ctypedef Py_ssize_t intp
 ctypedef npc.uint8_t uint8
@@ -19,6 +17,17 @@ ctypedef npc.uint32_t uint32
 ctypedef npc.float32_t float32
 ctypedef npc.float64_t float64
 
+DEF MODE_C_CONTIGUOUS = 'c'
+DEF MODE_FORTRAN_CONTIGUOUS = 'fortran'
+
+IF UNAME_SYSNAME == 'Windows':
+    DEF FORMAT_UINT32 = 'I'
+    DEF FORMAT_INTP = 'q'
+    DEF FORMAT_FLOAT64 = 'd'
+ELSE:
+    DEF FORMAT_UINT32 = 'I'
+    DEF FORMAT_INTP = 'l'
+    DEF FORMAT_FLOAT64 = 'd'
 
 cdef inline cvarray array_intp(intp num_elements):
     """
@@ -29,12 +38,8 @@ cdef inline cvarray array_intp(intp num_elements):
     """
     cdef tuple shape = tuple([num_elements])
     cdef intp itemsize = sizeof(intp)
-    cdef char* format='l'
-    cdef char* mode = 'c'
-    cdef char* buf = NULL
-    cdef cvarray array = new_array(shape, itemsize, format, mode, buf)
+    cdef cvarray array = cvarray(shape, itemsize, FORMAT_INTP, MODE_C_CONTIGUOUS)
     return array
-
 
 cdef inline cvarray array_uint32(intp num_elements):
     """
@@ -45,15 +50,10 @@ cdef inline cvarray array_uint32(intp num_elements):
     """
     cdef tuple shape = tuple([num_elements])
     cdef intp itemsize = sizeof(uint32)
-    cdef char* format='I'
-    cdef char* mode = 'c'
-    cdef char* buf = NULL
-    cdef cvarray array = new_array(shape, itemsize, format, mode, buf)
+    cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT32, MODE_C_CONTIGUOUS)
     return array
 
-
 cdef inline cvarray array_float64(intp num_elements):
-
     """
     Creates and returns a new C-contiguous array of dtype `float64`, shape `(num_elements)`.
 
@@ -62,12 +62,8 @@ cdef inline cvarray array_float64(intp num_elements):
     """
     cdef tuple shape = tuple([num_elements])
     cdef intp itemsize = sizeof(float64)
-    cdef char* format = 'd'
-    cdef char* mode = 'c'
-    cdef char* buf = NULL
-    cdef cvarray array = new_array(shape, itemsize, format, mode, buf)
+    cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
-
 
 cdef inline cvarray matrix_intp(intp num_rows, intp num_cols):
     """
@@ -79,12 +75,8 @@ cdef inline cvarray matrix_intp(intp num_rows, intp num_cols):
     """
     cdef tuple shape = tuple([num_rows, num_cols])
     cdef intp itemsize = sizeof(intp)
-    cdef char* format = 'l'
-    cdef char* mode = 'fortran'
-    cdef char* buf = NULL
-    cdef cvarray array = new_array(shape, itemsize, format, mode, buf)
+    cdef cvarray array = cvarray(shape, itemsize, FORMAT_INTP, MODE_FORTRAN_CONTIGUOUS)
     return array
-
 
 cdef inline cvarray matrix_float64(intp num_rows, num_cols):
     """
@@ -96,8 +88,5 @@ cdef inline cvarray matrix_float64(intp num_rows, num_cols):
     """
     cdef tuple shape = tuple([num_rows, num_cols])
     cdef intp itemsize = sizeof(float64)
-    cdef char* format = 'd'
-    cdef char* mode = 'fortran'
-    cdef char* buf = NULL
-    cdef cvarray array = new_array(shape, itemsize, format, mode, buf)
+    cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_FORTRAN_CONTIGUOUS)
     return array
