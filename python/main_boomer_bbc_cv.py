@@ -333,4 +333,4 @@ if __name__ == '__main__':
                                                        best_configuration=best_config, output_dir=args.output_dir)
         bbc_cv.evaluate(observer=best_config_observer)
     else:
-        raise ValueError('Invalid valu given for argument \'mode\': ' + str(mode))
+        raise ValueError('Invalid value given for argument \'mode\': ' + str(mode))
