@@ -87,8 +87,7 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
 
     @abstractmethod
     def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
-                           predictions,
-                           configurations, current_fold: int, last_fold: int, num_folds: int):
+                           predictions, configurations, current_fold: int, last_fold: int, num_folds: int):
         """
         Must be implemented by subclasses to store the predictions provided by a specific model for the given test
         examples. The predictions, together with the corresponding configuration, must be stored in the given lists
