@@ -29,7 +29,7 @@ from boomer.stats import Stats
 
 class MLRuleLearner(MLLearner):
     """
-    A scikit-multilearn implementation of a rule learner algorithm for multi-label classification or ranking.
+    A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
 
     Attributes
         stats_          Statistics about the training data set
