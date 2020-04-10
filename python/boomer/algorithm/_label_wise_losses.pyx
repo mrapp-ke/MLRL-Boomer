@@ -14,9 +14,9 @@ from boomer.algorithm._math cimport divide_or_zero_float64, l2_norm_pow
 from libc.math cimport pow, exp
 
 
-cdef class MacroLoss(DecomposableLoss):
+cdef class LabelWiseLoss(DecomposableLoss):
     """
-    A base class for all loss functions that are applied example- and label-wise.
+    A base class for all loss functions that are applied label-wise.
     """
 
     cdef float64 _gradient(self, float64 expected_score, float64 current_score):
@@ -311,9 +311,9 @@ cdef class MacroLoss(DecomposableLoss):
                 hessians[i, l] = tmp
 
 
-cdef class MacroSquaredErrorLoss(MacroLoss):
+cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     """
-    A multi-label variant of the squared error loss that is applied example- and label-wise.
+    A multi-label variant of the squared error loss that is applied label-wise.
     """
 
     cdef float64 _gradient(self, float64 expected_score, float64 current_score):
@@ -323,9 +323,9 @@ cdef class MacroSquaredErrorLoss(MacroLoss):
         return 2
 
 
-cdef class MacroLogisticLoss(MacroLoss):
+cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     """
-    A multi-label variant of the logistic loss that is applied example- and label-wise.
+    A multi-label variant of the logistic loss that is applied label-wise.
     """
 
     cdef float64 _gradient(self, float64 expected_score, float64 current_score):
