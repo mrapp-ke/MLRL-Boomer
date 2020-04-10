@@ -97,7 +97,7 @@ class Boomer(MLRuleLearner):
                  instance_sub_sampling: str = 'bagging', feature_sub_sampling: str = 'random-feature-selection',
                  pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
         """
-        :param num_rules:                   The number of rules to be induced (including the default rule)<
+        :param num_rules:                   The number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
