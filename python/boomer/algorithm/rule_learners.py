@@ -9,16 +9,16 @@ classification rules. The classifier is composed of several modules, e.g., for r
 from abc import abstractmethod
 
 import numpy as np
+from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._losses import Loss, DecomposableLoss
-from boomer.algorithm._pruning import Pruning, IREP
-
-from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
 from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
+from boomer.algorithm._pruning import Pruning, IREP
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+
 from boomer.algorithm.model import DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
@@ -92,12 +92,12 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, model_dir: str = None, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = 'macro-squared-error-loss', label_sub_sampling: int = -1,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
-                 shrinkage: float = 1.0, l2_regularization_weight: float = 0.0):
+    def __init__(self, model_dir: str = None, num_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
+                 loss: str = 'macro-logistic-loss', label_sub_sampling: int = -1,
+                 instance_sub_sampling: str = 'bagging', feature_sub_sampling: str = 'random-feature-selection',
+                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
         """
-        :param num_rules:                   The number of rules to be induced (including the default rule)
+        :param num_rules:                   The number of rules to be induced (including the default rule)<
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
