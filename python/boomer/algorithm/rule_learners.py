@@ -9,10 +9,10 @@ classification rules. The classifier is composed of several modules, e.g., for r
 from abc import abstractmethod
 
 import numpy as np
-from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
+from boomer.algorithm._example_wise_losses import ExampleWiseLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.algorithm._label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
 from boomer.algorithm._losses import Loss, DecomposableLoss
-from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._pruning import Pruning, IREP
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
@@ -93,7 +93,7 @@ class Boomer(MLRuleLearner):
     """
 
     def __init__(self, model_dir: str = None, num_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = 'macro-logistic-loss', label_sub_sampling: int = -1,
+                 loss: str = 'label-wise-logistic-loss', label_sub_sampling: int = -1,
                  instance_sub_sampling: str = 'bagging', feature_sub_sampling: str = 'random-feature-selection',
                  pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
         """
@@ -102,8 +102,8 @@ class Boomer(MLRuleLearner):
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
                                             `single-label`, `full` or None, if the default strategy should be used
-        :param loss:                        The loss function to be minimized. Must be `macro-squared-error-loss` or
-                                            `example-based-logistic-loss`
+        :param loss:                        The loss function to be minimized. Must be `label-wise-squared-error-loss`,
+                                            `label-wise-logistic-loss` or `example-wise-logistic-loss`
         :param label_sub_sampling:          The number of samples to be used for sub-sampling the labels each time a new
                                             classification rule is learned. Must be at least 1 or -1, if no sub-sampling
                                             should be used
@@ -171,12 +171,12 @@ class Boomer(MLRuleLearner):
     def __create_loss(self, l2_regularization_weight: float) -> Loss:
         loss = self.loss
 
-        if loss == 'macro-squared-error-loss':
-            return MacroSquaredErrorLoss(l2_regularization_weight)
-        elif loss == 'macro-logistic-loss':
-            return MacroLogisticLoss(l2_regularization_weight)
-        elif loss == 'example-based-logistic-loss':
-            return ExampleBasedLogisticLoss(l2_regularization_weight)
+        if loss == 'label-wise-squared-error-loss':
+            return LabelWiseSquaredErrorLoss(l2_regularization_weight)
+        elif loss == 'label-wise-logistic-loss':
+            return LabelWiseLogisticLoss(l2_regularization_weight)
+        elif loss == 'example-wise-logistic-loss':
+            return ExampleWiseLogisticLoss(l2_regularization_weight)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_head_refinement(self, loss: Loss) -> HeadRefinement:

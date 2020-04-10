@@ -32,7 +32,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The name of the strategy to be used for feature sub-sampling or None')
     p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
-    p.add_argument('--loss', type=str, default='macro-logistic-loss',
+    p.add_argument('--loss', type=str, default='label-wise-logistic-loss',
                    help='The name of the loss function to be used')
     p.add_argument('--l2-regularization-weight', type=float, default=1.0,
                    help='The weight of the L2 regularization to be used')

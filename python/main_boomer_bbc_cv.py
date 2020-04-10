@@ -266,21 +266,21 @@ if __name__ == '__main__':
                         help='The step size to be used for testing subsets of a model\'s rules')
     parser.add_argument('--target-measure', type=target_measure, default='hamming-loss',
                         help='The target measure to be used for evaluating different configurations on the tuning set')
-    parser.add_argument('--num-rules', type=int_list, default='500',
+    parser.add_argument('--num-rules', type=int_list, default='1000',
                         help='The values for the parameter \'num_rules\' as a comma-separated list')
-    parser.add_argument('--loss', type=string_list, default='macro-squared-error-loss',
+    parser.add_argument('--loss', type=string_list, default='label-wise-logistic-loss',
                         help='The values for the parameter \'loss\' as a comma-separated list')
     parser.add_argument('--head-refinement', type=string_list, default='single-label',
                         help='The values for the parameter \'head_refinement\' as a comma-separated list')
     parser.add_argument('--label-sub-sampling', type=int_list, default='-1',
                         help='The values for the parameter \'label_sub_sampling\' as a comma-separated list')
-    parser.add_argument('--instance-sub-sampling', type=string_list, default='None',
+    parser.add_argument('--instance-sub-sampling', type=string_list, default='bagging',
                         help='The values for the parameter \'instance_sub_sampling\' as a comma-separated list')
-    parser.add_argument('--feature-sub-sampling', type=string_list, default='None',
+    parser.add_argument('--feature-sub-sampling', type=string_list, default='random-feature-selection',
                         help='The values for the parameter \'feature_sub_sampling\' as a comma-separated list')
     parser.add_argument('--pruning', type=string_list, default='None',
                         help='The values for the parameter \'pruning\' as a comma-separated list')
-    parser.add_argument('--shrinkage', type=float_list, default='1.0',
+    parser.add_argument('--shrinkage', type=float_list, default='0.3',
                         help='The values for the parameter \'shrinkage\' as a comma-separated list')
     parser.add_argument('--l2-regularization-weight', type=float_list, default='1.0',
                         help='The values for the parameter \'l2-regularization-weight\' as a comma-separated list')

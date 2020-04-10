@@ -2,7 +2,7 @@ from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 from boomer.algorithm._losses cimport NonDecomposableLoss, Prediction, LabelIndependentPrediction
 
 
-cdef class ExampleBasedLogisticLoss(NonDecomposableLoss):
+cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
 
     # Attributes:
 
