@@ -26,6 +26,24 @@ from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppi
 from boomer.learners import MLLearner
 from boomer.stats import Stats
 
+HEAD_REFINEMENT_SINGLE = 'single-label'
+
+HEAD_REFINEMENT_FULL = 'full'
+
+LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
+
+LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
+
+LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
+
+INSTANCE_SUB_SAMPLING_RANDOM = 'random-instance-selection'
+
+INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
+
+FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
+
+PRUNING_IREP = 'irep'
+
 
 class MLRuleLearner(MLLearner):
     """
@@ -93,8 +111,9 @@ class Boomer(MLRuleLearner):
     """
 
     def __init__(self, model_dir: str = None, num_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = 'label-wise-logistic-loss', label_sub_sampling: int = -1,
-                 instance_sub_sampling: str = 'bagging', feature_sub_sampling: str = 'random-feature-selection',
+                 loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: int = -1,
+                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
+                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM,
                  pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
         """
         :param num_rules:                   The number of rules to be induced (including the default rule)
@@ -171,11 +190,11 @@ class Boomer(MLRuleLearner):
     def __create_loss(self, l2_regularization_weight: float) -> Loss:
         loss = self.loss
 
-        if loss == 'label-wise-squared-error-loss':
+        if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
             return LabelWiseSquaredErrorLoss(l2_regularization_weight)
-        elif loss == 'label-wise-logistic-loss':
+        elif loss == LOSS_LABEL_WISE_LOGISTIC:
             return LabelWiseLogisticLoss(l2_regularization_weight)
-        elif loss == 'example-wise-logistic-loss':
+        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
             return ExampleWiseLogisticLoss(l2_regularization_weight)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
@@ -184,9 +203,9 @@ class Boomer(MLRuleLearner):
 
         if head_refinement is None:
             return SingleLabelHeadRefinement() if isinstance(loss, DecomposableLoss) else FullHeadRefinement()
-        elif head_refinement == 'single-label':
+        elif head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinement()
-        elif head_refinement == 'full':
+        elif head_refinement == HEAD_REFINEMENT_FULL:
             return FullHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
@@ -209,9 +228,9 @@ class Boomer(MLRuleLearner):
 
         if instance_sub_sampling is None:
             return None
-        elif instance_sub_sampling == 'bagging':
+        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
             return Bagging()
-        elif instance_sub_sampling == 'random-instance-selection':
+        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
             return RandomInstanceSubsetSelection()
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
@@ -220,7 +239,7 @@ class Boomer(MLRuleLearner):
 
         if feature_sub_sampling is None:
             return None
-        elif feature_sub_sampling == 'random-feature-selection':
+        elif feature_sub_sampling == FEATURE_SUB_SAMPLING_RANDOM:
             return RandomFeatureSubsetSelection()
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
@@ -229,7 +248,7 @@ class Boomer(MLRuleLearner):
 
         if pruning is None:
             return None
-        if pruning == 'irep':
+        if pruning == PRUNING_IREP:
             return IREP()
         raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 

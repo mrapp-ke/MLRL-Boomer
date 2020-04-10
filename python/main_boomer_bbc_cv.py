@@ -11,6 +11,8 @@ from skmultilearn.problem_transform import LabelPowerset
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure, boolean_string
 from boomer.algorithm.model import DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
+from boomer.algorithm.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
+    LOSS_LABEL_WISE_LOGISTIC, HEAD_REFINEMENT_SINGLE
 from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver, DefaultBbcCvObserver, DefaultBootstrapping
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 
@@ -268,15 +270,15 @@ if __name__ == '__main__':
                         help='The target measure to be used for evaluating different configurations on the tuning set')
     parser.add_argument('--num-rules', type=int_list, default='1000',
                         help='The values for the parameter \'num_rules\' as a comma-separated list')
-    parser.add_argument('--loss', type=string_list, default='label-wise-logistic-loss',
+    parser.add_argument('--loss', type=string_list, default=LOSS_LABEL_WISE_LOGISTIC,
                         help='The values for the parameter \'loss\' as a comma-separated list')
-    parser.add_argument('--head-refinement', type=string_list, default='single-label',
+    parser.add_argument('--head-refinement', type=string_list, default=HEAD_REFINEMENT_SINGLE,
                         help='The values for the parameter \'head_refinement\' as a comma-separated list')
     parser.add_argument('--label-sub-sampling', type=int_list, default='-1',
                         help='The values for the parameter \'label_sub_sampling\' as a comma-separated list')
-    parser.add_argument('--instance-sub-sampling', type=string_list, default='bagging',
+    parser.add_argument('--instance-sub-sampling', type=string_list, default=INSTANCE_SUB_SAMPLING_BAGGING,
                         help='The values for the parameter \'instance_sub_sampling\' as a comma-separated list')
-    parser.add_argument('--feature-sub-sampling', type=string_list, default='random-feature-selection',
+    parser.add_argument('--feature-sub-sampling', type=string_list, default=FEATURE_SUB_SAMPLING_RANDOM,
                         help='The values for the parameter \'feature_sub_sampling\' as a comma-separated list')
     parser.add_argument('--pruning', type=string_list, default='None',
                         help='The values for the parameter \'pruning\' as a comma-separated list')
