@@ -17,7 +17,7 @@ cdef class LabelWiseMeasure(Loss):
     """
 
     def __cinit__(self, Heuristic heuristic):
-        self.prediction = LabelIndependentPrediction()
+        self.prediction = LabelIndependentPrediction.__new__(LabelIndependentPrediction)
         self.confusion_matrices_covered = None
         self.label_indices = None
         self.heuristic = heuristic
