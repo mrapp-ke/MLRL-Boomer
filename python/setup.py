@@ -6,6 +6,12 @@ extensions = [
     Extension(name='*', sources=['**/*.pyx'], define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")])
 ]
 
+compiler_directives = {
+    'boundscheck': False,
+    'wraparound': False,
+    'cdivision': True
+}
+
 setup(name='boomer',
       version='0.1.0',
       description='BOOMER - An algorithm for learning gradient boosted multi-label classification rules',
@@ -26,6 +32,6 @@ setup(name='boomer',
           'xgboost>=1.0.0'
       ],
       python_requires='>=3.7',
-      ext_modules=cythonize(extensions, language_level='3', annotate=True),
+      ext_modules=cythonize(extensions, language_level='3', annotate=True, compiler_directives=compiler_directives),
       include_dirs=[numpy.get_include()],
       zip_safe=False)
