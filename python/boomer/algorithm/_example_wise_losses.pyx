@@ -27,7 +27,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
                                          more conservative, setting it to 0 turns of L2 regularization entirely
         """
         self.l2_regularization_weight = l2_regularization_weight
-        self.prediction = LabelIndependentPrediction()
+        self.prediction = LabelIndependentPrediction.__new__(LabelIndependentPrediction)
         self.sums_of_gradients = None
         self.sums_of_hessians = None
 
