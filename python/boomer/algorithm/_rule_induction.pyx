@@ -35,8 +35,8 @@ cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
     :return:        The default rule that has been induced
     """
     cdef float64[::1] scores = loss.calculate_default_scores(y)
-    cdef FullHead head = FullHead(scores)
-    cdef EmptyBody body = EmptyBody()
+    cdef FullHead head = FullHead.__new__(FullHead, scores)
+    cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
     cdef Rule rule = Rule(body, head)
     return rule
 
@@ -371,16 +371,16 @@ cdef Rule __build_rule(HeadCandidate head, list[s_condition] conditions,  intp n
 
         postincrement(iterator)
 
-    cdef ConjunctiveBody rule_body = ConjunctiveBody(leq_feature_indices, leq_thresholds, gr_feature_indices,
-                                                     gr_thresholds)
+    cdef ConjunctiveBody rule_body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
+                                                             gr_feature_indices, gr_thresholds)
     cdef Head rule_head
 
     if head.label_indices is None:
-        rule_head = FullHead(head.predicted_scores)
+        rule_head = FullHead.__new__(FullHead, head.predicted_scores)
     else:
-        rule_head = PartialHead(head.label_indices, head.predicted_scores)
+        rule_head = PartialHead.__new__(PartialHead, head.label_indices, head.predicted_scores)
 
-    cdef Rule rule = Rule(rule_body, rule_head)
+    cdef Rule rule = Rule.__new__(Rule, rule_body, rule_head)
     return rule
 
 
