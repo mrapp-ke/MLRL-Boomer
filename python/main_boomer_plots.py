@@ -21,9 +21,9 @@ class Plotter(CrossValidation, MLClassifierBase):
     Plots the performance of a BOOMER model at each iteration.
     """
 
-    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, num_folds: int, current_fold: int,
-                 learner: Boomer):
-        super().__init__(data_dir, data_set, num_folds, current_fold)
+    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, use_one_hot_encoding: bool,
+                 num_folds: int, current_fold: int, learner: Boomer):
+        super().__init__(data_dir, data_set, use_one_hot_encoding, num_folds, current_fold)
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
         self.persistence = ModelPersistence(model_dir=model_dir)
@@ -96,6 +96,6 @@ if __name__ == '__main__':
     log.info('Configuration: %s', args)
 
     plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
-                      data_set=args.dataset, num_folds=args.folds, current_fold=args.current_fold,
-                      learner=create_learner(args))
+                      data_set=args.dataset, use_one_hot_encoding=args.one_hot_encoding, num_folds=args.folds,
+                      current_fold=args.current_fold, learner=create_learner(args))
     plotter.run()

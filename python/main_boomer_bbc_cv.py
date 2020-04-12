@@ -19,9 +19,9 @@ from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, Eva
 
 class BoomerBccCvAdapter(BbcCvAdapter):
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str, min_rules: int, max_rules: int,
-                 step_size_rules: int, subset_correction: bool):
-        super().__init__(data_dir, data_set, num_folds, model_dir)
+    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int, model_dir: str,
+                 min_rules: int, max_rules: int, step_size_rules: int, subset_correction: bool):
+        super().__init__(data_dir, data_set, use_one_hot_encoding, num_folds, model_dir)
         self.min_rules = min_rules
         self.max_rules = max_rules
         self.step_size_rules = step_size_rules
@@ -254,6 +254,8 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
     parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
+    parser.add_argument('--one-hot-encoding', type=bool, default=True,
+                        help='True, if one-hot-encoding should be used, False otherwise')
     parser.add_argument('--folds', type=int, default=1, help='The total number of folds to be used by cross validation')
     parser.add_argument('--model-dir', type=str, help='The path of the directory where the models are stored')
     parser.add_argument('--output-dir', type=optional_string, default=None,
@@ -297,10 +299,12 @@ if __name__ == '__main__':
     target_measure, target_measure_is_loss = args.target_measure
     base_configurations = __create_configurations(args)
     learner = Boomer()
-    bbc_cv_adapter = BoomerBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
+    bbc_cv_adapter = BoomerBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset,
+                                        use_one_hot_encoding=args.one_hot_encoding, num_folds=args.folds,
                                         model_dir=args.model_dir, min_rules=args.min_rules, max_rules=args.max_rules,
                                         step_size_rules=args.step_size_rules, subset_correction=args.subset_correction)
-    # bootstrapping = CVBootstrapping(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds)
+    # bootstrapping = CVBootstrapping(data_dir=args.data_dir, data_set=args.dataset,
+    #                                 use_one_hot_encoding=args.one_hot_encoding, num_folds=args.folds)
     bootstrapping = DefaultBootstrapping(args.num_bootstraps)
     bbc_cv = BbcCv(configurations=base_configurations, adapter=bbc_cv_adapter, bootstrapping=bootstrapping,
                    learner=learner)

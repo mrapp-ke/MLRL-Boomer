@@ -208,13 +208,13 @@ class ParameterTuning(CrossValidation):
     using a `ParameterSearch` and writes the optimal parameters to one or several outputs.
     """
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, current_fold: int,
+    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int,
                  parameter_search: ParameterSearch, *args: ParameterOutput):
         """
         :param parameter_search:
         :param args:
         """
-        super().__init__(data_dir, data_set, num_folds, current_fold)
+        super().__init__(data_dir, data_set, use_one_hot_encoding, num_folds, current_fold)
         self.parameter_search = parameter_search
         self.outputs = args
 
