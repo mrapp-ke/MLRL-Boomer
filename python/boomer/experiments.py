@@ -8,10 +8,10 @@ Provides classes for performing experiments.
 """
 import logging as log
 from abc import ABC, abstractmethod
+from typing import List
 
 from sklearn.base import clone
 
-from boomer.data import MetaData
 from boomer.evaluation import Evaluation
 from boomer.learners import MLLearner
 from boomer.parameters import ParameterInput
@@ -32,8 +32,8 @@ class AbstractExperiment(CrossValidation, ABC):
         self.evaluation = evaluation
 
     @abstractmethod
-    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
-                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
+                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         pass
 
 
@@ -57,8 +57,8 @@ class Experiment(AbstractExperiment):
         log.info('Starting experiment \"' + self.base_learner.get_name() + '\"...')
         super().run()
 
-    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
-                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
+                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         base_learner = self.base_learner
         parameter_input = self.parameter_input
 
