@@ -62,7 +62,7 @@ class MetaData:
 
     def get_attribute_indices(self, attribute_type: AttributeType = None) -> List[int]:
         """
-        Returns a list that contains the indices of all attributes of a specific type (sorted in increasing order).
+        Returns a list that contains the indices of all attributes of a specific type (in ascending order).
 
         :param attribute_type:  The type of the attributes whose indices should be returned or None, if all indices
                                 should be returned
