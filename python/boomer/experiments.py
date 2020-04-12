@@ -13,7 +13,7 @@ from typing import List
 from sklearn.base import clone
 
 from boomer.evaluation import Evaluation
-from boomer.learners import MLLearner
+from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.parameters import ParameterInput
 from boomer.training import CrossValidation, DataSet
 
@@ -60,10 +60,10 @@ class Experiment(AbstractExperiment):
     def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
                             test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         base_learner = self.base_learner
-        parameter_input = self.parameter_input
+        current_learner = clone(base_learner)
 
         # Apply parameter setting, if necessary
-        current_learner = clone(base_learner)
+        parameter_input = self.parameter_input
 
         if parameter_input is not None:
             params = parameter_input.read_parameters(current_fold)
@@ -73,6 +73,10 @@ class Experiment(AbstractExperiment):
         # Train classifier
         current_learner.random_state = self.random_state
         current_learner.fold = current_fold
+
+        if isinstance(current_learner, NominalAttributeLearner):
+            current_learner.nominal_attribute_indices = nominal_attribute_indices
+
         current_learner.fit(train_x, train_y)
 
         # Obtain and evaluate predictions for test data
