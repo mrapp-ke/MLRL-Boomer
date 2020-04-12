@@ -21,7 +21,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--model-dir', type=optional_string, default=None,
                    help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
-    p.add_argument('--one-hot-encoding', type=bool, default=True,
+    p.add_argument('--one-hot-encoding', type=boolean_string, default=True,
                    help='True, if one-hot-encoding should be used, False otherwise')
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
     p.add_argument('--current-fold', type=current_fold_string, default=-1,

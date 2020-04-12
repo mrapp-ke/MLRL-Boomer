@@ -255,7 +255,7 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
     parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
-    parser.add_argument('--one-hot-encoding', type=bool, default=True,
+    parser.add_argument('--one-hot-encoding', type=boolean_string, default=True,
                         help='True, if one-hot-encoding should be used, False otherwise')
     parser.add_argument('--folds', type=int, default=1, help='The total number of folds to be used by cross validation')
     parser.add_argument('--model-dir', type=str, help='The path of the directory where the models are stored')
