@@ -8,6 +8,7 @@ Provides functions for handling multi-label data.
 import logging as log
 import os.path as path
 import xml.etree.ElementTree as XmlTree
+from enum import Enum, auto
 from typing import List, Set
 
 import numpy as np
@@ -20,28 +21,28 @@ from xml.dom import minidom
 from boomer.io import write_xml_file
 
 
+class AttributeType(Enum):
+    """
+    Specifies all supported types of attributes.
+    """
+
+    NUMERIC = auto()
+
+    NOMINAL = auto()
+
+
 class Attribute:
     """
-    Represents a numeric or nominal attribute contained in a data set.
+    Represents an attribute contained in a data set.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, attribute_name: str, attribute_type: AttributeType):
         """
-        :param name:    The name of the attribute
+        :param attribute_name:   The name of the attribute
+        :param attribute_type:   The type of the attribute
         """
-        self.name = name
-
-
-class NominalAttribute(Attribute):
-    """
-    Represents a nominal attribute contained in a data set.
-    """
-
-    def __init__(self, name):
-        """
-        :param name:    The name of the attribute
-        """
-        super().__init__(name)
+        self.attribute_name = attribute_name
+        self.attribute_type = attribute_type
 
 
 class MetaData:
@@ -59,31 +60,19 @@ class MetaData:
         self.labels = labels
         self.attributes = attributes
 
-    def get_nominal_indices(self) -> List[int]:
+    def get_attribute_indices(self, attribute_type: AttributeType) -> List[int]:
         """
-        Returns a list that contains the indices of all nominal attributes (sorted in increasing order).
+        Returns a list that contains the indices of all attributes of a specific type (sorted in increasing order).
 
-        :return: A list that contains the indices of all nominal attributes
+        :param attribute_type:  The type of the attributes whose indices should be returned
+        :return:                A list that contains the indices of all attributes of the given type
         """
         labels = self.labels
         num_labels = len(labels)
         labels_located_at_start = self.label_location == 'start'
         attributes = self.attributes
         return [i - (num_labels if labels_located_at_start else 0) for i, attribute in enumerate(attributes)
-                if isinstance(attribute, NominalAttribute)]
-
-    def get_numerical_indices(self) -> List[int]:
-        """
-        Returns a list that contains the indices of all numerical attributes (sorted in increasing order).
-
-        :return: A list that contains the indices of all numerical attributes
-        """
-        labels = self.labels
-        num_labels = len(labels)
-        labels_located_at_start = self.label_location == 'start'
-        attributes = self.attributes
-        return [i - (num_labels if labels_located_at_start else 0) for i, attribute in enumerate(attributes)
-                if not isinstance(attribute, NominalAttribute)]
+                if attribute.attribute_type == attribute_type]
 
 
 def load_data_set_and_meta_data(data_dir: str, arff_file_name: str,
@@ -164,7 +153,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     num_labels = y.shape[1]
     labels = set('y' + str(i) for i in range(num_labels))
     num_attributes = x.shape[1]
-    attributes = [Attribute('X' + str(i)) for i in range(num_attributes)]
+    attributes = [Attribute('X' + str(i), AttributeType.NUMERIC) for i in range(num_attributes)]
     meta_data = MetaData(label_location, labels, attributes)
     save_to_arff(csr_matrix(x), csr_matrix(y), label_location=label_location, save_sparse=False, filename=arff_file)
     log.info('Successfully saved data set to file \'' + str(arff_file) + '\'.')
@@ -195,7 +184,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :param encoder:     The 'OneHotEncoder' to be used or None, if a new encoder should be created
     :return:            The encoded features of the given examples and the encoder that has been used
     """
-    nominal_indices = meta_data.get_nominal_indices()
+    nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
     log.info('Data set contains %s nominal and %s numerical attributes.', len(nominal_indices),
              (len(meta_data.attributes) - len(nominal_indices)))
 
@@ -254,20 +243,20 @@ def __parse_attributes(arff_file, labels: Set[str]) -> (str, List[Attribute]):
                 if attribute_definition.endswith('numeric') or attribute_definition.endswith('NUMERIC'):
                     # Numerical attribute
                     attribute_name = attribute_definition[:(len(attribute_definition) - len('numeric'))]
-                    numeric = True
+                    attribute_type = AttributeType.NUMERIC
                 elif attribute_definition.endswith('real') or attribute_definition.endswith('REAL'):
                     # Numerical attribute
                     attribute_name = attribute_definition[:(len(attribute_definition) - len('real'))]
-                    numeric = True
+                    attribute_type = AttributeType.NUMERIC
                 else:
                     # Nominal attribute
                     attribute_name = attribute_definition[:attribute_definition.find(' {')]
-                    numeric = False
+                    attribute_type = AttributeType.NOMINAL
 
                 attribute_name = __parse_attribute_or_label_name(attribute_name)
 
                 if attribute_name not in labels:
-                    attribute = Attribute(attribute_name) if numeric else NominalAttribute(attribute_name)
+                    attribute = Attribute(attribute_name, attribute_type)
                     attributes.append(attribute)
                 elif len(attributes) == 0:
                     label_location = 'start'
