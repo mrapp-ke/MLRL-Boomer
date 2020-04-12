@@ -10,6 +10,7 @@ from boomer.algorithm.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATUR
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
+from boomer.training import DataSet
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     learner = create_learner(args)
     parameter_input = parameter_input
     evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
-    experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
-                            use_one_hot_encoding=args.one_hot_encoding, num_folds=args.folds,
+    data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
+    experiment = Experiment(learner, evaluation, data_set=data_set, num_folds=args.folds,
                             current_fold=args.current_fold, parameter_input=parameter_input)
     experiment.run()

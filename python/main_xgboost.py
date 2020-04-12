@@ -9,6 +9,7 @@ from boomer.baselines.xgboost import XGBoost
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
+from boomer.training import DataSet
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='An multi-label classification experiment using BR with XGBoost')
@@ -64,7 +65,8 @@ if __name__ == '__main__':
 
     parameter_input = parameter_input
     evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
-    experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset,
-                            use_one_hot_encoding=True, num_folds=args.folds, current_fold=args.current_fold,
+    data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=True)
+    experiment = Experiment(learner, evaluation, data_set=data_set, num_folds=args.folds,
+                            current_fold=args.current_fold,
                             parameter_input=parameter_input)
     experiment.run()

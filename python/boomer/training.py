@@ -18,25 +18,37 @@ from boomer.data import load_data_set_and_meta_data, load_data_set, one_hot_enco
 from boomer.interfaces import Randomized
 
 
+class DataSet:
+    """
+    Stores the properties of a data set to be used for training and evaluation multi-label classifiers.
+    """
+
+    def __init__(self, data_dir: str, data_set_name: str, use_one_hot_encoding: bool):
+        """
+        :param data_dir:                The path of the directory where the data set is located
+        :param data_set_name:           The name of the data set
+        :param use_one_hot_encoding:    True, if one-hot-encoding should be used to encode nominal attributes, False
+                                        otherwise
+        """
+        self.data_dir = data_dir
+        self.data_set_name = data_set_name
+        self.use_one_hot_encoding = use_one_hot_encoding
+
+
 class CrossValidation(Randomized, ABC):
     """
     A base class for all classes that use cross validation or a train-test split to train and evaluate a multi-label
     classifier or ranker.
     """
 
-    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int):
+    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int):
         """
-        :param data_dir:                The path of the directory that contains the .arff file(s)
-        :param data_set:                Name of the data set, e.g. "emotions"
-        :param use_one_hot_encoding:    True, if one-hot-encoding should be used, False otherwise
-        :param num_folds:               The total number of folds to be used by cross validation or 1, if separate
-                                        training and test sets should be used
-        :param current_fold:            The cross validation fold to be performed or -1, if all folds should be
-                                        performed
+        :param data_set:        The properties of the data set to be used
+        :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
+                                test sets should be used
+        :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
         """
-        self.data_dir = data_dir
         self.data_set = data_set
-        self.use_one_hot_encoding = use_one_hot_encoding
         self.num_folds = num_folds
         self.current_fold = current_fold
 
@@ -63,9 +75,12 @@ class CrossValidation(Randomized, ABC):
         log.info('Performing ' + (
             'full' if current_fold < 0 else ('fold ' + str(current_fold) + ' of')) + ' %s-fold cross validation...',
                  num_folds)
-        x, y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + ".arff", self.data_set + ".xml")
+        data_set = self.data_set
+        data_set_name = data_set.data_set_name
+        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, data_set_name + ".arff",
+                                                      data_set_name + ".xml")
 
-        if self.use_one_hot_encoding:
+        if data_set.use_one_hot_encoding:
             x, _ = one_hot_encode(x, y, meta_data)
 
         # Cross validate
@@ -106,27 +121,30 @@ class CrossValidation(Randomized, ABC):
         log.info('Using separate training and test sets...')
 
         # Load training data
-        train_arff_file_name = self.data_set + '-train.arff'
-        train_arff_file = path.join(self.data_dir, train_arff_file_name)
-        use_one_hot_encoding = self.use_one_hot_encoding
+        data_set = self.data_set
+        data_dir = data_set.data_dir
+        data_set_name = data_set.data_set_name
+        use_one_hot_encoding = data_set.use_one_hot_encoding
+        train_arff_file_name = data_set_name + '-train.arff'
+        train_arff_file = path.join(data_dir, train_arff_file_name)
         test_data_exists = True
         encoder = None
 
         if not path.isfile(train_arff_file):
-            train_arff_file_name = self.data_set + '.arff'
+            train_arff_file_name = data_set_name + '.arff'
             log.warning('File \'' + train_arff_file + '\' does not exist. Using \'' +
-                        path.join(self.data_dir, train_arff_file_name) + '\' instead!')
+                        path.join(data_dir, train_arff_file_name) + '\' instead!')
             test_data_exists = False
 
-        train_x, train_y, meta_data = load_data_set_and_meta_data(self.data_dir, train_arff_file_name,
-                                                                  self.data_set + '.xml')
+        train_x, train_y, meta_data = load_data_set_and_meta_data(data_dir, train_arff_file_name,
+                                                                  data_set_name + '.xml')
 
         if use_one_hot_encoding:
             train_x, encoder = one_hot_encode(train_x, train_y, meta_data)
 
         # Load test data
         if test_data_exists:
-            test_x, test_y = load_data_set(self.data_dir, self.data_set + '-test.arff', meta_data)
+            test_x, test_y = load_data_set(data_dir, data_set_name + '-test.arff', meta_data)
 
             if use_one_hot_encoding:
                 test_x, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
