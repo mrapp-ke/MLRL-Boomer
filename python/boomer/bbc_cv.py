@@ -20,7 +20,7 @@ from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, Eva
 from boomer.interfaces import Randomized
 from boomer.learners import MLLearner
 from boomer.persistence import ModelPersistence
-from boomer.training import CrossValidation
+from boomer.training import CrossValidation, DataSet
 
 
 class BbcCvAdapter(CrossValidation, MLClassifierBase):
@@ -29,11 +29,11 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
     test examples.
     """
 
-    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int, model_dir: str):
+    def __init__(self, data_set: DataSet, num_folds: int, model_dir: str):
         """
         :param model_dir: The path of the directory where the models are stored
         """
-        super().__init__(data_dir, data_set, use_one_hot_encoding, num_folds, -1)
+        super().__init__(data_set, num_folds, -1)
         self.persistence = ModelPersistence(model_dir=model_dir)
         self.learner = None
         self.configuration = None
@@ -257,9 +257,9 @@ class BbcCv(Randomized):
 
 class CV(CrossValidation):
 
-    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding, num_folds: int, prediction_matrix,
-                 ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
-        super().__init__(data_dir, data_set, use_one_hot_encoding, num_folds, -1)
+    def __init__(self, data_set: DataSet, num_folds: int, prediction_matrix, ground_truth_matrix,
+                 configurations: List[dict], observer: BbcCvObserver):
+        super().__init__(data_set, num_folds, -1)
         self.prediction_matrix = prediction_matrix
         self.ground_truth_matrix = ground_truth_matrix
         self.configurations = configurations
@@ -281,17 +281,14 @@ class CV(CrossValidation):
 
 class CVBootstrapping(Bootstrapping):
 
-    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int):
-        self.data_dir = data_dir
+    def __init__(self, data_set: DataSet, num_folds: int):
         self.data_set = data_set
-        self.use_one_hot_encoding = use_one_hot_encoding
         self.num_folds = num_folds
 
     def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
         num_configurations = prediction_matrix.shape[1]
         log.info('%s configurations have been evaluated...', num_configurations)
-        cv = CV(self.data_dir, self.data_set, self.use_one_hot_encoding, self.num_folds, prediction_matrix,
-                ground_truth_matrix, configurations, observer)
+        cv = CV(self.data_set, self.num_folds, prediction_matrix, ground_truth_matrix, configurations, observer)
         cv.random_state = self.random_state
         cv.run()
 

@@ -15,7 +15,7 @@ from boomer.interfaces import Randomized
 from boomer.io import clear_directory
 from boomer.io import open_readable_csv_file, create_csv_dict_writer
 from boomer.io import open_writable_csv_file, create_csv_dict_reader
-from boomer.training import CrossValidation
+from boomer.training import CrossValidation, DataSet
 
 
 class ParameterSearch(Randomized, ABC):
@@ -208,13 +208,13 @@ class ParameterTuning(CrossValidation):
     using a `ParameterSearch` and writes the optimal parameters to one or several outputs.
     """
 
-    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int,
+    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int,
                  parameter_search: ParameterSearch, *args: ParameterOutput):
         """
         :param parameter_search:
         :param args:
         """
-        super().__init__(data_dir, data_set, use_one_hot_encoding, num_folds, current_fold)
+        super().__init__(data_set, num_folds, current_fold)
         self.parameter_search = parameter_search
         self.outputs = args
 
