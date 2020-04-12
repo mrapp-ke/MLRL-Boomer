@@ -13,10 +13,10 @@ from boomer.baselines.xgboost import XGBoost
 from boomer.bbc_cv import BbcCv, BbcCvAdapter, DefaultBbcCvObserver, DefaultBootstrapping
 
 
-class BrBccCvAdapter(BbcCvAdapter):
+class BrBbcCvAdapter(BbcCvAdapter):
 
     def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str):
-        super().__init__(data_dir, data_set, num_folds, model_dir)
+        super().__init__(data_dir, data_set, True, num_folds, model_dir)
 
     def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
                            predictions, configurations, current_fold, last_fold, num_folds):
@@ -39,10 +39,10 @@ class BrBccCvAdapter(BbcCvAdapter):
             current_predictions[test_indices, :] = test_y
 
 
-class LpBccCvAdapter(BbcCvAdapter):
+class LpBbcCvAdapter(BbcCvAdapter):
 
     def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str):
-        super().__init__(data_dir, data_set, num_folds, model_dir)
+        super().__init__(data_dir, data_set, True, num_folds, model_dir)
 
     def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
                            predictions, configurations, current_fold, last_fold, num_folds):
@@ -64,10 +64,10 @@ class LpBccCvAdapter(BbcCvAdapter):
             current_predictions[test_indices, :] = test_y
 
 
-class CcBccCvAdapter(BrBccCvAdapter):
+class CcBbcCvAdapter(BbcCvAdapter):
 
     def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str):
-        super().__init__(data_dir, data_set, num_folds, model_dir)
+        super().__init__(data_dir, data_set, True, num_folds, model_dir)
 
     def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
                            predictions, configurations, current_fold: int, last_fold: int, num_folds: int):
@@ -144,17 +144,17 @@ if __name__ == '__main__':
     if transformation_method == 'br':
         learner = BRLearner(model_dir=args.model_dir, base_learner=base_learner)
         objective = 'binary:logistic'
-        bbc_cv_adapter = BrBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
+        bbc_cv_adapter = BrBbcCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                                         model_dir=args.model_dir)
     elif transformation_method == 'lp':
         learner = LPLearner(model_dir=args.model_dir, base_learner=base_learner)
         objective = 'multi:softmax'
-        bbc_cv_adapter = LpBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
+        bbc_cv_adapter = LpBbcCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                                         model_dir=args.model_dir)
     elif transformation_method == 'cc':
         learner = CCLearner(model_dir=args.model_dir, base_learner=base_learner)
         objective = 'binary:logistic'
-        bbc_cv_adapter = CcBccCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
+        bbc_cv_adapter = CcBbcCvAdapter(data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
                                         model_dir=args.model_dir)
     else:
         raise ValueError('Invalid argument given: ' + str(transformation_method))

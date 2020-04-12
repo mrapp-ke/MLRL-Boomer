@@ -24,16 +24,19 @@ class CrossValidation(Randomized, ABC):
     classifier or ranker.
     """
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, current_fold: int):
+    def __init__(self, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int):
         """
-        :param data_dir:        The path of the directory that contains the .arff file(s)
-        :param data_set:        Name of the data set, e.g. "emotions"
-        :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
-                                test sets should be used
-        :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
+        :param data_dir:                The path of the directory that contains the .arff file(s)
+        :param data_set:                Name of the data set, e.g. "emotions"
+        :param use_one_hot_encoding:    True, if one-hot-encoding should be used, False otherwise
+        :param num_folds:               The total number of folds to be used by cross validation or 1, if separate
+                                        training and test sets should be used
+        :param current_fold:            The cross validation fold to be performed or -1, if all folds should be
+                                        performed
         """
         self.data_dir = data_dir
         self.data_set = data_set
+        self.use_one_hot_encoding = use_one_hot_encoding
         self.num_folds = num_folds
         self.current_fold = current_fold
 
@@ -61,7 +64,9 @@ class CrossValidation(Randomized, ABC):
             'full' if current_fold < 0 else ('fold ' + str(current_fold) + ' of')) + ' %s-fold cross validation...',
                  num_folds)
         x, y, meta_data = load_data_set_and_meta_data(self.data_dir, self.data_set + ".arff", self.data_set + ".xml")
-        x, _ = one_hot_encode(x, y, meta_data)
+
+        if self.use_one_hot_encoding:
+            x, _ = one_hot_encode(x, y, meta_data)
 
         # Cross validate
         if current_fold < 0:
@@ -103,7 +108,9 @@ class CrossValidation(Randomized, ABC):
         # Load training data
         train_arff_file_name = self.data_set + '-train.arff'
         train_arff_file = path.join(self.data_dir, train_arff_file_name)
+        use_one_hot_encoding = self.use_one_hot_encoding
         test_data_exists = True
+        encoder = None
 
         if not path.isfile(train_arff_file):
             train_arff_file_name = self.data_set + '.arff'
@@ -113,12 +120,16 @@ class CrossValidation(Randomized, ABC):
 
         train_x, train_y, meta_data = load_data_set_and_meta_data(self.data_dir, train_arff_file_name,
                                                                   self.data_set + '.xml')
-        train_x, encoder = one_hot_encode(train_x, train_y, meta_data)
+
+        if use_one_hot_encoding:
+            train_x, encoder = one_hot_encode(train_x, train_y, meta_data)
 
         # Load test data
         if test_data_exists:
             test_x, test_y = load_data_set(self.data_dir, self.data_set + '-test.arff', meta_data)
-            test_x, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
+
+            if use_one_hot_encoding:
+                test_x, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
         else:
             log.warning('No test data set available. Model will be evaluated on the training data!')
             test_x = train_x

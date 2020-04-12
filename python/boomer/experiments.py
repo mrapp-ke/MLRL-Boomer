@@ -22,12 +22,13 @@ class AbstractExperiment(CrossValidation, ABC):
     An abstract base class for all experiments. It automatically encodes nominal attributes using one-hot encoding.
     """
 
-    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, num_folds: int, current_fold: int):
+    def __init__(self, evaluation: Evaluation, data_dir: str, data_set: str, use_one_hot_encoding: bool, num_folds: int,
+                 current_fold: int):
         """
         :param evaluation:      The evaluation to be used
         """
 
-        super().__init__(data_dir, data_set, num_folds, current_fold)
+        super().__init__(data_dir, data_set, use_one_hot_encoding, num_folds, current_fold)
         self.evaluation = evaluation
 
     @abstractmethod
@@ -43,12 +44,13 @@ class Experiment(AbstractExperiment):
     """
 
     def __init__(self, base_learner: MLLearner, evaluation: Evaluation, data_dir: str, data_set: str,
-                 num_folds: int = 1, current_fold: int = -1, parameter_input: ParameterInput = None):
+                 use_one_hot_encoding: bool, num_folds: int = 1, current_fold: int = -1,
+                 parameter_input: ParameterInput = None):
         """
         :param base_learner:    The classifier or ranker to be trained
         :param parameter_input: The input that should be used to read the parameter settings
         """
-        super().__init__(evaluation, data_dir, data_set, num_folds, current_fold)
+        super().__init__(evaluation, data_dir, data_set, use_one_hot_encoding, num_folds, current_fold)
         self.base_learner = base_learner
         self.parameter_input = parameter_input
 
