@@ -60,19 +60,16 @@ class MetaData:
         self.labels = labels
         self.attributes = attributes
 
-    def get_attribute_indices(self, attribute_type: AttributeType) -> List[int]:
+    def get_attribute_indices(self, attribute_type: AttributeType = None) -> List[int]:
         """
         Returns a list that contains the indices of all attributes of a specific type (sorted in increasing order).
 
-        :param attribute_type:  The type of the attributes whose indices should be returned
+        :param attribute_type:  The type of the attributes whose indices should be returned or None, if all indices
+                                should be returned
         :return:                A list that contains the indices of all attributes of the given type
         """
-        labels = self.labels
-        num_labels = len(labels)
-        labels_located_at_start = self.label_location == 'start'
-        attributes = self.attributes
-        return [i - (num_labels if labels_located_at_start else 0) for i, attribute in enumerate(attributes)
-                if attribute.attribute_type == attribute_type]
+        return [i for i, attribute in enumerate(self.attributes) if
+                attribute_type is None or attribute.attribute_type == attribute_type]
 
 
 def load_data_set_and_meta_data(data_dir: str, arff_file_name: str,
@@ -181,7 +178,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :param x:           The features of the examples in the data set
     :param y:           The labels of the examples in the data set
     :param meta_data:   The meta data of the data set
-    :param encoder:     The 'OneHotEncoder' to be used or None, if a new encoder should be created
+    :param encoder:     The 'ColumnTransformer' to be used or None, if a new encoder should be created
     :return:            The encoded features of the given examples and the encoder that has been used
     """
     nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
