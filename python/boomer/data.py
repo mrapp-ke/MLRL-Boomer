@@ -9,13 +9,13 @@ import logging as log
 import os.path as path
 import xml.etree.ElementTree as XmlTree
 from typing import List, Set
-from xml.dom import minidom
 
 import numpy as np
 from scipy.sparse import csr_matrix
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from skmultilearn.dataset import load_from_arff, save_to_arff
+from xml.dom import minidom
 
 from boomer.io import write_xml_file
 
@@ -61,7 +61,7 @@ class MetaData:
 
     def get_nominal_indices(self) -> List[int]:
         """
-        Returns a list that contains the indices of all nominal attributes.
+        Returns a list that contains the indices of all nominal attributes (sorted in increasing order).
 
         :return: A list that contains the indices of all nominal attributes
         """
@@ -74,7 +74,7 @@ class MetaData:
 
     def get_numerical_indices(self) -> List[int]:
         """
-        Returns a list that contains the indices of all numerical attributes.
+        Returns a list that contains the indices of all numerical attributes (sorted in increasing order).
 
         :return: A list that contains the indices of all numerical attributes
         """
