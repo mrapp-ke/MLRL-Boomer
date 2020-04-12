@@ -8,10 +8,10 @@ Provides classes for parameter tuning.
 import logging as log
 from abc import ABC
 from abc import abstractmethod
+from typing import List
 
 from sklearn.model_selection import KFold
 
-from boomer.data import MetaData
 from boomer.interfaces import Randomized
 from boomer.io import clear_directory
 from boomer.io import open_readable_csv_file, create_csv_dict_writer
@@ -219,8 +219,8 @@ class ParameterTuning(CrossValidation):
         self.parameter_search = parameter_search
         self.outputs = args
 
-    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
-                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
+                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         parameter_search = self.parameter_search
         parameter_search.random_state = self.random_state
         parameter_search.search(train_x, train_y, current_fold=current_fold, num_folds=num_folds)
