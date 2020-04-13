@@ -1,7 +1,3 @@
-# cython: boundscheck=False
-# cython: wraparound=False
-# cython: cdivision=True
-
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
@@ -99,7 +95,8 @@ cdef class FullHeadRefinement(HeadRefinement):
             for c in range(num_labels):
                 candidate_predicted_scores[c] = predicted_scores[c]
 
-            candidate = HeadCandidate(label_indices, candidate_predicted_scores, overall_quality_score)
+            candidate = HeadCandidate.__new__(HeadCandidate, label_indices, candidate_predicted_scores,
+                                              overall_quality_score)
             return candidate
         else:
             # The quality score must be better than that of `best_head`...
@@ -151,7 +148,8 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
             candidate_label_indices[0] = get_index(best_c, label_indices)
             candidate_predicted_scores = array_float64(1)
             candidate_predicted_scores[0] = predicted_scores[best_c]
-            candidate = HeadCandidate(candidate_label_indices, candidate_predicted_scores, best_quality_score)
+            candidate = HeadCandidate.__new__(HeadCandidate, candidate_label_indices, candidate_predicted_scores,
+                                              best_quality_score)
             return candidate
         else:
             # The quality score must be better than that of `best_head`...
