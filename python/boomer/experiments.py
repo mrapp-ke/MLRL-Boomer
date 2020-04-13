@@ -7,7 +7,7 @@
 Provides classes for performing experiments.
 """
 import logging as log
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import List
 
 from sklearn.base import clone
@@ -18,26 +18,7 @@ from boomer.parameters import ParameterInput
 from boomer.training import CrossValidation, DataSet
 
 
-class AbstractExperiment(CrossValidation, ABC):
-    """
-    An abstract base class for all experiments. It automatically encodes nominal attributes using one-hot encoding.
-    """
-
-    def __init__(self, evaluation: Evaluation, data_set: DataSet, num_folds: int, current_fold: int):
-        """
-        :param evaluation:      The evaluation to be used
-        """
-
-        super().__init__(data_set, num_folds, current_fold)
-        self.evaluation = evaluation
-
-    @abstractmethod
-    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
-                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
-        pass
-
-
-class Experiment(AbstractExperiment):
+class Experiment(CrossValidation, ABC):
     """
     An experiment that trains and evaluates a single multi-label classifier or ranker on a specific data set using cross
     validation or separate training and test sets.
@@ -49,8 +30,9 @@ class Experiment(AbstractExperiment):
         :param base_learner:    The classifier or ranker to be trained
         :param parameter_input: The input that should be used to read the parameter settings
         """
-        super().__init__(evaluation, data_set, num_folds, current_fold)
+        super().__init__(data_set, num_folds, current_fold)
         self.base_learner = base_learner
+        self.evaluation = evaluation
         self.parameter_input = parameter_input
 
     def run(self):

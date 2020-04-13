@@ -6,6 +6,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
 
     # Attributes:
 
+    cdef readonly float64 l2_regularization_weight
+
     cdef float64[::1, :] expected_scores
 
     cdef float64[::1, :] current_scores
