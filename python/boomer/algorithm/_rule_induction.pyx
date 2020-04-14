@@ -47,7 +47,8 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
     expected and currently predicted confidence scores.
 
     :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
-                                        indices of all nominal features (in ascending order)
+                                        indices of all nominal features (in ascending order) or None, if no nominal
+                                        features are available
     :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing the
                                         features of the training examples
     :param x_sorted_indices:            An array of dtype int, shape `(num_examples, num_features)`, representing the
