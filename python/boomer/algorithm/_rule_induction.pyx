@@ -215,7 +215,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
                             # (see description above for details)...
                             if instance_sub_sampling is not None and r - previous_r > 1:
                                 best_condition_r = __adjust_split(x, sorted_indices, r, previous_r, f,
-                                                                  best_condition_leq, best_condition_threshold)
+                                                                  best_condition_threshold)
 
                     previous_threshold = current_threshold
                     previous_r = r
@@ -295,12 +295,12 @@ cdef inline __copy_array(float64[::1] from_array, float64[::1] to_array):
         to_array[i] = from_array[i]
 
 
-cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp position_start, intp position_end,
-                         intp feature_index, bint leq, float32 threshold):
+cdef inline intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp position_start, intp position_end,
+                                intp feature_index, float32 threshold):
     """
     Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
-    not contained in the sample by looking back a certain number of examples (that are not contained in the sample) to
-    see if they satisfy a condition or not.
+    not contained in the current sub-sample. This requires to look back a certain number of examples (until the next
+    example that is contained in the current sub-sample is encountered) to see if they satisfy the new condition or not.
 
     :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features of 
                             the training examples
@@ -309,8 +309,7 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
     :param position_start:  The position that separates the covered from the uncovered examples (when only taking into 
                             account the examples that are contained in the sample). This is the position to start at
     :param position_end:    The position to stop at (exclusive, must be smaller than `position_start`)
-    :param feature_index:   The index of the feature used by the condition
-    :param leq:             1, if the condition uses the <= operator, 0 if it uses the > operator
+    :param feature_index:   The index of the feature, the condition corresponds to
     :param threshold:       The threshold of the condition
     :return:                The adjusted position that separates the covered from the uncovered examples with respect to 
                             the examples that are not contained in the sample
@@ -319,18 +318,20 @@ cdef intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, intp po
     cdef float32 feature_value
     cdef intp r, i
 
-    # Go back until the latest example that is contained in the sample...
+    # Traverse the preceding examples until we encounter an example that is contained in the current sub-sample...
     for r in range(position_start - 1, position_end, -1):
         i = sorted_indices[r, feature_index]
         feature_value = x[i, feature_index]
 
-        if test_condition(threshold, leq, feature_value) == leq:
+        if feature_value > threshold:
+            # The feature value at `position_start` is guaranteed to be greater than the given `threshold`. If this does
+            # also apply to the feature value of a preceding example, it is not separated from the example at
+            # `position_start`. Hence, we are not done yet and continue by decrementing the adjusted position by one...
+            adjusted_position = r
+        else:
             # If we have found the first example that is separated from the example at the position we started at, we
             # are done...
             break
-        else:
-            # Otherwise, we reduce the adjusted position by one and continue...
-            adjusted_position = r
 
     return adjusted_position
 
