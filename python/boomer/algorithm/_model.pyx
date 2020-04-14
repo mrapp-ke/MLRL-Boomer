@@ -126,7 +126,7 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    def __cinit__(self, float64[::1] scores = None):
+    def __cinit__(self, float64[::1] scores):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                         rule for each label
@@ -154,7 +154,7 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    def __cinit__(self, intp[::1] label_indices = None, float64[::1] scores = None):
+    def __cinit__(self, intp[::1] label_indices, float64[::1] scores):
         """
         :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
                                 labels for which the rule predicts
@@ -188,7 +188,7 @@ cdef class Rule:
     A rule consisting of a body and head.
     """
 
-    def __cinit__(self, body: Body = None, head: Head = None):
+    def __cinit__(self, body: Body, head: Head):
         """
         :param body:    The body of the rule
         :param head:    The head of the rule
