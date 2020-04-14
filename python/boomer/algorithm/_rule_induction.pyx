@@ -192,7 +192,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
                 i = sorted_indices[r, f]
                 weight = get_weight(i, weights)
 
-                # Do only consider examples that are included in the sub-sample...
+                # Do only consider examples that are included in the current sub-sample...
                 if weight > 0:
                     current_threshold = x[i, f]
 
