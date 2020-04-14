@@ -108,9 +108,9 @@ class GradientBoosting(RuleInduction):
             log.info('Learning rule %s...', len(theory) + 1)
 
             # Induce a new rule
-            # TODO Use nominal_attribute_indices
-            rule = induce_rule(x, x_sorted_indices, y, head_refinement, loss, label_sub_sampling, instance_sub_sampling,
-                               feature_sub_sampling, pruning, shrinkage, random_state)
+            rule = induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
+                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
+                               random_state)
 
             # Add new rule to theory
             theory.append(rule)
