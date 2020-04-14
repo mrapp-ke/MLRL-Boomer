@@ -38,34 +38,36 @@ cpdef Rule induce_default_rule(uint8[::1, :] y, Loss loss):
     return rule
 
 
-cpdef Rule induce_rule(float32[::1, :] x, intp[::1, :] x_sorted_indices, uint8[::1, :] y,
-                       HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
+                       uint8[::1, :] y, HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                        InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                        Pruning pruning, Shrinkage shrinkage, random_state: int):
     """
     Induces a single- or multi-label classification rule that minimizes a certain loss function with respect to the
     expected and currently predicted confidence scores.
 
-    :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
-                                    features of the training examples
-    :param x_sorted_indices:        An array of dtype int, shape `(num_examples, num_features)`, representing the
-                                    indices of the training examples when sorting column-wise
-    :param y:                       An array of dtype int, shape `(num_examples, num_labels)`, representing the labels 
-                                    of the training examples
-    :param head_refinement:         The strategy that is used to find the heads of rules
-    :param loss:                    The loss function to be minimized
-    :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label 
-                                    sub-sampling should be used
-    :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if no
-                                    instance sub-sampling should be used
-    :param feature_sub_sampling:    The strategy that should be used to sub-sample the available features or None, if no
-                                    feature sub-sampling should be used
-    :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
-                                    used
-    :param shrinkage:               The strategy that should be used to shrink the weights of rules or None, if no 
-                                    shrinkage should be used
-    :param random_state:            The seed to be used by RNGs
-    :return:                        The rule that has been induced
+    :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
+                                        indices of all nominal features (in ascending order)
+    :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing the
+                                        features of the training examples
+    :param x_sorted_indices:            An array of dtype int, shape `(num_examples, num_features)`, representing the
+                                        indices of the training examples when sorting column-wise
+    :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing the
+                                        labels of the training examples
+    :param head_refinement:             The strategy that is used to find the heads of rules
+    :param loss:                        The loss function to be minimized
+    :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no label
+                                        sub-sampling should be used
+    :param instance_sub_sampling:       The strategy that should be used to sub-sample the training examples or None, if
+                                        no instance sub-sampling should be used
+    :param feature_sub_sampling:        The strategy that should be used to sub-sample the available features or None,
+                                        if no feature sub-sampling should be used
+    :param pruning:                     The strategy that should be used to prune rules or None, if no pruning should be
+                                        used
+    :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if no
+                                        shrinkage should be used
+    :param random_state:                The seed to be used by RNGs
+    :return:                            The rule that has been induced
     """
     # The head of the induced rule
     cdef HeadCandidate head = None
