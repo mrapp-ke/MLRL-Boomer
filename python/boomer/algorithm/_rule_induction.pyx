@@ -427,7 +427,7 @@ cdef intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :] sorted
         i = 0
 
         if c == condition_index:
-            # For the feature used by the new condition we know the indices of the covered examples...
+            # For the feature that corresponds to the new condition we know the indices of the covered examples...
             if condition_leq:
                 offset = 0
             else:
