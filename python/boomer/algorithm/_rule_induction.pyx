@@ -92,12 +92,11 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
     cdef intp num_examples = x.shape[0]
 
     # Variables for specifying the features used for finding the best refinement
+    cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
+    cdef intp next_nominal_f = -1
     cdef intp[::1] feature_indices
-    cdef intp num_features, num_nominal_features, next_nominal_c, next_nominal_f
+    cdef intp num_features, next_nominal_c
     cdef bint nominal
-
-    if nominal_attribute_indices is not None:
-        num_nominal_features = nominal_attribute_indices.shape[0]
 
     # Temporary variables
     cdef HeadCandidate current_head
@@ -145,8 +144,6 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
         if num_nominal_features > 0:
             next_nominal_f = nominal_attribute_indices[0]
             next_nominal_c = 1
-        else:
-            next_nominal_f = -1
 
         # Search for the best condition among all available features to be added to the current rule. For each feature,
         # the examples are traversed in increasing order of their respective feature values and the loss function is
