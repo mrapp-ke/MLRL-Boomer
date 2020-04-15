@@ -93,7 +93,11 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
 
     # Variables for specifying the features used for finding the best refinement
     cdef intp[::1] feature_indices
-    cdef intp num_features
+    cdef intp num_features, num_nominal_features, next_nominal_c, next_nominal_f
+    cdef bint nominal
+
+    if nominal_attribute_indices is not None:
+        num_nominal_features = nominal_attribute_indices.shape[0]
 
     # Temporary variables
     cdef HeadCandidate current_head
@@ -124,19 +128,6 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
     else:
         label_indices = label_sub_sampling.sub_sample(y, random_state)
 
-    # Obtain the index of the next nominal feature, if available...
-    cdef intp num_nominal_features, next_nominal_c, next_nominal_f
-    cdef bint nominal
-
-    if nominal_attribute_indices is not None:
-        num_nominal_features = nominal_attribute_indices.shape[0]
-
-    if num_nominal_features > 0:
-        next_nominal_f = nominal_attribute_indices[0]
-        next_nominal_c = 1
-    else:
-        next_nominal_f = -1
-
     # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
     while found_refinement:
         num_examples = sorted_indices.shape[0]
@@ -149,6 +140,13 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
         else:
             feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
             num_features = feature_indices.shape[0]
+
+        # Obtain the index of the first nominal feature, if available...
+        if num_nominal_features > 0:
+            next_nominal_f = nominal_attribute_indices[0]
+            next_nominal_c = 1
+        else:
+            next_nominal_f = -1
 
         # Search for the best condition among all available features to be added to the current rule. For each feature,
         # the examples are traversed in increasing order of their respective feature values and the loss function is
