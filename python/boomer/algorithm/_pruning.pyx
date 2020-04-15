@@ -6,7 +6,7 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.algorithm._arrays cimport array_intp
-from boomer.algorithm._utils cimport test_condition
+from boomer.algorithm._utils cimport test_condition, Comparator
 from boomer.algorithm._losses cimport Prediction
 
 from cython.operator cimport dereference, postincrement
@@ -115,7 +115,7 @@ cdef class IREP(Pruning):
         cdef list[s_condition].iterator iterator = conditions.begin()
         cdef s_condition condition
         cdef float32 threshold, feature_value
-        cdef bint leq
+        cdef Comparator comparator
         cdef intp[::1] covered_example_indices, new_covered_example_indices
         cdef uint32 weight
         cdef float64 quality_score
@@ -129,7 +129,7 @@ cdef class IREP(Pruning):
             condition = dereference(iterator)
             c = condition.feature_index
             threshold = condition.threshold
-            leq = condition.leq
+            comparator = condition.comparator
 
             # Reset the loss function...
             loss.begin_search(label_indices)
@@ -141,17 +141,17 @@ cdef class IREP(Pruning):
             new_covered_example_indices = array_intp(num_examples)
             i = 0
 
-            if n == 0:
-                # For the first condition, we traverse the examples in the order of their feature values. The order of
-                # traversing depends on the condition's operator. If the condition uses the <= operator, we traverse in
-                # ascending order, i.e., we start with the example with the smallest feature value. If the condition
-                # uses the > operator, we traverse in descending order, i.e., we start with the example with the largest
-                # feature value.
-                for r in (range(num_examples) if leq else range(num_examples - 1, -1, -1)):
+            if n == 0 and (comparator == Comparator.LEQ or comparator == Comparator.GR):
+                # For the first condition, if it uses the <= or > operator, we traverse the examples in the order of
+                # their feature values. The order of traversing depends on the condition's operator. If the condition
+                # uses the <= operator, we traverse in ascending order, i.e., we start with the example with the
+                # smallest feature value. If the condition uses the > operator, we traverse in descending order, i.e.,
+                # we start with the example with the largest feature value.
+                for r in (range(num_examples) if comparator == Comparator.LEQ else range(num_examples - 1, -1, -1)):
                     index = x_sorted_indices[r, c]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, leq, feature_value):
+                    if test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
@@ -167,13 +167,13 @@ cdef class IREP(Pruning):
                         # not satisfy the condition either...
                         break
             else:
-                # For the remaining conditions we traverse the indices of the examples that satisfy all previously
-                # processed conditions and check if they also satisfy the current one...
+                # For the other conditions we traverse the indices of the examples that satisfy all previously processed
+                # conditions and check if they also satisfy the current one...
                 for r in range(num_examples):
                     index = covered_example_indices[r]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, leq, feature_value):
+                    if test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
