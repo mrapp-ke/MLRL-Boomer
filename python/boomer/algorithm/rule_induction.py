@@ -100,7 +100,7 @@ class GradientBoosting(RuleInduction):
 
         # Induce default rule, if necessary
         if len(theory) == 0:
-            log.info('Learning rule 1(default rule)...')
+            log.info('Learning rule 1 (default rule)...')
             default_rule = induce_default_rule(y, loss)
             theory.append(default_rule)
 
