@@ -141,13 +141,12 @@ cdef class IREP(Pruning):
             new_covered_example_indices = array_intp(num_examples)
             i = 0
 
-            if n == 0 and (comparator == Comparator.LEQ or comparator == Comparator.GR):
-                # For the first condition, if it uses the <= or > operator, we traverse the examples in the order of
-                # their feature values. The order of traversing depends on the condition's operator. If the condition
-                # uses the <= operator, we traverse in ascending order, i.e., we start with the example with the
-                # smallest feature value. If the condition uses the > operator, we traverse in descending order, i.e.,
-                # we start with the example with the largest feature value.
-                for r in (range(num_examples) if comparator == Comparator.LEQ else range(num_examples - 1, -1, -1)):
+            if n == 0:
+                # For the first condition, we traverse the examples in the order of their feature values. The order of
+                # traversing depends on the condition's operator. If the condition uses the > operator, we traverse in
+                # descending order, i.e., we start with the example with the greatest feature value. Otherwise, we
+                # traverse in ascending order, i.e., we start with the example with the smallest feature value.
+                for r in (range(num_examples - 1, -1, -1) if comparator == Comparator.GR else range(num_examples)):
                     index = x_sorted_indices[r, c]
                     feature_value = x[index, c]
 
@@ -162,13 +161,13 @@ cdef class IREP(Pruning):
 
                         if weight == 0:
                             loss.update_search(index, 1)
-                    else:
-                        # If the example does not satisfy the condition, we are done, because the remaining ones will
-                        # not satisfy the condition either...
+                    elif comparator == Comparator.LEQ or comparator == Comparator.GR:
+                        # If the condition uses the <= or the > operator and the example does not satisfy the condition,
+                        # we are done, because the remaining ones will not satisfy the condition either...
                         break
             else:
-                # For the other conditions we traverse the indices of the examples that satisfy all previously processed
-                # conditions and check if they also satisfy the current one...
+                # For the remaining conditions we traverse the indices of the examples that satisfy all previously
+                # processed conditions and check if they also satisfy the current one...
                 for r in range(num_examples):
                     index = covered_example_indices[r]
                     feature_value = x[index, c]
