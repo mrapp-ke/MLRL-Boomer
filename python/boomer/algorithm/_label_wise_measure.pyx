@@ -89,7 +89,7 @@ cdef class LabelWiseMeasure(DecomposableLoss):
             l = get_index(c, label_indices)
             if uncovered_labels[r, l] > 0:
                 true_label = true_labels[r, c]
-                predicted_label = <uint8> minority_labels[c]
+                predicted_label = minority_labels[c]
 
                 if true_label == 0:
                     if predicted_label == 0:
