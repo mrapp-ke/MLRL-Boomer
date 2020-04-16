@@ -7,6 +7,7 @@ Provides a scikit-multilearn implementation of "BOOMER" -- an algorithm for lear
 classification rules. The classifier is composed of several modules, e.g., for rule induction and prediction.
 """
 from abc import abstractmethod
+from typing import List
 
 import numpy as np
 from boomer.algorithm._example_wise_losses import ExampleWiseLogisticLoss
@@ -24,7 +25,8 @@ from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSe
 from boomer.algorithm.model import DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
-from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion, UncoveredLabelsCriterion
+from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
+    UncoveredLabelsCriterion
 from boomer.learners import MLLearner
 from boomer.stats import Stats
 
@@ -38,6 +40,12 @@ LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
 
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
+MEASURE_LABEL_WISE = 'label-wise-measure'
+
+HEURISTIC_PRECISION = 'precision'
+
+HEURISTIC_HAMMING_LOSS = 'hamming-loss'
+
 INSTANCE_SUB_SAMPLING_RANDOM = 'random-instance-selection'
 
 INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
@@ -45,6 +53,63 @@ INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
 FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 
 PRUNING_IREP = 'irep'
+
+
+def _create_label_sub_sampling(label_sub_sampling: int, stats: Stats) -> LabelSubSampling:
+    if label_sub_sampling == -1:
+        return None
+    elif label_sub_sampling > 0:
+        if label_sub_sampling < stats.num_labels:
+            return RandomLabelSubsetSelection(label_sub_sampling)
+        else:
+            raise ValueError('Value given for parameter \'label_sub_sampling\' (' + str(label_sub_sampling)
+                             + ') must be less that the number of labels in the training data set ('
+                             + str(stats.num_labels) + ')')
+    raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
+
+
+def _create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampling:
+    if instance_sub_sampling is None:
+        return None
+    elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
+        return Bagging()
+    elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
+        return RandomInstanceSubsetSelection()
+    raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
+
+
+def _create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling:
+    if feature_sub_sampling is None:
+        return None
+    elif feature_sub_sampling == FEATURE_SUB_SAMPLING_RANDOM:
+        return RandomFeatureSubsetSelection()
+    raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
+
+
+def _create_pruning(pruning: str) -> Pruning:
+    if pruning is None:
+        return None
+    if pruning == PRUNING_IREP:
+        return IREP()
+    raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
+
+
+def _create_stopping_criteria(num_rules: int, time_limit: int) -> List[StoppingCriterion]:
+    stopping_criteria: List[StoppingCriterion] = []
+
+    if num_rules != -1:
+        if num_rules > 0:
+            stopping_criteria.append(SizeStoppingCriterion(num_rules))
+        else:
+            raise ValueError('Invalid value given for parameter \'num_rules\': ' + str(num_rules))
+
+    if time_limit != -1:
+        if time_limit > 0:
+            stopping_criteria.append(TimeStoppingCriterion(time_limit))
+        else:
+            raise ValueError('Invalid value given for parameter \'time_limit\': ' + str(time_limit))
+
+    return stopping_criteria
 
 
 class MLRuleLearner(MLLearner):
@@ -157,37 +222,26 @@ class Boomer(MLRuleLearner):
         return Sign(LinearCombination())
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
-        num_rules = int(self.num_rules)
-        time_limit = int(self.time_limit)
-        stopping_criteria = []
+        stopping_criteria = _create_stopping_criteria(int(self.num_rules), int(self.time_limit))
+        l2_regularization_weight = self.__create_l2_regularization_weight()
+        loss = self.__create_loss(l2_regularization_weight)
+        head_refinement = self.__create_head_refinement(loss)
+        label_sub_sampling = _create_label_sub_sampling(int(self.label_sub_sampling), stats)
+        instance_sub_sampling = _create_instance_sub_sampling(str(self.instance_sub_sampling))
+        feature_sub_sampling = _create_feature_sub_sampling(str(self.feature_sub_sampling))
+        pruning = _create_pruning(str(self.pruning))
+        shrinkage = self.__create_shrinkage()
+        return GradientBoosting(head_refinement, loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                pruning, shrinkage, *stopping_criteria)
 
-        if num_rules != -1:
-            if num_rules > 0:
-                stopping_criteria.append(SizeStoppingCriterion(num_rules))
-            else:
-                raise ValueError('Invalid value given for parameter \'num_rules\': ' + str(num_rules))
-
-        if time_limit != -1:
-            if time_limit > 0:
-                stopping_criteria.append(TimeStoppingCriterion(time_limit))
-            else:
-                raise ValueError('Invalid value given for parameter \'time_limit\': ' + str(time_limit))
-
+    def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)
 
         if l2_regularization_weight < 0:
             raise ValueError(
                 'Invalid value given for parameter \'l2_regularization_weight\': ' + str(l2_regularization_weight))
 
-        loss = self.__create_loss(l2_regularization_weight)
-        head_refinement = self.__create_head_refinement(loss)
-        label_sub_sampling = self.__create_label_sub_sampling(stats)
-        instance_sub_sampling = self.__create_instance_sub_sampling()
-        feature_sub_sampling = self.__create_feature_sub_sampling()
-        pruning = self.__create_pruning()
-        shrinkage = self.__create_shrinkage()
-        return GradientBoosting(head_refinement, loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                pruning, shrinkage, *stopping_criteria)
+        return l2_regularization_weight
 
     def __create_loss(self, l2_regularization_weight: float) -> Loss:
         loss = self.loss
@@ -210,49 +264,6 @@ class Boomer(MLRuleLearner):
         elif head_refinement == HEAD_REFINEMENT_FULL:
             return FullHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
-
-    def __create_label_sub_sampling(self, stats: Stats) -> LabelSubSampling:
-        label_sub_sampling = int(self.label_sub_sampling)
-
-        if label_sub_sampling == -1:
-            return None
-        elif label_sub_sampling > 0:
-            if label_sub_sampling < stats.num_labels:
-                return RandomLabelSubsetSelection(label_sub_sampling)
-            else:
-                raise ValueError('Value given for parameter \'label_sub_sampling\' (' + str(label_sub_sampling)
-                                 + ') must be less that the number of labels in the training data set ('
-                                 + str(stats.num_labels) + ')')
-        raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
-
-    def __create_instance_sub_sampling(self) -> InstanceSubSampling:
-        instance_sub_sampling = self.instance_sub_sampling
-
-        if instance_sub_sampling is None:
-            return None
-        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
-            return Bagging()
-        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
-            return RandomInstanceSubsetSelection()
-        raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
-
-    def __create_feature_sub_sampling(self) -> FeatureSubSampling:
-        feature_sub_sampling = self.feature_sub_sampling
-
-        if feature_sub_sampling is None:
-            return None
-        elif feature_sub_sampling == FEATURE_SUB_SAMPLING_RANDOM:
-            return RandomFeatureSubsetSelection()
-        raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
-
-    def __create_pruning(self) -> Pruning:
-        pruning = self.pruning
-
-        if pruning is None:
-            return None
-        if pruning == PRUNING_IREP:
-            return IREP()
-        raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
     def __create_shrinkage(self) -> Shrinkage:
         shrinkage = float(self.shrinkage)
@@ -343,48 +354,31 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return 'SeparateAndConquerRuleLearner'
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
-        max_rules = int(self.max_rules)
-        time_limit = int(self.time_limit)
         heuristic = self.__create_heuristic()
         loss = self.__create_loss(heuristic)
         head_refinement = self.__create_head_refinement()
-        label_sub_sampling = self.__create_label_sub_sampling(stats)
-        instance_sub_sampling = self.__create_instance_sub_sampling()
-        feature_sub_sampling = self.__create_feature_sub_sampling()
-        pruning = self.__create_pruning()
-
-        stopping_criteria = []
-
-        if max_rules != -1:
-            if max_rules > 0:
-                stopping_criteria.append(SizeStoppingCriterion(max_rules))
-            else:
-                raise ValueError('Invalid value given for parameter \'num_rules\': ' + str(max_rules))
-
-        if time_limit != -1:
-            if time_limit > 0:
-                stopping_criteria.append(TimeStoppingCriterion(time_limit))
-            else:
-                raise ValueError('Invalid value given for parameter \'time_limit\': ' + str(time_limit))
-
+        label_sub_sampling = _create_label_sub_sampling(int(self.label_sub_sampling), stats)
+        instance_sub_sampling = _create_instance_sub_sampling(str(self.instance_sub_sampling))
+        feature_sub_sampling = _create_feature_sub_sampling(str(self.feature_sub_sampling))
+        pruning = _create_pruning(str(self.pruning))
+        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
-
         return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
                                   feature_sub_sampling, pruning, *stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
 
-        if heuristic == 'precision':
+        if heuristic == HEURISTIC_PRECISION:
             return Precision()
-        elif heuristic == 'hamming-loss':
+        elif heuristic == HEURISTIC_HAMMING_LOSS:
             return HammingLoss()
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
     def __create_loss(self, heuristic: Heuristic) -> Loss:
         loss = self.loss
 
-        if loss == 'label-wise-measure':
+        if loss == MEASURE_LABEL_WISE:
             return LabelWiseMeasure(heuristic)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
@@ -393,52 +387,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
         if head_refinement is None:
             return SingleLabelHeadRefinement()
-        elif head_refinement == 'single-label':
+        elif head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
-
-    def __create_label_sub_sampling(self, stats: Stats) -> LabelSubSampling:
-        label_sub_sampling = int(self.label_sub_sampling)
-
-        if label_sub_sampling == -1:
-            return None
-        elif label_sub_sampling > 0:
-            if label_sub_sampling < stats.num_labels:
-                return RandomLabelSubsetSelection(label_sub_sampling)
-            else:
-                raise ValueError('Value given for parameter \'label_sub_sampling\' (' + str(label_sub_sampling)
-                                 + ') must be less that the number of labels in the training data set ('
-                                 + str(stats.num_labels) + ')')
-        raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
-
-    def __create_instance_sub_sampling(self) -> InstanceSubSampling:
-        instance_sub_sampling = self.instance_sub_sampling
-
-        if instance_sub_sampling is None:
-            return None
-        elif instance_sub_sampling == 'bagging':
-            return Bagging()
-        elif instance_sub_sampling == 'random-instance-selection':
-            return RandomInstanceSubsetSelection()
-        raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
-
-    def __create_feature_sub_sampling(self) -> FeatureSubSampling:
-        feature_sub_sampling = self.feature_sub_sampling
-
-        if feature_sub_sampling is None:
-            return None
-        elif feature_sub_sampling == 'random-feature-selection':
-            return RandomFeatureSubsetSelection()
-        raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
-
-    def __create_pruning(self) -> Pruning:
-        pruning = self.pruning
-
-        if pruning is None:
-            return None
-        if pruning == 'irep':
-            return IREP()
-        raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
     def _create_prediction(self) -> Prediction:
         return DecisionList()
