@@ -9,19 +9,18 @@ classification rules. The classifier is composed of several modules, e.g., for r
 from abc import abstractmethod
 
 import numpy as np
-
+from boomer.algorithm._example_wise_losses import ExampleWiseLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._heuristics import HammingLoss, Precision, Heuristic
+from boomer.algorithm._heuristics import Heuristic, HammingLoss, Precision
+from boomer.algorithm._label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
 from boomer.algorithm._label_wise_measure import LabelWiseMeasure
 from boomer.algorithm._losses import Loss, DecomposableLoss
 from boomer.algorithm._pruning import Pruning, IREP
-
-from boomer.algorithm._example_based_losses import ExampleBasedLogisticLoss
-from boomer.algorithm._macro_losses import MacroSquaredErrorLoss, MacroLogisticLoss
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+
 from boomer.algorithm.model import DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
@@ -29,10 +28,28 @@ from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppi
 from boomer.learners import MLLearner
 from boomer.stats import Stats
 
+HEAD_REFINEMENT_SINGLE = 'single-label'
+
+HEAD_REFINEMENT_FULL = 'full'
+
+LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
+
+LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
+
+LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
+
+INSTANCE_SUB_SAMPLING_RANDOM = 'random-instance-selection'
+
+INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
+
+FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
+
+PRUNING_IREP = 'irep'
+
 
 class MLRuleLearner(MLLearner):
     """
-    A scikit-multilearn implementation of a rule learner algorithm for multi-label classification or ranking.
+    A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
 
     Attributes
         stats_          Statistics about the training data set
@@ -95,18 +112,19 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, model_dir: str = None, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = 'macro-squared-error-loss', label_sub_sampling: int = -1,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
-                 shrinkage: float = 1.0, l2_regularization_weight: float = 0.0):
+    def __init__(self, model_dir: str = None, num_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
+                 loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: int = -1,
+                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
+                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM,
+                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
         """
         :param num_rules:                   The number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
                                             `single-label`, `full` or None, if the default strategy should be used
-        :param loss:                        The loss function to be minimized. Must be `macro-squared-error-loss` or
-                                            `example-based-logistic-loss`
+        :param loss:                        The loss function to be minimized. Must be `label-wise-squared-error-loss`,
+                                            `label-wise-logistic-loss` or `example-wise-logistic-loss`
         :param label_sub_sampling:          The number of samples to be used for sub-sampling the labels each time a new
                                             classification rule is learned. Must be at least 1 or -1, if no sub-sampling
                                             should be used
@@ -174,12 +192,12 @@ class Boomer(MLRuleLearner):
     def __create_loss(self, l2_regularization_weight: float) -> Loss:
         loss = self.loss
 
-        if loss == 'macro-squared-error-loss':
-            return MacroSquaredErrorLoss(l2_regularization_weight)
-        elif loss == 'macro-logistic-loss':
-            return MacroLogisticLoss(l2_regularization_weight)
-        elif loss == 'example-based-logistic-loss':
-            return ExampleBasedLogisticLoss(l2_regularization_weight)
+        if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
+            return LabelWiseSquaredErrorLoss(l2_regularization_weight)
+        elif loss == LOSS_LABEL_WISE_LOGISTIC:
+            return LabelWiseLogisticLoss(l2_regularization_weight)
+        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+            return ExampleWiseLogisticLoss(l2_regularization_weight)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
@@ -187,9 +205,9 @@ class Boomer(MLRuleLearner):
 
         if head_refinement is None:
             return SingleLabelHeadRefinement() if isinstance(loss, DecomposableLoss) else FullHeadRefinement()
-        elif head_refinement == 'single-label':
+        elif head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinement()
-        elif head_refinement == 'full':
+        elif head_refinement == HEAD_REFINEMENT_FULL:
             return FullHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
@@ -212,9 +230,9 @@ class Boomer(MLRuleLearner):
 
         if instance_sub_sampling is None:
             return None
-        elif instance_sub_sampling == 'bagging':
+        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
             return Bagging()
-        elif instance_sub_sampling == 'random-instance-selection':
+        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
             return RandomInstanceSubsetSelection()
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
@@ -223,7 +241,7 @@ class Boomer(MLRuleLearner):
 
         if feature_sub_sampling is None:
             return None
-        elif feature_sub_sampling == 'random-feature-selection':
+        elif feature_sub_sampling == FEATURE_SUB_SAMPLING_RANDOM:
             return RandomFeatureSubsetSelection()
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
@@ -232,7 +250,7 @@ class Boomer(MLRuleLearner):
 
         if pruning is None:
             return None
-        if pruning == 'irep':
+        if pruning == PRUNING_IREP:
             return IREP()
         raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 

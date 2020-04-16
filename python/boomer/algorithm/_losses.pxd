@@ -18,10 +18,6 @@ cdef class LabelIndependentPrediction(Prediction):
 
 cdef class Loss:
 
-    # Attributes:
-
-    cdef readonly float64 l2_regularization_weight
-
     # Functions:
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)

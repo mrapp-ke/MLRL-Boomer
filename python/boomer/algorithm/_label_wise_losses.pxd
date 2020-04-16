@@ -2,9 +2,11 @@ from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 from boomer.algorithm._losses cimport DecomposableLoss, Prediction, LabelIndependentPrediction
 
 
-cdef class MacroLoss(DecomposableLoss):
+cdef class LabelWiseLoss(DecomposableLoss):
 
     # Attributes:
+
+    cdef readonly float64 l2_regularization_weight
 
     cdef float64[::1, :] expected_scores
 
@@ -48,7 +50,7 @@ cdef class MacroLoss(DecomposableLoss):
                            float64[::1] predicted_scores)
 
 
-cdef class MacroSquaredErrorLoss(MacroLoss):
+cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
 
     # Functions:
 
@@ -72,7 +74,7 @@ cdef class MacroSquaredErrorLoss(MacroLoss):
                            float64[::1] predicted_scores)
 
 
-cdef class MacroLogisticLoss(MacroLoss):
+cdef class LabelWiseLogisticLoss(LabelWiseLoss):
 
     # Functions:
 
