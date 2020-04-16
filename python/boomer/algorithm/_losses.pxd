@@ -1,5 +1,6 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 
+
 cdef class Prediction:
 
     # Attributes:

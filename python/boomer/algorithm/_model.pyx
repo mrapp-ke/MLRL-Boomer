@@ -122,6 +122,7 @@ cdef class Head:
         """
         pass
 
+
 cdef class FullHead(Head):
     """
     A full head that assigns a numerical score to each label.
@@ -153,6 +154,7 @@ cdef class FullHead(Head):
                     predicted[c] = 1
             else:
                 predictions[c] += scores[c]
+
 
 cdef class PartialHead(Head):
     """
@@ -192,6 +194,7 @@ cdef class PartialHead(Head):
             else:
                 predictions[label] += scores[c]
 
+
 cdef class Rule:
     """
     A rule consisting of a body and head.
@@ -212,7 +215,6 @@ cdef class Rule:
         body, head = state
         self.body = body
         self.head = head
-
 
     cpdef predict(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted = None):
         """
