@@ -1,5 +1,3 @@
-from boomer.algorithm._arrays cimport float64
-
 cdef class Heuristic:
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
@@ -8,13 +6,15 @@ cdef class Heuristic:
 cdef class HammingLoss(Heuristic):
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
-        if cin + cip + crn + crp + uin + uip + urn + urp == 0:
+        cdef float64 num_labels = cin + cip + crn + crp + uin + uip + urn + urp
+        if num_labels == 0:
             return 1
-        return (cip + crn + urn + urp) / (cin + cip + crn + crp + uin + uip + urn + urp)
+        return (cip + crn + urn + urp) / num_labels
 
 cdef class Precision(Heuristic):
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
-        if cin + cip + crn + crp == 0:
+        cdef float64 num_covered_labels = cin + cip + crn + crp
+        if num_covered_labels == 0:
             return 1
-        return (cip + crn) / (cin + cip + crn + crp)
+        return (cip + crn) / num_covered_labels

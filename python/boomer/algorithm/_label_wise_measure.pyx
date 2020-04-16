@@ -1,9 +1,7 @@
-import numpy
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64, array_float64, matrix_float64, array_uint32
 
-from boomer.algorithm._arrays cimport matrix_intp, array_intp
 from boomer.algorithm._heuristics cimport Heuristic
-from boomer.algorithm._losses cimport Loss, LabelIndependentPrediction, Prediction
+from boomer.algorithm._losses cimport LabelIndependentPrediction, DecomposableLoss
 from boomer.algorithm._utils cimport get_index
 
 DEF _IN = 0
@@ -11,7 +9,7 @@ DEF _IP = 1
 DEF _RN = 2
 DEF _RP = 3
 
-cdef class LabelWiseMeasure(Loss):
+cdef class LabelWiseMeasure(DecomposableLoss):
     """
     A class for label-wise evaluation.
     """
@@ -31,7 +29,6 @@ cdef class LabelWiseMeasure(Loss):
         cdef float64[::1, :] coverable_labels = matrix_float64(num_examples, num_labels)
         cdef float64[::1, :] confusion_matrices_covered = matrix_float64(num_labels, 4)
         cdef float64[::1, :] confusion_matrices_default = matrix_float64(num_labels, 4)
-        cdef intp[::1] example_weights = array_intp(num_examples)
         cdef float64 threshold = num_examples / 2.0
         cdef uint8 true_label, predicted_label
         cdef intp r, c
@@ -66,26 +63,50 @@ cdef class LabelWiseMeasure(Loss):
 
         self.uncovered_labels = uncovered_labels
         self.coverable_labels = coverable_labels
-        self.example_weights = example_weights
         self.minority_labels = minority_labels
         self.true_labels = y
 
         return default_rule
 
     cdef begin_instance_sub_sampling(self):
-        cdef intp[::1] example_weights = self.example_weights
-        example_weights[:] = 0
+        pass
 
-    cdef update_sub_sample(self, intp example_index):
-        self.example_weights[example_index] = 1
+
+    cdef update_sub_sample(self, intp r):
+        cdef intp num_labels
+        cdef intp[::1] label_indices = self.label_indices
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef uint32[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+
+        if label_indices is None:
+            num_labels = minority_labels.shape[0]
+        else:
+            num_labels = label_indices.shape[0]
+
+        for c in range(num_labels):
+            l = get_index(c, label_indices)
+            if uncovered_labels[r, l] > 0:
+                true_label = true_labels[r, c]
+                predicted_label = <uint8> minority_labels[c]
+
+                if true_label == 0:
+                    if predicted_label == 0:
+                        confusion_matrices_default[c, _IN] += 1
+                    elif predicted_label == 1:
+                        confusion_matrices_default[c, _IP] += 1
+                elif true_label == 1:
+                    if predicted_label == 0:
+                        confusion_matrices_default[c, _RN] += 1
+                    elif predicted_label == 1:
+                        confusion_matrices_default[c, _RP] += 1
+
 
     cdef begin_search(self, intp[::1] label_indices):
         cdef uint32[::1] minority_labels = self.minority_labels
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        cdef intp[::1] example_weights = self.example_weights
         cdef uint8[::1, :] true_labels = self.true_labels
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef intp num_examples = true_labels.shape[0]
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
@@ -98,24 +119,6 @@ cdef class LabelWiseMeasure(Loss):
             num_labels = label_indices.shape[0]
 
         confusion_matrices_default[:,:] = 0
-
-        for c in range(num_labels):
-            l = get_index(c, label_indices)
-            for r in range(num_examples):
-                if example_weights[r] == 1 and uncovered_labels[r, l] > 0:
-                    true_label = true_labels[r, c]
-                    predicted_label = <uint8> minority_labels[c]
-
-                    if true_label == 0:
-                        if predicted_label == 0:
-                            confusion_matrices_default[c, _IN] += 1
-                        elif predicted_label == 1:
-                            confusion_matrices_default[c, _IP] += 1
-                    elif true_label == 1:
-                        if predicted_label == 0:
-                            confusion_matrices_default[c, _RN] += 1
-                        elif predicted_label == 1:
-                            confusion_matrices_default[c, _RP] += 1
 
         if confusion_matrices_covered is None or confusion_matrices_covered.shape[0] != num_labels:
             confusion_matrices_covered = matrix_float64(num_labels, 4)
@@ -136,7 +139,6 @@ cdef class LabelWiseMeasure(Loss):
         cdef intp[::1] label_indices = self.label_indices
         cdef intp num_labels = confusion_matrices_covered.shape[0]
         cdef intp c, l
-        cdef intp[::1] example_weights = self.example_weights
         cdef uint8 true_label, predicted_label
 
         for c in range(num_labels):
@@ -168,12 +170,6 @@ cdef class LabelWiseMeasure(Loss):
         cdef intp num_labels = confusion_matrices_covered.shape[0]
         cdef intp c
         cdef Heuristic heuristic = self.heuristic
-
-        if predicted_scores is None or predicted_scores.shape[0] != num_labels:
-            predicted_scores = array_float64(num_labels)
-            prediction.predicted_scores = predicted_scores
-            quality_scores = array_float64(num_labels)
-            prediction.quality_scores = quality_scores
 
         for c in range(num_labels):
             l = get_index(c, label_indices)
@@ -207,9 +203,6 @@ cdef class LabelWiseMeasure(Loss):
 
         return prediction
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
-        return self.evaluate_label_independent_predictions(uncovered)
-
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
@@ -227,4 +220,3 @@ cdef class LabelWiseMeasure(Loss):
             # Only the examples that are covered by the new rule must be considered
             for i in covered_example_indices:
                 uncovered_labels[i, l] = 0
-
