@@ -202,17 +202,10 @@ cdef class LabelWiseMeasure(DecomposableLoss):
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef uint8[::1, :] true_labels = self.true_labels
-        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        cdef uint32[::1] minority_labels = self.minority_labels
-        cdef intp num_labels = predicted_scores.shape[0]
-        cdef float64 minority_label
         cdef intp l, i
 
         # Only the labels that are predicted by the new rule must be considered
         for l in label_indices:
-            minority_label = minority_labels[l]
-
             # Only the examples that are covered by the new rule must be considered
             for i in covered_example_indices:
                 uncovered_labels[i, l] = 0
