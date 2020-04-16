@@ -316,11 +316,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
+    def __init__(self, model_dir: str = None, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: int = -1,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None):
         """
-        :param max_rules:                   The maximum number of rules to be induced (including the default rule)
+        :param num_rules:                   The maximum number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
@@ -340,7 +340,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                             pruning should be used
         """
         super().__init__(model_dir)
-        self.max_rules = max_rules
+        self.num_rules = num_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
         self.loss = loss
@@ -361,7 +361,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         instance_sub_sampling = _create_instance_sub_sampling(str(self.instance_sub_sampling))
         feature_sub_sampling = _create_feature_sub_sampling(str(self.feature_sub_sampling))
         pruning = _create_pruning(str(self.pruning))
-        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
+        stopping_criteria = _create_stopping_criteria(int(self.num_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
         return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
                                   feature_sub_sampling, pruning, *stopping_criteria)
