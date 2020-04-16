@@ -105,14 +105,15 @@ cdef class LabelWiseMeasure(DecomposableLoss):
 
 
     cdef begin_search(self, intp[::1] label_indices):
-        cdef uint32[::1] minority_labels = self.minority_labels
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
         cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef uint32[::1] minority_labels
         cdef intp num_labels
 
         if label_indices is None:
+            minority_labels = self.minority_labels
             num_labels = minority_labels.shape[0]
         else:
             num_labels = label_indices.shape[0]
