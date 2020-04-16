@@ -1,8 +1,8 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 from boomer.algorithm._heuristics cimport Heuristic
-from boomer.algorithm._losses cimport Loss, Prediction, LabelIndependentPrediction
+from boomer.algorithm._losses cimport DecomposableLoss, Prediction, LabelIndependentPrediction
 
-cdef class LabelWiseMeasure(Loss):
+cdef class LabelWiseMeasure(DecomposableLoss):
 
     # Attributes:
 
@@ -23,8 +23,6 @@ cdef class LabelWiseMeasure(Loss):
     cdef float64[::1, :] confusion_matrices_covered
 
     cdef intp[::1] label_indices
-
-    cdef intp[::1] example_weights
 
     # Functions:
 

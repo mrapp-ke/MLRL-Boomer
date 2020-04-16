@@ -147,8 +147,6 @@ class SeparateAndConquer(RuleInduction):
         :param feature_sub_sampling:    The strategy that is used for sub-sampling the features each time a
                                         classification rule is refined
         :param pruning:                 The strategy that is used for pruning rules
-        :param shrinkage:               The shrinkage parameter that should be applied to the predictions of newly
-                                        induced rules to reduce their effect on the entire model. Must be in (0, 1]
         :param stopping_criteria        The stopping criteria that should be used to decide whether additional rules
                                         should be induced or not
         """

@@ -354,7 +354,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
                                   feature_sub_sampling, pruning, *stopping_criteria)
 
-    def __create_heuristic(self) -> Loss:
+    def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
 
         if heuristic == 'precision':

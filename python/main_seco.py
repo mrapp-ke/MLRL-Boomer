@@ -35,11 +35,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The name of the strategy to be used for pruning or None')
     p.add_argument('--loss', type=str, default='macro-squared-error-loss',
                    help='The name of the loss function to be used')
-    p.add_argument('--l2-regularization-weight', type=float, default=0,
-                   help='The weight of the L2 regularization to be used')
     p.add_argument('--head-refinement', type=optional_string, default=None,
                    help='The name of the strategy to be used for finding the heads of rules')
-    p.add_argument('--shrinkage', type=float, default=1.0, help='The shrinkage parameter to be used')
 
 
 def create_learner(params) -> SeparateAndConquerRuleLearner:
@@ -53,7 +50,7 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='An multi-label classification experiment using Separate and Conquer')
+    parser = argparse.ArgumentParser(description='A multi-label classification experiment using Separate and Conquer')
     configure_argument_parser(parser)
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,

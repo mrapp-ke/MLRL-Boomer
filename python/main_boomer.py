@@ -50,7 +50,7 @@ def create_learner(params) -> Boomer:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='An multi-label classification experiment using BOOMER')
+    parser = argparse.ArgumentParser(description='A multi-label classification experiment using BOOMER')
     configure_argument_parser(parser)
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
