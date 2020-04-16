@@ -5,6 +5,7 @@ import logging as log
 
 from args import current_fold_string
 from args import optional_string, log_level, boolean_string
+from boomer.algorithm.rule_learners import MEASURE_LABEL_WISE
 from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
@@ -33,7 +34,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The name of the strategy to be used for feature sub-sampling or None')
     p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
-    p.add_argument('--loss', type=str, default='macro-squared-error-loss',
+    p.add_argument('--loss', type=str, default=MEASURE_LABEL_WISE,
                    help='The name of the loss function to be used')
     p.add_argument('--head-refinement', type=optional_string, default=None,
                    help='The name of the strategy to be used for finding the heads of rules')
