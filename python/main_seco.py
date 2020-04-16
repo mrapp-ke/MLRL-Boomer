@@ -23,7 +23,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
     p.add_argument('--current-fold', type=current_fold_string, default=-1,
                    help='The cross validation fold to be performed')
-    p.add_argument('--num-rules', type=int, default=1000, help='The number of rules to be induced or -1')
+    p.add_argument('--num-rules', type=int, default=500, help='The number of rules to be induced or -1')
     p.add_argument('--time-limit', type=int, default=-1,
                    help='The duration in seconds after which the induction of rules should be canceled or -1')
     p.add_argument('--label-sub-sampling', type=int, default=-1,
