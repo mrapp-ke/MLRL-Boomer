@@ -69,8 +69,8 @@ cdef class LabelWiseMeasure(DecomposableLoss):
         return default_rule
 
     cdef begin_instance_sub_sampling(self):
-        pass
-
+        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        confusion_matrices_default[:, :] = 0
 
     cdef update_sub_sample(self, intp r):
         cdef intp num_labels
@@ -105,8 +105,6 @@ cdef class LabelWiseMeasure(DecomposableLoss):
 
     cdef begin_search(self, intp[::1] label_indices):
         cdef uint32[::1] minority_labels = self.minority_labels
-        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        cdef uint8[::1, :] true_labels = self.true_labels
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
@@ -118,8 +116,6 @@ cdef class LabelWiseMeasure(DecomposableLoss):
         else:
             num_labels = label_indices.shape[0]
 
-        confusion_matrices_default[:,:] = 0
-
         if confusion_matrices_covered is None or confusion_matrices_covered.shape[0] != num_labels:
             confusion_matrices_covered = matrix_float64(num_labels, 4)
             self.confusion_matrices_covered = confusion_matrices_covered
@@ -128,7 +124,7 @@ cdef class LabelWiseMeasure(DecomposableLoss):
             quality_scores = array_float64(num_labels)
             prediction.quality_scores = quality_scores
 
-        confusion_matrices_covered[:,:] = 0
+        confusion_matrices_covered[:, :] = 0
         self.label_indices = label_indices
 
     cdef update_search(self, intp example_index, uint32 weight):
