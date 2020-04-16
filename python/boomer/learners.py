@@ -4,7 +4,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides base classes for implementing multi-label classifiers or rankers.
+Provides base classes for implementing single- or multi-label classifiers or rankers.
 """
 import logging as log
 from abc import abstractmethod
