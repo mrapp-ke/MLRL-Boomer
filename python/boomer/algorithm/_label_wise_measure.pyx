@@ -17,7 +17,6 @@ cdef class LabelWiseMeasure(DecomposableLoss):
     def __cinit__(self, Heuristic heuristic):
         self.prediction = LabelIndependentPrediction.__new__(LabelIndependentPrediction)
         self.confusion_matrices_covered = None
-        self.label_indices = None
         self.heuristic = heuristic
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
