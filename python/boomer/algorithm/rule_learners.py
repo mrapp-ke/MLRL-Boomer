@@ -317,7 +317,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     """
 
     def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = 'label-wise-measure', heuristic: str = 'precision', label_sub_sampling: int = -1,
+                 loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: int = -1,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None):
         """
         :param max_rules:                   The maximum number of rules to be induced (including the default rule)
