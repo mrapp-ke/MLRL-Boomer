@@ -218,6 +218,44 @@ class Boomer(MLRuleLearner):
         self.shrinkage = shrinkage
         self.l2_regularization_weight = l2_regularization_weight
 
+    def get_model_prefix(self) -> str:
+        return 'boomer'
+
+    def get_name(self) -> str:
+        name = 'num-rules=' + str(self.num_rules)
+        if self.head_refinement is not None:
+            name += '_head-refinement=' + str(self.head_refinement)
+        name += '_loss=' + str(self.loss)
+        if self.label_sub_sampling is not None:
+            name += '_label-sub-sampling=' + str(self.label_sub_sampling)
+        if self.instance_sub_sampling is not None:
+            name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
+        if self.feature_sub_sampling is not None:
+            name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.pruning is not None:
+            name += '_pruning=' + str(self.pruning)
+        if 0.0 < float(self.shrinkage) < 1.0:
+            name += '_shrinkage=' + str(self.shrinkage)
+        if float(self.l2_regularization_weight) > 0.0:
+            name += '_l2=' + str(self.l2_regularization_weight)
+        return name
+
+    def get_params(self, deep=True):
+        params = super().get_params()
+        params.update({
+            'num_rules': self.num_rules,
+            'time_limit': self.time_limit,
+            'head_refinement': self.head_refinement,
+            'loss': self.loss,
+            'label_sub_sampling': self.label_sub_sampling,
+            'instance_sub_sampling': self.instance_sub_sampling,
+            'feature_sub_sampling': self.feature_sub_sampling,
+            'pruning': self.pruning,
+            'shrinkage': self.shrinkage,
+            'l2_regularization_weight': self.l2_regularization_weight
+        })
+        return params
+
     def _create_prediction(self) -> Prediction:
         return Sign(LinearCombination())
 
@@ -274,41 +312,6 @@ class Boomer(MLRuleLearner):
             return None
         raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
 
-    def get_name(self) -> str:
-        name = 'num-rules=' + str(self.num_rules)
-        if self.head_refinement is not None:
-            name += '_head-refinement=' + str(self.head_refinement)
-        name += '_loss=' + str(self.loss)
-        if self.label_sub_sampling is not None:
-            name += '_label-sub-sampling=' + str(self.label_sub_sampling)
-        if self.instance_sub_sampling is not None:
-            name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
-        if self.feature_sub_sampling is not None:
-            name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
-        if self.pruning is not None:
-            name += '_pruning=' + str(self.pruning)
-        if 0.0 < float(self.shrinkage) < 1.0:
-            name += '_shrinkage=' + str(self.shrinkage)
-        if float(self.l2_regularization_weight) > 0.0:
-            name += '_l2=' + str(self.l2_regularization_weight)
-        return name
-
-    def get_params(self, deep=True):
-        params = super().get_params()
-        params.update({
-            'num_rules': self.num_rules,
-            'time_limit': self.time_limit,
-            'head_refinement': self.head_refinement,
-            'loss': self.loss,
-            'label_sub_sampling': self.label_sub_sampling,
-            'instance_sub_sampling': self.instance_sub_sampling,
-            'feature_sub_sampling': self.feature_sub_sampling,
-            'pruning': self.pruning,
-            'shrinkage': self.shrinkage,
-            'l2_regularization_weight': self.l2_regularization_weight
-        })
-        return params
-
 
 class SeparateAndConquerRuleLearner(MLRuleLearner):
     """
@@ -350,8 +353,39 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
 
+    def get_model_prefix(self) -> str:
+        return 'seco'
+
     def get_name(self) -> str:
-        return 'SeparateAndConquerRuleLearner'
+        name = 'num-rules=' + str(self.num_rules)
+        if self.head_refinement is not None:
+            name += '_head-refinement=' + str(self.head_refinement)
+        name += '_loss=' + str(self.loss)
+        name += '_heuristic=' + str(self.heuristic)
+        if self.label_sub_sampling is not None:
+            name += '_label-sub-sampling=' + str(self.label_sub_sampling)
+        if self.instance_sub_sampling is not None:
+            name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
+        if self.feature_sub_sampling is not None:
+            name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.pruning is not None:
+            name += '_pruning=' + str(self.pruning)
+        return name
+
+    def get_params(self, deep=True):
+        params = super().get_params()
+        params.update({
+            'num_rules': self.num_rules,
+            'time_limit': self.time_limit,
+            'head_refinement': self.head_refinement,
+            'loss': self.loss,
+            'heuristic': self.heuristic,
+            'label_sub_sampling': self.label_sub_sampling,
+            'instance_sub_sampling': self.instance_sub_sampling,
+            'feature_sub_sampling': self.feature_sub_sampling,
+            'pruning': self.pruning
+        })
+        return params
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
         heuristic = self.__create_heuristic()
