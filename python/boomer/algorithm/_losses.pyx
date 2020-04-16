@@ -4,6 +4,7 @@
 Provides base classes for loss functions to be minimized during training.
 """
 
+
 cdef class Prediction:
     """
     Assess the overall quality of a rule's predictions for one or several labels.
