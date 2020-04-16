@@ -226,7 +226,7 @@ class Boomer(MLRuleLearner):
         if self.head_refinement is not None:
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
-        if self.label_sub_sampling is not None:
+        if int(self.label_sub_sampling) != 1:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
         if self.instance_sub_sampling is not None:
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
@@ -362,7 +362,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
-        if self.label_sub_sampling is not None:
+        if int(self.label_sub_sampling) != -1:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
         if self.instance_sub_sampling is not None:
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
