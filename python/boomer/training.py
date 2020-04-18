@@ -21,7 +21,7 @@ from boomer.interfaces import Randomized
 
 class DataSet:
     """
-    Stores the properties of a data set to be used for training and evaluation multi-label classifiers.
+    Stores the properties of a data set to be used for training and evaluating multi-label classifiers.
     """
 
     def __init__(self, data_dir: str, data_set_name: str, use_one_hot_encoding: bool):
