@@ -12,7 +12,7 @@ from boomer.algorithm._losses cimport Loss, Prediction
 from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.algorithm._pruning cimport Pruning
 from boomer.algorithm._shrinkage cimport Shrinkage
-from boomer.algorithm._utils cimport Comparator, s_condition, test_condition, get_index, get_weight
+from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_index, get_weight
 
 from libcpp.list cimport list as list
 from cython.operator cimport dereference, postincrement
@@ -70,7 +70,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
     # The head of the induced rule
     cdef HeadCandidate head = None
     # A list that contains the rule's conditions (in the order they have been learned)
-    cdef list[s_condition] conditions
+    cdef list[Condition] conditions
     # An array that specifies the number of conditions that use the different types of operators
     cdef intp[::1] num_conditions_per_comparator = array_intp(4)
     num_conditions_per_comparator[:] = 0
@@ -317,7 +317,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
     return __build_rule(head, conditions, num_conditions_per_comparator)
 
 
-cdef inline s_condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
+cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
 
@@ -325,7 +325,7 @@ cdef inline s_condition __make_condition(intp feature_index, Comparator comparat
     :param comparator:      The type of the operator used by the condition
     :param threshold:       The threshold that is used by the condition
     """
-    cdef s_condition condition
+    cdef Condition condition
     condition.feature_index = feature_index
     condition.comparator = comparator
     condition.threshold = threshold
@@ -389,7 +389,7 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, 
     return adjusted_position
 
 
-cdef inline Rule __build_rule(HeadCandidate head, list[s_condition] conditions,
+cdef inline Rule __build_rule(HeadCandidate head, list[Condition] conditions,
                               intp[::1] num_conditions_per_comparator):
     """
     Builds and returns a rule.
@@ -412,12 +412,12 @@ cdef inline Rule __build_rule(HeadCandidate head, list[s_condition] conditions,
     num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
     cdef intp[::1] neq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
     cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    cdef list[s_condition].iterator iterator = conditions.begin()
+    cdef list[Condition].iterator iterator = conditions.begin()
     cdef intp leq_i = 0
     cdef intp gr_i = 0
     cdef intp eq_i = 0
     cdef intp neq_i = 0
-    cdef s_condition condition
+    cdef Condition condition
     cdef Comparator comparator
 
     while iterator != conditions.end():

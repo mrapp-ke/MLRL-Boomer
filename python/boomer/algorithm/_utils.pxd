@@ -20,7 +20,7 @@ cdef enum Comparator:
 A struct that represents a condition of a rule. It consists of the index of the feature the condition corresponds to,
 the type of the operator that is used by the condition, as well as a threshold.
 """
-cdef struct s_condition:
+cdef struct Condition:
     intp feature_index
     Comparator comparator
     float32 threshold
