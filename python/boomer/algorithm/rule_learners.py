@@ -67,7 +67,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         x = self._ensure_input_format(x)
         y = self._ensure_input_format(y)
 
-        # Create an array that contains the indices of all nominal attributes
+        # Create an array that contains the indices of all nominal attributes, if any
         nominal_attribute_indices = self.nominal_attribute_indices
 
         if nominal_attribute_indices is not None and len(nominal_attribute_indices) > 0:
