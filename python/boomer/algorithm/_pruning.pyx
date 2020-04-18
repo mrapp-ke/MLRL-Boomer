@@ -44,7 +44,7 @@ cdef class Pruning:
         """
         pass
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[s_condition] conditions):
+    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions):
         """
         Prunes the conditions of a rule by modifying a given list of conditions in-place.
 
@@ -101,7 +101,7 @@ cdef class IREP(Pruning):
         self.head_refinement = head_refinement
         self.weights = weights
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[s_condition] conditions):
+    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions):
         cdef intp[::1] label_indices = self.label_indices
         cdef Loss loss = self.loss
         cdef HeadRefinement head_refinement = self.head_refinement
@@ -112,8 +112,8 @@ cdef class IREP(Pruning):
         cdef intp[::1] best_covered_example_indices = self.covered_example_indices
         cdef intp best_num_examples = best_covered_example_indices.shape[0]
         cdef intp num_pruned_conditions = 0
-        cdef list[s_condition].iterator iterator = conditions.begin()
-        cdef s_condition condition
+        cdef list[Condition].iterator iterator = conditions.begin()
+        cdef Condition condition
         cdef float32 threshold, feature_value
         cdef Comparator comparator
         cdef intp[::1] covered_example_indices, new_covered_example_indices
