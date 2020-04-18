@@ -182,10 +182,11 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :return:            The encoded features of the given examples and the encoder that has been used
     """
     nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
-    log.info('Data set contains %s nominal and %s numerical attributes.', len(nominal_indices),
-             (len(meta_data.attributes) - len(nominal_indices)))
+    num_nominal_attributes = len(nominal_indices)
+    log.info('Data set contains %s nominal and %s numerical attributes.', num_nominal_attributes,
+             (len(meta_data.attributes) - num_nominal_attributes))
 
-    if len(nominal_indices) > 0:
+    if num_nominal_attributes > 0:
         x = x.toarray()
         old_shape = x.shape
 
