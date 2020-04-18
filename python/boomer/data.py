@@ -23,7 +23,7 @@ from boomer.io import write_xml_file
 
 class AttributeType(Enum):
     """
-    Specifies all supported types of attributes.
+    All supported types of attributes.
     """
 
     NUMERIC = auto()
