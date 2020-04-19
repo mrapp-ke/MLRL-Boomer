@@ -64,7 +64,7 @@ cdef class Loss:
 
         This function must be invoked before a new rule is learned from scratch (as each rule may be learned on a
         different sub-sample of the training data), as well as each time an existing rule has been refined, i.e.
-        when a new condition has been be added to its body (because this results in less examples being covered by the
+        when a new condition has been added to its body (because this results in fewer examples being covered by the
         refined rule).
 
         This function is supposed to reset any non-global internal state that only holds for a certain set of examples
