@@ -18,7 +18,7 @@ cdef class Heuristic:
         A confusion matrix consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN, URP. According to this
         notation, the individual symbols have the following meaning:
 
-        - The first symbol denotes whether a element corresponds to labels that are covered (C) or uncovered (U) by the
+        - The first symbol denotes whether an element corresponds to labels that are covered (C) or uncovered (U) by the
           rule.
         - The second symbol denotes relevant (R) and irrelevant (I) labels according to the ground truth.
         - The third symbol denotes labels for which the prediction in the rule's head is positive (P) or negative (N).
