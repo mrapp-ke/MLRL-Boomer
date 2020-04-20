@@ -10,8 +10,8 @@ from abc import abstractmethod, ABC
 from timeit import default_timer as timer
 
 import numpy as np
-
 from boomer.algorithm._label_wise_measure import LabelWiseMeasure
+
 from boomer.algorithm.model import Theory
 
 
@@ -37,14 +37,14 @@ class SizeStoppingCriterion(StoppingCriterion):
     A stopping criterion that ensures that the number of rules in a theory does not exceed a certain maximum.
     """
 
-    def __init__(self, num_rules: int):
+    def __init__(self, max_rules: int):
         """
-        :param num_rules: The maximum number of rules
+        :param max_rules: The maximum number of rules
         """
-        self.num_rules = num_rules
+        self.max_rules = max_rules
 
     def should_continue(self, theory: Theory) -> bool:
-        return len(theory) < self.num_rules
+        return len(theory) < self.max_rules
 
 
 class TimeStoppingCriterion(StoppingCriterion):

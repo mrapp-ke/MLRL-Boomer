@@ -94,14 +94,14 @@ def _create_pruning(pruning: str) -> Pruning:
     raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
 
-def _create_stopping_criteria(num_rules: int, time_limit: int) -> List[StoppingCriterion]:
+def _create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
     stopping_criteria: List[StoppingCriterion] = []
 
-    if num_rules != -1:
-        if num_rules > 0:
-            stopping_criteria.append(SizeStoppingCriterion(num_rules))
+    if max_rules != -1:
+        if max_rules > 0:
+            stopping_criteria.append(SizeStoppingCriterion(max_rules))
         else:
-            raise ValueError('Invalid value given for parameter \'num_rules\': ' + str(num_rules))
+            raise ValueError('Invalid value given for parameter \'max_rules\': ' + str(max_rules))
 
     if time_limit != -1:
         if time_limit > 0:
@@ -177,13 +177,13 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, model_dir: str = None, num_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
+    def __init__(self, model_dir: str = None, max_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: int = -1,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM,
                  pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
         """
-        :param num_rules:                   The number of rules to be induced (including the default rule)
+        :param max_rules:                   The maximum number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
@@ -207,7 +207,7 @@ class Boomer(MLRuleLearner):
                                             scores that are predicted by rules. Must be at least 0
         """
         super().__init__(model_dir)
-        self.num_rules = num_rules
+        self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
         self.loss = loss
@@ -222,7 +222,7 @@ class Boomer(MLRuleLearner):
         return 'boomer'
 
     def get_name(self) -> str:
-        name = 'num-rules=' + str(self.num_rules)
+        name = 'max-rules=' + str(self.max_rules)
         if self.head_refinement is not None:
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
@@ -243,7 +243,7 @@ class Boomer(MLRuleLearner):
     def get_params(self, deep=True):
         params = super().get_params()
         params.update({
-            'num_rules': self.num_rules,
+            'max_rules': self.max_rules,
             'time_limit': self.time_limit,
             'head_refinement': self.head_refinement,
             'loss': self.loss,
@@ -260,7 +260,7 @@ class Boomer(MLRuleLearner):
         return Sign(LinearCombination())
 
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
-        stopping_criteria = _create_stopping_criteria(int(self.num_rules), int(self.time_limit))
+        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         l2_regularization_weight = self.__create_l2_regularization_weight()
         loss = self.__create_loss(l2_regularization_weight)
         head_refinement = self.__create_head_refinement(loss)
@@ -319,11 +319,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, model_dir: str = None, num_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
+    def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: int = -1,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None):
         """
-        :param num_rules:                   The maximum number of rules to be induced (including the default rule)
+        :param max_rules:                   The maximum number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
@@ -343,7 +343,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                             pruning should be used
         """
         super().__init__(model_dir)
-        self.num_rules = num_rules
+        self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
         self.loss = loss
@@ -357,7 +357,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return 'seco'
 
     def get_name(self) -> str:
-        name = 'num-rules=' + str(self.num_rules)
+        name = 'max-rules=' + str(self.max_rules)
         if self.head_refinement is not None:
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
@@ -375,7 +375,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def get_params(self, deep=True):
         params = super().get_params()
         params.update({
-            'num_rules': self.num_rules,
+            'max_rules': self.max_rules,
             'time_limit': self.time_limit,
             'head_refinement': self.head_refinement,
             'loss': self.loss,
@@ -395,7 +395,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         instance_sub_sampling = _create_instance_sub_sampling(str(self.instance_sub_sampling))
         feature_sub_sampling = _create_feature_sub_sampling(str(self.feature_sub_sampling))
         pruning = _create_pruning(str(self.pruning))
-        stopping_criteria = _create_stopping_criteria(int(self.num_rules), int(self.time_limit))
+        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
         return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
                                   feature_sub_sampling, pruning, *stopping_criteria)
