@@ -1,13 +1,13 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides base classes for loss functions to be minimized during training.
+Provides base classes for all (surrogate) loss functions to be minimized locally by the rules learned during training.
 """
 
 
 cdef class Prediction:
     """
-    Assess the overall quality of a rule's predictions for one or several labels.
+    Assesses the overall quality of a rule's predictions for one or several labels.
     """
 
     def __cinit__(self):
@@ -26,140 +26,166 @@ cdef class LabelIndependentPrediction(Prediction):
 
 cdef class Loss:
     """
-    A base class for all decomposable or non-decomposable loss functions. A loss function can be used to calculate the
-    optimal scores to be predicted by rules for individual labels and covered examples.
+    A base class for all (surrogate) loss functions to be minimized locally by the rules learned during training.
+
+    An algorithm for rule induction may use the functions provided by this class to obtain loss-minimizing predictions
+    for candidate rules (or the default rule), as well as quality scores that assess the quality of these rules.
+
+    For reasons of efficiency, implementations of this class may be stateful. This enabled to avoid redundant
+    recalculations of information that applies to several candidate rules. Call to functions of this class must follow a
+    strict protocol regarding the order of function invocations. For detailed information refer to the documentation of
+    the individual functions.
     """
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         """
-        Calculates the optimal scores to be predicted by the default rule for each label and example.
+        Calculates the loss-minimizing scores to be predicted by the default rule, i.e., a rule that covers all
+        examples, for each label.
 
-        This function must be called prior to calling any other function provided by this class. It calculates and
-        caches the gradients and hessians based on the expected confidence scores and the scores predicted by the 
-        default rule.
+        This function must be called exactly once. It must be called prior to the invocation of any other function
+        provided by this class.
 
-        Furthermore, this function also allocates arrays for storing the total sum of gradients or hessians for each 
-        label. These arrays are later used to search for the optimal scores to be predicted by rules that cover all
-        examples provided to the search, as well as by rules that do not cover these instances (but all other ones) at
-        the same time instead of requiring two passes through the examples. 
-        
-        To initialize the arrays, before invoking the function `begin_search`, the function 
-        `begin_instance_sub_sampling` must be called, followed by invocations of the function `update_sub_sample` for 
-        each of the examples to be considered by the search.
+        As this function is guaranteed to be invoked at first, it may be used to initialize the internal state of an
+        instantiation of this class, i.e., to compute and store global information that is required by the other
+        functions that will be called later, e.g. overall statistics about the given ground truth labels.
 
         :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
                     examples according to the ground truth
-        :return:    An array of dtype float, shape `(num_labels)`, representing the optimal scores to be predicted by
-                    the default rule for each label and example
+        :return:    An array of dtype float, shape `(num_labels)`, representing the scores to be predicted by the
+                    default rule for each label
         """
         pass
 
     cdef begin_instance_sub_sampling(self):
         """
-        Resets the cached sum of gradients and hessians for each label to 0.
-        
-        This function must always be invoked before the functions `begin_instance_sub_sampling` and `begin_search`. It 
-        must also  be invoked when a rule has been refined, i.e., when a new condition has been added to its body, as 
-        this results in less examples being covered by the rule.
+        Notifies the loss function that the examples, which should be considered in the following for learning a new
+        rule or refining an existing one, have changed. The indices of the respective examples must be provided via
+        subsequent calls to the function `update_sub_sample`.
+
+        This function must be invoked before a new rule is learned from scratch (as each rule may be learned on a
+        different sub-sample of the training data), as well as each time an existing rule has been refined, i.e.
+        when a new condition has been added to its body (because this results in fewer examples being covered by the
+        refined rule).
+
+        This function is supposed to reset any non-global internal state that only holds for a certain set of examples
+        and therefore becomes invalid when different examples are used, e.g. statistics about the ground truth labels of
+        particular examples.
         """
         pass
 
     cdef update_sub_sample(self, intp example_index):
         """
-        Updates the total sum of gradients and hessians for each label given an example that should be considered by the 
-        upcoming search. This should include all examples that have been selected via instance-sub-sampling and are 
-        covered by the current rule (if any).
+        Notifies the loss function about an example that should be considered in the following for learning a new rule
+        or refining an existing one.
 
-        This function must be invoked for each example that should be considered by the upcoming search after the 
-        function `begin_instance_sub_sampling' and before `begin_search`.
+        This function must be called repeatedly for each example that should be considered, e.g., for all examples that
+        have been selected via instance sub-sampling, immediately after the invocation of the function
+        `begin_instance_sub_sampling`.
 
-        :param example_index: The index of an example that should be considered by the upcoming search
+        This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
+        and store local information that is required by the other functions that will be called later, e.g. statistics
+        about the ground truth labels of these particular examples. Any information computed by this function is
+        expected to be reset when invoking the function `begin_instance_sub_sample` for the next time.
+
+        :param example_index: The index of an example that should be considered
         """
         pass
 
     cdef begin_search(self, intp[::1] label_indices):
         """
-        Begins a new search to find the optimal scores to be predicted by candidate rules for individual labels.
+        Notifies the loss function that a new search for the best refinement of a rule, i.e., the best condition to be
+        added to its body, should be started. The examples that are covered by such a condition must be provided via
+        subsequent calls to the function `update_search`.
 
-        This function must be called prior to searching for the best refinement with respect to a certain attribute in
-        order to reset the sums of gradients and hessians cached internally to calculate the optimal scores more 
-        efficiently. Subsequent invocations of the function `update_search` can be used to update the cached values 
-        afterwards based on a single, newly covered example.
-        
-        Invoking the function `evaluate_label_independent_predictions` or `evaluate_label_dependent_predictions` at any
-        point of the search (`update_search` must be called at least once before!) will yield the optimal scores to be
-        predicted by a rule that covers all examples given so far, as well as corresponding quality scores that measure
-        the quality of such a rule's predictions.
+        This function must be called each time a new condition is considered, unless the new condition covers all
+        examples previously provided via calls to the function `update_search`.
 
-        When a new rule has been induced, the function `apply_predictions` must be invoked in order to update the cached
-        gradients (and hessians in case of a non-decomposable loss function).
+        This function is supposed to reset any internal state that only holds for the examples covered by a previously
+        considered condition and therefore becomes invalid when different examples are covered by another condition,
+        e.g. statistics about the ground truth labels of the covered examples.
+
+        Optionally, a subset of the available labels may be specified via the argument `label_indices`. In such case,
+        only the specified labels will be considered by the functions that will be called later. When calling this
+        function again, a different set of labels may be specified.
 
         :param label_indices: An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
-                              labels for which the rule should predict or None, if the rule may predict for all labels
+                              labels for which the refined rule should predict or None, if the rule may predict for all
+                              labels
         """
         pass
 
     cdef update_search(self, intp example_index, uint32 weight):
         """
-        Updates the cached sums of gradients and hessians based on a single, newly covered example.
+        Notifies the loss function about an example that is covered by the condition that is currently considered for
+        refining a rule.
 
-        Subsequent invocations of the function `evaluate_label_independent_predictions` or
-        `evaluate_label_dependent_predictions` will yield the optimal scores to be predicted by a rule that covers all
-        examples given so far, as well as corresponding quality scores that measure the quality of such a rule's
-        predictions.
+        This function must be called repeatedly for each example that is covered by the current condition, immediately
+        after the invocation of the function `begin_search`. Each of these examples must have been provided earlier via
+        the function `update_sub_sample`.
 
-        :param example_index:   The index of the newly-covered example in the entire training data set
-        :param weight:          The weight of the newly covered example
+        This function is supposed to update any internal state that relates to the examples that are covered current
+        condition, i.e., to compute and store local information that is required by the other functions that will be
+        called later, e.g. statistics about the ground truth labels of the covered examples. Any information computed by
+        this function is expected to be reset when invoking the function `begin_search` for the next time.
+
+        :param example_index:   The index of the covered example
+        :param weight:          The weight of the covered example
         """
         pass
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         """
-        Calculates the optimal scores to be predicted by a rule that covers all examples that have been provided so far
-        via the function `update_search`, respectively by a rule that covers all examples that have not been provided
-        yet. Additionally, quality scores that measure the quality of the predicted scores are calculated for each
-        label.
+        Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
+        been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
+        is considered to cover all examples that belong to the difference between the examples that have been provided
+        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
 
-        The optimal score to be predicted for an individual label is calculated independently from the other labels. In
-        case of a non-decomposable loss function, it is assumed that the rule will abstain, i.e., predict 0, for the
-        other labels. The same assumption is used to calculate a quality score for each label independently.
+        The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
+        be predicted for an individual label is calculated independently from the other labels, i.e., in case of a
+        non-decomposable loss function, it is assumed that the rule will abstain for the other labels. In addition to
+        each score, a quality score, which assesses the quality of the prediction for the respective label, is returned.
 
-        The calculated scores correspond to the label indices provided to the `begin_search` function. If no label
-        indices were provided, scores for all labels are calculated.
-
-        :param uncovered:   0, if the scores for a rule that covers all examples that have been provided so far should
-                            be calculated, 1, if the scores for a rule that covers all examples that have not been
-                            provided yet should be calculated
-        :return:            A `LabelIndependentPrediction` that stores the optimal scores to be predicted by the rule,
-                            as well as the corresponding quality scores for each label
+        :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
+                            1, if the rule covers all examples that belong to the difference between the examples that
+                            have been provided via the function `update_sub_sample` and the examples that have been
+                            provided via the function `update_search`
+        :return:            A `LabelIndependentPrediction` that stores the scores to be predicted by the rule for each
+                            considered label, as well as the corresponding quality scores
         """
         pass
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         """
-        Calculates the optimal scores to be predicted by a rule that covers all examples that have been provided so far
-        via the function `update_search`, respectively by a rule that covers all examples that have not been provided
-        yet. Additionally, a single quality score that measures the quality of the predicted scores is calculated.
+        Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
+        been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
+        is considered to cover all examples that belong to the difference between the examples that have been provided
+        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
 
-        The optimal score to be predicted for an individual label is calculated with respect to the predictions for the
-        other labels. In case of a decomposable loss function, i.e., if the labels are independent from each other, the
-        optimal scores provided by the function `evaluate_label_independent_predictions` are the same.
+        The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
+        be predicted for an individual label is calculated with respect to the predictions for the other labels. In case
+        of a decomposable loss function, i.e., if the labels are considered independently from each other, this function
+        is equivalent to the function `evaluate_label_independent_predictions`. In addition to the scores, an overall
+        quality score, which assesses the quality of the predictions for all labels in terms of a single score, is
+        returned.
 
-        The calculated scores correspond to the label indices provided to the `begin_search` function. If no label
-        indices were provided, scores for all labels are calculated.
-
-        :param uncovered:   0, if the scores for a rule that covers all examples that have been provided so far should
-                            be calculated, 1, if the scores for a rule that covers all examples that have not been
-                            provided yet should be calculated
-        :return:            A `Prediction` that stores the optimal scores to be predicted by the rule, as well as its
-                            overall quality score
+        :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
+                            1, if the rule covers all examples that belong to the difference between the examples that
+                            have been provided via the function `update_sub_sample` and the examples that have been
+                            provided via the function `update_search`
+        :return:            A `Prediction` that stores the optimal scores to be predicted by the rule for each
+                            considered label, as well as its overall quality score
         """
         pass
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         """
-        Updates the cached gradients and hessians based on the predictions provided by newly induced rules.
+        Notifies the loss function that a new rule has been induced.
+
+        This function must be called before learning the next rule, i.e., prior to the next invocation of the function
+        `begin_instance_sub_sampling`.
+
+        This function is supposed to update any internal state that depends on the predictions of already induced rules.
 
         :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
                                         of the examples that are covered by the newly induced rule, regardless of
@@ -174,7 +200,7 @@ cdef class Loss:
 
 cdef class DecomposableLoss(Loss):
     """
-    A base class for all decomposable loss functions.
+    A base class for all (label-wise) decomposable loss functions.
     """
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
@@ -207,7 +233,7 @@ cdef class DecomposableLoss(Loss):
 
 cdef class NonDecomposableLoss(Loss):
     """
-    A base class for all non-decomposable loss functions.
+    A base class for all (label-wise) non-decomposable loss functions.
     """
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
