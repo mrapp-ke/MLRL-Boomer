@@ -62,7 +62,7 @@ class BoomerBccCvAdapter(BbcCvAdapter):
                     rule.predict(test_x, masked_predictions)
                     current_predictions[test_indices, :] = masked_predictions
 
-            current_config['num_rules'] = (n + 1)
+            current_config['max_rules'] = (n + 1)
 
             if min_rules <= (n + 1) <= max_rules - 1 and (n + 1) % step_size == 0:
                 c += 1
@@ -173,14 +173,14 @@ class BestConfigBbcCvObserver(BbcCvObserver):
 
             for c, config in enumerate(configurations):
                 if best_configuration is None or self.__is_best_config(config, best_configuration):
-                    num_rules = config['num_rules']
-                    indices_list = indices_map[num_rules] if num_rules in indices_map else []
+                    max_rules = config['max_rules']
+                    indices_list = indices_map[max_rules] if max_rules in indices_map else []
                     indices_list.append(c)
-                    indices_map[num_rules] = indices_list
+                    indices_map[max_rules] = indices_list
 
             self.indices_map = indices_map
 
-        for num_rules, indices_list in indices_map.items():
+        for max_rules, indices_list in indices_map.items():
             num_configurations = len(indices_list)
 
             if num_configurations > 1:
@@ -196,20 +196,20 @@ class BestConfigBbcCvObserver(BbcCvObserver):
                 best_index = indices_list[0]
 
             best_predictions = predictions_test[:, best_index, :]
-            evaluation_name = 'best_configuration_num-rules=' + str(num_rules)
+            evaluation_name = 'best_configuration_num-rules=' + str(max_rules)
             evaluation.evaluate(evaluation_name, best_predictions, ground_truth_test, first_fold=0,
                                 current_fold=current_bootstrap, last_fold=num_bootstraps - 1, num_folds=num_bootstraps)
 
     @staticmethod
     def __is_best_config(config: dict, best: dict):
         for key, value in config.items():
-            if key != 'num_rules' and best[key] != value:
+            if key != 'max_rules' and best[key] != value:
                 return False
         return True
 
 
 def __create_configurations(arguments) -> List[dict]:
-    num_rules_values: List[int] = arguments.num_rules
+    max_rules_values: List[int] = arguments.max_rules
     loss_values: List[str] = arguments.loss
     head_refinement_values: List[str] = [None if x.lower() == 'none' else x for x in arguments.head_refinement]
     label_sub_sampling_values: List[int] = arguments.label_sub_sampling
@@ -222,7 +222,7 @@ def __create_configurations(arguments) -> List[dict]:
     l2_regularization_weight_values: List[float] = arguments.l2_regularization_weight
     result: List[dict] = []
 
-    for num_rules in num_rules_values:
+    for max_rules in max_rules_values:
         for loss in loss_values:
             for pruning in pruning_values:
                 for instance_sub_sampling in instance_sub_sampling_values:
@@ -233,7 +233,7 @@ def __create_configurations(arguments) -> List[dict]:
                                     for label_sub_sampling in label_sub_sampling_values:
                                         if head_refinement == 'full' or label_sub_sampling == -1:
                                             configuration = {
-                                                'num_rules': num_rules,
+                                                'max_rules': max_rules,
                                                 'loss': loss,
                                                 'pruning': pruning,
                                                 'instance_sub_sampling': instance_sub_sampling,
@@ -268,8 +268,8 @@ if __name__ == '__main__':
                         help='The step size to be used for testing subsets of a model\'s rules')
     parser.add_argument('--target-measure', type=target_measure, default='hamming-loss',
                         help='The target measure to be used for evaluating different configurations on the tuning set')
-    parser.add_argument('--num-rules', type=int_list, default='1000',
-                        help='The values for the parameter \'num_rules\' as a comma-separated list')
+    parser.add_argument('--max-rules', type=int_list, default='1000',
+                        help='The values for the parameter \'max_rules\' as a comma-separated list')
     parser.add_argument('--loss', type=string_list, default=LOSS_LABEL_WISE_LOGISTIC,
                         help='The values for the parameter \'loss\' as a comma-separated list')
     parser.add_argument('--head-refinement', type=string_list, default=HEAD_REFINEMENT_SINGLE,
