@@ -5,6 +5,7 @@ import logging as log
 
 from args import current_fold_string
 from args import optional_string, log_level, boolean_string
+from boomer.algorithm.rule_learners import MEASURE_LABEL_WISE, HEURISTIC_PRECISION
 from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
@@ -33,17 +34,17 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The name of the strategy to be used for feature sub-sampling or None')
     p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
-    p.add_argument('--loss', type=str, default='macro-squared-error-loss',
+    p.add_argument('--loss', type=str, default=MEASURE_LABEL_WISE,
                    help='The name of the loss function to be used')
+    p.add_argument('--heuristic', type=str, default=HEURISTIC_PRECISION, help='The name of the heuristic to be used')
     p.add_argument('--head-refinement', type=optional_string, default=None,
                    help='The name of the strategy to be used for finding the heads of rules')
 
 
 def create_learner(params) -> SeparateAndConquerRuleLearner:
     return SeparateAndConquerRuleLearner(model_dir=params.model_dir, max_rules=params.max_rules,
-                                         time_limit=params.time_limit,
-                                         loss=params.loss, pruning=params.pruning,
-                                         label_sub_sampling=params.label_sub_sampling,
+                                         time_limit=params.time_limit, loss=params.loss, heuristic=params.heuristic,
+                                         pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          feature_sub_sampling=params.feature_sub_sampling,
                                          head_refinement=params.head_refinement)
