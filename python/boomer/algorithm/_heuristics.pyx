@@ -57,7 +57,7 @@ cdef class HammingLoss(Heuristic):
         cdef float64 num_correct_labels = cip + crn + urn + urp
         cdef float64 num_total_labels = num_correct_labels + cin + crp + uin + uip
 
-        if num_labels == 0:
+        if num_total_labels == 0:
             return 1
         return num_correct_labels / num_total_labels
 
