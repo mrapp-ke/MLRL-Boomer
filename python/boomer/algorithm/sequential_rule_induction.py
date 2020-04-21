@@ -12,7 +12,7 @@ import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
 from boomer.algorithm._pruning import Pruning
-from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
+from boomer.algorithm._rule_induction import ExactGreedyRuleInduction
 from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 
@@ -87,6 +87,7 @@ class GradientBoosting(SequentialRuleInduction):
         feature_sub_sampling = self.feature_sub_sampling
         pruning = self.pruning
         shrinkage = self.shrinkage
+        rule_induction = ExactGreedyRuleInduction()
 
         # Convert feature and label matrices into Fortran-contiguous arrays
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
@@ -101,16 +102,16 @@ class GradientBoosting(SequentialRuleInduction):
         # Induce default rule, if necessary
         if len(theory) == 0:
             log.info('Learning rule 1 (default rule)...')
-            default_rule = induce_default_rule(y, loss)
+            default_rule = rule_induction.induce_default_rule(y, loss)
             theory.append(default_rule)
 
         while all([stopping_criterion.should_continue(theory) for stopping_criterion in stopping_criteria]):
             log.info('Learning rule %s...', len(theory) + 1)
 
             # Induce a new rule
-            rule = induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
-                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
-                               random_state)
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
+                                              label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                              shrinkage, random_state)
 
             # Add new rule to theory
             theory.append(rule)
