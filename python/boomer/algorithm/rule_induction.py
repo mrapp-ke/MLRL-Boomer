@@ -161,7 +161,7 @@ class SeparateAndConquer(RuleInduction):
         self.pruning = pruning
         self.stopping_criteria = stopping_criteria
 
-    def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+    def induce_rules(self, stats: Stats, nominal_attribute_indices: np.ndarray, x: np.ndarray, y: np.ndarray) -> Theory:
         stopping_criteria = self.stopping_criteria
         random_state = self.random_state
         head_refinement = self.head_refinement
@@ -184,8 +184,8 @@ class SeparateAndConquer(RuleInduction):
 
         while all([stopping_criterion.should_continue(theory) for stopping_criterion in stopping_criteria]):
             log.info('Learning rule %s...', num_learned_rules + 1)
-            rule = induce_rule(x, x_sorted_indices, y, head_refinement, loss, label_sub_sampling,
-                               instance_sub_sampling, feature_sub_sampling, pruning, None,
+            rule = induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
+                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, None,
                                random_state)
 
             print(format_rule(stats, rule))
