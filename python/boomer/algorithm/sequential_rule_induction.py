@@ -22,9 +22,9 @@ from boomer.interfaces import Randomized
 from boomer.stats import Stats
 
 
-class RuleInduction(Randomized):
+class SequentialRuleInduction(Randomized):
     """
-    A module that allows to induce a `Theory`, consisting of several classification rules.
+    A base class for all algorithms that allow to sequentially induce the classification rules included in a `Theory`.
     """
 
     @abstractmethod
@@ -44,9 +44,9 @@ class RuleInduction(Randomized):
         pass
 
 
-class GradientBoosting(RuleInduction):
+class GradientBoosting(SequentialRuleInduction):
     """
-    Implements the induction of (multi-label) classification rules using gradient boosting.
+    Allows to sequentially induce classification rules using gradient boosting.
     """
 
     def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,

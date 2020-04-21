@@ -21,7 +21,7 @@ from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSe
 
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination
-from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting
+from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, GradientBoosting
 from boomer.algorithm.stopping_criteria import SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
@@ -76,9 +76,9 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             nominal_attribute_indices = None
 
         # Induce rules
-        rule_induction = self._create_rule_induction(stats)
-        rule_induction.random_state = random_state
-        theory = rule_induction.induce_rules(stats, nominal_attribute_indices, x, y)
+        sequential_rule_induction = self._create_sequential_rule_induction(stats)
+        sequential_rule_induction.random_state = random_state
+        theory = sequential_rule_induction.induce_rules(stats, nominal_attribute_indices, x, y)
         return theory
 
     def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
@@ -102,12 +102,13 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_rule_induction(self, stats: Stats) -> RuleInduction:
+    def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
         """
-        Must be implemented by subclasses in order to create the `RuleInduction` to be used for inducing rules.
+        Must be implemented by subclasses in order to create the algorithm that should be used for sequential rule
+        induction.
 
         :param stats:   Statistics about the training data set
-        :return:        The `RuleInduction` that has been created
+        :return:        The algorithm for sequential rule induction that has been created
         """
         pass
 
@@ -162,7 +163,7 @@ class Boomer(MLRuleLearner):
     def _create_prediction(self) -> Prediction:
         return Sign(LinearCombination())
 
-    def _create_rule_induction(self, stats: Stats) -> RuleInduction:
+    def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
         num_rules = int(self.num_rules)
         time_limit = int(self.time_limit)
         stopping_criteria = []
