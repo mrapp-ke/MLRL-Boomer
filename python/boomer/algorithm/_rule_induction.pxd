@@ -1,4 +1,3 @@
-# distutils: language=c++
 from boomer.algorithm._arrays cimport intp, uint8, float32
 from boomer.algorithm._model cimport Rule
 from boomer.algorithm._losses cimport Loss
