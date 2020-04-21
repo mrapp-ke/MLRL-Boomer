@@ -44,58 +44,108 @@ cdef class EmptyBody(Body):
 
 cdef class ConjunctiveBody(Body):
     """
-    A body that consists of a conjunction of numerical conditions using <= and > operators.
+    A body that consists of a conjunction of conditions using the operators <= or > for numerical conditions and = or !=
+    for nominal conditions, respectively.
     """
 
-    def __cinit__(self, intp[::1] leq_feature_indices = None, float32[::1] leq_thresholds = None,
-                  intp[::1] gr_feature_indices = None, float32[::1] gr_thresholds = None):
+    def __cinit__(self, intp[::1] leq_feature_indices, float32[::1] leq_thresholds, intp[::1] gr_feature_indices,
+                  float32[::1] gr_thresholds, intp[::1] eq_feature_indices, float32[::1] eq_thresholds,
+                  intp[::1] neq_feature_indices, float32[::1] neq_thresholds):
         """
-        :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the features of
-                                    the conditions that use the <= operator
+        :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the indices of the
+                                    features, the numerical conditions that use the <= operator correspond to or None,
+                                    if the body does not contain such a condition
         :param leq_thresholds:      An array of dtype float, shape `(num_leq_condition)`, representing the thresholds of
-                                    the conditions that use the <= operator
-        :param gr_feature_indices:  An array of dtype int, shape `(num_gr_conditions)`, representing the features of the
-                                    conditions that use the > operator
+                                    the numerical conditions that use the <= operator or None, if the body does not
+                                    contain such a condition
+        :param gr_feature_indices:  An array of dtype int, shape `(num_gr_conditions)`, representing the indices of the
+                                    features, the numerical conditions that use the > operator correspond to or None, if
+                                    the body does not contain such a condition
         :param gr_thresholds:       An array of dtype float, shape `(num_gr_conditions)`, representing the thresholds of
-                                    the conditions that use the > operator
+                                    the numerical conditions that use the > operator or None, if the body does not
+                                    contain such a condition
+        :param eq_feature_indices:  An array of dtype int, shape `(num_eq_conditions)`, representing the indices of the
+                                    features, the nominal conditions that use the = operator correspond to or None, if
+                                    the body does not contain such a condition
+        :param eq_thresholds:       An array of dtype float, shape `(num_eq_conditions)`, representing the thresholds of
+                                    the nominal conditions that use the = operator or None, if the body does not contain
+                                    such a condition
+        :param neq_feature_indices: An array of dtype int, shape `(num_neq_conditions)`, representing the indices of the
+                                    features, the nominal conditions that use the != operator correspond to or None, if
+                                    the body does not contain such a condition
+        :param neq_thresholds:      An array of dtype float, shape `(num_neq_conditions)`, representing the thresholds
+                                    of the nominal conditions that use the != operator or None, if the body does not
+                                    contain such a condition
         """
         self.leq_feature_indices = leq_feature_indices
         self.leq_thresholds = leq_thresholds
         self.gr_feature_indices = gr_feature_indices
         self.gr_thresholds = gr_thresholds
+        self.eq_feature_indices = eq_feature_indices
+        self.eq_thresholds = eq_thresholds
+        self.neq_feature_indices = neq_feature_indices
+        self.neq_thresholds = neq_thresholds
 
     def __getstate__(self):
-        return (np.asarray(self.leq_feature_indices),
-                np.asarray(self.leq_thresholds),
-                np.asarray(self.gr_feature_indices),
-                np.asarray(self.gr_thresholds))
+        return (np.asarray(self.leq_feature_indices) if self.leq_feature_indices is not None else None,
+                np.asarray(self.leq_thresholds) if self.leq_thresholds is not None else None,
+                np.asarray(self.gr_feature_indices) if self.gr_feature_indices is not None else None,
+                np.asarray(self.gr_thresholds) if self.gr_thresholds is not None else None,
+                np.asarray(self.eq_feature_indices) if self.eq_feature_indices is not None else None,
+                np.asarray(self.eq_thresholds) if self.eq_thresholds is not None else None,
+                np.asarray(self.neq_feature_indices) if self.neq_feature_indices is not None else None,
+                np.asarray(self.neq_thresholds) if self.neq_thresholds is not None else None)
 
     def __setstate__(self, state):
-        leq_feature_indices, leq_thresholds, gr_feature_indices, gr_thresholds = state
-        self.leq_feature_indices = leq_feature_indices
-        self.leq_thresholds = leq_thresholds
-        self.gr_feature_indices = gr_feature_indices
-        self.gr_thresholds = gr_thresholds
+        self.leq_feature_indices = state[0]
+        self.leq_thresholds = state[1]
+        self.gr_feature_indices = state[2]
+        self.gr_thresholds = state[3]
+        self.eq_feature_indices = state[4]
+        self.eq_thresholds = state[5]
+        self.neq_feature_indices = state[6]
+        self.neq_thresholds = state[7]
 
     cdef bint covers(self, float32[:] example):
-        cdef intp[::1] leq_feature_indices = self.leq_feature_indices
-        cdef float32[::1] leq_thresholds = self.leq_thresholds
-        cdef intp[::1] gr_feature_indices = self.gr_feature_indices
-        cdef float32[::1] gr_thresholds = self.gr_thresholds
-        cdef intp num_leq_conditions = leq_feature_indices.shape[0]
-        cdef intp num_gr_conditions = gr_feature_indices.shape[0]
+        cdef intp[::1] feature_indices = self.leq_feature_indices
+        cdef float32[::1] thresholds = self.leq_thresholds
+        cdef intp num_conditions = feature_indices.shape[0]
         cdef intp i, c
 
-        for i in range(num_leq_conditions):
-            c = leq_feature_indices[i]
+        for i in range(num_conditions):
+            c = feature_indices[i]
 
-            if example[c] > leq_thresholds[i]:
+            if example[c] > thresholds[i]:
                 return 0
 
-        for i in range(num_gr_conditions):
-            c = gr_feature_indices[i]
+        feature_indices = self.gr_feature_indices
+        thresholds = self.gr_thresholds
+        num_conditions = feature_indices.shape[0]
 
-            if example[c] <= gr_thresholds[i]:
+        for i in range(num_conditions):
+            c = feature_indices[i]
+
+            if example[c] <= thresholds[i]:
+                return 0
+
+        feature_indices = self.eq_feature_indices
+        thresholds = self.eq_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+
+            if example[c] != thresholds[i]:
+                return 0
+
+        feature_indices = self.neq_feature_indices
+        thresholds = self.neq_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+
+            if example[c] == thresholds[i]:
                 return 0
 
         return 1
@@ -128,7 +178,7 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    def __cinit__(self, float64[::1] scores = None):
+    def __cinit__(self, float64[::1] scores):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                         rule for each label
@@ -161,7 +211,7 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    def __cinit__(self, intp[::1] label_indices = None, float64[::1] scores = None):
+    def __cinit__(self, intp[::1] label_indices, float64[::1] scores):
         """
         :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
                                 labels for which the rule predicts
@@ -200,7 +250,7 @@ cdef class Rule:
     A rule consisting of a body and head.
     """
 
-    def __cinit__(self, body: Body = None, head: Head = None):
+    def __cinit__(self, body: Body, head: Head):
         """
         :param body:    The body of the rule
         :param head:    The head of the rule

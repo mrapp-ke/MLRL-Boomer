@@ -20,7 +20,7 @@ from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, Eva
 from boomer.interfaces import Randomized
 from boomer.learners import MLLearner
 from boomer.persistence import ModelPersistence
-from boomer.training import CrossValidation
+from boomer.training import CrossValidation, DataSet
 
 
 class BbcCvAdapter(CrossValidation, MLClassifierBase):
@@ -29,19 +29,19 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
     test examples.
     """
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, model_dir: str):
+    def __init__(self, data_set: DataSet, num_folds: int, model_dir: str):
         """
         :param model_dir: The path of the directory where the models are stored
         """
-        super().__init__(data_dir, data_set, num_folds, -1)
+        super().__init__(data_set, num_folds, -1)
         self.persistence = ModelPersistence(model_dir=model_dir)
         self.learner = None
         self.configuration = None
         self.store_true_labels = True
         self.require_dense = [True, True]
 
-    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
-                            current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
+                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         num_total_examples = test_x.shape[0] + (0 if test_indices is None else train_x.shape[0])
         num_labels = test_y.shape[1]
 
@@ -257,16 +257,16 @@ class BbcCv(Randomized):
 
 class CV(CrossValidation):
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, prediction_matrix, ground_truth_matrix,
+    def __init__(self, data_set: DataSet, num_folds: int, prediction_matrix, ground_truth_matrix,
                  configurations: List[dict], observer: BbcCvObserver):
-        super().__init__(data_dir, data_set, num_folds, -1)
+        super().__init__(data_set, num_folds, -1)
         self.prediction_matrix = prediction_matrix
         self.ground_truth_matrix = ground_truth_matrix
         self.configurations = configurations
         self.observer = observer
 
-    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
-                            current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
+                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         configurations = self.configurations
         prediction_matrix = self.prediction_matrix
         ground_truth_matrix = self.ground_truth_matrix
@@ -281,16 +281,14 @@ class CV(CrossValidation):
 
 class CVBootstrapping(Bootstrapping):
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int):
-        self.data_dir = data_dir
+    def __init__(self, data_set: DataSet, num_folds: int):
         self.data_set = data_set
         self.num_folds = num_folds
 
     def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
         num_configurations = prediction_matrix.shape[1]
         log.info('%s configurations have been evaluated...', num_configurations)
-        cv = CV(self.data_dir, self.data_set, self.num_folds, prediction_matrix, ground_truth_matrix, configurations,
-                observer)
+        cv = CV(self.data_set, self.num_folds, prediction_matrix, ground_truth_matrix, configurations, observer)
         cv.random_state = self.random_state
         cv.run()
 

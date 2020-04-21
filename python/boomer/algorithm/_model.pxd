@@ -27,6 +27,14 @@ cdef class ConjunctiveBody(Body):
 
     cdef readonly float32[::1] gr_thresholds
 
+    cdef readonly intp[::1] eq_feature_indices
+
+    cdef readonly float32[::1] eq_thresholds
+
+    cdef readonly intp[::1] neq_feature_indices
+
+    cdef readonly float32[::1] neq_thresholds
+
     # Functions:
 
     cdef bint covers(self, float32[:] example)
