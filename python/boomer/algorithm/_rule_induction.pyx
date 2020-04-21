@@ -43,24 +43,24 @@ cdef class RuleInduction:
         :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
                                             indices of all nominal features (in ascending order) or None, if no nominal
                                             features are available
-        :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing the
-                                            features of the training examples
-        :param x_sorted_indices:            An array of dtype int, shape `(num_examples, num_features)`, representing the
-                                            indices of the training examples when sorting column-wise
+        :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing
+                                            the features of the training examples
+        :param x_sorted_indices:            An array of dtype int, shape `(num_examples, num_features)`, representing
+                                            the indices of the training examples when sorting column-wise
         :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing the
                                             labels of the training examples
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
-        :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no label
-                                            sub-sampling should be used
-        :param instance_sub_sampling:       The strategy that should be used to sub-sample the training examples or None, if
-                                            no instance sub-sampling should be used
-        :param feature_sub_sampling:        The strategy that should be used to sub-sample the available features or None,
-                                            if no feature sub-sampling should be used
-        :param pruning:                     The strategy that should be used to prune rules or None, if no pruning should be
-                                            used
-        :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if no
-                                            shrinkage should be used
+        :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no
+                                            label sub-sampling should be used
+        :param instance_sub_sampling:       The strategy that should be used to sub-sample the training examples or
+                                            None, if no instance sub-sampling should be used
+        :param feature_sub_sampling:        The strategy that should be used to sub-sample the available features or
+                                            None, if no feature sub-sampling should be used
+        :param pruning:                     The strategy that should be used to prune rules or None, if no pruning
+                                            should be used
+        :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if
+                                            no shrinkage should be used
         :param random_state:                The seed to be used by RNGs
         :return:                            The rule that has been induced
         """
@@ -84,9 +84,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         return rule
 
     cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
-                           uint8[::1, :] y, HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                           Pruning pruning, Shrinkage shrinkage, random_state: int):
+                           uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
+                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                           random_state: int):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A list that contains the rule's conditions (in the order they have been learned)
@@ -147,7 +148,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         else:
             label_indices = label_sub_sampling.sub_sample(y, random_state)
 
-        # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
+        # Search for the best refinement until no improvement in terms of the rule's quality score is possible
+        # anymore...
         while found_refinement:
             num_examples = sorted_indices.shape[0]
             found_refinement = False
@@ -165,10 +167,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 next_nominal_f = nominal_attribute_indices[0]
                 next_nominal_c = 1
 
-            # Search for the best condition among all available features to be added to the current rule. For each feature,
-            # the examples are traversed in increasing order of their respective feature values and the loss function is
-            # updated accordingly. For each potential condition, a quality score is calculated to keep track of the best
-            # possible refinement.
+            # Search for the best condition among all available features to be added to the current rule. For each
+            # feature, the examples are traversed in increasing order of their respective feature values and the loss
+            # function is updated accordingly. For each potential condition, a quality score is calculated to keep track
+            # of the best possible refinement.
             for c in range(num_features):
                 first_r = 0
                 f = get_index(c, feature_indices)
@@ -211,8 +213,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         # Split points between examples with the same feature value must not be considered...
                         if previous_threshold != current_threshold:
-                            # Find and evaluate the best head for the current refinement, if a condition that uses the <=
-                            # operator (or the == operator in case of a nominal feature) is used...
+                            # Find and evaluate the best head for the current refinement, if a condition that uses the
+                            # <= operator (or the == operator in case of a nominal feature) is used...
                             current_head = head_refinement.find_head(head, label_indices, loss, False)
 
                             # If refinement using the <= operator (or the == operator in case of a nominal feature) is
@@ -232,14 +234,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_threshold = (previous_threshold + current_threshold) / 2.0
 
                                 # If instance sub-sampling is used, examples that are not contained in the current
-                                # sub-sample were not considered for finding the condition. Later on, we need to identify
-                                # the examples that are covered by the refined rule, including those that are not contained
-                                # in the sub-sample, via the function `_filter_sorted_indices`. Said function calculates the
-                                # number of covered examples based on the variable `best_condition_end`, which represents
-                                # the position that separates the covered from the uncovered examples. However, when taking
-                                # into account the examples that are not contained in the sub-sample, this position may
-                                # differ from the value of `best_condition_end` at this point and therefore must be
-                                # adjusted...
+                                # sub-sample were not considered for finding the condition. Later on, we need to
+                                # identify the examples that are covered by the refined rule, including those that are
+                                # not contained in the sub-sample, via the function `_filter_sorted_indices`. Said
+                                # function calculates the number of covered examples based on the variable
+                                # `best_condition_end`, which represents the position that separates the covered from
+                                # the uncovered examples. However, when taking into account the examples that are not
+                                # contained in the sub-sample, this position may differ from the value of
+                                # `best_condition_end` at this point and therefore must be adjusted...
                                 if instance_sub_sampling is not None and r - previous_r > 1:
                                     best_condition_end = __adjust_split(x, sorted_indices, r, previous_r, f,
                                                                         best_condition_threshold)
@@ -248,8 +250,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # operator (or the != operator in case of a nominal feature) is used...
                             current_head = head_refinement.find_head(head, label_indices, loss, True)
 
-                            # If refinement using the > operator (or the != operator in case of a nominal feature) is better
-                            # than the current rule...
+                            # If refinement using the > operator (or the != operator in case of a nominal feature) is
+                            # better than the current rule...
                             if current_head is not None:
                                 found_refinement = True
                                 head = current_head
@@ -264,9 +266,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_comparator = Comparator.GR
                                     best_condition_threshold = (previous_threshold + current_threshold) / 2.0
 
-                                # Again, if instance sub-sampling is used, we need to adjust the position that separates the
-                                # covered from the uncovered examples, including those that are not contained in the sample
-                                # (see description above for details)...
+                                # Again, if instance sub-sampling is used, we need to adjust the position that separates
+                                # the covered from the uncovered examples, including those that are not contained in the
+                                # sample (see description above for details)...
                                 if instance_sub_sampling is not None and r - previous_r > 1:
                                     best_condition_end = __adjust_split(x, sorted_indices, r, previous_r, f,
                                                                         best_condition_threshold)
@@ -306,8 +308,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         if head is None:
             raise RuntimeError('Failed to find an useful condition for the new rule! Please remove any constants features from the training data')
 
-        # Obtain the indices of all examples that are covered by the new rule, regardless of whether they are included in
-        # the sub-sample or not...
+        # Obtain the indices of all examples that are covered by the new rule, regardless of whether they are included
+        # in the sub-sample or not...
         covered_example_indices = sorted_indices[:, 0]
 
         if weights is not None:
@@ -316,8 +318,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
                 covered_example_indices = pruning.prune(x, x_sorted_indices, conditions)
 
-            # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire training
-            # data...
+            # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire
+            # training data...
             loss.begin_search(label_indices)
 
             for i in covered_example_indices:
