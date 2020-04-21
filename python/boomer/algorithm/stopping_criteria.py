@@ -10,7 +10,7 @@ from abc import abstractmethod, ABC
 from timeit import default_timer as timer
 
 import numpy as np
-from boomer.algorithm._label_wise_measure import LabelWiseMeasure
+from boomer.algorithm._label_wise_measure import LabelWiseAveraging
 
 from boomer.algorithm.model import Theory
 
@@ -78,7 +78,7 @@ class UncoveredLabelsCriterion(StoppingCriterion):
     non-zero entries
     """
 
-    def __init__(self, label_wise_measure: LabelWiseMeasure, threshold: int):
+    def __init__(self, label_wise_measure: LabelWiseAveraging, threshold: int):
         """
         :param label_wise_measure: The label-wise measure
         """

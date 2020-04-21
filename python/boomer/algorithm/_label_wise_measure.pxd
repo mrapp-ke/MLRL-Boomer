@@ -2,7 +2,7 @@ from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 from boomer.algorithm._heuristics cimport Heuristic
 from boomer.algorithm._losses cimport DecomposableLoss, Prediction, LabelIndependentPrediction
 
-cdef class LabelWiseMeasure(DecomposableLoss):
+cdef class LabelWiseAveraging(DecomposableLoss):
 
     # Attributes:
 

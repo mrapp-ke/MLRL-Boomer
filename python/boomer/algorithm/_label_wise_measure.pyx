@@ -9,7 +9,7 @@ DEF _IP = 1
 DEF _RN = 2
 DEF _RP = 3
 
-cdef class LabelWiseMeasure(DecomposableLoss):
+cdef class LabelWiseAveraging(DecomposableLoss):
     """
     A class for label-wise evaluation.
     """
