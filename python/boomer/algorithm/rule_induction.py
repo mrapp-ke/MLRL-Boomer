@@ -159,6 +159,15 @@ class SeparateAndConquer(RuleInduction):
         self.stopping_criteria = stopping_criteria
 
     def induce_rules(self, stats: Stats, x: np.ndarray, y: np.ndarray) -> Theory:
+        stopping_criteria = self.stopping_criteria
+        random_state = self.random_state
+        head_refinement = self.head_refinement
+        loss = self.loss
+        label_sub_sampling = self.label_sub_sampling
+        instance_sub_sampling = self.instance_sub_sampling
+        feature_sub_sampling = self.feature_sub_sampling
+        pruning = self.pruning
+
         theory = []
 
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
@@ -166,21 +175,24 @@ class SeparateAndConquer(RuleInduction):
 
         x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
 
-        default_rule = induce_default_rule(y, self.loss)
+        default_rule = induce_default_rule(y, loss)
 
         num_learned_rules = 0
 
-        while all([stopping_criterion.should_continue(theory) for stopping_criterion in self.stopping_criteria]):
+        while all([stopping_criterion.should_continue(theory) for stopping_criterion in stopping_criteria]):
             log.info('Learning rule %s...', num_learned_rules + 1)
-            rule = induce_rule(x, x_sorted_indices, y, self.head_refinement, self.loss, self.label_sub_sampling,
-                               self.instance_sub_sampling, self.feature_sub_sampling, self.pruning, None,
-                               self.random_state)
+            rule = induce_rule(x, x_sorted_indices, y, head_refinement, loss, label_sub_sampling,
+                               instance_sub_sampling, feature_sub_sampling, pruning, None,
+                               random_state)
 
             print(format_rule(stats, rule))
 
             theory.append(rule)
 
             num_learned_rules += 1
+
+            # Alter random state for inducing the next rule
+            random_state += 1
 
         theory.append(default_rule)
 
