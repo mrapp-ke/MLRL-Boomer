@@ -76,7 +76,8 @@ cdef class LabelWiseMeasure(DecomposableLoss):
         cdef intp num_labels = minority_labels.shape[0]
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef intp c
-        cdef uint8 true_label, predicted_label
+        cdef uint8 true_label
+        cdef uint32 predicted_label
 
         for c in range(num_labels):
             if uncovered_labels[example_index, c] > 0:
@@ -125,7 +126,8 @@ cdef class LabelWiseMeasure(DecomposableLoss):
         cdef intp[::1] label_indices = self.label_indices
         cdef intp num_labels = confusion_matrices_covered.shape[0]
         cdef intp c, l
-        cdef uint8 true_label, predicted_label
+        cdef uint8 true_label
+        cdef uint32 predicted_label
 
         for c in range(num_labels):
             l = get_index(c, label_indices)
