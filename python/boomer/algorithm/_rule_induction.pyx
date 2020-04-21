@@ -102,7 +102,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef int num_refinements = 1
 
         # Variables for representing the best refinement
-        cdef found_refinement = 1
+        cdef bint found_refinement = True
         cdef Comparator best_condition_comparator
         cdef intp best_condition_start, best_condition_end, best_condition_index
         cdef float32 best_condition_threshold
@@ -150,7 +150,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore...
         while found_refinement:
             num_examples = sorted_indices.shape[0]
-            found_refinement = 0
+            found_refinement = False
 
             # Sub-sample features, if necessary...
             if feature_sub_sampling is None:
@@ -218,7 +218,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # If refinement using the <= operator (or the == operator in case of a nominal feature) is
                             # better than the current rule...
                             if current_head is not None:
-                                found_refinement = 1
+                                found_refinement = True
                                 head = current_head
                                 best_condition_start = first_r
                                 best_condition_end = r
@@ -251,7 +251,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # If refinement using the > operator (or the != operator in case of a nominal feature) is better
                             # than the current rule...
                             if current_head is not None:
-                                found_refinement = 1
+                                found_refinement = True
                                 head = current_head
                                 best_condition_start = first_r
                                 best_condition_end = r
