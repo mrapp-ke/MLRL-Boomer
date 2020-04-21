@@ -491,9 +491,9 @@ cdef inline intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :]
                                     indices of the training examples that are covered by the previous rule when sorting
                                     column-wise
     :param condition_start:         The row in `sorted_indices` that corresponds to the first example (inclusive) that
-                                        has been passed to the loss function when searching for the new condition
+                                    has been passed to the loss function when searching for the new condition
     :param condition_end:           The row in `sorted_indices` that corresponds to the last example (exclusive) that
-                                        has been passed to the loss function when searching for the new condition
+                                    has been passed to the loss function when searching for the new condition
     :param condition_index:         The index of the feature, the new condition corresponds to
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param condition_threshold:     The threshold of the new condition
