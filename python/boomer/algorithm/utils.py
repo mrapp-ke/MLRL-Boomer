@@ -35,20 +35,32 @@ def __print_body(body: Body) -> str:
 
 
 def __print_conjunctive_body(body: ConjunctiveBody) -> str:
-    text = __print_conditions(np.asarray(body.leq_feature_indices), np.asarray(body.leq_thresholds), 1)
-    return __print_conditions(np.asarray(body.gr_feature_indices), np.asarray(body.gr_thresholds), 0, text)
+    text = ''
+
+    if body.leq_feature_indices is not None and body.leq_thresholds is not None:
+        text = __print_conditions(np.asarray(body.leq_feature_indices), np.asarray(body.leq_thresholds), '<=', text)
+
+    if body.gr_feature_indices is not None and body.gr_thresholds is not None:
+        text = __print_conditions(np.asarray(body.gr_feature_indices), np.asarray(body.gr_thresholds), '>', text)
+
+    if body.eq_feature_indices is not None and body.eq_thresholds is not None:
+        text = __print_conditions(np.asarray(body.eq_feature_indices), np.asarray(body.eq_thresholds), '==', text)
+
+    if body.neq_feature_indices is not None and body.neq_thresholds is not None:
+        text = __print_conditions(np.asarray(body.neq_feature_indices), np.asarray(body.neq_thresholds), '!=', text)
+
+    return text
 
 
-def __print_conditions(feature_indices: np.ndarray, thresholds: np.ndarray, leq: int, text: str = '') -> str:
+def __print_conditions(feature_indices: np.ndarray, thresholds: np.ndarray, operator: str, text: str) -> str:
     for i in range(feature_indices.shape[0]):
         if len(text) > 0:
             text += ' & '
 
         text += str(feature_indices[i])
-        if leq:
-            text += ' <= '
-        else:
-            text += ' > '
+        text += ' '
+        text += operator
+        text += ' '
         text += str(thresholds[i])
 
     return text

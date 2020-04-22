@@ -7,9 +7,10 @@
 Provides base classes for implementing single- or multi-label classifiers or rankers.
 """
 import logging as log
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from os.path import isdir
 from timeit import default_timer as timer
+from typing import List
 
 import numpy as np
 from sklearn.base import BaseEstimator
@@ -19,6 +20,14 @@ from skmultilearn.base import MLClassifierBase
 from boomer.interfaces import Randomized
 from boomer.persistence import ModelPersistence
 from boomer.stats import Stats
+
+
+class NominalAttributeLearner(ABC):
+    """
+    A base class for all single- or multi-label classifiers or rankers that natively support nominal attributes.
+    """
+
+    nominal_attribute_indices: List[int] = None
 
 
 class Learner(BaseEstimator, Randomized):

@@ -10,6 +10,7 @@ from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
+from boomer.training import DataSet
 
 
 def configure_argument_parser(p: argparse.ArgumentParser):
@@ -20,6 +21,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--model-dir', type=optional_string, default=None,
                    help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
+    p.add_argument('--one-hot-encoding', type=boolean_string, default=True,
+                   help='True, if one-hot-encoding should be used, False otherwise')
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
     p.add_argument('--current-fold', type=current_fold_string, default=-1,
                    help='The cross validation fold to be performed')
@@ -73,6 +76,7 @@ if __name__ == '__main__':
     learner = create_learner(args)
     parameter_input = parameter_input
     evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
-    experiment = Experiment(learner, evaluation, data_dir=args.data_dir, data_set=args.dataset, num_folds=args.folds,
+    data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
+    experiment = Experiment(learner, evaluation, data_set=data_set, num_folds=args.folds,
                             current_fold=args.current_fold, parameter_input=parameter_input)
     experiment.run()
