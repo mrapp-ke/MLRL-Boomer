@@ -114,9 +114,12 @@ class LossMinimizationCurve(NumRulesDependentEvaluationPlot):
     y-axis corresponds to the evaluation score and the x-axis corresponds to the number of rules in the model.
     """
 
-    def __init__(self, data_set: str, *args: str):
+    def __init__(self, data_set_name: str, *args: str):
+        """
+        :param data_set_name:   The name of the data set
+        """
         super().__init__(*args)
-        self.data_set = data_set
+        self.data_set_name = data_set_name
 
     def __plot_curves(self):
         max_num_rules = 0
@@ -145,7 +148,7 @@ class LossMinimizationCurve(NumRulesDependentEvaluationPlot):
         max_x = self.__plot_curves()
 
         # Set title
-        plt.title(self.data_set)
+        plt.title(self.data_set_name)
 
         # Customize x axis
         plt.xlabel('# rules')
@@ -189,9 +192,12 @@ class MeasureVsMeasureCurve(NumRulesDependentEvaluationPlot):
     other one.
     """
 
-    def __init__(self, data_set: str, first_measure: str, second_measure: str):
+    def __init__(self, data_set_name: str, first_measure: str, second_measure: str):
+        """
+        :param data_set_name:   The name of the data set
+        """
         super().__init__(first_measure, second_measure)
-        self.data_set = data_set
+        self.data_set_name = data_set_name
 
     def __plot_curves(self) -> (str, str):
         y_measure = self.measures[0]
@@ -219,7 +225,7 @@ class MeasureVsMeasureCurve(NumRulesDependentEvaluationPlot):
         x_measure, y_measure = self.__plot_curves()
 
         # Set title
-        plt.title(self.data_set)
+        plt.title(self.data_set_name)
 
         # Customize x axis
         plt.xlabel(x_measure)

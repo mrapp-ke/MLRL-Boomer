@@ -22,12 +22,12 @@ from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubs
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
 
-from boomer.algorithm.model import DTYPE_FLOAT32
+from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
 from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
 from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
     UncoveredLabelsCriterion
-from boomer.learners import MLLearner
+from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
@@ -112,7 +112,7 @@ def _create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingC
     return stopping_criteria
 
 
-class MLRuleLearner(MLLearner):
+class MLRuleLearner(MLLearner, NominalAttributeLearner):
     """
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
 
@@ -134,10 +134,18 @@ class MLRuleLearner(MLLearner):
         x = self._ensure_input_format(x)
         y = self._ensure_input_format(y)
 
+        # Create an array that contains the indices of all nominal attributes, if any
+        nominal_attribute_indices = self.nominal_attribute_indices
+
+        if nominal_attribute_indices is not None and len(nominal_attribute_indices) > 0:
+            nominal_attribute_indices = np.ascontiguousarray(nominal_attribute_indices, dtype=DTYPE_INTP)
+        else:
+            nominal_attribute_indices = None
+
         # Induce rules
         rule_induction = self._create_rule_induction(stats)
         rule_induction.random_state = random_state
-        theory = rule_induction.induce_rules(stats, x, y)
+        theory = rule_induction.induce_rules(stats, nominal_attribute_indices, x, y)
         return theory
 
     def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
@@ -180,8 +188,8 @@ class Boomer(MLRuleLearner):
     def __init__(self, model_dir: str = None, max_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: int = -1,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
-                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM,
-                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
+                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
+                 l2_regularization_weight: float = 1.0):
         """
         :param max_rules:                   The maximum number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be

@@ -3,6 +3,7 @@
 import argparse
 import logging as log
 import os.path as path
+from typing import List
 
 import numpy as np
 from skmultilearn.base import MLClassifierBase
@@ -12,7 +13,7 @@ from boomer.algorithm.rule_learners import Boomer
 from boomer.evaluation import HAMMING_LOSS, SUBSET_01_LOSS
 from boomer.persistence import ModelPersistence
 from boomer.plots import LossMinimizationCurve
-from boomer.training import CrossValidation
+from boomer.training import CrossValidation, DataSet
 from main_boomer import configure_argument_parser, create_learner
 
 
@@ -21,17 +22,17 @@ class Plotter(CrossValidation, MLClassifierBase):
     Plots the performance of a BOOMER model at each iteration.
     """
 
-    def __init__(self, model_dir: str, output_dir: str, data_dir: str, data_set: str, num_folds: int, current_fold: int,
+    def __init__(self, model_dir: str, output_dir: str, data_set: DataSet, num_folds: int, current_fold: int,
                  learner: Boomer):
-        super().__init__(data_dir, data_set, num_folds, current_fold)
+        super().__init__(data_set, num_folds, current_fold)
         self.output_dir = output_dir
         self.require_dense = [True, True]  # We need a dense representation of the training data
         self.persistence = ModelPersistence(model_dir=model_dir)
         self.learner = learner
-        self.plot = LossMinimizationCurve(data_set, HAMMING_LOSS, SUBSET_01_LOSS)
+        self.plot = LossMinimizationCurve(data_set.data_set_name, HAMMING_LOSS, SUBSET_01_LOSS)
 
-    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
-                            current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
+                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         # Create a dense representation of the training data
         train_x = np.asfortranarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)
@@ -95,7 +96,7 @@ if __name__ == '__main__':
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
 
-    plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_dir=args.data_dir,
-                      data_set=args.dataset, num_folds=args.folds, current_fold=args.current_fold,
-                      learner=create_learner(args))
+    data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
+    plotter = Plotter(model_dir=args.model_dir, output_dir=args.output_dir, data_set=data_set, num_folds=args.folds,
+                      current_fold=args.current_fold, learner=create_learner(args))
     plotter.run()

@@ -8,6 +8,7 @@ Provides classes for parameter tuning.
 import logging as log
 from abc import ABC
 from abc import abstractmethod
+from typing import List
 
 from sklearn.model_selection import KFold
 
@@ -15,7 +16,7 @@ from boomer.interfaces import Randomized
 from boomer.io import clear_directory
 from boomer.io import open_readable_csv_file, create_csv_dict_writer
 from boomer.io import open_writable_csv_file, create_csv_dict_reader
-from boomer.training import CrossValidation
+from boomer.training import CrossValidation, DataSet
 
 
 class ParameterSearch(Randomized, ABC):
@@ -208,18 +209,18 @@ class ParameterTuning(CrossValidation):
     using a `ParameterSearch` and writes the optimal parameters to one or several outputs.
     """
 
-    def __init__(self, data_dir: str, data_set: str, num_folds: int, current_fold: int,
+    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int,
                  parameter_search: ParameterSearch, *args: ParameterOutput):
         """
         :param parameter_search:
         :param args:
         """
-        super().__init__(data_dir, data_set, num_folds, current_fold)
+        super().__init__(data_set, num_folds, current_fold)
         self.parameter_search = parameter_search
         self.outputs = args
 
-    def _train_and_evaluate(self, train_indices, train_x, train_y, test_indices, test_x, test_y, first_fold: int,
-                            current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
+                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         parameter_search = self.parameter_search
         parameter_search.random_state = self.random_state
         parameter_search.search(train_x, train_y, current_fold=current_fold, num_folds=num_folds)
