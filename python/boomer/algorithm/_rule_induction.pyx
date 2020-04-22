@@ -168,11 +168,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 next_nominal_c = 1
 
             # Search for the best condition among all available features to be added to the current rule. For each
-            # feature, the examples are traversed in increasing order of their respective feature values and the loss
+            # feature, the examples are traversed in descending order of their respective feature values and the loss
             # function is updated accordingly. For each potential condition, a quality score is calculated to keep track
             # of the best possible refinement.
             for c in range(num_features):
-                first_r = 0
                 f = get_index(c, feature_indices)
 
                 # Check if feature is nominal...
@@ -190,8 +189,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # Reset the loss function when processing a new feature...
                 loss.begin_search(label_indices)
 
-                # Find first example with weight > 0...
-                for r in range(num_examples):
+                # Traverse examples in descending order until the first example with weight > 0 is encountered...
+                first_r = num_examples - 1
+
+                for r in range(num_examples - 1, -1, -1):
                     i = sorted_indices[r, f]
                     weight = get_weight(i, weights)
 
@@ -202,8 +203,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         previous_r = r
                         break
 
-                # Traverse remaining instances...
-                for r in range(r + 1, num_examples):
+                # Traverse the remaining examples in descending order...
+                for r in range(r - 1, -1, -1):
                     i = sorted_indices[r, f]
                     weight = get_weight(i, weights)
 
@@ -214,10 +215,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         # Split points between examples with the same feature value must not be considered...
                         if previous_threshold != current_threshold:
                             # Find and evaluate the best head for the current refinement, if a condition that uses the
-                            # <= operator (or the == operator in case of a nominal feature) is used...
+                            # > operator (or the == operator in case of a nominal feature) is used...
                             current_head = head_refinement.find_head(head, label_indices, loss, False)
 
-                            # If refinement using the <= operator (or the == operator in case of a nominal feature) is
+                            # If refinement using the > operator (or the == operator in case of a nominal feature) is
                             # better than the current rule...
                             if current_head is not None:
                                 found_refinement = True
@@ -230,27 +231,27 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_comparator = Comparator.EQ
                                     best_condition_threshold = previous_threshold
                                 else:
-                                    best_condition_comparator = Comparator.LEQ
+                                    best_condition_comparator = Comparator.GR
                                     best_condition_threshold = (previous_threshold + current_threshold) / 2.0
 
                                 # If instance sub-sampling is used, examples that are not contained in the current
                                 # sub-sample were not considered for finding the condition. Later on, we need to
                                 # identify the examples that are covered by the refined rule, including those that are
-                                # not contained in the sub-sample, via the function `_filter_sorted_indices`. Said
+                                # not contained in the sub-sample, via the function `__filter_sorted_indices`. Said
                                 # function calculates the number of covered examples based on the variable
                                 # `best_condition_end`, which represents the position that separates the covered from
                                 # the uncovered examples. However, when taking into account the examples that are not
-                                # contained in the sub-sample, this position may differ from the value of
-                                # `best_condition_end` at this point and therefore must be adjusted...
-                                if instance_sub_sampling is not None and r - previous_r > 1:
+                                # contained in the sub-sample, this position may differ from the current value of
+                                # `best_condition_end` and therefore must be adjusted...
+                                if instance_sub_sampling is not None and previous_r - r > 1:
                                     best_condition_end = __adjust_split(x, sorted_indices, r, previous_r, f,
                                                                         best_condition_threshold)
 
-                            # Find and evaluate the best head for the current refinement, if a condition that uses the >
-                            # operator (or the != operator in case of a nominal feature) is used...
+                            # Find and evaluate the best head for the current refinement, if a condition that uses the
+                            # <= operator (or the != operator in case of a nominal feature) is used...
                             current_head = head_refinement.find_head(head, label_indices, loss, True)
 
-                            # If refinement using the > operator (or the != operator in case of a nominal feature) is
+                            # If refinement using the <= operator (or the != operator in case of a nominal feature) is
                             # better than the current rule...
                             if current_head is not None:
                                 found_refinement = True
@@ -263,13 +264,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_comparator = Comparator.NEQ
                                     best_condition_threshold = previous_threshold
                                 else:
-                                    best_condition_comparator = Comparator.GR
+                                    best_condition_comparator = Comparator.LEQ
                                     best_condition_threshold = (previous_threshold + current_threshold) / 2.0
 
                                 # Again, if instance sub-sampling is used, we need to adjust the position that separates
                                 # the covered from the uncovered examples, including those that are not contained in the
                                 # sample (see description above for details)...
-                                if instance_sub_sampling is not None and r - previous_r > 1:
+                                if instance_sub_sampling is not None and previous_r - r > 1:
                                     best_condition_end = __adjust_split(x, sorted_indices, r, previous_r, f,
                                                                         best_condition_threshold)
 
@@ -325,7 +326,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             for i in covered_example_indices:
                 loss.update_search(i, 1)
 
-            prediction = head_refinement.evaluate_predictions(loss, 0)
+            prediction = head_refinement.evaluate_predictions(loss, False)
             __copy_array(prediction.predicted_scores, head.predicted_scores)
 
         # Apply shrinkage, if necessary...
@@ -374,8 +375,9 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, 
                                 intp feature_index, float32 threshold):
    """
    Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
-   not contained in the current sub-sample. This requires to look back a certain number of examples (until the next
-   example that is contained in the current sub-sample is encountered) to see if they satisfy the new condition or not.
+   not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
+   the examples in ascending order until the next example that is contained in the current sub-sample is encountered, to
+   see if they satisfy the new condition or not.
 
    :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features of
                            the training examples
@@ -383,7 +385,7 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, 
                            examples that are covered by the previous rule when sorting column-wise
    :param position_start:  The position that separates the covered from the uncovered examples (when only taking into
                            account the examples that are contained in the sample). This is the position to start at
-   :param position_end:    The position to stop at (exclusive, must be smaller than `position_start`)
+   :param position_end:    The position to stop at (exclusive, must be greater than `position_start`)
    :param feature_index:   The index of the feature, the condition corresponds to
    :param threshold:       The threshold of the condition
    :return:                The adjusted position that separates the covered from the uncovered examples with respect to
@@ -393,13 +395,14 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp[::1, :] sorted_indices, 
    cdef float32 feature_value
    cdef intp r, i
 
-   # Traverse the preceding examples until we encounter an example that is contained in the current sub-sample...
-   for r in range(position_start - 1, position_end, -1):
+   # Traverse the examples in ascending order until we encounter an example that is contained in the current
+   # sub-sample...
+   for r in range(position_start + 1, position_end):
         i = sorted_indices[r, feature_index]
         feature_value = x[i, feature_index]
 
-        if feature_value > threshold:
-            # The feature value at `position_start` is guaranteed to be greater than the given `threshold`. If this does
+        if feature_value < threshold:
+            # The feature value at `position_start` is guaranteed to be smaller than the given `threshold`. If this does
             # also apply to the feature value of a preceding example, it is not separated from the example at
             # `position_start`. Hence, we are not done yet and continue by decrementing the adjusted position by one...
             adjusted_position = r
@@ -493,9 +496,11 @@ cdef inline intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :]
                                     indices of the training examples that are covered by the previous rule when sorting
                                     column-wise
     :param condition_start:         The row in `sorted_indices` that corresponds to the first example (inclusive) that
-                                    has been passed to the loss function when searching for the new condition
+                                    has been passed to the loss function when searching for the new condition (must be
+                                    greater than `condition_end`)
     :param condition_end:           The row in `sorted_indices` that corresponds to the last example (exclusive) that
-                                    has been passed to the loss function when searching for the new condition
+                                    has been passed to the loss function when searching for the new condition (must be
+                                    smaller than `condition_start`)
     :param condition_index:         The index of the feature, the new condition corresponds to
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param condition_threshold:     The threshold of the new condition
@@ -508,13 +513,13 @@ cdef inline intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :]
     """
     cdef intp num_features = x.shape[1]
     cdef intp num_examples = sorted_indices.shape[0]
-    cdef intp num_covered = condition_end - condition_start
+    cdef intp num_covered = condition_start - condition_end
     cdef intp first, last
 
-    if condition_comparator == Comparator.GR or condition_comparator == Comparator.NEQ:
+    if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
         num_covered = num_examples - num_covered
         first = condition_end
-        last = num_examples
+        last = -1
     else:
         first = condition_start
         last = condition_end
@@ -527,38 +532,38 @@ cdef inline intp[::1, :] __filter_sorted_indices(float32[::1, :] x, intp[::1, :]
     loss.begin_instance_sub_sampling()
 
     for c in range(num_features):
-        i = 0
+        i = num_covered - 1
 
         if c == condition_index:
             # For the feature that corresponds to the new condition we know the indices of the covered examples...
             if condition_comparator == Comparator.NEQ:
-                for r in range(condition_start):
+                for r in range(num_examples - 1, condition_start, -1):
                     index = sorted_indices[r, c]
                     filtered_sorted_indices[i, c] = index
-                    i += 1
+                    i -= 1
 
                     # Tell the loss function that the example at the current index is covered by the current rule...
                     loss.update_sub_sample(index)
 
-            for r in range(first, last):
+            for r in range(first, last, -1):
                 index = sorted_indices[r, c]
                 filtered_sorted_indices[i, c] = index
-                i += 1
+                i -= 1
 
                 # Tell the loss function that the example at the current index is covered by the current rule...
                 loss.update_sub_sample(index)
         else:
             # For the other features we need to filter out the indices that correspond to examples that do not satisfy
             # the new condition...
-            for r in range(num_examples):
+            for r in range(num_examples - 1, -1, -1):
                 index = sorted_indices[r, c]
                 feature_value = x[index, condition_index]
 
                 if test_condition(condition_threshold, condition_comparator, feature_value):
                     filtered_sorted_indices[i, c] = index
-                    i += 1
+                    i -= 1
 
-                    if i >= num_covered:
+                    if i < 0:
                         break
 
     return filtered_sorted_indices
