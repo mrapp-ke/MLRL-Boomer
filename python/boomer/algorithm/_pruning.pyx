@@ -6,7 +6,7 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.algorithm._arrays cimport array_intp
-from boomer.algorithm._utils cimport test_condition
+from boomer.algorithm._utils cimport test_condition, Comparator
 from boomer.algorithm._losses cimport Prediction
 
 from cython.operator cimport dereference, postincrement
@@ -44,7 +44,7 @@ cdef class Pruning:
         """
         pass
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[s_condition] conditions):
+    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions):
         """
         Prunes the conditions of a rule by modifying a given list of conditions in-place.
 
@@ -101,7 +101,7 @@ cdef class IREP(Pruning):
         self.head_refinement = head_refinement
         self.weights = weights
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[s_condition] conditions):
+    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions):
         cdef intp[::1] label_indices = self.label_indices
         cdef Loss loss = self.loss
         cdef HeadRefinement head_refinement = self.head_refinement
@@ -112,10 +112,10 @@ cdef class IREP(Pruning):
         cdef intp[::1] best_covered_example_indices = self.covered_example_indices
         cdef intp best_num_examples = best_covered_example_indices.shape[0]
         cdef intp num_pruned_conditions = 0
-        cdef list[s_condition].iterator iterator = conditions.begin()
-        cdef s_condition condition
+        cdef list[Condition].iterator iterator = conditions.begin()
+        cdef Condition condition
         cdef float32 threshold, feature_value
-        cdef bint leq
+        cdef Comparator comparator
         cdef intp[::1] covered_example_indices, new_covered_example_indices
         cdef uint32 weight
         cdef float64 quality_score
@@ -129,7 +129,7 @@ cdef class IREP(Pruning):
             condition = dereference(iterator)
             c = condition.feature_index
             threshold = condition.threshold
-            leq = condition.leq
+            comparator = condition.comparator
 
             # Reset the loss function...
             loss.begin_search(label_indices)
@@ -143,15 +143,14 @@ cdef class IREP(Pruning):
 
             if n == 0:
                 # For the first condition, we traverse the examples in the order of their feature values. The order of
-                # traversing depends on the condition's operator. If the condition uses the <= operator, we traverse in
-                # ascending order, i.e., we start with the example with the smallest feature value. If the condition
-                # uses the > operator, we traverse in descending order, i.e., we start with the example with the largest
-                # feature value.
-                for r in (range(num_examples) if leq else range(num_examples - 1, -1, -1)):
+                # traversing depends on the condition's operator. If the condition uses the > operator, we traverse in
+                # descending order, i.e., we start with the example with the greatest feature value. Otherwise, we
+                # traverse in ascending order, i.e., we start with the example with the smallest feature value.
+                for r in (range(num_examples - 1, -1, -1) if comparator == Comparator.GR else range(num_examples)):
                     index = x_sorted_indices[r, c]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, leq, feature_value):
+                    if test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
@@ -162,9 +161,9 @@ cdef class IREP(Pruning):
 
                         if weight == 0:
                             loss.update_search(index, 1)
-                    else:
-                        # If the example does not satisfy the condition, we are done, because the remaining ones will
-                        # not satisfy the condition either...
+                    elif comparator == Comparator.LEQ or comparator == Comparator.GR:
+                        # If the condition uses the <= or the > operator and the example does not satisfy the condition,
+                        # we are done, because the remaining ones will not satisfy the condition either...
                         break
             else:
                 # For the remaining conditions we traverse the indices of the examples that satisfy all previously
@@ -173,7 +172,7 @@ cdef class IREP(Pruning):
                     index = covered_example_indices[r]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, leq, feature_value):
+                    if test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
