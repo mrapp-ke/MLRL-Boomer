@@ -12,8 +12,8 @@ from boomer.algorithm._losses cimport Prediction
 from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_index, get_weight
 
 from libcpp.list cimport list as list
-from libc.stdlib cimport malloc, free
 from cython.operator cimport dereference, postincrement
+from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
 
 import numpy as np
 from boomer.algorithm.model import DTYPE_INTP
