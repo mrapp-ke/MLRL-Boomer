@@ -7,8 +7,12 @@ Provides classes that implement different stopping criteria that allow to decide
 added to a theory or not.
 """
 from abc import abstractmethod, ABC
-from boomer.algorithm.model import Theory
 from timeit import default_timer as timer
+
+import numpy as np
+from boomer.algorithm._label_wise_measure import LabelWiseAveraging
+
+from boomer.algorithm.model import Theory
 
 
 class StoppingCriterion(ABC):
@@ -33,14 +37,14 @@ class SizeStoppingCriterion(StoppingCriterion):
     A stopping criterion that ensures that the number of rules in a theory does not exceed a certain maximum.
     """
 
-    def __init__(self, num_rules: int):
+    def __init__(self, max_rules: int):
         """
-        :param num_rules: The maximum number of rules
+        :param max_rules: The maximum number of rules
         """
-        self.num_rules = num_rules
+        self.max_rules = max_rules
 
     def should_continue(self, theory: Theory) -> bool:
-        return len(theory) < self.num_rules
+        return len(theory) < self.max_rules
 
 
 class TimeStoppingCriterion(StoppingCriterion):
@@ -66,3 +70,20 @@ class TimeStoppingCriterion(StoppingCriterion):
             current_time = timer()
             run_time = current_time - start_time
             return run_time < self.time_limit
+
+
+class UncoveredLabelsCriterion(StoppingCriterion):
+    """
+    A stopping criterion that stops when the weight matrix of a label-wise measure has less than a certain amount of
+    non-zero entries
+    """
+
+    def __init__(self, label_wise_measure: LabelWiseAveraging, threshold: int):
+        """
+        :param label_wise_measure: The label-wise measure
+        """
+        self.label_wise_measure = label_wise_measure
+        self.treshold = threshold
+
+    def should_continue(self, theory: Theory) -> bool:
+        return np.count_nonzero(np.logical_and(self.label_wise_measure.uncovered_labels, self.label_wise_measure.coverable_labels)) > self.treshold
