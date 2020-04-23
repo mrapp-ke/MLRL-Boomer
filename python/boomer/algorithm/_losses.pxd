@@ -81,3 +81,4 @@ cdef class NonDecomposableLoss(Loss):
 
     cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores)
+
