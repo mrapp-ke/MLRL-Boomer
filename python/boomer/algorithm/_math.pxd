@@ -7,8 +7,10 @@ from boomer.algorithm._arrays cimport intp, float64, array_float64, matrix_float
 
 from scipy.linalg.cython_lapack cimport dsysv
 from scipy.linalg.cython_blas cimport dspmv, ddot
-from libc.stdlib cimport malloc, free
+
 from libc.math cimport pow
+
+from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
 
 
 cdef inline divide_or_zero_float64(float64 a, float64 b):
