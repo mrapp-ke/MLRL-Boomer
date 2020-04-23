@@ -16,25 +16,23 @@ cdef class RuleInduction:
 
     cpdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
-                           uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
-                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int)
+    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                           Pruning pruning, Shrinkage shrinkage, random_state: int)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef map[intp, intp*]* sorted_indices_global
+    cdef map[intp, intp*]* sorted_indices_map_global
 
     # Functions:
 
     cpdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
-                           uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
-                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int)
+    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                           Pruning pruning, Shrinkage shrinkage, random_state: int)

@@ -16,7 +16,7 @@ from boomer.algorithm._rule_induction import ExactGreedyRuleInduction
 from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 
-from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
+from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stopping_criteria import StoppingCriterion
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
@@ -93,9 +93,6 @@ class GradientBoosting(SequentialRuleInduction):
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
         y = np.asfortranarray(y, dtype=DTYPE_UINT8)
 
-        # Sort feature matrix once
-        x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
-
         # Create a new theory
         theory = []
 
@@ -109,7 +106,7 @@ class GradientBoosting(SequentialRuleInduction):
             log.info('Learning rule %s...', len(theory) + 1)
 
             # Induce a new rule
-            rule = rule_induction.induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x, y, head_refinement, loss,
                                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
                                               shrinkage, random_state)
 

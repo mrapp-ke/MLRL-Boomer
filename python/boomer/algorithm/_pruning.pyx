@@ -44,16 +44,17 @@ cdef class Pruning:
         """
         pass
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions):
+    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions):
         """
         Prunes the conditions of a rule by modifying a given list of conditions in-place.
 
         :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the
                                     features of all training examples, regardless of whether they are included in the
                                     prune set or grow set
-        :param x_sorted_indices:    An array of dtype int, shape `(num_examples, num_features)`, representing the
-                                    indices of all training examples, regardless of whether they are included in the
-                                    prune set or grow set, when sorting column-wise
+        :param sorted_indices_map:  A pointer to a map that maps feature indices to arrays of dtype int, shape
+                                    `(num_examples)`, representing the indices of all training examples, regardless of
+                                    whether they are included in the grow or prune set, when sorted in ascending order
+                                    according to their feature values
         :param conditions:          A list that contains the rule's conditions
         :return:                    An array of dtype int, shape `(num_covered_examples)`, representing the indices of
                                     all training examples that are covered by the pruned rule, regardless of whether
@@ -101,13 +102,13 @@ cdef class IREP(Pruning):
         self.head_refinement = head_refinement
         self.weights = weights
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions):
+    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions):
         cdef intp[::1] label_indices = self.label_indices
         cdef Loss loss = self.loss
         cdef HeadRefinement head_refinement = self.head_refinement
         cdef uint32[::1] weights = self.weights
         cdef intp num_conditions = conditions.size()
-        cdef intp num_examples = x_sorted_indices.shape[0]
+        cdef intp num_examples = x.shape[0]
         cdef float64 best_quality_score = self.original_quality_score
         cdef intp[::1] best_covered_example_indices = self.covered_example_indices
         cdef intp best_num_examples = best_covered_example_indices.shape[0]
@@ -116,7 +117,8 @@ cdef class IREP(Pruning):
         cdef Condition condition
         cdef float32 threshold, feature_value
         cdef Comparator comparator
-        cdef intp[::1] covered_example_indices, new_covered_example_indices
+        cdef intp* sorted_indices_array
+        cdef intp[::1] sorted_indices, covered_example_indices, new_covered_example_indices
         cdef uint32 weight
         cdef float64 quality_score
         cdef Prediction prediction
@@ -126,10 +128,15 @@ cdef class IREP(Pruning):
         # each iteration we calculate the overall quality score of a rule that only contains the conditions processed so
         # far and keep track of the best one...
         for n in range(num_conditions - 1):
+            # Obtain properties of the current condition...
             condition = dereference(iterator)
             c = condition.feature_index
             threshold = condition.threshold
             comparator = condition.comparator
+
+            # Obtain sorted indices for the feature used by the current condition...
+            sorted_indices_array = dereference(sorted_indices_map)[c]
+            sorted_indices = <intp[:num_examples]>sorted_indices_array
 
             # Reset the loss function...
             loss.begin_search(label_indices)
@@ -147,7 +154,7 @@ cdef class IREP(Pruning):
                 # descending order, i.e., we start with the example with the greatest feature value. Otherwise, we
                 # traverse in ascending order, i.e., we start with the example with the smallest feature value.
                 for r in (range(num_examples - 1, -1, -1) if comparator == Comparator.GR else range(num_examples)):
-                    index = x_sorted_indices[r, c]
+                    index = sorted_indices[r]
                     feature_value = x[index, c]
 
                     if test_condition(threshold, comparator, feature_value):
