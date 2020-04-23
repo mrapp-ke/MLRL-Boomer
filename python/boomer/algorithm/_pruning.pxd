@@ -5,6 +5,7 @@ from boomer.algorithm._head_refinement cimport HeadRefinement
 from boomer.algorithm._utils cimport Condition
 
 from libcpp.list cimport list
+from libcpp.unordered_map cimport unordered_map as map
 
 
 cdef class Pruning:
@@ -14,7 +15,7 @@ cdef class Pruning:
     cdef begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
                        intp[::1] covered_example_indices, intp[::1] label_indices)
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions)
+    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions)
 
 
 cdef class IREP(Pruning):
@@ -38,4 +39,4 @@ cdef class IREP(Pruning):
     cdef begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
                        intp[::1] covered_example_indices, intp[::1] label_indices)
 
-    cdef intp[::1] prune(self, float32[::1, :] x, intp[::1, :] x_sorted_indices, list[Condition] conditions)
+    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions)
