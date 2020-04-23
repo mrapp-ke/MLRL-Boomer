@@ -12,6 +12,7 @@ from boomer.algorithm._losses cimport Prediction
 from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_index, get_weight
 
 from libcpp.list cimport list as list
+from libc.stdlib cimport malloc, free
 from cython.operator cimport dereference, postincrement
 
 
@@ -75,6 +76,21 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     at each iteration result from an exact split finding algorithm, i.e., all possible thresholds that may be used by
     the conditions are considered.
     """
+
+    def __cinit__(self):
+        self.sorted_indices_global = new map[intp, intp*]()
+
+    def __dealloc__(self):
+        cdef map[intp, intp*]* sorted_indices_global = self.sorted_indices_global
+        cdef map[intp, intp*].iterator iterator = dereference(sorted_indices_global).begin()
+        cdef intp* value
+
+        while iterator != dereference(sorted_indices_global).end():
+            value = dereference(iterator).second
+            free(value)
+            postincrement(iterator)
+
+        del self.sorted_indices_global
 
     cpdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
         cdef float64[::1] scores = loss.calculate_default_scores(y)
