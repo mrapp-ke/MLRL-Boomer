@@ -3,10 +3,10 @@
 import argparse
 import logging as log
 
-from args import optional_string, log_level, boolean_string, current_fold_string
-from boomer.algorithm.rule_learners import Boomer
-from boomer.algorithm.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
-    LOSS_LABEL_WISE_LOGISTIC
+from args import current_fold_string
+from args import optional_string, log_level, boolean_string
+from boomer.algorithm.rule_learners import MEASURE_LABEL_WISE, HEURISTIC_PRECISION
+from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
@@ -31,31 +31,30 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The duration in seconds after which the induction of rules should be canceled or -1')
     p.add_argument('--label-sub-sampling', type=int, default=-1,
                    help='The number of samples to be used for label sub-sampling or -1')
-    p.add_argument('--instance-sub-sampling', type=optional_string, default=INSTANCE_SUB_SAMPLING_BAGGING,
+    p.add_argument('--instance-sub-sampling', type=optional_string, default=None,
                    help='The name of the strategy to be used for instance sub-sampling or None')
-    p.add_argument('--feature-sub-sampling', type=optional_string, default=FEATURE_SUB_SAMPLING_RANDOM,
+    p.add_argument('--feature-sub-sampling', type=optional_string, default=None,
                    help='The name of the strategy to be used for feature sub-sampling or None')
     p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
-    p.add_argument('--loss', type=str, default=LOSS_LABEL_WISE_LOGISTIC,
+    p.add_argument('--loss', type=str, default=MEASURE_LABEL_WISE,
                    help='The name of the loss function to be used')
-    p.add_argument('--l2-regularization-weight', type=float, default=1.0,
-                   help='The weight of the L2 regularization to be used')
+    p.add_argument('--heuristic', type=str, default=HEURISTIC_PRECISION, help='The name of the heuristic to be used')
     p.add_argument('--head-refinement', type=optional_string, default=None,
                    help='The name of the strategy to be used for finding the heads of rules')
-    p.add_argument('--shrinkage', type=float, default=0.3, help='The shrinkage parameter to be used')
 
 
-def create_learner(params) -> Boomer:
-    return Boomer(model_dir=params.model_dir, max_rules=params.max_rules, time_limit=params.time_limit,
-                  loss=params.loss, pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
-                  instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
-                  feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement,
-                  l2_regularization_weight=params.l2_regularization_weight)
+def create_learner(params) -> SeparateAndConquerRuleLearner:
+    return SeparateAndConquerRuleLearner(model_dir=params.model_dir, max_rules=params.max_rules,
+                                         time_limit=params.time_limit, loss=params.loss, heuristic=params.heuristic,
+                                         pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
+                                         instance_sub_sampling=params.instance_sub_sampling,
+                                         feature_sub_sampling=params.feature_sub_sampling,
+                                         head_refinement=params.head_refinement)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='A multi-label classification experiment using BOOMER')
+    parser = argparse.ArgumentParser(description='A multi-label classification experiment using Separate and Conquer')
     configure_argument_parser(parser)
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
