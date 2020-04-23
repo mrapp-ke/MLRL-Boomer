@@ -403,7 +403,15 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = _create_pruning(self.pruning)
-        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
+
+        max_rules = int(self.max_rules)
+
+        # To learn max_rules rules including the default rule, the learner has to learn max_rules - 1 rules excluding
+        # the default rule as the default rule is learned after the SizeStoppingCriterion is reached.
+        if max_rules > 0:
+            max_rules = max_rules - 1
+
+        stopping_criteria = _create_stopping_criteria(max_rules, int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
         return SeparateAndConquer(head_refinement, loss, label_sub_sampling, instance_sub_sampling,
                                   feature_sub_sampling, pruning, *stopping_criteria)
