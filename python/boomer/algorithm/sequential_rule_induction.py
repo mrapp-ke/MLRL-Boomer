@@ -18,9 +18,9 @@ from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampli
 
 from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stopping_criteria import StoppingCriterion
+from boomer.algorithm.utils import format_rule
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
-from boomer.algorithm.utils import format_rule
 
 
 class SequentialRuleInduction(Randomized):
@@ -130,7 +130,7 @@ class GradientBoosting(SequentialRuleInduction):
             raise ValueError('Parameter \'head_refinement\' may not be None')
 
 
-class SeparateAndConquer(RuleInduction):
+class SeparateAndConquer(SequentialRuleInduction):
     """
     Implements the induction of (multi-label) classification rules using a separate and conquer algorithm.
     """
@@ -168,23 +168,22 @@ class SeparateAndConquer(RuleInduction):
         instance_sub_sampling = self.instance_sub_sampling
         feature_sub_sampling = self.feature_sub_sampling
         pruning = self.pruning
+        rule_induction = ExactGreedyRuleInduction()
 
         theory = []
 
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
         y = np.asfortranarray(y, dtype=DTYPE_UINT8)
 
-        x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
-
-        default_rule = induce_default_rule(y, loss)
+        default_rule = rule_induction.induce_default_rule(y, loss)
 
         num_learned_rules = 0
 
         while all([stopping_criterion.should_continue(theory) for stopping_criterion in stopping_criteria]):
             log.info('Learning rule %s...', num_learned_rules + 1)
-            rule = induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
-                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, None,
-                               random_state)
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x, y, head_refinement, loss,
+                                              label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                              None, random_state)
 
             print(format_rule(stats, rule))
 
