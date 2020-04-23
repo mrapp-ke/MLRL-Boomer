@@ -15,6 +15,9 @@ from libcpp.list cimport list as list
 from libc.stdlib cimport malloc, free
 from cython.operator cimport dereference, postincrement
 
+import numpy as np
+from boomer.algorithm.model import DTYPE_INTP
+
 
 cdef class RuleInduction:
     """
@@ -129,10 +132,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp num_examples = x.shape[0]
 
         # Variables for specifying the features used for finding the best refinement
+        cdef intp num_features = x.shape[1]
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
         cdef intp next_nominal_f = -1
         cdef intp[::1] feature_indices
-        cdef intp num_features, next_nominal_c
+        cdef intp next_nominal_c
         cdef bint nominal
 
         # Temporary variables
@@ -141,6 +145,25 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef float32 previous_threshold, current_threshold
         cdef uint32 weight
         cdef intp c, f, r, i, first_r, previous_r
+
+        # Sort feature values...
+        # TODO Sort feature values on demand
+        cdef map[intp, intp*]* sorted_indices_global = self.sorted_indices_global
+        cdef intp[::1] sorted_indices_column
+        cdef intp* sorted_indices_array
+
+        if dereference(sorted_indices_global).size() == 0:
+            for c in range(num_features):
+                # TODO Use C function call for sorting
+                sorted_indices_column = np.ascontiguousarray(np.argsort(x[:, c]), dtype=DTYPE_INTP)
+                sorted_indices_array = <intp*>malloc(num_examples * sizeof(intp))
+
+                for r in range(num_examples):
+                    sorted_indices_array[r] = sorted_indices_column[r]
+
+                dereference(sorted_indices_global)[c] = sorted_indices_array
+
+        cdef map[intp, intp*]* sorted_indices_local = sorted_indices_global
 
         # Sub-sample examples, if necessary...
         cdef uint32[::1] weights
@@ -173,7 +196,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             # Sub-sample features, if necessary...
             if feature_sub_sampling is None:
                 feature_indices = None
-                num_features = x.shape[1]
             else:
                 feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
                 num_features = feature_indices.shape[0]
