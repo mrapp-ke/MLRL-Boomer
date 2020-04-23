@@ -155,7 +155,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
 
             # Check if feature is nominal...
             if f == next_nominal_f:
-                nominal = 1
+                nominal = True
 
                 if next_nominal_c < num_nominal_features:
                     next_nominal_f = nominal_attribute_indices[next_nominal_c]
@@ -163,7 +163,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
                 else:
                     next_nominal_f = -1
             else:
-                nominal = 0
+                nominal = False
 
             # Reset the loss function when processing a new feature...
             loss.begin_search(label_indices)
@@ -193,7 +193,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
                     if previous_threshold != current_threshold:
                         # Find and evaluate the best head for the current refinement, if a condition that uses the <=
                         # operator (or the == operator in case of a nominal feature) is used...
-                        current_head = head_refinement.find_head(head, label_indices, loss, 0)
+                        current_head = head_refinement.find_head(head, label_indices, loss, False)
 
                         # If refinement using the <= operator (or the == operator in case of a nominal feature) is
                         # better than the current rule...
@@ -226,7 +226,7 @@ cpdef Rule induce_rule(intp[::1] nominal_attribute_indices, float32[::1, :] x, i
 
                         # Find and evaluate the best head for the current refinement, if a condition that uses the >
                         # operator (or the != operator in case of a nominal feature) is used...
-                        current_head = head_refinement.find_head(head, label_indices, loss, 1)
+                        current_head = head_refinement.find_head(head, label_indices, loss, True)
 
                         # If refinement using the > operator (or the != operator in case of a nominal feature) is better
                         # than the current rule...
