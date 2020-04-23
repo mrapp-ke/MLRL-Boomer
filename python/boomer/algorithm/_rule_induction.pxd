@@ -1,3 +1,4 @@
+# distutils: language=c++
 from boomer.algorithm._arrays cimport intp, uint8, float32
 from boomer.algorithm._model cimport Rule
 from boomer.algorithm._losses cimport Loss
@@ -5,6 +6,8 @@ from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampl
 from boomer.algorithm._pruning cimport Pruning
 from boomer.algorithm._shrinkage cimport Shrinkage
 from boomer.algorithm._head_refinement cimport HeadRefinement
+
+from libcpp.unordered_map cimport unordered_map as map
 
 
 cdef class RuleInduction:
@@ -21,6 +24,10 @@ cdef class RuleInduction:
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
+
+    # Attributes:
+
+    cdef map[intp, intp*]* sorted_indices_global
 
     # Functions:
 
