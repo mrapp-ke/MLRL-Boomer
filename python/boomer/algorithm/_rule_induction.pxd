@@ -10,6 +10,18 @@ from boomer.algorithm._head_refinement cimport HeadRefinement
 from libcpp.unordered_map cimport unordered_map as map
 
 
+"""
+A struct that contains a pointer to a C-array of type intp, representing the indices of the training examples that are
+covered by a rule. The attribute `num_elements` specifies how many elements the array contains. The attribute
+`num_conditions` specifies how many conditions the rule contained when the struct was updated for the last time. It may
+be used to check if the array is still valid or must be updated.
+"""
+cdef struct IndexArray:
+    intp* data
+    intp num_elements
+    intp num_conditions
+
+
 cdef class RuleInduction:
 
     # Functions:
