@@ -13,7 +13,7 @@ from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_
 
 from libcpp.list cimport list
 from cython.operator cimport dereference, postincrement
-from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
+from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 import numpy as np
 from boomer.algorithm.model import DTYPE_INTP
@@ -105,26 +105,31 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                            Pruning pruning, Shrinkage shrinkage, random_state: int):
         # The head of the induced rule
         cdef HeadCandidate head = None
-        # A list that contains the rule's conditions (in the order they have been learned)
+        # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef list[Condition] conditions
-        # An array that specifies the number of conditions that use the different types of operators
+        # The total number of conditions
+        cdef int num_conditions = 0
+        # An array representing the number of conditions per type of operator
         cdef intp[::1] num_conditions_per_comparator = array_intp(4)
         num_conditions_per_comparator[:] = 0
-        # The indices of the examples that are covered by the induced rule
+        # An array representing the indices of the examples that are covered by the rule
         cdef intp[::1] covered_example_indices
-
-        # Variables used to update the seed used by RNGs, depending on the refinement iteration (starting at 1)
+        # The seed to be used by RNGs (must be updated after each refinement)
         cdef int current_random_state = random_state
-        cdef int num_refinements = 1
 
         # Variables for representing the best refinement
         cdef bint found_refinement = True
         cdef Comparator best_condition_comparator
         cdef intp best_condition_start, best_condition_end, best_condition_index
         cdef float32 best_condition_threshold
+        cdef intp[::1] best_condition_sorted_indices
+        cdef IndexArray best_condition_index_array
 
-        # Variables for specifying the examples and features used for finding the best refinement
+        # Variables for specifying the examples that should be used for finding the best refinement
         cdef intp num_examples = x.shape[0]
+        cdef intp num_covered = num_examples
+
+        # Variables for specifying the features used for finding the best refinement
         cdef intp num_features = x.shape[1]
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
         cdef intp next_nominal_f = -1
@@ -156,7 +161,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 dereference(sorted_indices_map_global)[c] = sorted_indices_array
 
-        cdef map[intp, intp*]* sorted_indices_map_local = sorted_indices_map_global
+        cdef map[intp, IndexArray] sorted_indices_map_local  # Stack-allocated map
+        cdef IndexArray index_array
 
         # Sub-sample examples, if necessary...
         cdef uint32[::1] weights
@@ -192,7 +198,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
                 num_features = feature_indices.shape[0]
 
-            # Obtain the index of the first nominal feature, if available...
+            # Obtain the index of the first nominal feature, if any...
             if num_nominal_features > 0:
                 next_nominal_f = nominal_attribute_indices[0]
                 next_nominal_c = 1
@@ -204,9 +210,27 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             for c in range(num_features):
                 f = get_index(c, feature_indices)
 
-                # Obtain array with sorted indices...
-                sorted_indices_array = dereference(sorted_indices_map_local)[f]
+                # Obtain array that contains the indices of the training examples sorted according to the current
+                # feature...
+                index_array = sorted_indices_map_local[f]  # Allocates a new struct if key does not exist
+                sorted_indices_array = index_array.data
+
+                if sorted_indices_array == NULL:
+                    sorted_indices_map_local[f] = index_array
+                    sorted_indices_array = dereference(sorted_indices_map_global)[f]
+                    num_examples = x.shape[0]
+                else:
+                    num_examples = index_array.num_elements
+
                 sorted_indices = <intp[:num_examples]>sorted_indices_array
+
+                # Filter indices, if only a subset of the contained examples is covered...
+                if num_conditions > index_array.num_conditions:
+                    sorted_indices = filter_any_indices(x, sorted_indices, index_array, conditions, num_conditions,
+                                                        num_covered)
+                    num_examples = sorted_indices.shape[0]
+
+                # TODO check if feature is constant
 
                 # Check if feature is nominal...
                 if f == next_nominal_f:
@@ -260,6 +284,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 best_condition_start = first_r
                                 best_condition_end = r
                                 best_condition_index = f
+                                best_condition_sorted_indices = sorted_indices
+                                best_condition_index_array = index_array
 
                                 if nominal:
                                     best_condition_comparator = Comparator.EQ
@@ -293,6 +319,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 best_condition_start = first_r
                                 best_condition_end = r
                                 best_condition_index = f
+                                best_condition_sorted_indices = sorted_indices
+                                best_condition_index_array = index_array
 
                                 if nominal:
                                     best_condition_comparator = Comparator.NEQ
@@ -324,40 +352,31 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # If a refinement has been found, add the new condition...
                 conditions.push_back(__make_condition(best_condition_index, best_condition_comparator,
                                                       best_condition_threshold))
+                num_conditions += 1
                 num_conditions_per_comparator[<intp>best_condition_comparator] += 1
 
                 # Update the examples and labels for which the rule predicts...
                 label_indices = head.label_indices
-                sorted_indices_map_local = __filter_sorted_indices(x, sorted_indices_map_local, num_examples,
-                                                                   num_refinements, best_condition_start,
+                covered_example_indices = __filter_current_indices(best_condition_sorted_indices,
+                                                                   best_condition_index_array, best_condition_start,
                                                                    best_condition_end, best_condition_index,
-                                                                   best_condition_comparator, best_condition_threshold,
-                                                                   loss)
-                # TODO This is super ugly
-                if best_condition_comparator == Comparator.LEQ or best_condition_comparator == Comparator.NEQ:
-                    num_examples = num_examples - (best_condition_start - best_condition_end)
-                else:
-                    num_examples = best_condition_start - best_condition_end
+                                                                   best_condition_comparator, num_conditions, loss)
+                num_covered = covered_example_indices.shape[0]
 
-                if num_examples > 1:
+                if num_covered > 1:
                     # Alter seed to be used by RNGs for the next refinement...
-                    num_refinements += 1
-                    current_random_state = random_state * num_refinements
+                    current_random_state = random_state * (num_conditions + 1)
                 else:
                     # Abort refinement process if rule covers a single example...
                     break
 
+        # TODO Do not raise an error but simply return None
         if head is None:
             raise RuntimeError('Failed to find an useful condition for the new rule! Please remove any constants features from the training data')
 
-        # Obtain the indices of all examples that are covered by the new rule, regardless of whether they are included
-        # in the sub-sample or not...
-        sorted_indices_array = dereference(sorted_indices_map_local)[0]
-        covered_example_indices = <intp[:num_examples]>sorted_indices_array
-
         if weights is not None:
             # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-            if pruning is not None and conditions.size() > 1:
+            if pruning is not None and num_conditions > 1:
                 pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
                 covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
 
@@ -378,19 +397,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Tell the loss function that a new rule has been induced...
         loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
 
+        # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
         # TODO Move into a finally block
-        cdef map[intp, intp*].iterator iterator
-        cdef intp* value
+        cdef map[intp, IndexArray].iterator iterator = sorted_indices_map_local.begin()
 
-        if num_refinements > 1:
-            iterator = dereference(sorted_indices_map_local).begin()
-
-            while iterator != dereference(sorted_indices_map_local).end():
-                value = dereference(iterator).second
-                free(value)
-                postincrement(iterator)
-
-            del sorted_indices_map_local
+        while iterator != sorted_indices_map_local.end():
+            index_array = dereference(iterator).second
+            free(index_array.data)
+            postincrement(iterator)
 
         # Build and return the induced rule...
         return __build_rule(head, conditions, num_conditions_per_comparator)
@@ -539,42 +553,35 @@ cdef inline Rule __build_rule(HeadCandidate head, list[Condition] conditions,
     return rule
 
 
-cdef inline map[intp, intp*]* __filter_sorted_indices(float32[::1, :] x, map[intp, intp*]* sorted_indices_map,
-                                                      intp num_examples, intp num_refinements, intp condition_start,
-                                                      intp condition_end, intp condition_index,
-                                                      Comparator condition_comparator, float32 condition_threshold,
-                                                      Loss loss):
+cdef inline intp[::1] __filter_current_indices(intp[::1] sorted_indices, IndexArray index_array, intp condition_start,
+                                               intp condition_end, intp condition_index,
+                                               Comparator condition_comparator, int num_conditions, Loss loss):
     """
-    Filters the matrix of example indices after a new condition has been added to a previous rule, such that the
-    filtered matrix does only contain the indices of examples that are covered by the new rule.
+    Filters and returns the array that contains the indices of the examples that are covered by the previous rule after
+    a new condition has been added, such that the filtered array does only contain the indices of the examples that are
+    covered by the new rule. The filtered array is stored in a given struct of type `IndexArray`.
 
-    :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
-                                    features of the training examples
-    :param sorted_indices_map:      A pointer to a map that maps feature indices to arrays of dtype int, shape
-                                    `(num_examples)`, representing the indices of the training examples that are covered
-                                    by the previous rule when sorted in ascending order according to their feature
-                                    values
-    :param num_examples:            The number of training examples that are covered by the previous rule
-    :param num_refinements:         The number of refinements (including the current one)
-    :param condition_start:         The row in `sorted_indices_map[condition_index]` that corresponds to the first
-                                    example (inclusive) that has been passed to the loss function when searching for the
-                                    new condition (must be greater than `condition_end`)
-    :param condition_end:           The row in `sorted_indices_map[condition_index]` that corresponds to the last
+    :param sorted_indices:          An array of dtype int, shape `(num_examples)`, representing the indices of the
+                                    training examples that are covered by the previous rule in ascending order of values
+                                    for the feature, the new condition corresponds to
+    :param index_array:             The struct of type `IndexArray` that should be used to store the filtered array
+    :param condition_start:         The element in `sorted_indices` that corresponds to the first example (inclusive)
+                                    that has been passed to the loss function when searching for the new condition (must
+                                    be greater than `condition_end`)
+    :param condition_end:           The element in `sorted_indices_map[condition_index]` that corresponds to the last
                                     example (exclusive) that has been passed to the loss function when searching for the
                                     new condition (must be smaller than `condition_start`)
     :param condition_index:         The index of the feature, the new condition corresponds to
     :param condition_comparator:    The type of the operator that is used by the new condition
-    :param condition_threshold:     The threshold of the new condition
+    :param num_conditions:          The total number of conditions in the rule's body (including the new one)
     :param loss:                    The loss function to be notified about the examples that must be considered when
-                                    searching for the next refinement, i.e., the examples that are covered by the
-                                    current rule
-    :return:                        An array of dtype int, shape `(num_covered_examples, num_features)`, representing
-                                    the indices of the examples that are covered by the new rule when sorting
-                                    column-wise
+                                    searching for the next refinement, i.e., the examples that are covered by the new
+                                    rule
     """
-    cdef intp num_features = x.shape[1]
+    cdef intp* filtered_indices_array = index_array.data
+    cdef num_examples = sorted_indices.shape[0]
     cdef intp num_covered = condition_start - condition_end
-    cdef intp first, last
+    cdef intp r, first, last, index
 
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
         num_covered = num_examples - num_covered
@@ -584,60 +591,101 @@ cdef inline map[intp, intp*]* __filter_sorted_indices(float32[::1, :] x, map[int
         first = condition_start
         last = condition_end
 
-    cdef map[intp, intp*]* filtered_indices_map = new map[intp, intp*]()
-    cdef intp* sorted_indices_array,
-    cdef intp* filtered_indices_array
-    cdef intp[::1] sorted_indices
-    cdef float32 feature_value
-    cdef intp c, r, i, index
+    if filtered_indices_array == NULL:
+        # If the given struct does not point to an existing array, we must allocate a new one...
+        filtered_indices_array = <intp*>malloc(num_covered * sizeof(intp))
+        index_array.data = filtered_indices_array
+    elif index_array.num_elements != num_covered:
+        # It the size of the array in the given struct does not fit anymore, we must reallocate it...
+        filtered_indices_array = <intp*>realloc(filtered_indices_array, num_covered * sizeof(intp))
+        index_array.data = filtered_indices_array
+
+    index_array.num_elements = num_covered
+    index_array.num_conditions = num_conditions
 
     # Tell the loss function that a new sub-sample of examples will be selected...
     loss.begin_instance_sub_sampling()
 
-    for c in range(num_features):
-        sorted_indices_array = dereference(sorted_indices_map)[c]
-        sorted_indices = <intp[:num_examples]>sorted_indices_array
+    cdef intp i = num_covered - 1
+
+    if condition_comparator == Comparator.NEQ:
+        for r in range(num_examples - 1, condition_start, -1):
+            index = sorted_indices[r]
+            filtered_indices_array[i] = index
+            i -= 1
+
+            # Tell the loss function that the example at the current index is covered by the current rule...
+            loss.update_sub_sample(index)
+
+    for r in range(first, last, -1):
+        index = sorted_indices[r]
+        filtered_indices_array[i] = index
+        i -= 1
+
+        # Tell the loss function that the example at the current index is covered by the current rule...
+        loss.update_sub_sample(index)
+
+    sorted_indices = <intp[:num_covered]>filtered_indices_array
+    return sorted_indices
+
+
+cdef inline intp[::1] filter_any_indices(float32[::1, :] x, intp[::1] sorted_indices, IndexArray index_array,
+                                         list[Condition] conditions, intp num_conditions, intp num_covered):
+    """
+    # TODO
+    """
+    cdef intp* filtered_indices_array = index_array.data
+    cdef intp num_untested_conditions = num_conditions - index_array.num_conditions
+
+    if filtered_indices_array == NULL:
+        # If the given struct does not point to an existing array, we must allocate a new one...
         filtered_indices_array = <intp*>malloc(num_covered * sizeof(intp))
-        i = num_covered - 1
+        index_array.data = filtered_indices_array
+    elif index_array.num_elements != num_covered:
+        # It the size of the array in the given struct does not fit anymore, we must reallocate it...
+        filtered_indices_array = <intp*>realloc(filtered_indices_array, num_covered * sizeof(intp))
+        index_array.data = filtered_indices_array
 
-        if c == condition_index:
-            # For the feature that corresponds to the new condition we know the indices of the covered examples...
-            if condition_comparator == Comparator.NEQ:
-                for r in range(num_examples - 1, condition_start, -1):
-                    index = sorted_indices[r]
-                    filtered_indices_array[i] = index
-                    i -= 1
+    index_array.num_elements = num_covered
+    index_array.num_conditions = num_conditions
 
-                    # Tell the loss function that the example at the current index is covered by the current rule...
-                    loss.update_sub_sample(index)
+    cdef intp num_examples = sorted_indices.shape[0]
+    cdef intp i = num_covered - 1
+    cdef list[Condition].reverse_iterator iterator
+    cdef Condition condition
+    cdef Comparator condition_comparator
+    cdef float32 condition_threshold, feature_value
+    cdef intp condition_index, c, r, index
+    cdef bint covered
 
-            for r in range(first, last, -1):
-                index = sorted_indices[r]
-                filtered_indices_array[i] = index
-                i -= 1
+    for r in range(num_examples - 1, -1, -1):
+        index = sorted_indices[r]
+        covered = True
 
-                # Tell the loss function that the example at the current index is covered by the current rule...
-                loss.update_sub_sample(index)
-        else:
-            # For the other features we need to filter out the indices that correspond to examples that do not satisfy
-            # the new condition...
-            for r in range(num_examples - 1, -1, -1):
-                index = sorted_indices[r]
-                feature_value = x[index, condition_index]
+        # Traverse conditions in reverse order...
+        iterator = conditions.rbegin()
+        c = 0
 
-                if test_condition(condition_threshold, condition_comparator, feature_value):
-                    filtered_indices_array[i] = index
-                    i -= 1
+        while c < num_untested_conditions:
+            condition = dereference(iterator)
+            condition_threshold = condition.threshold
+            condition_comparator = condition.comparator
+            condition_index = condition.feature_index
+            feature_value = x[index, condition_index]
 
-                    if i < 0:
-                        break
+            if not test_condition(condition_threshold, condition_comparator, feature_value):
+                covered = False
+                break
 
-        dereference(filtered_indices_map)[c] = filtered_indices_array
+            c += 1
+            postincrement(iterator)
 
-        if num_refinements > 1:
-            free(sorted_indices_array)
+        if covered:
+            filtered_indices_array[i] = index
+            i -= 1
 
-    if num_refinements > 1:
-        del sorted_indices_map
+            if i < 0:
+                break
 
-    return filtered_indices_map
+    sorted_indices = <intp[:num_covered]>filtered_indices_array
+    return sorted_indices
