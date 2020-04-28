@@ -14,7 +14,7 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
     cdef readonly float64[::1, :] coverable_labels
 
-    cdef uint32[::1] minority_labels
+    cdef uint8[::1] minority_labels
 
     cdef uint8[::1, :] true_labels
 
