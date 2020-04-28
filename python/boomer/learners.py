@@ -128,7 +128,7 @@ class MLLearner(Learner, MLClassifierBase):
             'model_dir': self.model_dir
         }
 
-    def fit(self, x: np.ndarray, y: np.ndarray) -> 'MLLearner':
+    def fit(self, x, y):
         # Obtain information about the training data
         stats = Stats.create_stats(x, y)
         self.stats_ = stats
@@ -154,7 +154,7 @@ class MLLearner(Learner, MLClassifierBase):
         self.model_ = model
         return model
 
-    def predict(self, x: np.ndarray) -> np.ndarray:
+    def predict(self, x):
         check_is_fitted(self)
         log.info("Making a prediction for %s query instances...", x.shape[0])
         return self._predict(self.model_, self.stats_, x, self.random_state)
