@@ -133,7 +133,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
     def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
         # Create a dense representation of the training data
         x = self._ensure_input_format(x)
-        y = self._ensure_input_format(y)
+        y = self._ensure_output_format(y)
 
         # Create an array that contains the indices of all nominal attributes, if any
         nominal_attribute_indices = self.nominal_attribute_indices
