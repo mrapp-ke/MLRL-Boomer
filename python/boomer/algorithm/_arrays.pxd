@@ -17,11 +17,13 @@ DEF MODE_C_CONTIGUOUS = 'c'
 DEF MODE_FORTRAN_CONTIGUOUS = 'fortran'
 
 IF UNAME_SYSNAME == 'Windows':
+    DEF FORMAT_UINT8 = 'B'
     DEF FORMAT_UINT32 = 'I'
     DEF FORMAT_INTP = 'q'
     DEF FORMAT_FLOAT32 = 'f'
     DEF FORMAT_FLOAT64 = 'd'
 ELSE:
+    DEF FORMAT_UINT8 = 'B'
     DEF FORMAT_UINT32 = 'I'
     DEF FORMAT_INTP = 'l'
     DEF FORMAT_FLOAT32 = 'f'
@@ -37,6 +39,17 @@ cdef inline cvarray array_intp(intp num_elements):
     cdef tuple shape = tuple([num_elements])
     cdef intp itemsize = sizeof(intp)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_INTP, MODE_C_CONTIGUOUS)
+    return array
+
+cdef inline cvarray array_uint8(intp num_elements):
+    """
+    Creates and returns a new C-contiguous array of dtype `uint8`, shape `(num_elements)`.
+    :param num_elements:    The number of elements in the array
+    :return:                The array that has been created
+    """
+    cdef tuple shape = tuple([num_elements])
+    cdef intp itemsize = sizeof(uint8)
+    cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT8, MODE_C_CONTIGUOUS)
     return array
 
 cdef inline cvarray array_uint32(intp num_elements):
