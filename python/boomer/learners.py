@@ -152,7 +152,7 @@ class MLLearner(Learner, MLClassifierBase):
             log.info('Successfully fit model in %s seconds', run_time)
 
         self.model_ = model
-        return model
+        return self
 
     def predict(self, x):
         check_is_fitted(self)
