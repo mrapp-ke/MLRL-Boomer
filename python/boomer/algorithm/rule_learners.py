@@ -13,8 +13,8 @@ import numpy as np
 from boomer.algorithm._example_wise_losses import ExampleWiseLogisticLoss
 from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm._heuristics import Heuristic, HammingLoss, Precision
+from boomer.algorithm._label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm._label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
-from boomer.algorithm._label_wise_measure import LabelWiseAveraging
 from boomer.algorithm._losses import Loss, DecomposableLoss
 from boomer.algorithm._pruning import Pruning, IREP
 from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
