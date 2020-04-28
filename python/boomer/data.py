@@ -12,7 +12,7 @@ from enum import Enum, auto
 from typing import List, Set
 
 import numpy as np
-from scipy.sparse import csr_matrix
+from scipy.sparse import lil_matrix, csr_matrix
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from skmultilearn.dataset import load_from_arff, save_to_arff
@@ -73,16 +73,17 @@ class MetaData:
 
 
 def load_data_set_and_meta_data(data_dir: str, arff_file_name: str,
-                                xml_file_name: str) -> (np.ndarray, np.ndarray, MetaData):
+                                xml_file_name: str) -> (lil_matrix, lil_matrix, MetaData):
     """
     Loads a multi-label data set from an ARFF file and the corresponding Mulan XML file..
 
     :param data_dir:        The path of the directory that contains the files
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param xml_file_name:   The name of the XML file (including the suffix)
-    :return:                An array of dtype float, shape `(num_examples, num_features)`, representing the features of
-                            the examples, an array of dtype float, shape `(num_examples, num_labels)`, representing the
-                            corresponding label vectors, as well as the data set's meta data
+    :return:                A scipy.sparse.lil_matrix of dtype float, shape `(num_examples, num_features)`, representing
+                            the features of the examples, a scipy.sparse.lil_matrix of dtype float, shape
+                            `(num_examples, num_labels)`, representing the corresponding label vectors, as well as the
+                            data set's meta data
     """
 
     arff_file = path.join(data_dir, arff_file_name)
@@ -93,7 +94,7 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str,
     return x, y, meta_data
 
 
-def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData) -> (np.ndarray, np.ndarray):
+def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData) -> (lil_matrix, lil_matrix):
     """
     Loads a multi-label data set from an ARFF file given its meta data.
 
