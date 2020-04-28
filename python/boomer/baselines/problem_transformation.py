@@ -7,7 +7,6 @@ Implements different problem transformation methods.
 """
 from abc import abstractmethod
 
-import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.multioutput import ClassifierChain
 from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset
@@ -51,20 +50,20 @@ class ProblemTransformationLearner(MLLearner):
 
         return super().set_params(**parameters)
 
-    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+    def _fit(self, stats: Stats, x, y, random_state: int):
         base_learner = self.base_learner
         transformation_method = self._create_transformation_method(base_learner, stats, x, y, random_state)
         transformation_method.fit(x, y)
         return transformation_method
 
-    def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
+    def _predict(self, model, stats: Stats, x, random_state: int):
         return model.predict(x)
 
     def get_name(self) -> str:
         return self.base_learner.get_name()
 
     @abstractmethod
-    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x, y,
                                       random_state: int) -> BaseEstimator:
         pass
 
@@ -81,7 +80,7 @@ class BRLearner(ProblemTransformationLearner):
     def __init__(self, model_dir: str, base_learner: Learner):
         super().__init__(model_dir, base_learner)
 
-    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x, y,
                                       random_state: int) -> BaseEstimator:
         return BinaryRelevance(classifier=base_learner)
 
@@ -97,7 +96,7 @@ class LPLearner(ProblemTransformationLearner):
     def __init__(self, model_dir: str, base_learner: Learner):
         super().__init__(model_dir, base_learner)
 
-    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x, y,
                                       random_state: int) -> BaseEstimator:
         return LabelPowerset(classifier=base_learner)
 
@@ -122,10 +121,10 @@ class CCLearner(ProblemTransformationLearner):
         })
         return params
 
-    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+    def _fit(self, stats: Stats, x, y, random_state: int):
         return super()._fit(stats, self._ensure_input_format(x), self._ensure_input_format(y), random_state)
 
-    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x: np.ndarray, y: np.ndarray,
+    def _create_transformation_method(self, base_learner: Learner, stats: Stats, x, y,
                                       random_state: int) -> BaseEstimator:
         return ClassifierChain(base_learner, order='random', random_state=self.chain_order)
 

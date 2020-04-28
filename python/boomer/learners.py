@@ -12,7 +12,6 @@ from os.path import isdir
 from timeit import default_timer as timer
 from typing import List
 
-import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 from skmultilearn.base import MLClassifierBase
@@ -128,7 +127,7 @@ class MLLearner(Learner, MLClassifierBase):
             'model_dir': self.model_dir
         }
 
-    def fit(self, x: np.ndarray, y: np.ndarray) -> 'MLLearner':
+    def fit(self, x, y):
         # Obtain information about the training data
         stats = Stats.create_stats(x, y)
         self.stats_ = stats
@@ -152,11 +151,11 @@ class MLLearner(Learner, MLClassifierBase):
             log.info('Successfully fit model in %s seconds', run_time)
 
         self.model_ = model
-        return model
+        return self
 
-    def predict(self, x: np.ndarray) -> np.ndarray:
+    def predict(self, x):
         check_is_fitted(self)
-        log.info("Making a prediction for %s query instances...", np.shape(x)[0])
+        log.info("Making a prediction for %s query instances...", x.shape[0])
         return self._predict(self.model_, self.stats_, x, self.random_state)
 
     @abstractmethod
@@ -169,31 +168,31 @@ class MLLearner(Learner, MLClassifierBase):
         pass
 
     @abstractmethod
-    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+    def _fit(self, stats: Stats, x, y, random_state: int):
         """
-        Trains the classifier or ranker on the given training data.
+        Trains a new model on the given training data.
 
         :param stats:           Statistics about the training data set
-        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the training examples
-        :param y:               An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of
-                                the training examples
+        :param x:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`,
+                                representing the feature values of the training examples
+        :param y:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`,
+                                representing the labels of the training examples
         :param random_state:    The seed to be used by RNGs
-        :return:                The classifier or ranker that has been trained
+        :return:                The model that has been trained
         """
         pass
 
     @abstractmethod
-    def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
+    def _predict(self, model, stats: Stats, x, random_state: int):
         """
-        Makes a prediction for given test data.
+        Makes a prediction for given query examples.
 
         :param model:           The model that should be used for making a prediction
         :param stats:           Statistics about the training data set
-        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the test examples
+        :param x:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`,
+                                representing the feature values of the query examples
         :param random_state:    The seed to be used by RNGs
-        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the labels
-                                predicted for the given test examples
+        :return:                A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`,
+                                representing the labels predicted for the given query examples
         """
         pass
