@@ -124,15 +124,16 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
     def __init__(self, model_dir: str):
         super().__init__(model_dir)
-        self.require_dense = [True, True]  # We need a dense representation of the training data
+        # We need a dense representation of the feature matrix (first value) and the label matrix (second value)
+        self.require_dense = [True, True]
 
     def get_model_prefix(self) -> str:
         return 'rules'
 
-    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+    def _fit(self, stats: Stats, x, y, random_state: int):
         # Create a dense representation of the training data
         x = self._ensure_input_format(x)
-        y = self._ensure_input_format(y)
+        y = self._ensure_output_format(y)
 
         # Create an array that contains the indices of all nominal attributes, if any
         nominal_attribute_indices = self.nominal_attribute_indices
@@ -148,7 +149,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         theory = sequential_rule_induction.induce_rules(stats, nominal_attribute_indices, x, y)
         return theory
 
-    def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
+    def _predict(self, model, stats: Stats, x, random_state: int):
         # Create a dense representation of the given examples
         x = self._ensure_input_format(x)
 
