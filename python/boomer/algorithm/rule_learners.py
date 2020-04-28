@@ -124,7 +124,8 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
     def __init__(self, model_dir: str):
         super().__init__(model_dir)
-        self.require_dense = [True, True]  # We need a dense representation of the training data
+        # We need a dense representation of the feature matrix (first value) and the label matrix (second value)
+        self.require_dense = [True, True]
 
     def get_model_prefix(self) -> str:
         return 'rules'
