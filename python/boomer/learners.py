@@ -128,6 +128,10 @@ class MLLearner(Learner, MLClassifierBase):
         }
 
     def fit(self, x, y):
+        # Convert feature matrix and label matrix of the training data into required format, if necessary
+        x = self._ensure_input_format(x)
+        y = self._ensure_output_format(y)
+
         # Obtain information about the training data
         stats = Stats.create_stats(x, y)
         self.stats_ = stats
@@ -154,7 +158,12 @@ class MLLearner(Learner, MLClassifierBase):
         return self
 
     def predict(self, x):
+        # Check if a model has been trained
         check_is_fitted(self)
+
+        # Convert feature matrix of the query examples into required format, if necessary
+        x = self._ensure_input_format(x)
+
         log.info("Making a prediction for %s query instances...", x.shape[0])
         return self._predict(self.model_, self.stats_, x, self.random_state)
 
