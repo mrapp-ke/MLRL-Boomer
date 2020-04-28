@@ -12,7 +12,6 @@ from os.path import isdir
 from timeit import default_timer as timer
 from typing import List
 
-import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 from skmultilearn.base import MLClassifierBase
@@ -169,9 +168,9 @@ class MLLearner(Learner, MLClassifierBase):
         pass
 
     @abstractmethod
-    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+    def _fit(self, stats: Stats, x, y, random_state: int):
         """
-        Trains the classifier or ranker on the given training data.
+        Trains a new model on the given training data.
 
         :param stats:           Statistics about the training data set
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
@@ -179,12 +178,12 @@ class MLLearner(Learner, MLClassifierBase):
         :param y:               An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of
                                 the training examples
         :param random_state:    The seed to be used by RNGs
-        :return:                The classifier or ranker that has been trained
+        :return:                The model that has been trained
         """
         pass
 
     @abstractmethod
-    def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
+    def _predict(self, model, stats: Stats, x, random_state: int):
         """
         Makes a prediction for given test data.
 

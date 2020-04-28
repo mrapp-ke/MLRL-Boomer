@@ -130,7 +130,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
     def get_model_prefix(self) -> str:
         return 'rules'
 
-    def _fit(self, stats: Stats, x: np.ndarray, y: np.ndarray, random_state: int):
+    def _fit(self, stats: Stats, x, y, random_state: int):
         # Create a dense representation of the training data
         x = self._ensure_input_format(x)
         y = self._ensure_output_format(y)
@@ -149,7 +149,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         theory = rule_induction.induce_rules(stats, nominal_attribute_indices, x, y)
         return theory
 
-    def _predict(self, model, stats: Stats, x: np.ndarray, random_state: int) -> np.ndarray:
+    def _predict(self, model, stats: Stats, x, random_state: int):
         # Create a dense representation of the given examples
         x = self._ensure_input_format(x)
 
