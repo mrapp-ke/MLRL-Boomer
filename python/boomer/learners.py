@@ -173,10 +173,10 @@ class MLLearner(Learner, MLClassifierBase):
         Trains a new model on the given training data.
 
         :param stats:           Statistics about the training data set
-        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the training examples
-        :param y:               An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of
-                                the training examples
+        :param x:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`,
+                                representing the feature values of the training examples
+        :param y:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`,
+                                representing the labels of the training examples
         :param random_state:    The seed to be used by RNGs
         :return:                The model that has been trained
         """
@@ -185,14 +185,14 @@ class MLLearner(Learner, MLClassifierBase):
     @abstractmethod
     def _predict(self, model, stats: Stats, x, random_state: int):
         """
-        Makes a prediction for given test data.
+        Makes a prediction for given query examples.
 
         :param model:           The model that should be used for making a prediction
         :param stats:           Statistics about the training data set
-        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the test examples
+        :param x:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`,
+                                representing the feature values of the query examples
         :param random_state:    The seed to be used by RNGs
-        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the labels
-                                predicted for the given test examples
+        :return:                A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`,
+                                representing the labels predicted for the given query examples
         """
         pass
