@@ -81,7 +81,7 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str,
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param xml_file_name:   The name of the XML file (including the suffix)
     :return:                A scipy.sparse.lil_matrix of dtype float, shape `(num_examples, num_features)`, representing
-                            the features of the examples, a scipy.sparse.lil_matrix of dtype float, shape
+                            the feature values of the examples, a scipy.sparse.lil_matrix of dtype float, shape
                             `(num_examples, num_labels)`, representing the corresponding label vectors, as well as the
                             data set's meta data
     """
@@ -101,9 +101,9 @@ def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData) -> (l
     :param data_dir:        The path of the directory that contains the ARFF file
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param meta_data:       The meta data
-    :return:                An array of dtype float, shape `(num_examples, num_features)`, representing the features of
-                            the examples, as well as an array of dtype float, shape `(num_examples, num_labels)`,
-                            representing the corresponding label vectors
+    :return:                A scipy.sparse.lil_matrix of dtype float, shape `(num_examples, num_features)`, representing
+                            the feature values of the examples, as well as a scipy.sparse.lil_matrix of dtype float,
+                            shape `(num_examples, num_labels)`, representing the corresponding label vectors
     """
 
     arff_file = path.join(data_dir, arff_file_name)
