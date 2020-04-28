@@ -156,7 +156,7 @@ class MLLearner(Learner, MLClassifierBase):
 
     def predict(self, x: np.ndarray) -> np.ndarray:
         check_is_fitted(self)
-        log.info("Making a prediction for %s query instances...", np.shape(x)[0])
+        log.info("Making a prediction for %s query instances...", x.shape[0])
         return self._predict(self.model_, self.stats_, x, self.random_state)
 
     @abstractmethod
