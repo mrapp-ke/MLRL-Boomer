@@ -26,8 +26,6 @@ class ProblemTransformationLearner(MLLearner):
         """
         super().__init__(model_dir)
         self.base_learner = base_learner
-        # We support sparse feature matrices (first value) and the label matrices (second value)
-        self.require_dense = [False, False]
 
     def get_params(self, deep=True):
         params = super().get_params()
