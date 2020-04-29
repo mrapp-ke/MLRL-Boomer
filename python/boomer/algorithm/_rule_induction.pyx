@@ -352,6 +352,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 num_conditions += 1
                 num_conditions_per_comparator[<intp>best_condition_comparator] += 1
 
+                # TODO Adjust split here
+
                 # Update the examples and labels for which the rule predicts...
                 label_indices = head.label_indices
                 covered_example_indices = __filter_current_indices(best_condition_sorted_indices,
