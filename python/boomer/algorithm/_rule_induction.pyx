@@ -120,7 +120,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Variables for representing the best refinement
         cdef bint found_refinement = True
         cdef Comparator best_condition_comparator
-        cdef intp best_condition_start, best_condition_end, best_condition_index
+        cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_index
         cdef float32 best_condition_threshold
         cdef intp[::1] best_condition_sorted_indices
         cdef IndexArray best_condition_index_array
@@ -280,6 +280,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 head = current_head
                                 best_condition_start = first_r
                                 best_condition_end = r
+                                best_condition_previous = previous_r
                                 best_condition_index = f
                                 best_condition_sorted_indices = sorted_indices
                                 best_condition_index_array = index_array
@@ -290,19 +291,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 else:
                                     best_condition_comparator = Comparator.GR
                                     best_condition_threshold = (previous_threshold + current_threshold) / 2.0
-
-                                # If instance sub-sampling is used, examples that are not contained in the current
-                                # sub-sample were not considered for finding the condition. Later on, we need to
-                                # identify the examples that are covered by the refined rule, including those that are
-                                # not contained in the sub-sample, via the function `__filter_sorted_indices`. Said
-                                # function calculates the number of covered examples based on the variable
-                                # `best_condition_end`, which represents the position that separates the covered from
-                                # the uncovered examples. However, when taking into account the examples that are not
-                                # contained in the sub-sample, this position may differ from the current value of
-                                # `best_condition_end` and therefore must be adjusted...
-                                if instance_sub_sampling is not None and previous_r - r > 1:
-                                    best_condition_end = __adjust_split(x, sorted_indices, r, previous_r, f,
-                                                                        best_condition_threshold)
 
                             # Find and evaluate the best head for the current refinement, if a condition that uses the
                             # <= operator (or the != operator in case of a nominal feature) is used...
@@ -315,6 +303,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 head = current_head
                                 best_condition_start = first_r
                                 best_condition_end = r
+                                best_condition_previous = previous_r
                                 best_condition_index = f
                                 best_condition_sorted_indices = sorted_indices
                                 best_condition_index_array = index_array
@@ -325,13 +314,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 else:
                                     best_condition_comparator = Comparator.LEQ
                                     best_condition_threshold = (previous_threshold + current_threshold) / 2.0
-
-                                # Again, if instance sub-sampling is used, we need to adjust the position that separates
-                                # the covered from the uncovered examples, including those that are not contained in the
-                                # sample (see description above for details)...
-                                if instance_sub_sampling is not None and previous_r - r > 1:
-                                    best_condition_end = __adjust_split(x, sorted_indices, r, previous_r, f,
-                                                                        best_condition_threshold)
 
                             # Reset the loss function in case of a nominal feature, as the previous examples will not be
                             # covered by the next condition...
@@ -352,7 +334,18 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 num_conditions += 1
                 num_conditions_per_comparator[<intp>best_condition_comparator] += 1
 
-                # TODO Adjust split here
+                # If instance sub-sampling is used, examples that are not contained in the current sub-sample were not
+                # considered for finding the new condition. In the next step, we need to identify the examples that are
+                # covered by the refined rule, including those that are not contained in the sub-sample, via the
+                # function `__filter_sorted_indices`. Said function calculates the number of covered examples based on
+                # the variable `best_condition_end`, which represents the position that separates the covered from the
+                # uncovered examples. However, when taking into account the examples that are not contained in the
+                # sub-sample, this position may differ from the current value of `best_condition_end` and therefore must
+                # be adjusted...
+                if instance_sub_sampling is not None and best_condition_previous - best_condition_end > 1:
+                    best_condition_end = __adjust_split(x, best_condition_sorted_indices, best_condition_end,
+                                                        best_condition_previous, best_condition_index,
+                                                        best_condition_threshold)
 
                 # Update the examples and labels for which the rule predicts...
                 label_indices = head.label_indices
