@@ -11,6 +11,15 @@ from libcpp.unordered_map cimport unordered_map as map
 
 
 """
+A struct that stores a value of type float32 and a corresponding index that refers to the (original) position of the
+value in an array.
+"""
+cdef struct IndexedElement:
+    intp index
+    float32 value
+
+
+"""
 A struct that contains a pointer to a C-array of type intp, representing the indices of the training examples that are
 covered by a rule. The attribute `num_elements` specifies how many elements the array contains. The attribute
 `num_conditions` specifies how many conditions the rule contained when the struct was updated for the last time. It may

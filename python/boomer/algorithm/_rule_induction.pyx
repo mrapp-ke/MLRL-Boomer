@@ -11,12 +11,10 @@ from boomer.algorithm._head_refinement cimport HeadCandidate
 from boomer.algorithm._losses cimport Prediction
 from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_index, get_weight
 
+from libc.stdlib cimport qsort
 from libcpp.list cimport list
 from cython.operator cimport dereference, postincrement
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
-
-import numpy as np
-from boomer.algorithm.model import DTYPE_INTP
 
 
 cdef class RuleInduction:
@@ -208,13 +206,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         sorted_indices_array = dereference(sorted_indices_map_global)[f]
 
                         if sorted_indices_array == NULL:
-                            sorted_indices_array = <intp*>malloc(num_examples * sizeof(intp))
-                            # TODO Use C function call for sorting
-                            sorted_indices = np.ascontiguousarray(np.argsort(x[:, f]), dtype=DTYPE_INTP)
-
-                            for r in range(num_examples):
-                                sorted_indices_array[r] = sorted_indices[r]
-
+                            sorted_indices_array = __argsort(x[:, f])
                             dereference(sorted_indices_map_global)[f] = sorted_indices_array
 
                         sorted_indices_map_local[f] = index_array
@@ -683,3 +675,30 @@ cdef inline intp[::1] filter_any_indices(float32[::1, :] x, intp[::1] sorted_ind
 
     sorted_indices = <intp[:num_covered]>filtered_indices_array
     return sorted_indices
+
+
+cdef inline intp* __argsort(float32[::1] values):
+    cdef intp num_elements = values.shape[0]
+    cdef IndexedElement* tmp_array = <IndexedElement*>malloc(num_elements * sizeof(IndexedElement))
+    cdef intp* result_array
+    cdef intp i
+
+    try:
+        for i in range(num_elements):
+            tmp_array[i].index = i
+            tmp_array[i].value = values[i]
+
+        qsort(tmp_array, num_elements, sizeof(IndexedElement), &__compare)
+        result_array = <intp*>malloc(num_elements * sizeof(intp))
+
+        for i in range(num_elements):
+            result_array[i] = tmp_array[i].index
+
+        return result_array
+    finally:
+        free(tmp_array)
+
+cdef int __compare(const void* a, const void* b) nogil:
+    cdef float32 v1 = (<IndexedElement*>a).value
+    cdef float32 v2 = (<IndexedElement*>b).value
+    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
