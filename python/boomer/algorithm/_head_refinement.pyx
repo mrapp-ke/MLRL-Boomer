@@ -3,6 +3,8 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
+import math
+
 from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._losses cimport LabelIndependentPrediction
@@ -118,11 +120,68 @@ cdef class FullHeadRefinement(HeadRefinement):
 cdef class PartialHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
-        pass
+        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef intp num_labels = predicted_scores.shape[0]
+        cdef float64[::1] candidate_predicted_scores
+        cdef HeadCandidate candidate
+        cdef intp c, c2, bits, labels, best_mask = 0, best_labelcount = 0
+        cdef float64 best_quality_score
+
+        # The following loops iterate through all possible combinations of labels. Each combination is represented as
+        # an integer between 1 and 2^num_label - 1, where each bit of the integer represents whether a label is
+        # included in a combination or not.
+
+        for c in range(1, 1 << num_labels):
+            bits = c
+            quality_score = 0
+            labels = 0
+
+            # iterate through all bits of c
+            for c2 in range(0, num_labels):
+                if bits & 1:
+                    quality_score += quality_scores[c2]
+                    labels = labels + 1
+                bits >>= 1
+
+            if labels > 0:
+                quality_score = self.lift(quality_score, labels)
+
+            if best_mask == 0 or quality_score < best_quality_score:
+                best_quality_score = quality_score
+                best_mask = c
+                best_labelcount = labels
+
+
+        if best_head is None or best_quality_score < best_head.quality_score:
+            # Create a new `HeadCandidate` and return it...
+            candidate_label_indices = array_intp(best_labelcount)
+            candidate_predicted_scores = array_float64(best_labelcount)
+
+            c2 = 0
+
+            for c in range(0, num_labels):
+                if best_mask & 1:
+                    candidate_label_indices[c2] = get_index(c, label_indices)
+                    candidate_predicted_scores[c2] = predicted_scores[c]
+                    c2 = c2 + 1
+                best_mask >>= 1
+
+            candidate = HeadCandidate.__new__(HeadCandidate, candidate_label_indices, candidate_predicted_scores,
+                                              best_quality_score)
+            return candidate
+
+        # Return None, as the quality_score of the found head is worse than that of `best_head`...
+        return None
 
     cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
         cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered)
         return prediction
+
+    cdef float64 lift(self, float64 quality_score, intp labelcount):
+        # Example lift function, labelcount only breaks ties between equal scores
+        return (quality_score / labelcount) - 0.001 * labelcount
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
     """

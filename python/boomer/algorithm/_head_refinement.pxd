@@ -39,6 +39,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
     cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered)
 
+    cdef float64 lift(self, float64 quality_score, intp labelcount)
+
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
 
