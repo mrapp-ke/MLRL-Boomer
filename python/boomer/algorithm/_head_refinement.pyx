@@ -3,7 +3,6 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-import math
 
 from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_index
