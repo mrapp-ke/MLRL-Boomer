@@ -128,6 +128,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Variables for specifying the examples that should be used for finding the best refinement
         cdef map[intp, intp*]* sorted_indices_map_global = self.sorted_indices_map_global
         cdef map[intp, IndexArray] sorted_indices_map_local  # Stack-allocated map
+        cdef map[intp, IndexArray].iterator sorted_indices_iterator
         cdef intp[::1] sorted_indices
         cdef intp* sorted_indices_array
         cdef IndexArray index_array
@@ -172,234 +173,235 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         else:
             label_indices = label_sub_sampling.sub_sample(y, random_state)
 
-        # Search for the best refinement until no improvement in terms of the rule's quality score is possible
-        # anymore...
-        while found_refinement:
-            found_refinement = False
+        try:
+            # Search for the best refinement until no improvement in terms of the rule's quality score is possible
+            # anymore...
+            while found_refinement:
+                found_refinement = False
 
-            # Sub-sample features, if necessary...
-            if feature_sub_sampling is None:
-                feature_indices = None
-            else:
-                feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
-                num_features = feature_indices.shape[0]
+                # Sub-sample features, if necessary...
+                if feature_sub_sampling is None:
+                    feature_indices = None
+                else:
+                    feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
+                    num_features = feature_indices.shape[0]
 
-            # Obtain the index of the first nominal feature, if any...
-            if num_nominal_features > 0:
-                next_nominal_f = nominal_attribute_indices[0]
-                next_nominal_c = 1
+                # Obtain the index of the first nominal feature, if any...
+                if num_nominal_features > 0:
+                    next_nominal_f = nominal_attribute_indices[0]
+                    next_nominal_c = 1
 
-            # Search for the best condition among all available features to be added to the current rule. For each
-            # feature, the examples are traversed in descending order of their respective feature values and the loss
-            # function is updated accordingly. For each potential condition, a quality score is calculated to keep track
-            # of the best possible refinement.
-            for c in range(num_features):
-                f = get_index(c, feature_indices)
+                # Search for the best condition among all available features to be added to the current rule. For each
+                # feature, the examples are traversed in descending order of their respective feature values and the
+                # loss function is updated accordingly. For each potential condition, a quality score is calculated to
+                # keep track of the best possible refinement.
+                for c in range(num_features):
+                    f = get_index(c, feature_indices)
 
-                # Obtain array that contains the indices of the training examples sorted according to the current
-                # feature...
-                index_array = sorted_indices_map_local[f]  # Allocates a new struct if key does not exist
-                sorted_indices_array = index_array.data
-
-                if sorted_indices_array == NULL:
-                    num_examples = x.shape[0]
-                    sorted_indices_array = dereference(sorted_indices_map_global)[f]
+                    # Obtain array that contains the indices of the training examples sorted according to the current
+                    # feature...
+                    index_array = sorted_indices_map_local[f]  # Allocates a new struct if key does not exist
+                    sorted_indices_array = index_array.data
 
                     if sorted_indices_array == NULL:
-                        sorted_indices_array = <intp*>malloc(num_examples * sizeof(intp))
-                        # TODO Use C function call for sorting
-                        sorted_indices = np.ascontiguousarray(np.argsort(x[:, f]), dtype=DTYPE_INTP)
+                        num_examples = x.shape[0]
+                        sorted_indices_array = dereference(sorted_indices_map_global)[f]
 
-                        for r in range(num_examples):
-                            sorted_indices_array[r] = sorted_indices[r]
+                        if sorted_indices_array == NULL:
+                            sorted_indices_array = <intp*>malloc(num_examples * sizeof(intp))
+                            # TODO Use C function call for sorting
+                            sorted_indices = np.ascontiguousarray(np.argsort(x[:, f]), dtype=DTYPE_INTP)
 
-                        dereference(sorted_indices_map_global)[f] = sorted_indices_array
+                            for r in range(num_examples):
+                                sorted_indices_array[r] = sorted_indices[r]
 
-                    sorted_indices_map_local[f] = index_array
-                else:
-                    num_examples = index_array.num_elements
+                            dereference(sorted_indices_map_global)[f] = sorted_indices_array
 
-                sorted_indices = <intp[:num_examples]>sorted_indices_array
-
-                # Filter indices, if only a subset of the contained examples is covered...
-                if num_conditions > index_array.num_conditions:
-                    sorted_indices = filter_any_indices(x, sorted_indices, index_array, conditions, num_conditions,
-                                                        num_covered)
-                    num_examples = sorted_indices.shape[0]
-
-                # TODO check if feature is constant
-
-                # Check if feature is nominal...
-                if f == next_nominal_f:
-                    nominal = True
-
-                    if next_nominal_c < num_nominal_features:
-                        next_nominal_f = nominal_attribute_indices[next_nominal_c]
-                        next_nominal_c += 1
+                        sorted_indices_map_local[f] = index_array
                     else:
-                        next_nominal_f = -1
-                else:
-                    nominal = False
+                        num_examples = index_array.num_elements
 
-                # Reset the loss function when processing a new feature...
-                loss.begin_search(label_indices)
+                    sorted_indices = <intp[:num_examples]>sorted_indices_array
 
-                # Traverse examples in descending order until the first example with weight > 0 is encountered...
-                first_r = num_examples - 1
+                    # Filter indices, if only a subset of the contained examples is covered...
+                    if num_conditions > index_array.num_conditions:
+                        sorted_indices = filter_any_indices(x, sorted_indices, index_array, conditions, num_conditions,
+                                                            num_covered)
+                        num_examples = sorted_indices.shape[0]
 
-                for r in range(num_examples - 1, -1, -1):
-                    i = sorted_indices[r]
-                    weight = get_weight(i, weights)
+                    # TODO check if feature is constant
 
-                    if weight > 0:
-                        # Tell the loss function that the example will be covered by upcoming refinements...
-                        loss.update_search(i, weight)
-                        previous_threshold = x[i, f]
-                        previous_r = r
+                    # Check if feature is nominal...
+                    if f == next_nominal_f:
+                        nominal = True
+
+                        if next_nominal_c < num_nominal_features:
+                            next_nominal_f = nominal_attribute_indices[next_nominal_c]
+                            next_nominal_c += 1
+                        else:
+                            next_nominal_f = -1
+                    else:
+                        nominal = False
+
+                    # Reset the loss function when processing a new feature...
+                    loss.begin_search(label_indices)
+
+                    # Traverse examples in descending order until the first example with weight > 0 is encountered...
+                    first_r = num_examples - 1
+
+                    for r in range(num_examples - 1, -1, -1):
+                        i = sorted_indices[r]
+                        weight = get_weight(i, weights)
+
+                        if weight > 0:
+                            # Tell the loss function that the example will be covered by upcoming refinements...
+                            loss.update_search(i, weight)
+                            previous_threshold = x[i, f]
+                            previous_r = r
+                            break
+
+                    # Traverse the remaining examples in descending order...
+                    for r in range(r - 1, -1, -1):
+                        i = sorted_indices[r]
+                        weight = get_weight(i, weights)
+
+                        # Do only consider examples that are included in the current sub-sample...
+                        if weight > 0:
+                            current_threshold = x[i, f]
+
+                            # Split points between examples with the same feature value must not be considered...
+                            if previous_threshold != current_threshold:
+                                # Find and evaluate the best head for the current refinement, if a condition that uses
+                                # the > operator (or the == operator in case of a nominal feature) is used...
+                                current_head = head_refinement.find_head(head, label_indices, loss, False)
+
+                                # If refinement using the > operator (or the == operator in case of a nominal feature)
+                                # is better than the current rule...
+                                if current_head is not None:
+                                    found_refinement = True
+                                    head = current_head
+                                    best_condition_start = first_r
+                                    best_condition_end = r
+                                    best_condition_previous = previous_r
+                                    best_condition_index = f
+                                    best_condition_sorted_indices = sorted_indices
+                                    best_condition_index_array = index_array
+
+                                    if nominal:
+                                        best_condition_comparator = Comparator.EQ
+                                        best_condition_threshold = previous_threshold
+                                    else:
+                                        best_condition_comparator = Comparator.GR
+                                        best_condition_threshold = (previous_threshold + current_threshold) / 2.0
+
+                                # Find and evaluate the best head for the current refinement, if a condition that uses
+                                # the <= operator (or the != operator in case of a nominal feature) is used...
+                                current_head = head_refinement.find_head(head, label_indices, loss, True)
+
+                                # If refinement using the <= operator (or the != operator in case of a nominal feature)
+                                # is better than the current rule...
+                                if current_head is not None:
+                                    found_refinement = True
+                                    head = current_head
+                                    best_condition_start = first_r
+                                    best_condition_end = r
+                                    best_condition_previous = previous_r
+                                    best_condition_index = f
+                                    best_condition_sorted_indices = sorted_indices
+                                    best_condition_index_array = index_array
+
+                                    if nominal:
+                                        best_condition_comparator = Comparator.NEQ
+                                        best_condition_threshold = previous_threshold
+                                    else:
+                                        best_condition_comparator = Comparator.LEQ
+                                        best_condition_threshold = (previous_threshold + current_threshold) / 2.0
+
+                                # Reset the loss function in case of a nominal feature, as the previous examples will
+                                # not be covered by the next condition...
+                                if nominal:
+                                    loss.begin_search(label_indices)
+                                    first_r = r
+
+                            previous_threshold = current_threshold
+                            previous_r = r
+
+                            # Tell the loss function that the example will be covered by upcoming refinements...
+                            loss.update_search(i, weight)
+
+                if found_refinement:
+                    # If a refinement has been found, add the new condition...
+                    conditions.push_back(__make_condition(best_condition_index, best_condition_comparator,
+                                                          best_condition_threshold))
+                    num_conditions += 1
+                    num_conditions_per_comparator[<intp>best_condition_comparator] += 1
+
+                    # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
+                    # not considered for finding the new condition. In the next step, we need to identify the examples
+                    # that are covered by the refined rule, including those that are not contained in the sub-sample,
+                    # via the function `__filter_sorted_indices`. Said function calculates the number of covered
+                    # examples based on the variable `best_condition_end`, which represents the position that separates
+                    # the covered from the uncovered examples. However, when taking into account the examples that are
+                    # not contained in the sub-sample, this position may differ from the current value of
+                    # `best_condition_end` and therefore must be adjusted...
+                    if instance_sub_sampling is not None and best_condition_previous - best_condition_end > 1:
+                        best_condition_end = __adjust_split(x, best_condition_sorted_indices, best_condition_end,
+                                                            best_condition_previous, best_condition_index,
+                                                            best_condition_threshold)
+
+                    # Update the examples and labels for which the rule predicts...
+                    label_indices = head.label_indices
+                    covered_example_indices = __filter_current_indices(best_condition_sorted_indices,
+                                                                       best_condition_index_array, best_condition_start,
+                                                                       best_condition_end, best_condition_index,
+                                                                       best_condition_comparator, num_conditions, loss)
+                    num_covered = covered_example_indices.shape[0]
+
+                    if num_covered > 1:
+                        # Alter seed to be used by RNGs for the next refinement...
+                        current_random_state = random_state * (num_conditions + 1)
+                    else:
+                        # Abort refinement process if rule covers a single example...
                         break
 
-                # Traverse the remaining examples in descending order...
-                for r in range(r - 1, -1, -1):
-                    i = sorted_indices[r]
-                    weight = get_weight(i, weights)
+            # TODO Do not raise an error but simply return None
+            if head is None:
+                raise RuntimeError('Failed to find an useful condition for the new rule! Please remove any constants features from the training data')
 
-                    # Do only consider examples that are included in the current sub-sample...
-                    if weight > 0:
-                        current_threshold = x[i, f]
+            if weights is not None:
+                # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
+                if pruning is not None and num_conditions > 1:
+                    pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
+                    covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
 
-                        # Split points between examples with the same feature value must not be considered...
-                        if previous_threshold != current_threshold:
-                            # Find and evaluate the best head for the current refinement, if a condition that uses the
-                            # > operator (or the == operator in case of a nominal feature) is used...
-                            current_head = head_refinement.find_head(head, label_indices, loss, False)
+                # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire
+                # training data...
+                loss.begin_search(label_indices)
 
-                            # If refinement using the > operator (or the == operator in case of a nominal feature) is
-                            # better than the current rule...
-                            if current_head is not None:
-                                found_refinement = True
-                                head = current_head
-                                best_condition_start = first_r
-                                best_condition_end = r
-                                best_condition_previous = previous_r
-                                best_condition_index = f
-                                best_condition_sorted_indices = sorted_indices
-                                best_condition_index_array = index_array
+                for i in covered_example_indices:
+                    loss.update_search(i, 1)
 
-                                if nominal:
-                                    best_condition_comparator = Comparator.EQ
-                                    best_condition_threshold = previous_threshold
-                                else:
-                                    best_condition_comparator = Comparator.GR
-                                    best_condition_threshold = (previous_threshold + current_threshold) / 2.0
+                prediction = head_refinement.evaluate_predictions(loss, False)
+                __copy_array(prediction.predicted_scores, head.predicted_scores)
 
-                            # Find and evaluate the best head for the current refinement, if a condition that uses the
-                            # <= operator (or the != operator in case of a nominal feature) is used...
-                            current_head = head_refinement.find_head(head, label_indices, loss, True)
+            # Apply shrinkage, if necessary...
+            if shrinkage is not None:
+                shrinkage.apply_shrinkage(head.predicted_scores)
 
-                            # If refinement using the <= operator (or the != operator in case of a nominal feature) is
-                            # better than the current rule...
-                            if current_head is not None:
-                                found_refinement = True
-                                head = current_head
-                                best_condition_start = first_r
-                                best_condition_end = r
-                                best_condition_previous = previous_r
-                                best_condition_index = f
-                                best_condition_sorted_indices = sorted_indices
-                                best_condition_index_array = index_array
+            # Tell the loss function that a new rule has been induced...
+            loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
 
-                                if nominal:
-                                    best_condition_comparator = Comparator.NEQ
-                                    best_condition_threshold = previous_threshold
-                                else:
-                                    best_condition_comparator = Comparator.LEQ
-                                    best_condition_threshold = (previous_threshold + current_threshold) / 2.0
+            # Build and return the induced rule...
+            return __build_rule(head, conditions, num_conditions_per_comparator)
+        finally:
+            # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
+            sorted_indices_iterator = sorted_indices_map_local.begin()
 
-                            # Reset the loss function in case of a nominal feature, as the previous examples will not be
-                            # covered by the next condition...
-                            if nominal:
-                                loss.begin_search(label_indices)
-                                first_r = r
+            while sorted_indices_iterator != sorted_indices_map_local.end():
+                index_array = dereference(sorted_indices_iterator).second
+                free(index_array.data)
+                postincrement(sorted_indices_iterator)
 
-                        previous_threshold = current_threshold
-                        previous_r = r
-
-                        # Tell the loss function that the example will be covered by upcoming refinements...
-                        loss.update_search(i, weight)
-
-            if found_refinement:
-                # If a refinement has been found, add the new condition...
-                conditions.push_back(__make_condition(best_condition_index, best_condition_comparator,
-                                                      best_condition_threshold))
-                num_conditions += 1
-                num_conditions_per_comparator[<intp>best_condition_comparator] += 1
-
-                # If instance sub-sampling is used, examples that are not contained in the current sub-sample were not
-                # considered for finding the new condition. In the next step, we need to identify the examples that are
-                # covered by the refined rule, including those that are not contained in the sub-sample, via the
-                # function `__filter_sorted_indices`. Said function calculates the number of covered examples based on
-                # the variable `best_condition_end`, which represents the position that separates the covered from the
-                # uncovered examples. However, when taking into account the examples that are not contained in the
-                # sub-sample, this position may differ from the current value of `best_condition_end` and therefore must
-                # be adjusted...
-                if instance_sub_sampling is not None and best_condition_previous - best_condition_end > 1:
-                    best_condition_end = __adjust_split(x, best_condition_sorted_indices, best_condition_end,
-                                                        best_condition_previous, best_condition_index,
-                                                        best_condition_threshold)
-
-                # Update the examples and labels for which the rule predicts...
-                label_indices = head.label_indices
-                covered_example_indices = __filter_current_indices(best_condition_sorted_indices,
-                                                                   best_condition_index_array, best_condition_start,
-                                                                   best_condition_end, best_condition_index,
-                                                                   best_condition_comparator, num_conditions, loss)
-                num_covered = covered_example_indices.shape[0]
-
-                if num_covered > 1:
-                    # Alter seed to be used by RNGs for the next refinement...
-                    current_random_state = random_state * (num_conditions + 1)
-                else:
-                    # Abort refinement process if rule covers a single example...
-                    break
-
-        # TODO Do not raise an error but simply return None
-        if head is None:
-            raise RuntimeError('Failed to find an useful condition for the new rule! Please remove any constants features from the training data')
-
-        if weights is not None:
-            # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-            if pruning is not None and num_conditions > 1:
-                pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
-                covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
-
-            # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire
-            # training data...
-            loss.begin_search(label_indices)
-
-            for i in covered_example_indices:
-                loss.update_search(i, 1)
-
-            prediction = head_refinement.evaluate_predictions(loss, False)
-            __copy_array(prediction.predicted_scores, head.predicted_scores)
-
-        # Apply shrinkage, if necessary...
-        if shrinkage is not None:
-            shrinkage.apply_shrinkage(head.predicted_scores)
-
-        # Tell the loss function that a new rule has been induced...
-        loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
-
-        # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
-        # TODO Move into a finally block
-        cdef map[intp, IndexArray].iterator iterator = sorted_indices_map_local.begin()
-
-        while iterator != sorted_indices_map_local.end():
-            index_array = dereference(iterator).second
-            free(index_array.data)
-            postincrement(iterator)
-
-        # Build and return the induced rule...
-        return __build_rule(head, conditions, num_conditions_per_comparator)
 
 
 cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
