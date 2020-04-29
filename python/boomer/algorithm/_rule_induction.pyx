@@ -126,6 +126,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexArray best_condition_index_array
 
         # Variables for specifying the examples that should be used for finding the best refinement
+        cdef map[intp, intp*]* sorted_indices_map_global = self.sorted_indices_map_global
+        cdef map[intp, IndexArray] sorted_indices_map_local  # Stack-allocated map
+        cdef intp[::1] sorted_indices
+        cdef intp* sorted_indices_array
+        cdef IndexArray index_array
+
         cdef intp num_examples = x.shape[0]
         cdef intp num_covered = num_examples
 
@@ -143,26 +149,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef float32 previous_threshold, current_threshold
         cdef uint32 weight
         cdef intp c, f, r, i, first_r, previous_r
-
-        # Sort feature values...
-        # TODO Sort feature values on demand
-        cdef map[intp, intp*]* sorted_indices_map_global = self.sorted_indices_map_global
-        cdef intp[::1] sorted_indices
-        cdef intp* sorted_indices_array
-
-        if dereference(sorted_indices_map_global).size() == 0:
-            for c in range(num_features):
-                # TODO Use C function call for sorting
-                sorted_indices = np.ascontiguousarray(np.argsort(x[:, c]), dtype=DTYPE_INTP)
-                sorted_indices_array = <intp*>malloc(num_examples * sizeof(intp))
-
-                for r in range(num_examples):
-                    sorted_indices_array[r] = sorted_indices[r]
-
-                dereference(sorted_indices_map_global)[c] = sorted_indices_array
-
-        cdef map[intp, IndexArray] sorted_indices_map_local  # Stack-allocated map
-        cdef IndexArray index_array
 
         # Sub-sample examples, if necessary...
         cdef uint32[::1] weights
@@ -216,9 +202,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 sorted_indices_array = index_array.data
 
                 if sorted_indices_array == NULL:
-                    sorted_indices_map_local[f] = index_array
-                    sorted_indices_array = dereference(sorted_indices_map_global)[f]
                     num_examples = x.shape[0]
+                    sorted_indices_array = dereference(sorted_indices_map_global)[f]
+
+                    if sorted_indices_array == NULL:
+                        sorted_indices_array = <intp*>malloc(num_examples * sizeof(intp))
+                        # TODO Use C function call for sorting
+                        sorted_indices = np.ascontiguousarray(np.argsort(x[:, f]), dtype=DTYPE_INTP)
+
+                        for r in range(num_examples):
+                            sorted_indices_array[r] = sorted_indices[r]
+
+                        dereference(sorted_indices_map_global)[f] = sorted_indices_array
+
+                    sorted_indices_map_local[f] = index_array
                 else:
                     num_examples = index_array.num_elements
 
