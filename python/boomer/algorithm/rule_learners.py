@@ -335,7 +335,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
-                                            `single-label` or None, if the default strategy should be used
+                                            `single-label`, `partial` or None, if the default strategy should be used
         :param loss:                        The loss function to be minimized. Must be `label-wise-measure`
         :param heuristic:                   The heuristic to be minimized. Must be `precision` or `hamming-loss`
         :param label_sub_sampling:          The number of samples to be used for sub-sampling the labels each time a new
@@ -439,6 +439,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return SingleLabelHeadRefinement()
         elif head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinement()
+        elif head_refinement == HEAD_REFINEMENT_PARTIAL:
+            return PartialHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_prediction(self) -> Prediction:
