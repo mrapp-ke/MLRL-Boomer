@@ -39,7 +39,7 @@ cdef class EmptyBody(Body):
         pass
 
     cdef bint covers(self, float32[:] example):
-        return 1
+        return True
 
 
 cdef class ConjunctiveBody(Body):
@@ -116,7 +116,7 @@ cdef class ConjunctiveBody(Body):
             c = feature_indices[i]
 
             if example[c] > thresholds[i]:
-                return 0
+                return False
 
         feature_indices = self.gr_feature_indices
         thresholds = self.gr_thresholds
@@ -126,7 +126,7 @@ cdef class ConjunctiveBody(Body):
             c = feature_indices[i]
 
             if example[c] <= thresholds[i]:
-                return 0
+                return False
 
         feature_indices = self.eq_feature_indices
         thresholds = self.eq_thresholds
@@ -136,7 +136,7 @@ cdef class ConjunctiveBody(Body):
             c = feature_indices[i]
 
             if example[c] != thresholds[i]:
-                return 0
+                return False
 
         feature_indices = self.neq_feature_indices
         thresholds = self.neq_thresholds
@@ -146,9 +146,9 @@ cdef class ConjunctiveBody(Body):
             c = feature_indices[i]
 
             if example[c] == thresholds[i]:
-                return 0
+                return False
 
-        return 1
+        return True
 
 
 cdef class Head:
