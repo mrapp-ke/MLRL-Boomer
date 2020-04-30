@@ -61,7 +61,7 @@ cdef class RuleInduction:
         :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if
                                             no shrinkage should be used
         :param random_state:                The seed to be used by RNGs
-        :return:                            The rule that has been induced
+        :return:                            The rule that has been induced or None, if no rule could be induced
         """
         pass
 
@@ -356,35 +356,36 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         # Abort refinement process if rule covers a single example...
                         break
 
-            # TODO Do not raise an error but simply return None
             if head is None:
-                raise RuntimeError('Failed to find an useful condition for the new rule! Please remove any constants features from the training data')
+                # No rule could be induced, because no useful condition could be found. This is for example the case, if
+                # all features are constant.
+                return None
+            else:
+                if weights is not None:
+                    # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
+                    if pruning is not None and num_conditions > 1:
+                        pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
+                        covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
 
-            if weights is not None:
-                # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-                if pruning is not None and num_conditions > 1:
-                    pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
-                    covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
+                    # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
+                    # entire training data...
+                    loss.begin_search(label_indices)
 
-                # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the entire
-                # training data...
-                loss.begin_search(label_indices)
+                    for i in covered_example_indices:
+                        loss.update_search(i, 1)
 
-                for i in covered_example_indices:
-                    loss.update_search(i, 1)
+                    prediction = head_refinement.evaluate_predictions(loss, False)
+                    __copy_array(prediction.predicted_scores, head.predicted_scores)
 
-                prediction = head_refinement.evaluate_predictions(loss, False)
-                __copy_array(prediction.predicted_scores, head.predicted_scores)
+                # Apply shrinkage, if necessary...
+                if shrinkage is not None:
+                    shrinkage.apply_shrinkage(head.predicted_scores)
 
-            # Apply shrinkage, if necessary...
-            if shrinkage is not None:
-                shrinkage.apply_shrinkage(head.predicted_scores)
+                # Tell the loss function that a new rule has been induced...
+                loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
 
-            # Tell the loss function that a new rule has been induced...
-            loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
-
-            # Build and return the induced rule...
-            return __build_rule(head, conditions, num_conditions_per_comparator)
+                # Build and return the induced rule...
+                return __build_rule(head, conditions, num_conditions_per_comparator)
         finally:
             # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
             sorted_indices_iterator = sorted_indices_map_local.begin()
