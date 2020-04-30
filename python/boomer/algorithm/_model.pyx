@@ -162,7 +162,7 @@ cdef class Head:
     def __setstate__(self, state):
         pass
 
-    cdef predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
         """
         Applies the head's prediction to a given vector of predictions given that no prediction has yet been made.
 
@@ -192,7 +192,7 @@ cdef class FullHead(Head):
         scores = state
         self.scores = scores
 
-    cdef predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
         cdef float64[::1] scores = self.scores
         cdef intp num_cols = predictions.shape[0]
         cdef intp c
@@ -229,7 +229,7 @@ cdef class PartialHead(Head):
         self.label_indices = label_indices
         self.scores = scores
 
-    cdef predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
         cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
         cdef intp num_labels = label_indices.shape[0]
