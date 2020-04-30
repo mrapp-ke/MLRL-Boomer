@@ -161,7 +161,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
 
         return scores
 
-    cdef begin_instance_sub_sampling(self):
+    cdef void begin_instance_sub_sampling(self):
         # Class members
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
@@ -169,7 +169,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         total_sums_of_gradients[:] = 0
         total_sums_of_hessians[:] = 0
 
-    cdef update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -190,7 +190,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         for c in range(num_elements):
             total_sums_of_hessians[c] += hessians[example_index, c]
 
-    cdef begin_search(self, intp[::1] label_indices):
+    cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of gradients and hessians to be considered by the upcoming search...
         cdef float64[::1, :] gradients
         cdef intp num_gradients
@@ -224,7 +224,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         # Store the given label indices...
         self.label_indices = label_indices
 
-    cdef update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
@@ -362,8 +362,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
 
         return prediction
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                           float64[::1] predicted_scores):
+    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                                float64[::1] predicted_scores):
         # Class members
         cdef float64[::1, :] expected_scores = self.expected_scores
         cdef float64[::1, :] current_scores = self.current_scores
