@@ -411,7 +411,7 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline __copy_array(float64[::1] from_array, float64[::1] to_array):
+cdef inline void __copy_array(float64[::1] from_array, float64[::1] to_array):
     """
     Copies the elements from one array to another.
 
