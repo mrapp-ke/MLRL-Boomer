@@ -396,7 +396,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(sorted_indices_iterator)
 
 
-
 cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
