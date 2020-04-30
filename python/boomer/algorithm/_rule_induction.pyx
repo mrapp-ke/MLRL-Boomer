@@ -331,7 +331,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
                     # that are covered by the refined rule, including those that are not contained in the sub-sample,
-                    # via the function `__filter_sorted_indices`. Said function calculates the number of covered
+                    # via the function `__filter_current_indices`. Said function calculates the number of covered
                     # examples based on the variable `best_condition_end`, which represents the position that separates
                     # the covered from the uncovered examples. However, when taking into account the examples that are
                     # not contained in the sub-sample, this position may differ from the current value of
