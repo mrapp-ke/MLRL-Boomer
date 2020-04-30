@@ -94,7 +94,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef float64[::1] scores = loss.calculate_default_scores(y)
         cdef FullHead head = FullHead.__new__(FullHead, scores)
         cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
-        cdef Rule rule = Rule(body, head)
+        cdef Rule rule = Rule.__new__(Rule, body, head)
         return rule
 
     cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
