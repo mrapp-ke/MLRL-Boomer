@@ -65,11 +65,11 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
         return default_rule
 
-    cdef begin_instance_sub_sampling(self):
+    cdef void begin_instance_sub_sampling(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         confusion_matrices_default[:, :] = 0
 
-    cdef update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
@@ -94,7 +94,7 @@ cdef class LabelWiseAveraging(DecomposableLoss):
                     elif predicted_label == 1:
                         confusion_matrices_default[c, _RP] += 1
 
-    cdef begin_search(self, intp[::1] label_indices):
+    cdef void begin_search(self, intp[::1] label_indices):
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
@@ -117,7 +117,7 @@ cdef class LabelWiseAveraging(DecomposableLoss):
         confusion_matrices_covered[:, :] = 0
         self.label_indices = label_indices
 
-    cdef update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp example_index, uint32 weight):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef uint8[::1, :] true_labels = self.true_labels
@@ -189,8 +189,8 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
         return prediction
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                           float64[::1] predicted_scores):
+    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                                float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef intp l, i
 

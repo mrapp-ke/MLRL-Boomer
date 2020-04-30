@@ -19,8 +19,8 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                       intp[::1] covered_example_indices, intp[::1] label_indices):
+    cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
+                            intp[::1] covered_example_indices, intp[::1] label_indices):
         """
         Calculates the quality score of an existing rule, based on the examples that are contained in the prune set,
         i.e., based on all examples whose weight is 0.
@@ -71,8 +71,8 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                       intp[::1] covered_example_indices, intp[::1] label_indices):
+    cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
+                            intp[::1] covered_example_indices, intp[::1] label_indices):
         cdef uint32 weight
         cdef intp i
 

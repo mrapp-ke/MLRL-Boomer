@@ -5,7 +5,7 @@ cdef class Shrinkage:
 
     # Functions:
 
-    cdef apply_shrinkage(self, float64[::1] predicted_scores)
+    cdef void apply_shrinkage(self, float64[::1] predicted_scores)
 
 
 cdef class ConstantShrinkage(Shrinkage):
@@ -16,4 +16,4 @@ cdef class ConstantShrinkage(Shrinkage):
 
     # Functions:
 
-    cdef apply_shrinkage(self, float64[::1] predicted_scores)
+    cdef void apply_shrinkage(self, float64[::1] predicted_scores)
