@@ -471,8 +471,7 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp[::1] sorted_indices, int
    return adjusted_position
 
 
-cdef inline Rule __build_rule(HeadCandidate head, list[Condition] conditions,
-                                  intp[::1] num_conditions_per_comparator):
+cdef inline Rule __build_rule(HeadCandidate head, list[Condition] conditions, intp[::1] num_conditions_per_comparator):
     """
     Builds and returns a rule.
 
