@@ -14,7 +14,7 @@ from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_
 from libc.stdlib cimport qsort
 from libcpp.list cimport list
 from cython.operator cimport dereference, postincrement
-from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
+from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
 cdef class RuleInduction:
@@ -617,9 +617,14 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
     """
     # TODO
     """
-    cdef intp* filtered_indices_array = <intp*>malloc(num_covered * sizeof(intp))
+    cdef intp* filtered_indices_array = dereference(index_array).data
+    cdef bint must_allocate = filtered_indices_array == NULL
+
+    if must_allocate:
+        filtered_indices_array = <intp*>malloc(num_covered * sizeof(intp))
+
     cdef intp num_untested_conditions = num_conditions - dereference(index_array).num_conditions
-    cdef intp i = num_covered - 1
+    cdef intp i = 0
     cdef list[Condition].reverse_iterator iterator
     cdef Condition condition
     cdef Comparator condition_comparator
@@ -627,7 +632,7 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
     cdef intp condition_index, c, r, index
     cdef bint covered
 
-    for r in range(num_indices - 1, -1, -1):
+    for r in range(num_indices):
         index = sorted_indices[r]
         covered = True
 
@@ -651,12 +656,14 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
 
         if covered:
             filtered_indices_array[i] = index
-            i -= 1
+            i += 1
 
-            if i < 0:
+            if i >= num_covered:
                 break
 
-    free(dereference(index_array).data)
+    if not must_allocate:
+        filtered_indices_array = <intp*>realloc(filtered_indices_array, num_covered * sizeof(intp))
+
     dereference(index_array).data = filtered_indices_array
     dereference(index_array).num_elements = num_covered
     dereference(index_array).num_conditions = num_conditions
