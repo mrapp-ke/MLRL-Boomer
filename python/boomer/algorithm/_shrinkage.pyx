@@ -12,7 +12,7 @@ cdef class Shrinkage:
     a.k.a. the learning rate, may e.g. be constant or a function depending on the number of rules learned so far.
     """
 
-    cdef apply_shrinkage(self, float64[::1] predicted_scores):
+    cdef void apply_shrinkage(self, float64[::1] predicted_scores):
         """
         Applies the shrinkage parameter to the scores that are predicted by a rule.
         
@@ -33,7 +33,7 @@ cdef class ConstantShrinkage(Shrinkage):
         """
         self.shrinkage = shrinkage
 
-    cdef apply_shrinkage(self, float64[::1] predicted_scores):
+    cdef void apply_shrinkage(self, float64[::1] predicted_scores):
         cdef float shrinkage = self.shrinkage
         cdef intp num_labels = predicted_scores.shape[0]
         cdef intp c
