@@ -11,7 +11,7 @@ from libc.stdlib cimport malloc, free
 from libc.math cimport pow
 
 
-cdef inline divide_or_zero_float64(float64 a, float64 b):
+cdef inline float64 divide_or_zero_float64(float64 a, float64 b):
     """
     Divides a number of dtype `float64` by another one. The division by zero evaluates to 0 by definition.
 
@@ -35,7 +35,7 @@ cdef inline intp triangular_number(intp n):
     return (n * (n + 1)) // 2
 
 
-cdef inline l2_norm_pow(float64[::1] a):
+cdef inline float64 l2_norm_pow(float64[::1] a):
     """
     Computes and returns the square of the L2 norm of a specific vector, i.e. the sum of the squares of its elements. To 
     obtain the actual L2 norm, the square-root of the result provided by this function must be computed.

@@ -56,7 +56,7 @@ cdef class Loss:
         """
         pass
 
-    cdef begin_instance_sub_sampling(self):
+    cdef void begin_instance_sub_sampling(self):
         """
         Notifies the loss function that the examples, which should be considered in the following for learning a new
         rule or refining an existing one, have changed. The indices of the respective examples must be provided via
@@ -73,7 +73,7 @@ cdef class Loss:
         """
         pass
 
-    cdef update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index):
         """
         Notifies the loss function about an example that should be considered in the following for learning a new rule
         or refining an existing one.
@@ -91,7 +91,7 @@ cdef class Loss:
         """
         pass
 
-    cdef begin_search(self, intp[::1] label_indices):
+    cdef void begin_search(self, intp[::1] label_indices):
         """
         Notifies the loss function that a new search for the best refinement of a rule, i.e., the best condition to be
         added to its body, should be started. The examples that are covered by such a condition must be provided via
@@ -114,7 +114,7 @@ cdef class Loss:
         """
         pass
 
-    cdef update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp example_index, uint32 weight):
         """
         Notifies the loss function about an example that is covered by the condition that is currently considered for
         refining a rule.
@@ -177,8 +177,8 @@ cdef class Loss:
         """
         pass
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                           float64[::1] predicted_scores):
+    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                                float64[::1] predicted_scores):
         """
         Notifies the loss function that a new rule has been induced.
 
@@ -206,16 +206,16 @@ cdef class DecomposableLoss(Loss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
-    cdef begin_instance_sub_sampling(self):
+    cdef void begin_instance_sub_sampling(self):
         pass
 
-    cdef update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index):
         pass
 
-    cdef begin_search(self, intp[::1] label_indices):
+    cdef void begin_search(self, intp[::1] label_indices):
         pass
 
-    cdef update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp example_index, uint32 weight):
         pass
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
@@ -226,8 +226,8 @@ cdef class DecomposableLoss(Loss):
         # predictions...
         return self.evaluate_label_independent_predictions(uncovered)
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                           float64[::1] predicted_scores):
+    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                                float64[::1] predicted_scores):
         pass
 
 
@@ -239,16 +239,16 @@ cdef class NonDecomposableLoss(Loss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
-    cdef begin_instance_sub_sampling(self):
+    cdef void begin_instance_sub_sampling(self):
         pass
 
-    cdef update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index):
         pass
 
-    cdef begin_search(self, intp[::1] label_indices):
+    cdef void begin_search(self, intp[::1] label_indices):
         pass
 
-    cdef update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp example_index, uint32 weight):
         pass
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
@@ -257,6 +257,6 @@ cdef class NonDecomposableLoss(Loss):
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         pass
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                           float64[::1] predicted_scores):
+    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                                float64[::1] predicted_scores):
         pass
