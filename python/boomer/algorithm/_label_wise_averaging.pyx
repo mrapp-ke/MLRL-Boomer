@@ -25,9 +25,9 @@ cdef class LabelWiseAveraging(DecomposableLoss):
         cdef float64[::1] default_rule = array_float64(num_labels)
         cdef uint8[::1] minority_labels = array_uint8(num_labels)
         cdef float64[::1, :] uncovered_labels = matrix_float64(num_examples, num_labels)
-        cdef float64[::1, :] coverable_labels = matrix_float64(num_examples, num_labels)
         cdef float64[::1, :] confusion_matrices_default = matrix_float64(num_labels, 4)
         cdef float64 threshold = num_examples / 2.0
+        cdef float64 sum_uncovered_labels = 0
         cdef uint8 true_label, predicted_label
         cdef intp r, c
 
@@ -46,10 +46,8 @@ cdef class LabelWiseAveraging(DecomposableLoss):
                 minority_labels[c] = 1
 
             for r in range(num_examples):
-                if default_rule[c] == y[r,c]:
-                    coverable_labels[r,c] = 0
-                else:
-                    coverable_labels[r,c] = 1
+                if default_rule[c] != y[r,c]:
+                    sum_uncovered_labels = sum_uncovered_labels + 1
 
 
         self.confusion_matrices_default = confusion_matrices_default
@@ -59,7 +57,7 @@ cdef class LabelWiseAveraging(DecomposableLoss):
         uncovered_labels[:,:] = 1
 
         self.uncovered_labels = uncovered_labels
-        self.coverable_labels = coverable_labels
+        self.sum_uncovered_labels = sum_uncovered_labels
         self.minority_labels = minority_labels
         self.true_labels = y
 
@@ -193,9 +191,14 @@ cdef class LabelWiseAveraging(DecomposableLoss):
                            float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef intp l, i
+        cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
 
         # Only the labels that are predicted by the new rule must be considered
         for l in label_indices:
             # Only the examples that are covered by the new rule must be considered
             for i in covered_example_indices:
-                uncovered_labels[i, l] = 0
+                if uncovered_labels[i, l] == 1:
+                    uncovered_labels[i, l] = 0
+                    sum_uncovered_labels = sum_uncovered_labels - 1
+
+        self.sum_uncovered_labels = sum_uncovered_labels
