@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes for inducing classification rules.
+Provides classes for inducing theories that consist of several classification rules.
 """
 import logging as log
 from abc import abstractmethod
@@ -18,14 +18,14 @@ from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampli
 
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stopping_criteria import StoppingCriterion
+from boomer.algorithm.utils import format_rule
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
-from boomer.algorithm.utils import format_rule
 
 
-class RuleInduction(Randomized):
+class SequentialRuleInduction(Randomized):
     """
-    A module that allows to induce a `Theory`, consisting of several classification rules.
+    A base class for all algorithms that allow to sequentially induce the classification rules included in a `Theory`.
     """
 
     @abstractmethod
@@ -45,9 +45,9 @@ class RuleInduction(Randomized):
         pass
 
 
-class GradientBoosting(RuleInduction):
+class GradientBoosting(SequentialRuleInduction):
     """
-    Implements the induction of (multi-label) classification rules using gradient boosting.
+    Allows to sequentially induce classification rules using gradient boosting.
     """
 
     def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
@@ -132,7 +132,7 @@ class GradientBoosting(RuleInduction):
             raise ValueError('Parameter \'head_refinement\' may not be None')
 
 
-class SeparateAndConquer(RuleInduction):
+class SeparateAndConquer(SequentialRuleInduction):
     """
     Implements the induction of (multi-label) classification rules using a separate and conquer algorithm.
     """
