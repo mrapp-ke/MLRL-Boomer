@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes for inducing classification rules.
+Provides classes for inducing theories that consist of several classification rules.
 """
 import logging as log
 from abc import abstractmethod
@@ -12,7 +12,7 @@ import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
 from boomer.algorithm._pruning import Pruning
-from boomer.algorithm._rule_induction import ExactGreedyRuleInduction
+from boomer.algorithm._rule_induction import RuleInduction
 from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 
@@ -50,10 +50,12 @@ class GradientBoosting(SequentialRuleInduction):
     Allows to sequentially induce classification rules using gradient boosting.
     """
 
-    def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
-                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
-                 shrinkage: Shrinkage, *stopping_criteria: StoppingCriterion):
+    def __init__(self, rule_induction: RuleInduction, head_refinement: HeadRefinement, loss: Loss,
+                 label_sub_sampling: LabelSubSampling, instance_sub_sampling: InstanceSubSampling,
+                 feature_sub_sampling: FeatureSubSampling, pruning: Pruning, shrinkage: Shrinkage,
+                 *stopping_criteria: StoppingCriterion):
         """
+        :param rule_induction:          The algorithm that is used to induce individual rules
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param loss:                    The loss function to be minimized
         :param label_sub_sampling:      The strategy that is used for sub-sampling the labels each time a new
@@ -68,6 +70,7 @@ class GradientBoosting(SequentialRuleInduction):
         :param stopping_criteria        The stopping criteria that should be used to decide whether additional rules
                                         should be induced or not
         """
+        self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.loss = loss
         self.label_sub_sampling = label_sub_sampling
@@ -88,7 +91,7 @@ class GradientBoosting(SequentialRuleInduction):
         feature_sub_sampling = self.feature_sub_sampling
         pruning = self.pruning
         shrinkage = self.shrinkage
-        rule_induction = ExactGreedyRuleInduction()
+        rule_induction = self.rule_induction
 
         # Convert feature and label matrices into Fortran-contiguous arrays
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
@@ -139,10 +142,11 @@ class SeparateAndConquer(SequentialRuleInduction):
     Implements the induction of (multi-label) classification rules using a separate and conquer algorithm.
     """
 
-    def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
-                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
-                 *stopping_criteria: StoppingCriterion):
+    def __init__(self, rule_induction: RuleInduction, head_refinement: HeadRefinement, loss: Loss,
+                 label_sub_sampling: LabelSubSampling, instance_sub_sampling: InstanceSubSampling,
+                 feature_sub_sampling: FeatureSubSampling, pruning: Pruning, *stopping_criteria: StoppingCriterion):
         """
+        :param rule_induction:          The algorithm that is used to induce individual rules
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param loss:                    The loss function to be minimized
         :param label_sub_sampling:      The strategy that is used for sub-sampling the labels each time a new
@@ -155,6 +159,7 @@ class SeparateAndConquer(SequentialRuleInduction):
         :param stopping_criteria        The stopping criteria that should be used to decide whether additional rules
                                         should be induced or not
         """
+        self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.loss = loss
         self.label_sub_sampling = label_sub_sampling
@@ -172,7 +177,7 @@ class SeparateAndConquer(SequentialRuleInduction):
         instance_sub_sampling = self.instance_sub_sampling
         feature_sub_sampling = self.feature_sub_sampling
         pruning = self.pruning
-        rule_induction = ExactGreedyRuleInduction()
+        rule_induction = self.rule_induction
 
         theory = []
 
