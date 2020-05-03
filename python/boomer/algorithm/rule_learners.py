@@ -11,7 +11,8 @@ from typing import List
 
 import numpy as np
 from boomer.algorithm._example_wise_losses import ExampleWiseLogisticLoss
-from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement, \
+    PartialHeadRefinement
 from boomer.algorithm._heuristics import Heuristic, HammingLoss, Precision
 from boomer.algorithm._label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm._label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
@@ -31,6 +32,8 @@ from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
+
+HEAD_REFINEMENT_PARTIAL = 'partial'
 
 HEAD_REFINEMENT_FULL = 'full'
 
