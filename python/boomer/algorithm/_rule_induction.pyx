@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that implement algorithms for the induction of individual classification rules.
+Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.algorithm._arrays cimport uint32, float64, array_intp, array_float32, matrix_intp
 from boomer.algorithm._model cimport Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
