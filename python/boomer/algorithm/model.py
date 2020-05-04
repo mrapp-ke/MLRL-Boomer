@@ -8,7 +8,7 @@ Provides classes for representing the model learned by a classifier or ranker.
 from typing import List
 
 import numpy as np
-from boomer.algorithm._model import Rule
+from boomer.algorithm.rules import Rule
 
 DTYPE_INTP = np.intp
 

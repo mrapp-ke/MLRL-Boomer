@@ -6,10 +6,10 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.algorithm._arrays cimport uint32, float64, array_intp, array_float32, matrix_intp
-from boomer.algorithm._model cimport Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
-from boomer.algorithm._head_refinement cimport HeadCandidate
-from boomer.algorithm._losses cimport Prediction
 from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_index, get_weight
+from boomer.algorithm.rules cimport Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
+from boomer.algorithm.head_refinement cimport HeadCandidate
+from boomer.algorithm.losses cimport Prediction
 
 from libc.stdlib cimport qsort
 from libcpp.list cimport list
