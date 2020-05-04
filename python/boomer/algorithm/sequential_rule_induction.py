@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes for inducing classification rules.
+Provides classes for inducing theories that consist of several classification rules.
 """
 import logging as log
 from abc import abstractmethod
@@ -12,20 +12,20 @@ import numpy as np
 from boomer.algorithm._head_refinement import HeadRefinement
 from boomer.algorithm._losses import Loss
 from boomer.algorithm._pruning import Pruning
-from boomer.algorithm._rule_induction import induce_default_rule, induce_rule
+from boomer.algorithm._rule_induction import RuleInduction
 from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stopping_criteria import StoppingCriterion
+from boomer.algorithm.utils import format_rule
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
-from boomer.algorithm.utils import format_rule
 
 
-class RuleInduction(Randomized):
+class SequentialRuleInduction(Randomized):
     """
-    A module that allows to induce a `Theory`, consisting of several classification rules.
+    A base class for all algorithms that allow to sequentially induce the classification rules included in a `Theory`.
     """
 
     @abstractmethod
@@ -45,15 +45,17 @@ class RuleInduction(Randomized):
         pass
 
 
-class GradientBoosting(RuleInduction):
+class GradientBoosting(SequentialRuleInduction):
     """
-    Implements the induction of (multi-label) classification rules using gradient boosting.
+    Allows to sequentially induce classification rules using gradient boosting.
     """
 
-    def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
-                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
-                 shrinkage: Shrinkage, *stopping_criteria: StoppingCriterion):
+    def __init__(self, rule_induction: RuleInduction, head_refinement: HeadRefinement, loss: Loss,
+                 label_sub_sampling: LabelSubSampling, instance_sub_sampling: InstanceSubSampling,
+                 feature_sub_sampling: FeatureSubSampling, pruning: Pruning, shrinkage: Shrinkage,
+                 *stopping_criteria: StoppingCriterion):
         """
+        :param rule_induction:          The algorithm that is used to induce individual rules
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param loss:                    The loss function to be minimized
         :param label_sub_sampling:      The strategy that is used for sub-sampling the labels each time a new
@@ -68,6 +70,7 @@ class GradientBoosting(RuleInduction):
         :param stopping_criteria        The stopping criteria that should be used to decide whether additional rules
                                         should be induced or not
         """
+        self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.loss = loss
         self.label_sub_sampling = label_sub_sampling
@@ -88,6 +91,7 @@ class GradientBoosting(RuleInduction):
         feature_sub_sampling = self.feature_sub_sampling
         pruning = self.pruning
         shrinkage = self.shrinkage
+        rule_induction = self.rule_induction
 
         # Convert feature and label matrices into Fortran-contiguous arrays
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
@@ -102,16 +106,16 @@ class GradientBoosting(RuleInduction):
         # Induce default rule, if necessary
         if len(theory) == 0:
             log.info('Learning rule 1 (default rule)...')
-            default_rule = induce_default_rule(y, loss)
+            default_rule = rule_induction.induce_default_rule(y, loss)
             theory.append(default_rule)
 
         while all([stopping_criterion.should_continue(theory) for stopping_criterion in stopping_criteria]):
             log.info('Learning rule %s...', len(theory) + 1)
 
             # Induce a new rule
-            rule = induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
-                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
-                               random_state)
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
+                                              label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                              shrinkage, random_state)
 
             # Add new rule to theory
             theory.append(rule)
@@ -132,15 +136,16 @@ class GradientBoosting(RuleInduction):
             raise ValueError('Parameter \'head_refinement\' may not be None')
 
 
-class SeparateAndConquer(RuleInduction):
+class SeparateAndConquer(SequentialRuleInduction):
     """
     Implements the induction of (multi-label) classification rules using a separate and conquer algorithm.
     """
 
-    def __init__(self, head_refinement: HeadRefinement, loss: Loss, label_sub_sampling: LabelSubSampling,
-                 instance_sub_sampling: InstanceSubSampling, feature_sub_sampling: FeatureSubSampling, pruning: Pruning,
-                 *stopping_criteria: StoppingCriterion):
+    def __init__(self, rule_induction: RuleInduction, head_refinement: HeadRefinement, loss: Loss,
+                 label_sub_sampling: LabelSubSampling, instance_sub_sampling: InstanceSubSampling,
+                 feature_sub_sampling: FeatureSubSampling, pruning: Pruning, *stopping_criteria: StoppingCriterion):
         """
+        :param rule_induction:          The algorithm that is used to induce individual rules
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param loss:                    The loss function to be minimized
         :param label_sub_sampling:      The strategy that is used for sub-sampling the labels each time a new
@@ -153,6 +158,7 @@ class SeparateAndConquer(RuleInduction):
         :param stopping_criteria        The stopping criteria that should be used to decide whether additional rules
                                         should be induced or not
         """
+        self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.loss = loss
         self.label_sub_sampling = label_sub_sampling
@@ -170,6 +176,7 @@ class SeparateAndConquer(RuleInduction):
         instance_sub_sampling = self.instance_sub_sampling
         feature_sub_sampling = self.feature_sub_sampling
         pruning = self.pruning
+        rule_induction = self.rule_induction
 
         theory = []
 
@@ -178,15 +185,15 @@ class SeparateAndConquer(RuleInduction):
 
         x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
 
-        default_rule = induce_default_rule(y, loss)
+        default_rule = rule_induction.induce_default_rule(y, loss)
 
         num_learned_rules = 0
 
         while all([stopping_criterion.should_continue(theory) for stopping_criterion in stopping_criteria]):
             log.info('Learning rule %s...', num_learned_rules + 1)
-            rule = induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
-                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, None,
-                               random_state)
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
+                                              label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                              None, random_state)
 
             print(format_rule(stats, rule))
 
