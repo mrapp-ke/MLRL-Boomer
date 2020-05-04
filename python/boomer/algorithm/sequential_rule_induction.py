@@ -9,12 +9,12 @@ import logging as log
 from abc import abstractmethod
 
 import numpy as np
-from boomer.algorithm._head_refinement import HeadRefinement
-from boomer.algorithm._losses import Loss
-from boomer.algorithm._pruning import Pruning
-from boomer.algorithm._rule_induction import RuleInduction
-from boomer.algorithm._shrinkage import Shrinkage
-from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
+from boomer.algorithm.head_refinement import HeadRefinement
+from boomer.algorithm.losses import Loss
+from boomer.algorithm.pruning import Pruning
+from boomer.algorithm.rule_induction import RuleInduction
+from boomer.algorithm.shrinkage import Shrinkage
+from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 
 from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stopping_criteria import StoppingCriterion
