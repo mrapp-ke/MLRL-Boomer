@@ -302,7 +302,7 @@ class AbstractEvaluation(Evaluation):
 
     def __init__(self, *args: EvaluationOutput):
         """
-        :param outputs: The outputs the evaluation results should be written to
+        :param args: The outputs the evaluation results should be written to
         """
         self.outputs = args
         self.results: Dict[str, EvaluationResult] = {}
