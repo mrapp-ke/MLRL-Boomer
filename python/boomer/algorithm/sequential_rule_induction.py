@@ -18,7 +18,6 @@ from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSamplin
 
 from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stopping_criteria import StoppingCriterion
-from boomer.algorithm.utils import format_rule
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
 
@@ -197,8 +196,6 @@ class SeparateAndConquer(SequentialRuleInduction):
             if rule is None:
                 log.info('No more rules can be induced')
                 break
-
-            print(format_rule(stats, rule))
 
             theory.append(rule)
 
