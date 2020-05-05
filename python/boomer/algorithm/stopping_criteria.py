@@ -10,7 +10,7 @@ from abc import abstractmethod, ABC
 from timeit import default_timer as timer
 
 import numpy as np
-from boomer.algorithm._label_wise_averaging import LabelWiseAveraging
+from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 
 from boomer.algorithm.model import Theory
 
