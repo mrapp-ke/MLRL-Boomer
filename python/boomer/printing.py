@@ -13,31 +13,9 @@ import numpy as np
 from boomer.algorithm.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
 from boomer.algorithm.model import Theory
-from boomer.algorithm.rule_learners import MLRuleLearner
 from boomer.io import clear_directory, open_writable_txt_file
 from boomer.learners import MLLearner
 from boomer.stats import Stats
-
-
-class ModelPrinter(ABC):
-    """
-    An abstract base class for all classes that allow to print a textual representation of a `MLLearner`'s model.
-    """
-
-    @abstractmethod
-    def print(self, experiment_name: str, learner: MLLearner, first_fold: int, current_fold: int, last_fold: int,
-              num_folds: int):
-        """
-        Prints a textual representation of a `MLLearner`'s model.
-
-        :param experiment_name: The name of the experiment
-        :param learner:         The learner
-        :param first_fold:      The first cross validation fold or 0, if no cross validation is used
-        :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
-        :param last_fold:       The last cross validation fold or 0, if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
-        """
-        pass
 
 
 class ModelPrinterOutput(ABC):
@@ -55,6 +33,45 @@ class ModelPrinterOutput(ABC):
         :param total_folds:         The total number of folds
         :param fold:                The fold for which the results should be written or None, if no cross validation is
                                     used or if the overall results, averaged over all folds, should be written
+        """
+        pass
+
+
+class ModelPrinter(ABC):
+    """
+    An abstract base class for all classes that allow to print a textual representation of a `MLLearner`'s model.
+    """
+
+    def __init__(self, *args: ModelPrinterOutput):
+        """
+        :param args: The outputs, the textual representations of models should be written to
+        """
+        self.outputs = args
+
+    def print(self, experiment_name: str, learner: MLLearner, current_fold: int, num_folds: int):
+        """
+        Prints a textual representation of a `MLLearner`'s model.
+
+        :param experiment_name: The name of the experiment
+        :param learner:         The learner
+        :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
+        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
+        """
+        stats = learner.stats_
+        model = learner.model_
+        text = self._format_model(stats, model)
+
+        for output in self.outputs:
+            output.write_model(experiment_name, text, num_folds, current_fold if num_folds > 1 else None)
+
+    @abstractmethod
+    def _format_model(self, stats: Stats, model) -> str:
+        """
+        Must be implemented by subclasses in order to create a textual representation of a model.
+
+        :param stats:   Statistics about the training data set
+        :param model:   The model
+        :return:        The textual representation of the given model
         """
         pass
 
@@ -98,23 +115,13 @@ class RulePrinter(ModelPrinter):
     """
 
     def __init__(self, *args: ModelPrinterOutput):
-        """
-        :param args: The outputs, the textual representations of rules should be written to
-        """
-        self.outputs = args
+        super().__init__(*args)
 
-    def print(self, experiment_name: str, learner: MLLearner, first_fold: int, current_fold: int, last_fold: int,
-              num_folds: int):
-        if isinstance(learner, MLRuleLearner):
-            stats = learner.stats_
-            theory = learner.model_
-            formatted_theory = format_theory(stats, theory)
-
-            for output in self.outputs:
-                output.write_model(experiment_name, formatted_theory, num_folds,
-                                   current_fold if num_folds > 1 else None)
+    def _format_model(self, stats: Stats, model) -> str:
+        if isinstance(model, list):
+            return format_theory(stats, model)
         else:
-            raise ValueError('Unsupported model type: ' + type(learner).__name__)
+            raise ValueError('Unsupported model type: ' + type(model).__name__)
 
 
 def format_theory(stats: Stats, theory: Theory) -> str:
