@@ -1,13 +1,12 @@
-from boomer.algorithm._arrays cimport uint8, uint32, intp, float64, array_float64, matrix_float64, array_uint8
-
-from boomer.algorithm._heuristics cimport Heuristic
-from boomer.algorithm._losses cimport LabelIndependentPrediction, DecomposableLoss
+from boomer.algorithm._arrays cimport array_float64, matrix_float64, array_uint8
 from boomer.algorithm._utils cimport get_index
+
 
 DEF _IN = 0
 DEF _IP = 1
 DEF _RN = 2
 DEF _RP = 3
+
 
 cdef class LabelWiseAveraging(DecomposableLoss):
     """

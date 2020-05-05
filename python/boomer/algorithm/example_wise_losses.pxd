@@ -1,28 +1,32 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
-from boomer.algorithm._heuristics cimport Heuristic
-from boomer.algorithm._losses cimport DecomposableLoss, Prediction, LabelIndependentPrediction
+from boomer.algorithm.losses cimport NonDecomposableLoss, Prediction, LabelIndependentPrediction
 
-cdef class LabelWiseAveraging(DecomposableLoss):
+
+cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
 
     # Attributes:
 
-    cdef Prediction prediction
+    cdef readonly float64 l2_regularization_weight
 
-    cdef Heuristic heuristic
+    cdef float64[::1, :] expected_scores
 
-    cdef readonly float64[::1, :] uncovered_labels
+    cdef float64[::1, :] current_scores
 
-    cdef readonly float64[::1, :] coverable_labels
+    cdef float64[::1, :] gradients
 
-    cdef uint8[::1] minority_labels
+    cdef float64[::1] sums_of_gradients
 
-    cdef uint8[::1, :] true_labels
+    cdef float64[::1] total_sums_of_gradients
 
-    cdef float64[::1, :] confusion_matrices_default
+    cdef float64[::1, :] hessians
 
-    cdef float64[::1, :] confusion_matrices_covered
+    cdef float64[::1] sums_of_hessians
+
+    cdef float64[::1] total_sums_of_hessians
 
     cdef intp[::1] label_indices
+
+    cdef LabelIndependentPrediction prediction
 
     # Functions:
 
@@ -42,4 +46,3 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
     cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                                 float64[::1] predicted_scores)
-
