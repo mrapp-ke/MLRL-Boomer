@@ -70,10 +70,7 @@ if __name__ == '__main__':
 
     parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
     evaluation_outputs = [EvaluationLogOutput()]
-    model_printer_outputs = []
-
-    if args.print_rules:
-        model_printer_outputs.append(ModelPrinterLogOutput())
+    model_printer_outputs = [ModelPrinterLogOutput()] if args.print_rules else []
 
     if args.output_dir is not None:
         evaluation_outputs.append(EvaluationCsvOutput(output_dir=args.output_dir,
