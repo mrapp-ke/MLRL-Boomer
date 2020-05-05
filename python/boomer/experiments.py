@@ -65,14 +65,14 @@ class Experiment(CrossValidation, ABC):
         current_learner.fit(train_x, train_y)
         learner_name = current_learner.get_name()
 
+        # Obtain and evaluate predictions for test data
+        predictions = current_learner.predict(test_x)
+        self.evaluation.evaluate(learner_name, predictions, test_y, first_fold=first_fold, current_fold=current_fold,
+                                 last_fold=last_fold, num_folds=num_folds)
+
         # Print model, if necessary
         model_printer = self.model_printer
 
         if model_printer is not None:
             model_printer.print(learner_name, current_learner, first_fold=first_fold, current_fold=current_fold,
                                 last_fold=last_fold, num_folds=num_folds)
-
-        # Obtain and evaluate predictions for test data
-        predictions = current_learner.predict(test_x)
-        self.evaluation.evaluate(learner_name, predictions, test_y, first_fold=first_fold, current_fold=current_fold,
-                                 last_fold=last_fold, num_folds=num_folds)
