@@ -10,6 +10,7 @@ from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
+from boomer.printing import RulePrinter, ModelPrinterLogOutput
 from boomer.training import DataSet
 
 
@@ -59,6 +60,8 @@ if __name__ == '__main__':
     parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     parser.add_argument('--store-predictions', type=boolean_string, default=False,
                         help='True, if the predictions should be stored as CSV files, False otherwise')
+    parser.add_argument('--print-rules', type=boolean_string, default=True,
+                        help='True, if the induced rules should be printed on the console, False otherwise')
     parser.add_argument('--parameter-dir', type=optional_string, default=None,
                         help='The path of the directory, parameter settings should be loaded from')
     args = parser.parse_args()
@@ -67,6 +70,10 @@ if __name__ == '__main__':
 
     parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
     evaluation_outputs = [EvaluationLogOutput()]
+    model_printer_outputs = []
+
+    if args.print_rules:
+        model_printer_outputs.append(ModelPrinterLogOutput())
 
     if args.output_dir is not None:
         evaluation_outputs.append(EvaluationCsvOutput(output_dir=args.output_dir,
@@ -75,8 +82,10 @@ if __name__ == '__main__':
 
     learner = create_learner(args)
     parameter_input = parameter_input
+    model_printer = RulePrinter(*model_printer_outputs) if len(model_printer_outputs) > 0 else None
     evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
     data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
     experiment = Experiment(learner, evaluation, data_set=data_set, num_folds=args.folds,
-                            current_fold=args.current_fold, parameter_input=parameter_input)
+                            current_fold=args.current_fold, parameter_input=parameter_input,
+                            model_printer=model_printer)
     experiment.run()
