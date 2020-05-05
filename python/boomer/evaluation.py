@@ -60,7 +60,7 @@ RANK_LOSS = 'Rank Loss'
 
 class Evaluation(ABC):
     """
-    Base class for all classes that evaluate the predictions provided by a classifier or ranker.
+    An abstract base class for all classes that evaluate the predictions provided by a classifier or ranker.
     """
 
     @abstractmethod
