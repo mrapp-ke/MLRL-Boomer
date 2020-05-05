@@ -14,6 +14,7 @@ from boomer.algorithm.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head,
 
 from boomer.algorithm.model import Theory
 from boomer.algorithm.rule_learners import MLRuleLearner
+from boomer.io import clear_directory, open_writable_txt_file
 from boomer.learners import MLLearner
 from boomer.stats import Stats
 
@@ -45,14 +46,15 @@ class ModelPrinterOutput(ABC):
     """
 
     @abstractmethod
-    def write_model(self, experiment_name: str, model: str, current_fold: int, num_folds: int):
+    def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
         """
         Write a textual representation of a model to the output.
 
         :param experiment_name: The name of the experiment
         :param model:           The textual representation of the model
-        :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
+        :param total_folds:         The total number of folds
+        :param fold:                The fold for which the results should be written or None, if no cross validation is
+                                    used or if the overall results, averaged over all folds, should be written
         """
         pass
 
@@ -62,10 +64,32 @@ class ModelPrinterLogOutput(ModelPrinterOutput):
     Outputs the textual representation of a model using the logger.
     """
 
-    def write_model(self, experiment_name: str, model: str, current_fold: int, num_folds: int):
+    def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
         msg = 'Model for experiment \"' + experiment_name + '\"' + (
-            ' (Fold ' + str(current_fold + 1) + ')' if num_folds > 1 else '') + ':\n\n%s\n'
+            ' (Fold ' + str(fold + 1) + ')' if fold is not None else '') + ':\n\n%s\n'
         log.info(msg, model)
+
+
+class ModelPrinterTxtOutput(ModelPrinterOutput):
+    """
+    Writes the textual representation of a model to a TXT file.
+    """
+
+    def __init__(self, output_dir: str, clear_dir: bool = True):
+        self.output_dir = output_dir
+        self.clear_dir = clear_dir
+
+    def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
+        with open_writable_txt_file(self.output_dir, 'rules', fold, append=False) as text_file:
+            text_file.write(model)
+
+    def __clear_dir_if_necessary(self):
+        """
+        Clears the output directory, if necessary.
+        """
+        if self.clear_dir:
+            clear_directory(self.output_dir)
+            self.clear_dir = False
 
 
 class RulePrinter(ModelPrinter):
@@ -87,7 +111,8 @@ class RulePrinter(ModelPrinter):
             formatted_theory = format_theory(stats, theory)
 
             for output in self.outputs:
-                output.write_model(experiment_name, formatted_theory, current_fold, num_folds)
+                output.write_model(experiment_name, formatted_theory, num_folds,
+                                   current_fold if num_folds > 1 else None)
         else:
             raise ValueError('Unsupported model type: ' + type(learner).__name__)
 
