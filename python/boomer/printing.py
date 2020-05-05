@@ -10,7 +10,7 @@ import logging as log
 from abc import ABC, abstractmethod
 
 import numpy as np
-from boomer.algorithm._rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
+from boomer.algorithm.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
 from boomer.algorithm.model import Theory
 from boomer.algorithm.rule_learners import MLRuleLearner
