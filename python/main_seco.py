@@ -63,7 +63,7 @@ if __name__ == '__main__':
     parser.add_argument('--print-rules', type=boolean_string, default=True,
                         help='True, if the induced rules should be printed on the console, False otherwise')
     parser.add_argument('--store-rules', type=boolean_string, default=False,
-                        help='True, if the induced rules should be stored as a TXT file, False otherwise')
+                        help='True, if the induced rules should be stored in TXT files, False otherwise')
     parser.add_argument('--parameter-dir', type=optional_string, default=None,
                         help='The path of the directory, parameter settings should be loaded from')
     args = parser.parse_args()
