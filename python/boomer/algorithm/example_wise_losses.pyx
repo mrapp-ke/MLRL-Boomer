@@ -5,7 +5,7 @@ Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index, convert_label_into_score
-from boomer.algorithm._math cimport divide_or_zero_float64, triangular_number, l2_norm_pow
+from boomer.algorithm._math cimport triangular_number, l2_norm_pow
 from boomer.algorithm._math cimport dsysv_float64, dspmv_float64, ddot_float64
 
 from libc.math cimport pow, exp, fabs
@@ -297,7 +297,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
             # Calculate score to be predicted for the current label...
             # Note: As the sign of the gradients was inverted in the function `calculate_default_scores`, it must be
             # reverted again in the following.
-            score = divide_or_zero_float64(sum_of_gradients, sum_of_hessians + l2_regularization_weight)
+            score = sum_of_hessians + l2_regularization_weight
+            score = sum_of_gradients / score if score != 0 else 0
             predicted_scores[c] = score
 
             # Calculate the quality score for the current label...
