@@ -1,5 +1,5 @@
 from boomer.algorithm._arrays cimport intp, float64
-from boomer.algorithm._label_wise_averaging cimport LabelWiseAveraging
+from boomer.algorithm.label_wise_averaging cimport LabelWiseAveraging
 
 
 cdef class StoppingCriterion:
