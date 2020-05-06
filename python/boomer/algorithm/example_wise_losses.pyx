@@ -4,8 +4,9 @@
 Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport get_index, convert_label_into_score
+from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._math cimport l2_norm_pow
+from boomer.algorithm.differentiable_losses cimport _convert_label_into_score
 
 from libc.math cimport pow, exp, fabs
 from libc.stdlib cimport malloc, free
@@ -64,7 +65,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         for r in range(num_examples):
             # Traverse the labels of the current example once to convert the ground truth labels into expected scores...
             for c in range(num_labels):
-                expected_scores[r, c] = convert_label_into_score(y[r, c])
+                expected_scores[r, c] = _convert_label_into_score(y[r, c])
 
             # Traverse the labels again to calculate the gradients and hessians...
             i = 0
