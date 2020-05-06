@@ -6,7 +6,7 @@
 Provides commonly used utility functions.
 """
 import numpy as np
-from boomer.algorithm._model import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
+from boomer.algorithm.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
 from boomer.stats import Stats
 

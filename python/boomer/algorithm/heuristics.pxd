@@ -1,5 +1,6 @@
 from boomer.algorithm._arrays cimport float64
 
+
 cdef class Heuristic:
 
     # Functions:
