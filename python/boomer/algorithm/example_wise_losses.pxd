@@ -1,12 +1,13 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
-from boomer.algorithm.losses cimport NonDecomposableLoss, Prediction, LabelIndependentPrediction
+from boomer.algorithm.losses cimport Prediction, LabelIndependentPrediction
+from boomer.algorithm.differentiable_losses cimport NonDecomposableDifferentiableLoss
 
 
-cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
+cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     # Attributes:
 
-    cdef readonly float64 l2_regularization_weight
+    cdef float64 l2_regularization_weight
 
     cdef float64[::1, :] expected_scores
 
