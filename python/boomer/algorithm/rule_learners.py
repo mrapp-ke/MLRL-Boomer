@@ -22,12 +22,12 @@ from boomer.algorithm.shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
+    UncoveredLabelsCriterion
 
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
 from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, GradientBoosting, SeparateAndConquer
-from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
-    UncoveredLabelsCriterion
 from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
 

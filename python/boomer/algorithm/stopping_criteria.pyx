@@ -1,0 +1,87 @@
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides classes that implement different stopping criteria that allow to decide whether additional rules should be
+added to a theory or not.
+"""
+from timeit import default_timer as timer
+
+
+cdef class StoppingCriterion:
+    """
+    A base class for all stopping criteria that allow to decide whether additional rules should should be added to a
+    theory or not.
+    """
+
+    cpdef bint should_continue(self, list theory):
+        """
+        Returns, whether more rules should be added to a specific theory, or not.
+
+        :param theory:  The theory
+        :return:        True, if more rules should be added to the given theory, False otherwise
+        """
+        pass
+
+
+cdef class SizeStoppingCriterion(StoppingCriterion):
+    """
+    A stopping criterion that ensures that the number of rules in a theory does not exceed a certain maximum.
+    """
+
+    def __cinit__(self, intp max_rules):
+        """
+        :param max_rules: The maximum number of rules
+        """
+        self.max_rules = max_rules
+
+    cpdef bint should_continue(self, list theory):
+        cdef intp num_rules = len(theory)
+        cdef intp max_rules = self.max_rules
+        return num_rules < max_rules
+
+
+cdef class TimeStoppingCriterion(StoppingCriterion):
+    """
+    A stopping criterion that ensures that a time limit is not exceeded.
+    """
+
+    def __cinit__(self, intp time_limit):
+        """
+        :param time_limit: The time limit in seconds
+        """
+        self.time_limit = time_limit
+        self.start_time = -1
+
+    cpdef bint should_continue(self, list theory):
+        cdef intp start_time = self.start_time
+        cdef intp current_time, time_limit
+
+        if start_time < 0:
+            start_time = timer()
+            self.start_time = start_time
+            return True
+        else:
+            current_time = timer()
+            time_limit = self.time_limit
+            return current_time - start_time < time_limit
+
+
+cdef class UncoveredLabelsCriterion(StoppingCriterion):
+    """
+    A stopping criterion that stops when the sum of the weight matrix used in `LabelWiseAveraging` is smaller than or
+    equal to a certain threshold.
+    """
+
+    def __cinit__(self, LabelWiseAveraging loss, float64 threshold):
+        """
+        :param loss:        The `LabelWiseAveraging`
+        :param threshold:   The threshold
+        """
+        self.loss = loss
+        self.threshold = threshold
+
+    cpdef bint should_continue(self, list theory):
+        cdef LabelWiseAveraging loss = self.loss
+        cdef float64 sum_uncovered_labels = loss.sum_uncovered_labels
+        cdef float64 threshold = self.threshold
+        return sum_uncovered_labels > threshold
