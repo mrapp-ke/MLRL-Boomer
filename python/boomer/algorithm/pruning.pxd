@@ -1,6 +1,6 @@
 # distutils: language=c++
 from boomer.algorithm._arrays cimport intp, uint32, float32, float64
-from boomer.algorithm._utils cimport Condition
+from boomer.algorithm.rule_induction cimport Condition
 from boomer.algorithm.losses cimport Loss
 from boomer.algorithm.head_refinement cimport HeadRefinement
 

@@ -6,7 +6,7 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.algorithm._arrays cimport array_intp
-from boomer.algorithm._utils cimport test_condition, Comparator
+from boomer.algorithm.rule_induction cimport test_condition, Comparator
 from boomer.algorithm.losses cimport Prediction
 
 from cython.operator cimport dereference, postincrement
