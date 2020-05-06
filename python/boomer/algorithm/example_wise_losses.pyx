@@ -14,7 +14,7 @@ from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
 
-cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
+cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
     """
     A multi-label variant of the logistic loss that is applied example-wise.
     """

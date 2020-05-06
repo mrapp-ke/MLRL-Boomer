@@ -10,9 +10,9 @@ from boomer.algorithm._math cimport l2_norm_pow
 from libc.math cimport pow, exp
 
 
-cdef class LabelWiseLoss(DecomposableLoss):
+cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
     """
-    A base class for all loss functions that are applied label-wise.
+    A base class for all differentiable loss functions that are applied label-wise.
     """
 
     cdef float64 _gradient(self, float64 expected_score, float64 current_score):
@@ -308,7 +308,7 @@ cdef class LabelWiseLoss(DecomposableLoss):
                 hessians[i, l] = tmp
 
 
-cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
+cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
     """
     A multi-label variant of the squared error loss that is applied label-wise.
     """
@@ -320,7 +320,7 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
         return 2
 
 
-cdef class LabelWiseLogisticLoss(LabelWiseLoss):
+cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
     """
     A multi-label variant of the logistic loss that is applied label-wise.
     """
