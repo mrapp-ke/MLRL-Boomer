@@ -5,7 +5,7 @@ Provides classes that implement loss functions that are applied example- and lab
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport convert_label_into_score, get_index
-from boomer.algorithm._math cimport divide_or_zero_float64, l2_norm_pow
+from boomer.algorithm._math cimport l2_norm_pow
 
 from libc.math cimport pow, exp
 
@@ -254,7 +254,8 @@ cdef class LabelWiseLoss(DecomposableLoss):
                 sum_of_hessians = total_sums_of_hessians[l] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
-            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians + l2_regularization_weight)
+            score = sum_of_hessians + l2_regularization_weight
+            score = -sum_of_gradients / score if score != 0 else 0
             predicted_scores[c] = score
 
             # Calculate the quality score for the current label...
