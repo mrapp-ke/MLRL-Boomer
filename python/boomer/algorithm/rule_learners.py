@@ -10,18 +10,18 @@ from abc import abstractmethod
 from typing import List
 
 import numpy as np
-from boomer.algorithm._example_wise_losses import ExampleWiseLogisticLoss
-from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm._heuristics import Heuristic, HammingLoss, Precision
-from boomer.algorithm._label_wise_averaging import LabelWiseAveraging
-from boomer.algorithm._label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
-from boomer.algorithm._losses import Loss, DecomposableLoss
-from boomer.algorithm._pruning import Pruning, IREP
-from boomer.algorithm._rule_induction import ExactGreedyRuleInduction
-from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
-from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
-from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
-from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+from boomer.algorithm.example_wise_losses import ExampleWiseLogisticLoss
+from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision
+from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
+from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
+from boomer.algorithm.losses import Loss, DecomposableLoss
+from boomer.algorithm.pruning import Pruning, IREP
+from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
+from boomer.algorithm.shrinkage import Shrinkage, ConstantShrinkage
+from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
+from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
+from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
 from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
     UncoveredLabelsCriterion
 
