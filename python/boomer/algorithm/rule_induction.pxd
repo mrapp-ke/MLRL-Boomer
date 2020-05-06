@@ -1,11 +1,11 @@
 # distutils: language=c++
 from boomer.algorithm._arrays cimport intp, uint8, float32
-from boomer.algorithm._model cimport Rule
-from boomer.algorithm._losses cimport Loss
-from boomer.algorithm._sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
-from boomer.algorithm._pruning cimport Pruning
-from boomer.algorithm._shrinkage cimport Shrinkage
-from boomer.algorithm._head_refinement cimport HeadRefinement
+from boomer.algorithm.rules cimport Rule
+from boomer.algorithm.losses cimport Loss
+from boomer.algorithm.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
+from boomer.algorithm.pruning cimport Pruning
+from boomer.algorithm.shrinkage cimport Shrinkage
+from boomer.algorithm.head_refinement cimport HeadRefinement
 
 
 cdef class RuleInduction:
