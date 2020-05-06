@@ -3,8 +3,7 @@
 
 Provides classes that implement loss functions that are applied example-wise.
 """
-from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport get_index
+from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
 from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
