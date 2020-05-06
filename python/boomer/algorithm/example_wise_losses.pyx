@@ -6,9 +6,10 @@ Provides classes that implement loss functions that are applied example-wise.
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index, convert_label_into_score
 from boomer.algorithm._math cimport l2_norm_pow
-from boomer.algorithm._math cimport dsysv_float64, dspmv_float64, ddot_float64
+from boomer.algorithm._math cimport dsysv_float64, dspmv_float64
 
 from libc.math cimport pow, exp, fabs
+from scipy.linalg.cython_blas cimport ddot
 
 
 cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
@@ -353,9 +354,9 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         prediction.predicted_scores = scores
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-        cdef float64 overall_quality_score = -ddot_float64(scores, gradients)
+        cdef float64 overall_quality_score = -__ddot_float64(scores, gradients)
         cdef float64[::1] tmp = dspmv_float64(hessians, scores)
-        overall_quality_score += 0.5 * ddot_float64(scores, tmp)
+        overall_quality_score += 0.5 * __ddot_float64(scores, tmp)
 
         # Add the L2 regularization term to the overall quality score...
         overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(scores)
@@ -441,3 +442,21 @@ cdef inline intp __triangular_number(intp n):
     :return:    A scalar of dtype `intp`, representing the n-th triangular number
     """
     return (n * (n + 1)) // 2
+
+
+cdef inline float64 __ddot_float64(float64[::1] x, float64[::1] y):
+    """
+    Computes and returns the dot product x * y of two vectors using BLAS' DDOT routine (see
+    http://www.netlib.org/lapack/explore-html/de/da4/group__double__blas__level1_ga75066c4825cb6ff1c8ec4403ef8c843a.html).
+
+    :param x:   An array of dtype `float64`, shape (n), representing the first vector x
+    :param y:   An array of dtype `float64`, shape (n), representing the second vector y
+    :return:    A scalar of dtype `float64`, representing the result of the dot product x * y
+    """
+    # The number of elements in the arrays x and y
+    cdef int n = x.shape[0]
+    # Storage spacing between the elements of the arrays x and y
+    cdef int inc = 1
+    # Invoke the DDOT routine...
+    cdef float64 result = ddot(&n, &x[0], &inc, &y[0], &inc)
+    return result
