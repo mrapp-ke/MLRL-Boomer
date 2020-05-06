@@ -4,8 +4,9 @@
 Provides classes that implement loss functions that are applied example- and label-wise.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport convert_label_into_score, get_index
+from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._math cimport l2_norm_pow
+from boomer.algorithm.differentiable_losses cimport _convert_label_into_score
 
 from libc.math cimport pow, exp
 
@@ -84,7 +85,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
             for r in range(num_examples):
                 # Convert ground truth label into expected score...
-                expected_score = convert_label_into_score(y[r, c])
+                expected_score = _convert_label_into_score(y[r, c])
                 expected_scores[r, c] = expected_score
 
                 # Calculate gradient for the current example and label...
