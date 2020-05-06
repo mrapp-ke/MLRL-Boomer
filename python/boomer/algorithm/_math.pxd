@@ -6,7 +6,7 @@ Provides utility functions for common mathematical operations.
 from boomer.algorithm._arrays cimport intp, float64, array_float64, matrix_float64
 
 from scipy.linalg.cython_lapack cimport dsysv
-from scipy.linalg.cython_blas cimport dspmv, ddot
+from scipy.linalg.cython_blas cimport dspmv
 from libc.stdlib cimport malloc, free
 from libc.math cimport pow
 
@@ -29,24 +29,6 @@ cdef inline float64 l2_norm_pow(float64[::1] a):
         tmp = pow(tmp, 2)
         result += tmp
 
-    return result
-
-
-cdef inline float64 ddot_float64(float64[::1] x, float64[::1] y):
-    """
-    Computes and returns the dot product x * y of two vectors using BLAS' DDOT routine (see 
-    http://www.netlib.org/lapack/explore-html/de/da4/group__double__blas__level1_ga75066c4825cb6ff1c8ec4403ef8c843a.html).
-    
-    :param x:   An array of dtype `float64`, shape (n), representing the first vector x
-    :param y:   An array of dtype `float64`, shape (n), representing the second vector y
-    :return:    A scalar of dtype `float64`, representing the result of the dot product x * y
-    """
-    # The number of elements in the arrays x and y
-    cdef int n = x.shape[0]
-    # Storage spacing between the elements of the arrays x and y
-    cdef int inc = 1
-    # Invoke the DDOT routine...
-    cdef float64 result = ddot(&n, &x[0], &inc, &y[0], &inc)
     return result
 
 
