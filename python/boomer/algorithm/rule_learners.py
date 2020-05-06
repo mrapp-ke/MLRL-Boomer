@@ -10,20 +10,21 @@ from abc import abstractmethod
 from typing import List
 
 import numpy as np
+from boomer.algorithm.differentiable_losses import DecomposableDifferentiableLoss
 from boomer.algorithm.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision
 from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
-from boomer.algorithm.losses import Loss, DecomposableLoss
+from boomer.algorithm.losses import Loss
 from boomer.algorithm.pruning import Pruning, IREP
 from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
 from boomer.algorithm.shrinkage import Shrinkage, ConstantShrinkage
+from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
+    UncoveredLabelsCriterion
 from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
-from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
-    UncoveredLabelsCriterion
 
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
@@ -307,7 +308,10 @@ class Boomer(MLRuleLearner):
         head_refinement = self.head_refinement
 
         if head_refinement is None:
-            return SingleLabelHeadRefinement() if isinstance(loss, DecomposableLoss) else FullHeadRefinement()
+            if isinstance(loss, DecomposableDifferentiableLoss):
+                return SingleLabelHeadRefinement()
+            else:
+                return FullHeadRefinement()
         elif head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinement()
         elif head_refinement == HEAD_REFINEMENT_FULL:
