@@ -1,9 +1,10 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 from boomer.algorithm.heuristics cimport Heuristic
-from boomer.algorithm.losses cimport DecomposableLoss, Prediction, LabelIndependentPrediction
+from boomer.algorithm.losses cimport Prediction, LabelIndependentPrediction
+from boomer.algorithm.coverage_losses cimport DecomposableCoverageLoss
 
 
-cdef class LabelWiseAveraging(DecomposableLoss):
+cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
     # Attributes:
 
@@ -11,9 +12,7 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
     cdef Heuristic heuristic
 
-    cdef readonly float64[::1, :] uncovered_labels
-
-    cdef readonly float64 sum_uncovered_labels
+    cdef float64[::1, :] uncovered_labels
 
     cdef uint8[::1] minority_labels
 
@@ -43,4 +42,3 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
     cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                                 float64[::1] predicted_scores)
-
