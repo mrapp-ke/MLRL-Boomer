@@ -5,7 +5,7 @@ Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index, convert_label_into_score
-from boomer.algorithm._math cimport triangular_number, l2_norm_pow
+from boomer.algorithm._math cimport l2_norm_pow
 from boomer.algorithm._math cimport dsysv_float64, dspmv_float64, ddot_float64
 
 from libc.math cimport pow, exp, fabs
@@ -53,7 +53,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         # coefficients to each other and omitting the unspecified elements.
         cdef float64[::1] ordinates = array_float64(num_labels)
         ordinates[:] = 0
-        cdef intp num_hessians = triangular_number(num_labels)  # The number of elements in the upper-right triangle
+        cdef intp num_hessians = __triangular_number(num_labels)  # The number of elements in the upper-right triangle
         cdef float64[::1] coefficients = array_float64(num_hessians)
         coefficients[:] = 0
 
@@ -211,7 +211,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         if sums_of_gradients is None or sums_of_gradients.shape[0] != num_gradients:
             sums_of_gradients = array_float64(num_gradients)
             self.sums_of_gradients = sums_of_gradients
-            num_hessians = triangular_number(num_gradients)
+            num_hessians = __triangular_number(num_gradients)
             sums_of_hessians = array_float64(num_hessians)
             self.sums_of_hessians = sums_of_hessians
         else:
@@ -243,7 +243,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         for c in range(num_gradients):
             l = get_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
-            offset = triangular_number(l)
+            offset = __triangular_number(l)
 
             for c2 in range(c + 1):
                 l2 = offset + get_index(c2, label_indices)
@@ -285,13 +285,13 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
         # For each label, calculate the score to be predicted, as well as a quality score...
         for c in range(num_gradients):
             sum_of_gradients = sums_of_gradients[c]
-            c2 = triangular_number(c + 1) - 1
+            c2 = __triangular_number(c + 1) - 1
             sum_of_hessians = sums_of_hessians[c2]
 
             if uncovered:
                 l = get_index(c, label_indices)
                 sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
-                l2 = triangular_number(l + 1) - 1
+                l2 = __triangular_number(l + 1) - 1
                 sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
@@ -338,7 +338,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
             for c in range(num_gradients):
                 l = get_index(c, label_indices)
                 gradients[c] = total_sums_of_gradients[l] - sums_of_gradients[c]
-                offset = triangular_number(l)
+                offset = __triangular_number(l)
 
                 for c2 in range(c + 1):
                     l2 = offset + get_index(c2, label_indices)
@@ -431,3 +431,13 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
                 tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
                 hessians[r, i] = tmp
                 i += 1
+
+
+cdef inline intp __triangular_number(intp n):
+    """
+    Computes and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
+
+    :param n:   A scalar of dtype `intp`, representing the order of the triangular number
+    :return:    A scalar of dtype `intp`, representing the n-th triangular number
+    """
+    return (n * (n + 1)) // 2

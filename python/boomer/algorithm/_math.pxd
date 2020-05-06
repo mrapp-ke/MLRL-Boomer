@@ -11,16 +11,6 @@ from libc.stdlib cimport malloc, free
 from libc.math cimport pow
 
 
-cdef inline intp triangular_number(intp n):
-    """
-    Computes and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
-
-    :param n:   A scalar of dtype `intp`, representing the order of the triangular number
-    :return:    A scalar of dtype `intp`, representing the n-th triangular number
-    """
-    return (n * (n + 1)) // 2
-
-
 cdef inline float64 l2_norm_pow(float64[::1] a):
     """
     Computes and returns the square of the L2 norm of a specific vector, i.e. the sum of the squares of its elements. To 
