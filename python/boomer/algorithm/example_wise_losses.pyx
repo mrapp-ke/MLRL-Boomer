@@ -5,11 +5,10 @@ Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index, convert_label_into_score
-from boomer.algorithm._math cimport l2_norm_pow
-from boomer.algorithm._math cimport dsysv_float64, dspmv_float64
+from boomer.algorithm._math cimport l2_norm_pow, dsysv_float64
 
 from libc.math cimport pow, exp, fabs
-from scipy.linalg.cython_blas cimport ddot
+from scipy.linalg.cython_blas cimport ddot, dspmv
 
 
 cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
@@ -355,7 +354,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
         cdef float64 overall_quality_score = -__ddot_float64(scores, gradients)
-        cdef float64[::1] tmp = dspmv_float64(hessians, scores)
+        cdef float64[::1] tmp = __dspmv_float64(hessians, scores)
         overall_quality_score += 0.5 * __ddot_float64(scores, tmp)
 
         # Add the L2 regularization term to the overall quality score...
@@ -460,3 +459,37 @@ cdef inline float64 __ddot_float64(float64[::1] x, float64[::1] y):
     # Invoke the DDOT routine...
     cdef float64 result = ddot(&n, &x[0], &inc, &y[0], &inc)
     return result
+
+
+cdef inline float64[::1] __dspmv_float64(float64[::1] a, float64[::1] x):
+    """
+    Computes and returns the solution to the matrix-vector operation A * x using BLAS' DSPMV routine (see
+    http://www.netlib.org/lapack/explore-html/d7/d15/group__double__blas__level2_gab746575c4f7dd4eec72e8110d42cefe9.html).
+    This function expects A to be a double-precision symmetric matrix with shape `(n, n)` and x a double-precision array
+    with shape `(n)`.
+
+    DSPMV expects the matrix A to be supplied in packed form, i.e., as an array with shape `(n * (n + 1) // 2 )` that
+    consists of the columns of A appended to each other and omitting all unspecified elements.
+
+    :param a:   An array of dtype `float64`, shape `(n * (n + 1) // 2)`, representing the elements in the upper-right
+                triangle of the matrix A in a packed form
+    :param x:   An array of dtype `float64`, shape `(n)`, representing the elements in the array x
+    :return:    An array of dtype `float64`, shape `(n)`, representing the result of the matrix-vector operation A * x
+    """
+    # 'U' if the upper-right triangle of A should be used, 'L' if the lower-left triangle should be used
+    cdef char* uplo = 'U'
+    # The number of rows and columns of the matrix A
+    cdef int n = x.shape[0]
+    # A scalar to be multiplied with the matrix A
+    cdef float64 alpha = 1
+    # The increment for the elements of x
+    cdef int incx = 1
+    # A scalar to be multiplied with vector y
+    cdef float64 beta = 0
+    # An array of dtype `float64`, shape `(n)`. Will contain the result of A * x
+    cdef float64[::1] y = array_float64(n)
+    # The increment for the elements of y
+    cdef int incy = 1
+    # Invoke the DSPMV routine...
+    dspmv(uplo, &n, &alpha, &a[0], &x[0], &incx, &beta, &y[0], &incy)
+    return y
