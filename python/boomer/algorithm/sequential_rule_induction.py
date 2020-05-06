@@ -15,9 +15,9 @@ from boomer.algorithm._pruning import Pruning
 from boomer.algorithm._rule_induction import RuleInduction
 from boomer.algorithm._shrinkage import Shrinkage
 from boomer.algorithm._sub_sampling import InstanceSubSampling, FeatureSubSampling, LabelSubSampling
+from boomer.algorithm.stopping_criteria import StoppingCriterion
 
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
-from boomer.algorithm.stopping_criteria import StoppingCriterion
 from boomer.algorithm.utils import format_rule
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
