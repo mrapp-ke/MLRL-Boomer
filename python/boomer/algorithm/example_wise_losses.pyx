@@ -11,7 +11,7 @@ from boomer.algorithm._math cimport dsysv_float64, dspmv_float64, ddot_float64
 from libc.math cimport pow, exp, fabs
 
 
-cdef class ExampleWiseLogisticLoss(NonDecomposableLoss):
+cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
     """
     A multi-label variant of the logistic loss that is applied example-wise.
     """
