@@ -190,8 +190,10 @@ cdef class LabelWiseAveraging(DecomposableLoss):
     cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                                 float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef intp l, i
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
+        cdef intp l, i
 
         # Only the labels that are predicted by the new rule must be considered
         for l in label_indices:
@@ -199,6 +201,8 @@ cdef class LabelWiseAveraging(DecomposableLoss):
             for i in covered_example_indices:
                 if uncovered_labels[i, l] == 1:
                     uncovered_labels[i, l] = 0
-                    sum_uncovered_labels = sum_uncovered_labels - 1
+
+                    if minority_labels[l] == true_labels[i, l]:
+                        sum_uncovered_labels = sum_uncovered_labels - 1
 
         self.sum_uncovered_labels = sum_uncovered_labels
