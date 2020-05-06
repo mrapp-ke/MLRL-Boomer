@@ -5,8 +5,7 @@ Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.algorithm._arrays cimport array_float64, matrix_float64
 from boomer.algorithm._utils cimport get_index
-from boomer.algorithm._math cimport l2_norm_pow
-from boomer.algorithm.differentiable_losses cimport _convert_label_into_score
+from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
 from libc.stdlib cimport malloc, free
@@ -312,7 +311,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
 
         return prediction
@@ -362,7 +361,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         overall_quality_score += 0.5 * __ddot_float64(scores, tmp)
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(scores)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(scores)
         prediction.overall_quality_score = overall_quality_score
 
         return prediction

@@ -1,6 +1,8 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
 from boomer.algorithm.losses cimport Loss, Prediction, LabelIndependentPrediction
 
+from libc.math cimport pow
+
 
 cdef class DifferentiableLoss(Loss):
 
@@ -79,3 +81,24 @@ cdef inline float64 _convert_label_into_score(uint8 label):
         return label
     else:
         return -1
+
+
+cdef inline float64 _l2_norm_pow(float64[::1] a):
+    """
+    Computes and returns the square of the L2 norm of a specific vector, i.e. the sum of the squares of its elements. To
+    obtain the actual L2 norm, the square-root of the result provided by this function must be computed.
+
+    :param a:   An array of dtype `float64`, shape (n), representing a vector
+    :return:    A scalar of dtype `float64`, representing the square of the L2 of the given vector
+    """
+    cdef float64 result = 0
+    cdef intp n = a.shape[0]
+    cdef float64 tmp
+    cdef intp i
+
+    for i in range(n):
+        tmp = a[i]
+        tmp = pow(tmp, 2)
+        result += tmp
+
+    return result
