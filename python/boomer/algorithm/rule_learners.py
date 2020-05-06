@@ -10,7 +10,8 @@ from abc import abstractmethod
 from typing import List
 
 import numpy as np
-from boomer.algorithm.differentiable_losses import DecomposableDifferentiableLoss
+from boomer.algorithm.coverage_losses import CoverageLoss
+from boomer.algorithm.differentiable_losses import DifferentiableLoss, DecomposableDifferentiableLoss
 from boomer.algorithm.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision
@@ -293,7 +294,7 @@ class Boomer(MLRuleLearner):
 
         return l2_regularization_weight
 
-    def __create_loss(self, l2_regularization_weight: float) -> Loss:
+    def __create_loss(self, l2_regularization_weight: float) -> DifferentiableLoss:
         loss = self.loss
 
         if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
@@ -433,7 +434,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return HammingLoss()
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
-    def __create_loss(self, heuristic: Heuristic) -> Loss:
+    def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
         loss = self.loss
 
         if loss == MEASURE_LABEL_WISE:
