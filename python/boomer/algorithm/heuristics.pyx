@@ -5,6 +5,7 @@ implemented as loss functions, i.e., rules with a smaller quality score are bett
 score.
 """
 
+
 cdef class Heuristic:
     """
     A base class for all heuristics.

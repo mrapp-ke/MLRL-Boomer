@@ -1,5 +1,5 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float32
-from boomer.algorithm._losses cimport Loss
+from boomer.algorithm.losses cimport Loss
 
 
 cdef class InstanceSubSampling:

@@ -1,6 +1,7 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float64
-from boomer.algorithm._heuristics cimport Heuristic
-from boomer.algorithm._losses cimport DecomposableLoss, Prediction, LabelIndependentPrediction
+from boomer.algorithm.heuristics cimport Heuristic
+from boomer.algorithm.losses cimport DecomposableLoss, Prediction, LabelIndependentPrediction
+
 
 cdef class LabelWiseAveraging(DecomposableLoss):
 

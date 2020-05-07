@@ -1,5 +1,5 @@
 from boomer.algorithm._arrays cimport intp, float64
-from boomer.algorithm._losses cimport Loss, Prediction
+from boomer.algorithm.losses cimport Loss, Prediction
 
 
 cdef class HeadCandidate:
