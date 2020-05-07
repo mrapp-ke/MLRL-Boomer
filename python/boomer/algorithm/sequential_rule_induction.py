@@ -18,7 +18,6 @@ from boomer.algorithm.sub_sampling import InstanceSubSampling, FeatureSubSamplin
 
 from boomer.algorithm.model import Theory, DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.algorithm.stopping_criteria import StoppingCriterion
-from boomer.algorithm.utils import format_rule
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
 
@@ -194,8 +193,6 @@ class SeparateAndConquer(SequentialRuleInduction):
             rule = rule_induction.induce_rule(nominal_attribute_indices, x, x_sorted_indices, y, head_refinement, loss,
                                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
                                               None, random_state)
-
-            print(format_rule(stats, rule))
 
             theory.append(rule)
 
