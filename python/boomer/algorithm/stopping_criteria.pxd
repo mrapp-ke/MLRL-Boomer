@@ -38,7 +38,7 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
     # Attributes:
 
     cdef readonly float64 threshold
-
+    
     cdef CoverageLoss loss
 
     # Functions:
