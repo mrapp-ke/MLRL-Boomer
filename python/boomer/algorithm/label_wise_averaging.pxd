@@ -11,9 +11,9 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
     cdef Heuristic heuristic
 
-    cdef readonly float64[::1, :] uncovered_labels
+    cdef float64[::1, :] uncovered_labels
 
-    cdef readonly float64 sum_uncovered_labels
+    cdef float64 sum_uncovered_labels
 
     cdef uint8[::1] minority_labels
 
