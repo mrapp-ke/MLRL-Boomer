@@ -1,5 +1,5 @@
 from boomer.algorithm._arrays cimport intp, float64
-from boomer.algorithm.label_wise_averaging cimport LabelWiseAveraging
+from boomer.algorithm.coverage_losses cimport CoverageLoss
 
 
 cdef class StoppingCriterion:
@@ -38,8 +38,8 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
     # Attributes:
 
     cdef readonly float64 threshold
-
-    cdef LabelWiseAveraging loss
+    
+    cdef CoverageLoss loss
 
     # Functions:
 

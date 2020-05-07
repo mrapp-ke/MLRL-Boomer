@@ -8,7 +8,7 @@ DEF _RN = 2
 DEF _RP = 3
 
 
-cdef class LabelWiseAveraging(DecomposableLoss):
+cdef class LabelWiseAveraging(DecomposableCoverageLoss):
     """
     A class for label-wise evaluation.
     """
