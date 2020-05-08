@@ -26,8 +26,6 @@ from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCr
 from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
-from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
-    UncoveredLabelsCriterion
 
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
