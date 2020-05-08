@@ -8,8 +8,6 @@ from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._losses cimport LabelIndependentPrediction
 
-from libcpp.list cimport list
-
 cdef class HeadCandidate:
     """
     Stores information about a potential head of a rule.
@@ -124,13 +122,17 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels = predicted_scores.shape[0]
-        cdef intp num_label_indices = label_indices.shape[0]
+        cdef intp num_label_indices
+        if label_indices is None:
+            num_label_indices = num_labels
+        else:
+            num_label_indices = label_indices.shape[0]
         cdef float64[::1] candidate_predicted_scores
         cdef HeadCandidate candidate
-        cdef intp c, c2, c3, l
+        cdef intp i, c, c2, c3, l
 
         cdef intp sorted_label_indices_length = 0
-        cdef intp[::1] sorted_label_indices = array_intp(num_label_indices)
+        cdef intp[::1] sorted_indices = array_intp(num_label_indices)
 
         cdef intp[::1] current_head_candidate = array_intp(num_label_indices)
         cdef intp current_head_candidate_length = 0
@@ -145,44 +147,50 @@ cdef class PartialHeadRefinement(HeadRefinement):
         for c in range(0, num_label_indices):
             l = get_index(c, label_indices)
             for c2 in range(0, num_label_indices):
-                if c2 >= sorted_label_indices_length or quality_scores[sorted_label_indices[c2]] < quality_scores[l]:
+                if c2 >= sorted_label_indices_length or quality_scores[sorted_indices[c2]] > quality_scores[c]:
                     # Shift
                     for c3 in range(sorted_label_indices_length - 1, c2 - 1, -1):
-                        sorted_label_indices[c3 + 1] = sorted_label_indices[c3]
+                        sorted_indices[c3 + 1] = sorted_indices[c3]
 
                     # Insert
-                    sorted_label_indices[c2] = label_indices[c]
+                    sorted_indices[c2] = c
                     sorted_label_indices_length += 1
 
                     break
-
-        print(np.asarray(sorted_label_indices))
 
         for c in range(0, num_labels):
             # select the top element of sorted_label_indices excluding labels already contained
 
             c2 = 0
             should_continue = True
+            no_improvement = False
 
             while should_continue:
                 should_continue = False
+
+                if c2 >= sorted_label_indices_length:
+                    no_improvement = True
+                    break
+
                 # checks if current_head_candidate contains sorted_label_indices[c2]
                 for c3 in range(0, current_head_candidate_length):
-                    if current_head_candidate[c3] == sorted_label_indices[c2]:
+                    if current_head_candidate[c3] == get_index(sorted_indices[c2], label_indices):
                         should_continue = True
-                        break
+                        c2 += 1
+                        continue
 
-                c2 += 1
+            if no_improvement:
+                break
 
-            current_head_candidate[current_head_candidate_length] = sorted_label_indices[c2]
+            current_head_candidate[current_head_candidate_length] = sorted_indices[c2]
             current_head_candidate_length += 1
 
             maximum_lift = 1 # TODO
 
-            for label in current_head_candidate:
-                total_quality_score += quality_scores[get_index(label, label_indices)]
+            for c2 in range(0, current_head_candidate_length):
+                total_quality_score += quality_scores[current_head_candidate[c2]]
 
-            total_quality_score /= current_head_candidate.size()
+            total_quality_score /= current_head_candidate_length
 
             quality_score = total_quality_score * self.lift(total_quality_score, current_head_candidate_length)
 
@@ -202,12 +210,12 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
         if best_head is None or best_quality_score < best_head.quality_score:
             # Create a new `HeadCandidate` and return it...
-            candidate_label_indices = array_intp(current_head_candidate_length)
-            candidate_predicted_scores = array_float64(current_head_candidate_length)
+            candidate_label_indices = array_intp(best_head_candidate_length)
+            candidate_predicted_scores = array_float64(best_head_candidate_length)
 
             for c in range(0, best_head_candidate_length):
-                candidate_label_indices[c] = best_head_candidate[c]
-                candidate_predicted_scores[c] = predicted_scores[get_index(c, candidate_label_indices[c])]
+                candidate_label_indices[c] = get_index(best_head_candidate[c], label_indices)
+                candidate_predicted_scores[c] = predicted_scores[best_head_candidate[c]]
 
             candidate = HeadCandidate.__new__(HeadCandidate, candidate_label_indices, candidate_predicted_scores,
                                               best_quality_score)
