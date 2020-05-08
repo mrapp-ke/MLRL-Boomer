@@ -5,8 +5,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.algorithm._arrays cimport uint32, float64, array_intp, array_float32, matrix_intp
-from boomer.algorithm._utils cimport Comparator, Condition, test_condition, get_index, get_weight
+from boomer.algorithm._arrays cimport uint32, float64, array_intp, array_float32, matrix_intp, get_index
 from boomer.algorithm.rules cimport Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm.head_refinement cimport HeadCandidate
 from boomer.algorithm.losses cimport Prediction
@@ -247,7 +246,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     for r in range(num_examples - 1, -1, -1):
                         i = sorted_indices[r]
-                        weight = get_weight(i, weights)
+                        weight = __get_weight(i, weights)
 
                         if weight > 0:
                             # Tell the loss function that the example will be covered by upcoming refinements...
@@ -259,7 +258,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # Traverse the remaining examples in descending order...
                     for r in range(r - 1, -1, -1):
                         i = sorted_indices[r]
-                        weight = get_weight(i, weights)
+                        weight = __get_weight(i, weights)
 
                         # Do only consider examples that are included in the current sub-sample...
                         if weight > 0:
@@ -695,3 +694,18 @@ cdef int __compare(const void* a, const void* b) nogil:
     cdef float32 v1 = (<IndexedElement*>a).value
     cdef float32 v2 = (<IndexedElement*>b).value
     return -1 if v1 < v2 else (0 if v1 == v2 else 1)
+
+
+cdef inline uint32 __get_weight(intp i, uint32[::1] weights):
+    """
+    Retrieves and returns the i-th weight from an array of weights, if such an array is available. Otherwise 1 is
+    returned.
+
+    :param i:       The position of the weight that should be retrieved
+    :param weights: An array of dtype int, shape `(num_weights)`, representing the weights, or None
+    :return:        A scalar of dtype int, representing the i-th weight in the given array or 1, if the array is None
+    """
+    if weights is None:
+        return 1
+    else:
+        return weights[i]
