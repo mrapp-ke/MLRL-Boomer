@@ -127,15 +127,19 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef intp num_label_indices = label_indices.shape[0]
         cdef float64[::1] candidate_predicted_scores
         cdef HeadCandidate candidate
-        cdef intp c, c2, c3, l, bits, labels, best_mask = 0, best_labelcount = 0
+        cdef intp c, c2, c3, l
+
         cdef intp sorted_label_indices_length = 0
-        cdef float64 best_quality_score, total_quality_score
+        cdef intp[::1] sorted_label_indices = array_intp(num_label_indices)
 
-        cdef sorted_predictions = array_float64(num_label_indices)
-        cdef sorted_quality_scores = array_float64(num_label_indices)
-        cdef sorted_label_indices = array_intp(num_label_indices)
+        cdef intp[::1] current_head_candidate = array_intp(num_label_indices)
+        cdef intp current_head_candidate_length = 0
 
-        cdef list[intp] current_head_candidate
+        cdef intp[::1] best_head_candidate = array_intp(num_label_indices)
+        cdef intp best_head_candidate_length = 0
+
+        cdef float64 best_quality_score, total_quality_score, quality_score
+        cdef intp should_continue
 
         # Insertion sort
         for c in range(0, num_label_indices):
@@ -152,13 +156,26 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
                     break
 
+        print(np.asarray(sorted_label_indices))
+
         for c in range(0, num_labels):
+            # select the top element of sorted_label_indices excluding labels already contained
+
             c2 = 0
-            # TODO list.contains
-            while current_head_candidate.contains(sorted_label_indices[c2]):
+            should_continue = True
+
+            while should_continue:
+                should_continue = False
+                # checks if current_head_candidate contains sorted_label_indices[c2]
+                for c3 in range(0, current_head_candidate_length):
+                    if current_head_candidate[c3] == sorted_label_indices[c2]:
+                        should_continue = True
+                        break
+
                 c2 += 1
 
-            current_head_candidate.push_back(sorted_label_indices[c2])
+            current_head_candidate[current_head_candidate_length] = sorted_label_indices[c2]
+            current_head_candidate_length += 1
 
             maximum_lift = 1 # TODO
 
@@ -167,12 +184,34 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
             total_quality_score /= current_head_candidate.size()
 
+            quality_score = total_quality_score * self.lift(total_quality_score, current_head_candidate_length)
+
+            if best_head_candidate_length == 0 or quality_score < best_quality_score:
+                best_head_candidate_length = current_head_candidate_length
+                # deep copy
+                for c2 in range(0, best_head_candidate_length):
+                    best_head_candidate[c2] = current_head_candidate[c2]
+
+                best_quality_score = quality_score
+
             max_score = total_quality_score * maximum_lift
 
             if max_score < best_quality_score:
+                # prunable by decomposition
                 break
 
-        # TODO return HeadCandidate
+        if best_head is None or best_quality_score < best_head.quality_score:
+            # Create a new `HeadCandidate` and return it...
+            candidate_label_indices = array_intp(current_head_candidate_length)
+            candidate_predicted_scores = array_float64(current_head_candidate_length)
+
+            for c in range(0, best_head_candidate_length):
+                candidate_label_indices[c] = best_head_candidate[c]
+                candidate_predicted_scores[c] = predicted_scores[get_index(c, candidate_label_indices[c])]
+
+            candidate = HeadCandidate.__new__(HeadCandidate, candidate_label_indices, candidate_predicted_scores,
+                                              best_quality_score)
+            return candidate
 
         # Return None, as the quality_score of the found head is worse than that of `best_head`...
         return None
