@@ -20,6 +20,7 @@ from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelW
 from boomer.algorithm.losses import Loss
 from boomer.algorithm.pruning import Pruning, IREP
 from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
+from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.algorithm.shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
     UncoveredLabelsCriterion
@@ -27,9 +28,8 @@ from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubse
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
 
-from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
+from boomer.algorithm.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
-from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, GradientBoosting, SeparateAndConquer
 from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
 
@@ -146,10 +146,16 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         else:
             nominal_attribute_indices = None
 
+        # Convert feature and label matrices into Fortran-contiguous arrays
+        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
+        y = np.asfortranarray(y, dtype=DTYPE_UINT8)
+
+        # Sort feature matrix once
+        x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
+
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(stats)
-        sequential_rule_induction.random_state = random_state
-        return sequential_rule_induction.induce_rules(stats, nominal_attribute_indices, x, y)
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, x_sorted_indices, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
         # Create a dense representation of the given examples
@@ -272,18 +278,18 @@ class Boomer(MLRuleLearner):
         return Sign(LinearCombination())
 
     def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
-        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
+        rule_induction = ExactGreedyRuleInduction()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         loss = self.__create_loss(l2_regularization_weight)
         head_refinement = self.__create_head_refinement(loss)
+        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         label_sub_sampling = _create_label_sub_sampling(int(self.label_sub_sampling), stats)
         instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = _create_pruning(self.pruning)
         shrinkage = self.__create_shrinkage()
-        rule_induction = ExactGreedyRuleInduction()
-        return GradientBoosting(rule_induction, head_refinement, loss, label_sub_sampling, instance_sub_sampling,
-                                feature_sub_sampling, pruning, shrinkage, *stopping_criteria)
+        return RuleListInduction(False, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
+                                 instance_sub_sampling, feature_sub_sampling, pruning, shrinkage)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)
@@ -404,6 +410,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return params
 
     def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
+        rule_induction = ExactGreedyRuleInduction()
         heuristic = self.__create_heuristic()
         loss = self.__create_loss(heuristic)
         head_refinement = self.__create_head_refinement()
@@ -411,19 +418,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = _create_pruning(self.pruning)
-
-        max_rules = int(self.max_rules)
-
-        # To learn max_rules rules including the default rule, the learner has to learn max_rules - 1 rules excluding
-        # the default rule as the default rule is learned after the SizeStoppingCriterion is reached.
-        if max_rules > 0:
-            max_rules = max_rules - 1
-
-        stopping_criteria = _create_stopping_criteria(max_rules, int(self.time_limit))
+        stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
-        rule_induction = ExactGreedyRuleInduction()
-        return SeparateAndConquer(rule_induction, head_refinement, loss, label_sub_sampling, instance_sub_sampling,
-                                  feature_sub_sampling, pruning, *stopping_criteria)
+        return RuleListInduction(True, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
+                                 instance_sub_sampling, feature_sub_sampling, pruning, None)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic

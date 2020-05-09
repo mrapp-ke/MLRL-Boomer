@@ -35,7 +35,7 @@ cdef class RuleInduction:
     cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                            HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                            InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                           Pruning pruning, Shrinkage shrinkage, random_state: int):
+                           Pruning pruning, Shrinkage shrinkage, intp random_state):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -99,20 +99,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                            HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                            InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                           Pruning pruning, Shrinkage shrinkage, random_state: int):
+                           Pruning pruning, Shrinkage shrinkage, intp random_state):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef list[Condition] conditions
         # The total number of conditions
-        cdef int num_conditions = 0
+        cdef intp num_conditions = 0
         # An array representing the number of conditions per type of operator
         cdef intp[::1] num_conditions_per_comparator = array_intp(4)
         num_conditions_per_comparator[:] = 0
         # An array representing the indices of the examples that are covered by the rule
         cdef intp[::1] covered_example_indices
         # The seed to be used by RNGs (must be updated after each refinement)
-        cdef int current_random_state = random_state
+        cdef intp current_random_state = random_state
 
         # Variables for representing the best refinement
         cdef bint found_refinement = True
@@ -544,7 +544,7 @@ cdef inline Rule __build_rule(HeadCandidate head, list[Condition] conditions, in
 
 cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices, IndexArray* index_array,
                                           intp condition_start, intp condition_end, intp condition_index,
-                                          Comparator condition_comparator, int num_conditions, Loss loss):
+                                          Comparator condition_comparator, intp num_conditions, Loss loss):
     """
     Filters and returns the array that contains the indices of the examples that are covered by the previous rule after
     a new condition has been added, such that the filtered array does only contain the indices of the examples that are
