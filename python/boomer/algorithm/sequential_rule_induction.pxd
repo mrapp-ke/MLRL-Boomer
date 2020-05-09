@@ -11,8 +11,8 @@ cdef class SequentialRuleInduction:
 
     # Functions:
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :],
-                              uint8[::1, :] y, intp random_state)
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x,
+                              intp[::1, :] x_sorted_indices, uint8[::1, :] y, intp random_state)
 
 
 cdef class RuleListInduction(SequentialRuleInduction):
