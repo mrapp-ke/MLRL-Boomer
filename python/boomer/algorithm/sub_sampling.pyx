@@ -18,7 +18,7 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state):
         """
         Creates and returns a sub-sample of the available training examples.
 
@@ -45,7 +45,7 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state):
         cdef intp num_examples = x.shape[0]
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
@@ -84,7 +84,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state):
         cdef intp num_examples = x.shape[0]
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
@@ -129,7 +129,7 @@ cdef class FeatureSubSampling:
     A base class for all classes that implement a strategy for sub-sampling features.
     """
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, int random_state):
+    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state):
         """
         Creates and returns a sub-sample of the available features.
 
@@ -155,7 +155,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, int random_state):
+    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state):
          cdef intp num_features = x.shape[1]
          cdef float sample_size = self.sample_size
          cdef int num_samples
@@ -174,7 +174,7 @@ cdef class LabelSubSampling:
     A base class for all classes that implement a strategy for sub-sampling labels.
     """
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, int random_state):
+    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state):
         """
         Creates and returns a sub-sample of the available labels.
         
@@ -195,9 +195,8 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
         """
         self.num_samples = num_samples
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, int random_state):
+    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state):
         cdef intp num_labels = y.shape[1]
         cdef intp num_samples = self.num_samples
-        cdef intp[::1] result = np.ascontiguousarray(sample_without_replacement(num_labels, num_samples, 'auto', random_state),
+        return np.ascontiguousarray(sample_without_replacement(num_labels, num_samples, 'auto', random_state),
                                     dtype=DTYPE_INTP)
-        return result
