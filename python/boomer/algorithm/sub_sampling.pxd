@@ -6,7 +6,7 @@ cdef class InstanceSubSampling:
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state)
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state)
 
 
 cdef class Bagging(InstanceSubSampling):
@@ -17,7 +17,7 @@ cdef class Bagging(InstanceSubSampling):
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state)
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state)
 
 
 cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
@@ -27,14 +27,14 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, int random_state)
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state)
 
 
 cdef class FeatureSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, int random_state)
+    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state)
 
 
 cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
@@ -45,14 +45,14 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, int random_state)
+    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state)
 
 
 cdef class LabelSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, int random_state)
+    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state)
 
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
@@ -63,4 +63,4 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, int random_state)
+    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state)

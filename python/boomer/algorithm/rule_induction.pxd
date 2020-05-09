@@ -60,7 +60,7 @@ cdef class RuleInduction:
     cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                            HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                            InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                           Pruning pruning, Shrinkage shrinkage, random_state: int)
+                           Pruning pruning, Shrinkage shrinkage, intp random_state)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
@@ -76,7 +76,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                            HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                            InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                           Pruning pruning, Shrinkage shrinkage, random_state: int)
+                           Pruning pruning, Shrinkage shrinkage, intp random_state)
 
 
 cdef inline bint test_condition(float32 threshold, Comparator comparator, float32 feature_value):
