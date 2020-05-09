@@ -36,7 +36,7 @@ cdef class RuleInduction:
                            uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                            LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                            FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int):
+                           intp random_state):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function with respect to the
         expected and currently predicted confidence scores.
@@ -88,7 +88,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                            uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                            LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                            FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int):
+                           intp random_state):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A list that contains the rule's conditions (in the order they have been learned)
@@ -100,8 +100,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp[::1] covered_example_indices
 
         # Variables used to update the seed used by RNGs, depending on the refinement iteration (starting at 1)
-        cdef int current_random_state = random_state
-        cdef int num_refinements = 1
+        cdef intp current_random_state = random_state
+        cdef intp num_refinements = 1
 
         # Variables for representing the best refinement
         cdef found_refinement = 1

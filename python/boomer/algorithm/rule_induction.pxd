@@ -18,7 +18,7 @@ cdef class RuleInduction:
                            uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                            LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                            FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int)
+                           intp random_state)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
@@ -31,4 +31,4 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                            uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                            LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                            FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int)
+                           intp random_state)
