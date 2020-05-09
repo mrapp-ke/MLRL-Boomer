@@ -6,7 +6,7 @@ cdef class StoppingCriterion:
 
     # Functions:
 
-    cpdef bint should_continue(self, intp num_rules)
+    cdef bint should_continue(self, intp num_rules)
 
 
 cdef class SizeStoppingCriterion(StoppingCriterion):
@@ -17,7 +17,7 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
 
     # Functions:
 
-    cpdef bint should_continue(self, intp num_rules)
+    cdef bint should_continue(self, intp num_rules)
 
 
 cdef class TimeStoppingCriterion(StoppingCriterion):
@@ -30,7 +30,7 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
 
     # Functions:
 
-    cpdef bint should_continue(self, intp num_rules)
+    cdef bint should_continue(self, intp num_rules)
 
 
 cdef class UncoveredLabelsCriterion(StoppingCriterion):
@@ -43,4 +43,4 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
 
     # Functions:
 
-    cpdef bint should_continue(self, intp num_rules)
+    cdef bint should_continue(self, intp num_rules)
