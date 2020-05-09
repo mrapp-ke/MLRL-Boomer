@@ -13,7 +13,7 @@ cdef class StoppingCriterion:
     not.
     """
 
-    cpdef bint should_continue(self, intp num_rules):
+    cdef bint should_continue(self, intp num_rules):
         """
         Returns, whether more rules should be induced, or not.
 
@@ -34,7 +34,7 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
         """
         self.max_rules = max_rules
 
-    cpdef bint should_continue(self, intp num_rules):
+    cdef bint should_continue(self, intp num_rules):
         cdef intp max_rules = self.max_rules
         return num_rules < max_rules
 
@@ -51,7 +51,7 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
         self.time_limit = time_limit
         self.start_time = -1
 
-    cpdef bint should_continue(self, intp num_rules):
+    cdef bint should_continue(self, intp num_rules):
         cdef intp start_time = self.start_time
         cdef intp current_time, time_limit
 
@@ -79,7 +79,7 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
         self.loss = loss
         self.threshold = threshold
 
-    cpdef bint should_continue(self, intp num_rules):
+    cdef bint should_continue(self, intp num_rules):
         cdef CoverageLoss loss = self.loss
         cdef float64 sum_uncovered_labels = loss.sum_uncovered_labels
         cdef float64 threshold = self.threshold
