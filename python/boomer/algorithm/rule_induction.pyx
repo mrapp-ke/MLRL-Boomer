@@ -369,12 +369,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if pruning is not None and num_conditions > 1:
                         pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
                         covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
+                        num_covered = covered_example_indices.shape[0]
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
                     loss.begin_search(label_indices)
 
-                    for i in covered_example_indices:
+                    for r in range(num_covered):
+                        i = covered_example_indices[r]
                         loss.update_search(i, 1)
 
                     prediction = head_refinement.evaluate_predictions(loss, False)
