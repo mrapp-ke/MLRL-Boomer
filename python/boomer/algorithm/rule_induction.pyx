@@ -21,7 +21,7 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cpdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
+    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
         """
         Induces the default rule that minimizes a certain loss function with respect to the given ground truth labels.
 
@@ -32,10 +32,10 @@ cdef class RuleInduction:
         """
         pass
 
-    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                           Pruning pruning, Shrinkage shrinkage, intp random_state):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                          Pruning pruning, Shrinkage shrinkage, intp random_state):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -89,17 +89,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.sorted_indices_map_global
 
-    cpdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
+    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
         cdef float64[::1] scores = loss.calculate_default_scores(y)
         cdef FullHead head = FullHead.__new__(FullHead, scores)
         cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
         cdef Rule rule = Rule.__new__(Rule, body, head)
         return rule
 
-    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                           Pruning pruning, Shrinkage shrinkage, intp random_state):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                          Pruning pruning, Shrinkage shrinkage, intp random_state):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
