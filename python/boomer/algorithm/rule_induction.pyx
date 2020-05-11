@@ -143,6 +143,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Temporary variables
         cdef HeadCandidate current_head
         cdef Prediction prediction
+        cdef float64[::1] predicted_scores
         cdef float32 previous_threshold, current_threshold
         cdef uint32 weight
         cdef intp c, f, r, i, first_r, previous_r
@@ -364,6 +365,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # all features are constant.
                 return None
             else:
+                predicted_scores = head.predicted_scores
+
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
@@ -380,14 +383,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         loss.update_search(i, 1)
 
                     prediction = head_refinement.evaluate_predictions(loss, False)
-                    __copy_array(prediction.predicted_scores, head.predicted_scores)
+                    predicted_scores[:] = prediction.predicted_scores
 
                 # Apply shrinkage, if necessary...
                 if shrinkage is not None:
-                    shrinkage.apply_shrinkage(head.predicted_scores)
+                    shrinkage.apply_shrinkage(predicted_scores)
 
                 # Tell the loss function that a new rule has been induced...
-                loss.apply_predictions(covered_example_indices, label_indices, head.predicted_scores)
+                loss.apply_predictions(covered_example_indices, label_indices, predicted_scores)
 
                 # Build and return the induced rule...
                 return __build_rule(head, conditions, num_conditions_per_comparator)
@@ -415,22 +418,6 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     condition.comparator = comparator
     condition.threshold = threshold
     return condition
-
-
-cdef inline void __copy_array(float64[::1] from_array, float64[::1] to_array):
-    """
-    Copies the elements from one array to another.
-
-    :param from_array:  An array of dtype float, shape `(num_elements)`, representing the array from which the elements
-                        should be copied
-    :param to_array:    An array of dtype float, shape `(num_elements)`, representing the array to which the elements
-                        should be copied
-    """
-    cdef intp num_elements = from_array.shape[0]
-    cdef intp i
-
-    for i in range(num_elements):
-        to_array[i] = from_array[i]
 
 
 cdef inline intp __adjust_split(float32[::1, :] x, intp* sorted_indices, intp position_start, intp position_end,
