@@ -18,13 +18,12 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, intp random_state):
         """
         Creates and returns a sub-sample of the available training examples.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the training examples
-        :param loss:            A loss function that should be updated based on the examples included in the sub-sample
         :param random_state:    The seed to be used by RNGs
         :return:                An array of dtype uint, shape `(num_examples)`, representing the weights of the given
                                 training examples, i.e., how many times each of the examples is contained in the sample
@@ -45,18 +44,15 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, intp random_state):
         cdef intp num_examples = x.shape[0]
         cdef float sample_size = self.sample_size
-        cdef int num_samples = <int>(sample_size * num_examples)
+        cdef intp num_samples = <int>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
         weights[:] = 0
         rng = check_random_state(random_state)
         rng_randint = rng.randint
         cdef intp n, i
-
-        # Tell the given loss function that instance sub-sampling is used...
-        loss.begin_instance_sub_sampling()
 
         for n in range(num_samples):
             # Select the index of an example randomly...
@@ -64,9 +60,6 @@ cdef class Bagging(InstanceSubSampling):
 
              # Update weight at the selected index...
              weights[i] += 1
-
-             # Tell the given loss function that a new example has been chosen to be included in the sample...
-             loss.update_sub_sample(i)
 
         return weights
 
@@ -84,7 +77,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state):
+    cdef uint32[::1] sub_sample(self, float32[::1, :] x, intp random_state):
         cdef intp num_examples = x.shape[0]
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
@@ -95,9 +88,6 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         rng_randint = rng.randint
         cdef uint32 tmp
         cdef intp n, i, rand
-
-        # Tell the given loss function that instance sub-sampling is used...
-        loss.begin_instance_sub_sampling()
 
         # Initialize arrays...
         for n in range(num_examples):
@@ -112,9 +102,6 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
             # Set weight at the selected index to 1...
             weights[i] += 1
-
-            # Tell the given loss function that a new example has been chosen to be included in the sample...
-            loss.update_sub_sample(i)
 
             # Shrink the region [0, limit] that contains the indices of the examples that have not been drawn yet and
             # move the the element at the border to the position of the recently drawn element...

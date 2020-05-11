@@ -163,34 +163,39 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return scores
 
-    cdef void begin_instance_sub_sampling(self):
-        # Class members
-        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        # Reset total sums of gradients and hessians to 0...
-        total_sums_of_gradients[:] = 0
-        total_sums_of_hessians[:] = 0
-
-    cdef void update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        # The number of gradients/hessians...
-        cdef intp num_elements = gradients.shape[1]
+        # The number of examples
+        cdef num_examples = gradients.shape[0] if example_indices is None else example_indices.shape[0]
         # Temporary variables
-        cdef intp c
+        cdef uint32 weight
+        cdef intp num_elements, r, c, i
 
-        # For each label, add the gradient of the example at the given index to the total sums of gradients...
-        for c in range(num_elements):
-            total_sums_of_gradients[c] += gradients[example_index, c]
+        # Reset total sums of gradients and hessians to 0...
+        total_sums_of_gradients[:] = 0
+        total_sums_of_hessians[:] = 0
 
-        # Add the hessians of the example at the given index to the total sums of hessians...
-        num_elements = hessians.shape[1]
+        for r in range(num_examples):
+            i = get_index(r, example_indices)
+            weight = 1 if weights is None else weights[i]
 
-        for c in range(num_elements):
-            total_sums_of_hessians[c] += hessians[example_index, c]
+            # For each label, add the gradient of the current example (weighted by the example's weight) to the total
+            # sums of gradients...
+            num_elements = gradients.shape[1]
+
+            for c in range(num_elements):
+                total_sums_of_gradients[c] += (weight * gradients[i, c])
+
+            # Add the hessians of the current example (weighted by the example's weight) to the total sums of
+            # hessians...
+            num_elements = hessians.shape[1]
+
+            for c in range(num_elements):
+                total_sums_of_hessians[c] += (weight * hessians[i, c])
 
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of gradients and hessians to be considered by the upcoming search...

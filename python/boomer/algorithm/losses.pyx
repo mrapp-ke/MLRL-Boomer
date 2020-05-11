@@ -56,38 +56,20 @@ cdef class Loss:
         """
         pass
 
-    cdef void begin_instance_sub_sampling(self):
+    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         """
-        Notifies the loss function that the examples, which should be considered in the following for learning a new
-        rule or refining an existing one, have changed. The indices of the respective examples must be provided via
-        subsequent calls to the function `update_sub_sample`.
-
-        This function must be invoked before a new rule is learned from scratch (as each rule may be learned on a
-        different sub-sample of the training data), as well as each time an existing rule has been refined, i.e.
-        when a new condition has been added to its body (because this results in fewer examples being covered by the
-        refined rule).
-
-        This function is supposed to reset any non-global internal state that only holds for a certain set of examples
-        and therefore becomes invalid when different examples are used, e.g. statistics about the ground truth labels of
-        particular examples.
-        """
-        pass
-
-    cdef void update_sub_sample(self, intp example_index):
-        """
-        Notifies the loss function about an example that should be considered in the following for learning a new rule
+        Notifies the loss function about the examples that should be considered in the following for learning a new rule
         or refining an existing one.
-
-        This function must be called repeatedly for each example that should be considered, e.g., for all examples that
-        have been selected via instance sub-sampling, immediately after the invocation of the function
-        `begin_instance_sub_sampling`.
 
         This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
         and store local information that is required by the other functions that will be called later, e.g. statistics
         about the ground truth labels of these particular examples. Any information computed by this function is
-        expected to be reset when invoking the function `begin_instance_sub_sample` for the next time.
+        expected to be reset when invoking the function `update_sub_sample` for the next time.
 
-        :param example_index: The index of an example that should be considered
+        :param example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices of the
+                                examples that should be considered or None, if all examples should be considered
+        :param weights:         An array of dtype uint, shape `(num_examples)`, representing the weights of all training
+                                examples or None, if all training examples should be weighted equally
         """
         pass
 
@@ -183,7 +165,7 @@ cdef class Loss:
         Notifies the loss function that a new rule has been induced.
 
         This function must be called before learning the next rule, i.e., prior to the next invocation of the function
-        `begin_instance_sub_sampling`.
+        `update_sub_sample`.
 
         This function is supposed to update any internal state that depends on the predictions of already induced rules.
 
