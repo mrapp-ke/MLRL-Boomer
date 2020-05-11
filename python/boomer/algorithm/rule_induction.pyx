@@ -492,77 +492,6 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp* sorted_indices, intp po
    return adjusted_position
 
 
-cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_scores, list[Condition] conditions,
-                              intp[::1] num_conditions_per_comparator):
-    """
-    Builds and returns a rule.
-
-    :param label_indices:                   An array of dtype int, shape `(num_predicted_labels)`, representing the
-                                            indices of the labels for which the rule predicts or None, if the rule
-                                            predicts for all labels
-    :param predicted_scores:                An array of dtype float, shape `(num_predicted_labels)`, representing the
-                                            scores that are predicted by the rule
-    :param conditions:                      A list that contains the rule's conditions
-    :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of conditions
-                                            that use a specific operator
-    return:                                 The rule that has been built
-    """
-    cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
-    cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    num_conditions = num_conditions_per_comparator[<intp>Comparator.GR]
-    cdef intp[::1] gr_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] gr_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    num_conditions = num_conditions_per_comparator[<intp>Comparator.EQ]
-    cdef intp[::1] eq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] eq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
-    cdef intp[::1] neq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    cdef list[Condition].iterator iterator = conditions.begin()
-    cdef intp leq_i = 0
-    cdef intp gr_i = 0
-    cdef intp eq_i = 0
-    cdef intp neq_i = 0
-    cdef Condition condition
-    cdef Comparator comparator
-
-    while iterator != conditions.end():
-        condition = dereference(iterator)
-        comparator = condition.comparator
-
-        if comparator == Comparator.LEQ:
-           leq_feature_indices[leq_i] = condition.feature_index
-           leq_thresholds[leq_i] = condition.threshold
-           leq_i += 1
-        elif comparator == Comparator.GR:
-           gr_feature_indices[gr_i] = condition.feature_index
-           gr_thresholds[gr_i] = condition.threshold
-           gr_i += 1
-        elif comparator == Comparator.EQ:
-           eq_feature_indices[eq_i] = condition.feature_index
-           eq_thresholds[eq_i] = condition.threshold
-           eq_i += 1
-        else:
-           neq_feature_indices[neq_i] = condition.feature_index
-           neq_thresholds[neq_i] = condition.threshold
-           neq_i += 1
-
-        postincrement(iterator)
-
-    cdef ConjunctiveBody rule_body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
-                                                             gr_feature_indices, gr_thresholds, eq_feature_indices,
-                                                             eq_thresholds, neq_feature_indices, neq_thresholds)
-    cdef Head rule_head
-
-    if label_indices is None:
-        rule_head = FullHead.__new__(FullHead, predicted_scores)
-    else:
-        rule_head = PartialHead.__new__(PartialHead, label_indices, predicted_scores)
-
-    return Rule.__new__(Rule, rule_body, rule_head)
-
-
 cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices, IndexArray* index_array,
                                           intp condition_start, intp condition_end, intp condition_index,
                                           Comparator condition_comparator, intp num_conditions, Loss loss):
@@ -687,3 +616,74 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
     dereference(index_array).data = filtered_indices_array
     dereference(index_array).num_elements = num_covered
     dereference(index_array).num_conditions = num_conditions
+
+
+cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_scores, list[Condition] conditions,
+                              intp[::1] num_conditions_per_comparator):
+    """
+    Builds and returns a rule.
+
+    :param label_indices:                   An array of dtype int, shape `(num_predicted_labels)`, representing the
+                                            indices of the labels for which the rule predicts or None, if the rule
+                                            predicts for all labels
+    :param predicted_scores:                An array of dtype float, shape `(num_predicted_labels)`, representing the
+                                            scores that are predicted by the rule
+    :param conditions:                      A list that contains the rule's conditions
+    :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of conditions
+                                            that use a specific operator
+    return:                                 The rule that has been built
+    """
+    cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
+    cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+    cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+    num_conditions = num_conditions_per_comparator[<intp>Comparator.GR]
+    cdef intp[::1] gr_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+    cdef float32[::1] gr_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+    num_conditions = num_conditions_per_comparator[<intp>Comparator.EQ]
+    cdef intp[::1] eq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+    cdef float32[::1] eq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+    num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
+    cdef intp[::1] neq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+    cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+    cdef list[Condition].iterator iterator = conditions.begin()
+    cdef intp leq_i = 0
+    cdef intp gr_i = 0
+    cdef intp eq_i = 0
+    cdef intp neq_i = 0
+    cdef Condition condition
+    cdef Comparator comparator
+
+    while iterator != conditions.end():
+        condition = dereference(iterator)
+        comparator = condition.comparator
+
+        if comparator == Comparator.LEQ:
+           leq_feature_indices[leq_i] = condition.feature_index
+           leq_thresholds[leq_i] = condition.threshold
+           leq_i += 1
+        elif comparator == Comparator.GR:
+           gr_feature_indices[gr_i] = condition.feature_index
+           gr_thresholds[gr_i] = condition.threshold
+           gr_i += 1
+        elif comparator == Comparator.EQ:
+           eq_feature_indices[eq_i] = condition.feature_index
+           eq_thresholds[eq_i] = condition.threshold
+           eq_i += 1
+        else:
+           neq_feature_indices[neq_i] = condition.feature_index
+           neq_thresholds[neq_i] = condition.threshold
+           neq_i += 1
+
+        postincrement(iterator)
+
+    cdef ConjunctiveBody rule_body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
+                                                             gr_feature_indices, gr_thresholds, eq_feature_indices,
+                                                             eq_thresholds, neq_feature_indices, neq_thresholds)
+    cdef Head rule_head
+
+    if label_indices is None:
+        rule_head = FullHead.__new__(FullHead, predicted_scores)
+    else:
+        rule_head = PartialHead.__new__(PartialHead, label_indices, predicted_scores)
+
+    return Rule.__new__(Rule, rule_body, rule_head)
