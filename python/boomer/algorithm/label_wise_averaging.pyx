@@ -192,12 +192,18 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
-        cdef intp l, i
+        cdef intp num_labels = predicted_scores.shape[0]
+        cdef intp num_covered = covered_example_indices.shape[0]
+        cdef intp r, c, l, i
 
         # Only the labels that are predicted by the new rule must be considered
-        for l in label_indices:
+        for c in range(num_labels):
+            l = get_index(c, label_indices)
+
             # Only the examples that are covered by the new rule must be considered
-            for i in covered_example_indices:
+            for r in range(num_covered):
+                i = covered_example_indices[r]
+
                 if uncovered_labels[i, l] == 1:
                     uncovered_labels[i, l] = 0
 
