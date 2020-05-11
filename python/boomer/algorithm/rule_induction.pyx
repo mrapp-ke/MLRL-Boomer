@@ -405,6 +405,34 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(sorted_indices_iterator)
 
 
+cdef inline intp* __argsort(float32[::1] values):
+    cdef intp num_elements = values.shape[0]
+    cdef IndexedElement* tmp_array = <IndexedElement*>malloc(num_elements * sizeof(IndexedElement))
+    cdef intp* result_array
+    cdef intp i
+
+    try:
+        for i in range(num_elements):
+            tmp_array[i].index = i
+            tmp_array[i].value = values[i]
+
+        qsort(tmp_array, num_elements, sizeof(IndexedElement), &__compare)
+        result_array = <intp*>malloc(num_elements * sizeof(intp))
+
+        for i in range(num_elements):
+            result_array[i] = tmp_array[i].index
+
+        return result_array
+    finally:
+        free(tmp_array)
+
+
+cdef int __compare(const void* a, const void* b) nogil:
+    cdef float32 v1 = (<IndexedElement*>a).value
+    cdef float32 v2 = (<IndexedElement*>b).value
+    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
+
+
 cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
@@ -659,31 +687,3 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
     dereference(index_array).data = filtered_indices_array
     dereference(index_array).num_elements = num_covered
     dereference(index_array).num_conditions = num_conditions
-
-
-cdef inline intp* __argsort(float32[::1] values):
-    cdef intp num_elements = values.shape[0]
-    cdef IndexedElement* tmp_array = <IndexedElement*>malloc(num_elements * sizeof(IndexedElement))
-    cdef intp* result_array
-    cdef intp i
-
-    try:
-        for i in range(num_elements):
-            tmp_array[i].index = i
-            tmp_array[i].value = values[i]
-
-        qsort(tmp_array, num_elements, sizeof(IndexedElement), &__compare)
-        result_array = <intp*>malloc(num_elements * sizeof(intp))
-
-        for i in range(num_elements):
-            result_array[i] = tmp_array[i].index
-
-        return result_array
-    finally:
-        free(tmp_array)
-
-
-cdef int __compare(const void* a, const void* b) nogil:
-    cdef float32 v1 = (<IndexedElement*>a).value
-    cdef float32 v2 = (<IndexedElement*>b).value
-    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
