@@ -213,7 +213,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         sorted_indices = dereference(sorted_indices_map_global)[f]
 
                         if sorted_indices == NULL:
-                            sorted_indices = __argsort(x[:, f])
+                            sorted_indices = __argsort_feature_values(x[:, f])
                             dereference(sorted_indices_map_global)[f] = sorted_indices
                     else:
                         num_examples = dereference(index_array).num_elements
@@ -405,24 +405,24 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(sorted_indices_iterator)
 
 
-cdef inline intp* __argsort(float32[::1] values):
-    cdef intp num_elements = values.shape[0]
-    cdef IndexedElement* tmp_array = <IndexedElement*>malloc(num_elements * sizeof(IndexedElement))
-    cdef intp* result_array
+cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
+    cdef intp num_values = feature_values.shape[0]
+    cdef IndexedElement* tmp_array = <IndexedElement*>malloc(num_values * sizeof(IndexedElement))
+    cdef intp* sorted_array
     cdef intp i
 
     try:
-        for i in range(num_elements):
+        for i in range(num_values):
             tmp_array[i].index = i
-            tmp_array[i].value = values[i]
+            tmp_array[i].value = feature_values[i]
 
-        qsort(tmp_array, num_elements, sizeof(IndexedElement), &__compare)
-        result_array = <intp*>malloc(num_elements * sizeof(intp))
+        qsort(tmp_array, num_values, sizeof(IndexedElement), &__compare)
+        sorted_array = <intp*>malloc(num_values * sizeof(intp))
 
-        for i in range(num_elements):
-            result_array[i] = tmp_array[i].index
+        for i in range(num_values):
+            sorted_array[i] = tmp_array[i].index
 
-        return result_array
+        return sorted_array
     finally:
         free(tmp_array)
 
