@@ -393,7 +393,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 loss.apply_predictions(covered_example_indices, label_indices, predicted_scores)
 
                 # Build and return the induced rule...
-                return __build_rule(head, conditions, num_conditions_per_comparator)
+                return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
         finally:
             # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
             sorted_indices_iterator = sorted_indices_map_local.begin()
@@ -464,11 +464,16 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp* sorted_indices, intp po
    return adjusted_position
 
 
-cdef inline Rule __build_rule(HeadCandidate head, list[Condition] conditions, intp[::1] num_conditions_per_comparator):
+cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_scores, list[Condition] conditions,
+                              intp[::1] num_conditions_per_comparator):
     """
     Builds and returns a rule.
 
-    :param head:                            A 'HeadCandidate' representing the head of the rule
+    :param label_indices:                   An array of dtype int, shape `(num_predicted_labels)`, representing the
+                                            indices of the labels for which the rule predicts or None, if the rule
+                                            predicts for all labels
+    :param predicted_scores:                An array of dtype float, shape `(num_predicted_labels)`, representing the
+                                            scores that are predicted by the rule
     :param conditions:                      A list that contains the rule's conditions
     :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of conditions
                                             that use a specific operator
@@ -522,13 +527,12 @@ cdef inline Rule __build_rule(HeadCandidate head, list[Condition] conditions, in
                                                              eq_thresholds, neq_feature_indices, neq_thresholds)
     cdef Head rule_head
 
-    if head.label_indices is None:
-        rule_head = FullHead.__new__(FullHead, head.predicted_scores)
+    if label_indices is None:
+        rule_head = FullHead.__new__(FullHead, predicted_scores)
     else:
-        rule_head = PartialHead.__new__(PartialHead, head.label_indices, head.predicted_scores)
+        rule_head = PartialHead.__new__(PartialHead, label_indices, predicted_scores)
 
-    cdef Rule rule = Rule.__new__(Rule, rule_body, rule_head)
-    return rule
+    return Rule.__new__(Rule, rule_body, rule_head)
 
 
 cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices, IndexArray* index_array,
