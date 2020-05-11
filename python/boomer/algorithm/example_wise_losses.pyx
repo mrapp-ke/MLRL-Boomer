@@ -378,7 +378,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # An array for caching pre-calculated values
         cdef float64[::1] exponentials = array_float64(num_labels)
         # Temporary variables
-        cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow
+        cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow, tmp
         cdef intp r, c, c2, l, i, j
 
         # Only the examples that are covered by the new rule must be considered...
