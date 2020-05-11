@@ -61,34 +61,37 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
         return default_rule
 
-    cdef void begin_instance_sub_sampling(self):
-        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        confusion_matrices_default[:, :] = 0
-
-    cdef void update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
+        cdef intp num_examples = true_labels.shape[0] if example_indices is None else example_indices.shape[0]
         cdef intp num_labels = minority_labels.shape[0]
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        cdef intp c
+        cdef intp r, c, i
         cdef uint8 true_label, predicted_label
 
-        for c in range(num_labels):
-            if uncovered_labels[example_index, c] > 0:
-                true_label = true_labels[example_index, c]
-                predicted_label = minority_labels[c]
+        confusion_matrices_default[:, :] = 0
 
-                if true_label == 0:
-                    if predicted_label == 0:
-                        confusion_matrices_default[c, _IN] += 1
-                    elif predicted_label == 1:
-                        confusion_matrices_default[c, _IP] += 1
-                elif true_label == 1:
-                    if predicted_label == 0:
-                        confusion_matrices_default[c, _RN] += 1
-                    elif predicted_label == 1:
-                        confusion_matrices_default[c, _RP] += 1
+        for r in range(num_examples):
+            i = get_index(r, example_indices)
+            weight = 1 if weights is None else weights[i]
+
+            for c in range(num_labels):
+                if uncovered_labels[i, c] > 0:
+                    true_label = true_labels[i, c]
+                    predicted_label = minority_labels[c]
+
+                    if true_label == 0:
+                        if predicted_label == 0:
+                            confusion_matrices_default[c, _IN] += weight
+                        elif predicted_label == 1:
+                            confusion_matrices_default[c, _IP] += weight
+                    elif true_label == 1:
+                        if predicted_label == 0:
+                            confusion_matrices_default[c, _RN] += weight
+                        elif predicted_label == 1:
+                            confusion_matrices_default[c, _RP] += weight
 
     cdef void begin_search(self, intp[::1] label_indices):
         cdef LabelIndependentPrediction prediction = self.prediction

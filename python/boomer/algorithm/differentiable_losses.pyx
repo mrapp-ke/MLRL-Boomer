@@ -15,10 +15,7 @@ cdef class DifferentiableLoss(Loss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
-    cdef void begin_instance_sub_sampling(self):
-        pass
-
-    cdef void update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):
@@ -45,10 +42,7 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
-    cdef void begin_instance_sub_sampling(self):
-        pass
-
-    cdef void update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):
@@ -78,10 +72,7 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
         pass
 
-    cdef void begin_instance_sub_sampling(self):
-        pass
-
-    cdef void update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):
