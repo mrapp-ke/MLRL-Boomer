@@ -165,7 +165,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         if label_sub_sampling is None:
             label_indices = None
         else:
-            label_indices = label_sub_sampling.sub_sample(y, random_state)
+            label_indices = label_sub_sampling.sub_sample(y.shape[1], random_state)
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
