@@ -126,7 +126,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
     features.
     """
 
-    def __cinit__(self, float sample_size = 0):
+    def __cinit__(self, float32 sample_size = 0.0):
         """
         :param sample_size: The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available features) or 0, if the default sample size
@@ -135,13 +135,13 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
         self.sample_size = sample_size
 
     cdef intp[::1] sub_sample(self, intp num_features, intp random_state):
-         cdef float sample_size = self.sample_size
-         cdef int num_samples
+         cdef float32 sample_size = self.sample_size
+         cdef intp num_samples
 
          if sample_size > 0:
-            num_samples = <int>(sample_size * num_features)
+            num_samples = <intp>(sample_size * num_features)
          else:
-            num_samples = <int>(log2(num_features - 1) + 1)
+            num_samples = <intp>(log2(num_features - 1) + 1)
 
          return np.ascontiguousarray(sample_without_replacement(num_features, num_samples, 'auto', random_state),
                                      dtype=DTYPE_INTP)

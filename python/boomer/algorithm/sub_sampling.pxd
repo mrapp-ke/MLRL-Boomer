@@ -41,7 +41,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
     # Attributes:
 
-    cdef readonly float sample_size
+    cdef readonly float32 sample_size
 
     # Functions:
 
