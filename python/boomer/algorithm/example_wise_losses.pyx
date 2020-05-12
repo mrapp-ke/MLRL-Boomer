@@ -7,7 +7,8 @@ from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
 from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
-from libc.stdlib cimport malloc, free
+
+from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
 
 from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
