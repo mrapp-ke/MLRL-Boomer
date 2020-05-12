@@ -68,7 +68,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
     examples without replacement.
     """
 
-    def __cinit__(self, float32 sample_size = 0.5):
+    def __cinit__(self, float32 sample_size = 0.66):
         """
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples)
