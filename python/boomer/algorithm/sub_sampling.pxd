@@ -12,7 +12,7 @@ cdef class Bagging(InstanceSubSampling):
 
     # Attributes:
 
-    cdef readonly float sample_size
+    cdef readonly float32 sample_size
 
     # Functions:
 
@@ -22,7 +22,7 @@ cdef class Bagging(InstanceSubSampling):
 cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
     # Attributes
-    cdef readonly float sample_size
+    cdef readonly float32 sample_size
 
     # Functions:
 

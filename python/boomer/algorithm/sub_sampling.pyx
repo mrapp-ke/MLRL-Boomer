@@ -36,7 +36,7 @@ cdef class Bagging(InstanceSubSampling):
     examples with replacement.
     """
 
-    def __cinit__(self, float sample_size = 1):
+    def __cinit__(self, float32 sample_size = 1.0):
         """
         :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available examples)
@@ -44,8 +44,8 @@ cdef class Bagging(InstanceSubSampling):
         self.sample_size = sample_size
 
     cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
-        cdef float sample_size = self.sample_size
-        cdef intp num_samples = <int>(sample_size * num_examples)
+        cdef float32 sample_size = self.sample_size
+        cdef intp num_samples = <intp>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
         weights[:] = 0
         rng = check_random_state(random_state)
@@ -68,7 +68,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
     examples without replacement.
     """
 
-    def __cinit__(self, float sample_size = 0.5):
+    def __cinit__(self, float32 sample_size = 0.5):
         """
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples)
@@ -76,9 +76,9 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         self.sample_size = sample_size
 
     cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
-        cdef float sample_size = self.sample_size
-        cdef int num_samples = <int>(sample_size * num_examples)
-        cdef int limit = num_examples
+        cdef float32 sample_size = self.sample_size
+        cdef intp num_samples = <intp>(sample_size * num_examples)
+        cdef intp limit = num_examples
         cdef uint32[::1] weights = array_uint32(num_examples)
         cdef uint32[::1] indices = array_uint32(num_examples)
         rng = check_random_state(random_state)
