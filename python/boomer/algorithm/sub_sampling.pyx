@@ -18,14 +18,14 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
+    cdef uint32[::1] sub_sample(self, intp num_examples, RNG rng):
         """
         Creates and returns a sub-sample of the available training examples.
 
-        :param x:               The total number of available training examples
-        :param random_state:    The seed to be used by RNGs
-        :return:                An array of dtype uint, shape `(num_examples)`, representing the weights of the given
-                                training examples, i.e., how many times each of the examples is contained in the sample
+        :param x:   The total number of available training examples
+        :param rng: The random number generator to be used
+        :return:    An array of dtype uint, shape `(num_examples)`, representing the weights of the given training
+                    examples, i.e., how many times each of the examples is contained in the sample
         """
         pass
 
@@ -43,21 +43,21 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
+    cdef uint32[::1] sub_sample(self, intp num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
         cdef intp num_samples = <intp>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
+        cdef uint32 random_index
+        cdef intp i
+
         weights[:] = 0
-        rng = check_random_state(random_state)
-        rng_randint = rng.randint
-        cdef intp n, i
 
-        for n in range(num_samples):
-            # Select the index of an example randomly...
-             i = rng_randint(num_examples)
+        for i in range(num_samples):
+            # Randomly select the index of an example...
+            random_index = rng.random(0, num_examples)
 
-             # Update weight at the selected index...
-             weights[i] += 1
+            # Update weight at the selected index...
+            weights[random_index] += 1
 
         return weights
 
@@ -75,35 +75,31 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
+    cdef uint32[::1] sub_sample(self, intp num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
         cdef intp num_samples = <intp>(sample_size * num_examples)
-        cdef intp limit = num_examples
+        cdef uint32 limit = num_examples
         cdef uint32[::1] weights = array_uint32(num_examples)
         cdef uint32[::1] indices = array_uint32(num_examples)
-        rng = check_random_state(random_state)
-        rng_randint = rng.randint
-        cdef uint32 tmp
-        cdef intp n, i, rand
+        cdef uint32 random_index
+        cdef intp i
 
         # Initialize arrays...
-        for n in range(num_examples):
-            weights[n] = 0
-            indices[n] = n
+        for i in range(num_examples):
+            weights[i] = 0
+            indices[i] = i
 
-        for n in range(num_samples):
-            # Select the index of an example that has not been drawn yet, i.e., which belongs to the region
-            # [0, limit]...
-            rand = rng_randint(limit)
-            i = indices[rand]
+        for i in range(num_examples):
+            # Randomly select an index that has not been drawn yet, i.e., which belongs to the region [0, limit)...
+            random_index = indices[rng.random(0, limit)]
 
             # Set weight at the selected index to 1...
-            weights[i] += 1
+            weights[random_index] = 1
 
-            # Shrink the region [0, limit] that contains the indices of the examples that have not been drawn yet and
-            # move the the element at the border to the position of the recently drawn element...
+            # Shrink the region [0, limit) that contains the indices of the examples that have not been drawn yet and
+            # move the element at the border to the position of the recently drawn element...
             limit -= 1
-            indices[rand] = indices[limit]
+            indices[random_index] = indices[limit]
 
         return weights
 

@@ -14,7 +14,7 @@ cdef class SequentialRuleInduction:
     """
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              intp random_state):
+                              uint32 random_state):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -72,7 +72,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.shrinkage = shrinkage
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              intp random_state):
+                              uint32 random_state):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleInduction rule_induction = self.rule_induction
@@ -84,12 +84,13 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef FeatureSubSampling feature_sub_sampling = self.feature_sub_sampling
         cdef Pruning pruning = self.pruning
         cdef Shrinkage shrinkage = self.shrinkage
+        cdef RNG rng = RNG.__new__(RNG, random_state)
         # The list that contains the induced rules
         cdef list rule_list = []
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
         # The random state to be used by RNGs when inducing the next rule
-        cdef intp current_random_state = random_state
+        cdef intp current_random_state = <intp>random_state
         # Temporary variables
         cdef Rule default_rule, rule
         cdef bint should_continue
@@ -104,7 +105,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
             # Induce a new rule
             rule = rule_induction.induce_rule(nominal_attribute_indices, x, y, head_refinement, loss,
                                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                              shrinkage, current_random_state)
+                                              shrinkage, rng, current_random_state)
             rule_list.append(rule)
             num_rules += 1
             current_random_state += 1

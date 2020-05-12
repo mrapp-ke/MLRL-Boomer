@@ -1,11 +1,12 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float32
+from boomer.algorithm._random cimport RNG
 
 
 cdef class InstanceSubSampling:
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state)
+    cdef uint32[::1] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class Bagging(InstanceSubSampling):
@@ -16,7 +17,7 @@ cdef class Bagging(InstanceSubSampling):
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state)
+    cdef uint32[::1] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
@@ -26,7 +27,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state)
+    cdef uint32[::1] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class FeatureSubSampling:
