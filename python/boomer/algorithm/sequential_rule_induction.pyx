@@ -3,6 +3,7 @@
 
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
+from boomer.algorithm._random cimport RNG
 from boomer.algorithm.rules cimport Rule
 from boomer.algorithm.stopping_criteria cimport StoppingCriterion
 
