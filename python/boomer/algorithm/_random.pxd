@@ -9,4 +9,4 @@ cdef class RNG:
 
     # Functions:
 
-    cpdef uint32 random(self, uint32 min, uint32 max)
+    cdef uint32 random(self, uint32 min, uint32 max)
