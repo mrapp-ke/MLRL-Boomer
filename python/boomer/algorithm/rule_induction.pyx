@@ -154,7 +154,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         if instance_sub_sampling is None:
             weights = None
         else:
-            weights = instance_sub_sampling.sub_sample(x, random_state)
+            weights = instance_sub_sampling.sub_sample(num_examples, random_state)
 
         loss.update_sub_sample(covered_example_indices, weights)
 

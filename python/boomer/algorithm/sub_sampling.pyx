@@ -18,12 +18,11 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, intp random_state):
+    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
         """
         Creates and returns a sub-sample of the available training examples.
 
-        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the training examples
+        :param x:               The total number of available training examples
         :param random_state:    The seed to be used by RNGs
         :return:                An array of dtype uint, shape `(num_examples)`, representing the weights of the given
                                 training examples, i.e., how many times each of the examples is contained in the sample
@@ -44,8 +43,7 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, intp random_state):
-        cdef intp num_examples = x.shape[0]
+    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
         cdef float sample_size = self.sample_size
         cdef intp num_samples = <int>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
@@ -77,8 +75,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, intp random_state):
-        cdef intp num_examples = x.shape[0]
+    cdef uint32[::1] sub_sample(self, intp num_examples, intp random_state):
         cdef float sample_size = self.sample_size
         cdef int num_samples = <int>(sample_size * num_examples)
         cdef int limit = num_examples
