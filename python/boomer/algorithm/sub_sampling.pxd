@@ -52,7 +52,7 @@ cdef class LabelSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_labels, intp random_state)
 
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
@@ -63,4 +63,4 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_labels, intp random_state)
