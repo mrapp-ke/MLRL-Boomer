@@ -1,5 +1,6 @@
 # distutils: language=c++
 from boomer.algorithm._arrays cimport intp, uint8, float32
+from boomer.algorithm._random cimport RNG
 from boomer.algorithm.rules cimport Rule
 from boomer.algorithm.losses cimport Loss
 from boomer.algorithm.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
@@ -60,7 +61,7 @@ cdef class RuleInduction:
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp random_state)
+                          Pruning pruning, Shrinkage shrinkage, RNG rng, intp random_state)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
@@ -76,7 +77,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp random_state)
+                          Pruning pruning, Shrinkage shrinkage, RNG rng, intp random_state)
 
 
 cdef inline bint test_condition(float32 threshold, Comparator comparator, float32 feature_value):

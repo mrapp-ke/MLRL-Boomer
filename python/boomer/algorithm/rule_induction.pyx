@@ -35,7 +35,7 @@ cdef class RuleInduction:
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp random_state):
+                          Pruning pruning, Shrinkage shrinkage, RNG rng, intp random_state):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -59,6 +59,7 @@ cdef class RuleInduction:
                                             should be used
         :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if
                                             no shrinkage should be used
+        :param rng:                         The random number generator to be used
         :param random_state:                The seed to be used by RNGs
         :return:                            The rule that has been induced or None, if no rule could be induced
         """
@@ -99,7 +100,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp random_state):
+                          Pruning pruning, Shrinkage shrinkage, RNG rng, intp random_state):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -154,7 +155,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         if instance_sub_sampling is None:
             weights = None
         else:
-            weights = instance_sub_sampling.sub_sample(num_examples, random_state)
+            weights = instance_sub_sampling.sub_sample(num_examples, rng)
 
         loss.update_sub_sample(covered_example_indices, weights)
 
