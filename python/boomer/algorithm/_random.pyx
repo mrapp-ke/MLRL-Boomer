@@ -18,7 +18,7 @@ cdef class RNG:
         """
         self.random_state = random_state if random_state > 0 else 1
 
-    cpdef uint32 random(self, uint32 min, uint32 max):
+    cdef uint32 random(self, uint32 min, uint32 max):
         """
         Generates and returns a random number in [min, max).
 
