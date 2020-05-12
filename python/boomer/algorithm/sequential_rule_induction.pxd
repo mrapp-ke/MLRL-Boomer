@@ -1,4 +1,4 @@
-from boomer.algorithm._arrays cimport uint8, intp, float32
+from boomer.algorithm._arrays cimport uint8, uint32, intp, float32
 from boomer.algorithm.rule_induction cimport RuleInduction
 from boomer.algorithm.head_refinement cimport HeadRefinement
 from boomer.algorithm.losses cimport Loss
