@@ -166,7 +166,7 @@ cdef class LabelSubSampling:
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
-    def __cinit__(self, num_samples: int):
+    def __cinit__(self, intp num_samples):
         """
         :param num_samples: The number of labels to be included in the sample
         """
