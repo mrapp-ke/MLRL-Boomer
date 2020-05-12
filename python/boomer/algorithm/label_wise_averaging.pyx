@@ -1,5 +1,4 @@
-from boomer.algorithm._arrays cimport array_float64, matrix_float64, array_uint8
-from boomer.algorithm._utils cimport get_index
+from boomer.algorithm._arrays cimport array_float64, matrix_float64, array_uint8, get_index
 
 
 DEF _IN = 0

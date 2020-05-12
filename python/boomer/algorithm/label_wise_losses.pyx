@@ -3,9 +3,8 @@
 
 Provides classes that implement loss functions that are applied example- and label-wise.
 """
-from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport convert_label_into_score, get_index
-from boomer.algorithm._math cimport divide_or_zero_float64, l2_norm_pow
+from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
+from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp
 
@@ -84,7 +83,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
             for r in range(num_examples):
                 # Convert ground truth label into expected score...
-                expected_score = convert_label_into_score(y[r, c])
+                expected_score = _convert_label_into_score(y[r, c])
                 expected_scores[r, c] = expected_score
 
                 # Calculate gradient for the current example and label...
@@ -254,7 +253,8 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
                 sum_of_hessians = total_sums_of_hessians[l] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
-            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians + l2_regularization_weight)
+            score = sum_of_hessians + l2_regularization_weight
+            score = -sum_of_gradients / score if score != 0 else 0
             predicted_scores[c] = score
 
             # Calculate the quality score for the current label...
@@ -264,7 +264,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
 
         return prediction
