@@ -138,7 +138,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
         cdef intp next_nominal_f = -1
         cdef intp[::1] feature_indices
-        cdef intp next_nominal_c
+        cdef intp next_nominal_c, num_sampled_features
         cdef bint nominal
 
         # Temporary variables
@@ -176,9 +176,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # Sub-sample features, if necessary...
                 if feature_sub_sampling is None:
                     feature_indices = None
+                    num_sampled_features = num_features
                 else:
-                    feature_indices = feature_sub_sampling.sub_sample(x, current_random_state)
-                    num_features = feature_indices.shape[0]
+                    feature_indices = feature_sub_sampling.sub_sample(num_features, current_random_state)
+                    num_sampled_features = feature_indices.shape[0]
 
                 # Obtain the index of the first nominal feature, if any...
                 if num_nominal_features > 0:
@@ -189,7 +190,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # feature, the examples are traversed in descending order of their respective feature values and the
                 # loss function is updated accordingly. For each potential condition, a quality score is calculated to
                 # keep track of the best possible refinement.
-                for c in range(num_features):
+                for c in range(num_sampled_features):
                     f = get_index(c, feature_indices)
 
                     # Obtain array that contains the indices of the training examples sorted according to the current

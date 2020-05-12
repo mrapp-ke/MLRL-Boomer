@@ -34,7 +34,7 @@ cdef class FeatureSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_features, intp random_state)
 
 
 cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
@@ -45,7 +45,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_features, intp random_state)
 
 
 cdef class LabelSubSampling:
