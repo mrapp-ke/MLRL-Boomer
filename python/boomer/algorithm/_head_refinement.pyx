@@ -129,7 +129,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
             num_label_indices = label_indices.shape[0]
         cdef float64[::1] candidate_predicted_scores
         cdef HeadCandidate candidate
-        cdef intp i, c, c2, c3, l
+        cdef intp c, c2, c3, l
 
         cdef intp sorted_label_indices_length = 0
         cdef intp[::1] sorted_indices = array_intp(num_label_indices)
