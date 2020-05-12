@@ -59,7 +59,7 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
     # Attributes:
 
-    cdef readonly int num_samples
+    cdef readonly intp num_samples
 
     # Functions:
 
