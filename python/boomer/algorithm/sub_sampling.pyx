@@ -77,30 +77,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
     cdef uint32[::1] sub_sample(self, intp num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
         cdef intp num_samples = <intp>(sample_size * num_examples)
-        cdef uint32 limit = num_examples
-        cdef uint32[::1] weights = array_uint32(num_examples)
-        cdef uint32[::1] indices = array_uint32(num_examples)
-        cdef uint32 random_index
-        cdef intp i
-
-        # Initialize arrays...
-        for i in range(num_examples):
-            weights[i] = 0
-            indices[i] = i
-
-        for i in range(num_examples):
-            # Randomly select an index that has not been drawn yet, i.e., which belongs to the region [0, limit)...
-            random_index = indices[rng.random(0, limit)]
-
-            # Set weight at the selected index to 1...
-            weights[random_index] = 1
-
-            # Shrink the region [0, limit) that contains the indices of the examples that have not been drawn yet and
-            # move the element at the border to the position of the recently drawn element...
-            limit -= 1
-            indices[random_index] = indices[limit]
-
-        return weights
+        return __sample_weights_without_replacement(num_examples, num_samples, rng)
 
 
 cdef class FeatureSubSampling:
@@ -175,10 +152,97 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
         return __sample_indices_without_replacement(num_labels, num_samples, rng)
 
 
+cdef inline uint32[::1] __sample_weights_without_replacement(intp num_total, intp num_samples, RNG rng):
+    """
+    Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
+    are set to 0. The method that is used internally is chosen automatically, depending on the ratio
+    `num_samples / num_total`.
+
+    :param num_total:   The total number of available elements
+    :param num_samples: The number of weights to be set to 1
+    :param rng:         The random number generator to be used
+    :return:            An array of dtype uint, shape `(num_total)`, representing the weights of the elements
+    """
+    cdef float64 ratio = (<float64>num_samples) / (<float64>num_total) if num_total != 0 else 1.0
+
+    if ratio < 0.06:
+        # For very small ratios use tracking selection
+        return __sample_weights_without_replacement_via_tracking_selection(num_total, num_samples, rng)
+    else:
+        # Otherwise, use a pool as the default method
+        return __sample_weights_without_replacement_via_pool(num_total, num_samples, rng)
+
+
+cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_selection(intp num_total, intp num_samples,
+                                                                                    RNG rng):
+    """
+    Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
+    are set to 0, by using a set to keep track of the elements that have already been selected. This method is suitable
+    if `num_samples` is much smaller than `num_total`.
+
+    :param num_total:   The total number of available elements
+    :param num_samples: The number of weights to be set to 1
+    :param rng:         The random number generator to be used
+    :return:            An array of dtype uint, shape `(num_total)`, representing the weights of the elements
+    """
+    cdef uint32[::1] weights = array_uint32(num_total)
+    cdef set[uint32] selected_indices  # Stack-allocated set
+    cdef bint should_continue
+    cdef uint32 random_index
+    cdef intp i
+
+    weights[:] = 0
+
+    for i in range(num_samples):
+        should_continue = True
+
+        while should_continue:
+            random_index = rng.random(0, num_total)
+            should_continue = not selected_indices.insert(random_index).second
+
+        weights[random_index] = 1
+
+    return weights
+
+
+cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(intp num_total, intp num_samples, RNG rng):
+    """
+    Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
+    are set to 0, by using a pool, i.e., an array, to keep track of the elements that have not been selected yet.
+
+    :param num_total:   The total number of available elements
+    :param num_samples: The number of weights to be set to 1
+    :param rng:         The random number generator to be used
+    :return:            An array of dtype uint, shape `(num_total)`, representing the weights of the elements
+    """
+    cdef uint32[::1] weights = array_uint32(num_total)
+    cdef intp[::1] pool = array_intp(num_total)
+    cdef uint32 random_index, j
+    cdef intp i
+
+    # Initialize arrays...
+    for i in range(num_total):
+        weights[i] = 0
+        pool[i] = i
+
+    for i in range(num_samples):
+        # Randomly select an index that has not been drawn yet...
+        random_index = rng.random(0, num_total - i)
+        j = pool[random_index]
+
+        # Set weight at the selected index to 1...
+        weights[j] = 1
+
+        # Move the index at the border to the position of the recently drawn index...
+        pool[random_index] = pool[num_total - i - 1]
+
+    return weights
+
+
 cdef inline intp[::1] __sample_indices_without_replacement(intp num_total, intp num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement. The method that is used internally is
-    chosen automatically depending on the ratio `num_samples` / `num_total`.
+    chosen automatically, depending on the ratio `num_samples / num_total`.
 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
@@ -196,7 +260,7 @@ cdef inline intp[::1] __sample_indices_without_replacement(intp num_total, intp 
         # For large ratios use reservoir sampling
         return __sample_indices_without_replacement_via_reservoir_sampling(num_total, num_samples, rng)
     else:
-        # Otherwise use random permutation as the default method
+        # Otherwise, use random permutation as the default method
         return __sample_indices_without_replacement_via_random_permutation(num_total, num_samples, rng)
 
 
