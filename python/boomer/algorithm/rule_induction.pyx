@@ -35,7 +35,7 @@ cdef class RuleInduction:
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, RNG rng, intp random_state):
+                          Pruning pruning, Shrinkage shrinkage, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -60,7 +60,6 @@ cdef class RuleInduction:
         :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if
                                             no shrinkage should be used
         :param rng:                         The random number generator to be used
-        :param random_state:                The seed to be used by RNGs
         :return:                            The rule that has been induced or None, if no rule could be induced
         """
         pass
@@ -100,7 +99,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, RNG rng, intp random_state):
+                          Pruning pruning, Shrinkage shrinkage, RNG rng):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -112,8 +111,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         num_conditions_per_comparator[:] = 0
         # An array representing the indices of the examples that are covered by the rule
         cdef intp[::1] covered_example_indices = None
-        # The seed to be used by RNGs (must be updated after each refinement)
-        cdef intp current_random_state = random_state
 
         # Variables for representing the best refinement
         cdef bint found_refinement = True
@@ -165,7 +162,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         if label_sub_sampling is None:
             label_indices = None
         else:
-            label_indices = label_sub_sampling.sub_sample(y.shape[1], random_state)
+            label_indices = label_sub_sampling.sub_sample(y.shape[1], rng)
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
@@ -178,7 +175,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     feature_indices = None
                     num_sampled_features = num_features
                 else:
-                    feature_indices = feature_sub_sampling.sub_sample(num_features, current_random_state)
+                    feature_indices = feature_sub_sampling.sub_sample(num_features, rng)
                     num_sampled_features = feature_indices.shape[0]
 
                 # Obtain the index of the first nominal feature, if any...
@@ -355,9 +352,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         # Inform the loss function about the weights of the examples that are covered by the current
                         # rule...
                         loss.update_sub_sample(covered_example_indices, weights)
-
-                        # Alter seed to be used by RNGs for the next refinement...
-                        current_random_state = random_state * (num_conditions + 1)
                     else:
                         # Abort refinement process if rule covers a single example...
                         break

@@ -90,8 +90,6 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef list rule_list = []
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
-        # The random state to be used by RNGs when inducing the next rule
-        cdef intp current_random_state = <intp>random_state
         # Temporary variables
         cdef Rule default_rule, rule
         cdef bint should_continue
@@ -106,10 +104,9 @@ cdef class RuleListInduction(SequentialRuleInduction):
             # Induce a new rule
             rule = rule_induction.induce_rule(nominal_attribute_indices, x, y, head_refinement, loss,
                                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                              shrinkage, rng, current_random_state)
+                                              shrinkage, rng)
             rule_list.append(rule)
             num_rules += 1
-            current_random_state += 1
 
         if default_rule_at_end:
             rule_list.append(default_rule)
