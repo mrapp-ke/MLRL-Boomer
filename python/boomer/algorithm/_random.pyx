@@ -16,7 +16,7 @@ cdef class RNG:
         """
         :param random_state: The seed to be used by the random number generator
         """
-        self.random_state = random_state if random_state > 0 else 1
+        self.random_state = random_state
 
     cdef uint32 random(self, uint32 min, uint32 max):
         """
@@ -27,6 +27,9 @@ cdef class RNG:
         :return:    The random number that has been generated
         """
         cdef uint32* random_state = &self.random_state
+
+        if random_state[0] == 0:
+            random_state[0] = 1
 
         random_state[0] ^= <uint32>(random_state[0] << 13)
         random_state[0] ^= <uint32>(random_state[0] >> 17)
