@@ -178,7 +178,7 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 cdef inline intp[::1] __sample_indices_without_replacement(intp num_total, intp num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement. The method that is used internally is
-    automatically chosen depending on the ratio `num_samples` / `num_total`.
+    chosen automatically depending on the ratio `num_samples` / `num_total`.
 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
