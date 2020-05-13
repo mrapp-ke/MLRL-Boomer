@@ -19,7 +19,7 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cpdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
+    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
         """
         Induces the default rule that minimizes a certain loss function with respect to the expected confidence scores
         according to the ground truth.
@@ -31,11 +31,11 @@ cdef class RuleInduction:
         """
         pass
 
-    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
-                           uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
-                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
+                          uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp random_state):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function with respect to the
         expected and currently predicted confidence scores.
@@ -76,18 +76,18 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     the conditions are considered.
     """
 
-    cpdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
+    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
         cdef float64[::1] scores = loss.calculate_default_scores(y)
         cdef FullHead head = FullHead.__new__(FullHead, scores)
         cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
         cdef Rule rule = Rule(body, head)
         return rule
 
-    cpdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
-                           uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
-                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                           random_state: int):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp[::1, :] x_sorted_indices,
+                          uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp random_state):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A list that contains the rule's conditions (in the order they have been learned)
@@ -99,8 +99,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp[::1] covered_example_indices
 
         # Variables used to update the seed used by RNGs, depending on the refinement iteration (starting at 1)
-        cdef int current_random_state = random_state
-        cdef int num_refinements = 1
+        cdef intp current_random_state = random_state
+        cdef intp num_refinements = 1
 
         # Variables for representing the best refinement
         cdef found_refinement = 1
