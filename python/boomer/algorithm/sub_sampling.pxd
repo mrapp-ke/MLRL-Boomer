@@ -1,4 +1,4 @@
-from boomer.algorithm._arrays cimport uint8, uint32, intp, float32
+from boomer.algorithm._arrays cimport uint32, intp, float32
 from boomer.algorithm._random cimport RNG
 
 
@@ -34,7 +34,7 @@ cdef class FeatureSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_features, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_features, RNG rng)
 
 
 cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
@@ -45,14 +45,14 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_features, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_features, RNG rng)
 
 
 cdef class LabelSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_labels, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng)
 
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
@@ -63,4 +63,4 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_labels, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng)
