@@ -416,7 +416,7 @@ cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
             tmp_array[i].index = i
             tmp_array[i].value = feature_values[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare)
+        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
         sorted_array = <intp*>malloc(num_values * sizeof(intp))
 
         for i in range(num_values):
@@ -427,7 +427,15 @@ cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
         free(tmp_array)
 
 
-cdef int __compare(const void* a, const void* b) nogil:
+cdef int __compare_indexed_value(const void* a, const void* b) nogil:
+    """
+    Compares the values of two structs of type `IndexedValue`.
+
+    :param a:   A pointer to the first struct
+    :param b:   A pointer to the second struct
+    :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
+                equal, or 1 if the value of the first struct is greater than the value of the second struct
+    """
     cdef float32 v1 = (<IndexedValue*>a).value
     cdef float32 v2 = (<IndexedValue*>b).value
     return -1 if v1 < v2 else (0 if v1 == v2 else 1)
