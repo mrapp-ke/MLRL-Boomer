@@ -512,7 +512,7 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
                                           intp condition_start, intp condition_end, intp condition_index,
                                           Comparator condition_comparator, intp num_conditions, Loss loss):
     """
-    Filters the array that contains the indices of the examples that are covered by the previous rule after a new
+    Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
     covered by the new rule. The filtered array is stored in a given struct of type `IndexArray`.
 
@@ -580,7 +580,21 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
                                       IndexArray* index_array, list[Condition] conditions, intp num_conditions,
                                       intp num_covered):
     """
-    # TODO
+    Filters an array that contains the indices of examples with respect to one or several conditions, such that the
+    filtered array does only contain the indices of the examples that satisfy the conditions. The filtered array is
+    stored in a given struct of type `IndexArray`.
+
+    :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
+                                    features of the training examples
+    :param sorted_indices:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
+                                    of the training examples
+    :param num_indices:             The number of elements in the array `sorted_indices`
+    :param index_array:             A pointer to a struct of type `IndexArray` that should be used to store the filtered
+                                    array
+    :param conditions:              A list that contains the conditions that should be taken into account for filtering
+                                    the indices
+    :param num_conditions:          The number of conditions in the list `conditions`
+    :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
     """
     cdef intp* filtered_indices_array = dereference(index_array).data
     cdef bint must_allocate = filtered_indices_array == NULL
