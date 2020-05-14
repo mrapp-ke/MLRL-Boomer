@@ -225,8 +225,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         sorted_indices = dereference(index_array).data
                         num_examples = dereference(index_array).num_elements
 
-                    # TODO check if feature is constant
-
                     # Check if feature is nominal...
                     if f == next_nominal_f:
                         nominal = True
