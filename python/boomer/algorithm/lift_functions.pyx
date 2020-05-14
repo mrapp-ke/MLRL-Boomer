@@ -14,7 +14,7 @@ cdef class PeakLiftFunction(LiftFunction):
         self.maximum_labels = maximum_number_of_labels
         self.maximum = maximum
         self.maximum_lift = maximum_lift
-        self.curvature = curvature
+        self.exponent = 1.0 / curvature
 
     cdef float64 eval(self, intp label_count):
         if label_count < self.maximum:
@@ -24,15 +24,13 @@ cdef class PeakLiftFunction(LiftFunction):
         return self.maximum_lift
 
     cdef float64 eval_before_maximum(self, intp label_count):
-        cdef float64 exponent = 1.0 / self.curvature
         cdef float64 normalization = (label_count - 1.0) / (self.maximum - 1)
-        cdef float64 boost = 1.0 + pow(normalization, exponent) * (self.maximum_lift - 1)
+        cdef float64 boost = 1.0 + pow(normalization, self.exponent) * (self.maximum_lift - 1)
         return boost
 
     cdef float64 eval_after_maximum(self, intp label_count):
-        cdef float64 exponent = 1.0 / self.curvature
         cdef float64 normalization = (label_count - self.maximum_labels) / (self.maximum_labels - self.maximum )
-        cdef float64 boost = 1.0 + pow(normalization, exponent) * (self.maximum_lift - 1.0)
+        cdef float64 boost = 1.0 + pow(normalization, self.exponent) * (self.maximum_lift - 1.0)
         return boost
 
     cdef float64 get_maximum_lift(self):
