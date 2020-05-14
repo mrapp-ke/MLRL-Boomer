@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that implement strategies for sub-sampling training examples or features.
+Provides classes that implement strategies for sub-sampling training examples, features or labels.
 """
 from boomer.algorithm._arrays cimport float64, array_uint32, array_intp
 
