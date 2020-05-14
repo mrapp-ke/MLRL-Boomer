@@ -407,7 +407,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
 cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
     cdef intp num_values = feature_values.shape[0]
-    cdef IndexedElement* tmp_array = <IndexedElement*>malloc(num_values * sizeof(IndexedElement))
+    cdef IndexedValue* tmp_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
     cdef intp* sorted_array
     cdef intp i
 
@@ -416,7 +416,7 @@ cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
             tmp_array[i].index = i
             tmp_array[i].value = feature_values[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedElement), &__compare)
+        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare)
         sorted_array = <intp*>malloc(num_values * sizeof(intp))
 
         for i in range(num_values):
@@ -428,8 +428,8 @@ cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
 
 
 cdef int __compare(const void* a, const void* b) nogil:
-    cdef float32 v1 = (<IndexedElement*>a).value
-    cdef float32 v2 = (<IndexedElement*>b).value
+    cdef float32 v1 = (<IndexedValue*>a).value
+    cdef float32 v2 = (<IndexedValue*>b).value
     return -1 if v1 < v2 else (0 if v1 == v2 else 1)
 
 
