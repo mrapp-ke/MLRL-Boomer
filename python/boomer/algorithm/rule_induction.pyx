@@ -209,7 +209,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         sorted_indices = dereference(sorted_indices_map_global)[f]
 
                         if sorted_indices == NULL:
-                            sorted_indices = __argsort_feature_values(x[:, f])
+                            sorted_indices = __argsort_by_feature_values(x[:, f])
                             dereference(sorted_indices_map_global)[f] = sorted_indices
                     else:
                         num_examples = dereference(index_array).num_elements
@@ -220,8 +220,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                              num_covered)
                         sorted_indices = dereference(index_array).data
                         num_examples = dereference(index_array).num_elements
-
-                    # TODO check if feature is constant
 
                     # Check if feature is nominal...
                     if f == next_nominal_f:
@@ -405,9 +403,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(sorted_indices_iterator)
 
 
-cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
+cdef inline intp* __argsort_by_feature_values(float32[::1] feature_values):
+    """
+    Sorts the indices of the training examples in ascending order of their values for a certain feature.
+
+    :param feature_values:  An array of dtype float, shape `(num_examples)`, representing the values of the training
+                            examples for a certain feature
+    :return:                A pointer to a C-array of type intp, representing the sorted indices of the training
+                            examples
+    """
     cdef intp num_values = feature_values.shape[0]
-    cdef IndexedElement* tmp_array = <IndexedElement*>malloc(num_values * sizeof(IndexedElement))
+    cdef IndexedValue* tmp_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
     cdef intp* sorted_array
     cdef intp i
 
@@ -416,7 +422,7 @@ cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
             tmp_array[i].index = i
             tmp_array[i].value = feature_values[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedElement), &__compare)
+        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
         sorted_array = <intp*>malloc(num_values * sizeof(intp))
 
         for i in range(num_values):
@@ -427,9 +433,17 @@ cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
         free(tmp_array)
 
 
-cdef int __compare(const void* a, const void* b) nogil:
-    cdef float32 v1 = (<IndexedElement*>a).value
-    cdef float32 v2 = (<IndexedElement*>b).value
+cdef int __compare_indexed_value(const void* a, const void* b) nogil:
+    """
+    Compares the values of two structs of type `IndexedValue`.
+
+    :param a:   A pointer to the first struct
+    :param b:   A pointer to the second struct
+    :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
+                equal, or 1 if the value of the first struct is greater than the value of the second struct
+    """
+    cdef float32 v1 = (<IndexedValue*>a).value
+    cdef float32 v2 = (<IndexedValue*>b).value
     return -1 if v1 < v2 else (0 if v1 == v2 else 1)
 
 
@@ -496,8 +510,8 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
                                           intp condition_start, intp condition_end, intp condition_index,
                                           Comparator condition_comparator, intp num_conditions):
     """
-    Filters and returns the array that contains the indices of the examples that are covered by the previous rule after
-    a new condition has been added, such that the filtered array does only contain the indices of the examples that are
+    Filters an array that contains the indices of the examples that are covered by the previous rule after a new
+    condition has been added, such that the filtered array does only contain the indices of the examples that are
     covered by the new rule. The filtered array is stored in a given struct of type `IndexArray`.
 
     :param sorted_indices:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
@@ -551,7 +565,21 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
                                       IndexArray* index_array, list[Condition] conditions, intp num_conditions,
                                       intp num_covered):
     """
-    # TODO
+    Filters an array that contains the indices of examples with respect to one or several conditions, such that the
+    filtered array does only contain the indices of the examples that satisfy the conditions. The filtered array is
+    stored in a given struct of type `IndexArray`.
+
+    :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
+                                    features of the training examples
+    :param sorted_indices:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
+                                    of the training examples
+    :param num_indices:             The number of elements in the array `sorted_indices`
+    :param index_array:             A pointer to a struct of type `IndexArray` that should be used to store the filtered
+                                    array
+    :param conditions:              A list that contains the conditions that should be taken into account for filtering
+                                    the indices
+    :param num_conditions:          The number of conditions in the list `conditions`
+    :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
     """
     cdef intp* filtered_indices_array = dereference(index_array).data
     cdef bint must_allocate = filtered_indices_array == NULL
