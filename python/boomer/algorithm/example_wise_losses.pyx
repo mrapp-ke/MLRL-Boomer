@@ -7,7 +7,8 @@ from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
 from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
-from libc.stdlib cimport malloc, free
+
+from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
 
 from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
@@ -377,6 +378,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         cdef float64[::1, :] current_scores = self.current_scores
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1, :] hessians = self.hessians
+        # The number of covered examples
+        cdef intp num_covered = covered_example_indices.shape[0]
         # The total number of labels
         cdef intp num_labels = gradients.shape[1]
         # The number of predicted labels
@@ -384,60 +387,62 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # An array for caching pre-calculated values
         cdef float64[::1] exponentials = array_float64(num_labels)
         # Temporary variables
-        cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow
-        cdef intp r, c, c2, l, i
+        cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow, tmp
+        cdef intp r, c, c2, l, i, j
 
         # Only the examples that are covered by the new rule must be considered...
-        for r in covered_example_indices:
+        for r in range(num_covered):
+            i = covered_example_indices[r]
+
             # Traverse the labels for which the new rule predicts to update the currently predicted scores...
             for c in range(num_predicted_labels):
                 l = get_index(c, label_indices)
-                current_scores[r, l] += predicted_scores[c]
+                current_scores[i, l] += predicted_scores[c]
 
             # Traverse the labels of the current example to create arrays of expected scores and exponentials that are
             # shared among the upcoming calculations of gradients and hessians...
             sum_of_exponentials = 1
 
             for c in range(num_labels):
-                expected_score = expected_scores[r, c]
-                exponential = exp(-expected_score * current_scores[r, c])
+                expected_score = expected_scores[i, c]
+                exponential = exp(-expected_score * current_scores[i, c])
                 exponentials[c] = exponential
                 sum_of_exponentials += exponential
 
             sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
 
             # Traverse the labels again to update the gradients and hessians...
-            i = 0
+            j = 0
 
             for c in range(num_labels):
-                expected_score = expected_scores[r, c]
+                expected_score = expected_scores[i, c]
                 exponential = exponentials[c]
-                score = current_scores[r, c]
+                score = current_scores[i, c]
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
                 # add it to the matrix of gradients...
-                tmp = gradients[r, c]
+                tmp = gradients[i, c]
                 tmp = (expected_score * exponential) / sum_of_exponentials
                 # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
                 # the sums of gradients as the ordinates for solving a system of linear equations in the function
                 # `evaluate_label_dependent_predictions`, the sign must be inverted again...
-                gradients[r, c] = tmp
+                gradients[i, c] = tmp
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
                 for c2 in range(c):
-                    tmp = hessians[r, i]
-                    tmp = exp(-expected_scores[r, c2] * current_scores[r, c2] - expected_score * score)
-                    tmp = (expected_scores[r, c2] * expected_score * tmp) / sum_of_exponentials_pow
-                    hessians[r, i] = -tmp
-                    i += 1
+                    tmp = hessians[i, j]
+                    tmp = exp(-expected_scores[i, c2] * current_scores[i, c2] - expected_score * score)
+                    tmp = (expected_scores[i, c2] * expected_score * tmp) / sum_of_exponentials_pow
+                    hessians[i, j] = -tmp
+                    j += 1
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
                 # add it to the matrix of hessians...
-                tmp = hessians[r, i]
+                tmp = hessians[i, j]
                 tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
-                hessians[r, i] = tmp
-                i += 1
+                hessians[i, j] = tmp
+                j += 1
 
 
 cdef inline intp __triangular_number(intp n):
