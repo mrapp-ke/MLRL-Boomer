@@ -213,7 +213,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         sorted_indices = dereference(sorted_indices_map_global)[f]
 
                         if sorted_indices == NULL:
-                            sorted_indices = __argsort_feature_values(x[:, f])
+                            sorted_indices = __argsort_by_feature_values(x[:, f])
                             dereference(sorted_indices_map_global)[f] = sorted_indices
                     else:
                         num_examples = dereference(index_array).num_elements
@@ -405,7 +405,15 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(sorted_indices_iterator)
 
 
-cdef inline intp* __argsort_feature_values(float32[::1] feature_values):
+cdef inline intp* __argsort_by_feature_values(float32[::1] feature_values):
+    """
+    Sorts the indices of the training examples in ascending order of their values for a certain feature.
+
+    :param feature_values:  An array of dtype float, shape `(num_examples)`, representing the values of the training
+                            examples for a certain feature
+    :return:                A pointer to a C-array of type intp, representing the sorted indices of the training
+                            examples
+    """
     cdef intp num_values = feature_values.shape[0]
     cdef IndexedValue* tmp_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
     cdef intp* sorted_array
