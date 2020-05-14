@@ -16,7 +16,7 @@ cdef class PeakLiftFunction(LiftFunction):
 
     cdef float64 maximum_lift
 
-    cdef float64 curvature
+    cdef float64 exponent
 
     # Functions:
 
