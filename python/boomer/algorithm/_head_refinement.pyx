@@ -168,6 +168,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
             c2 = 0
             should_continue = True
+
+            # temporary variable required to break outer loop
             no_improvement = False
 
             while should_continue:
