@@ -512,8 +512,8 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
                                           intp condition_start, intp condition_end, intp condition_index,
                                           Comparator condition_comparator, intp num_conditions, Loss loss):
     """
-    Filters and returns the array that contains the indices of the examples that are covered by the previous rule after
-    a new condition has been added, such that the filtered array does only contain the indices of the examples that are
+    Filters the array that contains the indices of the examples that are covered by the previous rule after a new
+    condition has been added, such that the filtered array does only contain the indices of the examples that are
     covered by the new rule. The filtered array is stored in a given struct of type `IndexArray`.
 
     :param sorted_indices:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
