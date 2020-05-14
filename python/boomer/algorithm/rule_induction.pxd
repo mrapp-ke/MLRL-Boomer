@@ -14,7 +14,7 @@ from libcpp.unordered_map cimport unordered_map as map
 A struct that stores a value of type float32 and a corresponding index that refers to the (original) position of the
 value in an array.
 """
-cdef struct IndexedElement:
+cdef struct IndexedValue:
     intp index
     float32 value
 

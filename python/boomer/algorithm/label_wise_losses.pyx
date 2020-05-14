@@ -274,11 +274,13 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1, :] expected_scores = self.expected_scores
         cdef float64[::1, :] current_scores = self.current_scores
+        # The number of covered examples
+        cdef intp num_covered = covered_example_indices.shape[0]
         # The number of predicted labels
         cdef intp num_labels = predicted_scores.shape[0]
         # Temporary variables
         cdef float64 predicted_score, expected_score, current_score, tmp
-        cdef intp c, l, i
+        cdef intp c, l, r, i
 
         # Only the labels that are predicted by the new rule must be considered...
         for c in range(num_labels):
@@ -286,7 +288,9 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
             predicted_score = predicted_scores[c]
 
             # Only the examples that are covered by the new rule must be considered...
-            for i in covered_example_indices:
+            for r in range(num_covered):
+                i = covered_example_indices[r]
+
                 # Retrieve the expected score for the current example and label...
                 expected_score = expected_scores[i, l]
 
