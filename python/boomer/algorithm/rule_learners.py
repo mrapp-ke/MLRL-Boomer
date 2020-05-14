@@ -22,6 +22,7 @@ from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
 from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+from boomer.algorithm.lift_functions import LiftFunction, PeakLiftFunction
 
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
@@ -56,6 +57,8 @@ INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
 FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 
 PRUNING_IREP = 'irep'
+
+LIFT_FUNCTION_PEAK = 'peak'
 
 
 def _create_label_sub_sampling(label_sub_sampling: int, stats: Stats) -> LabelSubSampling:
@@ -303,7 +306,7 @@ class Boomer(MLRuleLearner):
             return ExampleWiseLogisticLoss(l2_regularization_weight)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
+    def __create_head_refinement(self, loss: Loss, lift: LiftFunction) -> HeadRefinement:
         head_refinement = self.head_refinement
 
         if head_refinement is None:
@@ -331,14 +334,16 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     """
 
     def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: int = -1,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None):
+                 lift: str = LIFT_FUNCTION_PEAK, loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION,
+                 label_sub_sampling: int = -1, instance_sub_sampling: str = None, feature_sub_sampling: str = None,
+                 pruning: str = None):
         """
         :param max_rules:                   The maximum number of rules to be induced (including the default rule)
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
                                             `single-label`, `partial` or None, if the default strategy should be used
+        :param loss:                        The lift function to be minimized. Must be `peak`
         :param loss:                        The loss function to be minimized. Must be `label-wise-measure`
         :param heuristic:                   The heuristic to be minimized. Must be `precision` or `hamming-loss`
         :param label_sub_sampling:          The number of samples to be used for sub-sampling the labels each time a new
@@ -357,6 +362,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
+        self.lift = lift
         self.loss = loss
         self.heuristic = heuristic
         self.label_sub_sampling = label_sub_sampling
@@ -371,6 +377,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         name = 'max-rules=' + str(self.max_rules)
         if self.head_refinement is not None:
             name += '_head-refinement=' + str(self.head_refinement)
+        name += '_lift=' + str(self.lift)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
         if int(self.label_sub_sampling) != -1:
@@ -389,6 +396,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             'max_rules': self.max_rules,
             'time_limit': self.time_limit,
             'head_refinement': self.head_refinement,
+            'lift': self.lift,
             'loss': self.loss,
             'heuristic': self.heuristic,
             'label_sub_sampling': self.label_sub_sampling,
@@ -401,7 +409,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def _create_rule_induction(self, stats: Stats) -> RuleInduction:
         heuristic = self.__create_heuristic()
         loss = self.__create_loss(heuristic)
-        head_refinement = self.__create_head_refinement()
+        lift = self.__create_lift(stats)
+        head_refinement = self.__create_head_refinement(lift)
         label_sub_sampling = _create_label_sub_sampling(int(self.label_sub_sampling), stats)
         instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
@@ -435,7 +444,15 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return LabelWiseAveraging(heuristic)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_head_refinement(self) -> HeadRefinement:
+    def __create_lift(self, stats: Stats) -> LiftFunction:
+        lift = self.lift
+
+        if lift == LIFT_FUNCTION_PEAK:
+            # TODO: Example configuration
+            return PeakLiftFunction(stats.num_labels, stats.num_labels / 2, 2.0, 1.0)
+        raise ValueError('Invalid value given for parameter \'lift\': ' + str(lift))
+
+    def __create_head_refinement(self, lift: LiftFunction = None) -> HeadRefinement:
         head_refinement = self.head_refinement
 
         if head_refinement is None:
@@ -443,7 +460,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         elif head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinement()
         elif head_refinement == HEAD_REFINEMENT_PARTIAL:
-            return PartialHeadRefinement()
+            return PartialHeadRefinement(lift)
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_prediction(self) -> Prediction:

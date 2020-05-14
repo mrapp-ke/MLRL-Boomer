@@ -3,10 +3,10 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-import numpy as np
 from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._losses cimport LabelIndependentPrediction
+from boomer.algorithm.lift_functions cimport LiftFunction
 
 cdef class HeadCandidate:
     """
@@ -117,6 +117,9 @@ cdef class FullHeadRefinement(HeadRefinement):
 
 cdef class PartialHeadRefinement(HeadRefinement):
 
+    def __cinit__(self, LiftFunction lift):
+        self.lift = lift
+
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
         cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
@@ -142,6 +145,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
         cdef float64 best_quality_score, total_quality_score, quality_score
         cdef intp should_continue
+
+        cdef LiftFunction lift = self.lift
 
         # Insertion sort
         for c in range(0, num_label_indices):
@@ -185,14 +190,14 @@ cdef class PartialHeadRefinement(HeadRefinement):
             current_head_candidate[current_head_candidate_length] = sorted_indices[c2]
             current_head_candidate_length += 1
 
-            maximum_lift = 1 # TODO
+            maximum_lift = lift.get_maximum_lift()
 
             for c2 in range(0, current_head_candidate_length):
                 total_quality_score += quality_scores[current_head_candidate[c2]]
 
             total_quality_score /= current_head_candidate_length
 
-            quality_score = total_quality_score * self.lift(total_quality_score, current_head_candidate_length)
+            quality_score = total_quality_score * lift.eval(current_head_candidate_length)
 
             if best_head_candidate_length == 0 or quality_score < best_quality_score:
                 best_head_candidate_length = current_head_candidate_length
@@ -225,12 +230,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
         return None
 
     cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
-        cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered)
+        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered)
         return prediction
-
-    cdef float64 lift(self, float64 quality_score, intp labelcount):
-        # Example lift function, labelcount only breaks ties between equal scores
-        return (quality_score / labelcount) - 0.001 * labelcount
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
