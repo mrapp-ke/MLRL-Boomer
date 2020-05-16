@@ -152,6 +152,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
         for c in range(0, num_label_indices):
             l = get_index(c, label_indices)
             for c2 in range(0, num_label_indices):
+                # TODO Tie-breaking
                 if c2 >= sorted_label_indices_length or quality_scores[sorted_indices[c2]] > quality_scores[c]:
                     # Shift
                     for c3 in range(sorted_label_indices_length - 1, c2 - 1, -1):
@@ -181,7 +182,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
                 # checks if current_head_candidate contains sorted_label_indices[c2]
                 for c3 in range(0, current_head_candidate_length):
-                    if current_head_candidate[c3] == get_index(sorted_indices[c2], label_indices):
+                    if current_head_candidate[c3] == sorted_indices[c2]:
                         should_continue = True
                         c2 += 1
                         continue
