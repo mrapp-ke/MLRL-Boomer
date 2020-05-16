@@ -130,21 +130,16 @@ cdef class PartialHeadRefinement(HeadRefinement):
             num_label_indices = num_labels
         else:
             num_label_indices = label_indices.shape[0]
-        cdef float64[::1] candidate_predicted_scores
         cdef HeadCandidate candidate
-        cdef intp c, c2, c3, l
-
-        cdef intp sorted_label_indices_length = 0
+        cdef float64[::1] candidate_predicted_scores
         cdef intp[::1] sorted_indices = array_intp(num_label_indices)
-
+        cdef intp sorted_label_indices_length = 0
         cdef intp[::1] current_head_candidate = array_intp(num_label_indices)
         cdef intp current_head_candidate_length = 0
-
         cdef intp[::1] best_head_candidate = array_intp(num_label_indices)
         cdef intp best_head_candidate_length = 0
-
-        cdef float64 best_quality_score, total_quality_score, quality_score
-        cdef intp should_continue
+        cdef float64 best_quality_score, total_quality_score, quality_score, maximum_lift
+        cdef intp should_continue, no_improvement, c, c2, c3, l
 
         cdef LiftFunction lift = self.lift
 
