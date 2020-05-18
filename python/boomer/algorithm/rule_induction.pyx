@@ -493,10 +493,10 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp* sorted_indices, intp po
         i = sorted_indices[r]
         feature_value = x[i, feature_index]
 
-        if feature_value < threshold:
-            # The feature value at `position_start` is guaranteed to be smaller than the given `threshold`. If this does
-            # also apply to the feature value of a preceding example, it is not separated from the example at
-            # `position_start`. Hence, we are not done yet and continue by decrementing the adjusted position by one...
+        if feature_value <= threshold:
+            # The feature value at `position_start` is guaranteed to be smaller than or equal to the given `threshold`.
+            # If this does also apply to the feature value of a preceding example, it is not separated from the example
+            # at `position_start`. Hence, we are not done yet and continue by updating the adjusted position...
             adjusted_position = r
         else:
             # If we have found the first example that is separated from the example at the position we started at, we
