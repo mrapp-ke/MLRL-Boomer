@@ -61,7 +61,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
         return default_rule
 
-    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+    cdef void set_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
