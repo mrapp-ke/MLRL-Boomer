@@ -27,9 +27,10 @@ cdef class SequentialRuleInduction:
                                             the non-zero feature values of the training examples
         :param x_row_indices:               An array of dtype int, shape `(num_non_zero_feature_values)`, representing
                                             the row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:               An array of dtype int, shape `(num_features)`, representing the indices of
-                                            the first element in `x_data` and `x_row_indices` that corresponds to a
-                                            certain feature
+        :param x_col_indices:               An array of dtype int, shape `(num_features + 1)`, representing the indices
+                                            of the first element in `x_data` and `x_row_indices` that corresponds to a
+                                            certain feature. The index at the last position is equal to
+                                            `num_non_zero_feature_values`
         :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
                                             the labels of the training examples
         :param random_state:                The seed to be used by RNGs

@@ -47,9 +47,10 @@ cdef class RuleInduction:
                                             the non-zero feature values of the training examples
         :param x_row_indices:               An array of dtype int, shape `(num_non_zero_feature_values)`, representing
                                             the row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:               An array of dtype int, shape `(num_features)`, representing the indices of
-                                            the first element in `x_data` and `x_row_indices` that corresponds to a
-                                            certain feature
+        :param x_col_indices:               An array of dtype int, shape `(num_features + 1)`, representing the indices
+                                            of the first element in `x_data` and `x_row_indices` that corresponds to a
+                                            certain feature. The index at the last position is equal to
+                                            `num_non_zero_feature_values`
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
         :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no
