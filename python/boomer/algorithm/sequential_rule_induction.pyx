@@ -14,15 +14,22 @@ cdef class SequentialRuleInduction:
     rules.
     """
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              uint32 random_state):
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
+                              intp[::1] x_col_indices, uint8[::1, :] y, uint32 random_state):
         """
         Creates and returns a model that consists of several classification rules.
 
+        The feature matrix must be given in compressed sparse column (CSC) format.
+
         :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_features)`, representing the
                                             indices of all nominal attributes (in ascending order)
-        :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing
-                                            the feature values of the training examples
+        :param x_data:                      An array of dtype float, shape `(num_non_zero_feature_values)`, representing
+                                            the non-zero feature values of the training examples
+        :param x_row_indices:               An array of dtype int, shape `(num_non_zero_feature_values)`, representing
+                                            the row-indices of the examples, the values in `x_data` correspond to
+        :param x_col_indices:               An array of dtype int, shape `(num_features)`, representing the indices of
+                                            the first element in `x_data` and `x_row_indices` that corresponds to a
+                                            certain feature
         :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
                                             the labels of the training examples
         :param random_state:                The seed to be used by RNGs
@@ -72,8 +79,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.pruning = pruning
         self.shrinkage = shrinkage
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              uint32 random_state):
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
+                              intp[::1] x_col_indices, uint8[::1, :] y, uint32 random_state):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleInduction rule_induction = self.rule_induction
@@ -102,9 +109,9 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule
-            rule = rule_induction.induce_rule(nominal_attribute_indices, x, y, head_refinement, loss,
-                                              label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                              shrinkage, rng)
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x_data, x_row_indices, x_col_indices, y,
+                                              head_refinement, loss, label_sub_sampling, instance_sub_sampling,
+                                              feature_sub_sampling, pruning, shrinkage, rng)
             rule_list.append(rule)
             num_rules += 1
 

@@ -32,10 +32,10 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
+                          intp[::1] x_col_indices, uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -45,8 +45,13 @@ cdef class RuleInduction:
                                             features are available
         :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing
                                             the features of the training examples
-        :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing the
-                                            labels of the training examples
+        :param x_data:                      An array of dtype float, shape `(num_non_zero_feature_values)`, representing
+                                            the non-zero feature values of the training examples
+        :param x_row_indices:               An array of dtype int, shape `(num_non_zero_feature_values)`, representing
+                                            the row-indices of the examples, the values in `x_data` correspond to
+        :param x_col_indices:               An array of dtype int, shape `(num_features)`, representing the indices of
+                                            the first element in `x_data` and `x_row_indices` that corresponds to a
+                                            certain feature
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
         :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no
@@ -96,10 +101,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Rule rule = Rule.__new__(Rule, body, head)
         return rule
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
+                          intp[::1] x_col_indices, uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, RNG rng):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)

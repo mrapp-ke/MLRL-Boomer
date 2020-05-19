@@ -134,9 +134,12 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         return 'rules'
 
     def _fit(self, stats: Stats, x, y, random_state: int):
-        # Create a dense representation of the training data
-        x = self._ensure_input_format(x)
-        y = self._ensure_output_format(y)
+        # Convert training data into required format
+        x = self._ensure_input_format(x, sparse_format='csc', enforce_sparse=True)
+        x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
+        x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
+        x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
+        y = np.asfortranarray(self._ensure_output_format(y), dtype=DTYPE_UINT8)
 
         # Create an array that contains the indices of all nominal attributes, if any
         nominal_attribute_indices = self.nominal_attribute_indices
@@ -146,21 +149,16 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         else:
             nominal_attribute_indices = None
 
-        # Convert feature and label matrices into Fortran-contiguous arrays
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
-        y = np.asfortranarray(y, dtype=DTYPE_UINT8)
-
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(stats)
-        return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, y, random_state)
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, x_data, x_row_indices, x_col_indices,
+                                                      y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
-        # Create a dense representation of the given examples
-        x = self._ensure_input_format(x)
+        # Convert feature matrix into required format
+        x = np.asfortranarray(self._ensure_input_format(x), dtype=DTYPE_FLOAT32)
 
-        # Convert feature matrix into Fortran-contiguous array
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
-
+        # Make predictions
         prediction = self._create_prediction()
         prediction.random_state = self.random_state
         return prediction.predict(stats, model, x)
