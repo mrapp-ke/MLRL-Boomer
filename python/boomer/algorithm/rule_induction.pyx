@@ -156,7 +156,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         else:
             weights = instance_sub_sampling.sub_sample(x, random_state)
 
-        loss.update_sub_sample(covered_example_indices, weights)
+        loss.set_sub_sample(covered_example_indices, weights)
 
         # Sub-sample labels, if necessary...
         cdef intp[::1] label_indices
@@ -350,7 +350,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if num_covered > 1:
                         # Inform the loss function about the weights of the examples that are covered by the current
                         # rule...
-                        loss.update_sub_sample(covered_example_indices, weights)
+                        loss.set_sub_sample(covered_example_indices, weights)
 
                         # Alter seed to be used by RNGs for the next refinement...
                         current_random_state = random_state * (num_conditions + 1)

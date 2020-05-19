@@ -127,7 +127,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
         return scores
 
-    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+    cdef void set_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
