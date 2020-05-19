@@ -56,7 +56,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void update_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+    cdef void set_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
         """
         Notifies the loss function about the examples that should be considered in the following for learning a new rule
         or refining an existing one.
@@ -64,7 +64,7 @@ cdef class Loss:
         This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
         and store local information that is required by the other functions that will be called later, e.g. statistics
         about the ground truth labels of these particular examples. Any information computed by this function is
-        expected to be reset when invoking the function `update_sub_sample` for the next time.
+        expected to be reset when invoking the function `set_sub_sample` for the next time.
 
         :param example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices of the
                                 examples that should be considered or None, if all examples should be considered
@@ -103,7 +103,7 @@ cdef class Loss:
 
         This function must be called repeatedly for each example that is covered by the current condition, immediately
         after the invocation of the function `begin_search`. Each of these examples must have been provided earlier via
-        the function `update_sub_sample`.
+        the function `set_sub_sample`.
 
         This function is supposed to update any internal state that relates to the examples that are covered current
         condition, i.e., to compute and store local information that is required by the other functions that will be
@@ -120,7 +120,7 @@ cdef class Loss:
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
         is considered to cover all examples that belong to the difference between the examples that have been provided
-        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
+        via the function `set_sub_sample` and the examples that have been provided via the function `update_search`.
 
         The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
         be predicted for an individual label is calculated independently from the other labels, i.e., in case of a
@@ -129,7 +129,7 @@ cdef class Loss:
 
         :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
                             1, if the rule covers all examples that belong to the difference between the examples that
-                            have been provided via the function `update_sub_sample` and the examples that have been
+                            have been provided via the function `set_sub_sample` and the examples that have been
                             provided via the function `update_search`
         :return:            A `LabelIndependentPrediction` that stores the scores to be predicted by the rule for each
                             considered label, as well as the corresponding quality scores
@@ -141,7 +141,7 @@ cdef class Loss:
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
         is considered to cover all examples that belong to the difference between the examples that have been provided
-        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
+        via the function `set_sub_sample` and the examples that have been provided via the function `update_search`.
 
         The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
         be predicted for an individual label is calculated with respect to the predictions for the other labels. In case
@@ -152,7 +152,7 @@ cdef class Loss:
 
         :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
                             1, if the rule covers all examples that belong to the difference between the examples that
-                            have been provided via the function `update_sub_sample` and the examples that have been
+                            have been provided via the function `set_sub_sample` and the examples that have been
                             provided via the function `update_search`
         :return:            A `Prediction` that stores the optimal scores to be predicted by the rule for each
                             considered label, as well as its overall quality score
@@ -165,7 +165,7 @@ cdef class Loss:
         Notifies the loss function that a new rule has been induced.
 
         This function must be called before learning the next rule, i.e., prior to the next invocation of the function
-        `update_sub_sample`.
+        `set_sub_sample`.
 
         This function is supposed to update any internal state that depends on the predictions of already induced rules.
 
