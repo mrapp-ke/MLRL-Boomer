@@ -25,35 +25,32 @@ cdef class PeakLiftFunction(LiftFunction):
     decreases after that point.
     """
 
-    def __cinit__(self, intp maximum_number_of_labels, float64 maximum, float64 maximum_lift, float64 curvature):
+    def __cinit__(self, intp num_labels, float64 peak_label, float64 max_lift, float64 curvature):
         """
-        :param maximum_number_of_labels: The maximum number of labels predictable in the set
-        :param maximum: The number of labels for which the relaxation lift is maximal
-        :param maximum_lift: The relaxation lift at the peak label
-        :param curvature: The curvature of the lift function (a higher value means a steeper curvature and a lower value
-            means a flatter curvature
+        :param num_labels: The maximum number of labels predictable in the set. Must be more than zero
+        :param peak_label: The number of labels for which the relaxation lift is maximal. Must be in [1,num_labels]
+        :param max_lift: The relaxation lift at the peak label. Must be one or more
+        :param curvature: The curvature of the lift function. A higher value means a steeper curvature and a lower value
+            means a flatter curvature. Must be more than 0
         """
-        self.maximum_labels = maximum_number_of_labels
-        self.maximum = maximum
-        self.maximum_lift = maximum_lift
+        self.num_labels = num_labels
+        self.peak_label = peak_label
+        self.max_lift = max_lift
         self.exponent = 1.0 / curvature
 
     cdef float64 eval(self, intp label_count):
-        if label_count < self.maximum:
-            return self.eval_before_maximum(label_count)
-        elif label_count > self.maximum:
-            return self.eval_after_maximum(label_count)
-        return self.maximum_lift
+        cdef float64 normalization
+        cdef float64 boost
 
-    cdef float64 eval_before_maximum(self, intp label_count):
-        cdef float64 normalization = (label_count - 1.0) / (self.maximum - 1)
-        cdef float64 boost = 1.0 + pow(normalization, self.exponent) * (self.maximum_lift - 1)
+        if label_count < self.peak_label:
+            normalization = (label_count - 1.0) / (self.peak_label - 1.0)
+        elif label_count > self.peak_label:
+            normalization = (label_count - self.num_labels) / (self.num_labels - self.peak_label)
+        else:
+            return self.max_lift
+
+        boost = 1.0 + pow(normalization, self.exponent) * (self.max_lift - 1.0)
         return boost
 
-    cdef float64 eval_after_maximum(self, intp label_count):
-        cdef float64 normalization = (label_count - self.maximum_labels) / (self.maximum_labels - self.maximum )
-        cdef float64 boost = 1.0 + pow(normalization, self.exponent) * (self.maximum_lift - 1.0)
-        return boost
-
-    cdef float64 get_maximum_lift(self):
-        return self.maximum_lift
+cdef float64 get_maximum_lift(self):
+    return self.maximum_lift
