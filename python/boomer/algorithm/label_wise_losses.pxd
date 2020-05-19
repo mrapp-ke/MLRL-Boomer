@@ -39,6 +39,8 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
     cdef void set_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
 
+    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
+
     cdef void begin_search(self, intp[::1] label_indices)
 
     cdef void update_search(self, intp example_index, uint32 weight)
@@ -61,6 +63,8 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
 
     cdef void set_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
 
+    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
+
     cdef void begin_search(self, intp[::1] label_indices)
 
     cdef void update_search(self, intp example_index, uint32 weight)
@@ -82,6 +86,8 @@ cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
     cdef void set_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
+
+    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
 
     cdef void begin_search(self, intp[::1] label_indices)
 

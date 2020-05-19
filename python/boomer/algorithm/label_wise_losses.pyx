@@ -156,6 +156,10 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
                 total_sums_of_gradients[c] += (weight * gradients[i, c])
                 total_sums_of_hessians[c] += (weight * hessians[i, c])
 
+    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+        # TODO implement
+        pass
+
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of labels to be considered by the upcoming search...
         cdef float64[::1] total_sums_of_gradients

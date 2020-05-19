@@ -198,6 +198,10 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
             for c in range(num_elements):
                 total_sums_of_hessians[c] += (weight * hessians[i, c])
 
+    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+        # TODO implement
+        pass
+
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of gradients and hessians to be considered by the upcoming search...
         cdef float64[::1, :] gradients

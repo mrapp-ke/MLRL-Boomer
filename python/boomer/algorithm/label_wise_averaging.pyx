@@ -93,6 +93,10 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                         elif predicted_label == 1:
                             confusion_matrices_default[c, _RP] += weight
 
+    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+        # TODO implement
+        pass
+
     cdef void begin_search(self, intp[::1] label_indices):
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
