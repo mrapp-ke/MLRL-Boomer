@@ -43,8 +43,6 @@ cdef class RuleInduction:
         :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
                                             indices of all nominal features (in ascending order) or None, if no nominal
                                             features are available
-        :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing
-                                            the features of the training examples
         :param x_data:                      An array of dtype float, shape `(num_non_zero_feature_values)`, representing
                                             the non-zero feature values of the training examples
         :param x_row_indices:               An array of dtype int, shape `(num_non_zero_feature_values)`, representing
