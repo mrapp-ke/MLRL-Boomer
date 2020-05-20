@@ -43,6 +43,10 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--heuristic', type=str, default=HEURISTIC_PRECISION, help='The name of the heuristic to be used')
     p.add_argument('--head-refinement', type=optional_string, default=None,
                    help='The name of the strategy to be used for finding the heads of rules')
+    p.add_argument('--min-coverage', type=int, default=1,
+                   help='The minimum number of training examples that must be covered by a rule')
+    p.add_argument('--max-conditions', type=int, default=-1,
+                   help='The maximum number of conditions to be included in a rule\'s body or -1')
 
 
 def create_learner(params) -> SeparateAndConquerRuleLearner:
@@ -51,7 +55,8 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
                                          pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          feature_sub_sampling=params.feature_sub_sampling,
-                                         head_refinement=params.head_refinement)
+                                         head_refinement=params.head_refinement, min_coverage=params.min_coverage,
+                                         max_conditions=params.max_conditions)
 
 
 if __name__ == '__main__':

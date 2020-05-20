@@ -20,10 +20,6 @@ from cython.operator cimport dereference, postincrement
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
-# The number of examples that must be covered by a rule at least
-DEF MIN_COVERAGE = 1
-
-
 cdef class RuleInduction:
     """
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
@@ -43,7 +39,7 @@ cdef class RuleInduction:
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, RNG rng):
+                          Pruning pruning, Shrinkage shrinkage, min_coverage: intp, intp max_conditions, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -67,6 +63,10 @@ cdef class RuleInduction:
                                             should be used
         :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if
                                             no shrinkage should be used
+        :param min_coverage:                The minimum number of training examples that must be covered by the rule.
+                                            Must be at least 1
+        :param max_conditions:              The maximum number of conditions to be included in the rule's body. Must be
+                                            at least 1 or -1, if the number of conditions should not be restricted
         :param rng:                         The random number generator to be used
         :return:                            The rule that has been induced or None, if no rule could be induced
         """
@@ -107,7 +107,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, RNG rng):
+                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -180,8 +180,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
-            # anymore...
-            while found_refinement:
+            # anymore or the maximum number of conditions has been reached...
+            while found_refinement and (max_conditions == -1 or num_conditions < max_conditions):
                 found_refinement = False
 
                 # Sub-sample features, if necessary...
@@ -366,7 +366,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
-                    if best_condition_covered_weights > MIN_COVERAGE:
+                    if best_condition_covered_weights > min_coverage:
                         # Inform the loss function about the weights of the examples that are covered by the current
                         # rule...
                         loss.set_sub_sample(covered_example_indices, weights)

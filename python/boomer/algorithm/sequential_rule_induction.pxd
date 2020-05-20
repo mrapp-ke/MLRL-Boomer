@@ -39,6 +39,10 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
     cdef Shrinkage shrinkage
 
+    cdef intp min_coverage
+
+    cdef intp max_conditions
+
     # Functions:
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
