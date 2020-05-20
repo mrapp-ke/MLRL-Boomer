@@ -25,7 +25,7 @@ cdef class PeakLiftFunction(LiftFunction):
     decreases after that point.
     """
 
-    def __cinit__(self, intp num_labels, float64 peak_label, float64 max_lift, float64 curvature):
+    def __cinit__(self, intp num_labels, intp peak_label, float64 max_lift, float64 curvature):
         """
         :param num_labels: The maximum number of labels predictable in the set. Must be more than zero
         :param peak_label: The number of labels for which the relaxation lift is maximal. Must be in [1,num_labels]
@@ -45,12 +45,12 @@ cdef class PeakLiftFunction(LiftFunction):
         if label_count < self.peak_label:
             normalization = (label_count - 1.0) / (self.peak_label - 1.0)
         elif label_count > self.peak_label:
-            normalization = (label_count - self.num_labels) / (self.num_labels - self.peak_label)
+            normalization = (label_count - self.num_labels) / <float64> (self.num_labels - self.peak_label)
         else:
             return self.max_lift
 
         boost = 1.0 + pow(normalization, self.exponent) * (self.max_lift - 1.0)
         return boost
 
-cdef float64 get_maximum_lift(self):
-    return self.maximum_lift
+    cdef float64 get_maximum_lift(self):
+        return self.max_lift
