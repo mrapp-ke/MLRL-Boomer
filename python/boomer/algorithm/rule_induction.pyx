@@ -40,7 +40,7 @@ cdef class RuleInduction:
                           intp[::1] x_col_indices, uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                          intp min_coverage, intp max_condition, RNG rng):
+                          intp min_coverage, intp max_conditions, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
