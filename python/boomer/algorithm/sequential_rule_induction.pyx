@@ -48,7 +48,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
     def __cinit__(self, bint default_rule_at_end, RuleInduction rule_induction, HeadRefinement head_refinement,
                   Loss loss, list stopping_criteria, LabelSubSampling label_sub_sampling,
                   InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
-                  Shrinkage shrinkage):
+                  Shrinkage shrinkage, intp min_coverage, intp max_conditions):
         """
         :param default_rule_at_end:     True, if the default rule should be located at the end, False, if it should be
                                         located at the start
@@ -68,6 +68,10 @@ cdef class RuleListInduction(SequentialRuleInduction):
                                         be used
         :param shrinkage:               The strategy that should be used for shrinking the weights of rule, or None if
                                         no shrinkage should be used
+        :param min_coverage:            The minimum number of training examples that must be covered by a rule. Must be
+                                        at least 1
+        :param max_conditions:          The maximum number of conditions to be included in a rule's body. Must be at
+                                        least 1 or -1, if the number of conditions should not be restricted
         """
         self.default_rule_at_end = default_rule_at_end
         self.rule_induction = rule_induction
@@ -79,6 +83,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
         self.shrinkage = shrinkage
+        self.min_coverage = min_coverage
+        self.max_conditions = max_conditions
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
                               intp[::1] x_col_indices, uint8[::1, :] y, uint32 random_state):
@@ -93,6 +99,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef FeatureSubSampling feature_sub_sampling = self.feature_sub_sampling
         cdef Pruning pruning = self.pruning
         cdef Shrinkage shrinkage = self.shrinkage
+        cdef intp min_coverage = self.min_coverage
+        cdef intp max_conditions = self.max_conditions
         cdef RNG rng = RNG.__new__(RNG, random_state)
         # The list that contains the induced rules
         cdef list rule_list = []
@@ -112,7 +120,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
             # Induce a new rule
             rule = rule_induction.induce_rule(nominal_attribute_indices, x_data, x_row_indices, x_col_indices, y,
                                               head_refinement, loss, label_sub_sampling, instance_sub_sampling,
-                                              feature_sub_sampling, pruning, shrinkage, rng)
+                                              feature_sub_sampling, pruning, shrinkage, min_coverage, max_conditions,
+                                              rng)
             rule_list.append(rule)
             num_rules += 1
 

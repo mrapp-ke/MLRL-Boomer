@@ -11,8 +11,12 @@ from boomer.algorithm.head_refinement cimport HeadCandidate
 from boomer.algorithm.losses cimport Prediction
 
 from libc.stdlib cimport qsort
+
 from libcpp.list cimport list
+from libcpp.pair cimport pair
+
 from cython.operator cimport dereference, postincrement
+
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
@@ -35,7 +39,8 @@ cdef class RuleInduction:
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
                           intp[::1] x_col_indices, uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, RNG rng):
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp min_coverage, intp max_condition, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -63,6 +68,10 @@ cdef class RuleInduction:
                                             should be used
         :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if
                                             no shrinkage should be used
+        :param min_coverage:                The minimum number of training examples that must be covered by the rule.
+                                            Must be at least 1
+        :param max_conditions:              The maximum number of conditions to be included in the rule's body. Must be
+                                            at least 1 or -1, if the number of conditions should not be restricted
         :param rng:                         The random number generator to be used
         :return:                            The rule that has been induced or None, if no rule could be induced
         """
@@ -104,7 +113,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
                           intp[::1] x_col_indices, uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, RNG rng):
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp min_coverage, intp max_conditions, RNG rng):
         # The total number of examples in the training data set
         cdef intp num_examples = x_data.shape[0]
         # The total number of features in the training data set
@@ -128,6 +138,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Comparator best_condition_comparator
         cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_index
         cdef float32 best_condition_threshold
+        cdef intp best_condition_covered_weights
         cdef IndexedValue* best_condition_indexed_values
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
@@ -157,12 +168,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp c, f, r, i, first_r, previous_r
 
         # Sub-sample examples, if necessary...
+        cdef pair[uint32[::1], intp] instance_sub_sampling_result
         cdef uint32[::1] weights
+        cdef intp total_sum_of_weights, sum_of_weights
 
         if instance_sub_sampling is None:
             weights = None
+            total_sum_of_weights = num_examples
         else:
-            weights = instance_sub_sampling.sub_sample(num_examples, rng)
+            instance_sub_sampling_result = instance_sub_sampling.sub_sample(num_examples, rng)
+            weights = instance_sub_sampling_result.first
+            total_sum_of_weights = instance_sub_sampling_result.second
 
         loss.set_sub_sample(covered_example_indices, weights)
 
@@ -176,8 +192,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
-            # anymore...
-            while found_refinement:
+            # anymore or the maximum number of conditions has been reached...
+            while found_refinement and (max_conditions == -1 or num_conditions < max_conditions):
                 found_refinement = False
 
                 # Sub-sample features, if necessary...
@@ -243,10 +259,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Reset the loss function when processing a new feature...
                     loss.begin_search(label_indices)
-
-                    # Traverse examples in descending order until the first example with weight > 0 is encountered...
+                    sum_of_weights = 0
                     first_r = num_non_zero_feature_values - 1
 
+                    # Traverse examples in descending order until the first example with weight > 0 is encountered...
                     for r in range(num_non_zero_feature_values - 1, -1, -1):
                         i = indexed_values[r].index
                         weight = 1 if weights is None else weights[i]
@@ -254,6 +270,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         if weight > 0:
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
+                            sum_of_weights += weight
                             previous_threshold = indexed_values[r].value
                             previous_r = r
                             break
@@ -283,6 +300,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_end = r
                                     best_condition_previous = previous_r
                                     best_condition_index = f
+                                    best_condition_covered_weights = sum_of_weights
                                     best_condition_indexed_values = indexed_values
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
 
@@ -306,6 +324,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_end = r
                                     best_condition_previous = previous_r
                                     best_condition_index = f
+                                    best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
                                     best_condition_indexed_values = indexed_values
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
 
@@ -320,6 +339,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 # not be covered by the next condition...
                                 if nominal:
                                     loss.begin_search(label_indices)
+                                    sum_of_weights = 0
                                     first_r = r
 
                             previous_threshold = current_threshold
@@ -327,6 +347,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
+                            sum_of_weights += weight
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
@@ -358,11 +379,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
-                    # FIXME: num_covered does also include examples that are not included in the sub-sample
-                    if num_covered > 1:
+                    if best_condition_covered_weights > min_coverage:
                         # Inform the loss function about the weights of the examples that are covered by the current
                         # rule...
                         loss.set_sub_sample(covered_example_indices, weights)
+                        total_sum_of_weights = best_condition_covered_weights
                     else:
                         # Abort refinement process if rule covers a single example...
                         break
