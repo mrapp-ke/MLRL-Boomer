@@ -319,11 +319,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             loss.update_search(i, weight)
 
                 if found_refinement:
-                    # If a refinement has been found, add the new condition...
+                    # If a refinement has been found, add the new condition and update the labels for which the rule
+                    # predicts...
                     conditions.push_back(__make_condition(best_condition_index, best_condition_comparator,
                                                           best_condition_threshold))
                     num_conditions += 1
                     num_conditions_per_comparator[<intp>best_condition_comparator] += 1
+                    label_indices = head.label_indices
 
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
@@ -333,13 +335,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # the covered from the uncovered examples. However, when taking into account the examples that are
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_condition_end` and therefore must be adjusted...
-                    if instance_sub_sampling is not None and best_condition_previous - best_condition_end > 1:
+                    if weights is not None and best_condition_previous - best_condition_end > 1:
                         best_condition_end = __adjust_split(x, best_condition_sorted_indices, best_condition_end,
                                                             best_condition_previous, best_condition_index,
                                                             best_condition_threshold)
 
-                    # Update the examples and labels for which the rule predicts...
-                    label_indices = head.label_indices
+                    # Identify the examples for which the rule predicts...
                     __filter_current_indices(best_condition_sorted_indices, num_examples, best_condition_index_array,
                                              best_condition_start, best_condition_end, best_condition_index,
                                              best_condition_comparator, num_conditions)
