@@ -13,7 +13,7 @@ cdef class LiftFunction:
         """
         pass
 
-    cdef float64 get_maximum_lift(self):
+    cdef float64 get_max_lift(self):
         """
         :return: The relaxation lift at the peak label
         """
@@ -52,5 +52,5 @@ cdef class PeakLiftFunction(LiftFunction):
         boost = 1.0 + pow(normalization, self.exponent) * (self.max_lift - 1.0)
         return boost
 
-    cdef float64 get_maximum_lift(self):
+    cdef float64 get_max_lift(self):
         return self.max_lift

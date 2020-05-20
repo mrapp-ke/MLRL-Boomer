@@ -188,7 +188,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
             current_head_candidate[current_head_candidate_length] = sorted_indices[c2]
             current_head_candidate_length += 1
 
-            maximum_lift = lift.get_maximum_lift()
+            maximum_lift = lift.get_max_lift()
 
             for c2 in range(0, current_head_candidate_length):
                 total_quality_score += quality_scores[current_head_candidate[c2]]
