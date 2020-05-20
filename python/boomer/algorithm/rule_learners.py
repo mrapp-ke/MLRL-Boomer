@@ -449,7 +449,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
         if lift_function == LIFT_FUNCTION_PEAK:
             # TODO: Example configuration
-            return PeakLiftFunction(stats.num_labels, stats.num_labels / 2, 1.5, 1.0)
+            return PeakLiftFunction(stats.num_labels, int(stats.num_labels / 2), 2.0, 1.0)
         raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift))
 
     def __create_head_refinement(self, lift_function: LiftFunction) -> HeadRefinement:

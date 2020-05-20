@@ -10,9 +10,9 @@ cdef class PeakLiftFunction(LiftFunction):
 
     # Attributes:
 
-    cdef float64 num_labels
+    cdef intp num_labels
 
-    cdef float64 peak_label
+    cdef intp peak_label
 
     cdef float64 max_lift
 
