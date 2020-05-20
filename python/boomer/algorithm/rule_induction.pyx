@@ -338,7 +338,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # the covered from the uncovered examples. However, when taking into account the examples that are
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_condition_end` and therefore must be adjusted...
-                    if instance_sub_sampling is not None and best_condition_previous - best_condition_end > 1:
+                    if weights is not None and best_condition_previous - best_condition_end > 1:
                         best_condition_end = __adjust_split(x, best_condition_sorted_indices, best_condition_end,
                                                             best_condition_previous, best_condition_index,
                                                             best_condition_threshold)
