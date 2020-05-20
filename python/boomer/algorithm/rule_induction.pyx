@@ -11,8 +11,12 @@ from boomer.algorithm.head_refinement cimport HeadCandidate
 from boomer.algorithm.losses cimport Prediction
 
 from libc.stdlib cimport qsort
+
 from libcpp.list cimport list
+from libcpp.pair cimport pair
+
 from cython.operator cimport dereference, postincrement
+
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
@@ -147,12 +151,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp c, f, r, i, first_r, previous_r
 
         # Sub-sample examples, if necessary...
+        cdef pair[uint32[::1], intp] instance_sub_sampling_result
         cdef uint32[::1] weights
+        cdef intp total_sum_of_weights, sum_of_weights
 
         if instance_sub_sampling is None:
             weights = None
+            total_sum_of_weights = num_examples
         else:
-            weights = instance_sub_sampling.sub_sample(num_examples, rng)
+            instance_sub_sampling_result = instance_sub_sampling.sub_sample(num_examples, rng)
+            weights = instance_sub_sampling_result.first
+            total_sum_of_weights = instance_sub_sampling_result.second
 
         loss.set_sub_sample(covered_example_indices, weights)
 
