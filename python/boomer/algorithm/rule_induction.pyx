@@ -79,16 +79,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.sorted_indices_map_global = new map[intp, intp*]()
+        self.sorted_indices_map_global = new map[intp, IndexedArray*]()
 
     def __dealloc__(self):
-        cdef map[intp, intp*]* sorted_indices_map_global = self.sorted_indices_map_global
-        cdef map[intp, intp*].iterator iterator = dereference(sorted_indices_map_global).begin()
-        cdef intp* value
+        cdef map[intp, IndexedArray*]* sorted_indices_map_global = self.sorted_indices_map_global
+        cdef map[intp, IndexedArray*].iterator iterator = dereference(sorted_indices_map_global).begin()
+        cdef IndexedArray* indexed_array
 
         while iterator != dereference(sorted_indices_map_global).end():
-            value = dereference(iterator).second
-            free(value)
+            indexed_array = dereference(iterator).second
+            free(dereference(indexed_array).data)
+            free(indexed_array)
             postincrement(iterator)
 
         del self.sorted_indices_map_global
@@ -104,6 +105,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           intp[::1] x_col_indices, uint8[::1, :] y, HeadRefinement head_refinement, Loss loss,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, RNG rng):
+        # The total number of examples in the training data set
+        cdef intp num_examples = x_data.shape[0]
+        # The total number of features in the training data set
+        cdef intp num_features = x_col_indices.shape[0] - 1
+        # The total number of labels in the training data set
+        cdef intp num_labels = y.shape[1]
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -121,21 +128,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Comparator best_condition_comparator
         cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_index
         cdef float32 best_condition_threshold
-        cdef intp* best_condition_sorted_indices
-        cdef IndexArray* best_condition_index_array
+        cdef IndexedValue* best_condition_indexed_values
+        cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the examples that should be used for finding the best refinement
-        cdef map[intp, intp*]* sorted_indices_map_global = self.sorted_indices_map_global
-        cdef map[intp, IndexArray*] sorted_indices_map_local  # Stack-allocated map
-        cdef map[intp, IndexArray*].iterator sorted_indices_iterator
-        cdef IndexArray* index_array
-        cdef intp* sorted_indices
-
-        cdef intp num_examples = x.shape[0]
+        cdef map[intp, IndexedArray*]* sorted_indices_map_global = self.sorted_indices_map_global
+        cdef IndexedArray* indexed_array
+        cdef map[intp, IndexedArrayWrapper*] sorted_indices_map_local  # Stack-allocated map
+        cdef map[intp, IndexedArrayWrapper*].iterator indexed_array_wrapper_iterator
+        cdef IndexedArrayWrapper* indexed_array_wrapper
+        cdef IndexedValue* indexed_values
         cdef intp num_covered = num_examples
+        cdef intp num_non_zero_feature_values
 
         # Variables for specifying the features used for finding the best refinement
-        cdef intp num_features = x.shape[1]
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
         cdef intp next_nominal_f = -1
         cdef intp[::1] feature_indices
@@ -166,7 +172,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         if label_sub_sampling is None:
             label_indices = None
         else:
-            label_indices = label_sub_sampling.sub_sample(y.shape[1], rng)
+            label_indices = label_sub_sampling.sub_sample(num_labels, rng)
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
@@ -196,33 +202,32 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Obtain array that contains the indices of the training examples sorted according to the current
                     # feature...
-                    index_array = sorted_indices_map_local[f]
+                    indexed_array_wrapper = sorted_indices_map_local[f]
 
-                    if index_array == NULL:
-                        index_array = <IndexArray*>malloc(sizeof(IndexArray))
-                        dereference(index_array).data = NULL
-                        dereference(index_array).num_elements = 0
-                        dereference(index_array).num_conditions = 0
-                        sorted_indices_map_local[f] = index_array
+                    if indexed_array_wrapper == NULL:
+                        indexed_array_wrapper = <IndexedArrayWrapper*>malloc(sizeof(IndexedArrayWrapper))
+                        dereference(indexed_array_wrapper).array = NULL
+                        dereference(indexed_array_wrapper).num_conditions = 0
+                        sorted_indices_map_local[f] = indexed_array_wrapper
 
-                    sorted_indices = dereference(index_array).data
+                    indexed_array = dereference(indexed_array_wrapper).array
 
-                    if sorted_indices == NULL:
-                        num_examples = x.shape[0]
-                        sorted_indices = dereference(sorted_indices_map_global)[f]
+                    if indexed_array == NULL:
+                        indexed_array = dereference(sorted_indices_map_global)[f]
 
-                        if sorted_indices == NULL:
-                            sorted_indices = __argsort_by_feature_values(x[:, f])
-                            dereference(sorted_indices_map_global)[f] = sorted_indices
-                    else:
-                        num_examples = dereference(index_array).num_elements
+                        if indexed_array == NULL:
+                            indexed_array = __argsort_by_feature_values(x_data, x_row_indices, x_col_indices, f)
+                            dereference(sorted_indices_map_global)[f] = indexed_array
 
                     # Filter indices, if only a subset of the contained examples is covered...
-                    if num_conditions > dereference(index_array).num_conditions:
+                    if num_conditions > dereference(indexed_array_wrapper).num_conditions:
+                        # TODO Check arguments
                         __filter_any_indices(x, sorted_indices, num_examples, index_array, conditions, num_conditions,
                                              num_covered)
-                        sorted_indices = dereference(index_array).data
-                        num_examples = dereference(index_array).num_elements
+                        indexed_array = dereference(indexed_array_wrapper).array
+
+                    num_non_zero_feature_values = dereference(indexed_array).num_elements
+                    indexed_values = dereference(indexed_array).data
 
                     # Check if feature is nominal...
                     if f == next_nominal_f:
@@ -240,27 +245,28 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     loss.begin_search(label_indices)
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
-                    first_r = num_examples - 1
+                    first_r = num_non_zero_feature_values - 1
 
-                    for r in range(num_examples - 1, -1, -1):
-                        i = sorted_indices[r]
+                    for r in range(num_non_zero_feature_values - 1, -1, -1):
+                        i = indexed_values[r].index
                         weight = 1 if weights is None else weights[i]
 
                         if weight > 0:
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
-                            previous_threshold = x[i, f]
+                            previous_threshold = indexed_values[r].value
                             previous_r = r
                             break
 
                     # Traverse the remaining examples in descending order...
+                    # TODO explicitly handle zero feature values
                     for r in range(r - 1, -1, -1):
-                        i = sorted_indices[r]
+                        i = indexed_values[r].index
                         weight = 1 if weights is None else weights[i]
 
                         # Do only consider examples that are included in the current sub-sample...
                         if weight > 0:
-                            current_threshold = x[i, f]
+                            current_threshold = indexed_values[r].value
 
                             # Split points between examples with the same feature value must not be considered...
                             if previous_threshold != current_threshold:
@@ -277,8 +283,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_end = r
                                     best_condition_previous = previous_r
                                     best_condition_index = f
-                                    best_condition_sorted_indices = sorted_indices
-                                    best_condition_index_array = index_array
+                                    best_condition_indexed_values = indexed_values
+                                    best_condition_indexed_array_wrapper = indexed_array_wrapper
 
                                     if nominal:
                                         best_condition_comparator = Comparator.EQ
@@ -300,8 +306,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_end = r
                                     best_condition_previous = previous_r
                                     best_condition_index = f
-                                    best_condition_sorted_indices = sorted_indices
-                                    best_condition_index_array = index_array
+                                    best_condition_indexed_values = indexed_values
+                                    best_condition_indexed_array_wrapper = indexed_array_wrapper
 
                                     if nominal:
                                         best_condition_comparator = Comparator.NEQ
@@ -323,11 +329,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             loss.update_search(i, weight)
 
                 if found_refinement:
-                    # If a refinement has been found, add the new condition...
+                    # If a refinement has been found, add the new condition and update the labels for which the rule
+                    # predicts...
                     conditions.push_back(__make_condition(best_condition_index, best_condition_comparator,
                                                           best_condition_threshold))
                     num_conditions += 1
                     num_conditions_per_comparator[<intp>best_condition_comparator] += 1
+                    label_indices = head.label_indices
 
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
@@ -337,19 +345,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # the covered from the uncovered examples. However, when taking into account the examples that are
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_condition_end` and therefore must be adjusted...
-                    if instance_sub_sampling is not None and best_condition_previous - best_condition_end > 1:
-                        best_condition_end = __adjust_split(x, best_condition_sorted_indices, best_condition_end,
+                    if weights is not None and best_condition_previous - best_condition_end > 1:
+                        best_condition_end = __adjust_split(best_condition_indexed_values, best_condition_end,
                                                             best_condition_previous, best_condition_index,
                                                             best_condition_threshold)
 
-                    # Update the examples and labels for which the rule predicts...
-                    label_indices = head.label_indices
+                    # Update the examples for which the rule predicts...
+                    # TODO Check arguments
                     __filter_current_indices(best_condition_sorted_indices, num_examples, best_condition_index_array,
                                              best_condition_start, best_condition_end, best_condition_index,
                                              best_condition_comparator, num_conditions)
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
+                    # FIXME: num_covered does also include examples that are not included in the sub-sample
                     if num_covered > 1:
                         # Inform the loss function about the weights of the examples that are covered by the current
                         # rule...
@@ -368,12 +377,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
+                        # TODO revise pruning
                         pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
                         covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
                         num_covered = covered_example_indices.shape[0]
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
+                    # TODO revise re-calculation of predicted scores
                     loss.begin_search(label_indices)
 
                     for r in range(num_covered):
@@ -394,43 +405,56 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
         finally:
             # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
-            sorted_indices_iterator = sorted_indices_map_local.begin()
+            indexed_array_wrapper_iterator = sorted_indices_map_local.begin()
 
-            while sorted_indices_iterator != sorted_indices_map_local.end():
-                index_array = dereference(sorted_indices_iterator).second
-                free(dereference(index_array).data)
-                free(index_array)
-                postincrement(sorted_indices_iterator)
+            while indexed_array_wrapper_iterator != sorted_indices_map_local.end():
+                indexed_array_wrapper = dereference(indexed_array_wrapper_iterator).second
+                indexed_array = dereference(indexed_array_wrapper).array
+                indexed_values = dereference(indexed_array).data
+                free(indexed_values)
+                free(indexed_array)
+                free(indexed_array_wrapper)
+                postincrement(indexed_array_wrapper_iterator)
 
 
-cdef inline intp* __argsort_by_feature_values(float32[::1] feature_values):
+cdef inline IndexedArray* __argsort_by_feature_values(float32[::1] x_data, intp[::1] x_row_indices,
+                                                      intp[::1] x_col_indices, intp feature_index):
     """
-    Sorts the indices of the training examples in ascending order of their values for a certain feature.
+    Creates and returns a pointer to a struct of type `IndexedArray` that stores the indices of the training examples,
+    as well as their feature values for a specific feature, sorted in ascending order by the feature values.
 
-    :param feature_values:  An array of dtype float, shape `(num_examples)`, representing the values of the training
-                            examples for a certain feature
-    :return:                A pointer to a C-array of type intp, representing the sorted indices of the training
-                            examples
+    :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the non-zero
+                            feature values of the training examples
+    :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the row-indices
+                            of the examples, the values in `x_data` correspond to
+    :param x_col_indices:   An array of dtype int, shape `(num_features + 1)`, representing the indices of the first
+                            element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index at
+                            the last position is equal to `num_non_zero_feature_values`
+    :param feature_index:   The index of the feature, the feature values that should be used for sorting correspond to
+    :return:                A pointer to a struct of type `IndexedArray`
     """
-    cdef intp num_values = feature_values.shape[0]
-    cdef IndexedValue* tmp_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
-    cdef intp* sorted_array
-    cdef intp i
+    cdef intp start = x_col_indices[feature_index]
+    cdef intp end = x_col_indices[feature_index + 1]
+    cdef intp num_values = end - start
+    cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+    dereference(indexed_array).num_elements = num_values
 
-    try:
-        for i in range(num_values):
-            tmp_array[i].index = i
-            tmp_array[i].value = feature_values[i]
+    if num_values > 0:
+        cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
+        cdef intp i = 0
+        cdef intp j
 
-        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
-        sorted_array = <intp*>malloc(num_values * sizeof(intp))
+        for j in range(start, end):
+            sorted_array[i].index = x_row_indices[j]
+            sorted_array[i].value = x_data[j]
+            i += 1
 
-        for i in range(num_values):
-            sorted_array[i] = tmp_array[i].index
+        qsort(sorted_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
+        dereference(indexed_array).data = sorted_array
+    else:
+        dereference(indexed_array).data = NULL
 
-        return sorted_array
-    finally:
-        free(tmp_array)
+    return indexed_array
 
 
 cdef int __compare_indexed_value(const void* a, const void* b) nogil:
@@ -462,36 +486,33 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline intp __adjust_split(float32[::1, :] x, intp* sorted_indices, intp position_start, intp position_end,
+cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_start, intp position_end,
                                 intp feature_index, float32 threshold):
-   """
-   Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
-   not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
-   the examples in ascending order until the next example that is contained in the current sub-sample is encountered, to
-   see if they satisfy the new condition or not.
+    """
+    Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
+    not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
+    the examples in ascending order until the next example that is contained in the current sub-sample is encountered,
+    to see if they satisfy the new condition or not.
 
-   :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features of
-                           the training examples
-   :param sorted_indices:  An array of dtype int, shape `(num_examples)`, representing the indices of the examples that
-                           are covered by the previous rule when sorted in ascending order according to their feature
-                           values
-   :param position_start:  The position that separates the covered from the uncovered examples (when only taking into
-                           account the examples that are contained in the sample). This is the position to start at
-   :param position_end:    The position to stop at (exclusive, must be greater than `position_start`)
-   :param feature_index:   The index of the feature, the condition corresponds to
-   :param threshold:       The threshold of the condition
-   :return:                The adjusted position that separates the covered from the uncovered examples with respect to
-                           the examples that are not contained in the sample
-   """
-   cdef intp adjusted_position = position_start
-   cdef float32 feature_value
-   cdef intp r, i
+    :param indexed_values:  A pointer to a C-array of type `IndexedValue` that stores the indices of the training
+                            examples, as well as the corresponding feature values, sorted in ascending order according
+                            to the feature values
+    :param position_start:  The position that separates the covered from the uncovered examples (when only taking into
+                            account the examples that are contained in the sample). This is the position to start at
+    :param position_end:    The position to stop at (exclusive, must be greater than `position_start`)
+    :param feature_index:   The index of the feature, the condition corresponds to
+    :param threshold:       The threshold of the condition
+    :return:                The adjusted position that separates the covered from the uncovered examples with respect to
+                            the examples that are not contained in the sample
+    """
+    cdef intp adjusted_position = position_start
+    cdef float32 feature_value
+    cdef intp r
 
-   # Traverse the examples in ascending order until we encounter an example that is contained in the current
-   # sub-sample...
-   for r in range(position_start + 1, position_end):
-        i = sorted_indices[r]
-        feature_value = x[i, feature_index]
+    # Traverse the examples in ascending order until we encounter an example that is contained in the current
+    # sub-sample...
+    for r in range(position_start + 1, position_end):
+        feature_value = indexed_values[r].value
 
         if feature_value <= threshold:
             # The feature value at `position_start` is guaranteed to be smaller than or equal to the given `threshold`.
@@ -503,7 +524,7 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp* sorted_indices, intp po
             # are done...
             break
 
-   return adjusted_position
+    return adjusted_position
 
 
 cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices, IndexArray* index_array,
