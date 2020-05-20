@@ -345,7 +345,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                             best_condition_previous, best_condition_index,
                                                             best_condition_threshold)
 
-                    # Update the examples and labels for which the rule predicts...
+                    # Identify the examples for which the rule predicts...
                     __filter_current_indices(best_condition_sorted_indices, num_examples, best_condition_index_array,
                                              best_condition_start, best_condition_end, best_condition_index,
                                              best_condition_comparator, num_conditions, loss)
