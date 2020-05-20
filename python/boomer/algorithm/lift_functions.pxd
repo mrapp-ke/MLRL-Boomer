@@ -4,7 +4,7 @@ cdef class LiftFunction:
 
     cdef float64 eval(self, intp label_count);
 
-    cdef float64 get_maximum_lift(self);
+    cdef float64 get_max_lift(self);
 
 cdef class PeakLiftFunction(LiftFunction):
 
@@ -22,4 +22,4 @@ cdef class PeakLiftFunction(LiftFunction):
 
     cdef float64 eval(self, intp label_count);
 
-    cdef float64 get_maximum_lift(self);
+    cdef float64 get_max_lift(self);
