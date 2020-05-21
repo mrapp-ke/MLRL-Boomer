@@ -149,8 +149,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef map[intp, IndexedArrayWrapper*].iterator indexed_array_wrapper_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
+        cdef intp num_indexed_values
         cdef intp num_covered = num_examples
-        cdef intp num_non_zero_feature_values
 
         # Variables for specifying the features used for finding the best refinement
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
@@ -242,7 +242,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                              num_covered)
                         indexed_array = dereference(indexed_array_wrapper).array
 
-                    num_non_zero_feature_values = dereference(indexed_array).num_elements
+                    num_indexed_values = dereference(indexed_array).num_elements
                     indexed_values = dereference(indexed_array).data
 
                     # Check if feature is nominal...
@@ -260,10 +260,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # Reset the loss function when processing a new feature...
                     loss.begin_search(label_indices)
                     sum_of_weights = 0
-                    first_r = num_non_zero_feature_values - 1
+                    first_r = num_indexed_values - 1
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
-                    for r in range(num_non_zero_feature_values - 1, -1, -1):
+                    for r in range(first_r, -1, -1):
                         i = indexed_values[r].index
                         weight = 1 if weights is None else weights[i]
 
