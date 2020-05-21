@@ -373,9 +373,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Identify the examples for which the rule predicts...
                     # TODO Check arguments
-                    __filter_current_indices(best_condition_sorted_indices, num_examples, best_condition_index_array,
-                                             best_condition_start, best_condition_end, best_condition_index,
-                                             best_condition_comparator, num_conditions)
+                    __filter_current_indices(best_condition_indexed_values, num_indexed_values,
+                                             best_condition_indexed_array_wrapper, best_condition_start,
+                                             best_condition_end, best_condition_index, best_condition_comparator,
+                                             num_conditions)
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
@@ -548,20 +549,22 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
     return adjusted_position
 
 
-cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices, IndexArray* index_array,
-                                          intp condition_start, intp condition_end, intp condition_index,
-                                          Comparator condition_comparator, intp num_conditions):
+cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
+                                          IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
+                                          intp condition_end, intp condition_index, Comparator condition_comparator,
+                                          intp num_conditions):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
     covered by the new rule. The filtered array is stored in a given struct of type `IndexArray`.
 
-    :param sorted_indices:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
-                                    of the training examples that are covered by the previous rule in ascending order of
-                                    values for the feature, the new condition corresponds to
-    :param num_indices:             The number of elements in the array `sorted_indices`
-    :param index_array:             A pointer to a struct of type `IndexArray` that should be used to store the filtered
-                                    array
+    :param indexed_values:          A pointer to a C-array of type `IndexedValue` that stores the indices of the
+                                    training examples that are covered by the previous rule, as well as their feature
+                                    values for the feature, the new condition corresponds to, sorted in ascending order
+                                    according to the feature values
+    :param num_indexed_values:      The number of elements in the array `indexed_values`
+    :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
+                                    filtered array
     :param condition_start:         The element in `sorted_indices` that corresponds to the first example (inclusive)
                                     that has been passed to the loss function when searching for the new condition (must
                                     be greater than `condition_end`)
@@ -572,6 +575,7 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
     """
+    # TODO Re-implement
     cdef intp num_covered = condition_start - condition_end
     cdef intp r, first, last, index
 
