@@ -3,8 +3,6 @@
 
 Provides model classes that are used to build rule-based models.
 """
-from boomer.algorithm._arrays cimport array_intp, array_float32
-
 import numpy as np
 
 
