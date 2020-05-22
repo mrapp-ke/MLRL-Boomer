@@ -268,7 +268,7 @@ cdef class Rule:
 
     cpdef predict(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted = None):
         """
-        Applies the rule's prediction to all examples it covers.
+        Applies the rule's prediction to a matrix of predictions for all examples it covers.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the examples to predict for
