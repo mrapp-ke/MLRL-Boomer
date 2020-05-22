@@ -273,8 +273,8 @@ cdef class Rule:
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the examples to predict for
-        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
-                                predicted for the given examples
+        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                predictions of individual examples and labels
         :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, representing the labels
                                 per example for which a prediction has already been made
         """
