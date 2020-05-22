@@ -273,6 +273,8 @@ cdef class Rule:
         Applies the rule's prediction to a matrix of predictions for all examples it covers. Optionally, the prediction
         can be restricted to certain examples and labels.
 
+        The feature matrix must be given as a dense C-contiguous array.
+
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the examples to predict for
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
