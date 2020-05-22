@@ -428,4 +428,4 @@ cdef class Rule:
                 mask_row = None if mask is None else mask[r, :]
                 head.predict(predictions[r, :], mask_row)
 
-            n += 1
+            current_n += 1
