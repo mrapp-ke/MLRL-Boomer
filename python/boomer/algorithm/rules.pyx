@@ -233,16 +233,17 @@ cdef class PartialHead(Head):
         cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
         cdef intp num_labels = label_indices.shape[0]
-        cdef intp c, label
+        cdef intp c, l
 
         for c in range(num_labels):
-            label = label_indices[c]
+            l = label_indices[c]
+
             if predicted is not None:
-                if not predicted[label]:
-                    predictions[label] = scores[c]
-                    predicted[label] = 1
+                if not predicted[l]:
+                    predictions[l] = scores[c]
+                    predicted[l] = 1
             else:
-                predictions[label] += scores[c]
+                predictions[l] += scores[c]
 
 
 cdef class Rule:
