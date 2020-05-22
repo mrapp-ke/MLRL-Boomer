@@ -3,7 +3,7 @@
 
 Provides model classes that are used to build rule-based models.
 """
-from boomer.algorithm._arrays cimport array_intp
+from boomer.algorithm._arrays cimport array_intp, array_float32
 
 import numpy as np
 
@@ -406,7 +406,7 @@ cdef class Rule:
         cdef Head head = self.head
         cdef intp num_examples = x_row_indices.shape[0] - 1
         cdef intp num_features = predictions.shape[1]
-        cdef intp[::1] tmp_array1 = array_float32(num_features)
+        cdef float32[::1] tmp_array1 = array_float32(num_features)
         cdef intp[::1] tmp_array2 = array_intp(num_features)
         tmp_array2[:] = 0
         cdef uint8[::1] mask_row
