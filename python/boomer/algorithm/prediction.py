@@ -9,7 +9,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-from boomer.algorithm.model import Theory, DTYPE_FLOAT64, DTYPE_INTP
+from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_FLOAT64
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
 
@@ -91,9 +91,9 @@ class DecisionList(Prediction):
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
         predictions = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
-        predicted = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_INTP, order='C')
+        mask = np.ones((x.shape[0], stats.num_labels), dtype=DTYPE_UINT8, order='C')
 
         for rule in theory:
-            rule.predict(x, predictions, predicted)
+            rule.predict(x, predictions, mask)
 
         return predictions
