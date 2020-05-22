@@ -187,8 +187,8 @@ cdef class ConjunctiveBody(Body):
 
         for i in range(num_non_zero_feature_values):
             c = example_indices[i]
-            tmp_array2[c] = n
             tmp_array1[c] = example_data[i]
+            tmp_array2[c] = n
 
         cdef intp[::1] feature_indices = self.leq_feature_indices
         cdef float32[::1] thresholds = self.leq_thresholds
