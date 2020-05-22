@@ -49,7 +49,7 @@ class LinearCombination(Ranking):
     """
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        predictions = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64))
+        predictions = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
 
         for rule in theory:
             rule.predict(x, predictions)
@@ -90,8 +90,8 @@ class DecisionList(Prediction):
     """
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        predictions = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64))
-        predicted = np.asfortranarray(np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_INTP))
+        predictions = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
+        predicted = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_INTP, order='C')
 
         for rule in theory:
             rule.predict(x, predictions, predicted)
