@@ -7,12 +7,18 @@ cdef class Body:
 
     cdef bint covers(self, float32[::1] example)
 
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            intp[::1] tmp_array2, intp n)
+
 
 cdef class EmptyBody(Body):
 
     # Functions:
 
     cdef bint covers(self, float32[::1] example)
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            intp[::1] tmp_array2, intp n)
 
 
 cdef class ConjunctiveBody(Body):
@@ -38,6 +44,9 @@ cdef class ConjunctiveBody(Body):
     # Functions:
 
     cdef bint covers(self, float32[::1] example)
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            intp[::1] tmp_array2, intp n)
 
 
 cdef class Head:
