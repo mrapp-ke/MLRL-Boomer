@@ -27,6 +27,7 @@ from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCr
 from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+from scipy.sparse import issparse
 
 from boomer.algorithm.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
@@ -155,15 +156,39 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
-        # Create a dense representation of the given examples
-        x = self._ensure_input_format(x)
-
-        # Convert feature matrix into Fortran-contiguous array
-        x = np.ascontiguousarray(x, dtype=DTYPE_FLOAT32)
-
         prediction = self._create_prediction()
         prediction.random_state = self.random_state
-        return prediction.predict(stats, model, x)
+        sparse_format = 'csr'
+        enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
+        x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
+
+        if enforce_sparse:
+            return prediction.predict_csr(stats, model, x)
+        else:
+            x = np.ascontiguousarray(self._ensure_input_format(x))
+            return prediction.predict(stats, model, x)
+
+    @staticmethod
+    def __should_enforce_sparse(m, sparse_format: str = 'csr') -> bool:
+        """
+        Returns whether it is preferable to convert a matrix into a scipy.sparse.csr_matrix or scipy.sparse.csc_matrix,
+        depending on how much memory the sparse matrix will occupy compared to a dense matrix.
+
+        :param m:               The np.ndarray or scipy.sparse.matrix to be checked
+        :param sparse_format:   The sparse format to be used. Must be 'csr' or 'csc'
+        :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given
+                                format, False otherwise
+        """
+        if issparse(m):
+            num_non_zero = m.nnz
+            num_pointers = m.shape[1 if sparse_format == 'csc' else 0]
+            size_int = np.dtype(DTYPE_INTP).itemsize
+            size_float = np.dtype(DTYPE_FLOAT32).itemsize
+            size_sparse = (num_non_zero * size_float) + (num_non_zero * size_int) + (num_pointers * size_int)
+            size_dense = np.prod(m.shape) * size_float
+            return size_sparse < size_dense
+
+        return False
 
     @abstractmethod
     def _create_prediction(self) -> Prediction:
