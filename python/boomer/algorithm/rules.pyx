@@ -3,6 +3,8 @@
 
 Provides model classes that are used to build rule-based models.
 """
+from boomer.algorithm._arrays cimport array_intp
+
 import numpy as np
 
 
@@ -21,10 +23,34 @@ cdef class Body:
         """
         Returns whether a certain example is covered by the body, or not.
 
+        The feature values of the example must be given as a dense C-contiguous array.
+
         :param example: An array of dtype float, shape `(num_features)`, representing the features of an example
         :return:        1, if the example is covered, 0 otherwise
         """
         pass
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            intp[::1] tmp_array2, intp n):
+        """
+        Returns whether a certain example is covered by the body, or not.
+
+        The feature values of the example must be given as a sparse array.
+
+        :param example_data:    An array of dtype float, shape `(num_non_zero_feature_values), representing the non-zero
+                                feature values of the training examples
+        :param example_indices: An array of dtype int, shape `(num_non_zero_feature_values)`, representing the indices
+                                of the features, the values in `example_data` correspond to
+        :param tmp_array1:      An array of dtype float, shape `(num_features)` that is used to temporarily store
+                                non-zero feature values. May contain arbitrary values
+        :param tmp_array2:      An array of dtype intp, shape `(num_features)` that is used to temporarily keep track of
+                                the feature indices with non-zero feature values. Must not contain any elements with
+                                value `n`
+        :param n:               An arbitrary number. If this function is called multiple times for different examples,
+                                but using the same `tmp_array2`, the number must be unique for each of the function
+                                invocations
+        :return:                1, if the example is covered, 0 otherwise
+        """
 
 
 cdef class EmptyBody(Body):
@@ -39,6 +65,10 @@ cdef class EmptyBody(Body):
         pass
 
     cdef bint covers(self, float32[::1] example):
+        return True
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            intp[::1] tmp_array2, intp n):
         return True
 
 
@@ -146,6 +176,63 @@ cdef class ConjunctiveBody(Body):
             c = feature_indices[i]
 
             if example[c] == thresholds[i]:
+                return False
+
+        return True
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            intp[::1] tmp_array2, intp n):
+        cdef intp num_non_zero_feature_values = example_data.shape[0]
+        cdef intp i, c
+
+        for i in range(num_non_zero_feature_values):
+            c = example_indices[i]
+            tmp_array2[c] = n
+            tmp_array1[c] = example_data[i]
+
+        cdef intp[::1] feature_indices = self.leq_feature_indices
+        cdef float32[::1] thresholds = self.leq_thresholds
+        cdef intp num_conditions = feature_indices.shape[0]
+        cdef float32 feature_value
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value > thresholds[i]:
+                return False
+
+        feature_indices = self.gr_feature_indices
+        thresholds = self.gr_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value <= thresholds[i]:
+                return False
+
+        feature_indices = self.eq_feature_indices
+        thresholds = self.eq_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value != thresholds[i]:
+                return False
+
+        feature_indices = self.neq_feature_indices
+        thresholds = self.neq_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value == thresholds[i]:
                 return False
 
         return True
@@ -318,6 +405,10 @@ cdef class Rule:
         cdef Body body = self.body
         cdef Head head = self.head
         cdef intp num_examples = x_row_indices.shape[0] - 1
+        cdef intp num_features = predictions.shape[1]
+        cdef intp[::1] tmp_array1 = array_float32(num_features)
+        cdef intp[::1] tmp_array2 = array_intp(num_features)
+        tmp_array2[:] = 0
         cdef uint8[::1] mask_row
         cdef intp r, start, end
 
@@ -325,6 +416,6 @@ cdef class Rule:
             start = x_row_indices[r]
             end = x_row_indices[r + 1]
 
-            if body.covers(x_data[start:end], x_col_indices[start:end]):
+            if body.covers_sparse(x_data[start:end], x_col_indices[start:end], tmp_array1, tmp_array2, r + 1):
                 mask_row = None if mask is None else mask[r, :]
                 head.predict(predictions[r, :], mask_row)
