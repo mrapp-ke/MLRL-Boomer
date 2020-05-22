@@ -164,10 +164,11 @@ cdef class Head:
 
     cdef void predict(self, float64[::1] predictions, uint8[::1] mask = None):
         """
-        Applies the head's prediction to a given vector of predictions given that no prediction has yet been made.
+        Applies the head's prediction to a given vector of predictions. Optionally, the prediction can be restricted to
+        certain labels.
 
-        :param mask:        An array of dtype uint, shape `(num_labels)`, representing which labels have already been
-                            predicted.
+        :param mask:        An array of dtype uint, shape `(num_labels)`, indicating for which labels it is allowed to
+                            predict or None, if the prediction should not be restricted
         :param predictions: An array of dtype float, shape `(num_labels)`, representing a vector of predictions
         """
         pass
@@ -199,9 +200,9 @@ cdef class FullHead(Head):
 
         for c in range(num_cols):
             if mask is not None:
-                if not mask[c]:
+                if mask[c]:
                     predictions[c] += scores[c]
-                    mask[c] = True
+                    mask[c] = False
             else:
                 predictions[c] += scores[c]
 
@@ -239,9 +240,9 @@ cdef class PartialHead(Head):
             l = label_indices[c]
 
             if mask is not None:
-                if not mask[l]:
+                if mask[l]:
                     predictions[l] += scores[c]
-                    mask[l] = True
+                    mask[l] = False
             else:
                 predictions[l] += scores[c]
 
@@ -269,14 +270,16 @@ cdef class Rule:
 
     cpdef predict(self, float32[::1, :] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
         """
-        Applies the rule's prediction to a matrix of predictions for all examples it covers.
+        Applies the rule's prediction to a matrix of predictions for all examples it covers. Optionally, the prediction
+        can be restricted to certain examples and labels.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the examples to predict for
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
                                 predictions of individual examples and labels
-        :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, representing the labels
-                                per example for which a prediction has already been made
+        :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
+                                examples and labels it is allowed to predict or None, if the prediction should not be
+                                restricted
         """
         cdef Body body = self.body
         cdef Head head = self.head
@@ -286,5 +289,40 @@ cdef class Rule:
 
         for r in range(num_examples):
             if body.covers(x[r, :]):
+                mask_row = None if mask is None else mask[r, :]
+                head.predict(predictions[r, :], mask_row)
+
+    cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+                      float64[:, ::1] predictions, uint8[:, ::1] mask = None):
+        """
+        Applies the rule's predictions to a matrix of predictions for all examples it covers. Optionally, the prediction
+        can be restricted to certain examples and labels.
+
+        The feature matrix must be given in compressed sparse row (CSR) format.
+
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples
+        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
+                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
+                                index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                column-indices of the examples, the values in `x_data` correspond to
+        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                predictions of individual examples and labels
+        :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
+                                examples and labels it is allowed to predict or None, if the prediction should not be
+                                restricted
+        """
+        cdef Body body = self.body
+        cdef Head head = self.head
+        cdef intp num_examples = x_row_indices.shape[0] - 1
+        cdef intp[::1] mask_row
+        cdef intp r, start, end
+
+        for r in range(num_examples):
+            start = x_row_indices[r]
+            end = x_row_indices[r + 1]
+
+            if body.covers(x_data[start:end], x_col_indices[start:end]):
                 mask_row = None if mask is None else mask[r, :]
                 head.predict(predictions[r, :], mask_row)
