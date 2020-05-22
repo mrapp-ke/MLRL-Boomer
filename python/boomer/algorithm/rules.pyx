@@ -316,7 +316,7 @@ cdef class Rule:
         cdef Body body = self.body
         cdef Head head = self.head
         cdef intp num_examples = x_row_indices.shape[0] - 1
-        cdef intp[::1] mask_row
+        cdef uint8[::1] mask_row
         cdef intp r, start, end
 
         for r in range(num_examples):
