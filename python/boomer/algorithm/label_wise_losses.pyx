@@ -3,16 +3,15 @@
 
 Provides classes that implement loss functions that are applied example- and label-wise.
 """
-from boomer.algorithm._arrays cimport array_float64, matrix_float64
-from boomer.algorithm._utils cimport convert_label_into_score, get_index
-from boomer.algorithm._math cimport divide_or_zero_float64, l2_norm_pow
+from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
+from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp
 
 
-cdef class LabelWiseLoss(DecomposableLoss):
+cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
     """
-    A base class for all loss functions that are applied label-wise.
+    A base class for all differentiable loss functions that are applied label-wise.
     """
 
     cdef float64 _gradient(self, float64 expected_score, float64 current_score):
@@ -84,7 +83,7 @@ cdef class LabelWiseLoss(DecomposableLoss):
 
             for r in range(num_examples):
                 # Convert ground truth label into expected score...
-                expected_score = convert_label_into_score(y[r, c])
+                expected_score = _convert_label_into_score(y[r, c])
                 expected_scores[r, c] = expected_score
 
                 # Calculate gradient for the current example and label...
@@ -128,7 +127,7 @@ cdef class LabelWiseLoss(DecomposableLoss):
 
         return scores
 
-    cdef begin_instance_sub_sampling(self):
+    cdef void begin_instance_sub_sampling(self):
         # Class members
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
@@ -142,7 +141,7 @@ cdef class LabelWiseLoss(DecomposableLoss):
             total_sums_of_gradients[c] = 0
             total_sums_of_hessians[c] = 0
 
-    cdef update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -159,7 +158,7 @@ cdef class LabelWiseLoss(DecomposableLoss):
             total_sums_of_gradients[c] += gradients[example_index, c]
             total_sums_of_hessians[c] += hessians[example_index, c]
 
-    cdef begin_search(self, intp[::1] label_indices):
+    cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of labels to be considered by the upcoming search...
         cdef float64[::1] total_sums_of_gradients
         cdef intp num_labels, c
@@ -201,7 +200,7 @@ cdef class LabelWiseLoss(DecomposableLoss):
         # Store the given label indices...
         self.label_indices = label_indices
 
-    cdef update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
@@ -254,7 +253,8 @@ cdef class LabelWiseLoss(DecomposableLoss):
                 sum_of_hessians = total_sums_of_hessians[l] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
-            score = divide_or_zero_float64(-sum_of_gradients, sum_of_hessians + l2_regularization_weight)
+            score = sum_of_hessians + l2_regularization_weight
+            score = -sum_of_gradients / score if score != 0 else 0
             predicted_scores[c] = score
 
             # Calculate the quality score for the current label...
@@ -264,23 +264,25 @@ cdef class LabelWiseLoss(DecomposableLoss):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
 
         return prediction
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
                            float64[::1] predicted_scores):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1, :] expected_scores = self.expected_scores
         cdef float64[::1, :] current_scores = self.current_scores
+        # The number of covered examples
+        cdef intp num_covered = covered_example_indices.shape[0]
         # The number of predicted labels
         cdef intp num_labels = predicted_scores.shape[0]
         # Temporary variables
         cdef float64 predicted_score, expected_score, current_score, tmp
-        cdef intp c, l, i
+        cdef intp c, l, r, i
 
         # Only the labels that are predicted by the new rule must be considered...
         for c in range(num_labels):
@@ -288,7 +290,9 @@ cdef class LabelWiseLoss(DecomposableLoss):
             predicted_score = predicted_scores[c]
 
             # Only the examples that are covered by the new rule must be considered...
-            for i in covered_example_indices:
+            for r in range(num_covered):
+                i = covered_example_indices[r]
+
                 # Retrieve the expected score for the current example and label...
                 expected_score = expected_scores[i, l]
 
@@ -307,7 +311,7 @@ cdef class LabelWiseLoss(DecomposableLoss):
                 hessians[i, l] = tmp
 
 
-cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
+cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
     """
     A multi-label variant of the squared error loss that is applied label-wise.
     """
@@ -319,7 +323,7 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
         return 2
 
 
-cdef class LabelWiseLogisticLoss(LabelWiseLoss):
+cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
     """
     A multi-label variant of the logistic loss that is applied label-wise.
     """
