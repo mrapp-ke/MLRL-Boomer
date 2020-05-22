@@ -162,7 +162,7 @@ cdef class Head:
     def __setstate__(self, state):
         pass
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[::1] predictions, intp[::1] predicted = None):
         """
         Applies the head's prediction to a given vector of predictions given that no prediction has yet been made.
 
@@ -192,7 +192,7 @@ cdef class FullHead(Head):
         scores = state
         self.scores = scores
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[::1] predictions, intp[::1] predicted = None):
         cdef float64[::1] scores = self.scores
         cdef intp num_cols = predictions.shape[0]
         cdef intp c
@@ -229,7 +229,7 @@ cdef class PartialHead(Head):
         self.label_indices = label_indices
         self.scores = scores
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[::1] predictions, intp[::1] predicted = None):
         cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
         cdef intp num_labels = label_indices.shape[0]
@@ -266,7 +266,7 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted = None):
+    cpdef predict(self, float32[::1, :] x, float64[:, ::1] predictions, intp[:, ::1] predicted = None):
         """
         Applies the rule's prediction to a matrix of predictions for all examples it covers.
 
