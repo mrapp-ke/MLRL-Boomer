@@ -13,36 +13,23 @@ import numpy as np
 from boomer.algorithm.coverage_losses import CoverageLoss
 from boomer.algorithm.differentiable_losses import DifferentiableLoss, DecomposableDifferentiableLoss
 from boomer.algorithm.example_wise_losses import ExampleWiseLogisticLoss
-from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision
+from boomer.algorithm.head_refinement import SingleLabelHeadRefinement, FullHeadRefinement, HeadRefinement, \
+    PartialHeadRefinement
+from boomer.algorithm.heuristics import HammingLoss, Precision, Heuristic
 from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
 from boomer.algorithm.losses import Loss
-from boomer.algorithm.pruning import Pruning, IREP
+from boomer.algorithm.pruning import IREP, Pruning
 from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
 from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
-from boomer.algorithm.shrinkage import Shrinkage, ConstantShrinkage
-from boomer.algorithm._example_wise_losses import ExampleWiseLogisticLoss
-from boomer.algorithm._head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement, \
-    PartialHeadRefinement
-from boomer.algorithm._heuristics import Heuristic, HammingLoss, Precision
-from boomer.algorithm._label_wise_averaging import LabelWiseAveraging
-from boomer.algorithm._label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
-from boomer.algorithm._losses import Loss, DecomposableLoss
-from boomer.algorithm._pruning import Pruning, IREP
-from boomer.algorithm._shrinkage import Shrinkage, ConstantShrinkage
-from boomer.algorithm._sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
-from boomer.algorithm._sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
-from boomer.algorithm._sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+from boomer.algorithm.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.algorithm.lift_functions import LiftFunction, PeakLiftFunction
-
 from boomer.algorithm.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
-from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
-from boomer.algorithm.rule_induction import RuleInduction, GradientBoosting, SeparateAndConquer
 from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
     UncoveredLabelsCriterion
-
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
+from boomer.algorithm.sub_sampling import RandomLabelSubsetSelection, LabelSubSampling, InstanceSubSampling, Bagging, \
+    RandomInstanceSubsetSelection, FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
 
@@ -468,7 +455,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         if lift_function == LIFT_FUNCTION_PEAK:
             # TODO: Example configuration
             return PeakLiftFunction(stats.num_labels, int(stats.num_labels / 2), 2.0, 1.0)
-        raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift))
+        raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
 
     def __create_head_refinement(self, lift_function: LiftFunction) -> HeadRefinement:
         head_refinement = self.head_refinement
