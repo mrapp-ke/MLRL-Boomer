@@ -1,4 +1,5 @@
 from boomer.algorithm._arrays cimport intp, float64
+from boomer.algorithm.lift_functions cimport LiftFunction
 from boomer.algorithm._losses cimport Loss, Prediction
 
 
@@ -23,6 +24,17 @@ cdef class HeadRefinement:
 
 
 cdef class FullHeadRefinement(HeadRefinement):
+
+    # Functions:
+
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered)
+
+    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered)
+
+
+cdef class PartialHeadRefinement(HeadRefinement):
+
+    cdef LiftFunction lift
 
     # Functions:
 
