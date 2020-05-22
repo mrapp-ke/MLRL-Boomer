@@ -281,11 +281,10 @@ cdef class Rule:
         cdef Body body = self.body
         cdef Head head = self.head
         cdef intp num_examples = x.shape[0]
+        cdef intp[::1] predicted_row
         cdef intp r
 
         for r in range(num_examples):
             if body.covers(x[r, :]):
-                if predicted is not None:
-                    head.predict(predictions[r, :], predicted[r, :])
-                else:
-                    head.predict(predictions[r, :])
+                predicted_row = None if predicted is None else predicted[r, :]
+                head.predict(predictions[r, :], predicted_row)
