@@ -6,7 +6,7 @@ Provides classes that implement strategies for finding the heads of rules.
 from boomer.algorithm._arrays cimport array_intp, array_float64
 from boomer.algorithm._utils cimport get_index
 from boomer.algorithm._losses cimport LabelIndependentPrediction
-
+from boomer.algorithm.lift_functions cimport LiftFunction
 
 cdef class HeadCandidate:
     """
@@ -115,6 +115,121 @@ cdef class FullHeadRefinement(HeadRefinement):
         cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered)
         return prediction
 
+cdef class PartialHeadRefinement(HeadRefinement):
+
+    def __cinit__(self, LiftFunction lift):
+        self.lift = lift
+
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
+        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef intp num_labels = predicted_scores.shape[0]
+        cdef intp num_label_indices
+        if label_indices is None:
+            num_label_indices = num_labels
+        else:
+            num_label_indices = label_indices.shape[0]
+        cdef HeadCandidate candidate
+        cdef float64[::1] candidate_predicted_scores
+        cdef intp[::1] sorted_indices = array_intp(num_label_indices)
+        cdef intp sorted_label_indices_length = 0
+        cdef intp[::1] current_head_candidate = array_intp(num_label_indices)
+        cdef intp current_head_candidate_length = 0
+        cdef intp[::1] best_head_candidate = array_intp(num_label_indices)
+        cdef intp best_head_candidate_length = 0
+        cdef float64 best_quality_score, total_quality_score, quality_score, maximum_lift
+        cdef intp should_continue, no_improvement, c, c2, c3, l
+
+        cdef LiftFunction lift = self.lift
+
+        # Insertion sort
+        for c in range(0, num_label_indices):
+            l = get_index(c, label_indices)
+            for c2 in range(0, num_label_indices):
+                # TODO Tie-breaking
+                if c2 >= sorted_label_indices_length or quality_scores[sorted_indices[c2]] > quality_scores[c]:
+                    # Shift
+                    for c3 in range(sorted_label_indices_length - 1, c2 - 1, -1):
+                        sorted_indices[c3 + 1] = sorted_indices[c3]
+
+                    # Insert
+                    sorted_indices[c2] = c
+                    sorted_label_indices_length += 1
+
+                    break
+
+        for c in range(0, num_labels):
+            # select the top element of sorted_label_indices excluding labels already contained
+
+            c2 = 0
+            should_continue = True
+
+            # temporary variable required to break outer loop
+            no_improvement = False
+
+            while should_continue:
+                should_continue = False
+
+                if c2 >= sorted_label_indices_length:
+                    no_improvement = True
+                    break
+
+                # checks if current_head_candidate contains sorted_label_indices[c2]
+                for c3 in range(0, current_head_candidate_length):
+                    if current_head_candidate[c3] == sorted_indices[c2]:
+                        should_continue = True
+                        c2 += 1
+                        continue
+
+            if no_improvement:
+                break
+
+            current_head_candidate[current_head_candidate_length] = sorted_indices[c2]
+            current_head_candidate_length += 1
+
+            maximum_lift = lift.get_max_lift()
+
+            for c2 in range(0, current_head_candidate_length):
+                total_quality_score += quality_scores[current_head_candidate[c2]]
+
+            total_quality_score /= current_head_candidate_length
+
+            quality_score = total_quality_score * lift.eval(current_head_candidate_length)
+
+            if best_head_candidate_length == 0 or quality_score < best_quality_score:
+                best_head_candidate_length = current_head_candidate_length
+                # deep copy
+                for c2 in range(0, best_head_candidate_length):
+                    best_head_candidate[c2] = current_head_candidate[c2]
+
+                best_quality_score = quality_score
+
+            max_score = total_quality_score * maximum_lift
+
+            if max_score < best_quality_score:
+                # prunable by decomposition
+                break
+
+        if best_head is None or best_quality_score < best_head.quality_score:
+            # Create a new `HeadCandidate` and return it...
+            candidate_label_indices = array_intp(best_head_candidate_length)
+            candidate_predicted_scores = array_float64(best_head_candidate_length)
+
+            for c in range(0, best_head_candidate_length):
+                candidate_label_indices[c] = get_index(best_head_candidate[c], label_indices)
+                candidate_predicted_scores[c] = predicted_scores[best_head_candidate[c]]
+
+            candidate = HeadCandidate.__new__(HeadCandidate, candidate_label_indices, candidate_predicted_scores,
+                                              best_quality_score)
+            return candidate
+
+        # Return None, as the quality_score of the found head is worse than that of `best_head`...
+        return None
+
+    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
+        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+        return prediction
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
