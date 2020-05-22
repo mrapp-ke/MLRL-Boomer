@@ -381,7 +381,7 @@ cdef class Rule:
                 mask_row = None if mask is None else mask[r, :]
                 head.predict(predictions[r, :], mask_row)
 
-    cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+    cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
                       float64[:, ::1] predictions, uint8[:, ::1] mask = None):
         """
         Applies the rule's predictions to a matrix of predictions for all examples it covers. Optionally, the prediction
@@ -396,6 +396,7 @@ cdef class Rule:
                                 index at the last position is equal to `num_non_zero_feature_values`
         :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
+        :param num_features:    The total number of features
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
                                 predictions of individual examples and labels
         :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
@@ -405,7 +406,6 @@ cdef class Rule:
         cdef Body body = self.body
         cdef Head head = self.head
         cdef intp num_examples = x_row_indices.shape[0] - 1
-        cdef intp num_features = predictions.shape[1]
         cdef float32[::1] tmp_array1 = array_float32(num_features)
         cdef intp[::1] tmp_array2 = array_intp(num_features)
         tmp_array2[:] = 0
