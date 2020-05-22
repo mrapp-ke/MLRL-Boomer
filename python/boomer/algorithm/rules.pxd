@@ -5,14 +5,14 @@ cdef class Body:
 
     # Functions:
 
-    cdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[::1] example)
 
 
 cdef class EmptyBody(Body):
 
     # Functions:
 
-    cdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[::1] example)
 
 
 cdef class ConjunctiveBody(Body):
@@ -37,7 +37,7 @@ cdef class ConjunctiveBody(Body):
 
     # Functions:
 
-    cdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[::1] example)
 
 
 cdef class Head:
@@ -81,7 +81,7 @@ cdef class Rule:
 
     # Functions:
 
-    cpdef predict(self, float32[::1, :] x, float64[:, ::1] predictions, uint8[:, ::1] mask=*)
+    cpdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask=*)
 
     cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                       float64[:, ::1] predictions, uint8[:, ::1] mask=*)

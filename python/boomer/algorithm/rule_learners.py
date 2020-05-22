@@ -162,7 +162,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         x = self._ensure_input_format(x)
 
         # Convert feature matrix into Fortran-contiguous array
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
+        x = np.ascontiguousarray(x, dtype=DTYPE_FLOAT32)
 
         prediction = self._create_prediction()
         prediction.random_state = self.random_state
