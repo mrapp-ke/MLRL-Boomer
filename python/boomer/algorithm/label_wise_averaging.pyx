@@ -1,15 +1,13 @@
-from boomer.algorithm._arrays cimport uint8, uint32, intp, float64, array_float64, matrix_float64, array_uint8
+from boomer.algorithm._arrays cimport array_float64, matrix_float64, array_uint8, get_index
 
-from boomer.algorithm._heuristics cimport Heuristic
-from boomer.algorithm._losses cimport LabelIndependentPrediction, DecomposableLoss
-from boomer.algorithm._utils cimport get_index
 
 DEF _IN = 0
 DEF _IP = 1
 DEF _RN = 2
 DEF _RP = 3
 
-cdef class LabelWiseAveraging(DecomposableLoss):
+
+cdef class LabelWiseAveraging(DecomposableCoverageLoss):
     """
     A class for label-wise evaluation.
     """
@@ -63,11 +61,11 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
         return default_rule
 
-    cdef begin_instance_sub_sampling(self):
+    cdef void begin_instance_sub_sampling(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         confusion_matrices_default[:, :] = 0
 
-    cdef update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
@@ -92,7 +90,7 @@ cdef class LabelWiseAveraging(DecomposableLoss):
                     elif predicted_label == 1:
                         confusion_matrices_default[c, _RP] += 1
 
-    cdef begin_search(self, intp[::1] label_indices):
+    cdef void begin_search(self, intp[::1] label_indices):
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
@@ -115,7 +113,7 @@ cdef class LabelWiseAveraging(DecomposableLoss):
         confusion_matrices_covered[:, :] = 0
         self.label_indices = label_indices
 
-    cdef update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp example_index, uint32 weight):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef uint8[::1, :] true_labels = self.true_labels
@@ -187,18 +185,28 @@ cdef class LabelWiseAveraging(DecomposableLoss):
 
         return prediction
 
-    cdef apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                           float64[::1] predicted_scores):
+    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
+                                float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef intp l, i
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
+        cdef intp num_labels = predicted_scores.shape[0]
+        cdef intp num_covered = covered_example_indices.shape[0]
+        cdef intp r, c, l, i
 
         # Only the labels that are predicted by the new rule must be considered
-        for l in label_indices:
+        for c in range(num_labels):
+            l = get_index(c, label_indices)
+
             # Only the examples that are covered by the new rule must be considered
-            for i in covered_example_indices:
+            for r in range(num_covered):
+                i = covered_example_indices[r]
+
                 if uncovered_labels[i, l] == 1:
                     uncovered_labels[i, l] = 0
-                    sum_uncovered_labels = sum_uncovered_labels - 1
+
+                    if minority_labels[l] == true_labels[i, l]:
+                        sum_uncovered_labels = sum_uncovered_labels - 1
 
         self.sum_uncovered_labels = sum_uncovered_labels

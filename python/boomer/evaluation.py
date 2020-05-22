@@ -4,7 +4,7 @@
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides classes for evaluating the predictions or rankings provided by a multi-label learner according to different
-measures. The evaluation results can be written to one or several outputs, i.e., to the console or to a file.
+measures. The evaluation results can be written to one or several outputs, e.g. to the console or to a file.
 """
 import logging as log
 from abc import ABC, abstractmethod
@@ -60,7 +60,7 @@ RANK_LOSS = 'Rank Loss'
 
 class Evaluation(ABC):
     """
-    Base class for all classes that evaluate the predictions provided by a classifier or ranker.
+    An abstract base class for all classes that evaluate the predictions provided by a classifier or ranker.
     """
 
     @abstractmethod
@@ -302,7 +302,7 @@ class AbstractEvaluation(Evaluation):
 
     def __init__(self, *args: EvaluationOutput):
         """
-        :param outputs: The outputs the evaluation results should be written to
+        :param args: The outputs, the evaluation results should be written to
         """
         self.outputs = args
         self.results: Dict[str, EvaluationResult] = {}
