@@ -200,7 +200,7 @@ cdef class FullHead(Head):
         for c in range(num_cols):
             if predicted is not None:
                 if not predicted[c]:
-                    predictions[c] = scores[c]
+                    predictions[c] += scores[c]
                     predicted[c] = 1
             else:
                 predictions[c] += scores[c]
@@ -240,7 +240,7 @@ cdef class PartialHead(Head):
 
             if predicted is not None:
                 if not predicted[l]:
-                    predictions[l] = scores[c]
+                    predictions[l] += scores[c]
                     predicted[l] = 1
             else:
                 predictions[l] += scores[c]
