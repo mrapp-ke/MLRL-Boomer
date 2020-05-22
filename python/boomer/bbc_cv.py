@@ -46,7 +46,7 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         num_labels = test_y.shape[1]
 
         # Create a dense representation of the test data
-        test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
+        test_x = np.ascontiguousarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
         test_y = self._ensure_input_format(test_y)
 
         # Update true labels, if necessary...

@@ -17,7 +17,7 @@ cdef class Body:
     def __setstate__(self, state):
         pass
 
-    cdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[::1] example):
         """
         Returns whether a certain example is covered by the body, or not.
 
@@ -38,7 +38,7 @@ cdef class EmptyBody(Body):
     def __setstate__(self, state):
         pass
 
-    cdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[::1] example):
         return True
 
 
@@ -106,7 +106,7 @@ cdef class ConjunctiveBody(Body):
         self.neq_feature_indices = state[6]
         self.neq_thresholds = state[7]
 
-    cdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[::1] example):
         cdef intp[::1] feature_indices = self.leq_feature_indices
         cdef float32[::1] thresholds = self.leq_thresholds
         cdef intp num_conditions = feature_indices.shape[0]
@@ -268,7 +268,7 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cpdef predict(self, float32[::1, :] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
+    cpdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
         """
         Applies the rule's prediction to a matrix of predictions for all examples it covers. Optionally, the prediction
         can be restricted to certain examples and labels.
