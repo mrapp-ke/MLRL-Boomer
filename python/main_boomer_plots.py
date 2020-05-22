@@ -45,8 +45,8 @@ class Plotter(CrossValidation, MLClassifierBase):
                                                      fold=current_fold, raise_exception=True)
         num_iterations = len(theory)
 
-        train_predictions = np.asfortranarray(np.zeros((train_x.shape[0], train_y.shape[1]), dtype=DTYPE_FLOAT64))
-        test_predictions = np.asfortranarray(np.zeros((test_x.shape[0], test_y.shape[1]), dtype=DTYPE_FLOAT64))
+        train_predictions = np.zeros((train_x.shape[0], train_y.shape[1]), dtype=DTYPE_FLOAT64, order='C')
+        test_predictions = np.zeros((test_x.shape[0], test_y.shape[1]), dtype=DTYPE_FLOAT64, order='C')
 
         for i in range(1, num_iterations + 1):
             log.info("Evaluating model at iteration %s / %s...", i, num_iterations)
