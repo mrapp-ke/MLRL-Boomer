@@ -31,7 +31,7 @@ cdef class DensePredictor(Predictor):
 
     cdef readonly Aggregation aggregation
 
-    cdef readonly Transformation transformation
+    cdef readonly TransformationFunction transformation_function
 
     # Functions:
 
@@ -40,14 +40,14 @@ cdef class DensePredictor(Predictor):
     cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                              intp num_features, intp num_labels, list rules)
 
-cdef class Transformation:
+cdef class TransformationFunction:
 
     # Functions:
 
     cdef object transform_matrix(self, float64[:, ::1] m)
 
 
-cdef class SignFunction(Transformation):
+cdef class SignFunction(TransformationFunction):
 
     # Functions:
 
