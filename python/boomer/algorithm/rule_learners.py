@@ -63,14 +63,15 @@ PRUNING_IREP = 'irep'
 def _create_label_sub_sampling(label_sub_sampling: str, num_samples: int, stats: Stats) -> LabelSubSampling:
     if label_sub_sampling is None:
         return None
-    elif label_sub_sampling == LABEL_SUB_SAMPLING_RANDOM:
-        if num_samples < stats.num_labels:
+    else:
+        if num_samples < 1 or num_samples >= stats.num_labels:
+            raise ValueError('Value given for parameter \'label_sub_sampling_num_samples\' (' + str(
+                num_samples) + ') must be at least 1 and less than the number of labels in the data set (' + str(
+                stats.num_labels) + ')')
+
+        if label_sub_sampling == LABEL_SUB_SAMPLING_RANDOM:
             return RandomLabelSubsetSelection(num_samples)
-        else:
-            raise ValueError(
-                'Value given for parameter \'label_sub_sampling_num_samples\' (' + str(num_samples)
-                + ') must be less that the number of labels in the training data set (' + str(stats.num_labels) + ')')
-    raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
+        raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
 
 def _create_instance_sub_sampling(instance_sub_sampling: str, sample_size: float) -> InstanceSubSampling:
