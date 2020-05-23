@@ -80,13 +80,12 @@ def _create_instance_sub_sampling(instance_sub_sampling: str, sample_size: float
         if sample_size < 0 or sample_size > 1:
             raise ValueError(
                 'Invalid value given for parameter \'instance_sub_sampling_sample_size\': ' + str(sample_size))
+
         if instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
             return Bagging(sample_size if sample_size > 0 else 1.0)
         elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
             return RandomInstanceSubsetSelection(sample_size if sample_size > 0 else 0.66)
-        else:
-            raise ValueError(
-                'Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
+        raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
 def _create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling:
