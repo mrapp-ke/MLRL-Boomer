@@ -77,7 +77,7 @@ def _create_instance_sub_sampling(instance_sub_sampling: str, sample_size: float
     if instance_sub_sampling is None:
         return None
     else:
-        if sample_size < 0 or sample_size > 1:
+        if sample_size < 0 or sample_size >= 1:
             raise ValueError(
                 'Invalid value given for parameter \'instance_sub_sampling_sample_size\': ' + str(sample_size))
 
@@ -92,7 +92,7 @@ def _create_feature_sub_sampling(feature_sub_sampling: str, sample_size: float) 
     if feature_sub_sampling is None:
         return None
     else:
-        if sample_size < 0 or sample_size > 1:
+        if sample_size < 0 or sample_size >= 1:
             raise ValueError(
                 'Invalid value given for parameter \'feature_sub_sampling_sample_size\': ' + str(sample_size))
 
@@ -231,13 +231,13 @@ class Boomer(MLRuleLearner):
                                                     `random-instance-selection` or None, if no sub-sampling should be
                                                     used
         :param instance_sub_sampling_sample_size:   The fraction of examples to be included when sub-sampling the
-                                                    training examples. Must be in (0, 1] or 0, if the default value
+                                                    training examples. Must be in (0, 1) or 0, if the default value
                                                     should be used
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
                                                     or None, if no sub-sampling should be used
         :param feature_sub_sampling_sample_size:    The fraction of features to be included when sub-sampling the
-                                                    features. Must be in (0, 1] or 0, if the default value should be
+                                                    features. Must be in (0, 1) or 0, if the default value should be
                                                     used
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
@@ -402,13 +402,13 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     `random-instance-selection` or None, if no sub-sampling should be
                                                     used
         :param instance_sub_sampling_sample_size:   The fraction of examples to be included when sub-sampling the
-                                                    training examples. Must be in (0, 1] or 0, if the default value
+                                                    training examples. Must be in (0, 1) or 0, if the default value
                                                     should be used
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
                                                     or None, if no sub-sampling should be used
         :param feature_sub_sampling_sample_size:    The fraction of features to be included when sub-sampling the
-                                                    features. Must be in (0, 1] or 0, if the default value should be
+                                                    features. Must be in (0, 1) or 0, if the default value should be
                                                     used
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
