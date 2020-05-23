@@ -25,7 +25,7 @@ class Prediction(Randomized):
         """
         Predicts the labels of examples using a specific theory.
 
-        The feature matrix must be given as a dense np.ndarray.
+        The feature matrix must be given as a dense matrix.
 
         :param stats:   Statistics about the training data set
         :param theory:  The theory that is used to make predictions
@@ -39,6 +39,8 @@ class Prediction(Randomized):
     def predict_csr(self, stats: Stats, theory: Theory, x: csr_matrix) -> np.ndarray:
         """
         Predicts the labels of examples using a specific theory.
+
+        The feature matrix must be given as a sparse matrix in compressed sparse row (CSR) format.
 
         :param stats:   Statistics about the training data set
         :param theory:  The theory that is used to make predictions
