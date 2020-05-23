@@ -3,7 +3,7 @@
 
 Provides classes for making predictions using rule-based models.
 """
-from boomer.algorithm._arrays cimport float64, array_intp, array_float32, c_matrix_float64
+from boomer.algorithm._arrays cimport uint32, float64, array_uint32, array_float32, c_matrix_float64
 from boomer.algorithm.rules cimport Rule
 
 import numpy as np
@@ -63,9 +63,9 @@ cdef class RawPredictor(Predictor):
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
         predictions[:, :] = 0
         cdef float32[::1] tmp_array1 = array_float32(num_features)
-        cdef intp[::1] tmp_array2 = array_intp(num_features)
+        cdef uint32[::1] tmp_array2 = array_uint32(num_features)
         tmp_array2[:] = 0
-        cdef intp n = 1
+        cdef uint32 n = 1
         cdef Rule rule
 
         for rule in rules:
