@@ -60,16 +60,15 @@ FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 PRUNING_IREP = 'irep'
 
 
-def _create_label_sub_sampling(label_sub_sampling: str, label_sub_sampling_num_samples: int,
-                               stats: Stats) -> LabelSubSampling:
+def _create_label_sub_sampling(label_sub_sampling: str, num_samples: int, stats: Stats) -> LabelSubSampling:
     if label_sub_sampling is None:
         return None
     elif label_sub_sampling == LABEL_SUB_SAMPLING_RANDOM:
-        if label_sub_sampling_num_samples < stats.num_labels:
-            return RandomLabelSubsetSelection(label_sub_sampling_num_samples)
+        if num_samples < stats.num_labels:
+            return RandomLabelSubsetSelection(num_samples)
         else:
             raise ValueError(
-                'Value given for parameter \'label_sub_sampling_num_samples\' (' + str(label_sub_sampling_num_samples)
+                'Value given for parameter \'label_sub_sampling_num_samples\' (' + str(num_samples)
                 + ') must be less that the number of labels in the training data set (' + str(stats.num_labels) + ')')
     raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
