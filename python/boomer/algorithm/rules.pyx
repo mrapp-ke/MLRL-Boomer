@@ -337,7 +337,7 @@ cdef class Rule:
     A rule consisting of a body and head.
     """
 
-    def __cinit__(self, body: Body, head: Head):
+    def __cinit__(self, Body body, Head head):
         """
         :param body:    The body of the rule
         :param head:    The head of the rule
