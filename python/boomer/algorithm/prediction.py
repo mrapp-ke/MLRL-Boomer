@@ -9,7 +9,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32, DTYPE_FLOAT64
+from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.interfaces import Randomized
 from boomer.stats import Stats
 
@@ -92,7 +92,7 @@ class LinearCombination(Ranking):
         num_examples = x_row_indices.shape[0] - 1
         predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
         tmp_array1 = np.empty(num_features, dtype=DTYPE_FLOAT32, order='C')
-        tmp_array2 = np.zeros(num_features, dtype=DTYPE_INTP, order='C')
+        tmp_array2 = np.zeros(num_features, dtype=DTYPE_UINT32, order='C')
         n = 1
 
         for rule in theory:
@@ -160,7 +160,7 @@ class DecisionList(Prediction):
         predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
         mask = np.ones((num_examples, stats.num_labels), dtype=DTYPE_UINT8, order='C')
         tmp_array1 = np.empty(num_features, dtype=DTYPE_FLOAT32, order='C')
-        tmp_array2 = np.zeros(num_features, dtype=DTYPE_INTP, order='C')
+        tmp_array2 = np.zeros(num_features, dtype=DTYPE_UINT32, order='C')
         n = 1
 
         for rule in theory:

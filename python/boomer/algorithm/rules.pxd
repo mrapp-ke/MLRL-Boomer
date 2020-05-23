@@ -1,4 +1,4 @@
-from boomer.algorithm._arrays cimport uint8, intp, float32, float64
+from boomer.algorithm._arrays cimport uint8, uint32, intp, float32, float64
 
 
 cdef class Body:
@@ -8,7 +8,7 @@ cdef class Body:
     cdef bint covers(self, float32[::1] example)
 
     cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
-                            intp[::1] tmp_array2, intp n)
+                            uint32[::1] tmp_array2, uint32 n)
 
 
 cdef class EmptyBody(Body):
@@ -18,7 +18,7 @@ cdef class EmptyBody(Body):
     cdef bint covers(self, float32[::1] example)
 
     cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
-                            intp[::1] tmp_array2, intp n)
+                            uint32[::1] tmp_array2, uint32 n)
 
 
 cdef class ConjunctiveBody(Body):
@@ -46,7 +46,7 @@ cdef class ConjunctiveBody(Body):
     cdef bint covers(self, float32[::1] example)
 
     cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
-                            intp[::1] tmp_array2, intp n)
+                            uint32[::1] tmp_array2, uint32 n)
 
 
 cdef class Head:
@@ -93,5 +93,5 @@ cdef class Rule:
     cpdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask=*)
 
     cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
-                      float32[::1] tmp_array1, intp[::1] tmp_array2, intp n, float64[:, ::1] predictions,
+                      float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
                       uint8[:, ::1] mask=*)
