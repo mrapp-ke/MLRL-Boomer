@@ -18,7 +18,7 @@ from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision
 from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
 from boomer.algorithm.losses import Loss
-from boomer.algorithm.prediction import Predictor, RawPredictor, Sign
+from boomer.algorithm.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.algorithm.pruning import Pruning, IREP
 from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
 from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
@@ -311,7 +311,7 @@ class Boomer(MLRuleLearner):
         return params
 
     def _create_predictor(self) -> Predictor:
-        return Sign(RawPredictor())
+        return DensePredictor(Aggregation(), SignFunction())
 
     def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()
@@ -485,4 +485,4 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self) -> Predictor:
-        return Sign(RawPredictor(use_mask = True))
+        return DensePredictor(Aggregation(use_mask=True), SignFunction())
