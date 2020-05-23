@@ -88,7 +88,7 @@ cdef inline cvarray array_float64(intp num_elements):
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
 
-cdef inline cvarray fortran_matrix_float64(intp num_rows, num_cols):
+cdef inline cvarray fortran_matrix_float64(intp num_rows, intp num_cols):
     """
     Creates and returns a new Fortran-contiguous array of dtype `float64`, shape `(num_rows, num_cols)`.
 
