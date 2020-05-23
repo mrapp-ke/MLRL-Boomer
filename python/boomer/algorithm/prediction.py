@@ -36,7 +36,7 @@ class Prediction(Randomized):
 
     @abstractmethod
     def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
-                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+                    x_col_indices: np.ndarray, num_features: int) -> np.ndarray:
         """
         Predicts the labels of examples using a specific theory.
 
@@ -51,7 +51,6 @@ class Prediction(Randomized):
                                 index at the last position is equal to `num_non_zero_feature_values`
         :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
-        :param num_examples:    The number of examples
         :param num_features:    The number of features
         :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the predicted
                                 labels
@@ -70,7 +69,7 @@ class Ranking(Prediction):
 
     @abstractmethod
     def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
-                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+                    x_col_indices: np.ndarray, num_features: int) -> np.ndarray:
         pass
 
 
@@ -89,7 +88,8 @@ class LinearCombination(Ranking):
         return predictions
 
     def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
-                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+                    x_col_indices: np.ndarray, num_features: int) -> np.ndarray:
+        num_examples = x_row_indices.shape[0] - 1
         predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
         tmp_array1 = np.empty(num_features, dtype=DTYPE_FLOAT32, order='C')
         tmp_array2 = np.zeros(num_features, dtype=DTYPE_INTP, order='C')
@@ -113,7 +113,7 @@ class Bipartition(Prediction):
 
     @abstractmethod
     def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
-                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+                    x_col_indices: np.ndarray, num_features: int) -> np.ndarray:
         pass
 
 
@@ -134,9 +134,8 @@ class Sign(Bipartition):
         return np.where(predictions > 0, 1, 0)
 
     def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
-                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
-        predictions = self.ranking.predict_csr(stats, theory, x_data, x_row_indices, x_col_indices, num_examples,
-                                               num_features)
+                    x_col_indices: np.ndarray, num_features: int) -> np.ndarray:
+        predictions = self.ranking.predict_csr(stats, theory, x_data, x_row_indices, x_col_indices, num_features)
         return np.where(predictions > 0, 1, 0)
 
 
@@ -156,7 +155,8 @@ class DecisionList(Prediction):
         return predictions
 
     def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
-                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+                    x_col_indices: np.ndarray, num_features: int) -> np.ndarray:
+        num_examples = x_row_indices.shape[0] - 1
         predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
         mask = np.ones((num_examples, stats.num_labels), dtype=DTYPE_UINT8, order='C')
         tmp_array1 = np.empty(num_features, dtype=DTYPE_FLOAT32, order='C')
