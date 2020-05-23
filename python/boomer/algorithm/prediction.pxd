@@ -3,6 +3,8 @@ from boomer.algorithm._arrays cimport intp, float32
 
 cdef class Predictor:
 
+    # Functions:
+
     cpdef object predict(self, float32[:, ::1] x, intp num_labels, list rules)
 
     cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
@@ -10,6 +12,12 @@ cdef class Predictor:
 
 
 cdef class RawPredictor(Predictor):
+
+    # Arguments:
+
+    cdef readonly bint use_mask
+
+    # Functions:
 
     cpdef object predict(self, float32[:, ::1] x, intp num_labels, list rules)
 
