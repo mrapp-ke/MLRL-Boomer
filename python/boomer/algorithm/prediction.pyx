@@ -182,22 +182,24 @@ cdef class DensePredictor(Predictor):
 
 cdef class Transformation:
     """
-    TODO
+    A base class for all transformation functions that may be applied to predictions.
     """
 
     cdef object transform_matrix(self, float64[:, ::1] m):
         """
-        TODO
+        Applies the transformation function to a matrix.
 
-        :param m:
-        :return:
+        :param m:   An array of dtype float, shape `(num_rows, num_cols)`, the transformation function should be
+                    applied to
+        :return:    A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_rows, num_cols)`, representing the result of
+                    the transformation
         """
         pass
 
 
 cdef class SignFunction(Transformation):
     """
-    TODO
+    Transforms predictions according to the sign function (1 if x > 0, 0 otherwise).
     """
 
     cdef object transform_matrix(self, float64[:, ::1] m):
