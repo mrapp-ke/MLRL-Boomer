@@ -100,17 +100,21 @@ cdef class Aggregation:
 
 cdef class Predictor:
     """
-    TODO
+    A base class for all classes that allow to make predictions based on rule-based models.
     """
 
     cpdef object predict(self, float32[:, ::1] x, intp num_labels, list rules):
         """
-        TODO
+        Obtains and returns the predictions for given examples.
 
-        :param x:
-        :param num_labels:
-        :param rules:
-        :return:
+        The feature matrix must be given as a dense C-contiguous array.
+
+        :param x:           An array of dtype float, shape `(num_examples, num_features)`, representing the features of
+                            the examples to predict for
+        :param num_labels:  The total number of labels
+        :param rules:       A list that contains the rules
+        :return:            A `np.ndarray` or a `scipy.sparse.matrix`, shape `(num_examples, num_labels)`, representing
+                            the predictions for individual examples and labels
         """
         pass
 
@@ -118,29 +122,35 @@ cdef class Predictor:
     cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                              intp num_features, intp num_labels, list rules):
         """
-        TODO
+        Obtains and returns the predictions for given examples.
 
-        :param x_data:
-        :param x_row_indices:
-        :param x_col_indices:
-        :param num_features:
-        :param num_labels:
-        :param rules:
-        :return:
+        The feature matrix must be given in compressed sparse row (CSR) format.
+
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples
+        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
+                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
+                                index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                column-indices of the examples, the values in `x_data` correspond to
+        :param num_features:    The total number of features
+        :param num_labels:      The total number of labels
+        :param rules:           A list that contains the rules
+        :return:                A `np.ndarray` or a `scipy.sparse.matrix`, shape `(num_examples, num_labels)`,
+                                representing the predictions for individual examples and labels
         """
         pass
 
 
 cdef class DensePredictor(Predictor):
     """
-    TODO
+    Allows to make predictions based on rule-based models that are stored in dense matrices.
     """
 
     def __cinit__(self, Aggregation aggregation, Transformation transformation):
         """
-        TODO
-        :param aggregation:
-        :param transformation:
+        :param aggregation:     The aggregation to be used to obtain raw predictions from the individual rules
+        :param transformation:  The transformation to be applied to the raw predictions
         """
         self.aggregation = aggregation
         self.transformation = transformation
