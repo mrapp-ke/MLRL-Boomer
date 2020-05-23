@@ -1,4 +1,4 @@
-from boomer.algorithm._arrays cimport array_float64, matrix_float64, array_uint8, get_index
+from boomer.algorithm._arrays cimport array_float64, fortran_matrix_float64, array_uint8, get_index
 
 
 DEF _IN = 0
@@ -22,8 +22,8 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         cdef intp num_labels = y.shape[1]
         cdef float64[::1] default_rule = array_float64(num_labels)
         cdef uint8[::1] minority_labels = array_uint8(num_labels)
-        cdef float64[::1, :] uncovered_labels = matrix_float64(num_examples, num_labels)
-        cdef float64[::1, :] confusion_matrices_default = matrix_float64(num_labels, 4)
+        cdef float64[::1, :] uncovered_labels = fortran_matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] confusion_matrices_default = fortran_matrix_float64(num_labels, 4)
         cdef float64 threshold = num_examples / 2.0
         cdef float64 sum_uncovered_labels = 0
         cdef uint8 true_label, predicted_label
@@ -103,7 +103,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
             num_labels = label_indices.shape[0]
 
         if confusion_matrices_covered is None or confusion_matrices_covered.shape[0] != num_labels:
-            confusion_matrices_covered = matrix_float64(num_labels, 4)
+            confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
             self.confusion_matrices_covered = confusion_matrices_covered
             predicted_scores = array_float64(num_labels)
             prediction.predicted_scores = predicted_scores
