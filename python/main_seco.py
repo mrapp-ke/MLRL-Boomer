@@ -40,6 +40,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The fraction of examples to be used for instance sub-sampling')
     p.add_argument('--feature-sub-sampling', type=optional_string, default=None,
                    help='The name of the strategy to be used for feature sub-sampling or None')
+    p.add_argument('--feature-sub-sampling-sample-size', type=float, default=0.0,
+                   help='The fraction of features to be used for feature sub-sampling')
     p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
     p.add_argument('--loss', type=str, default=MEASURE_LABEL_WISE,
@@ -57,6 +59,7 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          instance_sub_sampling_sample_size=params.instance_sub_sampling_sample_size,
                                          feature_sub_sampling=params.feature_sub_sampling,
+                                         feature_sub_sampling_sample_size=params.feature_sub_sampling_sample_size,
                                          head_refinement=params.head_refinement)
 
 
