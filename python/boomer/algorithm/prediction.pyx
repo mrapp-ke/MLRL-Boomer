@@ -11,7 +11,7 @@ import numpy as np
 
 cdef class Aggregation:
     """
-    TODO
+    Allows to aggregate the predictions provided by several rules.
     """
 
     def __cinit__(self, bint use_mask = False):
@@ -22,12 +22,16 @@ cdef class Aggregation:
 
     cdef float64[:, ::1] predict(self, float32[:, ::1] x, intp num_labels, list rules):
         """
-        TODO
+        Aggregates and returns the predictions provided by several rules.
 
-        :param x:
-        :param num_labels:
-        :param rules:
-        :return:
+        The feature matrix must be given as a dense C-contiguous array.
+
+        :param x:           An array of dtype float, shape `(num_examples, num_features)`, representing the features of
+                            the examples to predict for
+        :param num_labels:  The total number of labels
+        :param rules:       A list that contains the rules
+        :return:            An array of dtype float, shape `(num_examples, num_labels)`, representing the predictions
+                            for individual examples and labels
         """
         cdef intp num_examples = x.shape[0]
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
@@ -51,15 +55,22 @@ cdef class Aggregation:
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                                      intp num_features, intp num_labels, list rules):
         """
-        TODO
+        Aggregates and returns the predictions provided by several rules.
 
-        :param x_data:
-        :param x_row_indices:
-        :param x_col_indices:
-        :param num_features:
-        :param num_labels:
-        :param rules:
-        :return:
+        The feature matrix must be given in compressed sparse row (CSR) format.
+
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples
+        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
+                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
+                                index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                column-indices of the examples, the values in `x_data` correspond to
+        :param num_features:    The total number of features
+        :param num_labels:      The total number of labels
+        :param rules:           A list that contains the rules
+        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                predictions for individual examples and labels
         """
         cdef intp num_examples = x_row_indices.shape[0] - 1
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
