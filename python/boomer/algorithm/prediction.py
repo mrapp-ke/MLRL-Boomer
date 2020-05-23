@@ -8,7 +8,6 @@ Provides classes for making predictions based on rules.
 from abc import abstractmethod
 
 import numpy as np
-from scipy.sparse import csr_matrix
 
 from boomer.algorithm.model import Theory, DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.interfaces import Randomized
@@ -36,17 +35,26 @@ class Prediction(Randomized):
         pass
 
     @abstractmethod
-    def predict_csr(self, stats: Stats, theory: Theory, x: csr_matrix) -> np.ndarray:
+    def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
+                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
         """
         Predicts the labels of examples using a specific theory.
 
         The feature matrix must be given as a sparse matrix in compressed sparse row (CSR) format.
 
-        :param stats:   Statistics about the training data set
-        :param theory:  The theory that is used to make predictions
-        :param x:       An csr_matrix of dtype float, shape `(num_examples, num_features)`, representing the features of
-                        the examples to be classified
-        :return:        An array of dtype float, shape `(num_examples, num_labels)`, representing the predicted labels
+        :param stats:           Statistics about the training data set
+        :param theory:          The theory that is used to make predictions
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the examples
+        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
+                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
+                                index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                column-indices of the examples, the values in `x_data` correspond to
+        :param num_examples:    The number of examples
+        :param num_features:    The number of features
+        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the predicted
+                                labels
         """
         pass
 
@@ -61,7 +69,8 @@ class Ranking(Prediction):
         pass
 
     @abstractmethod
-    def predict_csr(self, stats: Stats, theory: Theory, x: csr_matrix) -> np.ndarray:
+    def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
+                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
         pass
 
 
@@ -71,19 +80,17 @@ class LinearCombination(Ranking):
     """
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        predictions = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
+        num_examples = x.shape[0]
+        predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
 
         for rule in theory:
             rule.predict(x, predictions)
 
         return predictions
 
-    def predict_csr(self, stats: Stats, theory: Theory, x: csr_matrix) -> np.ndarray:
-        predictions = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
-        x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-        x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
-        x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
-        num_features = x.shape[1]
+    def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
+                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+        predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
         tmp_array1 = np.empty(num_features, dtype=DTYPE_FLOAT32, order='C')
         tmp_array2 = np.zeros(num_features, dtype=DTYPE_INTP, order='C')
         n = 1
@@ -105,7 +112,8 @@ class Bipartition(Prediction):
         pass
 
     @abstractmethod
-    def predict_csr(self, stats: Stats, theory: Theory, x: csr_matrix) -> np.ndarray:
+    def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
+                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
         pass
 
 
@@ -125,8 +133,10 @@ class Sign(Bipartition):
         predictions = self.ranking.predict(stats, theory, x)
         return np.where(predictions > 0, 1, 0)
 
-    def predict_csr(self, stats: Stats, theory: Theory, x: csr_matrix) -> np.ndarray:
-        predictions = self.ranking.predict_csr(stats, theory, x)
+    def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
+                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+        predictions = self.ranking.predict_csr(stats, theory, x_data, x_row_indices, x_col_indices, num_examples,
+                                               num_features)
         return np.where(predictions > 0, 1, 0)
 
 
@@ -136,21 +146,19 @@ class DecisionList(Prediction):
     """
 
     def predict(self, stats: Stats, theory: Theory, x: np.ndarray) -> np.ndarray:
-        predictions = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
-        mask = np.ones((x.shape[0], stats.num_labels), dtype=DTYPE_UINT8, order='C')
+        num_examples = x.shape[0]
+        predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
+        mask = np.ones((num_examples, stats.num_labels), dtype=DTYPE_UINT8, order='C')
 
         for rule in theory:
             rule.predict(x, predictions, mask)
 
         return predictions
 
-    def predict_csr(self, stats: Stats, theory: Theory, x: csr_matrix) -> np.ndarray:
-        predictions = np.zeros((x.shape[0], stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
-        mask = np.ones((x.shape[0], stats.num_labels), dtype=DTYPE_UINT8, order='C')
-        x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-        x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
-        x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
-        num_features = x.shape[1]
+    def predict_csr(self, stats: Stats, theory: Theory, x_data: np.ndarray, x_row_indices: np.ndarray,
+                    x_col_indices: np.ndarray, num_examples: int, num_features: int) -> np.ndarray:
+        predictions = np.zeros((num_examples, stats.num_labels), dtype=DTYPE_FLOAT64, order='C')
+        mask = np.ones((num_examples, stats.num_labels), dtype=DTYPE_UINT8, order='C')
         tmp_array1 = np.empty(num_features, dtype=DTYPE_FLOAT32, order='C')
         tmp_array2 = np.zeros(num_features, dtype=DTYPE_INTP, order='C')
         n = 1

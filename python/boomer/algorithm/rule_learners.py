@@ -163,7 +163,11 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
 
         if enforce_sparse:
-            return prediction.predict_csr(stats, model, x)
+            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
+            x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
+            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
+            num_features = x.shape[1]
+            return prediction.predict_csr(stats, model, x_data, x_row_indices, x_col_indices, num_features)
         else:
             x = np.ascontiguousarray(self._ensure_input_format(x))
             return prediction.predict(stats, model, x)
