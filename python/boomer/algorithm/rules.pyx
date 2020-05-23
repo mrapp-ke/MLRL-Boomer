@@ -29,7 +29,7 @@ cdef class Body:
         pass
 
     cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
-                            intp[::1] tmp_array2, intp n):
+                            uint32[::1] tmp_array2, uint32 n):
         """
         Returns whether a certain example is covered by the body, or not.
 
@@ -41,7 +41,7 @@ cdef class Body:
                                 of the features, the values in `example_data` correspond to
         :param tmp_array1:      An array of dtype float, shape `(num_features)` that is used to temporarily store
                                 non-zero feature values. May contain arbitrary values
-        :param tmp_array2:      An array of dtype intp, shape `(num_features)` that is used to temporarily keep track of
+        :param tmp_array2:      An array of dtype uint, shape `(num_features)` that is used to temporarily keep track of
                                 the feature indices with non-zero feature values. Must not contain any elements with
                                 value `n`
         :param n:               An arbitrary number. If this function is called multiple times for different examples,
@@ -66,7 +66,7 @@ cdef class EmptyBody(Body):
         return True
 
     cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
-                            intp[::1] tmp_array2, intp n):
+                            uint32[::1] tmp_array2, uint32 n):
         return True
 
 
@@ -179,7 +179,7 @@ cdef class ConjunctiveBody(Body):
         return True
 
     cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
-                            intp[::1] tmp_array2, intp n):
+                            uint32[::1] tmp_array2, uint32 n):
         cdef intp num_non_zero_feature_values = example_data.shape[0]
         cdef intp i, c
 
@@ -380,7 +380,7 @@ cdef class Rule:
                 head.predict(predictions[r, :], mask_row)
 
     cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
-                      float32[::1] tmp_array1, intp[::1] tmp_array2, intp n, float64[:, ::1] predictions,
+                      float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
                       uint8[:, ::1] mask = None):
         """
         Applies the rule's predictions to a matrix of predictions for all examples it covers. Optionally, the prediction
@@ -398,7 +398,7 @@ cdef class Rule:
         :param num_features:    The total number of features
         :param tmp_array1:      An array of dtype float, shape `(num_features)` that is used to temporarily store
                                 non-zero feature values. May contain arbitrary values
-        :param tmp_array2:      An array of dtype intp, shape `(num_features)` that is used to temporarily keep track of
+        :param tmp_array2:      An array of dtype uint, shape `(num_features)` that is used to temporarily keep track of
                                 the feature indices with non-zero feature values. Must not contain any elements with
                                 value `n`
         :param n:               An arbitrary number. If this function is called multiple times on different rules, but
@@ -414,7 +414,7 @@ cdef class Rule:
         cdef Body body = self.body
         cdef Head head = self.head
         cdef intp num_examples = x_row_indices.shape[0] - 1
-        cdef intp current_n = n
+        cdef uint32 current_n = n
         cdef uint8[::1] mask_row
         cdef intp r, start, end
 
