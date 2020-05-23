@@ -147,21 +147,21 @@ cdef class DensePredictor(Predictor):
     Allows to make predictions based on rule-based models that are stored in dense matrices.
     """
 
-    def __cinit__(self, Aggregation aggregation, Transformation transformation):
+    def __cinit__(self, Aggregation aggregation, TransformationFunction transformation_function):
         """
-        :param aggregation:     The aggregation to be used to obtain raw predictions from the individual rules
-        :param transformation:  The transformation to be applied to the raw predictions
+        :param aggregation:             The aggregation to be used to obtain raw predictions from the individual rules
+        :param transformation_function: The transformation function to be applied to the raw predictions
         """
         self.aggregation = aggregation
-        self.transformation = transformation
+        self.transformation_function = transformation_function
 
     cpdef object predict(self, float32[:, ::1] x, intp num_labels, list rules):
         cdef Aggregation aggregation = self.aggregation
         cdef float64[:, ::1] predictions = aggregation.predict(x, num_labels, rules)
-        cdef Transformation transformation = self.transformation
+        cdef TransformationFunction transformation_function = self.transformation_function
 
-        if transformation is not None:
-            return transformation.transform_matrix(predictions)
+        if transformation_function is not None:
+            return transformation_function.transform_matrix(predictions)
         else:
             return np.asarray(predictions)
 
@@ -171,16 +171,16 @@ cdef class DensePredictor(Predictor):
         cdef Aggregation aggregation = self.aggregation
         cdef float64[:, ::1] predictions = aggregation.predict_csr(x_data, x_row_indices, x_col_indices, num_features,
                                                                    num_labels, rules)
-        cdef Transformation transformation = self.transformation
+        cdef TransformationFunction transformation_function = self.transformation_function
 
-        if transformation is not None:
-            return transformation.transform_matrix(predictions)
+        if transformation_function is not None:
+            return transformation_function.transform_matrix(predictions)
         else:
             return np.asarray(predictions)
 
 
 
-cdef class Transformation:
+cdef class TransformationFunction:
     """
     A base class for all transformation functions that may be applied to predictions.
     """
@@ -197,7 +197,7 @@ cdef class Transformation:
         pass
 
 
-cdef class SignFunction(Transformation):
+cdef class SignFunction(TransformationFunction):
     """
     Transforms predictions according to the sign function (1 if x > 0, 0 otherwise).
     """
