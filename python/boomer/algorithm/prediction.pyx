@@ -104,15 +104,15 @@ cdef class Converter(Predictor):
     """
 
     cpdef object predict(self, float32[:, ::1] x, intp num_labels, list rules):
-        cdef Predictor predictor = self.predictor
+        cdef RawPredictor predictor = self.predictor
         cdef float64[:, ::1] raw_predictions = predictor.predict(x, num_labels, rules)
         return self._convert(raw_predictions)
 
     cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                              intp num_features, intp num_labels, list rules):
-        cdef Predictor predictor = self.predictor
+        cdef RawPredictor predictor = self.predictor
         cdef float64[:, ::1] raw_predictions = predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features,
-                                                           num_labels, rules)
+                                                                     num_labels, rules)
         return self._convert(raw_predictions)
 
     cdef object _convert(self, float64[:, ::1] raw_predictions):
