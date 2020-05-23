@@ -40,6 +40,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The fraction of examples to be used for instance sub-sampling')
     p.add_argument('--feature-sub-sampling', type=optional_string, default=FEATURE_SUB_SAMPLING_RANDOM,
                    help='The name of the strategy to be used for feature sub-sampling or None')
+    p.add_argument('--feature-sub-sampling-sample-size', type=float, default=0.0,
+                   help='The fraction of features to be used for feature sub-sampling')
     p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
     p.add_argument('--loss', type=str, default=LOSS_LABEL_WISE_LOGISTIC,
@@ -56,8 +58,9 @@ def create_learner(params) -> Boomer:
                   loss=params.loss, pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
                   label_sub_sampling_num_samples=params.label_sub_sampling_num_samples,
                   instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
-                  feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement,
-                  l2_regularization_weight=params.l2_regularization_weight)
+                  feature_sub_sampling=params.feature_sub_sampling,
+                  feature_sub_sampling_sample_size=params.feature_sub_sampling_sample_size,
+                  head_refinement=params.head_refinement, l2_regularization_weight=params.l2_regularization_weight)
 
 
 if __name__ == '__main__':
