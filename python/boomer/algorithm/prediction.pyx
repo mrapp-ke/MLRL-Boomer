@@ -147,10 +147,11 @@ cdef class DensePredictor(Predictor):
     Allows to make predictions based on rule-based models that are stored in dense matrices.
     """
 
-    def __cinit__(self, Aggregation aggregation, TransformationFunction transformation_function):
+    def __cinit__(self, Aggregation aggregation, TransformationFunction transformation_function = None):
         """
         :param aggregation:             The aggregation to be used to obtain raw predictions from the individual rules
-        :param transformation_function: The transformation function to be applied to the raw predictions
+        :param transformation_function: An (optional) transformation function to be applied to the raw predictions or
+                                        None, if no transformation function should be applied
         """
         self.aggregation = aggregation
         self.transformation_function = transformation_function
