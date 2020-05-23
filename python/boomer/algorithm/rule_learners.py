@@ -73,14 +73,20 @@ def _create_label_sub_sampling(label_sub_sampling: str, num_samples: int, stats:
     raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
 
-def _create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampling:
+def _create_instance_sub_sampling(instance_sub_sampling: str, sample_size: float) -> InstanceSubSampling:
     if instance_sub_sampling is None:
         return None
-    elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
-        return Bagging()
-    elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
-        return RandomInstanceSubsetSelection()
-    raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
+    else:
+        if sample_size < 0 or sample_size > 1:
+            raise ValueError(
+                'Invalid value given for parameter \'instance_sub_sampling_sample_size\': ' + str(sample_size))
+        if instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
+            return Bagging(sample_size)
+        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
+            return RandomInstanceSubsetSelection(sample_size)
+        else:
+            raise ValueError(
+                'Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
 def _create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling:
@@ -197,35 +203,42 @@ class Boomer(MLRuleLearner):
     def __init__(self, model_dir: str = None, max_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
                  label_sub_sampling_num_samples: int = 1, instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
+                 instance_sub_sampling_sample_size: float = 0.0,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0):
         """
-        :param max_rules:                       The maximum number of rules to be induced (including the default rule)
-        :param time_limit:                      The duration in seconds after which the induction of rules should be
-                                                canceled
-        :param head_refinement:                 The strategy that is used to find the heads of rules. Must be
-                                                `single-label`, `full` or None, if the default strategy should be used
-        :param loss:                            The loss function to be minimized. Must be
-                                                `label-wise-squared-error-loss`, `label-wise-logistic-loss` or
-                                                `example-wise-logistic-loss`
-        :param label_sub_sampling:              The strategy that is used for sub-sampling the labels each time a new
-                                                classification rule is learned. Must be 'random-label-selection' or
-                                                None, if no sub-sampling should be used
-        :param label_sub_sampling_num_samples:  The number of samples to be used for sub-sampling the labels. Must be at
-                                                least 1
-        :param instance_sub_sampling:           The strategy that is used for sub-sampling the training examples each
-                                                time a new classification rule is learned. Must be `bagging`,
-                                                `random-instance-selection` or None, if no sub-sampling should be used
-        :param feature_sub_sampling:            The strategy that is used for sub-sampling the features each time a
-                                                classification rule is refined. Must be `random-feature-selection` or
-                                                None, if no sub-sampling should be used
-        :param pruning:                         The strategy that is used for pruning rules. Must be `irep` or None, if
-                                                no pruning should be used
-        :param shrinkage:                       The shrinkage parameter that should be applied to the predictions of
-                                                newly induced rules to reduce their effect on the entire model. Must be
-                                                in (0, 1]
-        :param l2_regularization_weight:        The weight of the L2 regularization that is applied for calculating the
-                                                scores that are predicted by rules. Must be at least 0
+        :param max_rules:                           The maximum number of rules to be induced (including the default
+                                                    rule)
+        :param time_limit:                          The duration in seconds after which the induction of rules should be
+                                                    canceled
+        :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
+                                                    `single-label`, `full` or None, if the default strategy should be
+                                                    used
+        :param loss:                                The loss function to be minimized. Must be
+                                                    `label-wise-squared-error-loss`, `label-wise-logistic-loss` or
+                                                    `example-wise-logistic-loss`
+        :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
+                                                    new classification rule is learned. Must be 'random-label-selection'
+                                                    or None, if no sub-sampling should be used
+        :param label_sub_sampling_num_samples:      The number of samples to be used for sub-sampling the labels. Must
+                                                    be at least 1
+        :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
+                                                    each time a new classification rule is learned. Must be `bagging`,
+                                                    `random-instance-selection` or None, if no sub-sampling should be
+                                                    used
+        :param instance_sub_sampling_sample_size:   The fraction of examples to be included when sub-sampling the
+                                                    training examples. Must be in (0, 1] or 0, if the default value
+                                                    should be used
+        :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
+                                                    classification rule is refined. Must be `random-feature-selection`
+                                                    or None, if no sub-sampling should be used
+        :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
+                                                    if no pruning should be used
+        :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
+                                                    newly induced rules to reduce their effect on the entire model. Must
+                                                    be in (0, 1]
+        :param l2_regularization_weight:            The weight of the L2 regularization that is applied for calculating
+                                                    the scores that are predicted by rules. Must be at least 0
         """
         super().__init__(model_dir)
         self.max_rules = max_rules
@@ -235,6 +248,7 @@ class Boomer(MLRuleLearner):
         self.label_sub_sampling = label_sub_sampling
         self.label_sub_sampling_num_samples = label_sub_sampling_num_samples
         self.instance_sub_sampling = instance_sub_sampling
+        self.instance_sub_sampling_sample_size = instance_sub_sampling_sample_size
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
         self.shrinkage = shrinkage
@@ -253,6 +267,8 @@ class Boomer(MLRuleLearner):
             name += '_label-sub-sampling-num-samples=' + str(self.label_sub_sampling_num_samples)
         if self.instance_sub_sampling is not None:
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
+            if int(self.instance_sub_sampling_sample_size) > 0:
+                name += '_instance-sub-sampling-sample-size=' + str(self.instance_sub_sampling_sample_size)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
         if self.pruning is not None:
@@ -273,6 +289,7 @@ class Boomer(MLRuleLearner):
             'label_sub_sampling': self.label_sub_sampling,
             'label_sub_sampling_num_samples': self.label_sub_sampling_num_samples,
             'instance_sub_sampling': self.instance_sub_sampling,
+            'instance_sub_sampling_sample_size': self.instance_sub_sampling_sample_size,
             'feature_sub_sampling': self.feature_sub_sampling,
             'pruning': self.pruning,
             'shrinkage': self.shrinkage,
@@ -291,7 +308,8 @@ class Boomer(MLRuleLearner):
         stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         label_sub_sampling = _create_label_sub_sampling(self.label_sub_sampling,
                                                         int(self.label_sub_sampling_num_samples), stats)
-        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
+        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling,
+                                                              int(self.instance_sub_sampling_sample_size))
         feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = _create_pruning(self.pruning)
         shrinkage = self.__create_shrinkage()
@@ -351,28 +369,33 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  label_sub_sampling_num_samples: int = 1, instance_sub_sampling: str = None,
-                 feature_sub_sampling: str = None, pruning: str = None):
+                 instance_sub_sampling_sample_size: float = 0.0, feature_sub_sampling: str = None, pruning: str = None):
         """
-        :param max_rules:                       The maximum number of rules to be induced (including the default rule)
-        :param time_limit:                      The duration in seconds after which the induction of rules should be
-                                                canceled
-        :param head_refinement:                 The strategy that is used to find the heads of rules. Must be
-                                                `single-label` or None, if the default strategy should be used
-        :param loss:                            The loss function to be minimized. Must be `label-wise-measure`
-        :param heuristic:                       The heuristic to be minimized. Must be `precision` or `hamming-loss`
-        :param label_sub_sampling:              The strategy that is used for sub-sampling the labels each time a new
-                                                classification rule is learned. Must be 'random-label-selection' or
-                                                None, if no sub-sampling should be used
-        :param label_sub_sampling_num_samples:  The number of samples to be used for sub-sampling the labels. Must be at
-                                                least 1
-        :param instance_sub_sampling:           The strategy that is used for sub-sampling the training examples each
-                                                time a new classification rule is learned. Must be `bagging`,
-                                                `random-instance-selection` or None, if no sub-sampling should be used
-        :param feature_sub_sampling:            The strategy that is used for sub-sampling the features each time a
-                                                classification rule is refined. Must be `random-feature-selection` or
-                                                None, if no sub-sampling should be used
-        :param pruning:                         The strategy that is used for pruning rules. Must be `irep` or None, if
-                                                no pruning should be used
+        :param max_rules:                           The maximum number of rules to be induced (including the default
+                                                    rule)
+        :param time_limit:                          The duration in seconds after which the induction of rules should be
+                                                    canceled
+        :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
+                                                    `single-label` or None, if the default strategy should be used
+        :param loss:                                The loss function to be minimized. Must be `label-wise-measure`
+        :param heuristic:                           The heuristic to be minimized. Must be `precision` or `hamming-loss`
+        :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
+                                                    new classification rule is learned. Must be 'random-label-selection'
+                                                    or None, if no sub-sampling should be used
+        :param label_sub_sampling_num_samples:      The number of samples to be used for sub-sampling the labels. Must
+                                                    be at least 1
+        :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
+                                                    each time a new classification rule is learned. Must be `bagging`,
+                                                    `random-instance-selection` or None, if no sub-sampling should be
+                                                    used
+        :param instance_sub_sampling_sample_size:   The fraction of examples to be included when sub-sampling the
+                                                    training examples. Must be in (0, 1] or 0, if the default value
+                                                    should be used
+        :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
+                                                    classification rule is refined. Must be `random-feature-selection`
+                                                    or None, if no sub-sampling should be used
+        :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
+                                                    if no pruning should be used
         """
         super().__init__(model_dir)
         self.max_rules = max_rules
@@ -383,6 +406,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.label_sub_sampling = label_sub_sampling
         self.label_sub_sampling_num_samples = label_sub_sampling_num_samples
         self.instance_sub_sampling = instance_sub_sampling
+        self.instance_sub_sampling_sample_size = instance_sub_sampling_sample_size
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
 
@@ -400,6 +424,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_label-sub-sampling-num-samples=' + str(self.label_sub_sampling_num_samples)
         if self.instance_sub_sampling is not None:
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
+            if int(self.instance_sub_sampling_sample_size) > 0:
+                name += '_instance-sub-sampling-sample-size=' + str(self.instance_sub_sampling_sample_size)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
         if self.pruning is not None:
@@ -417,6 +443,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             'label_sub_sampling': self.label_sub_sampling,
             'label_sub_sampling_num_samples': self.label_sub_sampling_num_samples,
             'instance_sub_sampling': self.instance_sub_sampling,
+            'instance_sub_sampling_sample_size': self.instance_sub_sampling_sample_size,
             'feature_sub_sampling': self.feature_sub_sampling,
             'pruning': self.pruning
         })
@@ -429,7 +456,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         head_refinement = self.__create_head_refinement()
         label_sub_sampling = _create_label_sub_sampling(self.label_sub_sampling,
                                                         int(self.label_sub_sampling_num_samples), stats)
-        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
+        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling,
+                                                              self.instance_sub_sampling_sample_size)
         feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = _create_pruning(self.pruning)
         stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
