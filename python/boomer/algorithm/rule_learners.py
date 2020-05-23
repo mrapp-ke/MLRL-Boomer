@@ -43,7 +43,7 @@ LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
 
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
-MEASURE_LABEL_WISE = 'label-wise-measure'
+AVERAGING_LABEL_WISE = 'label-wise-averaging'
 
 HEURISTIC_PRECISION = 'precision'
 
@@ -339,7 +339,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     """
 
     def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: int = -1,
+                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: int = -1,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None):
         """
         :param max_rules:                   The maximum number of rules to be induced (including the default rule)
@@ -347,7 +347,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                             canceled
         :param head_refinement:             The strategy that is used to find the heads of rules. Must be
                                             `single-label` or None, if the default strategy should be used
-        :param loss:                        The loss function to be minimized. Must be `label-wise-measure`
+        :param loss:                        The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                   The heuristic to be minimized. Must be `precision` or `hamming-loss`
         :param label_sub_sampling:          The number of samples to be used for sub-sampling the labels each time a new
                                             classification rule is learned. Must be at least 1 or -1, if no sub-sampling
@@ -432,7 +432,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
         loss = self.loss
 
-        if loss == MEASURE_LABEL_WISE:
+        if loss == AVERAGING_LABEL_WISE:
             return LabelWiseAveraging(heuristic)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
