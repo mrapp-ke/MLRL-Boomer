@@ -389,7 +389,7 @@ cdef class Rule:
         The feature matrix must be given in compressed sparse row (CSR) format.
 
         :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
-                                non-zero feature values of the training examples
+                                non-zero feature values of the examples to predict for
         :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
                                 element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
                                 index at the last position is equal to `num_non_zero_feature_values`
