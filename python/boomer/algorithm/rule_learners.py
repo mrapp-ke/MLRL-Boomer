@@ -166,8 +166,10 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
+            num_examples = x.shape[0]
             num_features = x.shape[1]
-            return prediction.predict_csr(stats, model, x_data, x_row_indices, x_col_indices, num_features)
+            return prediction.predict_csr(stats, model, x_data, x_row_indices, x_col_indices, num_examples,
+                                          num_features)
         else:
             x = np.ascontiguousarray(self._ensure_input_format(x))
             return prediction.predict(stats, model, x)
