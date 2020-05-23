@@ -485,4 +485,4 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self) -> Predictor:
-        return RawPredictor(use_mask = True)
+        return Sign(RawPredictor(use_mask = True))
