@@ -145,7 +145,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef map[intp, IndexedArray*]* cache_global = self.cache_global
         cdef IndexedArray* indexed_array
         cdef map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
-        cdef map[intp, IndexedArrayWrapper*].iterator indexed_array_wrapper_iterator
+        cdef map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
         cdef intp num_indexed_values
@@ -426,16 +426,16 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
         finally:
             # Free memory occupied by the arrays stored in `cache_local`...
-            indexed_array_wrapper_iterator = cache_local.begin()
+            cache_local_iterator = cache_local.begin()
 
-            while indexed_array_wrapper_iterator != cache_local.end():
-                indexed_array_wrapper = dereference(indexed_array_wrapper_iterator).second
+            while cache_local_iterator != cache_local.end():
+                indexed_array_wrapper = dereference(cache_local_iterator).second
                 indexed_array = dereference(indexed_array_wrapper).array
                 indexed_values = dereference(indexed_array).data
                 free(indexed_values)
                 free(indexed_array)
                 free(indexed_array_wrapper)
-                postincrement(indexed_array_wrapper_iterator)
+                postincrement(cache_local_iterator)
 
 
 cdef inline IndexedArray* __argsort_by_feature_values(float32[::1] x_data, intp[::1] x_row_indices,
