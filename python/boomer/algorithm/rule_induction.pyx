@@ -5,7 +5,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.algorithm._arrays cimport uint32, float64, array_intp, array_float32, matrix_intp, get_index
+from boomer.algorithm._arrays cimport uint32, float64, array_uint32, array_intp, array_float32, matrix_intp, get_index
 from boomer.algorithm.rules cimport Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm.head_refinement cimport HeadCandidate
 from boomer.algorithm.losses cimport Prediction
@@ -129,8 +129,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # An array representing the number of conditions per type of operator
         cdef intp[::1] num_conditions_per_comparator = array_intp(4)
         num_conditions_per_comparator[:] = 0
-        # An array representing the indices of the examples that are covered by the rule
-        cdef intp[::1] covered_example_indices = None
+        # An array that is used to keep track of the indices of the examples are covered by the current rule.
+        cdef uint32[::1] tmp_array = array_uint32(num_examples)
+        tmp_array[:] = 0
 
         # Variables for representing the best refinement
         cdef bint found_refinement = True
@@ -375,11 +376,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                              best_condition_indexed_array_wrapper, best_condition_start,
                                              best_condition_end, best_condition_comparator, num_conditions)
                     num_covered = dereference(best_condition_index_array).num_elements
+                    # TODO Array `covered_example_indices` does not exist anymore
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
                     if best_condition_covered_weights > min_coverage:
                         # Inform the loss function about the weights of the examples that are covered by the current
                         # rule...
+                        # TODO Array `covered_example_indices` does not exist anymore
                         loss.set_sub_sample(covered_example_indices, weights)
                         total_sum_of_weights = best_condition_covered_weights
                     else:
@@ -396,14 +399,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
-                        # TODO revise pruning
+                        # TODO revise pruning (array `covered_example_indices` does not exist anymore)
                         pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
                         covered_example_indices = pruning.prune(x, cache_global, conditions)
                         num_covered = covered_example_indices.shape[0]
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
-                    # TODO revise re-calculation of predicted scores
+                    # TODO revise re-calculation of predicted scores (array `covered_example_indices` does not exist anymore)
                     loss.begin_search(label_indices)
 
                     for r in range(num_covered):
@@ -418,6 +421,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     shrinkage.apply_shrinkage(predicted_scores)
 
                 # Tell the loss function that a new rule has been induced...
+                # TODO Array `covered_example_indices` does not exist anymore
                 loss.apply_predictions(covered_example_indices, label_indices, predicted_scores)
 
                 # Build and return the induced rule...
