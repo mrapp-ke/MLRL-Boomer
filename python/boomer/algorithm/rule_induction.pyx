@@ -376,7 +376,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # TODO Check arguments
                     __filter_current_indices(best_condition_indexed_values, best_condition_num_indexed_values,
                                              best_condition_indexed_array_wrapper, best_condition_start,
-                                             best_condition_end, best_condition_comparator, num_conditions)
+                                             best_condition_end, best_condition_comparator, num_conditions, tmp_array)
                     num_covered = dereference(best_condition_index_array).num_elements
                     # TODO Array `covered_example_indices` does not exist anymore
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
@@ -553,7 +553,8 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
 
 cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
                                           IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
-                                          intp condition_end, Comparator condition_comparator, intp num_conditions):
+                                          intp condition_end, Comparator condition_comparator, intp num_conditions,
+                                          uint32[::1] tmp_array):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
@@ -574,6 +575,8 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
                                     be smaller than `condition_start`)
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
+    :param tmp_array:               An array of dtype uint, shape `(num_examples)` that is used to keep track of the
+                                    indices of the examples that are covered by the new rule
     """
     # TODO Re-implement
     cdef intp num_covered = condition_start - condition_end
