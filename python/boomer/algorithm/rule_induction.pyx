@@ -564,12 +564,12 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
     :param num_indexed_values:      The number of elements in the array `indexed_values`
     :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
                                     filtered array
-    :param condition_start:         The element in `sorted_indices` that corresponds to the first example (inclusive)
+    :param condition_start:         The element in `indexed_values` that corresponds to the first example (inclusive)
                                     that has been passed to the loss function when searching for the new condition (must
                                     be greater than `condition_end`)
-    :param condition_end:           The element in `sorted_indices_map[condition_index]` that corresponds to the last
-                                    example (exclusive) that has been passed to the loss function when searching for the
-                                    new condition (must be smaller than `condition_start`)
+    :param condition_end:           The element in `indexed_values` that corresponds to the last example (exclusive)
+                                    that has been passed to the loss function when searching for the new condition (must
+                                    be smaller than `condition_start`)
     :param condition_index:         The index of the feature, the new condition corresponds to
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
