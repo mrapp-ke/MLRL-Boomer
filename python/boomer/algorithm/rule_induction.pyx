@@ -89,20 +89,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.sorted_indices_map_global = new map[intp, IndexedArray*]()
+        self.cache_global = new map[intp, IndexedArray*]()
 
     def __dealloc__(self):
-        cdef map[intp, IndexedArray*]* sorted_indices_map_global = self.sorted_indices_map_global
-        cdef map[intp, IndexedArray*].iterator iterator = dereference(sorted_indices_map_global).begin()
+        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
+        cdef map[intp, IndexedArray*].iterator iterator = dereference(cache_global).begin()
         cdef IndexedArray* indexed_array
 
-        while iterator != dereference(sorted_indices_map_global).end():
+        while iterator != dereference(cache_global).end():
             indexed_array = dereference(iterator).second
             free(dereference(indexed_array).data)
             free(indexed_array)
             postincrement(iterator)
 
-        del self.sorted_indices_map_global
+        del self.cache_global
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
         cdef float64[::1] scores = loss.calculate_default_scores(y)
@@ -142,9 +142,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the examples that should be used for finding the best refinement
-        cdef map[intp, IndexedArray*]* sorted_indices_map_global = self.sorted_indices_map_global
+        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
         cdef IndexedArray* indexed_array
-        cdef map[intp, IndexedArrayWrapper*] sorted_indices_map_local  # Stack-allocated map
+        cdef map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
         cdef map[intp, IndexedArrayWrapper*].iterator indexed_array_wrapper_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
@@ -217,22 +217,22 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Obtain array that contains the indices of the training examples sorted according to the current
                     # feature...
-                    indexed_array_wrapper = sorted_indices_map_local[f]
+                    indexed_array_wrapper = cache_local[f]
 
                     if indexed_array_wrapper == NULL:
                         indexed_array_wrapper = <IndexedArrayWrapper*>malloc(sizeof(IndexedArrayWrapper))
                         dereference(indexed_array_wrapper).array = NULL
                         dereference(indexed_array_wrapper).num_conditions = 0
-                        sorted_indices_map_local[f] = indexed_array_wrapper
+                        cache_local[f] = indexed_array_wrapper
 
                     indexed_array = dereference(indexed_array_wrapper).array
 
                     if indexed_array == NULL:
-                        indexed_array = dereference(sorted_indices_map_global)[f]
+                        indexed_array = dereference(cache_global)[f]
 
                         if indexed_array == NULL:
                             indexed_array = __argsort_by_feature_values(x_data, x_row_indices, x_col_indices, f)
-                            dereference(sorted_indices_map_global)[f] = indexed_array
+                            dereference(cache_global)[f] = indexed_array
 
                     # Filter indices, if only a subset of the contained examples is covered...
                     if num_conditions > dereference(indexed_array_wrapper).num_conditions:
@@ -400,7 +400,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if pruning is not None and num_conditions > 1:
                         # TODO revise pruning
                         pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
-                        covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
+                        covered_example_indices = pruning.prune(x, cache_global, conditions)
                         num_covered = covered_example_indices.shape[0]
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
@@ -425,10 +425,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # Build and return the induced rule...
                 return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
         finally:
-            # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
-            indexed_array_wrapper_iterator = sorted_indices_map_local.begin()
+            # Free memory occupied by the arrays stored in `cache_local`...
+            indexed_array_wrapper_iterator = cache_local.begin()
 
-            while indexed_array_wrapper_iterator != sorted_indices_map_local.end():
+            while indexed_array_wrapper_iterator != cache_local.end():
                 indexed_array_wrapper = dereference(indexed_array_wrapper_iterator).second
                 indexed_array = dereference(indexed_array_wrapper).array
                 indexed_values = dereference(indexed_array).data
