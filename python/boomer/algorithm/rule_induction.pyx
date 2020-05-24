@@ -138,7 +138,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Comparator best_condition_comparator
         cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_feature_index
         cdef float32 best_condition_threshold
-        cdef intp best_condition_covered_weights
+        cdef intp best_condition_covered_weights, best_condition_num_indexed_values
         cdef IndexedValue* best_condition_indexed_values
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
@@ -301,6 +301,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_previous = previous_r
                                     best_condition_feature_index = f
                                     best_condition_covered_weights = sum_of_weights
+                                    best_condition_num_indexed_values = num_indexed_values
                                     best_condition_indexed_values = indexed_values
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
 
@@ -325,6 +326,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_previous = previous_r
                                     best_condition_feature_index = f
                                     best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
+                                    best_condition_num_indexed_values = num_indexed_values
                                     best_condition_indexed_values = indexed_values
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
 
@@ -372,7 +374,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Identify the examples for which the rule predicts...
                     # TODO Check arguments
-                    __filter_current_indices(best_condition_indexed_values, num_indexed_values,
+                    __filter_current_indices(best_condition_indexed_values, best_condition_num_indexed_values,
                                              best_condition_indexed_array_wrapper, best_condition_start,
                                              best_condition_end, best_condition_comparator, num_conditions)
                     num_covered = dereference(best_condition_index_array).num_elements
