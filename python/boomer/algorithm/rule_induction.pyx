@@ -93,14 +93,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     def __dealloc__(self):
         cdef map[intp, IndexedArray*]* cache_global = self.cache_global
-        cdef map[intp, IndexedArray*].iterator iterator = dereference(cache_global).begin()
+        cdef map[intp, IndexedArray*].iterator cache_global_iterator = dereference(cache_global).begin()
         cdef IndexedArray* indexed_array
 
-        while iterator != dereference(cache_global).end():
-            indexed_array = dereference(iterator).second
+        while cache_global_iterator != dereference(cache_global).end():
+            indexed_array = dereference(cache_global_iterator).second
             free(dereference(indexed_array).data)
             free(indexed_array)
-            postincrement(iterator)
+            postincrement(cache_global_iterator)
 
         del self.cache_global
 
