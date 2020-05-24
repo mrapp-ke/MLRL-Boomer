@@ -590,22 +590,22 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
         first = condition_start
         last = condition_end
 
-    cdef intp* filtered_indices_array = <intp*>malloc(num_covered * sizeof(intp))
+    cdef intp* filtered_array = <intp*>malloc(num_covered * sizeof(intp))
     cdef intp i = num_covered - 1
 
     if condition_comparator == Comparator.NEQ:
         for r in range(num_indices - 1, condition_start, -1):
             index = sorted_indices[r]
-            filtered_indices_array[i] = index
+            filtered_array[i] = index
             i -= 1
 
     for r in range(first, last, -1):
         index = sorted_indices[r]
-        filtered_indices_array[i] = index
+        filtered_array[i] = index
         i -= 1
 
     free(dereference(index_array).data)
-    dereference(index_array).data = filtered_indices_array
+    dereference(index_array).data = filtered_array
     dereference(index_array).num_elements = num_covered
     dereference(index_array).num_conditions = num_conditions
 
@@ -630,11 +630,11 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
     :param num_conditions:          The number of conditions in the list `conditions`
     :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
     """
-    cdef intp* filtered_indices_array = dereference(index_array).data
-    cdef bint must_allocate = filtered_indices_array == NULL
+    cdef intp* filtered_array = dereference(index_array).data
+    cdef bint must_allocate = filtered_array == NULL
 
     if must_allocate:
-        filtered_indices_array = <intp*>malloc(num_covered * sizeof(intp))
+        filtered_array = <intp*>malloc(num_covered * sizeof(intp))
 
     cdef intp num_untested_conditions = num_conditions - dereference(index_array).num_conditions
     cdef intp i = 0
@@ -668,16 +668,16 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, i
             postincrement(iterator)
 
         if covered:
-            filtered_indices_array[i] = index
+            filtered_array[i] = index
             i += 1
 
             if i >= num_covered:
                 break
 
     if not must_allocate:
-        filtered_indices_array = <intp*>realloc(filtered_indices_array, num_covered * sizeof(intp))
+        filtered_array = <intp*>realloc(filtered_array, num_covered * sizeof(intp))
 
-    dereference(index_array).data = filtered_indices_array
+    dereference(index_array).data = filtered_array
     dereference(index_array).num_elements = num_covered
     dereference(index_array).num_conditions = num_conditions
 
