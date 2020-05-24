@@ -135,7 +135,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Variables for representing the best refinement
         cdef bint found_refinement = True
         cdef Comparator best_condition_comparator
-        cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_index
+        cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_feature_index
         cdef float32 best_condition_threshold
         cdef intp best_condition_covered_weights
         cdef IndexedValue* best_condition_indexed_values
@@ -298,7 +298,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_start = first_r
                                     best_condition_end = r
                                     best_condition_previous = previous_r
-                                    best_condition_index = f
+                                    best_condition_feature_index = f
                                     best_condition_covered_weights = sum_of_weights
                                     best_condition_indexed_values = indexed_values
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
@@ -322,7 +322,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_start = first_r
                                     best_condition_end = r
                                     best_condition_previous = previous_r
-                                    best_condition_index = f
+                                    best_condition_feature_index = f
                                     best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
                                     best_condition_indexed_values = indexed_values
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
@@ -351,7 +351,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
                     # predicts...
-                    conditions.push_back(__make_condition(best_condition_index, best_condition_comparator,
+                    conditions.push_back(__make_condition(best_condition_feature_index, best_condition_comparator,
                                                           best_condition_threshold))
                     num_conditions += 1
                     num_conditions_per_comparator[<intp>best_condition_comparator] += 1
@@ -367,15 +367,15 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # `best_condition_end` and therefore must be adjusted...
                     if weights is not None and best_condition_previous - best_condition_end > 1:
                         best_condition_end = __adjust_split(best_condition_indexed_values, best_condition_end,
-                                                            best_condition_previous, best_condition_index,
+                                                            best_condition_previous, best_condition_feature_index,
                                                             best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
                     # TODO Check arguments
                     __filter_current_indices(best_condition_indexed_values, num_indexed_values,
                                              best_condition_indexed_array_wrapper, best_condition_start,
-                                             best_condition_end, best_condition_index, best_condition_comparator,
-                                             num_conditions)
+                                             best_condition_end, best_condition_feature_index,
+                                             best_condition_comparator, num_conditions)
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
