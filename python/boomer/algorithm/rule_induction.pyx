@@ -367,8 +367,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # `best_condition_end` and therefore must be adjusted...
                     if weights is not None and best_condition_previous - best_condition_end > 1:
                         best_condition_end = __adjust_split(best_condition_indexed_values, best_condition_end,
-                                                            best_condition_previous, best_condition_feature_index,
-                                                            best_condition_threshold)
+                                                            best_condition_previous, best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
                     # TODO Check arguments
@@ -507,7 +506,7 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
 
 
 cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_start, intp position_end,
-                                intp feature_index, float32 threshold):
+                                float32 threshold):
     """
     Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
     not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
@@ -520,7 +519,6 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
     :param position_start:  The position that separates the covered from the uncovered examples (when only taking into
                             account the examples that are contained in the sample). This is the position to start at
     :param position_end:    The position to stop at (exclusive, must be greater than `position_start`)
-    :param feature_index:   The index of the feature, the condition corresponds to
     :param threshold:       The threshold of the condition
     :return:                The adjusted position that separates the covered from the uncovered examples with respect to
                             the examples that are not contained in the sample
