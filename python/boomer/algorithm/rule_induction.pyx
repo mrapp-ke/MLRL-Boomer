@@ -456,12 +456,12 @@ cdef inline IndexedArray* __argsort_by_feature_values(float32[::1] x_data, intp[
     """
     cdef intp start = x_col_indices[feature_index]
     cdef intp end = x_col_indices[feature_index + 1]
-    cdef intp num_values = end - start
+    cdef intp num_elements = end - start
     cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
-    dereference(indexed_array).num_elements = num_values
+    dereference(indexed_array).num_elements = num_elements
 
-    if num_values > 0:
-        cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
+    if num_elements > 0:
+        cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
         cdef intp i = 0
         cdef intp j
 
@@ -470,7 +470,7 @@ cdef inline IndexedArray* __argsort_by_feature_values(float32[::1] x_data, intp[
             sorted_array[i].value = x_data[j]
             i += 1
 
-        qsort(sorted_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
+        qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
         dereference(indexed_array).data = sorted_array
     else:
         dereference(indexed_array).data = NULL
