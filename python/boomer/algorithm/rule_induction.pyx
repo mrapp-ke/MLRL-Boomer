@@ -374,8 +374,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # TODO Check arguments
                     __filter_current_indices(best_condition_indexed_values, num_indexed_values,
                                              best_condition_indexed_array_wrapper, best_condition_start,
-                                             best_condition_end, best_condition_feature_index,
-                                             best_condition_comparator, num_conditions)
+                                             best_condition_end, best_condition_comparator, num_conditions)
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
@@ -550,8 +549,7 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
 
 cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
                                           IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
-                                          intp condition_end, intp condition_index, Comparator condition_comparator,
-                                          intp num_conditions):
+                                          intp condition_end, Comparator condition_comparator, intp num_conditions):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
@@ -570,7 +568,6 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
     :param condition_end:           The element in `indexed_values` that corresponds to the last example (exclusive)
                                     that has been passed to the loss function when searching for the new condition (must
                                     be smaller than `condition_start`)
-    :param condition_index:         The index of the feature, the new condition corresponds to
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
     """
