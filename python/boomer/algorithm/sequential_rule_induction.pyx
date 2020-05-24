@@ -15,7 +15,7 @@ cdef class SequentialRuleInduction:
     """
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                              intp[::1] x_col_indices, uint8[::1, :] y, uint32 random_state):
+                              intp[::1] x_col_indices, intp num_examples, uint8[::1, :] y, uint32 random_state):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -31,6 +31,7 @@ cdef class SequentialRuleInduction:
                                             of the first element in `x_data` and `x_row_indices` that corresponds to a
                                             certain feature. The index at the last position is equal to
                                             `num_non_zero_feature_values`
+        :param num_examples:                The total number of training examples
         :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
                                             the labels of the training examples
         :param random_state:                The seed to be used by RNGs
@@ -87,7 +88,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.max_conditions = max_conditions
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                              intp[::1] x_col_indices, uint8[::1, :] y, uint32 random_state):
+                              intp[::1] x_col_indices, intp num_examples, uint8[::1, :] y, uint32 random_state):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleInduction rule_induction = self.rule_induction
@@ -118,10 +119,10 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule
-            rule = rule_induction.induce_rule(nominal_attribute_indices, x_data, x_row_indices, x_col_indices, y,
-                                              head_refinement, loss, label_sub_sampling, instance_sub_sampling,
-                                              feature_sub_sampling, pruning, shrinkage, min_coverage, max_conditions,
-                                              rng)
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x_data, x_row_indices, x_col_indices,
+                                              num_examples, y, head_refinement, loss, label_sub_sampling,
+                                              instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
+                                              min_coverage, max_conditions, rng)
             rule_list.append(rule)
             num_rules += 1
 

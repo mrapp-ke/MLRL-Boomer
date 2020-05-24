@@ -149,10 +149,11 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
     def _fit(self, stats: Stats, x, y, random_state: int):
         # Convert training data into required format
-        x = self._ensure_input_format(x, sparse_format='csc', enforce_sparse=True)
+        x = self._ensure_input_format(x, enforce_sparse=True, sparse_format='csc')
         x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
         x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
         x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
+        num_examples = x.shape[0]
         y = np.asfortranarray(self._ensure_output_format(y), dtype=DTYPE_UINT8)
 
         # Create an array that contains the indices of all nominal attributes, if any
@@ -166,7 +167,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(stats)
         return sequential_rule_induction.induce_rules(nominal_attribute_indices, x_data, x_row_indices, x_col_indices,
-                                                      y, random_state)
+                                                      num_examples, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
         # Convert feature matrix into required format
