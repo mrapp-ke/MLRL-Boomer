@@ -110,7 +110,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp[::1] num_conditions_per_comparator = array_intp(4)
         num_conditions_per_comparator[:] = 0
         # An array representing the indices of the examples that are covered by the rule
-        cdef intp[::1] covered_example_indices = None
+        cdef intp[::1] covered_example_indices
         # The seed to be used by RNGs (must be updated after each refinement)
         cdef intp current_random_state = random_state
 
@@ -153,10 +153,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         if instance_sub_sampling is None:
             weights = None
-        else:
-            weights = instance_sub_sampling.sub_sample(x, random_state)
 
-        loss.set_sub_sample(covered_example_indices, weights)
+             # Notify the loss that all examples should be considered...
+            loss.begin_instance_sub_sampling()
+
+            for i in range(num_examples):
+                loss.update_sub_sample(i, 1)
+        else:
+            weights = instance_sub_sampling.sub_sample(x, loss, random_state)
 
         # Sub-sample labels, if necessary...
         cdef intp[::1] label_indices
@@ -344,15 +348,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # Identify the examples for which the rule predicts...
                     __filter_current_indices(best_condition_sorted_indices, num_examples, best_condition_index_array,
                                              best_condition_start, best_condition_end, best_condition_index,
-                                             best_condition_comparator, num_conditions)
+                                             best_condition_comparator, num_conditions, loss, weights)
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
 
                     if num_covered > 1:
-                        # Inform the loss function about the weights of the examples that are covered by the current
-                        # rule...
-                        loss.set_sub_sample(covered_example_indices, weights)
-
                         # Alter seed to be used by RNGs for the next refinement...
                         current_random_state = random_state * (num_conditions + 1)
                     else:
@@ -509,7 +509,8 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp* sorted_indices, intp po
 
 cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices, IndexArray* index_array,
                                           intp condition_start, intp condition_end, intp condition_index,
-                                          Comparator condition_comparator, intp num_conditions):
+                                          Comparator condition_comparator, intp num_conditions, Loss loss,
+                                          uint32[::1] weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
@@ -530,6 +531,11 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
     :param condition_index:         The index of the feature, the new condition corresponds to
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
+    :param loss:                    The loss function to be notified about the examples that must be considered when
+                                    searching for the next refinement, i.e., the examples that are covered by the new
+                                    rule
+    :param weights:                 An array of dtype uint, shape `(num_examples)`, representing the weights of the
+                                    training examples
     """
     cdef intp num_covered = condition_start - condition_end
     cdef intp r, first, last, index
@@ -543,7 +549,12 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
         last = condition_end
 
     cdef intp* filtered_indices_array = <intp*>malloc(num_covered * sizeof(intp))
+
+    # Tell the loss function that a new sub-sample of examples will be selected...
+    loss.begin_instance_sub_sampling()
+
     cdef intp i = num_covered - 1
+    cdef uint32 weight
 
     if condition_comparator == Comparator.NEQ:
         for r in range(num_indices - 1, condition_start, -1):
@@ -551,10 +562,18 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
             filtered_indices_array[i] = index
             i -= 1
 
+            # Tell the loss function that the example at the current index is covered by the current rule...
+            weight = 1 if weights is None else weights[index]
+            loss.update_sub_sample(index, weight)
+
     for r in range(first, last, -1):
         index = sorted_indices[r]
         filtered_indices_array[i] = index
         i -= 1
+
+        # Tell the loss function that the example at the current index is covered by the current rule...
+        weight = 1 if weights is None else weights[index]
+        loss.update_sub_sample(index, weight)
 
     free(dereference(index_array).data)
     dereference(index_array).data = filtered_indices_array
