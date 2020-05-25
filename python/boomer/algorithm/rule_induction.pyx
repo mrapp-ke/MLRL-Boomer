@@ -129,9 +129,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # An array representing the number of conditions per type of operator
         cdef intp[::1] num_conditions_per_comparator = array_intp(4)
         num_conditions_per_comparator[:] = 0
-        # An array that is used to keep track of the indices of the examples are covered by the current rule.
-        cdef uint32[::1] tmp_array = array_uint32(num_examples)
-        tmp_array[:] = 0
+        # An array that is used to keep track of the indices of the training examples are covered by the current rule.
+        # Each element in the array corresponds to the example at the corresponding index. If the value for an element
+        # is equal to `covered_examples_target`, it is covered by the current rule, otherwise it is not.
+        cdef uint32[::1] covered_examples_mask = array_uint32(num_examples)
+        covered_examples_mask[:] = 0
+        cdef uint32 covered_examples_target = 0
 
         # Variables for representing the best refinement
         cdef bint found_refinement = True
@@ -374,9 +377,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Identify the examples for which the rule predicts...
                     # TODO Check arguments
-                    __filter_current_indices(best_condition_indexed_values, best_condition_num_indexed_values,
-                                             best_condition_indexed_array_wrapper, best_condition_start,
-                                             best_condition_end, best_condition_comparator, num_conditions, tmp_array)
+                    covered_examples_target = __filter_current_indices(best_condition_indexed_values,
+                                                                       best_condition_num_indexed_values,
+                                                                       best_condition_indexed_array_wrapper,
+                                                                       best_condition_start, best_condition_end,
+                                                                       best_condition_comparator, num_conditions,
+                                                                       covered_examples_mask, covered_examples_target)
                     num_covered = dereference(best_condition_index_array).num_elements
                     # TODO Array `covered_example_indices` does not exist anymore
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
@@ -551,10 +557,10 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
     return adjusted_position
 
 
-cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
-                                          IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
-                                          intp condition_end, Comparator condition_comparator, intp num_conditions,
-                                          uint32[::1] tmp_array):
+cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
+                                            IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
+                                            intp condition_end, Comparator condition_comparator, intp num_conditions,
+                                            uint32[::1] covered_examples_mask, uint32 covered_examples_target):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
@@ -575,8 +581,13 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
                                     be smaller than `condition_start`)
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
-    :param tmp_array:               An array of dtype uint, shape `(num_examples)` that is used to keep track of the
-                                    indices of the examples that are covered by the new rule
+    :param covered_examples_mask:   An array of dtype uint, shape `(num_examples)` that is used to keep track of the
+                                    indices of the examples that are covered by the previous rule. It will be updated by
+                                    this function
+    :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that are
+                                    covered by the previous rule
+    :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
+                                    that are covered by the new rule
     """
     # TODO Re-implement
     cdef intp num_covered = condition_start - condition_end
@@ -608,6 +619,9 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
     dereference(index_array).data = filtered_array
     dereference(index_array).num_elements = num_covered
     dereference(index_array).num_conditions = num_conditions
+
+    # TODO return correct value
+    return covered_examples_target
 
 
 cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, intp num_indices,
