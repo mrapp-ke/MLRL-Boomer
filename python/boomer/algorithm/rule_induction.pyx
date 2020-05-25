@@ -589,39 +589,55 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
                                     that are covered by the new rule
     """
-    # TODO Re-implement
+    cdef uint32 updated_target
+    cdef intp r, index
     cdef intp num_covered = condition_start - condition_end
-    cdef intp r, first, last, index
 
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
-        num_covered = num_indices - num_covered
-        first = condition_end
-        last = -1
-    else:
-        first = condition_start
-        last = condition_end
+        num_covered = num_indexed_values - num_covered
 
-    cdef intp* filtered_array = <intp*>malloc(num_covered * sizeof(intp))
+    cdef IndexedValue* filtered_array = <intp*>malloc(num_covered * sizeof(IndexedValue))
     cdef intp i = num_covered - 1
 
-    if condition_comparator == Comparator.NEQ:
-        for r in range(num_indices - 1, condition_start, -1):
-            index = sorted_indices[r]
-            filtered_array[i] = index
+    if condition_comparator == Comparator.GR:
+        updated_target = num_conditions
+
+        for r in range(condition_start, condition_end, -1):
+            index = indexed_values[r].index
+            covered_examples_mask[index] = num_conditions
+            filtered_array[i].index = index
+            filtered_array[i].value = indexed_values[r].value
+            i -= 1
+    else:
+        updated_target = covered_examples_target
+
+        if condition_comparator == Comparator.NEQ:
+            for r in range(num_indexed_values - 1, condition_start, -1):
+                filtered_array[i].index = indexed_values[r].index
+                filtered_array[i].value = indexed_values[r].value
+                i -= 1
+
+        for r in range(condition_start, condition_end, -1):
+            index = indexed_values[r].index
+            covered_examples_mask[index] = num_conditions
+
+        for r in range(condition_end, -1, -1):
+            filtered_array[i].index = indexed_values[r].index
+            filtered_array[i].value = indexed_values[r].value
             i -= 1
 
-    for r in range(first, last, -1):
-        index = sorted_indices[r]
-        filtered_array[i] = index
-        i -= 1
+    cdef IndexedArray* indexed_array = dereference(indexed_array_wrapper).array
 
-    free(dereference(index_array).data)
-    dereference(index_array).data = filtered_array
-    dereference(index_array).num_elements = num_covered
-    dereference(index_array).num_conditions = num_conditions
+    if indexed_array == NULL:
+        indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        dereference(indexed_array_wrapper).array = indexed_array
+    else:
+        free(dereference(indexed_array).data)
 
-    # TODO return correct value
-    return covered_examples_target
+    dereference(indexed_array).data = filtered_array
+    dereference(indexed_array).num_elements = num_covered
+    dereference(indexed_array_wrapper).num_conditions = num_conditions
+    return updated_target
 
 
 cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, intp num_indices,
