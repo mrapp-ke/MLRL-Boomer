@@ -17,14 +17,38 @@ cdef class Body:
     def __setstate__(self, state):
         pass
 
-    cdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[::1] example):
         """
         Returns whether a certain example is covered by the body, or not.
+
+        The feature values of the example must be given as a dense C-contiguous array.
 
         :param example: An array of dtype float, shape `(num_features)`, representing the features of an example
         :return:        1, if the example is covered, 0 otherwise
         """
         pass
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            uint32[::1] tmp_array2, uint32 n):
+        """
+        Returns whether a certain example is covered by the body, or not.
+
+        The feature values of the example must be given as a sparse array.
+
+        :param example_data:    An array of dtype float, shape `(num_non_zero_feature_values), representing the non-zero
+                                feature values of the training examples
+        :param example_indices: An array of dtype int, shape `(num_non_zero_feature_values)`, representing the indices
+                                of the features, the values in `example_data` correspond to
+        :param tmp_array1:      An array of dtype float, shape `(num_features)` that is used to temporarily store
+                                non-zero feature values. May contain arbitrary values
+        :param tmp_array2:      An array of dtype uint, shape `(num_features)` that is used to temporarily keep track of
+                                the feature indices with non-zero feature values. Must not contain any elements with
+                                value `n`
+        :param n:               An arbitrary number. If this function is called multiple times for different examples,
+                                but using the same `tmp_array2`, the number must be unique for each of the function
+                                invocations
+        :return:                1, if the example is covered, 0 otherwise
+        """
 
 
 cdef class EmptyBody(Body):
@@ -38,7 +62,11 @@ cdef class EmptyBody(Body):
     def __setstate__(self, state):
         pass
 
-    cdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[::1] example):
+        return True
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            uint32[::1] tmp_array2, uint32 n):
         return True
 
 
@@ -106,7 +134,7 @@ cdef class ConjunctiveBody(Body):
         self.neq_feature_indices = state[6]
         self.neq_thresholds = state[7]
 
-    cdef bint covers(self, float32[:] example):
+    cdef bint covers(self, float32[::1] example):
         cdef intp[::1] feature_indices = self.leq_feature_indices
         cdef float32[::1] thresholds = self.leq_thresholds
         cdef intp num_conditions = feature_indices.shape[0]
@@ -150,6 +178,63 @@ cdef class ConjunctiveBody(Body):
 
         return True
 
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            uint32[::1] tmp_array2, uint32 n):
+        cdef intp num_non_zero_feature_values = example_data.shape[0]
+        cdef intp i, c
+
+        for i in range(num_non_zero_feature_values):
+            c = example_indices[i]
+            tmp_array1[c] = example_data[i]
+            tmp_array2[c] = n
+
+        cdef intp[::1] feature_indices = self.leq_feature_indices
+        cdef float32[::1] thresholds = self.leq_thresholds
+        cdef intp num_conditions = feature_indices.shape[0]
+        cdef float32 feature_value
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value > thresholds[i]:
+                return False
+
+        feature_indices = self.gr_feature_indices
+        thresholds = self.gr_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value <= thresholds[i]:
+                return False
+
+        feature_indices = self.eq_feature_indices
+        thresholds = self.eq_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value != thresholds[i]:
+                return False
+
+        feature_indices = self.neq_feature_indices
+        thresholds = self.neq_thresholds
+        num_conditions = feature_indices.shape[0]
+
+        for i in range(num_conditions):
+            c = feature_indices[i]
+            feature_value = tmp_array1[c] if tmp_array2[c] == n else 0
+
+            if feature_value == thresholds[i]:
+                return False
+
+        return True
+
 
 cdef class Head:
     """
@@ -162,12 +247,13 @@ cdef class Head:
     def __setstate__(self, state):
         pass
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[::1] predictions, uint8[::1] mask = None):
         """
-        Applies the head's prediction to a given vector of predictions given that no prediction has yet been made.
+        Applies the head's prediction to a given vector of predictions. Optionally, the prediction can be restricted to
+        certain labels.
 
-        :param predicted:   An array of dtype float, shape `(num_labels)`, representing which labels have already been
-                            predicted.
+        :param mask:        An array of dtype uint, shape `(num_labels)`, indicating for which labels it is allowed to
+                            predict or None, if the prediction should not be restricted
         :param predictions: An array of dtype float, shape `(num_labels)`, representing a vector of predictions
         """
         pass
@@ -192,16 +278,16 @@ cdef class FullHead(Head):
         scores = state
         self.scores = scores
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[::1] predictions, uint8[::1] mask = None):
         cdef float64[::1] scores = self.scores
         cdef intp num_cols = predictions.shape[0]
         cdef intp c
 
         for c in range(num_cols):
-            if predicted is not None:
-                if not predicted[c]:
-                    predictions[c] = scores[c]
-                    predicted[c] = 1
+            if mask is not None:
+                if mask[c]:
+                    predictions[c] += scores[c]
+                    mask[c] = False
             else:
                 predictions[c] += scores[c]
 
@@ -229,20 +315,21 @@ cdef class PartialHead(Head):
         self.label_indices = label_indices
         self.scores = scores
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted = None):
+    cdef void predict(self, float64[::1] predictions, uint8[::1] mask = None):
         cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
         cdef intp num_labels = label_indices.shape[0]
-        cdef intp c, label
+        cdef intp c, l
 
         for c in range(num_labels):
-            label = label_indices[c]
-            if predicted is not None:
-                if not predicted[label]:
-                    predictions[label] = scores[c]
-                    predicted[label] = 1
+            l = label_indices[c]
+
+            if mask is not None:
+                if mask[l]:
+                    predictions[l] += scores[c]
+                    mask[l] = False
             else:
-                predictions[label] += scores[c]
+                predictions[l] += scores[c]
 
 
 cdef class Rule:
@@ -266,25 +353,77 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted = None):
+    cpdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
         """
-        Applies the rule's prediction to all examples it covers.
+        Applies the rule's prediction to a matrix of predictions for all examples it covers. Optionally, the prediction
+        can be restricted to certain examples and labels.
+
+        The feature matrix must be given as a dense C-contiguous array.
 
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the examples to predict for
-        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the scores
-                                predicted for the given examples
-        :param predicted:       An array of dtype float, shape `(num_examples, num_labels)`, representing the labels
-                                per example for which a prediction has already been made
+        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                predictions of individual examples and labels
+        :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
+                                examples and labels it is allowed to predict or None, if the prediction should not be
+                                restricted
         """
         cdef Body body = self.body
         cdef Head head = self.head
         cdef intp num_examples = x.shape[0]
+        cdef uint8[::1] mask_row
         cdef intp r
 
         for r in range(num_examples):
             if body.covers(x[r, :]):
-                if predicted is not None:
-                    head.predict(predictions[r, :], predicted[r, :])
-                else:
-                    head.predict(predictions[r, :])
+                mask_row = None if mask is None else mask[r, :]
+                head.predict(predictions[r, :], mask_row)
+
+    cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
+                      float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
+                      uint8[:, ::1] mask = None):
+        """
+        Applies the rule's predictions to a matrix of predictions for all examples it covers. Optionally, the prediction
+        can be restricted to certain examples and labels.
+
+        The feature matrix must be given in compressed sparse row (CSR) format.
+
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples
+        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
+                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
+                                index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                column-indices of the examples, the values in `x_data` correspond to
+        :param num_features:    The total number of features
+        :param tmp_array1:      An array of dtype float, shape `(num_features)` that is used to temporarily store
+                                non-zero feature values. May contain arbitrary values
+        :param tmp_array2:      An array of dtype uint, shape `(num_features)` that is used to temporarily keep track of
+                                the feature indices with non-zero feature values. Must not contain any elements with
+                                value `n`
+        :param n:               An arbitrary number. If this function is called multiple times on different rules, but
+                                using the same `tmp_array2`, the number must be unique for each of the function
+                                invocations and the numbers `n...n + num_examples` must not be used for any of the
+                                remaining invocations
+        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                predictions of individual examples and labels
+        :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
+                                examples and labels it is allowed to predict or None, if the prediction should not be
+                                restricted
+        """
+        cdef Body body = self.body
+        cdef Head head = self.head
+        cdef intp num_examples = x_row_indices.shape[0] - 1
+        cdef uint32 current_n = n
+        cdef uint8[::1] mask_row
+        cdef intp r, start, end
+
+        for r in range(num_examples):
+            start = x_row_indices[r]
+            end = x_row_indices[r + 1]
+
+            if body.covers_sparse(x_data[start:end], x_col_indices[start:end], tmp_array1, tmp_array2, current_n):
+                mask_row = None if mask is None else mask[r, :]
+                head.predict(predictions[r, :], mask_row)
+
+            current_n += 1
