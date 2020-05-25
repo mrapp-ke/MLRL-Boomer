@@ -27,6 +27,7 @@ from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCr
 from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
+from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 
 from boomer.algorithm.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
@@ -43,7 +44,7 @@ LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
 
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
-MEASURE_LABEL_WISE = 'label-wise-measure'
+AVERAGING_LABEL_WISE = 'label-wise-averaging'
 
 HEURISTIC_PRECISION = 'precision'
 
@@ -140,7 +141,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
     def __init__(self, model_dir: str):
         super().__init__(model_dir)
-        # We need a dense representation of the feature matrix (first value) and the label matrix (second value)
+        # By default, we use dense feature matrices (first value) and the label matrices (second value)
         self.require_dense = [True, True]
 
     def get_model_prefix(self) -> str:
@@ -168,15 +169,53 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
-        # Create a dense representation of the given examples
-        x = self._ensure_input_format(x)
-
-        # Convert feature matrix into Fortran-contiguous array
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
-
         prediction = self._create_prediction()
         prediction.random_state = self.random_state
-        return prediction.predict(stats, model, x)
+        sparse_format = 'csr'
+        enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
+        x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
+
+        if enforce_sparse:
+            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
+            x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
+            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
+            num_features = x.shape[1]
+            return prediction.predict_csr(stats, model, x_data, x_row_indices, x_col_indices, num_features)
+        else:
+            x = np.ascontiguousarray(self._ensure_input_format(x))
+            return prediction.predict(stats, model, x)
+
+    @staticmethod
+    def __should_enforce_sparse(m, sparse_format: str = 'csr') -> bool:
+        """
+        Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix` or
+        `scipy.sparse.csc_matrix`, depending on the format of the given matrix and on how much memory the sparse matrix
+        will occupy compared to a dense matrix. To be able to convert the matrix into a sparse format, it must be a
+        `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix` or `scipy.sparse.coo_matrix`. If the given matrix is
+        already in the specified sparse format or if it is a dense matrix, it will not be converted.
+
+        :param m:               The np.ndarray or scipy.sparse.matrix to be checked
+        :param sparse_format:   The sparse format to be used. Must be 'csr' or 'csc'
+        :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given
+                                format, False otherwise
+        """
+        if not issparse(m):
+            # Given matrix is dense
+            return False
+        elif (isspmatrix_csr(m) and sparse_format == 'csr') or (isspmatrix_csc(m) and sparse_format == 'csc'):
+            # Given matrix is already in the specified sparse format
+            return True
+        elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m):
+            # Given matrix is in a format that might be converted into the specified sparse format
+            num_non_zero = m.nnz
+            num_pointers = m.shape[1 if sparse_format == 'csc' else 0]
+            size_int = np.dtype(DTYPE_INTP).itemsize
+            size_float = np.dtype(DTYPE_FLOAT32).itemsize
+            size_sparse = (num_non_zero * size_float) + (num_non_zero * size_int) + (num_pointers * size_int)
+            size_dense = np.prod(m.shape) * size_float
+            return size_sparse < size_dense
+        else:
+            raise ValueError('Unsupported type of matrix given: ' + type(m).__name__)
 
     @abstractmethod
     def _create_prediction(self) -> Prediction:
@@ -380,7 +419,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     """
 
     def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = MEASURE_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
+                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  label_sub_sampling_num_samples: int = 1, instance_sub_sampling: str = None,
                  instance_sub_sampling_sample_size: float = 0.0, feature_sub_sampling: str = None,
                  feature_sub_sampling_sample_size: float = 0.0, pruning: str = None):
@@ -391,7 +430,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     canceled
         :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
                                                     `single-label` or None, if the default strategy should be used
-        :param loss:                                The loss function to be minimized. Must be `label-wise-measure`
+        :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                           The heuristic to be minimized. Must be `precision` or `hamming-loss`
         :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
                                                     new classification rule is learned. Must be 'random-label-selection'
@@ -499,7 +538,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
         loss = self.loss
 
-        if loss == MEASURE_LABEL_WISE:
+        if loss == AVERAGING_LABEL_WISE:
             return LabelWiseAveraging(heuristic)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
