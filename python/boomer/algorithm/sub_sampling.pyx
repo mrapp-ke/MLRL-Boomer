@@ -58,9 +58,6 @@ cdef class Bagging(InstanceSubSampling):
             # Update weight at the selected index...
             weights[random_index] += 1
 
-             # Tell the given loss function that a new example has been chosen to be included in the sample...
-             loss.update_sub_sample(i, 1)
-
         return weights
 
 
