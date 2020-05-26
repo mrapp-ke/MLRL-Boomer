@@ -1,18 +1,24 @@
-from boomer.algorithm._arrays cimport intp, float32, float64
+from boomer.algorithm._arrays cimport uint8, uint32, intp, float32, float64
 
 
 cdef class Body:
 
     # Functions:
 
-    cdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[::1] example)
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            uint32[::1] tmp_array2, uint32 n)
 
 
 cdef class EmptyBody(Body):
 
     # Functions:
 
-    cdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[::1] example)
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            uint32[::1] tmp_array2, uint32 n)
 
 
 cdef class ConjunctiveBody(Body):
@@ -37,14 +43,17 @@ cdef class ConjunctiveBody(Body):
 
     # Functions:
 
-    cdef bint covers(self, float32[:] example)
+    cdef bint covers(self, float32[::1] example)
+
+    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+                            uint32[::1] tmp_array2, uint32 n)
 
 
 cdef class Head:
 
     # Functions:
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted=*)
+    cdef void predict(self, float64[::1] predictions, uint8[::1] mask=*)
 
 
 cdef class FullHead(Head):
@@ -55,7 +64,7 @@ cdef class FullHead(Head):
 
     # Functions:
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted=*)
+    cdef void predict(self, float64[::1] predictions, uint8[::1] mask=*)
 
 
 cdef class PartialHead(Head):
@@ -68,7 +77,7 @@ cdef class PartialHead(Head):
 
     # Functions:
 
-    cdef void predict(self, float64[:] predictions, intp[:] predicted=*)
+    cdef void predict(self, float64[::1] predictions, uint8[::1] mask=*)
 
 
 cdef class Rule:
@@ -81,4 +90,8 @@ cdef class Rule:
 
     # Functions:
 
-    cpdef predict(self, float32[::1, :] x, float64[:, :] predictions, intp[:, :] predicted=*)
+    cpdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask=*)
+
+    cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
+                      float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
+                      uint8[:, ::1] mask=*)

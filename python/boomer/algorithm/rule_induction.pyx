@@ -5,7 +5,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.algorithm._arrays cimport uint32, float64, array_uint32, array_intp, array_float32, matrix_intp, get_index
+from boomer.algorithm._arrays cimport uint32, float64, array_uint32, array_intp, array_float32, get_index
 from boomer.algorithm.rules cimport Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm.head_refinement cimport HeadCandidate
 from boomer.algorithm.losses cimport Prediction
@@ -183,7 +183,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             weights = instance_sub_sampling_result.first
             total_sum_of_weights = instance_sub_sampling_result.second
 
-        loss.set_sub_sample(covered_example_indices, weights)
+        # Notify the loss function about the examples that are included in the sub-sample...
+        loss.begin_instance_sub_sampling()
+
+        for i in range(num_examples):
+            weight = 1 if weights is None else weights[i]
+            loss.update_sub_sample(i, weight)
 
         # Sub-sample labels, if necessary...
         cdef intp[::1] label_indices
@@ -382,18 +387,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                        best_condition_indexed_array_wrapper,
                                                                        best_condition_start, best_condition_end,
                                                                        best_condition_comparator, num_conditions,
-                                                                       covered_examples_mask, covered_examples_target)
+                                                                       covered_examples_mask, covered_examples_target,
+                                                                       loss, weight)
                     num_covered = dereference(best_condition_index_array).num_elements
                     # TODO Array `covered_example_indices` does not exist anymore
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
+                    total_sum_of_weights = best_condition_covered_weights
 
-                    if best_condition_covered_weights > min_coverage:
-                        # Inform the loss function about the weights of the examples that are covered by the current
-                        # rule...
-                        # TODO Array `covered_example_indices` does not exist anymore
-                        loss.set_sub_sample(covered_example_indices, weights)
-                        total_sum_of_weights = best_condition_covered_weights
-                    else:
+                    if total_sum_of_weights <= min_coverage:
                         # Abort refinement process if rule covers a single example...
                         break
 
@@ -560,7 +561,8 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
 cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
                                             IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
                                             intp condition_end, Comparator condition_comparator, intp num_conditions,
-                                            uint32[::1] covered_examples_mask, uint32 covered_examples_target):
+                                            uint32[::1] covered_examples_mask, uint32 covered_examples_target,
+                                            Loss loss, uint32[::1] weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
@@ -586,6 +588,11 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
                                     this function
     :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that are
                                     covered by the previous rule
+    :param loss:                    The loss function to be notified about the examples that must be considered when
+                                    searching for the next refinement, i.e., the examples that are covered by the new
+                                    rule
+    :param weights:                 An array of dtype uint, shape `(num_examples)`, representing the weights of the
+                                    training examples
     :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
                                     that are covered by the new rule
     """
@@ -598,6 +605,11 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
 
     cdef IndexedValue* filtered_array = <intp*>malloc(num_covered * sizeof(IndexedValue))
     cdef intp i = num_covered - 1
+
+    # Tell the loss function that a new sub-sample of examples will be selected...
+    loss.begin_instance_sub_sampling()
+
+    # TODO In the following, invoke update_sub_sample() or remove_from_sub_sample() as necessary
 
     if condition_comparator == Comparator.GR:
         updated_target = num_conditions

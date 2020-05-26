@@ -21,11 +21,11 @@ cdef class InstanceSubSampling:
         """
         Creates and returns a sub-sample of the available training examples.
 
-        :param x:   The total number of available training examples
-        :param rng: The random number generator to be used
-        :return:    A pair that contains an array of dtype uint, shape `(num_examples)`, representing the weights of the
-                    given training examples, i.e., how many times each of the examples is contained in the sample, as
-                    well as the sum of the weights
+        :param num_examples:    The total number of available training examples
+        :param rng:             The random number generator to be used
+        :return:                A pair that contains an array of dtype uint, shape `(num_examples)`, representing the
+                                weights of the given training examples, i.e., how many times each of the examples is
+                                contained in the sample, as well as the sum of the weights
         """
         pass
 
