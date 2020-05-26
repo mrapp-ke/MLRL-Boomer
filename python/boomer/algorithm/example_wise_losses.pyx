@@ -3,7 +3,7 @@
 
 Provides classes that implement loss functions that are applied example-wise.
 """
-from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
+from boomer.algorithm._arrays cimport array_float64, fortran_matrix_float64, get_index
 from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
@@ -38,7 +38,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # The number of labels
         cdef intp num_labels = y.shape[1]
         # A matrix that stores the expected scores for each example and label according to the ground truth
-        cdef float64[::1, :] expected_scores = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] expected_scores = fortran_matrix_float64(num_examples, num_labels)
         # Pre-calculated values
         cdef float64 sum_of_exponentials = num_labels + 1
         cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
@@ -94,15 +94,15 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # scores...
         cdef float64[::1] exponentials = ordinates # Reuse existing array instead of allocating a new one
         # A matrix that stores the gradients
-        cdef float64[::1, :] gradients = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] gradients = fortran_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of gradients
         cdef float64[::1] total_sums_of_gradients = array_float64(num_labels)
         # A matrix that stores the hessians
-        cdef float64[::1, :] hessians = matrix_float64(num_examples, num_hessians)
+        cdef float64[::1, :] hessians = fortran_matrix_float64(num_examples, num_hessians)
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = coefficients # Reuse existing array instead of allocating a new one
         # A matrix that stores the currently predicted scores for each example and label
-        cdef float64[::1, :] current_scores = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] current_scores = fortran_matrix_float64(num_examples, num_labels)
         # Temporary variables
         cdef float64 exponential, tmp, score
 
@@ -164,39 +164,36 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return scores
 
-    cdef void set_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+    cdef void begin_instance_sub_sampling(self):
+        # Class members
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        # Reset total sums of gradients and hessians to 0...
+        total_sums_of_gradients[:] = 0
+        total_sums_of_hessians[:] = 0
+
+    cdef void update_sub_sample(self, intp example_index, uint32 weight):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        # The number of examples
-        cdef num_examples = gradients.shape[0] if example_indices is None else example_indices.shape[0]
+        # The number of gradients/hessians...
+        cdef intp num_elements = gradients.shape[1]
         # Temporary variables
-        cdef uint32 weight
-        cdef intp num_elements, r, c, i
+        cdef intp c
 
-        # Reset total sums of gradients and hessians to 0...
-        total_sums_of_gradients[:] = 0
-        total_sums_of_hessians[:] = 0
+        # For each label, add the gradient of the example at the given index (weighted by the given weight) to the total
+        # sums of gradients...
+        for c in range(num_elements):
+            total_sums_of_gradients[c] += (weight * gradients[example_index, c])
 
-        for r in range(num_examples):
-            i = get_index(r, example_indices)
-            weight = 1 if weights is None else weights[i]
+        # Add the hessians of the example at the given index (weighted by the given weight) to the total sums of
+        # hessians...
+        num_elements = hessians.shape[1]
 
-            # For each label, add the gradient of the current example (weighted by the example's weight) to the total
-            # sums of gradients...
-            num_elements = gradients.shape[1]
-
-            for c in range(num_elements):
-                total_sums_of_gradients[c] += (weight * gradients[i, c])
-
-            # Add the hessians of the current example (weighted by the example's weight) to the total sums of
-            # hessians...
-            num_elements = hessians.shape[1]
-
-            for c in range(num_elements):
-                total_sums_of_hessians[c] += (weight * hessians[i, c])
+        for c in range(num_elements):
+            total_sums_of_hessians[c] += (weight * hessians[example_index, c])
 
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of gradients and hessians to be considered by the upcoming search...
@@ -541,7 +538,7 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
     # The number of linear equations
     cdef int n = ordinates.shape[0]
     # Create the array A by copying the array `coefficients`. DSYSV requires the array A to be Fortran-contiguous...
-    cdef float64[::1, :] a = matrix_float64(n, n)
+    cdef float64[::1, :] a = fortran_matrix_float64(n, n)
     i = 0
 
     for c in range(n):
@@ -556,7 +553,7 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
 
     # Create the array B by copying the array `ordinates`. It will be overwritten with the solution to the system of
     # linear equations. DSYSV requires the array B to be Fortran-contiguous...
-    cdef float64[::1, :] b = matrix_float64(n, 1)
+    cdef float64[::1, :] b = fortran_matrix_float64(n, 1)
 
     for r in range(n):
         b[r, 0] = ordinates[r]
