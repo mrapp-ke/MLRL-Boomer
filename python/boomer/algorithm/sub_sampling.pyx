@@ -48,7 +48,7 @@ cdef class Bagging(InstanceSubSampling):
     cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state):
         cdef intp num_examples = x.shape[0]
         cdef float sample_size = self.sample_size
-        cdef int num_samples = <int>(sample_size * num_examples)
+        cdef intp num_samples = <int>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
         weights[:] = 0
         rng = check_random_state(random_state)
@@ -66,7 +66,7 @@ cdef class Bagging(InstanceSubSampling):
              weights[i] += 1
 
              # Tell the given loss function that a new example has been chosen to be included in the sample...
-             loss.update_sub_sample(i)
+             loss.update_sub_sample(i, 1)
 
         return weights
 
@@ -114,7 +114,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
             weights[i] += 1
 
             # Tell the given loss function that a new example has been chosen to be included in the sample...
-            loss.update_sub_sample(i)
+            loss.update_sub_sample(i, 1)
 
             # Shrink the region [0, limit] that contains the indices of the examples that have not been drawn yet and
             # move the the element at the border to the position of the recently drawn element...
