@@ -172,7 +172,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         total_sums_of_gradients[:] = 0
         total_sums_of_hessians[:] = 0
 
-    cdef void update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -183,15 +183,17 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # Temporary variables
         cdef intp c
 
-        # For each label, add the gradient of the example at the given index to the total sums of gradients...
+        # For each label, add the gradient of the example at the given index (weighted by the given weight) to the total
+        # sums of gradients...
         for c in range(num_elements):
-            total_sums_of_gradients[c] += gradients[example_index, c]
+            total_sums_of_gradients[c] += (weight * gradients[example_index, c])
 
-        # Add the hessians of the example at the given index to the total sums of hessians...
+        # Add the hessians of the example at the given index (weighted by the given weight) to the total sums of
+        # hessians...
         num_elements = hessians.shape[1]
 
         for c in range(num_elements):
-            total_sums_of_hessians[c] += hessians[example_index, c]
+            total_sums_of_hessians[c] += (weight * hessians[example_index, c])
 
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of gradients and hessians to be considered by the upcoming search...
