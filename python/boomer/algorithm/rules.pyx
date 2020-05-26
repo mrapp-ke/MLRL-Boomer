@@ -337,7 +337,7 @@ cdef class Rule:
     A rule consisting of a body and head.
     """
 
-    def __cinit__(self, body: Body, head: Head):
+    def __cinit__(self, Body body, Head head):
         """
         :param body:    The body of the rule
         :param head:    The head of the rule
@@ -363,7 +363,7 @@ cdef class Rule:
         :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
                                 of the examples to predict for
         :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                predictions of individual examples and labels
+                                predictions for individual examples and labels
         :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
                                 examples and labels it is allowed to predict or None, if the prediction should not be
                                 restricted
@@ -389,7 +389,7 @@ cdef class Rule:
         The feature matrix must be given in compressed sparse row (CSR) format.
 
         :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
-                                non-zero feature values of the training examples
+                                non-zero feature values of the examples to predict for
         :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
                                 element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
                                 index at the last position is equal to `num_non_zero_feature_values`

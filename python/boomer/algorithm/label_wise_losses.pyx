@@ -3,7 +3,7 @@
 
 Provides classes that implement loss functions that are applied example- and label-wise.
 """
-from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
+from boomer.algorithm._arrays cimport array_float64, fortran_matrix_float64, get_index
 from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp
@@ -59,15 +59,15 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
         # The number of labels
         cdef intp num_labels = y.shape[1]
         # A matrix that stores the expected scores for each example and label according to the ground truth
-        cdef float64[::1, :] expected_scores = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] expected_scores = fortran_matrix_float64(num_examples, num_labels)
         # A matrix that stores the currently predicted scores for each example and label
-        cdef float64[::1, :] current_scores = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] current_scores = fortran_matrix_float64(num_examples, num_labels)
         # A matrix that stores the gradients for each example and label
-        cdef float64[::1, :] gradients = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] gradients = fortran_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of gradients
         cdef float64[::1] total_sums_of_gradients = array_float64(num_labels)
         # A matrix that stores the hessians for each example and label
-        cdef float64[::1, :] hessians = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] hessians = fortran_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = array_float64(num_labels)
         # An array that stores the scores that are predicted by the default rule
