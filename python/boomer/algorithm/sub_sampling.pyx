@@ -21,10 +21,10 @@ cdef class InstanceSubSampling:
         """
         Creates and returns a sub-sample of the available training examples.
 
-        :param x:   The total number of available training examples
-        :param rng: The random number generator to be used
-        :return:    An array of dtype uint, shape `(num_examples)`, representing the weights of the given training
-                    examples, i.e., how many times each of the examples is contained in the sample
+        :param num_examples:    The total number of available training examples
+        :param rng:             The random number generator to be used
+        :return:                An array of dtype uint, shape `(num_examples)`, representing the weights of the given
+                                training examples, i.e., how many times each of the examples is contained in the sample
         """
         pass
 
@@ -57,6 +57,9 @@ cdef class Bagging(InstanceSubSampling):
 
             # Update weight at the selected index...
             weights[random_index] += 1
+
+             # Tell the given loss function that a new example has been chosen to be included in the sample...
+             loss.update_sub_sample(i, 1)
 
         return weights
 
