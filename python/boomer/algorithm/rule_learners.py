@@ -18,6 +18,7 @@ from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision
 from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
 from boomer.algorithm.losses import Loss
+from boomer.algorithm.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.algorithm.pruning import Pruning, IREP
 from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
 from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
@@ -30,7 +31,6 @@ from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSel
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 
 from boomer.algorithm.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
-from boomer.algorithm.prediction import Prediction, Sign, LinearCombination, DecisionList
 from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
 
@@ -169,21 +169,21 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
-        prediction = self._create_prediction()
-        prediction.random_state = self.random_state
+        predictor = self._create_predictor()
         sparse_format = 'csr'
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
         x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
+        num_labels = stats.num_labels
 
         if enforce_sparse:
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
             num_features = x.shape[1]
-            return prediction.predict_csr(stats, model, x_data, x_row_indices, x_col_indices, num_features)
+            return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, num_labels, model)
         else:
             x = np.ascontiguousarray(self._ensure_input_format(x))
-            return prediction.predict(stats, model, x)
+            return predictor.predict(x, num_labels, model)
 
     @staticmethod
     def __should_enforce_sparse(m, sparse_format: str = 'csr') -> bool:
@@ -218,11 +218,11 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             raise ValueError('Unsupported type of matrix given: ' + type(m).__name__)
 
     @abstractmethod
-    def _create_prediction(self) -> Prediction:
+    def _create_predictor(self) -> Predictor:
         """
-        Must be implemented by subclasses in order to create the `Prediction` to be used for making predictions.
+        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
-        :return: The `Prediction` that has been created
+        :return: The `Predictor` that has been created
         """
         pass
 
@@ -348,8 +348,8 @@ class Boomer(MLRuleLearner):
         })
         return params
 
-    def _create_prediction(self) -> Prediction:
-        return Sign(LinearCombination())
+    def _create_predictor(self) -> Predictor:
+        return DensePredictor(Aggregation(), SignFunction())
 
     def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()
@@ -551,5 +551,5 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return SingleLabelHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
-    def _create_prediction(self) -> Prediction:
-        return DecisionList()
+    def _create_predictor(self) -> Predictor:
+        return DensePredictor(Aggregation(use_mask=True), SignFunction())

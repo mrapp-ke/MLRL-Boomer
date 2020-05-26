@@ -3,7 +3,7 @@
 
 Provides classes that implement loss functions that are applied example-wise.
 """
-from boomer.algorithm._arrays cimport array_float64, matrix_float64, get_index
+from boomer.algorithm._arrays cimport array_float64, fortran_matrix_float64, get_index
 from boomer.algorithm.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
@@ -38,7 +38,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # The number of labels
         cdef intp num_labels = y.shape[1]
         # A matrix that stores the expected scores for each example and label according to the ground truth
-        cdef float64[::1, :] expected_scores = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] expected_scores = fortran_matrix_float64(num_examples, num_labels)
         # Pre-calculated values
         cdef float64 sum_of_exponentials = num_labels + 1
         cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
@@ -94,15 +94,15 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # scores...
         cdef float64[::1] exponentials = ordinates # Reuse existing array instead of allocating a new one
         # A matrix that stores the gradients
-        cdef float64[::1, :] gradients = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] gradients = fortran_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of gradients
         cdef float64[::1] total_sums_of_gradients = array_float64(num_labels)
         # A matrix that stores the hessians
-        cdef float64[::1, :] hessians = matrix_float64(num_examples, num_hessians)
+        cdef float64[::1, :] hessians = fortran_matrix_float64(num_examples, num_hessians)
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = coefficients # Reuse existing array instead of allocating a new one
         # A matrix that stores the currently predicted scores for each example and label
-        cdef float64[::1, :] current_scores = matrix_float64(num_examples, num_labels)
+        cdef float64[::1, :] current_scores = fortran_matrix_float64(num_examples, num_labels)
         # Temporary variables
         cdef float64 exponential, tmp, score
 
@@ -536,7 +536,7 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
     # The number of linear equations
     cdef int n = ordinates.shape[0]
     # Create the array A by copying the array `coefficients`. DSYSV requires the array A to be Fortran-contiguous...
-    cdef float64[::1, :] a = matrix_float64(n, n)
+    cdef float64[::1, :] a = fortran_matrix_float64(n, n)
     i = 0
 
     for c in range(n):
@@ -551,7 +551,7 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
 
     # Create the array B by copying the array `ordinates`. It will be overwritten with the solution to the system of
     # linear equations. DSYSV requires the array B to be Fortran-contiguous...
-    cdef float64[::1, :] b = matrix_float64(n, 1)
+    cdef float64[::1, :] b = fortran_matrix_float64(n, 1)
 
     for r in range(n):
         b[r, 0] = ordinates[r]
