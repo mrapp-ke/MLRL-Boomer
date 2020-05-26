@@ -34,9 +34,9 @@ class Plotter(CrossValidation, MLClassifierBase):
     def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
                             test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         # Create a dense representation of the training data
-        train_x = np.asfortranarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
+        train_x = np.ascontiguousarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)
-        test_x = np.asfortranarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
+        test_x = np.ascontiguousarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
         test_y = self._ensure_input_format(test_y)
 
         learner = self.learner
@@ -45,8 +45,8 @@ class Plotter(CrossValidation, MLClassifierBase):
                                                      fold=current_fold, raise_exception=True)
         num_iterations = len(theory)
 
-        train_predictions = np.asfortranarray(np.zeros((train_x.shape[0], train_y.shape[1]), dtype=DTYPE_FLOAT64))
-        test_predictions = np.asfortranarray(np.zeros((test_x.shape[0], test_y.shape[1]), dtype=DTYPE_FLOAT64))
+        train_predictions = np.zeros((train_x.shape[0], train_y.shape[1]), dtype=DTYPE_FLOAT64, order='C')
+        test_predictions = np.zeros((test_x.shape[0], test_y.shape[1]), dtype=DTYPE_FLOAT64, order='C')
 
         for i in range(1, num_iterations + 1):
             log.info("Evaluating model at iteration %s / %s...", i, num_iterations)

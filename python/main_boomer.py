@@ -30,12 +30,18 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--max-rules', type=int, default=500, help='The maximum number of rules to be induced or -1')
     p.add_argument('--time-limit', type=int, default=-1,
                    help='The duration in seconds after which the induction of rules should be canceled or -1')
-    p.add_argument('--label-sub-sampling', type=int, default=-1,
-                   help='The number of samples to be used for label sub-sampling or -1')
+    p.add_argument('--label-sub-sampling', type=optional_string, default=None,
+                   help='The name of the strategy to be used for label sub-sampling or None')
+    p.add_argument('--label-sub-sampling-num-samples', type=int, default=1,
+                   help='The number of samples to be used for label sub-sampling')
     p.add_argument('--instance-sub-sampling', type=optional_string, default=INSTANCE_SUB_SAMPLING_BAGGING,
                    help='The name of the strategy to be used for instance sub-sampling or None')
+    p.add_argument('--instance-sub-sampling-sample-size', type=float, default=0.0,
+                   help='The fraction of examples to be used for instance sub-sampling')
     p.add_argument('--feature-sub-sampling', type=optional_string, default=FEATURE_SUB_SAMPLING_RANDOM,
                    help='The name of the strategy to be used for feature sub-sampling or None')
+    p.add_argument('--feature-sub-sampling-sample-size', type=float, default=0.0,
+                   help='The fraction of features to be used for feature sub-sampling')
     p.add_argument('--pruning', type=optional_string, default=None,
                    help='The name of the strategy to be used for pruning or None')
     p.add_argument('--loss', type=str, default=LOSS_LABEL_WISE_LOGISTIC,
@@ -54,10 +60,12 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 def create_learner(params) -> Boomer:
     return Boomer(model_dir=params.model_dir, max_rules=params.max_rules, time_limit=params.time_limit,
                   loss=params.loss, pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
+                  label_sub_sampling_num_samples=params.label_sub_sampling_num_samples,
                   instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
-                  feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement,
-                  l2_regularization_weight=params.l2_regularization_weight, min_coverage=params.min_coverage,
-                  max_conditions=params.max_conditions)
+                  feature_sub_sampling=params.feature_sub_sampling,
+                  feature_sub_sampling_sample_size=params.feature_sub_sampling_sample_size,
+                  head_refinement=params.head_refinement, l2_regularization_weight=params.l2_regularization_weight,
+                  min_coverage=params.min_coverage, max_conditions=params.max_conditions)
 
 
 if __name__ == '__main__':
