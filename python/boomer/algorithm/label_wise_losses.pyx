@@ -158,29 +158,22 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
             total_sums_of_gradients[c] += (weight * gradients[example_index, c])
             total_sums_of_hessians[c] += (weight * hessians[example_index, c])
 
-    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+    cdef void remove_from_sub_sample(self, intp example_index, uint32 weight):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        # The number of examples to be removed from the sub-sample
-        cdef intp num_examples = example_indices.shape[0]
         # The number of labels
         cdef intp num_labels = total_sums_of_gradients.shape[0]
         # Temporary variables
-        cdef uint32 weight
-        cdef intp r, c, i
+        cdef intp c
 
-        # For each example and label, subtract the gradient and hessian (weighted by the example's weight) from the
-        # total sums of gradients and hessians...
-        for r in range(num_examples):
-            i = example_indices[r]
-            weight = 1 if weights is None else weights[i]
-
-            for c in range(num_labels):
-                total_sums_of_gradients[c] -= (weight * gradients[i, c])
-                total_sums_of_hessians[c] -= (weight * hessians[i, c])
+        # For each label, subtract the gradient and hessian of the example at the given index (weighted by the given
+        # weight) from the total sums of gradients and hessians...
+        for c in range(num_labels):
+            total_sums_of_gradients[c] -= (weight * gradients[example_index, c])
+            total_sums_of_hessians[c] -= (weight * hessians[example_index, c])
 
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of labels to be considered by the upcoming search...

@@ -92,22 +92,21 @@ cdef class Loss:
         """
         pass
 
-    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+    cdef void remove_from_sub_sample(self, int example_index, uint32 weight):
         """
-        Notifies the loss function about examples that should not be considered anymore in the follow for learning a new
-        rule or refining an existing one. This function can be called wherever a call to `set_sub_sample` is allowed, as
-        long as the latter has been called at least once using the same value for the argument `weights` and an array
-        containing all specified indices or `None` for the argument `example_indices`.
+        Notifies the loss function about an example that should not be considered anymore in the follow for learning a
+        new rule or refining an existing one. This function can be called wherever a call to `update_sub_sample` is
+        allowed, as long as the latter has been called at least once using the same value for the arguments
+        `example_index` and `weight`.
 
-        Such as `set_sub_sample`, this function is supposed to update any internal state that relates to the considered
-        examples, i.e., to compute and store local information that is required by the other functions that will be
-        called later, e.g. statistics about the ground truth labels of these particular examples. Any information
-        computed by this function is expected to be reset when invoking the function `set sub_sample` for the next time.
+        Such as `update_sub_sample`, this function is supposed to update any internal state that relates to the
+        considered examples, i.e., to compute and store local information that is required by the other functions that
+        will be called later, e.g. statistics about the ground truth labels of these particular examples. Any
+        information computed by this function is expected to be reset when invoking the function
+        `begin_instance sub_sample` for the next time.
 
-        :param example_indices: An array of dtype int, shape `(num_uncovered_examples)`, representing the indices of the
-                                training examples that should not be considered anymore
-        :param weights:         An array of dtype uint, shape `(num_examples)`, representing the weights of all training
-                                examples or None, if all training examples should be weighted equally
+        :param example_index:   The index of an example that should not be considered anymore
+        :param weights:         The weight of the example that should not be considered anymore
         """
         pass
 

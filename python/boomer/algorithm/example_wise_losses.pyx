@@ -195,35 +195,28 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         for c in range(num_elements):
             total_sums_of_hessians[c] += (weight * hessians[example_index, c])
 
-    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights):
+    cdef void remove_from_sub_sample(self, intp example_index, uint32 weight):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        # The number of examples to be removed from the sub-sample
-        cdef intp num_examples = example_indices.shape[0]
         # Temporary variables
-        cdef uint32 weight
-        cdef intp num_elements, r, c, i
+        cdef intp num_elements, c
 
-        for r in range(num_examples):
-            i = example_indices[r]
-            weight = 1 if weights is None else weights[i]
+        # For each label, subtract the gradient of the current example (weighted by the example's weight) from the
+        # total sums of gradients...
+        num_elements = gradients.shape[1]
 
-            # For each label, subtract the gradient of the current example (weighted by the example's weight) from the
-            # total sums of gradients...
-            num_elements = gradients.shape[1]
+        for c in range(num_elements):
+            total_sums_of_gradients[c] -= (weight * gradients[example_index, c])
 
-            for c in range(num_elements):
-                total_sums_of_gradients[c] -= (weight * gradients[i, c])
+        # Subtract the hessians of the current example (weighted by the example's weight) from the total sums of
+        # hessians...
+        num_elements = hessians.shape[1]
 
-            # Subtract the hessians of the current example (weighted by the example's weight) from the total sums of
-            # hessians...
-            num_elements = hessians.shape[1]
-
-            for c in range(num_elements):
-                total_sums_of_hessians[c] -= (weight * hessians[i, c])
+        for c in range(num_elements):
+            total_sums_of_hessians[c] -= (weight * hessians[example_index, c])
 
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of gradients and hessians to be considered by the upcoming search...

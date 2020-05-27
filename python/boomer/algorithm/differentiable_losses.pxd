@@ -14,7 +14,7 @@ cdef class DifferentiableLoss(Loss):
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight)
 
-    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
+    cdef void remove_from_sub_sample(self, intp example_index, uint32 weight)
 
     cdef void begin_search(self, intp[::1] label_indices)
 
@@ -38,7 +38,7 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight)
 
-    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
+    cdef void remove_from_sub_sample(self, intp example_index, uint32 weight)
 
     cdef void begin_search(self, intp[::1] label_indices)
 
@@ -62,7 +62,7 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight)
 
-    cdef void remove_from_sub_sample(self, intp[::1] example_indices, uint32[::1] weights)
+    cdef void remove_from_sub_sample(self, intp example_index, uint32 weight)
 
     cdef void begin_search(self, intp[::1] label_indices)
 
