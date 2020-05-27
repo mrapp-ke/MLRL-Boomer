@@ -603,22 +603,20 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
 
     cdef IndexedValue* filtered_array = <intp*>malloc(num_covered * sizeof(IndexedValue))
     cdef intp i = num_covered - 1
-    cdef uint32 updated_target
+    cdef uint32 updated_target, weight
     cdef intp r, index
-
-    # Tell the loss function that a new sub-sample of examples will be selected...
-    loss.begin_instance_sub_sampling()
-
-    # TODO In the following, invoke update_sub_sample() or remove_from_sub_sample() as necessary
 
     if condition_comparator == Comparator.GR:
         updated_target = num_conditions
+        loss.begin_instance_sub_sampling()
 
         for r in range(condition_start, condition_end, -1):
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
+            weight = 1 if weights is None else weights[index]
+            loss.update_sub_sample(index, weight)
             i -= 1
     else:
         updated_target = covered_examples_target
@@ -632,6 +630,8 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
         for r in range(condition_start, condition_end, -1):
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
+            weight = 1 if weights is None else weights[index]
+            loss.remove_from_sub_sample(index, weight)
 
         for r in range(condition_end, -1, -1):
             filtered_array[i].index = indexed_values[r].index
