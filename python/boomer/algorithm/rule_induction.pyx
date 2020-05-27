@@ -356,7 +356,59 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             loss.update_search(i, weight)
                             sum_of_weights += weight
 
-                    # TODO explicitly handle zero feature values, if any
+                    # If not all examples have been iterated, this means that there are examples with (sparse) feature
+                    # value == 0. In such case, we must explicitly test conditions that separate these examples from the
+                    # ones that have already been iterated.
+                    if sum_of_weights < total_sum_of_weights:
+                        # Find and evaluate the best head for the current refinement, if a condition that uses the >
+                        # operator (or the == operator in case of a nominal feature) is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, False)
+
+                        # If refinement using the > operator (or the == operator in case of a nominal feature) is better
+                        # than the current rule...
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = first_r
+                            best_condition_end = -1
+                            best_condition_previous = previous_r
+                            best_condition_feature_index = f
+                            best_condition_covered_weights = sum_of_weights
+                            best_condition_num_indexed_values = num_indexed_values
+                            best_condition_indexed_values = indexed_values
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+
+                            if nominal:
+                                best_condition_comparator = Comparator.EQ
+                                best_condition_threshold = previous_threshold
+                            else:
+                                best_condition_comparator = Comparator.GR
+                                best_condition_threshold = previous_threshold / 2.0
+
+                        # Find and evaluate the best head for the current refinement, if a condition that uses the <=
+                        # operator (or the != operator in case of a nominal feature) is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, True)
+
+                        # If refinement using the <= operator (or the != operator in case of a nominal feature) is
+                        # better than the current rule...
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = first_r
+                            best_condition_end = -1
+                            best_condition_previous = previous_r
+                            best_condition_feature_index = f
+                            best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
+                            best_condition_num_indexed_values = num_indexed_values
+                            best_condition_indexed_values = indexed_values
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+
+                            if nominal:
+                                best_condition_comparator = Comparator.NEQ
+                                best_condition_threshold = previous_threshold
+                            else:
+                                best_condition_comparator = Comparator.LEQ
+                                best_condition_threshold = previous_threshold / 2.0
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
