@@ -386,7 +386,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                        best_condition_start, best_condition_end,
                                                                        best_condition_comparator, num_conditions,
                                                                        covered_examples_mask, covered_examples_target,
-                                                                       loss, weight)
+                                                                       loss, weights)
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
