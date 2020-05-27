@@ -210,7 +210,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
         return prediction
 
-    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
