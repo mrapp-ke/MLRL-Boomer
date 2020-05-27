@@ -282,7 +282,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             break
 
                     # Traverse the remaining examples in descending order...
-                    # TODO explicitly handle zero feature values
                     for r in range(r - 1, -1, -1):
                         i = indexed_values[r].index
                         weight = 1 if weights is None else weights[i]
@@ -356,6 +355,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
                             sum_of_weights += weight
+
+                    # TODO explicitly handle zero feature values, if any
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
