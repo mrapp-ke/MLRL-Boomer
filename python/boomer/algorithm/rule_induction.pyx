@@ -153,7 +153,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
         cdef intp num_indexed_values
-        cdef intp num_covered = num_examples
+        cdef intp num_covered = num_examples # TODO remove `num_covered`?
 
         # Variables for specifying the features that should be used for finding the best refinement
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
@@ -381,7 +381,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                             best_condition_previous, best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
-                    # TODO Check arguments
                     covered_examples_target = __filter_current_indices(best_condition_indexed_values,
                                                                        best_condition_num_indexed_values,
                                                                        best_condition_indexed_array_wrapper,
@@ -389,9 +388,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                        best_condition_comparator, num_conditions,
                                                                        covered_examples_mask, covered_examples_target,
                                                                        loss, weight)
-                    num_covered = dereference(best_condition_index_array).num_elements
-                    # TODO Array `covered_example_indices` does not exist anymore
-                    covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
