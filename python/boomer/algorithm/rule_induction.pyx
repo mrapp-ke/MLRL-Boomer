@@ -466,11 +466,12 @@ cdef inline IndexedArray* __argsort_by_feature_values(float32[::1] x_data, intp[
     cdef intp num_elements = end - start
     cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
     dereference(indexed_array).num_elements = num_elements
+    cdef IndexedValue* sorted_array
+    cdef intp i, j
 
     if num_elements > 0:
-        cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
-        cdef intp i = 0
-        cdef intp j
+        sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+        i = 0
 
         for j in range(start, end):
             sorted_array[i].index = x_row_indices[j]
