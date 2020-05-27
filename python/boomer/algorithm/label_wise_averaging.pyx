@@ -210,28 +210,22 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
         return prediction
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
         cdef intp num_labels = predicted_scores.shape[0]
-        cdef intp num_covered = covered_example_indices.shape[0]
-        cdef intp r, c, l, i
+        cdef intp c, l
 
         # Only the labels that are predicted by the new rule must be considered
         for c in range(num_labels):
             l = get_index(c, label_indices)
 
-            # Only the examples that are covered by the new rule must be considered
-            for r in range(num_covered):
-                i = covered_example_indices[r]
+            if uncovered_labels[example_index, l] == 1:
+                uncovered_labels[example_index, l] = 0
 
-                if uncovered_labels[i, l] == 1:
-                    uncovered_labels[i, l] = 0
-
-                    if minority_labels[l] == true_labels[i, l]:
-                        sum_uncovered_labels = sum_uncovered_labels - 1
+                if minority_labels[l] == true_labels[example_index, l]:
+                    sum_uncovered_labels = sum_uncovered_labels - 1
 
         self.sum_uncovered_labels = sum_uncovered_labels
