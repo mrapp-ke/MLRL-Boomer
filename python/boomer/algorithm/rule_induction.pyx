@@ -245,9 +245,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Filter indices, if only a subset of the contained examples is covered...
                     if num_conditions > dereference(indexed_array_wrapper).num_conditions:
-                        # TODO Check arguments
-                        __filter_any_indices(x, sorted_indices, num_examples, index_array, conditions, num_conditions,
-                                             num_covered)
+                        __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions,
+                                             covered_examples_mask, covered_examples_target)
                         indexed_array = dereference(indexed_array_wrapper).array
 
                     num_indexed_values = dereference(indexed_array).num_elements
@@ -649,26 +648,26 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     return updated_target
 
 
-cdef inline void __filter_any_indices(float32[::1, :] x, intp* sorted_indices, intp num_indices,
-                                      IndexArray* index_array, list[Condition] conditions, intp num_conditions,
-                                      intp num_covered):
+cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
+                                      intp num_conditions, uint32[::1] covered_examples_mask,
+                                      uint32 covered_examples_target):
     """
-    Filters an array that contains the indices of examples with respect to one or several conditions, such that the
-    filtered array does only contain the indices of the examples that satisfy the conditions. The filtered array is
-    stored in a given struct of type `IndexArray`.
+    Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
+    filtered array does only contain the indices and feature values of the examples that are covered by the current
+    rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
-    :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
-                                    features of the training examples
-    :param sorted_indices:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
-                                    of the training examples
-    :param num_indices:             The number of elements in the array `sorted_indices`
-    :param index_array:             A pointer to a struct of type `IndexArray` that should be used to store the filtered
-                                    array
-    :param conditions:              A list that contains the conditions that should be taken into account for filtering
-                                    the indices
-    :param num_conditions:          The number of conditions in the list `conditions`
-    :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
+    :param indexed_array:           A pointer to a struct of type `IndexedArray` that stores a pointer to the C-array to
+                                    be filtered, as well as the number of elements in said array
+    :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
+                                    filtered array
+    :param num_conditions:          The total number of conditions in the current rule's body
+    :param covered_examples_mask:   An array of dtype uint, shape `(num_examples)` that is used to keep track of the
+                                    indices of the examples that are covered by the previous rule. It will be updated by
+                                    this function
+    :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that are
+                                    covered by the previous rule
     """
+    # TODO Reimplement
     cdef intp* filtered_array = dereference(index_array).data
     cdef bint must_allocate = filtered_array == NULL
 
