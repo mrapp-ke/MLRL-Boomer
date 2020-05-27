@@ -92,7 +92,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void remove_from_sub_sample(self, int example_index, uint32 weight):
+    cdef void remove_from_sub_sample(self, intp example_index, uint32 weight):
         """
         Notifies the loss function about an example that should not be considered anymore in the follow for learning a
         new rule or refining an existing one. This function can be called wherever a call to `update_sub_sample` is
