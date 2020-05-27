@@ -153,7 +153,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
         cdef intp num_indexed_values
-        cdef intp num_covered = num_examples # TODO remove `num_covered`?
 
         # Variables for specifying the features that should be used for finding the best refinement
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
@@ -669,57 +668,42 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
     :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that are
                                     covered by the previous rule
     """
-    # TODO Reimplement
-    cdef intp* filtered_array = dereference(index_array).data
-    cdef bint must_allocate = filtered_array == NULL
+    cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
 
-    if must_allocate:
-        filtered_array = <intp*>malloc(num_covered * sizeof(intp))
+    if filtered_indexed_array == NULL:
+        filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
 
-    cdef intp num_untested_conditions = num_conditions - dereference(index_array).num_conditions
+    cdef IndexedValue* filtered_array = NULL
+    cdef intp max_elements = dereference(indexed_array).num_elements
     cdef intp i = 0
-    cdef list[Condition].reverse_iterator iterator
-    cdef Condition condition
-    cdef Comparator condition_comparator
-    cdef float32 condition_threshold, feature_value
-    cdef intp condition_index, c, r, index
-    cdef bint covered
+    cdef IndexedValue* indexed_values
+    cdef intp r, index
 
-    for r in range(num_indices):
-        index = sorted_indices[r]
-        covered = True
+    if max_elements > 0:
+        indexed_values = dereference(indexed_array).data
+        filtered_array = dereference(filtered_indexed_array).data
 
-        # Traverse conditions in reverse order...
-        iterator = conditions.rbegin()
-        c = 0
+        if filtered_array == NULL:
+            filtered_array = <IndexedValue*>malloc(max_elements * sizeof(IndexedValue))
 
-        while c < num_untested_conditions:
-            condition = dereference(iterator)
-            condition_threshold = condition.threshold
-            condition_comparator = condition.comparator
-            condition_index = condition.feature_index
-            feature_value = x[index, condition_index]
+        for r in range(max_elements):
+            index = indexed_values[r].index
 
-            if not test_condition(condition_threshold, condition_comparator, feature_value):
-                covered = False
-                break
+            if covered_examples_mask[index] == covered_examples_target:
+                filtered_array[i].index = index
+                filtered_array[i].value = indexed_values[r].value
+                i += 1
 
-            c += 1
-            postincrement(iterator)
+        if i == 0:
+            free(filtered_array)
+            filtered_array = NULL
+        elif i < max_elements:
+            filtered_array = <IndexedValue*>realloc(filtered_array, i * sizeof(IndexedValue))
 
-        if covered:
-            filtered_array[i] = index
-            i += 1
-
-            if i >= num_covered:
-                break
-
-    if not must_allocate:
-        filtered_array = <intp*>realloc(filtered_array, num_covered * sizeof(intp))
-
-    dereference(index_array).data = filtered_array
-    dereference(index_array).num_elements = num_covered
-    dereference(index_array).num_conditions = num_conditions
+    dereference(filtered_indexed_array).data = filtered_array
+    dereference(filtered_indexed_array).num_elements = i
+    dereference(indexed_array_wrapper).array = filtered_indexed_array
+    dereference(indexed_array_wrapper).num_conditions = num_conditions
 
 
 cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_scores, list[Condition] conditions,
