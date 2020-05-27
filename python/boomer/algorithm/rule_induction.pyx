@@ -390,7 +390,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
-                        # Abort refinement process if rule covers a single example...
+                        # Abort refinement process if rule is not allowed to cover less examples...
                         break
 
             if head is None:
