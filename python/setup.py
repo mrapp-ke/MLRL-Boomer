@@ -29,7 +29,7 @@ setup(name='boomer',
           'liac-arff>=2.4.0',
           'requests>=2.23.0',
           'matplotlib>=3.2.0',
-          'xgboost>=1.0.0'
+          'xgboost>=1.1.0'
       ],
       python_requires='>=3.7',
       ext_modules=cythonize(extensions, language_level='3', annotate=True, compiler_directives=compiler_directives),
