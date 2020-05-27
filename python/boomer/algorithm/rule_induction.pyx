@@ -592,13 +592,13 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
                                     that are covered by the new rule
     """
-    cdef intp num_covered = condition_start - condition_end
+    cdef intp num_elements = condition_start - condition_end
 
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
-        num_covered = num_indexed_values - num_covered
+        num_elements = num_indexed_values - num_elements
 
-    cdef IndexedValue* filtered_array = <intp*>malloc(num_covered * sizeof(IndexedValue))
-    cdef intp i = num_covered - 1
+    cdef IndexedValue* filtered_array = <intp*>malloc(num_elements * sizeof(IndexedValue))
+    cdef intp i = num_elements - 1
     cdef uint32 updated_target, weight
     cdef intp r, index
 
@@ -643,7 +643,7 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
         free(dereference(indexed_array).data)
 
     dereference(indexed_array).data = filtered_array
-    dereference(indexed_array).num_elements = num_covered
+    dereference(indexed_array).num_elements = num_elements
     dereference(indexed_array_wrapper).num_conditions = num_conditions
     return updated_target
 
