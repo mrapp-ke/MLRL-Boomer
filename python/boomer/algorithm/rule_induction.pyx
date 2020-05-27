@@ -599,7 +599,7 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
         num_elements = num_indexed_values - num_elements
 
-    cdef IndexedValue* filtered_array = <intp*>malloc(num_elements * sizeof(IndexedValue))
+    cdef IndexedValue* filtered_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
     cdef intp i = num_elements - 1
     cdef uint32 updated_target, weight
     cdef intp r, index
