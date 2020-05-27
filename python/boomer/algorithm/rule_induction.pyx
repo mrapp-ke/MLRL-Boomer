@@ -596,8 +596,6 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
                                     that are covered by the new rule
     """
-    cdef uint32 updated_target
-    cdef intp r, index
     cdef intp num_covered = condition_start - condition_end
 
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
@@ -605,6 +603,8 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
 
     cdef IndexedValue* filtered_array = <intp*>malloc(num_covered * sizeof(IndexedValue))
     cdef intp i = num_covered - 1
+    cdef uint32 updated_target
+    cdef intp r, index
 
     # Tell the loss function that a new sub-sample of examples will be selected...
     loss.begin_instance_sub_sampling()
