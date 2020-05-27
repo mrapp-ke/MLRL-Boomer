@@ -411,12 +411,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
-                    # TODO revise re-calculation of predicted scores (array `covered_example_indices` does not exist anymore)
                     loss.begin_search(label_indices)
 
-                    for r in range(num_covered):
-                        i = covered_example_indices[r]
-                        loss.update_search(i, 1)
+                    for r in range(num_examples):
+                        if covered_examples_mask[r] == covered_examples_target:
+                            loss.update_search(i, 1)
 
                     prediction = head_refinement.evaluate_predictions(loss, False)
                     predicted_scores[:] = prediction.predicted_scores
