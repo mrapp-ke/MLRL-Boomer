@@ -129,6 +129,20 @@ def _create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingC
     return stopping_criteria
 
 
+def _create_min_coverage(min_coverage: int) -> int:
+    if min_coverage < 1:
+        raise ValueError('Invalid value given for parameter \'min_coverage\':' + str(min_coverage))
+
+    return min_coverage
+
+
+def _create_max_conditions(max_conditions: int) -> int:
+    if max_conditions != -1 and max_conditions < 1:
+        raise ValueError('Invalid value given for parameter \'max_conditions\'' + str(max_conditions))
+
+    return max_conditions
+
+
 class MLRuleLearner(MLLearner, NominalAttributeLearner):
     """
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
@@ -249,7 +263,8 @@ class Boomer(MLRuleLearner):
                  label_sub_sampling_num_samples: int = 1, instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  instance_sub_sampling_sample_size: float = 0.0,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, feature_sub_sampling_sample_size: float = 0.0,
-                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0):
+                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0,
+                 min_coverage: int = 1, max_conditions: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -286,6 +301,11 @@ class Boomer(MLRuleLearner):
                                                     be in (0, 1]
         :param l2_regularization_weight:            The weight of the L2 regularization that is applied for calculating
                                                     the scores that are predicted by rules. Must be at least 0
+        :param min_coverage:                        The minimum number of training examples that must be covered by a
+                                                    rule. Must be at least 1
+        :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
+                                                    Must be at least 1 or -1, if the number of conditions should not be
+                                                    restricted
         """
         super().__init__(model_dir)
         self.max_rules = max_rules
@@ -301,6 +321,8 @@ class Boomer(MLRuleLearner):
         self.pruning = pruning
         self.shrinkage = shrinkage
         self.l2_regularization_weight = l2_regularization_weight
+        self.min_coverage = min_coverage
+        self.max_conditions = max_conditions
 
     def get_model_prefix(self) -> str:
         return 'boomer'
@@ -327,6 +349,10 @@ class Boomer(MLRuleLearner):
             name += '_shrinkage=' + str(self.shrinkage)
         if float(self.l2_regularization_weight) > 0.0:
             name += '_l2=' + str(self.l2_regularization_weight)
+        if int(self.min_coverage) > 1:
+            name += '_min-coverage=' + str(self.min_coverage)
+        if int(self.max_conditions) != -1:
+            name += '_max-conditions=' + str(self.max_conditions)
         return name
 
     def get_params(self, deep=True):
@@ -344,7 +370,9 @@ class Boomer(MLRuleLearner):
             'feature_sub_sampling_sample_size': self.feature_sub_sampling_sample_size,
             'pruning': self.pruning,
             'shrinkage': self.shrinkage,
-            'l2_regularization_weight': self.l2_regularization_weight
+            'l2_regularization_weight': self.l2_regularization_weight,
+            'min_coverage': self.min_coverage,
+            'max_conditions': self.max_conditions
         })
         return params
 
@@ -365,8 +393,11 @@ class Boomer(MLRuleLearner):
                                                             int(self.feature_sub_sampling_sample_size))
         pruning = _create_pruning(self.pruning)
         shrinkage = self.__create_shrinkage()
+        min_coverage = _create_min_coverage(self.min_coverage)
+        max_conditions = _create_max_conditions(self.max_conditions)
         return RuleListInduction(False, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
-                                 instance_sub_sampling, feature_sub_sampling, pruning, shrinkage)
+                                 instance_sub_sampling, feature_sub_sampling, pruning, shrinkage, min_coverage,
+                                 max_conditions)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)
@@ -422,7 +453,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                  loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  label_sub_sampling_num_samples: int = 1, instance_sub_sampling: str = None,
                  instance_sub_sampling_sample_size: float = 0.0, feature_sub_sampling: str = None,
-                 feature_sub_sampling_sample_size: float = 0.0, pruning: str = None):
+                 feature_sub_sampling_sample_size: float = 0.0, pruning: str = None, min_coverage: int = 1,
+                 max_conditions: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -452,6 +484,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     used
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
+        :param min_coverage:                        The minimum number of training examples that must be covered by a
+                                                    rule. Must be at least 1
+        :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
+                                                    Must be at least 1 or -1, if the number of conditions should not be
+                                                    restricted
         """
         super().__init__(model_dir)
         self.max_rules = max_rules
@@ -466,6 +503,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.feature_sub_sampling = feature_sub_sampling
         self.feature_sub_sampling_sample_size = feature_sub_sampling_sample_size
         self.pruning = pruning
+        self.min_coverage = min_coverage
+        self.max_conditions = max_conditions
 
     def get_model_prefix(self) -> str:
         return 'seco'
@@ -489,6 +528,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                 name += '_feature_sub_sampling=' + str(self.feature_sub_sampling_sample_size)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
+        if int(self.min_coverage) > 1:
+            name += '_min-coverage=' + str(self.min_coverage)
+        if int(self.max_conditions) != -1:
+            name += '_max-conditions=' + str(self.max_conditions)
         return name
 
     def get_params(self, deep=True):
@@ -505,7 +548,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             'instance_sub_sampling_sample_size': self.instance_sub_sampling_sample_size,
             'feature_sub_sampling': self.feature_sub_sampling,
             'feature_sub_sampling_sample_size': self.feature_sub_sampling_sample_size,
-            'pruning': self.pruning
+            'pruning': self.pruning,
+            'min_coverage': self.min_coverage,
+            'max_conditions': self.max_conditions
         })
         return params
 
@@ -521,10 +566,13 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling,
                                                             int(self.feature_sub_sampling_sample_size))
         pruning = _create_pruning(self.pruning)
+        min_coverage = _create_min_coverage(self.min_coverage)
+        max_conditions = _create_max_conditions(self.max_conditions)
         stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
         return RuleListInduction(True, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
-                                 instance_sub_sampling, feature_sub_sampling, pruning, None)
+                                 instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
+                                 max_conditions)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic

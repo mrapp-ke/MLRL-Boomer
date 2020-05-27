@@ -3,6 +3,7 @@
 
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
+from boomer.algorithm._random cimport RNG
 from boomer.algorithm.rules cimport Rule
 from boomer.algorithm.stopping_criteria cimport StoppingCriterion
 
@@ -14,7 +15,7 @@ cdef class SequentialRuleInduction:
     """
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              intp random_state):
+                              uint32 random_state):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -39,7 +40,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
     def __cinit__(self, bint default_rule_at_end, RuleInduction rule_induction, HeadRefinement head_refinement,
                   Loss loss, list stopping_criteria, LabelSubSampling label_sub_sampling,
                   InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
-                  Shrinkage shrinkage):
+                  Shrinkage shrinkage, intp min_coverage, intp max_conditions):
         """
         :param default_rule_at_end:     True, if the default rule should be located at the end, False, if it should be
                                         located at the start
@@ -59,6 +60,10 @@ cdef class RuleListInduction(SequentialRuleInduction):
                                         be used
         :param shrinkage:               The strategy that should be used for shrinking the weights of rule, or None if
                                         no shrinkage should be used
+        :param min_coverage:            The minimum number of training examples that must be covered by a rule. Must be
+                                        at least 1
+        :param max_conditions:          The maximum number of conditions to be included in a rule's body. Must be at
+                                        least 1 or -1, if the number of conditions should not be restricted
         """
         self.default_rule_at_end = default_rule_at_end
         self.rule_induction = rule_induction
@@ -70,9 +75,11 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
         self.shrinkage = shrinkage
+        self.min_coverage = min_coverage
+        self.max_conditions = max_conditions
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              intp random_state):
+                              uint32 random_state):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleInduction rule_induction = self.rule_induction
@@ -84,12 +91,13 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef FeatureSubSampling feature_sub_sampling = self.feature_sub_sampling
         cdef Pruning pruning = self.pruning
         cdef Shrinkage shrinkage = self.shrinkage
+        cdef intp min_coverage = self.min_coverage
+        cdef intp max_conditions = self.max_conditions
+        cdef RNG rng = RNG.__new__(RNG, random_state)
         # The list that contains the induced rules
         cdef list rule_list = []
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
-        # The random state to be used by RNGs when inducing the next rule
-        cdef intp current_random_state = random_state
         # Temporary variables
         cdef Rule default_rule, rule
         cdef bint should_continue
@@ -104,10 +112,9 @@ cdef class RuleListInduction(SequentialRuleInduction):
             # Induce a new rule
             rule = rule_induction.induce_rule(nominal_attribute_indices, x, y, head_refinement, loss,
                                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                              shrinkage, current_random_state)
+                                              shrinkage, min_coverage, max_conditions, rng)
             rule_list.append(rule)
             num_rules += 1
-            current_random_state += 1
 
         if default_rule_at_end:
             rule_list.append(default_rule)
