@@ -146,23 +146,18 @@ def _create_max_conditions(max_conditions: int) -> int:
 class MLRuleLearner(MLLearner, NominalAttributeLearner):
     """
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
-
-    Attributes
-        stats_          Statistics about the training data set
-        theory_         The theory that contains the classification rules
-        persistence     The 'ModelPersistence' to be used to load/save the theory
     """
 
     def __init__(self, model_dir: str):
         super().__init__(model_dir)
-        # By default, we use dense feature matrices (first value) and the label matrices (second value)
+        # By default, we use dense feature matrices (first value) and label matrices (second value)
         self.require_dense = [True, True]
 
     def get_model_prefix(self) -> str:
         return 'rules'
 
     def _fit(self, stats: Stats, x, y, random_state: int):
-        # Convert training data into required format
+        x, y = self._validate_data(x, y, accept_sparse=True, multi_output=True)
         x = self._ensure_input_format(x, enforce_sparse=True, sparse_format='csc')
         x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
         x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
@@ -184,13 +179,14 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
                                                       num_examples, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
-        predictor = self._create_predictor()
+        x = self._validate_data(x, reset=False, accept_sparse=True)
         sparse_format = 'csr'
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
         x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
         num_labels = stats.num_labels
+        predictor = self._create_predictor()
 
-        if enforce_sparse:
+        if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
