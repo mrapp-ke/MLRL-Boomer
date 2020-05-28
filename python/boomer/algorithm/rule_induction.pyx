@@ -37,6 +37,12 @@ cdef class ThresholdProvider:
 
 
 cdef class SparseThresholdProvider(ThresholdProvider):
+    """
+    Allows to access the thresholds that can potentially be used by conditions based on the feature values of all
+    training examples.
+
+    The feature matrix must be given in compressed sparse column (CSC) format.
+    """
 
     def __cinit__(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices):
         """
