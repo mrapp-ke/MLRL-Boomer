@@ -657,7 +657,7 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     cdef uint32 updated_target, weight
     cdef intp r, index
 
-    if condition_comparator == Comparator.GR:
+    if condition_comparator == Comparator.GR or condition_comparator == Comparator.EQ:
         updated_target = num_conditions
         loss.begin_instance_sub_sampling()
 
