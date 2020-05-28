@@ -124,28 +124,22 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels = predicted_scores.shape[0]
-        cdef intp num_label_indices
-        if label_indices is None:
-            num_label_indices = num_labels
-        else:
-            num_label_indices = label_indices.shape[0]
         cdef HeadCandidate candidate
         cdef float64[::1] candidate_predicted_scores
-        cdef intp[::1] sorted_indices = array_intp(num_label_indices)
+        cdef intp[::1] sorted_indices = array_intp(num_labels)
         cdef intp sorted_label_indices_length = 0
-        cdef intp[::1] current_head_candidate = array_intp(num_label_indices)
+        cdef intp[::1] current_head_candidate = array_intp(num_labels)
         cdef intp current_head_candidate_length = 0
-        cdef intp[::1] best_head_candidate = array_intp(num_label_indices)
         cdef intp best_head_candidate_length = 0
-        cdef float64 best_quality_score, total_quality_score, quality_score, maximum_lift
+        cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift
         cdef intp should_continue, no_improvement, c, c2, c3, l
 
         cdef LiftFunction lift = self.lift
 
         # Insertion sort
-        for c in range(0, num_label_indices):
+        for c in range(0, num_labels):
             l = get_index(c, label_indices)
-            for c2 in range(0, num_label_indices):
+            for c2 in range(0, num_labels):
                 # TODO Tie-breaking
                 if c2 >= sorted_label_indices_length or quality_scores[sorted_indices[c2]] > quality_scores[c]:
                     # Shift
@@ -158,49 +152,21 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
                     break
 
+        maximum_lift = lift.get_max_lift()
         for c in range(0, num_labels):
             # select the top element of sorted_label_indices excluding labels already contained
 
-            c2 = 0
             should_continue = True
 
-            # temporary variable required to break outer loop
-            no_improvement = False
-
-            while should_continue:
-                should_continue = False
-
-                if c2 >= sorted_label_indices_length:
-                    no_improvement = True
-                    break
-
-                # checks if current_head_candidate contains sorted_label_indices[c2]
-                for c3 in range(0, current_head_candidate_length):
-                    if current_head_candidate[c3] == sorted_indices[c2]:
-                        should_continue = True
-                        c2 += 1
-                        continue
-
-            if no_improvement:
-                break
-
-            current_head_candidate[current_head_candidate_length] = sorted_indices[c2]
+            current_head_candidate[current_head_candidate_length] = sorted_indices[c]
             current_head_candidate_length += 1
 
-            maximum_lift = lift.get_max_lift()
+            total_quality_score += quality_scores[sorted_indices[c]]
 
-            for c2 in range(0, current_head_candidate_length):
-                total_quality_score += quality_scores[current_head_candidate[c2]]
-
-            total_quality_score /= current_head_candidate_length
-
-            quality_score = total_quality_score * lift.eval(current_head_candidate_length)
+            quality_score = (1 - (1 - total_quality_score) * lift.eval(current_head_candidate_length)) / current_head_candidate_length
 
             if best_head_candidate_length == 0 or quality_score < best_quality_score:
                 best_head_candidate_length = current_head_candidate_length
-                # deep copy
-                for c2 in range(0, best_head_candidate_length):
-                    best_head_candidate[c2] = current_head_candidate[c2]
 
                 best_quality_score = quality_score
 
@@ -216,8 +182,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
             candidate_predicted_scores = array_float64(best_head_candidate_length)
 
             for c in range(0, best_head_candidate_length):
-                candidate_label_indices[c] = get_index(best_head_candidate[c], label_indices)
-                candidate_predicted_scores[c] = predicted_scores[best_head_candidate[c]]
+                candidate_label_indices[c] = get_index(sorted_indices[c], label_indices)
+                candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
 
             candidate = HeadCandidate.__new__(HeadCandidate, candidate_label_indices, candidate_predicted_scores,
                                               best_quality_score)
