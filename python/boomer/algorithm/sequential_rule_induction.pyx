@@ -6,7 +6,6 @@ Provides classes that allow to sequentially induce models that consist of severa
 from boomer.algorithm._random cimport RNG
 from boomer.algorithm.rules cimport Rule
 from boomer.algorithm.stopping_criteria cimport StoppingCriterion
-from boomer.algorithm.rule_induction cimport ThresholdProvider, SparseThresholdProvider
 
 
 cdef class SequentialRuleInduction:
@@ -15,8 +14,8 @@ cdef class SequentialRuleInduction:
     rules.
     """
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                              intp[::1] x_col_indices, intp num_examples, uint8[::1, :] y, uint32 random_state):
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                              intp num_examples, intp num_features, uint8[::1, :] y, uint32 random_state):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -24,15 +23,10 @@ cdef class SequentialRuleInduction:
 
         :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_features)`, representing the
                                             indices of all nominal attributes (in ascending order)
-        :param x_data:                      An array of dtype float, shape `(num_non_zero_feature_values)`, representing
-                                            the non-zero feature values of the training examples
-        :param x_row_indices:               An array of dtype int, shape `(num_non_zero_feature_values)`, representing
-                                            the row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:               An array of dtype int, shape `(num_features + 1)`, representing the indices
-                                            of the first element in `x_data` and `x_row_indices` that corresponds to a
-                                            certain feature. The index at the last position is equal to
-                                            `num_non_zero_feature_values`
+        :param threshold_provider:          The `ThresholdProvider` that allows to access the thresholds that can
+                                            potentially be used by conditions
         :param num_examples:                The total number of training examples
+        :param num_features:                The total number of features
         :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
                                             the labels of the training examples
         :param random_state:                The seed to be used by RNGs
@@ -88,8 +82,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                              intp[::1] x_col_indices, intp num_examples, uint8[::1, :] y, uint32 random_state):
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                              intp num_examples, intp num_features, uint8[::1, :] y, uint32 random_state):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleInduction rule_induction = self.rule_induction
@@ -104,13 +98,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef intp min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
         cdef RNG rng = RNG.__new__(RNG, random_state)
-        # The total number of features
-        cdef intp num_features = x_col_indices.shape[0] - 1
         # The total number of labels
         cdef intp num_labels = y.shape[1]
-        # The `ThresholdProvider` to be used
-        cdef ThresholdProvider threshold_provider = SparseThresholdProvider.__new__(SparseThresholdProvider, x_data,
-                                                                                    x_row_indices, x_col_indices)
         # The list that contains the induced rules
         cdef list rule_list = []
         # The number of rules induced so far (starts at 1 to account for the default rule)
