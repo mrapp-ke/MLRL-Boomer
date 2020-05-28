@@ -183,8 +183,9 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
         x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
         num_labels = stats.num_labels
+        predictor = self._create_predictor()
 
-        if enforce_sparse:
+        if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
