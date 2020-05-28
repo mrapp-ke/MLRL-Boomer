@@ -37,7 +37,7 @@ cdef class RuleInduction:
         pass
 
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                          intp[::1] x_col_indices, intp num_examples, uint8[::1, :] y, HeadRefinement head_refinement,
+                          intp[::1] x_col_indices, intp num_examples, intp num_labels, HeadRefinement head_refinement,
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng):
@@ -57,6 +57,7 @@ cdef class RuleInduction:
                                             certain feature. The index at the last position is equal to
                                             `num_non_zero_feature_values`
         :param num_examples:                The total number of training examples
+        :param num_labels:                  The total number of labels
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
         :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no
@@ -112,14 +113,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         return rule
 
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                          intp[::1] x_col_indices, intp num_examples, uint8[::1, :] y, HeadRefinement head_refinement,
+                          intp[::1] x_col_indices, intp num_examples, intp num_labels, HeadRefinement head_refinement,
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng):
         # The total number of features in the training data set
         cdef intp num_features = x_col_indices.shape[0] - 1
-        # The total number of labels in the training data set
-        cdef intp num_labels = y.shape[1]
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
