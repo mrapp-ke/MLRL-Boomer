@@ -359,7 +359,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # If not all examples have been iterated, this means that there are examples with (sparse) feature
                     # value == 0. In such case, we must explicitly test conditions that separate these examples from the
                     # ones that have already been iterated.
-                    if sum_of_weights < total_sum_of_weights:
+                    if num_indexed_values > 0 and sum_of_weights < total_sum_of_weights:
                         # Find and evaluate the best head for the current refinement, if a condition that uses the >
                         # operator (or the == operator in case of a nominal feature) is used...
                         current_head = head_refinement.find_head(head, label_indices, loss, False)
