@@ -490,8 +490,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             while cache_local_iterator != cache_local.end():
                 indexed_array_wrapper = dereference(cache_local_iterator).second
                 indexed_array = dereference(indexed_array_wrapper).array
-                indexed_values = dereference(indexed_array).data
-                free(indexed_values)
+
+                if indexed_array != NULL:
+                    indexed_values = dereference(indexed_array).data
+                    free(indexed_values)
+
                 free(indexed_array)
                 free(indexed_array_wrapper)
                 postincrement(cache_local_iterator)
