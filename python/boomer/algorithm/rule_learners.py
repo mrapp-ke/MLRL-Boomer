@@ -196,7 +196,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             num_features = x.shape[1]
             return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, num_labels, model)
         else:
-            x = np.ascontiguousarray(self._ensure_input_format(x))
+            x = np.ascontiguousarray(self._ensure_input_format(x), dtype=DTYPE_FLOAT32)
             return predictor.predict(x, num_labels, model)
 
     @staticmethod
