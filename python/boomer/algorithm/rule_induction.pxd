@@ -88,22 +88,3 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng)
-
-
-cdef inline bint test_condition(float32 threshold, Comparator comparator, float32 feature_value):
-    """
-    Returns whether a given feature value satisfies a certain condition.
-
-    :param threshold:       The threshold of the condition
-    :param comparator:      The operator that is used by the condition
-    :param feature_value:   The feature value
-    :return:                1, if the feature value satisfies the condition, 0 otherwise
-    """
-    if comparator == Comparator.LEQ:
-        return feature_value <= threshold
-    elif comparator == Comparator.GR:
-        return feature_value > threshold
-    elif comparator == Comparator.EQ:
-        return feature_value == threshold
-    else:
-        return feature_value != threshold

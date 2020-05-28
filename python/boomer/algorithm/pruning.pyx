@@ -6,7 +6,7 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.algorithm._arrays cimport array_intp
-from boomer.algorithm.rule_induction cimport test_condition, Comparator
+from boomer.algorithm.rule_induction cimport Comparator
 from boomer.algorithm.losses cimport Prediction
 
 from cython.operator cimport dereference, postincrement
@@ -157,7 +157,7 @@ cdef class IREP(Pruning):
                     index = sorted_indices[r]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, comparator, feature_value):
+                    if __test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
@@ -179,7 +179,7 @@ cdef class IREP(Pruning):
                     index = covered_example_indices[r]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, comparator, feature_value):
+                    if __test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
@@ -219,3 +219,22 @@ cdef class IREP(Pruning):
             num_pruned_conditions -= 1
 
         return best_covered_example_indices[0:best_num_examples]
+
+
+cdef inline bint __test_condition(float32 threshold, Comparator comparator, float32 feature_value):
+    """
+    Returns whether a given feature value satisfies a certain condition.
+
+    :param threshold:       The threshold of the condition
+    :param comparator:      The operator that is used by the condition
+    :param feature_value:   The feature value
+    :return:                1, if the feature value satisfies the condition, 0 otherwise
+    """
+    if comparator == Comparator.LEQ:
+        return feature_value <= threshold
+    elif comparator == Comparator.GR:
+        return feature_value > threshold
+    elif comparator == Comparator.EQ:
+        return feature_value == threshold
+    else:
+        return feature_value != threshold
