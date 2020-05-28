@@ -146,11 +146,6 @@ def _create_max_conditions(max_conditions: int) -> int:
 class MLRuleLearner(MLLearner, NominalAttributeLearner):
     """
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
-
-    Attributes
-        stats_          Statistics about the training data set
-        theory_         The theory that contains the classification rules
-        persistence     The 'ModelPersistence' to be used to load/save the theory
     """
 
     def __init__(self, model_dir: str):
