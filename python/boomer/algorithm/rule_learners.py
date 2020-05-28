@@ -155,7 +155,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
     def __init__(self, model_dir: str):
         super().__init__(model_dir)
-        # By default, we use dense feature matrices (first value) and the label matrices (second value)
+        # By default, we use dense feature matrices (first value) and label matrices (second value)
         self.require_dense = [True, True]
 
     def get_model_prefix(self) -> str:
