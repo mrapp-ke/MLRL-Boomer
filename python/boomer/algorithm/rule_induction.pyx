@@ -36,6 +36,43 @@ cdef class ThresholdProvider:
         pass
 
 
+cdef class DenseThresholdProvider(ThresholdProvider):
+    """
+    Allows to access the thresholds that can potentially be used by conditions based on the feature values of all
+    training examples.
+
+    The feature matrix must be given as a dense Fortran-contiguous array.
+    """
+
+    def __cinit__(self, float32[::1, :] x):
+        """
+        :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
+                  training examples
+        """
+        self.x = x
+
+    cdef IndexedArray* get_thresholds(self, intp feature_index):
+        # Class members
+        cdef float32[::1, :] x = self.x
+        # The number of elements to be returned
+        cdef intp num_elements = x.shape[0]
+        # The array to be returned
+        cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+        # The struct to be returned
+        cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        dereference(indexed_array).num_elements = num_elements
+        dereference(indexed_array).data = sorted_array
+        # Temporary variables
+        cdef intp i
+
+        for i in range(num_elements):
+            sorted_array[i].index = i
+            sorted_array[i].value = x[i, feature_index]
+
+        qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
+        return indexed_array
+
+
 cdef class SparseThresholdProvider(ThresholdProvider):
     """
     Allows to access the thresholds that can potentially be used by conditions based on the feature values of all
