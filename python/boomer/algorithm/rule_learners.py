@@ -157,6 +157,8 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         return 'rules'
 
     def _fit(self, stats: Stats, x, y, random_state: int):
+        x, y = self._validate_data(x, y, accept_sparse=True, multi_output=True)
+
         # Create a dense representation of the training data
         x = self._ensure_input_format(x)
         y = self._ensure_output_format(y)
@@ -178,7 +180,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
-        predictor = self._create_predictor()
+        x = self._validate_data(x, reset=False, accept_sparse=True)
         sparse_format = 'csr'
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
         x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
