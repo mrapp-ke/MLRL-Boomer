@@ -723,11 +723,11 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
                                     covered by the previous rule
     """
     cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
-
-    if filtered_indexed_array == NULL:
-        filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
-
     cdef IndexedValue* filtered_array = NULL
+
+    if filtered_indexed_array != NULL:
+        filtered_array = dereference(filtered_indexed_array).data
+
     cdef intp max_elements = dereference(indexed_array).num_elements
     cdef intp i = 0
     cdef IndexedValue* indexed_values
@@ -735,7 +735,6 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
 
     if max_elements > 0:
         indexed_values = dereference(indexed_array).data
-        filtered_array = dereference(filtered_indexed_array).data
 
         if filtered_array == NULL:
             filtered_array = <IndexedValue*>malloc(max_elements * sizeof(IndexedValue))
@@ -748,11 +747,14 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
                 filtered_array[i].value = indexed_values[r].value
                 i += 1
 
-        if i == 0:
-            free(filtered_array)
-            filtered_array = NULL
-        elif i < max_elements:
-            filtered_array = <IndexedValue*>realloc(filtered_array, i * sizeof(IndexedValue))
+    if i == 0:
+        free(filtered_array)
+        filtered_array = NULL
+    elif i < max_elements:
+        filtered_array = <IndexedValue*>realloc(filtered_array, i * sizeof(IndexedValue))
+
+    if filtered_indexed_array == NULL:
+        filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
 
     dereference(filtered_indexed_array).data = filtered_array
     dereference(filtered_indexed_array).num_elements = i
