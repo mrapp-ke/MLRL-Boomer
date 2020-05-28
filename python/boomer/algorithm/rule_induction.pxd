@@ -60,14 +60,36 @@ cdef struct Condition:
     float32 threshold
 
 
+cdef class ThresholdProvider:
+
+    # Functions:
+
+    cdef IndexedArray* get_thresholds(self, intp feature_index)
+
+
+cdef class SparseThresholdProvider(ThresholdProvider):
+
+    # Attributes:
+
+    cdef float32[::1] x_data
+
+    cdef intp[::1] x_row_indices
+
+    cdef intp[::1] x_col_indices
+
+    # Functions:
+
+    cdef IndexedArray* get_thresholds(self, intp feature_index)
+
+
 cdef class RuleInduction:
 
     # Functions:
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                          intp[::1] x_col_indices, intp num_examples, intp num_labels, HeadRefinement head_refinement,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng)
@@ -83,8 +105,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                          intp[::1] x_col_indices, intp num_examples, intp num_labels, HeadRefinement head_refinement,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng)

@@ -20,6 +20,72 @@ from cython.operator cimport dereference, postincrement
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
+cdef class ThresholdProvider:
+    """
+    A base class for all classes that allow to access the thresholds that can potentially be used by conditions.
+    """
+
+    cdef IndexedArray* get_thresholds(self, intp feature_index):
+        """
+        Creates and returns a pointer to a struct of type `IndexedArray` that stores the indices of training examples,
+        as well as their feature values, for a specific feature, sorted in ascending order by the feature values.
+
+        :param feature_index:   The index of the feature
+        :return:                A pointer to a struct of type `IndexedArray`
+        """
+        pass
+
+
+cdef class SparseThresholdProvider(ThresholdProvider):
+
+    def __cinit__(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices):
+        """
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples
+        :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                row-indices of the examples, the values in `x_data` correspond to
+        :param x_col_indices:   An array of dtype int, shape `(num_features + 1)`, representing the indices of the first
+                                element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
+                                at the last position is equal to `num_non_zero_feature_values`
+        """
+        self.x_data = x_data
+        self.x_row_indices = x_row_indices
+        self.x_col_indices = x_col_indices
+
+    cdef IndexedArray* get_thresholds(self, intp feature_index):
+        # Class members
+        cdef float32[::1] x_data = self.x_data
+        cdef intp[::1] x_row_indices = self.x_row_indices
+        cdef intp[::1] x_col_indices = self.x_col_indices
+        # The index of the first element in `x_data` and `x_row_indices` that corresponds to the given feature index
+        cdef intp start = x_col_indices[feature_index]
+        # The index of the last element in `x_data` and `x_row_indices` that corresponds to the given feature index
+        cdef intp end = x_col_indices[feature_index + 1]
+        # The number of elements to be returned
+        cdef intp num_elements = end - start
+        # The struct to be returned
+        cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        dereference(indexed_array).num_elements = num_elements
+        # The array to be returned
+        cdef IndexedValue* sorted_array = NULL
+        # Temporary variables
+        cdef intp i, j
+
+        if num_elements > 0:
+            sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+            i = 0
+
+            for j in range(start, end):
+                sorted_array[i].index = x_row_indices[j]
+                sorted_array[i].value = x_data[j]
+                i += 1
+
+            qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
+
+        dereference(indexed_array).data = sorted_array
+        return indexed_array
+
+
 cdef class RuleInduction:
     """
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
@@ -36,8 +102,8 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                          intp[::1] x_col_indices, intp num_examples, intp num_labels, HeadRefinement head_refinement,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng):
@@ -48,15 +114,10 @@ cdef class RuleInduction:
         :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
                                             indices of all nominal features (in ascending order) or None, if no nominal
                                             features are available
-        :param x_data:                      An array of dtype float, shape `(num_non_zero_feature_values)`, representing
-                                            the non-zero feature values of the training examples
-        :param x_row_indices:               An array of dtype int, shape `(num_non_zero_feature_values)`, representing
-                                            the row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:               An array of dtype int, shape `(num_features + 1)`, representing the indices
-                                            of the first element in `x_data` and `x_row_indices` that corresponds to a
-                                            certain feature. The index at the last position is equal to
-                                            `num_non_zero_feature_values`
+        :param threshold_provider:          A `ThresholdProvider` that allows to access the thresholds that can
+                                            potentially be used by conditions
         :param num_examples:                The total number of training examples
+        :param num_features:                The total number of features
         :param num_labels:                  The total number of labels
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
@@ -112,13 +173,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Rule rule = Rule.__new__(Rule, body, head)
         return rule
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1] x_data, intp[::1] x_row_indices,
-                          intp[::1] x_col_indices, intp num_examples, intp num_labels, HeadRefinement head_refinement,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng):
-        # The total number of features in the training data set
-        cdef intp num_features = x_col_indices.shape[0] - 1
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -238,7 +297,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         indexed_array = dereference(cache_global)[f]
 
                         if indexed_array == NULL:
-                            indexed_array = __argsort_by_feature_values(x_data, x_row_indices, x_col_indices, f)
+                            indexed_array = threshold_provider.get_thresholds(f)
                             dereference(cache_global)[f] = indexed_array
 
                     # Filter indices, if only a subset of the contained examples is covered...
@@ -497,45 +556,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 free(indexed_array)
                 free(indexed_array_wrapper)
                 postincrement(cache_local_iterator)
-
-
-cdef inline IndexedArray* __argsort_by_feature_values(float32[::1] x_data, intp[::1] x_row_indices,
-                                                      intp[::1] x_col_indices, intp feature_index):
-    """
-    Creates and returns a pointer to a struct of type `IndexedArray` that stores the indices of the training examples,
-    as well as their feature values for a specific feature, sorted in ascending order by the feature values.
-
-    :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the non-zero
-                            feature values of the training examples
-    :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the row-indices
-                            of the examples, the values in `x_data` correspond to
-    :param x_col_indices:   An array of dtype int, shape `(num_features + 1)`, representing the indices of the first
-                            element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index at
-                            the last position is equal to `num_non_zero_feature_values`
-    :param feature_index:   The index of the feature, the feature values that should be used for sorting correspond to
-    :return:                A pointer to a struct of type `IndexedArray`
-    """
-    cdef intp start = x_col_indices[feature_index]
-    cdef intp end = x_col_indices[feature_index + 1]
-    cdef intp num_elements = end - start
-    cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
-    dereference(indexed_array).num_elements = num_elements
-    cdef IndexedValue* sorted_array = NULL
-    cdef intp i, j
-
-    if num_elements > 0:
-        sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
-        i = 0
-
-        for j in range(start, end):
-            sorted_array[i].index = x_row_indices[j]
-            sorted_array[i].value = x_data[j]
-            i += 1
-
-        qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
-
-    dereference(indexed_array).data = sorted_array
-    return indexed_array
 
 
 cdef int __compare_indexed_value(const void* a, const void* b) nogil:
