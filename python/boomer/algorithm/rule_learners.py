@@ -154,12 +154,9 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
         y = np.asfortranarray(y, dtype=DTYPE_UINT8)
 
-        # Sort feature matrix once
-        x_sorted_indices = np.asfortranarray(np.argsort(x, axis=0), dtype=DTYPE_INTP)
-
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(stats)
-        return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, x_sorted_indices, y, random_state)
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
         # Create a dense representation of the given examples
