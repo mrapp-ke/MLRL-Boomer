@@ -254,6 +254,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
         cdef intp num_indexed_values
+        cdef bint sparse
 
         # Variables for specifying the features that should be used for finding the best refinement
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
@@ -273,7 +274,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], intp] instance_sub_sampling_result
         cdef uint32[::1] weights
-        cdef intp total_sum_of_weights, sum_of_weights
+        cdef intp total_sum_of_weights, sum_of_weights, accumulated_sum_of_weights
 
         if instance_sub_sampling is None:
             weights = None
@@ -367,6 +368,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # Reset the loss function when processing a new feature...
                     loss.begin_search(label_indices)
                     sum_of_weights = 0
+                    accumulated_sum_of_weights = 0
                     first_r = num_indexed_values - 1
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
@@ -378,6 +380,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
                             sum_of_weights += weight
+                            accumulated_sum_of_weights += weight
                             previous_threshold = indexed_values[r].value
                             previous_r = r
                             break
@@ -456,11 +459,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
                             sum_of_weights += weight
+                            accumulated_sum_of_weights += weight
 
                     # If not all examples have been iterated, this means that there are examples with (sparse) feature
                     # value == 0. In such case, we must explicitly test conditions that separate these examples from the
-                    # ones that have already been iterated.
-                    if num_indexed_values > 0 and sum_of_weights < total_sum_of_weights:
+                    # ones that have already been iterated...
+                    sparse = accumulated_sum_of_weights < total_sum_of_weights
+
+                    if sparse:
                         # Find and evaluate the best head for the current refinement, if a condition that uses the >
                         # operator (or the == operator in case of a nominal feature) is used...
                         current_head = head_refinement.find_head(head, label_indices, loss, False, False)
@@ -510,6 +516,59 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             else:
                                 best_condition_comparator = Comparator.LEQ
                                 best_condition_threshold = previous_threshold / 2.0
+
+                    # If the feature is nominal and there are examples with different feature values, we must evaluate
+                    # additional conditions...
+                    if nominal and (sparse or sum_of_weights < total_sum_of_weights):
+                        # Find and evaluate the best head for the current refinement, if a condition that uses ==
+                        # operator is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, sparse, sparse)
+
+                        # If refinement using the == operator is better than the current rule...
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = first_r
+                            best_condition_end = -1
+                            best_condition_previous = previous_r
+                            best_condition_feature_index = f
+
+                            if sparse:
+                                best_condition_covered_weights = (total_sum_of_weights - accumulated_sum_of_weights)
+                                best_condition_threshold = 0.0
+                            else:
+                                best_condition_covered_weights = sum_of_weights
+                                best_condition_threshold = previous_threshold
+
+                            best_condition_num_indexed_values = num_indexed_values
+                            best_condition_indexed_values = indexed_values
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+                            best_condition_comparator = Comparator.EQ
+
+                        # Find and evaluate the best head for the current refinement, if a condition that uses the !=
+                        # operator is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, not sparse, sparse)
+
+                        # If refinement using the != operator is better than the current rule...
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = first_r
+                            best_condition_end = -1
+                            best_condition_previous = previous_r
+                            best_condition_feature_index = f
+
+                            if sparse:
+                                best_condition_covered_weights = accumulated_sum_of_weights
+                                best_condition_threshold = 0.0
+                            else:
+                                best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
+                                best_condition_threshold = previous_threshold
+
+                            best_condition_num_indexed_values = num_indexed_values
+                            best_condition_indexed_values = indexed_values
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+                            best_condition_comparator = Comparator.NEQ
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
