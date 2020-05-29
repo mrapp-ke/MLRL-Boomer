@@ -344,7 +344,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # If the feature is nominal and there are examples with different feature values, we must evaluate
                     # additional conditions...
-                    if False and nominal and sum_of_weights < total_sum_of_weights:
+                    if nominal and sum_of_weights < total_sum_of_weights:
                         # Find and evaluate the best head for the current refinement, if a condition that uses the ==
                         # operator is used...
                         current_head = head_refinement.find_head(head, label_indices, loss, False)
