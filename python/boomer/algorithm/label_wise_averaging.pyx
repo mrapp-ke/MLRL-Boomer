@@ -165,7 +165,12 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                     elif predicted_label == 1:
                         confusion_matrices_covered[c, _RP] += weight
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
+        # TODO Implement
+        pass
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
+        # TODO Take into account `accumulated` argument
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores

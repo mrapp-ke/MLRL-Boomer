@@ -278,7 +278,12 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 sums_of_hessians[i] += (weight * hessians[example_index, l2])
                 i += 1
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
+        # TODO Implement
+        pass
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
+        # TODO Take into account `accumulated` argument
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef LabelIndependentPrediction prediction = self.prediction
@@ -341,7 +346,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return prediction
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
+        # TODO Take into account `accumulated` argument
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef Prediction prediction = <Prediction>self.prediction

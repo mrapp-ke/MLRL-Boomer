@@ -152,7 +152,13 @@ cdef class Loss:
         """
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
+        """
+        TODO
+        """
+        pass
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
@@ -168,12 +174,13 @@ cdef class Loss:
                             1, if the rule covers all examples that belong to the difference between the examples that
                             have been provided via the function `update_sub_sample` and the examples that have been
                             provided via the function `update_search`
+        :param accumulated: TODO
         :return:            A `LabelIndependentPrediction` that stores the scores to be predicted by the rule for each
                             considered label, as well as the corresponding quality scores
         """
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
@@ -191,6 +198,7 @@ cdef class Loss:
                             1, if the rule covers all examples that belong to the difference between the examples that
                             have been provided via the function `update_sub_sample` and the examples that have been
                             provided via the function `update_search`
+        :param accumulated: TODO
         :return:            A `Prediction` that stores the optimal scores to be predicted by the rule for each
                             considered label, as well as its overall quality score
         """

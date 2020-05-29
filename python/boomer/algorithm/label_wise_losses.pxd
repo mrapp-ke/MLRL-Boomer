@@ -17,11 +17,15 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
     cdef float64[::1] sums_of_gradients
 
+    cdef float64[::1] accumulated_sums_of_gradients
+
     cdef float64[::1] total_sums_of_gradients
 
     cdef float64[::1, :] hessians
 
     cdef float64[::1] sums_of_hessians
+
+    cdef float64[::1] accumulated_sums_of_hessians
 
     cdef float64[::1] total_sums_of_hessians
 
@@ -47,7 +51,9 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
     cdef void update_search(self, intp example_index, uint32 weight)
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
+    cdef void reset_search(self)
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
@@ -72,7 +78,9 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
 
     cdef void update_search(self, intp example_index, uint32 weight)
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
+    cdef void reset_search(self)
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
@@ -97,6 +105,8 @@ cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
 
     cdef void update_search(self, intp example_index, uint32 weight)
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
+    cdef void reset_search(self)
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
