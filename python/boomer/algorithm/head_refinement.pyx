@@ -128,8 +128,6 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef float64[::1] candidate_predicted_scores
         cdef intp[::1] sorted_indices = array_intp(num_labels)
         cdef intp sorted_label_indices_length = 0
-        cdef intp[::1] current_head_candidate = array_intp(num_labels)
-        cdef intp current_head_candidate_length = 0
         cdef intp best_head_candidate_length = 0
         cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift
         cdef intp should_continue, no_improvement, c, c2, c3, l
@@ -138,7 +136,6 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
         # Insertion sort
         for c in range(0, num_labels):
-            l = get_index(c, label_indices)
             for c2 in range(0, num_labels):
                 # TODO Tie-breaking
                 if c2 >= sorted_label_indices_length or quality_scores[sorted_indices[c2]] > quality_scores[c]:
@@ -158,15 +155,12 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
             should_continue = True
 
-            current_head_candidate[current_head_candidate_length] = sorted_indices[c]
-            current_head_candidate_length += 1
-
             total_quality_score += quality_scores[sorted_indices[c]]
 
-            quality_score = (1 - (1 - total_quality_score) * lift.eval(current_head_candidate_length)) / current_head_candidate_length
+            quality_score = (1 - (1 - total_quality_score) * lift.eval(c + 1)) / (c + 1)
 
             if best_head_candidate_length == 0 or quality_score < best_quality_score:
-                best_head_candidate_length = current_head_candidate_length
+                best_head_candidate_length = c + 1
 
                 best_quality_score = quality_score
 
@@ -176,7 +170,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
                 # prunable by decomposition
                 break
 
-        if best_head is None or best_quality_score < best_head.quality_score:
+        if best_head is None:
             # Create a new `HeadCandidate` and return it...
             candidate_label_indices = array_intp(best_head_candidate_length)
             candidate_predicted_scores = array_float64(best_head_candidate_length)
@@ -188,9 +182,21 @@ cdef class PartialHeadRefinement(HeadRefinement):
             candidate = HeadCandidate.__new__(HeadCandidate, candidate_label_indices, candidate_predicted_scores,
                                               best_quality_score)
             return candidate
+        elif best_quality_score < best_head.quality_score:
+                if best_head.label_indices.shape[0] != best_head_candidate_length:
+                    best_head.label_indices = array_intp(best_head_candidate_length)
+                    best_head.predicted_scores = array_float64(best_head_candidate_length)
 
-        # Return None, as the quality_score of the found head is worse than that of `best_head`...
-        return None
+                # Modify the `best_head` and return it...
+                for c in range(best_head_candidate_length):
+                    best_head.label_indices[c] = get_index(sorted_indices[c], label_indices)
+                    best_head.predicted_scores[c] = predicted_scores[sorted_indices[c]]
+
+                best_head.quality_score = best_quality_score
+                return best_head
+        else:
+            # Return None, as the quality_score of the found head is worse than that of `best_head`...
+            return None
 
     cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
         cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered)
