@@ -159,7 +159,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
     def _fit(self, stats: Stats, x, y, random_state: int):
         x, y = self._validate_data(x, y, accept_sparse=True, multi_output=True)
         sparse_format = 'csc'
-        enforce_sparse = False #MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
+        enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
         x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
 
         if issparse(x):
