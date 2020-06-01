@@ -35,7 +35,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     cdef void begin_instance_sub_sampling(self)
 
-    cdef void update_sub_sample(self, intp example_index)
+    cdef void update_sub_sample(self, intp example_index, uint32 weight)
 
     cdef void begin_search(self, intp[::1] label_indices)
 

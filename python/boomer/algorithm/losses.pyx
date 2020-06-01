@@ -73,7 +73,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void update_sub_sample(self, intp example_index):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight):
         """
         Notifies the loss function about an example that should be considered in the following for learning a new rule
         or refining an existing one.
@@ -87,7 +87,8 @@ cdef class Loss:
         about the ground truth labels of these particular examples. Any information computed by this function is
         expected to be reset when invoking the function `begin_instance_sub_sample` for the next time.
 
-        :param example_index: The index of an example that should be considered
+        :param example_index:   The index of an example that should be considered
+        :param weight:          The weight of the example that should be considered
         """
         pass
 
