@@ -1,66 +1,68 @@
-from boomer.algorithm._arrays cimport uint8, uint32, intp, float32
-from boomer.algorithm.losses cimport Loss
+from boomer.algorithm._arrays cimport uint32, intp, float32
+from boomer.algorithm._random cimport RNG
+
+from libcpp.pair cimport pair
 
 
 cdef class InstanceSubSampling:
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state)
+    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class Bagging(InstanceSubSampling):
 
     # Attributes:
 
-    cdef readonly float sample_size
+    cdef readonly float32 sample_size
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state)
+    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
     # Attributes
-    cdef readonly float sample_size
+    cdef readonly float32 sample_size
 
     # Functions:
 
-    cdef uint32[::1] sub_sample(self, float32[::1, :] x, Loss loss, intp random_state)
+    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class FeatureSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_features, RNG rng)
 
 
 cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
     # Attributes:
 
-    cdef readonly float sample_size
+    cdef readonly float32 sample_size
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, float32[::1, :] x, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_features, RNG rng)
 
 
 cdef class LabelSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng)
 
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
     # Attributes:
 
-    cdef readonly int num_samples
+    cdef readonly intp num_samples
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, uint8[::1, :] y, intp random_state)
+    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng)

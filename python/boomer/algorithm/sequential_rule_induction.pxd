@@ -1,4 +1,4 @@
-from boomer.algorithm._arrays cimport uint8, intp, float32
+from boomer.algorithm._arrays cimport uint8, uint32, intp, float32
 from boomer.algorithm.rule_induction cimport RuleInduction
 from boomer.algorithm.head_refinement cimport HeadRefinement
 from boomer.algorithm.losses cimport Loss
@@ -12,7 +12,7 @@ cdef class SequentialRuleInduction:
     # Functions:
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              intp random_state)
+                              uint32 random_state)
 
 
 cdef class RuleListInduction(SequentialRuleInduction):
@@ -39,7 +39,11 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
     cdef Shrinkage shrinkage
 
+    cdef intp min_coverage
+
+    cdef intp max_conditions
+
     # Functions:
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
-                              intp random_state)
+                              uint32 random_state)
