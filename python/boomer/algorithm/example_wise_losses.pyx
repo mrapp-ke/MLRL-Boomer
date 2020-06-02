@@ -249,6 +249,10 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         sums_of_gradients[:] = 0
         sums_of_hessians[:] = 0
 
+        # Reset the accumulated sums of gradients and hessians to None...
+        self.accumulated_sums_of_gradients = None
+        self.accumulated_sums_of_hessians = None
+
         # Store the given label indices...
         self.label_indices = label_indices
 
@@ -279,18 +283,51 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 i += 1
 
     cdef void reset_search(self):
-        # TODO Implement
-        pass
+        # Class members
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        # The number of gradients
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        # The number of hessians
+        cdef intp num_hessians = sums_of_hessians.shape[0]
+        # Temporary variables
+        cdef intp c
+        # Update the arrays that store the accumulated sums of gradients and hessians...
+        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
+        cdef float64[::1] accumulated_sums_of_hessians
+
+        if accumulated_sums_of_gradients is None:
+            accumulated_sums_of_gradients = array_float64(num_gradients)
+            self.accumulated_sums_of_gradients = accumulated_sums_of_gradients
+            accumulated_sums_of_hessians = array_float64(num_hessians)
+            self.accumulated_sums_of_hessians = accumulated_sums_of_hessians
+
+            for c in range(num_gradients):
+                accumulated_sums_of_gradients[c] = sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+
+            for c in range(num_hessians):
+                accumulated_sums_of_hessians[c] = sums_of_hessians[c]
+                sums_of_hessians[c] = 0
+        else:
+            accumulated_sums_of_hessians = self.accumulated_sums_of_hessians
+
+            for c in range(num_gradients):
+                accumulated_sums_of_gradients[c] += sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+
+            for c in range(num_hessians):
+                accumulated_sums_of_hessians[c] += sums_of_hessians[c]
+                sums_of_hessians[c] = 0
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
-        # TODO Take into account `accumulated` argument
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
         cdef intp num_gradients = sums_of_gradients.shape[0]
 
@@ -347,12 +384,11 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         return prediction
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
-        # TODO Take into account `accumulated` argument
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef Prediction prediction = <Prediction>self.prediction
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
         cdef intp num_gradients = sums_of_gradients.shape[0]
         # Temporary variables
