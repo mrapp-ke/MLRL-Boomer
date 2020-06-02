@@ -570,45 +570,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_indexed_array_wrapper = indexed_array_wrapper
                             best_condition_comparator = Comparator.NEQ
 
-                    # If the feature is nominal and there are examples with different feature values, we must evaluate
-                    # additional conditions...
-                    if nominal and sum_of_weights < total_sum_of_weights:
-                        # Find and evaluate the best head for the current refinement, if a condition that uses the ==
-                        # operator is used...
-                        current_head = head_refinement.find_head(head, label_indices, loss, False)
-
-                        # If refinement using the == operator is better than the current rule...
-                        if current_head is not None:
-                            found_refinement = True
-                            head = current_head
-                            best_condition_start = first_r
-                            best_condition_end = -1
-                            best_condition_previous = previous_r
-                            best_condition_index = f
-                            best_condition_covered_weights = sum_of_weights
-                            best_condition_sorted_indices = sorted_indices
-                            best_condition_index_array = index_array
-                            best_condition_comparator = Comparator.EQ
-                            best_condition_threshold = previous_threshold
-
-                        # Find and evaluate the best head for the current refinement, if a condition that uses the !=
-                        # operator is used...
-                        current_head = head_refinement.find_head(head, label_indices, loss, True)
-
-                        # If refinement using the != operator is better than the current rule...
-                        if current_head is not None:
-                            found_refinement = True
-                            head = current_head
-                            best_condition_start = first_r
-                            best_condition_end = -1
-                            best_condition_previous = previous_r
-                            best_condition_index = f
-                            best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
-                            best_condition_sorted_indices = sorted_indices
-                            best_condition_index_array = index_array
-                            best_condition_comparator = Comparator.NEQ
-                            best_condition_threshold = previous_threshold
-
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
                     # predicts...
