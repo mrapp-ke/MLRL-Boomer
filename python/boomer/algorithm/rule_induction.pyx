@@ -520,6 +520,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # If the feature is nominal and there are examples with different feature values, we must evaluate
                     # additional conditions...
                     if nominal and (sparse or sum_of_weights < total_sum_of_weights):
+                        if sparse:
+                            loss.reset_search()
+
                         # Find and evaluate the best head for the current refinement, if a condition that uses ==
                         # operator is used...
                         current_head = head_refinement.find_head(head, label_indices, loss, sparse, sparse)
