@@ -73,7 +73,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         """
         Notifies the loss function about an example that should be considered in the following for learning a new rule
         or refining an existing one.
@@ -82,6 +82,9 @@ cdef class Loss:
         have been selected via instance sub-sampling, immediately after the invocation of the function
         `begin_instance_sub_sampling`.
 
+        Alternatively, this function may be used to indicate that an example, which has previously been passed to this
+        function, should not be considered anymore by setting the argument `remove` accordingly.
+
         This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
         and store local information that is required by the other functions that will be called later, e.g. statistics
         about the ground truth labels of these particular examples. Any information computed by this function is
@@ -89,24 +92,8 @@ cdef class Loss:
 
         :param example_index:   The index of an example that should be considered
         :param weight:          The weight of the example that should be considered
-        """
-        pass
-
-    cdef void remove_from_sub_sample(self, intp example_index, uint32 weight):
-        """
-        Notifies the loss function about an example that should not be considered anymore in the follow for learning a
-        new rule or refining an existing one. This function can be called wherever a call to `update_sub_sample` is
-        allowed, as long as the latter has been called at least once using the same value for the arguments
-        `example_index` and `weight`.
-
-        Such as `update_sub_sample`, this function is supposed to update any internal state that relates to the
-        considered examples, i.e., to compute and store local information that is required by the other functions that
-        will be called later, e.g. statistics about the ground truth labels of these particular examples. Any
-        information computed by this function is expected to be reset when invoking the function
-        `begin_instance sub_sample` for the next time.
-
-        :param example_index:   The index of an example that should not be considered anymore
-        :param weights:         The weight of the example that should not be considered anymore
+        :param remove:          0, if the example should be considered, 1, if the example should not be considered
+                                anymore
         """
         pass
 
