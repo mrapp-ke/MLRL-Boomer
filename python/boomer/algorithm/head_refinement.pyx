@@ -51,7 +51,9 @@ cdef class HeadRefinement:
         :param uncovered:       0, if the rule for which the head should be found covers all examples that have been
                                 provided to the loss function so far, 1, if the rule covers all examples that have not
                                 been provided yet
-        :param accumulated:     TODO
+        :param accumulated:     0, if the rule covers all examples that have been provided since the loss function has
+                                been reset for the last time, 1, if the rule covers all examples that have been provided
+                                so far
         :return:                A 'HeadCandidate' that stores information about the head that has been found, if the
                                 head is better than `best_head`, None otherwise
         """
@@ -69,7 +71,9 @@ cdef class HeadRefinement:
         :param uncovered:       0, if the rule for which the optimal scores should be calculated covers all examples
                                 that have been provided to the loss function so far, 1, if the rule covers all examples
                                 that have not been provided yet
-        :param accumulated      TODO
+        :param accumulated      0, if the rule covers all examples that have been provided since the loss function has
+                                been reset for the last time, 1, if the rule covers all examples that have been provided
+                                so far
         :return:                A `Prediction` that stores the optimal scores to be predicted by the rule, as well as
                                 its overall quality score
         """
