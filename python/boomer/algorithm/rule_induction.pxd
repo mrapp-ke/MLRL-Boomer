@@ -26,7 +26,7 @@ covered by a rule. The attribute `num_elements` specifies how many elements the 
 `num_conditions` specifies how many conditions the rule contained when the struct was updated for the last time. It may
 be used to check if the array is still valid or must be updated.
 """
-cdef struct IndexArray:
+cdef struct IndexedArrayWrapper:
     intp* data
     intp num_elements
     intp num_conditions
