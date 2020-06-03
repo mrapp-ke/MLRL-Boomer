@@ -37,7 +37,6 @@ updated.
 """
 cdef struct IndexedArrayWrapper:
     IndexedArray* array
-    intp num_elements
     intp num_conditions
 
 
