@@ -267,7 +267,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             loss.update_search(i, weight)
                             sum_of_weights += weight
                             accumulated_sum_of_weights += weight
-                            previous_threshold = x[i, f]
+                            previous_threshold = indexed_values[r].value
                             previous_r = r
                             break
 
@@ -278,7 +278,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         # Do only consider examples that are included in the current sub-sample...
                         if weight > 0:
-                            current_threshold = x[i, f]
+                            current_threshold = indexed_values[r].value
 
                             # Split points between examples with the same feature value must not be considered...
                             if previous_threshold != current_threshold:
