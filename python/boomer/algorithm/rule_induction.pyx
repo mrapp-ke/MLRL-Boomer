@@ -25,13 +25,13 @@ cdef class ThresholdProvider:
     A base class for all classes that allow to access the thresholds that can potentially be used by conditions.
     """
 
-    cdef IndexedValue* get_thresholds(self, intp feature_index):
+    cdef IndexedArray* get_thresholds(self, intp feature_index):
         """
-        Creates and returns a pointer to a C-array of type `IndexedValue` that stores the indices of training examples,
+        Creates and returns a pointer to a struct of type `IndexedArray` that stores the indices of training examples,
         as well as their feature values, for a specific feature, sorted in ascending order by the feature values.
 
         :param feature_index:   The index of the feature
-        :return:                A pointer to a C-array of type `IndexedValue`
+        :return:                A pointer to a struct of type `IndexedArray`
         """
         pass
 
@@ -51,13 +51,17 @@ cdef class DenseThresholdProvider(ThresholdProvider):
         """
         self.x = x
 
-    cdef IndexedValue* get_thresholds(self, intp feature_index):
+    cdef IndexedArray* get_thresholds(self, intp feature_index):
         # Class members
         cdef float32[::1, :] x = self.x
         # The number of elements to be returned
         cdef intp num_elements = x.shape[0]
         # The array to be returned
         cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+        # The struct to be returned
+        cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        dereference(indexed_array).num_elements = num_elements
+        dereference(indexed_array).data = sorted_array
         # Temporary variables
         cdef intp i
 
@@ -66,7 +70,7 @@ cdef class DenseThresholdProvider(ThresholdProvider):
             sorted_array[i].value = x[i, feature_index]
 
         qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
-        return sorted_array
+        return indexed_array
 
 
 cdef class RuleInduction:
@@ -282,7 +286,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         indexed_values = dereference(cache_global)[f]
 
                         if indexed_values == NULL:
-                            indexed_values = threshold_provider.get_thresholds(f)
+                            indexed_values = dereference(threshold_provider.get_thresholds(f)).data
                             dereference(cache_global)[f] = indexed_values
                     else:
                         num_indexed_values = dereference(indexed_array_wrapper).num_elements
