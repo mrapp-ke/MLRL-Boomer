@@ -657,11 +657,11 @@ cdef inline void __filter_any_indices(float32[::1, :] x, IndexedValue* indexed_v
     :param num_conditions:          The number of conditions in the list `conditions`
     :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
     """
-    cdef IndexedValue* filtered_indices_array = dereference(indexed_array_wrapper).array
-    cdef bint must_allocate = filtered_indices_array == NULL
+    cdef IndexedValue* filtered_array = dereference(indexed_array_wrapper).array
+    cdef bint must_allocate = filtered_array == NULL
 
     if must_allocate:
-        filtered_indices_array = <IndexedValue*>malloc(num_covered * sizeof(IndexedValue))
+        filtered_array = <IndexedValue*>malloc(num_covered * sizeof(IndexedValue))
 
     cdef intp num_untested_conditions = num_conditions - dereference(indexed_array_wrapper).num_conditions
     cdef intp i = 0
@@ -695,17 +695,17 @@ cdef inline void __filter_any_indices(float32[::1, :] x, IndexedValue* indexed_v
             postincrement(iterator)
 
         if covered:
-            filtered_indices_array[i].index = index
-            filtered_indices_array[i].value = indexed_values[r].value
+            filtered_array[i].index = index
+            filtered_array[i].value = indexed_values[r].value
             i += 1
 
             if i >= num_covered:
                 break
 
     if not must_allocate:
-        filtered_indices_array = <IndexedValue*>realloc(filtered_indices_array, num_covered * sizeof(IndexedValue))
+        filtered_array = <IndexedValue*>realloc(filtered_array, num_covered * sizeof(IndexedValue))
 
-    dereference(indexed_array_wrapper).array = filtered_indices_array
+    dereference(indexed_array_wrapper).array = filtered_array
     dereference(indexed_array_wrapper).num_elements = num_covered
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 
