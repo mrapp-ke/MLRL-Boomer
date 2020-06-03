@@ -187,7 +187,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_feature_index
         cdef float32 best_condition_threshold
         cdef intp best_condition_covered_weights
-        cdef IndexedValue* best_condition_indexed_values
+        cdef IndexedArray* best_condition_indexed_array
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the examples that should be used for finding the best refinement
@@ -352,7 +352,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_previous = previous_r
                                     best_condition_feature_index = f
                                     best_condition_covered_weights = sum_of_weights
-                                    best_condition_indexed_values = indexed_values
+                                    best_condition_indexed_array = indexed_array
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
 
                                     if nominal:
@@ -375,7 +375,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_previous = previous_r
                                     best_condition_feature_index = f
                                     best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
-                                    best_condition_indexed_values = indexed_values
+                                    best_condition_indexed_array = indexed_array
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
 
                                     if nominal:
@@ -417,7 +417,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
                             best_condition_covered_weights = sum_of_weights
-                            best_condition_indexed_values = indexed_values
+                            best_condition_indexed_array = indexed_array
                             best_condition_indexed_array_wrapper = indexed_array_wrapper
                             best_condition_comparator = Comparator.EQ
                             best_condition_threshold = previous_threshold
@@ -435,7 +435,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
                             best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
-                            best_condition_indexed_values = indexed_values
+                            best_condition_indexed_array = indexed_array
                             best_condition_indexed_array_wrapper = indexed_array_wrapper
                             best_condition_comparator = Comparator.NEQ
                             best_condition_threshold = previous_threshold
@@ -458,12 +458,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_condition_end` and therefore must be adjusted...
                     if weights is not None and best_condition_previous - best_condition_end > 1:
-                        best_condition_end = __adjust_split(best_condition_indexed_values, best_condition_end,
+                        best_condition_end = __adjust_split(best_condition_indexed_array, best_condition_end,
                                                             best_condition_previous, best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
-                    covered_examples_target = __filter_current_indices(best_condition_indexed_values,
-                                                                       num_indexed_values,
+                    covered_examples_target = __filter_current_indices(best_condition_indexed_array,
                                                                        best_condition_indexed_array_wrapper,
                                                                        best_condition_start, best_condition_end,
                                                                        best_condition_comparator, num_conditions,
@@ -559,17 +558,16 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_start, intp position_end,
-                                float32 threshold):
+cdef inline intp __adjust_split(IndexedArray* indexed_array, intp position_start, intp position_end, float32 threshold):
     """
     Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
     not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
     the examples in ascending order until the next example that is contained in the current sub-sample is encountered,
     to see if they satisfy the new condition or not.
 
-    :param indexed_values:  A pointer to a C-array of type `IndexedValue` that stores the indices of the training
-                            examples, as well as the corresponding feature values, sorted in ascending order according
-                            to the feature values
+    :param indexed_array:   A pointer to a struct of type `IndexedArray` that stores a pointer to a C-array containing
+                            the indices of the training examples and the corresponding feature values, as well as the
+                            number of elements in said array
     :param position_start:  The position that separates the covered from the uncovered examples (when only taking into
                             account the examples that are contained in the sample). This is the position to start at
     :param position_end:    The position to stop at (exclusive, must be greater than `position_start`)
@@ -577,6 +575,7 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
     :return:                The adjusted position that separates the covered from the uncovered examples with respect to
                             the examples that are not contained in the sample
     """
+    cdef IndexedValue* indexed_values = dereference(indexed_array).data
     cdef intp adjusted_position = position_start
     cdef float32 feature_value
     cdef intp r
@@ -599,22 +598,18 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
     return adjusted_position
 
 
-cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
-                                            IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
-                                            intp condition_end, Comparator condition_comparator, intp num_conditions,
-                                            uint32[::1] covered_examples_mask, uint32 covered_examples_target,
-                                            Loss loss, uint32[::1] weights):
+cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
+                                            intp condition_start, intp condition_end, Comparator condition_comparator,
+                                            intp num_conditions, uint32[::1] covered_examples_mask,
+                                            uint32 covered_examples_target, Loss loss, uint32[::1] weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
     values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the new rule.
     The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
-    :param indexed_values:          A pointer to a C-array of type `IndexedValue` that stores the indices of the
-                                    training examples that are covered by the previous rule, as well as their feature
-                                    values for the feature, the new condition corresponds to, sorted in ascending order
-                                    according to the feature values
-    :param num_indexed_values:      The number of elements in the array `indexed_values`
+    :param indexed_array:           A pointer to a struct of type `IndexedArray` that stores a pointer to the C-array to
+                                    be filtered, as well as the number of elements in said array
     :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
                                     filtered array
     :param condition_start:         The element in `indexed_values` that corresponds to the first example (inclusive)
@@ -638,6 +633,8 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
                                     that are covered by the new rule
     """
+    cdef IndexedValue* indexed_values = dereference(indexed_array).data
+    cdef intp num_indexed_values = dereference(indexed_array).num_elements
     cdef intp num_elements = condition_start - condition_end
 
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
@@ -685,16 +682,16 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
             loss.update_sub_sample(index, weight, False)
             i -= 1
 
-    cdef IndexedArray* indexed_array = dereference(indexed_array_wrapper).array
+    cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
 
-    if indexed_array == NULL:
-        indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
-        dereference(indexed_array_wrapper).array = indexed_array
+    if filtered_indexed_array == NULL:
+        filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        dereference(indexed_array_wrapper).array = filtered_indexed_array
     else:
-        free(dereference(indexed_array).data)
+        free(dereference(filtered_indexed_array).data)
 
-    dereference(indexed_array).data = filtered_array
-    dereference(indexed_array).num_elements = num_elements
+    dereference(filtered_indexed_array).data = filtered_array
+    dereference(filtered_indexed_array).num_elements = num_elements
     dereference(indexed_array_wrapper).num_conditions = num_conditions
     return updated_target
 
