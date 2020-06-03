@@ -513,7 +513,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
-        if int(self.label_sub_sampling) != -1:
+        if self.label_sub_sampling is not None:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
             name += '_label-sub-sampling-num-samples=' + str(self.label_sub_sampling_num_samples)
         if self.instance_sub_sampling is not None:
