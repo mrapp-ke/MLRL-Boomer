@@ -258,7 +258,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     first_r = num_examples - 1
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
-                    for r in range(num_examples - 1, -1, -1):
+                    for r in range(first_r, -1, -1):
                         i = indexed_values[r]
                         weight = 1 if weights is None else weights[i]
 
