@@ -94,6 +94,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef intp min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
         cdef RNG rng = RNG.__new__(RNG, random_state)
+        # The total number of labels
+        cdef intp num_labels = y.shape[1]
         # The list that contains the induced rules
         cdef list rule_list = []
         # The number of rules induced so far (starts at 1 to account for the default rule)
@@ -110,7 +112,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule
-            rule = rule_induction.induce_rule(nominal_attribute_indices, x, y, head_refinement, loss,
+            rule = rule_induction.induce_rule(nominal_attribute_indices, x, num_labels, head_refinement, loss,
                                               label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
                                               shrinkage, min_coverage, max_conditions, rng)
             rule_list.append(rule)
