@@ -565,9 +565,10 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
                                           intp condition_end, intp condition_index, Comparator condition_comparator,
                                           intp num_conditions, Loss loss, uint32[::1] weights):
     """
-    Filters an array that contains the indices of the examples that are covered by the previous rule after a new
-    condition has been added, such that the filtered array does only contain the indices of the examples that are
-    covered by the new rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
+    Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
+    values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
+    filtered array does only contain the indices and feature values of the examples that are covered by the new rule.
+    The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
     :param indexed_values:          A pointer to a C-array of type `IndexedValue` that stores the indices of the
                                     training examples that are covered by the previous rule, as well as their feature
