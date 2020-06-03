@@ -418,11 +418,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                        covered_examples_mask, covered_examples_target,
                                                                        loss, weights)
                     num_covered = dereference(best_condition_indexed_array_wrapper).num_elements
-                    covered_example_indices = array_intp(num_covered)
-
-                    for r in range(num_covered):
-                        covered_example_indices[r] = dereference(best_condition_indexed_array_wrapper).array[r].index
-
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
@@ -614,20 +609,23 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
 
     cdef IndexedValue* filtered_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
     cdef intp i = num_elements - 1
-    cdef uint32 weight
+    cdef uint32 updated_target, weight
     cdef intp r, index
 
     if condition_comparator == Comparator.GR or condition_comparator == Comparator.EQ:
+        updated_target = num_conditions
         loss.begin_instance_sub_sampling()
 
         for r in range(condition_start, condition_end, -1):
             index = indexed_values[r].index
+            covered_examples_mask[index] = num_conditions
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
             weight = 1 if weights is None else weights[index]
             loss.update_sub_sample(index, weight, False)
             i -= 1
     else:
+        updated_target = covered_examples_target
         loss.begin_instance_sub_sampling()
 
         if condition_comparator == Comparator.NEQ:
@@ -638,6 +636,10 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
                 weight = 1 if weights is None else weights[index]
                 loss.update_sub_sample(index, weight, False)
                 i -= 1
+
+        for r in range(condition_start, condition_end, -1):
+            index = indexed_values[r].index
+            covered_examples_mask[index] = num_conditions
 
         for r in range(condition_end, -1, -1):
             index = indexed_values[r].index
@@ -651,7 +653,7 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     dereference(indexed_array_wrapper).array = filtered_array
     dereference(indexed_array_wrapper).num_elements = num_elements
     dereference(indexed_array_wrapper).num_conditions = num_conditions
-    return covered_examples_target
+    return updated_target
 
 
 cdef inline void __filter_any_indices(float32[::1, :] x, IndexedValue* indexed_values, intp num_indices,
