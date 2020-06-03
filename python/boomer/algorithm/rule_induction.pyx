@@ -73,6 +73,62 @@ cdef class DenseThresholdProvider(ThresholdProvider):
         return indexed_array
 
 
+cdef class SparseThresholdProvider(ThresholdProvider):
+    """
+    Allows to access the thresholds that can potentially be used by conditions based on the feature values of all
+    training examples.
+
+    The feature matrix must be given in compressed sparse column (CSC) format.
+    """
+
+    def __cinit__(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices):
+        """
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples
+        :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                row-indices of the examples, the values in `x_data` correspond to
+        :param x_col_indices:   An array of dtype int, shape `(num_features + 1)`, representing the indices of the first
+                                element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
+                                at the last position is equal to `num_non_zero_feature_values`
+        """
+        self.x_data = x_data
+        self.x_row_indices = x_row_indices
+        self.x_col_indices = x_col_indices
+
+    cdef IndexedArray* get_thresholds(self, intp feature_index):
+        # Class members
+        cdef float32[::1] x_data = self.x_data
+        cdef intp[::1] x_row_indices = self.x_row_indices
+        cdef intp[::1] x_col_indices = self.x_col_indices
+        # The index of the first element in `x_data` and `x_row_indices` that corresponds to the given feature index
+        cdef intp start = x_col_indices[feature_index]
+        # The index of the last element in `x_data` and `x_row_indices` that corresponds to the given feature index
+        cdef intp end = x_col_indices[feature_index + 1]
+        # The number of elements to be returned
+        cdef intp num_elements = end - start
+        # The struct to be returned
+        cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        dereference(indexed_array).num_elements = num_elements
+        # The array to be returned
+        cdef IndexedValue* sorted_array = NULL
+        # Temporary variables
+        cdef intp i, j
+
+        if num_elements > 0:
+            sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+            i = 0
+
+            for j in range(start, end):
+                sorted_array[i].index = x_row_indices[j]
+                sorted_array[i].value = x_data[j]
+                i += 1
+
+            qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
+
+        dereference(indexed_array).data = sorted_array
+        return indexed_array
+
+
 cdef class RuleInduction:
     """
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
