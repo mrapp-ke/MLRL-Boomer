@@ -610,44 +610,44 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
                                     that are covered by the new rule
     """
     cdef intp num_elements = condition_start - condition_end
-    cdef intp r, first, last, index
 
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
         num_elements = num_indexed_values - num_elements
-        first = condition_end
-        last = -1
-    else:
-        first = condition_start
-        last = condition_end
 
     cdef IndexedValue* filtered_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
-
-    # Tell the loss function that a new sub-sample of examples will be selected...
-    loss.begin_instance_sub_sampling()
-
     cdef intp i = num_elements - 1
     cdef uint32 weight
+    cdef intp r, index
 
-    if condition_comparator == Comparator.NEQ:
-        for r in range(num_indexed_values - 1, condition_start, -1):
+    if condition_comparator == Comparator.GR or condition_comparator == Comparator.EQ:
+        loss.begin_instance_sub_sampling()
+
+        for r in range(condition_start, condition_end, -1):
             index = indexed_values[r].index
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
-            i -= 1
-
-            # Tell the loss function that the example at the current index is covered by the current rule...
             weight = 1 if weights is None else weights[index]
             loss.update_sub_sample(index, weight, False)
+            i -= 1
+    else:
+        loss.begin_instance_sub_sampling()
 
-    for r in range(first, last, -1):
-        index = indexed_values[r].index
-        filtered_array[i].index = index
-        filtered_array[i].value = indexed_values[r].value
-        i -= 1
+        if condition_comparator == Comparator.NEQ:
+            for r in range(num_indexed_values - 1, condition_start, -1):
+                index = indexed_values[r].index
+                filtered_array[i].index = index
+                filtered_array[i].value = indexed_values[r].value
+                weight = 1 if weights is None else weights[index]
+                loss.update_sub_sample(index, weight, False)
+                i -= 1
 
-        # Tell the loss function that the example at the current index is covered by the current rule...
-        weight = 1 if weights is None else weights[index]
-        loss.update_sub_sample(index, weight, False)
+        for r in range(condition_end, -1, -1):
+            index = indexed_values[r].index
+            filtered_array[i].index = index
+            filtered_array[i].value = indexed_values[r].value
+            weight = 1 if weights is None else weights[index]
+            loss.update_sub_sample(index, weight, False)
+            i -= 1
 
     free(dereference(indexed_array_wrapper).array)
     dereference(indexed_array_wrapper).array = filtered_array
