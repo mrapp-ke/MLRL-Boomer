@@ -120,7 +120,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # An array that is used to keep track of the indices of the training examples are covered by the current rule.
         # Each element in the array corresponds to the example at the corresponding index. If the value for an element
         # is equal to `covered_examples_target`, it is covered by the current rule, otherwise it is not.
-        cdef uint32[::1] covered_examples_mask = array_uint32(num_examples)
+        cdef uint32[::1] covered_examples_mask = array_uint32(x.shape[0])
         covered_examples_mask[:] = 0
         cdef uint32 covered_examples_target = 0
         # An array representing the indices of the examples that are covered by the rule
