@@ -281,26 +281,23 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         dereference(indexed_array_wrapper).num_conditions = 0
                         cache_local[f] = indexed_array_wrapper
 
-                    indexed_values = dereference(indexed_array_wrapper).array
+                    indexed_array = dereference(indexed_array_wrapper).array
 
-                    if indexed_values == NULL:
+                    if indexed_array == NULL:
                         indexed_array = dereference(cache_global)[f]
 
                         if indexed_array == NULL:
                             indexed_array = threshold_provider.get_thresholds(f)
                             dereference(cache_global)[f] = indexed_array
 
-                        indexed_values = dereference(indexed_array).data
-                        num_indexed_values = dereference(indexed_array).num_elements
-                    else:
-                        num_indexed_values = dereference(indexed_array_wrapper).num_elements
-
                     # Filter indices, if only a subset of the contained examples is covered...
                     if num_conditions > dereference(indexed_array_wrapper).num_conditions:
-                        __filter_any_indices(indexed_values, num_indexed_values, indexed_array_wrapper, num_conditions,
-                                             num_covered, covered_examples_mask, covered_examples_target)
-                        num_indexed_values = dereference(indexed_array_wrapper).num_elements
-                        indexed_values = dereference(indexed_array_wrapper).array
+                        __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions, num_covered,
+                                             covered_examples_mask, covered_examples_target)
+                        indexed_array = dereference(indexed_array_wrapper).array
+
+                    num_indexed_values = dereference(indexed_array).num_elements
+                    indexed_values = dereference(indexed_array).data
 
                     # Check if feature is nominal...
                     if f == next_nominal_f:
@@ -475,7 +472,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                        best_condition_comparator, num_conditions,
                                                                        covered_examples_mask, covered_examples_target,
                                                                        loss, weights)
-                    num_covered = dereference(best_condition_indexed_array_wrapper).num_elements
+                    num_covered = dereference(dereference(best_condition_indexed_array_wrapper).array).num_elements
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
@@ -526,7 +523,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
             while cache_local_iterator != cache_local.end():
                 indexed_array_wrapper = dereference(cache_local_iterator).second
-                free(dereference(indexed_array_wrapper).array)
+                indexed_array = dereference(indexed_array_wrapper).array
+
+                if indexed_array != NULL:
+                    indexed_values = dereference(indexed_array).data
+                    free(indexed_values)
+
+                free(indexed_array)
                 free(indexed_array_wrapper)
                 postincrement(cache_local_iterator)
 
@@ -686,24 +689,31 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
             loss.update_sub_sample(index, weight, False)
             i -= 1
 
-    free(dereference(indexed_array_wrapper).array)
-    dereference(indexed_array_wrapper).array = filtered_array
-    dereference(indexed_array_wrapper).num_elements = num_elements
+    cdef IndexedArray* indexed_array = dereference(indexed_array_wrapper).array
+
+    if indexed_array == NULL:
+        indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        dereference(indexed_array_wrapper).array = indexed_array
+    else:
+        free(dereference(indexed_array).data)
+
+    dereference(indexed_array).data = filtered_array
+    dereference(indexed_array).num_elements = num_elements
     dereference(indexed_array_wrapper).num_conditions = num_conditions
+    dereference(indexed_array_wrapper).num_elements = num_elements
     return updated_target
 
 
-cdef inline void __filter_any_indices(IndexedValue* indexed_values, intp num_indices,
-                                      IndexedArrayWrapper* indexed_array_wrapper, intp num_conditions, intp num_covered,
-                                      uint32[::1] covered_examples_mask, uint32 covered_examples_target):
+cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
+                                      intp num_conditions, intp num_covered, uint32[::1] covered_examples_mask,
+                                      uint32 covered_examples_target):
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the current
     rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
-    :param indexed_values:          A pointer to a C-array of type `IndexedValue` that stores the indices of training
-                                    examples, as well as their feature values for a certain feature
-    :param num_indices:             The number of elements in the array `indexed_values`
+    :param indexed_array:           A pointer to a struct of type `IndexedArray` that stores a pointer to the C-array to
+                                    be filtered, as well as the number of elements in said array
     :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
                                     filtered array
     :param num_conditions:          The total number of conditions in the current rule's body
@@ -714,14 +724,23 @@ cdef inline void __filter_any_indices(IndexedValue* indexed_values, intp num_ind
     :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that are
                                     covered by the previous rule
     """
-    cdef IndexedValue* filtered_array = dereference(indexed_array_wrapper).array
-    cdef bint must_allocate = filtered_array == NULL
+    cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
+    cdef IndexedValue* filtered_array = NULL
 
-    if must_allocate:
-        filtered_array = <IndexedValue*>malloc(num_covered * sizeof(IndexedValue))
+    if filtered_indexed_array != NULL:
+        filtered_array = dereference(filtered_indexed_array).data
 
+    cdef bint must_allocate = False
+    cdef num_indices = dereference(indexed_array).num_elements
     cdef intp i = 0
+    cdef IndexedValue* indexed_values
     cdef intp r, index
+
+    indexed_values = dereference(indexed_array).data
+
+    if filtered_array == NULL:
+        filtered_array = <IndexedValue*>malloc(num_covered * sizeof(IndexedValue))
+        must_allocate = True
 
     for r in range(num_indices):
         index = indexed_values[r].index
@@ -737,8 +756,13 @@ cdef inline void __filter_any_indices(IndexedValue* indexed_values, intp num_ind
     if not must_allocate:
         filtered_array = <IndexedValue*>realloc(filtered_array, num_covered * sizeof(IndexedValue))
 
-    dereference(indexed_array_wrapper).array = filtered_array
+    if filtered_indexed_array == NULL:
+        filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+
+    dereference(filtered_indexed_array).data = filtered_array
+    dereference(filtered_indexed_array).num_elements = num_covered
     dereference(indexed_array_wrapper).num_elements = num_covered
+    dereference(indexed_array_wrapper).array = filtered_indexed_array
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 
 
