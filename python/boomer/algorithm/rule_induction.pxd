@@ -78,6 +78,21 @@ cdef class DenseThresholdProvider(ThresholdProvider):
     cdef IndexedArray* get_thresholds(self, intp feature_index)
 
 
+cdef class SparseThresholdProvider(ThresholdProvider):
+
+    # Attributes:
+
+    cdef float32[::1] x_data
+
+    cdef intp[::1] x_row_indices
+
+    cdef intp[::1] x_col_indices
+
+    # Functions:
+
+    cdef IndexedArray* get_thresholds(self, intp feature_index)
+
+
 cdef class RuleInduction:
 
     # Functions:
