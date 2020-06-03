@@ -22,8 +22,7 @@ cdef class DifferentiableLoss(Loss):
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
 
 cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
@@ -44,8 +43,7 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
 
 cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
@@ -66,8 +64,7 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
 
 cdef inline float64 _convert_label_into_score(uint8 label):

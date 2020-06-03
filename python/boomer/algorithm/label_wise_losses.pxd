@@ -47,8 +47,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
@@ -71,8 +70,7 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
@@ -95,5 +93,4 @@ cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)

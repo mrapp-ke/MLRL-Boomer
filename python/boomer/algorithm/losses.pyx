@@ -183,23 +183,21 @@ cdef class Loss:
         """
         pass
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         """
-        Notifies the loss function that a new rule has been induced.
+        Notifies the loss function about the predictions of a new rule that has been induced.
 
-        This function must be called before learning the next rule, i.e., prior to the next invocation of the function
-        `begin_instance_sub_sampling`.
+        This function must be called for each example that is covered by the new rule before learning the next rule,
+        i.e., prior to the next invocation of the function `begin_instance_sub_sampling`.
 
         This function is supposed to update any internal state that depends on the predictions of already induced rules.
 
-        :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
-                                        of the examples that are covered by the newly induced rule, regardless of
-                                        whether they are contained in the sub-sample or not
-        :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
-                                        of the labels for which the newly induced rule predicts or None, if the rule
-                                        predicts for all labels
-        :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                        that are predicted by the newly induced rule
+        :param example_index:       The index of an example that is covered by the newly induced rule, regardless of
+                                    whether it is contained in the sub-sample or not
+        :param label_indices:       An array of dtype int, shape `(num_predicted_labels)`, representing the indices of
+                                    the labels for which the newly induced rule predicts or None, if the rule predicts
+                                    for all labels
+        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
+                                    that are predicted by the newly induced rule
         """
         pass

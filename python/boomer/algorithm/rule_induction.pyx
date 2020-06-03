@@ -443,7 +443,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     shrinkage.apply_shrinkage(predicted_scores)
 
                 # Tell the loss function that a new rule has been induced...
-                loss.apply_predictions(covered_example_indices, label_indices, predicted_scores)
+                for r in range(num_covered):
+                    i = covered_example_indices[r]
+                    loss.apply_prediction(i, label_indices, predicted_scores)
 
                 # Build and return the induced rule...
                 return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)

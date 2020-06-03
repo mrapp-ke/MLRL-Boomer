@@ -33,8 +33,7 @@ cdef class DifferentiableLoss(Loss):
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         pass
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         pass
 
 cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
@@ -65,8 +64,7 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
         # predictions...
         return self.evaluate_label_independent_predictions(uncovered)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         pass
 
 
@@ -96,6 +94,5 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
         pass
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         pass
