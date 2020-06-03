@@ -5,7 +5,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.algorithm._arrays cimport uint32, float64, array_intp, array_float32, get_index
+from boomer.algorithm._arrays cimport uint32, float64, array_uint32, array_intp, array_float32, get_index
 from boomer.algorithm.rules cimport Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
 from boomer.algorithm.head_refinement cimport HeadCandidate
 from boomer.algorithm.losses cimport Prediction
@@ -117,6 +117,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # An array representing the number of conditions per type of operator
         cdef intp[::1] num_conditions_per_comparator = array_intp(4)
         num_conditions_per_comparator[:] = 0
+        # An array that is used to keep track of the indices of the training examples are covered by the current rule.
+        # Each element in the array corresponds to the example at the corresponding index. If the value for an element
+        # is equal to `covered_examples_target`, it is covered by the current rule, otherwise it is not.
+        cdef uint32[::1] covered_examples_mask = array_uint32(num_examples)
+        covered_examples_mask[:] = 0
+        cdef uint32 covered_examples_target = 0
         # An array representing the indices of the examples that are covered by the rule
         cdef intp[::1] covered_example_indices
 
@@ -405,10 +411,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                             best_condition_previous, best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
-                    __filter_current_indices(best_condition_indexed_values, num_examples,
-                                             best_condition_indexed_array_wrapper, best_condition_start,
-                                             best_condition_end, best_condition_feature_index,
-                                             best_condition_comparator, num_conditions, loss, weights)
+                    covered_examples_target = __filter_current_indices(best_condition_indexed_values, num_examples,
+                                                                       best_condition_indexed_array_wrapper,
+                                                                       best_condition_start, best_condition_end,
+                                                                       best_condition_feature_index,
+                                                                       best_condition_comparator, num_conditions,
+                                                                       covered_examples_mask, covered_examples_target,
+                                                                       loss, weights)
                     num_covered = dereference(best_condition_indexed_array_wrapper).num_elements
                     covered_example_indices = array_intp(num_covered)
 
@@ -560,10 +569,11 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
     return adjusted_position
 
 
-cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
-                                          IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
-                                          intp condition_end, intp condition_index, Comparator condition_comparator,
-                                          intp num_conditions, Loss loss, uint32[::1] weights):
+cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
+                                            IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
+                                            intp condition_end, intp condition_index, Comparator condition_comparator,
+                                            intp num_conditions, uint32[::1] covered_examples_mask,
+                                            uint32 covered_examples_target, Loss loss, uint32[::1] weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
     values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
@@ -586,11 +596,18 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
     :param condition_index:         The index of the feature, the new condition corresponds to
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
+    :param covered_examples_mask:   An array of dtype uint, shape `(num_examples)` that is used to keep track of the
+                                    indices of the examples that are covered by the previous rule. It will be updated by
+                                    this function
+    :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that are
+                                    covered by the previous rule
     :param loss:                    The loss function to be notified about the examples that must be considered when
                                     searching for the next refinement, i.e., the examples that are covered by the new
                                     rule
     :param weights:                 An array of dtype uint, shape `(num_examples)`, representing the weights of the
                                     training examples
+    :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
+                                    that are covered by the new rule
     """
     cdef intp num_elements = condition_start - condition_end
     cdef intp r, first, last, index
@@ -636,6 +653,7 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
     dereference(indexed_array_wrapper).array = filtered_array
     dereference(indexed_array_wrapper).num_elements = num_elements
     dereference(indexed_array_wrapper).num_conditions = num_conditions
+    return covered_examples_target
 
 
 cdef inline void __filter_any_indices(float32[::1, :] x, IndexedValue* indexed_values, intp num_indices,
