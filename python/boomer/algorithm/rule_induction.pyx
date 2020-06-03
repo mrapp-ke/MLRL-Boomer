@@ -277,7 +277,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if indexed_array_wrapper == NULL:
                         indexed_array_wrapper = <IndexedArrayWrapper*>malloc(sizeof(IndexedArrayWrapper))
                         dereference(indexed_array_wrapper).array = NULL
-                        dereference(indexed_array_wrapper).num_elements = 0
                         dereference(indexed_array_wrapper).num_conditions = 0
                         cache_local[f] = indexed_array_wrapper
 
@@ -700,7 +699,6 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     dereference(indexed_array).data = filtered_array
     dereference(indexed_array).num_elements = num_elements
     dereference(indexed_array_wrapper).num_conditions = num_conditions
-    dereference(indexed_array_wrapper).num_elements = num_elements
     return updated_target
 
 
@@ -761,7 +759,6 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
 
     dereference(filtered_indexed_array).data = filtered_array
     dereference(filtered_indexed_array).num_elements = num_covered
-    dereference(indexed_array_wrapper).num_elements = num_covered
     dereference(indexed_array_wrapper).array = filtered_indexed_array
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 
