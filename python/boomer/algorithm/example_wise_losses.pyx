@@ -181,7 +181,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # The number of gradients/hessians...
         cdef intp num_elements = gradients.shape[1]
         # The given weight multiplied by 1 or -1, depending on the argument `remove`
-        cdef float64 signed_weight = -weight if remove else weight
+        cdef float64 signed_weight = -<float64>weight if remove else weight
         # Temporary variables
         cdef intp c
 
