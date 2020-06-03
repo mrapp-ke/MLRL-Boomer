@@ -238,8 +238,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Filter indices, if only a subset of the contained examples is covered...
                     if num_conditions > dereference(indexed_array_wrapper).num_conditions:
-                        __filter_any_indices(x, indexed_values, num_examples, indexed_array_wrapper, conditions,
-                                             num_conditions, num_covered)
+                        __filter_any_indices(indexed_values, num_examples, indexed_array_wrapper, num_conditions,
+                                             num_covered, covered_examples_mask, covered_examples_target)
                         indexed_values = dereference(indexed_array_wrapper).array
                         num_examples = dereference(indexed_array_wrapper).num_elements
 
@@ -654,25 +654,26 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
     return updated_target
 
 
-cdef inline void __filter_any_indices(float32[::1, :] x, IndexedValue* indexed_values, intp num_indices,
-                                      IndexedArrayWrapper* indexed_array_wrapper, list[Condition] conditions,
-                                      intp num_conditions, intp num_covered):
+cdef inline void __filter_any_indices(IndexedValue* indexed_values, intp num_indices,
+                                      IndexedArrayWrapper* indexed_array_wrapper, intp num_conditions, intp num_covered,
+                                      uint32[::1] covered_examples_mask, uint32 covered_examples_target):
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the current
     rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
-    :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
-                                    features of the training examples
     :param indexed_values:          A pointer to a C-array of type `IndexedValue` that stores the indices of training
                                     examples, as well as their feature values for a certain feature
     :param num_indices:             The number of elements in the array `indexed_values`
     :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
                                     filtered array
-    :param conditions:              A list that contains the conditions that should be taken into account for filtering
-                                    the indices
-    :param num_conditions:          The number of conditions in the list `conditions`
+    :param num_conditions:          The total number of conditions in the current rule's body
     :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
+    :param covered_examples_mask:   An array of dtype uint, shape `(num_examples)` that is used to keep track of the
+                                    indices of the examples that are covered by the previous rule. It will be updated by
+                                    this function
+    :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that are
+                                    covered by the previous rule
     """
     cdef IndexedValue* filtered_array = dereference(indexed_array_wrapper).array
     cdef bint must_allocate = filtered_array == NULL
@@ -680,38 +681,13 @@ cdef inline void __filter_any_indices(float32[::1, :] x, IndexedValue* indexed_v
     if must_allocate:
         filtered_array = <IndexedValue*>malloc(num_covered * sizeof(IndexedValue))
 
-    cdef intp num_untested_conditions = num_conditions - dereference(indexed_array_wrapper).num_conditions
     cdef intp i = 0
-    cdef list[Condition].reverse_iterator iterator
-    cdef Condition condition
-    cdef Comparator condition_comparator
-    cdef float32 condition_threshold, feature_value
-    cdef intp condition_index, c, r, index
-    cdef bint covered
+    cdef intp r, index
 
     for r in range(num_indices):
         index = indexed_values[r].index
-        covered = True
 
-        # Traverse conditions in reverse order...
-        iterator = conditions.rbegin()
-        c = 0
-
-        while c < num_untested_conditions:
-            condition = dereference(iterator)
-            condition_threshold = condition.threshold
-            condition_comparator = condition.comparator
-            condition_index = condition.feature_index
-            feature_value = x[index, condition_index]
-
-            if not test_condition(condition_threshold, condition_comparator, feature_value):
-                covered = False
-                break
-
-            c += 1
-            postincrement(iterator)
-
-        if covered:
+        if covered_examples_mask[index] == covered_examples_target:
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
             i += 1
