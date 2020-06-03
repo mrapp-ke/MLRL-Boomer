@@ -65,12 +65,13 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         confusion_matrices_default[:, :] = 0
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef intp num_labels = minority_labels.shape[0]
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64 signed_weight = -weight if remove else weight
         cdef intp c
         cdef uint8 true_label, predicted_label
 
@@ -81,14 +82,14 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
                 if true_label == 0:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _IN] += weight
+                        confusion_matrices_default[c, _IN] += signed_weight
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _IP] += weight
+                        confusion_matrices_default[c, _IP] += signed_weight
                 elif true_label == 1:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _RN] += weight
+                        confusion_matrices_default[c, _RN] += signed_weight
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _RP] += weight
+                        confusion_matrices_default[c, _RP] += signed_weight
 
     cdef void begin_search(self, intp[::1] label_indices):
         cdef LabelIndependentPrediction prediction = self.prediction
