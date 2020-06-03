@@ -71,7 +71,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef intp num_labels = minority_labels.shape[0]
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        cdef float64 signed_weight = -weight if remove else weight
+        cdef float64 signed_weight = -<float64>weight if remove else weight
         cdef intp c
         cdef uint8 true_label, predicted_label
 
