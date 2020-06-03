@@ -52,16 +52,35 @@ cdef struct Condition:
     float32 threshold
 
 
+cdef class ThresholdProvider:
+
+    # Functions:
+
+    cdef IndexedValue* get_thresholds(self, intp feature_index)
+
+
+cdef class DenseThresholdProvider(ThresholdProvider):
+
+    # Attributes:
+
+    cdef float32[::1, :] x
+
+    # Functions:
+
+    cdef IndexedValue* get_thresholds(self, intp feature_index)
+
+
 cdef class RuleInduction:
 
     # Functions:
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng)
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
+                          Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp min_coverage, intp max_conditions, RNG rng)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
@@ -74,7 +93,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng)
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
+                          Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp min_coverage, intp max_conditions, RNG rng)

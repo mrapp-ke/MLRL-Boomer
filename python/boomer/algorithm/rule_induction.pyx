@@ -20,6 +20,55 @@ from cython.operator cimport dereference, postincrement
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
+cdef class ThresholdProvider:
+    """
+    A base class for all classes that allow to access the thresholds that can potentially be used by conditions.
+    """
+
+    cdef IndexedValue* get_thresholds(self, intp feature_index):
+        """
+        Creates and returns a pointer to a C-array of type `IndexedValue` that stores the indices of training examples,
+        as well as their feature values, for a specific feature, sorted in ascending order by the feature values.
+
+        :param feature_index:   The index of the feature
+        :return:                A pointer to a C-array of type `IndexedValue`
+        """
+        pass
+
+
+cdef class DenseThresholdProvider(ThresholdProvider):
+    """
+    Allows to access the thresholds that can potentially be used by conditions based on the feature values of all
+    training examples.
+
+    The feature matrix must be given as a dense Fortran-contiguous array.
+    """
+
+    def __cinit__(self, float32[::1, :] x):
+        """
+        :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
+                  training examples
+        """
+        self.x = x
+
+    cdef IndexedValue* get_thresholds(self, intp feature_index):
+        # Class members
+        cdef float32[::1, :] x = self.x
+        # The number of elements to be returned
+        cdef intp num_elements = x.shape[0]
+        # The array to be returned
+        cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+        # Temporary variables
+        cdef intp i
+
+        for i in range(num_elements):
+            sorted_array[i].index = i
+            sorted_array[i].value = x[i, feature_index]
+
+        qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
+        return sorted_array
+
+
 cdef class RuleInduction:
     """
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
@@ -36,10 +85,11 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
+                          Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp min_coverage, intp max_conditions, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -47,8 +97,10 @@ cdef class RuleInduction:
         :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
                                             indices of all nominal features (in ascending order) or None, if no nominal
                                             features are available
-        :param x:                           An array of dtype float, shape `(num_examples, num_features)`, representing
-                                            the features of the training examples
+        :param threshold_provider:          A `ThresholdProvider` that allows to access the thresholds that can
+                                            potentially be used by conditions
+        :param num_examples:                The total number of training examples
+        :param num_features:                The total number of features
         :param num_labels:                  The total number of labels
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
@@ -103,10 +155,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Rule rule = Rule.__new__(Rule, body, head)
         return rule
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
+                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
+                          Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
+                          intp min_coverage, intp max_conditions, RNG rng):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -119,7 +172,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # An array that is used to keep track of the indices of the training examples are covered by the current rule.
         # Each element in the array corresponds to the example at the corresponding index. If the value for an element
         # is equal to `covered_examples_target`, it is covered by the current rule, otherwise it is not.
-        cdef uint32[::1] covered_examples_mask = array_uint32(x.shape[0])
+        cdef uint32[::1] covered_examples_mask = array_uint32(num_examples)
         covered_examples_mask[:] = 0
         cdef uint32 covered_examples_target = 0
 
@@ -139,11 +192,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
 
-        cdef intp num_examples = x.shape[0]
-        cdef intp num_covered = num_examples
+        cdef intp num_indexed_values = num_examples
+        cdef intp num_covered = num_indexed_values
 
         # Variables for specifying the features that should be used for finding the best refinement
-        cdef intp num_features = x.shape[1]
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
         cdef intp next_nominal_f = -1
         cdef intp[::1] feature_indices
@@ -226,21 +278,21 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     indexed_values = dereference(indexed_array_wrapper).array
 
                     if indexed_values == NULL:
-                        num_examples = x.shape[0]
+                        num_indexed_values = num_examples
                         indexed_values = dereference(cache_global)[f]
 
                         if indexed_values == NULL:
-                            indexed_values = __argsort_by_feature_values(x[:, f])
+                            indexed_values = threshold_provider.get_thresholds(f)
                             dereference(cache_global)[f] = indexed_values
                     else:
-                        num_examples = dereference(indexed_array_wrapper).num_elements
+                        num_indexed_values = dereference(indexed_array_wrapper).num_elements
 
                     # Filter indices, if only a subset of the contained examples is covered...
                     if num_conditions > dereference(indexed_array_wrapper).num_conditions:
-                        __filter_any_indices(indexed_values, num_examples, indexed_array_wrapper, num_conditions,
+                        __filter_any_indices(indexed_values, num_indexed_values, indexed_array_wrapper, num_conditions,
                                              num_covered, covered_examples_mask, covered_examples_target)
+                        num_indexed_values = dereference(indexed_array_wrapper).num_elements
                         indexed_values = dereference(indexed_array_wrapper).array
-                        num_examples = dereference(indexed_array_wrapper).num_elements
 
                     # Check if feature is nominal...
                     if f == next_nominal_f:
@@ -258,7 +310,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     loss.begin_search(label_indices)
                     sum_of_weights = 0
                     accumulated_sum_of_weights = 0
-                    first_r = num_examples - 1
+                    first_r = num_indexed_values - 1
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
                     for r in range(first_r, -1, -1):
@@ -408,7 +460,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                             best_condition_previous, best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
-                    covered_examples_target = __filter_current_indices(best_condition_indexed_values, num_examples,
+                    covered_examples_target = __filter_current_indices(best_condition_indexed_values,
+                                                                       num_indexed_values,
                                                                        best_condition_indexed_array_wrapper,
                                                                        best_condition_start, best_condition_end,
                                                                        best_condition_comparator, num_conditions,
@@ -441,7 +494,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # entire training data...
                     loss.begin_search(label_indices)
 
-                    for r in range(x.shape[0]):
+                    for r in range(num_examples):
                         if covered_examples_mask[r] == covered_examples_target:
                             loss.update_search(r, 1)
 
@@ -453,7 +506,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     shrinkage.apply_shrinkage(predicted_scores)
 
                 # Tell the loss function that a new rule has been induced...
-                for r in range(x.shape[0]):
+                for r in range(num_examples):
                     if covered_examples_mask[r] == covered_examples_target:
                         loss.apply_prediction(r, label_indices, predicted_scores)
 
@@ -468,27 +521,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 free(dereference(indexed_array_wrapper).array)
                 free(indexed_array_wrapper)
                 postincrement(cache_local_iterator)
-
-
-cdef inline IndexedValue* __argsort_by_feature_values(float32[::1] feature_values):
-    """
-    Sorts the indices of the training examples in ascending order of their values for a certain feature.
-
-    :param feature_values:  An array of dtype float, shape `(num_examples)`, representing the values of the training
-                            examples for a certain feature
-    :return:                A pointer to a C-array of type intp, representing the sorted indices of the training
-                            examples
-    """
-    cdef intp num_values = feature_values.shape[0]
-    cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
-    cdef intp i
-
-    for i in range(num_values):
-        sorted_array[i].index = i
-        sorted_array[i].value = feature_values[i]
-
-    qsort(sorted_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
-    return sorted_array
 
 
 cdef int __compare_indexed_value(const void* a, const void* b) nogil:
