@@ -21,13 +21,13 @@ cdef struct IndexedValue:
 
 
 """
-A struct that contains a pointer to a C-array of type intp, representing the indices of the training examples that are
-covered by a rule. The attribute `num_elements` specifies how many elements the array contains. The attribute
-`num_conditions` specifies how many conditions the rule contained when the struct was updated for the last time. It may
-be used to check if the array is still valid or must be updated.
+A struct that contains a pointer to a C-array of type `IndexedValue`, representing the indices and feature values of the
+training examples that are covered by a rule. The attribute `num_elements` specifies how many elements the array
+contains. The attribute `num_conditions` specifies how many conditions the rule contained when the struct was updated
+for the last time. It may be used to check if the array is still valid or must be updated.
 """
 cdef struct IndexedArrayWrapper:
-    intp* array
+    IndexedValue* array
     intp num_elements
     intp num_conditions
 
@@ -68,7 +68,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef map[intp, intp*]* cache_global
+    cdef map[intp, IndexedValue*]* cache_global
 
     # Functions:
 
