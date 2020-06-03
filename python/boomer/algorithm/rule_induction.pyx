@@ -560,7 +560,7 @@ cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_star
     return adjusted_position
 
 
-cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num_indices,
+cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num_indexed_values,
                                           IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
                                           intp condition_end, intp condition_index, Comparator condition_comparator,
                                           intp num_conditions, Loss loss, uint32[::1] weights):
@@ -573,7 +573,7 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
                                     training examples that are covered by the previous rule, as well as their feature
                                     values for the feature, the new condition corresponds to, sorted in ascending order
                                     according to the feature values
-    :param num_indices:             The number of elements in the array `indexed_values`
+    :param num_indexed_values:      The number of elements in the array `indexed_values`
     :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
                                     filtered array
     :param condition_start:         The element in `indexed_values` that corresponds to the first example (inclusive)
@@ -591,30 +591,30 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
     :param weights:                 An array of dtype uint, shape `(num_examples)`, representing the weights of the
                                     training examples
     """
-    cdef intp num_covered = condition_start - condition_end
+    cdef intp num_elements = condition_start - condition_end
     cdef intp r, first, last, index
 
     if condition_comparator == Comparator.LEQ or condition_comparator == Comparator.NEQ:
-        num_covered = num_indices - num_covered
+        num_elements = num_indexed_values - num_elements
         first = condition_end
         last = -1
     else:
         first = condition_start
         last = condition_end
 
-    cdef IndexedValue* filtered_indices_array = <IndexedValue*>malloc(num_covered * sizeof(IndexedValue))
+    cdef IndexedValue* filtered_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
 
     # Tell the loss function that a new sub-sample of examples will be selected...
     loss.begin_instance_sub_sampling()
 
-    cdef intp i = num_covered - 1
+    cdef intp i = num_elements - 1
     cdef uint32 weight
 
     if condition_comparator == Comparator.NEQ:
-        for r in range(num_indices - 1, condition_start, -1):
+        for r in range(num_indexed_values - 1, condition_start, -1):
             index = indexed_values[r].index
-            filtered_indices_array[i].index = index
-            filtered_indices_array[i].value = indexed_values[r].value
+            filtered_array[i].index = index
+            filtered_array[i].value = indexed_values[r].value
             i -= 1
 
             # Tell the loss function that the example at the current index is covered by the current rule...
@@ -623,8 +623,8 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
 
     for r in range(first, last, -1):
         index = indexed_values[r].index
-        filtered_indices_array[i].index = index
-        filtered_indices_array[i].value = indexed_values[r].value
+        filtered_array[i].index = index
+        filtered_array[i].value = indexed_values[r].value
         i -= 1
 
         # Tell the loss function that the example at the current index is covered by the current rule...
@@ -632,8 +632,8 @@ cdef inline void __filter_current_indices(IndexedValue* indexed_values, intp num
         loss.update_sub_sample(index, weight, False)
 
     free(dereference(indexed_array_wrapper).array)
-    dereference(indexed_array_wrapper).array = filtered_indices_array
-    dereference(indexed_array_wrapper).num_elements = num_covered
+    dereference(indexed_array_wrapper).array = filtered_array
+    dereference(indexed_array_wrapper).num_elements = num_elements
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 
 
