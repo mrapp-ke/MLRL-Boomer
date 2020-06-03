@@ -271,46 +271,35 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
         return prediction
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                           float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1, :] expected_scores = self.expected_scores
         cdef float64[::1, :] current_scores = self.current_scores
-        # The number of covered examples
-        cdef intp num_covered = covered_example_indices.shape[0]
         # The number of predicted labels
         cdef intp num_labels = predicted_scores.shape[0]
         # Temporary variables
-        cdef float64 predicted_score, expected_score, current_score, tmp
-        cdef intp c, l, r, i
+        cdef float64 predicted_score, expected_score, current_score
+        cdef intp c, l
 
         # Only the labels that are predicted by the new rule must be considered...
         for c in range(num_labels):
             l = get_index(c, label_indices)
             predicted_score = predicted_scores[c]
 
-            # Only the examples that are covered by the new rule must be considered...
-            for r in range(num_covered):
-                i = covered_example_indices[r]
+            # Retrieve the expected score for the current example and label...
+            expected_score = expected_scores[example_index, l]
 
-                # Retrieve the expected score for the current example and label...
-                expected_score = expected_scores[i, l]
+            # Update the score that is currently predicted for the current example and label...
+            current_score = current_scores[example_index, l] + predicted_score
+            current_scores[example_index, l] = current_score
 
-                # Update the score that is currently predicted for the current example and label...
-                current_score = current_scores[i, l] + predicted_score
-                current_scores[i, l] = current_score
+            # Update the gradient for the current example and label...
+            gradients[example_index, l] = self._gradient(expected_score, current_score)
 
-                # Update the gradient for the current example and label...
-                tmp = gradients[i, l]
-                tmp = self._gradient(expected_score, current_score)
-                gradients[i, l] = tmp
-
-                # Update the hessian for the current example and label...
-                tmp = hessians[i, l]
-                tmp = self._hessian(expected_score, current_score)
-                hessians[i, l] = tmp
+            # Update the hessian for the current example and label...
+            hessians[example_index, l] = self._hessian(expected_score, current_score)
 
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
