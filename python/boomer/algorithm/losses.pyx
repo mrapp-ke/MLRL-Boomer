@@ -156,12 +156,18 @@ cdef class Loss:
         """
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
-        been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
-        is considered to cover all examples that belong to the difference between the examples that have been provided
-        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
+        been provided so far via the function `update_search`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
+        between the examples that have been provided via the function `update_sub_sample` and the examples that have
+        been provided via the function `update_search`.
+
+        If the argument `accumulated` is 1, all examples that have been provided since the last call to the function
+        `begin_search` are taken into account even if the function `reset_search` has been called before. If the latter
+        has not been invoked, the argument does not have any effect.
 
         The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
         be predicted for an individual label is calculated independently from the other labels, i.e., in case of a
@@ -172,17 +178,26 @@ cdef class Loss:
                             1, if the rule covers all examples that belong to the difference between the examples that
                             have been provided via the function `update_sub_sample` and the examples that have been
                             provided via the function `update_search`
+        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
+                            since the function `reset_search` has been called for the last time, 1, if the rule covers
+                            all examples that have been provided since the last call to the function `begin_search`
         :return:            A `LabelIndependentPrediction` that stores the scores to be predicted by the rule for each
                             considered label, as well as the corresponding quality scores
         """
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
-        been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
-        is considered to cover all examples that belong to the difference between the examples that have been provided
-        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
+        been provided so far via the function `update_search`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
+        between the examples that have been provided via the function `update_sub_sample` and the examples that have
+        been provided via the function `update_search`.
+
+        If the argument `accumulated` is 1, all examples that have been provided since the last call to the function
+        `begin_search` are taken into account even if the function `reset_search` has been called before. If the latter
+        has not been invoked, the argument does not have any effect.
 
         The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
         be predicted for an individual label is calculated with respect to the predictions for the other labels. In case
@@ -195,6 +210,9 @@ cdef class Loss:
                             1, if the rule covers all examples that belong to the difference between the examples that
                             have been provided via the function `update_sub_sample` and the examples that have been
                             provided via the function `update_search`
+        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
+                            since the function `reset_search` has been called for the last time, 1, if the rule covers
+                            all examples that have been provided since the last call to the function `begin_search`
         :return:            A `Prediction` that stores the optimal scores to be predicted by the rule for each
                             considered label, as well as its overall quality score
         """

@@ -30,10 +30,10 @@ cdef class CoverageLoss(Loss):
     cdef void reset_search(self):
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
         pass
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
@@ -62,13 +62,13 @@ cdef class DecomposableCoverageLoss(CoverageLoss):
     cdef void reset_search(self):
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
         # In case of a decomposable loss, the label-dependent predictions are the same as the label-independent
         # predictions...
-        return self.evaluate_label_independent_predictions(uncovered)
+        return self.evaluate_label_independent_predictions(uncovered, accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         pass

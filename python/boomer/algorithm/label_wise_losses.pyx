@@ -258,14 +258,14 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
                 accumulated_sums_of_hessians[c] += sums_of_hessians[c]
                 sums_of_hessians[c] = 0
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of labels considered by the current search
         cdef intp num_labels = sums_of_gradients.shape[0]
         # The overall quality score, i.e., the sum of the quality scores for each label plus the L2 regularization term
