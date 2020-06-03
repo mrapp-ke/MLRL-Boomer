@@ -197,9 +197,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedValue* indexed_values
-
-        cdef intp num_indexed_values = num_examples
-        cdef intp num_covered = num_indexed_values
+        cdef intp num_indexed_values
 
         # Variables for specifying the features that should be used for finding the best refinement
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
@@ -291,7 +289,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Filter indices, if only a subset of the contained examples is covered...
                     if num_conditions > dereference(indexed_array_wrapper).num_conditions:
-                        __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions, num_covered,
+                        __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions,
                                              covered_examples_mask, covered_examples_target)
                         indexed_array = dereference(indexed_array_wrapper).array
 
@@ -471,7 +469,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                        best_condition_comparator, num_conditions,
                                                                        covered_examples_mask, covered_examples_target,
                                                                        loss, weights)
-                    num_covered = dereference(dereference(best_condition_indexed_array_wrapper).array).num_elements
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
@@ -703,7 +700,7 @@ cdef inline uint32 __filter_current_indices(IndexedValue* indexed_values, intp n
 
 
 cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
-                                      intp num_conditions, intp num_covered, uint32[::1] covered_examples_mask,
+                                      intp num_conditions, uint32[::1] covered_examples_mask,
                                       uint32 covered_examples_target):
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
@@ -715,7 +712,6 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
     :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
                                     filtered array
     :param num_conditions:          The total number of conditions in the current rule's body
-    :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
     :param covered_examples_mask:   An array of dtype uint, shape `(num_examples)` that is used to keep track of the
                                     indices of the examples that are covered by the previous rule. It will be updated by
                                     this function
@@ -728,37 +724,36 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
     if filtered_indexed_array != NULL:
         filtered_array = dereference(filtered_indexed_array).data
 
-    cdef bint must_allocate = False
-    cdef num_indices = dereference(indexed_array).num_elements
+    cdef intp max_elements = dereference(indexed_array).num_elements
     cdef intp i = 0
     cdef IndexedValue* indexed_values
     cdef intp r, index
 
-    indexed_values = dereference(indexed_array).data
+    if max_elements > 0:
+        indexed_values = dereference(indexed_array).data
 
-    if filtered_array == NULL:
-        filtered_array = <IndexedValue*>malloc(num_covered * sizeof(IndexedValue))
-        must_allocate = True
+        if filtered_array == NULL:
+            filtered_array = <IndexedValue*>malloc(max_elements * sizeof(IndexedValue))
 
-    for r in range(num_indices):
-        index = indexed_values[r].index
+        for r in range(max_elements):
+            index = indexed_values[r].index
 
-        if covered_examples_mask[index] == covered_examples_target:
-            filtered_array[i].index = index
-            filtered_array[i].value = indexed_values[r].value
-            i += 1
+            if covered_examples_mask[index] == covered_examples_target:
+                filtered_array[i].index = index
+                filtered_array[i].value = indexed_values[r].value
+                i += 1
 
-            if i >= num_covered:
-                break
-
-    if not must_allocate:
-        filtered_array = <IndexedValue*>realloc(filtered_array, num_covered * sizeof(IndexedValue))
+    if i == 0:
+        free(filtered_array)
+        filtered_array = NULL
+    elif i < max_elements:
+        filtered_array = <IndexedValue*>realloc(filtered_array, i * sizeof(IndexedValue))
 
     if filtered_indexed_array == NULL:
         filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
 
     dereference(filtered_indexed_array).data = filtered_array
-    dereference(filtered_indexed_array).num_elements = num_covered
+    dereference(filtered_indexed_array).num_elements = i
     dereference(indexed_array_wrapper).array = filtered_indexed_array
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 
