@@ -658,9 +658,9 @@ cdef inline void __filter_any_indices(float32[::1, :] x, IndexedValue* indexed_v
                                       IndexedArrayWrapper* indexed_array_wrapper, list[Condition] conditions,
                                       intp num_conditions, intp num_covered):
     """
-    Filters an array that contains the indices of examples with respect to one or several conditions, such that the
-    filtered array does only contain the indices of the examples that satisfy the conditions. The filtered array is
-    stored in a given struct of type `IndexedArrayWrapper`.
+    Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
+    filtered array does only contain the indices and feature values of the examples that are covered by the current
+    rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
     :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
                                     features of the training examples
