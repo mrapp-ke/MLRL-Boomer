@@ -132,10 +132,27 @@ cdef class Loss:
         This function is supposed to update any internal state that relates to the examples that are covered current
         condition, i.e., to compute and store local information that is required by the other functions that will be
         called later, e.g. statistics about the ground truth labels of the covered examples. Any information computed by
-        this function is expected to be reset when invoking the function `begin_search` for the next time.
+        this function is expected to be reset when invoking the function `begin_search` or `reset_search` for the next
+        time.
 
         :param example_index:   The index of the covered example
         :param weight:          The weight of the covered example
+        """
+        pass
+
+    cdef void reset_search(self):
+        """
+        Resets the internal state that has been updated by preceding calls to the `update_search` function to the state
+        after the `begin_search` function was called for the last time. Unlike a call to the `begin_search` function,
+        which has the same effect, the current state is not purged entirely, but it is cached and made available for use
+        by the functions `evaluate_label_dependent_predictions` and `evaluate_label_independent_predictions` (if the
+        function argument `accumulated` is set accordingly).
+
+        The information that is cached by this function is expected to be reset when the function `begin_search` is
+        called for the next time. Before that, this function may be invoked multiple times (with one or several calls to
+        `update_search` in between), which is supposed to update the previously cached state by accumulating the new
+        one, i.e., when calling `begin_search` for the next time, the accumulated cached state should be the same as if
+        `reset_search` would not have been called at all.
         """
         pass
 

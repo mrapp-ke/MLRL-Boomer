@@ -329,7 +329,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 # Reset the loss function in case of a nominal feature, as the previous examples will
                                 # not be covered by the next condition...
                                 if nominal:
-                                    loss.begin_search(label_indices)
+                                    loss.reset_search()
                                     sum_of_weights = 0
                                     first_r = r
 

@@ -112,6 +112,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
             prediction.quality_scores = quality_scores
 
         confusion_matrices_covered[:, :] = 0
+        self.accumulated_confusion_matrices_covered = None
         self.label_indices = label_indices
 
     cdef void update_search(self, intp example_index, uint32 weight):
@@ -140,6 +141,36 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                         confusion_matrices_covered[c, _RN] += weight
                     elif predicted_label == 1:
                         confusion_matrices_covered[c, _RP] += weight
+
+    cdef void reset_search(self):
+        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef intp num_labels = confusion_matrices_covered.shape[0]
+        cdef float64[::1, :] accumulated_confusion_matrices_covered = self.accumulated_confusion_matrices_covered
+        cdef intp c
+
+        if accumulated_confusion_matrices_covered is None:
+            accumulated_confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
+            self.accumulated_confusion_matrices_covered = accumulated_confusion_matrices_covered
+
+            for c in range(num_labels):
+                accumulated_confusion_matrices_covered[c, _IN] = confusion_matrices_covered[c, _IN]
+                confusion_matrices_covered[c, _IN] = 0
+                accumulated_confusion_matrices_covered[c, _IP] = confusion_matrices_covered[c, _IP]
+                confusion_matrices_covered[c, _IP] = 0
+                accumulated_confusion_matrices_covered[c, _RN] = confusion_matrices_covered[c, _RN]
+                confusion_matrices_covered[c, _RN] = 0
+                accumulated_confusion_matrices_covered[c, _RP] = confusion_matrices_covered[c, _RP]
+                confusion_matrices_covered[c, _RP] = 0
+        else:
+            for c in range(num_labels):
+                accumulated_confusion_matrices_covered[c, _IN] += confusion_matrices_covered[c, _IN]
+                confusion_matrices_covered[c, _IN] = 0
+                accumulated_confusion_matrices_covered[c, _IP] += confusion_matrices_covered[c, _IP]
+                confusion_matrices_covered[c, _IP] = 0
+                accumulated_confusion_matrices_covered[c, _RN] += confusion_matrices_covered[c, _RN]
+                confusion_matrices_covered[c, _RN] = 0
+                accumulated_confusion_matrices_covered[c, _RP] += confusion_matrices_covered[c, _RP]
+                confusion_matrices_covered[c, _RP] = 0
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         cdef LabelIndependentPrediction prediction = self.prediction

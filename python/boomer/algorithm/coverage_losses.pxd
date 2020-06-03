@@ -20,6 +20,8 @@ cdef class CoverageLoss(Loss):
 
     cdef void update_search(self, intp example_index, uint32 weight)
 
+    cdef void reset_search(self)
+
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
 
     cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered)
@@ -40,6 +42,8 @@ cdef class DecomposableCoverageLoss(CoverageLoss):
     cdef void begin_search(self, intp[::1] label_indices)
 
     cdef void update_search(self, intp example_index, uint32 weight)
+
+    cdef void reset_search(self)
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
 

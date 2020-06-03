@@ -22,6 +22,8 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
     cdef float64[::1, :] confusion_matrices_covered
 
+    cdef float64[::1, :] accumulated_confusion_matrices_covered
+
     cdef intp[::1] label_indices
 
     # Functions:
@@ -35,6 +37,8 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
     cdef void begin_search(self, intp[::1] label_indices)
 
     cdef void update_search(self, intp example_index, uint32 weight)
+
+    cdef void reset_search(self)
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
 
