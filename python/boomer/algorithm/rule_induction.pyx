@@ -401,9 +401,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_condition_end` and therefore must be adjusted...
                     if weights is not None and best_condition_previous - best_condition_end > 1:
-                        best_condition_end = __adjust_split(x, best_condition_indexed_values, best_condition_end,
-                                                            best_condition_previous, best_condition_feature_index,
-                                                            best_condition_threshold)
+                        best_condition_end = __adjust_split(best_condition_indexed_values, best_condition_end,
+                                                            best_condition_previous, best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
                     __filter_current_indices(best_condition_indexed_values, num_examples,
@@ -521,36 +520,32 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline intp __adjust_split(float32[::1, :] x, IndexedValue* indexed_values, intp position_start, intp position_end,
-                                intp feature_index, float32 threshold):
+cdef inline intp __adjust_split(IndexedValue* indexed_values, intp position_start, intp position_end,
+                                float32 threshold):
     """
     Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
     not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
     the examples in ascending order until the next example that is contained in the current sub-sample is encountered,
     to see if they satisfy the new condition or not.
 
-    :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features of
-                            the training examples
     :param indexed_values:  A pointer to a C-array of type `IndexedValue` that stores the indices of the training
                             examples, as well as the corresponding feature values, sorted in ascending order according
                             to the feature values
     :param position_start:  The position that separates the covered from the uncovered examples (when only taking into
                             account the examples that are contained in the sample). This is the position to start at
     :param position_end:    The position to stop at (exclusive, must be greater than `position_start`)
-    :param feature_index:   The index of the feature, the condition corresponds to
     :param threshold:       The threshold of the condition
     :return:                The adjusted position that separates the covered from the uncovered examples with respect to
                             the examples that are not contained in the sample
     """
     cdef intp adjusted_position = position_start
     cdef float32 feature_value
-    cdef intp r, i
+    cdef intp r
 
     # Traverse the examples in ascending order until we encounter an example that is contained in the current
     # sub-sample...
     for r in range(position_start + 1, position_end):
-        i = indexed_values[r].index
-        feature_value = x[i, feature_index]
+        feature_value = indexed_values[r].value
 
         if feature_value <= threshold:
             # The feature value at `position_start` is guaranteed to be smaller than or equal to the given `threshold`.
