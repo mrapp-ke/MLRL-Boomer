@@ -18,7 +18,7 @@ cdef class CoverageLoss(Loss):
     cdef void begin_instance_sub_sampling(self):
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):
@@ -48,7 +48,7 @@ cdef class DecomposableCoverageLoss(CoverageLoss):
     cdef void begin_instance_sub_sampling(self):
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):

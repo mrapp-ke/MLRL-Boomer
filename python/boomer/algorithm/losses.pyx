@@ -73,7 +73,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         """
         Notifies the loss function about an example that should be considered in the following for learning a new rule
         or refining an existing one.
@@ -82,6 +82,9 @@ cdef class Loss:
         have been selected via instance sub-sampling, immediately after the invocation of the function
         `begin_instance_sub_sampling`.
 
+        Alternatively, this function may be used to indicate that an example, which has previously been passed to this
+        function, should not be considered anymore by setting the argument `remove` accordingly.
+
         This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
         and store local information that is required by the other functions that will be called later, e.g. statistics
         about the ground truth labels of these particular examples. Any information computed by this function is
@@ -89,6 +92,8 @@ cdef class Loss:
 
         :param example_index:   The index of an example that should be considered
         :param weight:          The weight of the example that should be considered
+        :param remove:          0, if the example should be considered, 1, if the example should not be considered
+                                anymore
         """
         pass
 

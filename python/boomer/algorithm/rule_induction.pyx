@@ -173,7 +173,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         for i in range(num_examples):
             weight = 1 if weights is None else weights[i]
-            loss.update_sub_sample(i, weight)
+            loss.update_sub_sample(i, weight, False)
 
         # Sub-sample labels, if necessary...
         cdef intp[::1] label_indices
@@ -618,7 +618,7 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
 
             # Tell the loss function that the example at the current index is covered by the current rule...
             weight = 1 if weights is None else weights[index]
-            loss.update_sub_sample(index, weight)
+            loss.update_sub_sample(index, weight, False)
 
     for r in range(first, last, -1):
         index = sorted_indices[r]
@@ -627,7 +627,7 @@ cdef inline void __filter_current_indices(intp* sorted_indices, intp num_indices
 
         # Tell the loss function that the example at the current index is covered by the current rule...
         weight = 1 if weights is None else weights[index]
-        loss.update_sub_sample(index, weight)
+        loss.update_sub_sample(index, weight, False)
 
     free(dereference(index_array).data)
     dereference(index_array).data = filtered_indices_array
