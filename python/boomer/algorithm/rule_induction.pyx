@@ -659,27 +659,22 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
             i -= 1
     else:
         updated_target = covered_examples_target
-        loss.begin_instance_sub_sampling()
 
         if condition_comparator == Comparator.NEQ:
             for r in range(num_indexed_values - 1, condition_start, -1):
-                index = indexed_values[r].index
-                filtered_array[i].index = index
+                filtered_array[i].index = indexed_values[r].index
                 filtered_array[i].value = indexed_values[r].value
-                weight = 1 if weights is None else weights[index]
-                loss.update_sub_sample(index, weight, False)
                 i -= 1
 
         for r in range(condition_start, condition_end, -1):
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
+            weight = 1 if weights is None else weights[index]
+            loss.update_sub_sample(index, weight, True)
 
         for r in range(condition_end, -1, -1):
-            index = indexed_values[r].index
-            filtered_array[i].index = index
+            filtered_array[i].index = indexed_values[r].index
             filtered_array[i].value = indexed_values[r].value
-            weight = 1 if weights is None else weights[index]
-            loss.update_sub_sample(index, weight, False)
             i -= 1
 
     cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
