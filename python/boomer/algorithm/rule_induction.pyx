@@ -139,7 +139,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp num_examples = x.shape[0]
         cdef intp num_covered = num_examples
 
-        # Variables for specifying the features used for finding the best refinement
+        # Variables for specifying the features that should be used for finding the best refinement
         cdef intp num_features = x.shape[1]
         cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
         cdef intp next_nominal_f = -1
