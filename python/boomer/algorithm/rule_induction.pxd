@@ -21,6 +21,15 @@ cdef struct IndexedValue:
 
 
 """
+A struct that contains a pointer to a C-array of type `IndexedValue`. The attribute `num_elements` specifies how many
+elements the array contains.
+"""
+cdef struct IndexedArray:
+    IndexedValue* data
+    intp num_elements
+
+
+"""
 A struct that contains a pointer to a C-array of type `IndexedValue`, representing the indices and feature values of the
 training examples that are covered by a rule. The attribute `num_elements` specifies how many elements the array
 contains. The attribute `num_conditions` specifies how many conditions the rule contained when the struct was updated
