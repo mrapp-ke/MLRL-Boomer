@@ -158,7 +158,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], intp] instance_sub_sampling_result
         cdef uint32[::1] weights
-        cdef intp total_sum_of_weights, sum_of_weights
+        cdef intp total_sum_of_weights, sum_of_weights, accumulated_sum_of_weights
 
         if instance_sub_sampling is None:
             weights = None
@@ -254,6 +254,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # Reset the loss function when processing a new feature...
                     loss.begin_search(label_indices)
                     sum_of_weights = 0
+                    accumulated_sum_of_weights = 0
                     first_r = num_examples - 1
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
@@ -265,6 +266,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
                             sum_of_weights += weight
+                            accumulated_sum_of_weights += weight
                             previous_threshold = x[i, f]
                             previous_r = r
                             break
@@ -339,10 +341,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
                             sum_of_weights += weight
+                            accumulated_sum_of_weights += weight
 
                     # If the feature is nominal and there are examples with different feature values, we must evaluate
                     # additional conditions...
-                    if nominal and sum_of_weights < total_sum_of_weights:
+                    if nominal and sum_of_weights > 0 and sum_of_weights < accumulated_sum_of_weights:
                         # Find and evaluate the best head for the current refinement, if a condition that uses the ==
                         # operator is used...
                         current_head = head_refinement.find_head(head, label_indices, loss, False, False)
