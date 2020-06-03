@@ -58,7 +58,7 @@ cdef class RuleInduction:
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng)
@@ -74,7 +74,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng)
