@@ -99,7 +99,7 @@ cdef class FullHeadRefinement(HeadRefinement):
             return candidate
         else:
             # The quality score must be better than that of `best_head`...
-            if overall_quality_score < best_head.quality_score:
+            if compare_quality_scores(overall_quality_score, best_head.quality_score) > 0:
                 # Modify the `best_head` and return it...
                 for c in range(num_labels):
                     best_head.predicted_scores[c] = predicted_scores[c]
@@ -137,7 +137,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         for c in range(1, num_labels):
             quality_score = quality_scores[c]
 
-            if quality_score < best_quality_score:
+            if compare_quality_scores(quality_score, best_quality_score) > 0:
                 best_quality_score = quality_score
                 best_c = c
 
@@ -152,7 +152,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
             return candidate
         else:
             # The quality score must be better than that of `best_head`...
-            if best_quality_score < best_head.quality_score:
+            if compare_quality_scores(best_quality_score, best_head.quality_score) > 0:
                 best_head.label_indices[0] = get_index(best_c, label_indices)
                 best_head.predicted_scores[0] = predicted_scores[best_c]
                 best_head.quality_score = best_quality_score
