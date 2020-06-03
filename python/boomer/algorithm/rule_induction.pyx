@@ -127,13 +127,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef float32 best_condition_threshold
         cdef intp best_condition_covered_weights
         cdef intp* best_condition_indexed_values
-        cdef IndexArray* best_condition_indexed_array_wrapper
+        cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the examples that should be used for finding the best refinement
         cdef map[intp, intp*]* cache_global = self.cache_global
-        cdef map[intp, IndexArray*] cache_local  # Stack-allocated map
-        cdef map[intp, IndexArray*].iterator cache_local_iterator
-        cdef IndexArray* indexed_array_wrapper
+        cdef map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
+        cdef map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
+        cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef intp* indexed_values
 
         cdef intp num_examples = x.shape[0]
@@ -214,7 +214,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     indexed_array_wrapper = cache_local[f]
 
                     if indexed_array_wrapper == NULL:
-                        indexed_array_wrapper = <IndexArray*>malloc(sizeof(IndexArray))
+                        indexed_array_wrapper = <IndexedArrayWrapper*>malloc(sizeof(IndexedArrayWrapper))
                         dereference(indexed_array_wrapper).data = NULL
                         dereference(indexed_array_wrapper).num_elements = 0
                         dereference(indexed_array_wrapper).num_conditions = 0
@@ -570,21 +570,21 @@ cdef inline intp __adjust_split(float32[::1, :] x, intp* indexed_values, intp po
    return adjusted_position
 
 
-cdef inline void __filter_current_indices(intp* indexed_values, intp num_indices, IndexArray* indexed_array_wrapper,
-                                          intp condition_start, intp condition_end, intp condition_index,
-                                          Comparator condition_comparator, intp num_conditions, Loss loss,
-                                          uint32[::1] weights):
+cdef inline void __filter_current_indices(intp* indexed_values, intp num_indices,
+                                          IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
+                                          intp condition_end, intp condition_index, Comparator condition_comparator,
+                                          intp num_conditions, Loss loss, uint32[::1] weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule after a new
     condition has been added, such that the filtered array does only contain the indices of the examples that are
-    covered by the new rule. The filtered array is stored in a given struct of type `IndexArray`.
+    covered by the new rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
     :param indexed_values:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
                                     of the training examples that are covered by the previous rule in ascending order of
                                     values for the feature, the new condition corresponds to
     :param num_indices:             The number of elements in the array `indexed_values`
-    :param indexed_array_wrapper:   A pointer to a struct of type `IndexArray` that should be used to store the filtered
-                                    array
+    :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
+                                    filtered array
     :param condition_start:         The element in `indexed_values` that corresponds to the first example (inclusive)
                                     that has been passed to the loss function when searching for the new condition (must
                                     be greater than `condition_end`)
@@ -645,20 +645,20 @@ cdef inline void __filter_current_indices(intp* indexed_values, intp num_indices
 
 
 cdef inline void __filter_any_indices(float32[::1, :] x, intp* indexed_values, intp num_indices,
-                                      IndexArray* indexed_array_wrapper, list[Condition] conditions,
+                                      IndexedArrayWrapper* indexed_array_wrapper, list[Condition] conditions,
                                       intp num_conditions, intp num_covered):
     """
     Filters an array that contains the indices of examples with respect to one or several conditions, such that the
     filtered array does only contain the indices of the examples that satisfy the conditions. The filtered array is
-    stored in a given struct of type `IndexArray`.
+    stored in a given struct of type `IndexedArrayWrapper`.
 
     :param x:                       An array of dtype float, shape `(num_examples, num_features)`, representing the
                                     features of the training examples
     :param indexed_values:          A pointer to a C-array of type int, shape `(num_indices)`, representing the indices
                                     of the training examples
     :param num_indices:             The number of elements in the array `indexed_values`
-    :param indexed_array_wrapper:   A pointer to a struct of type `IndexArray` that should be used to store the filtered
-                                    array
+    :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
+                                    filtered array
     :param conditions:              A list that contains the conditions that should be taken into account for filtering
                                     the indices
     :param num_conditions:          The number of conditions in the list `conditions`
