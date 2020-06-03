@@ -138,16 +138,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.cache_global = new map[intp, IndexedValue*]()
+        self.cache_global = new map[intp, IndexedArray*]()
 
     def __dealloc__(self):
-        cdef map[intp, IndexedValue*]* cache_global = self.cache_global
-        cdef map[intp, IndexedValue*].iterator cache_global_iterator = dereference(cache_global).begin()
-        cdef IndexedValue* indexed_values
+        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
+        cdef map[intp, IndexedArray*].iterator cache_global_iterator = dereference(cache_global).begin()
+        cdef IndexedArray* indexed_array
 
         while cache_global_iterator != dereference(cache_global).end():
-            indexed_values = dereference(cache_global_iterator).second
-            free(indexed_values)
+            indexed_array = dereference(cache_global_iterator).second
+            free(dereference(indexed_array).data)
+            free(indexed_array)
             postincrement(cache_global_iterator)
 
         del self.cache_global
@@ -190,7 +191,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the examples that should be used for finding the best refinement
-        cdef map[intp, IndexedValue*]* cache_global = self.cache_global
+        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
+        cdef IndexedArray* indexed_array
         cdef map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
         cdef map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
@@ -282,12 +284,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     indexed_values = dereference(indexed_array_wrapper).array
 
                     if indexed_values == NULL:
-                        num_indexed_values = num_examples
-                        indexed_values = dereference(cache_global)[f]
+                        indexed_array = dereference(cache_global)[f]
 
-                        if indexed_values == NULL:
-                            indexed_values = dereference(threshold_provider.get_thresholds(f)).data
-                            dereference(cache_global)[f] = indexed_values
+                        if indexed_array == NULL:
+                            indexed_array = threshold_provider.get_thresholds(f)
+                            dereference(cache_global)[f] = indexed_array
+
+                        indexed_values = dereference(indexed_array).data
+                        num_indexed_values = dereference(indexed_array).num_elements
                     else:
                         num_indexed_values = dereference(indexed_array_wrapper).num_elements
 
