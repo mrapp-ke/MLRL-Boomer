@@ -68,7 +68,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef map[intp, intp*]* sorted_indices_map_global
+    cdef map[intp, intp*]* cache_global
 
     # Functions:
 

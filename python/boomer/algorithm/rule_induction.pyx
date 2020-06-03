@@ -83,19 +83,19 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.sorted_indices_map_global = new map[intp, intp*]()
+        self.cache_global = new map[intp, intp*]()
 
     def __dealloc__(self):
-        cdef map[intp, intp*]* sorted_indices_map_global = self.sorted_indices_map_global
-        cdef map[intp, intp*].iterator iterator = dereference(sorted_indices_map_global).begin()
+        cdef map[intp, intp*]* cache_global = self.cache_global
+        cdef map[intp, intp*].iterator cache_global_iterator = dereference(cache_global).begin()
         cdef intp* value
 
-        while iterator != dereference(sorted_indices_map_global).end():
-            value = dereference(iterator).second
+        while cache_global_iterator != dereference(cache_global).end():
+            value = dereference(cache_global_iterator).second
             free(value)
-            postincrement(iterator)
+            postincrement(cache_global_iterator)
 
-        del self.sorted_indices_map_global
+        del self.cache_global
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
         cdef float64[::1] scores = loss.calculate_default_scores(y)
@@ -123,16 +123,16 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Variables for representing the best refinement
         cdef bint found_refinement = True
         cdef Comparator best_condition_comparator
-        cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_index
+        cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_feature_index
         cdef float32 best_condition_threshold
         cdef intp best_condition_covered_weights
         cdef intp* best_condition_sorted_indices
         cdef IndexArray* best_condition_index_array
 
         # Variables for specifying the examples that should be used for finding the best refinement
-        cdef map[intp, intp*]* sorted_indices_map_global = self.sorted_indices_map_global
-        cdef map[intp, IndexArray*] sorted_indices_map_local  # Stack-allocated map
-        cdef map[intp, IndexArray*].iterator sorted_indices_iterator
+        cdef map[intp, intp*]* cache_global = self.cache_global
+        cdef map[intp, IndexArray*] cache_local  # Stack-allocated map
+        cdef map[intp, IndexArray*].iterator cache_local_iterator
         cdef IndexArray* index_array
         cdef intp* sorted_indices
 
@@ -211,24 +211,24 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Obtain array that contains the indices of the training examples sorted according to the current
                     # feature...
-                    index_array = sorted_indices_map_local[f]
+                    index_array = cache_local[f]
 
                     if index_array == NULL:
                         index_array = <IndexArray*>malloc(sizeof(IndexArray))
                         dereference(index_array).data = NULL
                         dereference(index_array).num_elements = 0
                         dereference(index_array).num_conditions = 0
-                        sorted_indices_map_local[f] = index_array
+                        cache_local[f] = index_array
 
                     sorted_indices = dereference(index_array).data
 
                     if sorted_indices == NULL:
                         num_examples = x.shape[0]
-                        sorted_indices = dereference(sorted_indices_map_global)[f]
+                        sorted_indices = dereference(cache_global)[f]
 
                         if sorted_indices == NULL:
                             sorted_indices = __argsort_by_feature_values(x[:, f])
-                            dereference(sorted_indices_map_global)[f] = sorted_indices
+                            dereference(cache_global)[f] = sorted_indices
                     else:
                         num_examples = dereference(index_array).num_elements
 
@@ -291,7 +291,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_start = first_r
                                     best_condition_end = r
                                     best_condition_previous = previous_r
-                                    best_condition_index = f
+                                    best_condition_feature_index = f
                                     best_condition_covered_weights = sum_of_weights
                                     best_condition_sorted_indices = sorted_indices
                                     best_condition_index_array = index_array
@@ -314,7 +314,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_start = first_r
                                     best_condition_end = r
                                     best_condition_previous = previous_r
-                                    best_condition_index = f
+                                    best_condition_feature_index = f
                                     best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
                                     best_condition_sorted_indices = sorted_indices
                                     best_condition_index_array = index_array
@@ -354,7 +354,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_start = first_r
                             best_condition_end = -1
                             best_condition_previous = previous_r
-                            best_condition_index = f
+                            best_condition_feature_index = f
                             best_condition_covered_weights = sum_of_weights
                             best_condition_sorted_indices = sorted_indices
                             best_condition_index_array = index_array
@@ -372,7 +372,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_start = first_r
                             best_condition_end = -1
                             best_condition_previous = previous_r
-                            best_condition_index = f
+                            best_condition_feature_index = f
                             best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
                             best_condition_sorted_indices = sorted_indices
                             best_condition_index_array = index_array
@@ -382,7 +382,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
                     # predicts...
-                    conditions.push_back(__make_condition(best_condition_index, best_condition_comparator,
+                    conditions.push_back(__make_condition(best_condition_feature_index, best_condition_comparator,
                                                           best_condition_threshold))
                     num_conditions += 1
                     num_conditions_per_comparator[<intp>best_condition_comparator] += 1
@@ -398,12 +398,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # `best_condition_end` and therefore must be adjusted...
                     if weights is not None and best_condition_previous - best_condition_end > 1:
                         best_condition_end = __adjust_split(x, best_condition_sorted_indices, best_condition_end,
-                                                            best_condition_previous, best_condition_index,
+                                                            best_condition_previous, best_condition_feature_index,
                                                             best_condition_threshold)
 
                     # Identify the examples for which the rule predicts...
                     __filter_current_indices(best_condition_sorted_indices, num_examples, best_condition_index_array,
-                                             best_condition_start, best_condition_end, best_condition_index,
+                                             best_condition_start, best_condition_end, best_condition_feature_index,
                                              best_condition_comparator, num_conditions, loss, weights)
                     num_covered = dereference(best_condition_index_array).num_elements
                     covered_example_indices = <intp[:num_covered]>dereference(best_condition_index_array).data
@@ -424,7 +424,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
                         pruning.begin_pruning(weights, loss, head_refinement, covered_example_indices, label_indices)
-                        covered_example_indices = pruning.prune(x, sorted_indices_map_global, conditions)
+                        covered_example_indices = pruning.prune(x, cache_global, conditions)
                         num_covered = covered_example_indices.shape[0]
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
@@ -450,14 +450,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # Build and return the induced rule...
                 return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
         finally:
-            # Free memory occupied by the arrays stored in `sorted_indices_map_local`...
-            sorted_indices_iterator = sorted_indices_map_local.begin()
+            # Free memory occupied by the arrays stored in `cache_local`...
+            cache_local_iterator = cache_local.begin()
 
-            while sorted_indices_iterator != sorted_indices_map_local.end():
-                index_array = dereference(sorted_indices_iterator).second
+            while cache_local_iterator != cache_local.end():
+                index_array = dereference(cache_local_iterator).second
                 free(dereference(index_array).data)
                 free(index_array)
-                postincrement(sorted_indices_iterator)
+                postincrement(cache_local_iterator)
 
 
 cdef inline intp* __argsort_by_feature_values(float32[::1] feature_values):
