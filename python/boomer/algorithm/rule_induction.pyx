@@ -123,8 +123,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef uint32[::1] covered_examples_mask = array_uint32(x.shape[0])
         covered_examples_mask[:] = 0
         cdef uint32 covered_examples_target = 0
-        # An array representing the indices of the examples that are covered by the rule
-        cdef intp[::1] covered_example_indices
 
         # Variables for representing the best refinement
         cdef bint found_refinement = True
@@ -444,9 +442,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # entire training data...
                     loss.begin_search(label_indices)
 
-                    for r in range(num_covered):
-                        i = covered_example_indices[r]
-                        loss.update_search(i, 1)
+                    for r in range(x.shape[0]):
+                        if covered_examples_mask[r] == covered_examples_target:
+                            loss.update_search(r, 1)
 
                     prediction = head_refinement.evaluate_predictions(loss, False, False)
                     predicted_scores[:] = prediction.predicted_scores
@@ -456,9 +454,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     shrinkage.apply_shrinkage(predicted_scores)
 
                 # Tell the loss function that a new rule has been induced...
-                for r in range(num_covered):
-                    i = covered_example_indices[r]
-                    loss.apply_prediction(i, label_indices, predicted_scores)
+                for r in range(x.shape[0]):
+                    if covered_examples_mask[r] == covered_examples_target:
+                        loss.apply_prediction(r, label_indices, predicted_scores)
 
                 # Build and return the induced rule...
                 return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
