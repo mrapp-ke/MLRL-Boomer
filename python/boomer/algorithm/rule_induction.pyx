@@ -215,12 +215,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     if indexed_array_wrapper == NULL:
                         indexed_array_wrapper = <IndexedArrayWrapper*>malloc(sizeof(IndexedArrayWrapper))
-                        dereference(indexed_array_wrapper).data = NULL
+                        dereference(indexed_array_wrapper).array = NULL
                         dereference(indexed_array_wrapper).num_elements = 0
                         dereference(indexed_array_wrapper).num_conditions = 0
                         cache_local[f] = indexed_array_wrapper
 
-                    indexed_values = dereference(indexed_array_wrapper).data
+                    indexed_values = dereference(indexed_array_wrapper).array
 
                     if indexed_values == NULL:
                         num_examples = x.shape[0]
@@ -236,7 +236,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if num_conditions > dereference(indexed_array_wrapper).num_conditions:
                         __filter_any_indices(x, indexed_values, num_examples, indexed_array_wrapper, conditions,
                                              num_conditions, num_covered)
-                        indexed_values = dereference(indexed_array_wrapper).data
+                        indexed_values = dereference(indexed_array_wrapper).array
                         num_examples = dereference(indexed_array_wrapper).num_elements
 
                     # Check if feature is nominal...
@@ -411,7 +411,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                              best_condition_end, best_condition_feature_index,
                                              best_condition_comparator, num_conditions, loss, weights)
                     num_covered = dereference(best_condition_indexed_array_wrapper).num_elements
-                    covered_example_indices = <intp[:num_covered]>dereference(best_condition_indexed_array_wrapper).data
+                    covered_example_indices = <intp[:num_covered]>dereference(best_condition_indexed_array_wrapper).array
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
@@ -462,7 +462,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
             while cache_local_iterator != cache_local.end():
                 indexed_array_wrapper = dereference(cache_local_iterator).second
-                free(dereference(indexed_array_wrapper).data)
+                free(dereference(indexed_array_wrapper).array)
                 free(indexed_array_wrapper)
                 postincrement(cache_local_iterator)
 
@@ -638,8 +638,8 @@ cdef inline void __filter_current_indices(intp* indexed_values, intp num_indices
         weight = 1 if weights is None else weights[index]
         loss.update_sub_sample(index, weight, False)
 
-    free(dereference(indexed_array_wrapper).data)
-    dereference(indexed_array_wrapper).data = filtered_indices_array
+    free(dereference(indexed_array_wrapper).array)
+    dereference(indexed_array_wrapper).array = filtered_indices_array
     dereference(indexed_array_wrapper).num_elements = num_covered
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 
@@ -664,7 +664,7 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* indexed_values, i
     :param num_conditions:          The number of conditions in the list `conditions`
     :param num_covered:             The number of training examples that satisfy all conditions in the list `conditions`
     """
-    cdef intp* filtered_indices_array = dereference(indexed_array_wrapper).data
+    cdef intp* filtered_indices_array = dereference(indexed_array_wrapper).array
     cdef bint must_allocate = filtered_indices_array == NULL
 
     if must_allocate:
@@ -711,7 +711,7 @@ cdef inline void __filter_any_indices(float32[::1, :] x, intp* indexed_values, i
     if not must_allocate:
         filtered_indices_array = <intp*>realloc(filtered_indices_array, num_covered * sizeof(intp))
 
-    dereference(indexed_array_wrapper).data = filtered_indices_array
+    dereference(indexed_array_wrapper).array = filtered_indices_array
     dereference(indexed_array_wrapper).num_elements = num_covered
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 

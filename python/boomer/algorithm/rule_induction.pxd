@@ -27,7 +27,7 @@ covered by a rule. The attribute `num_elements` specifies how many elements the 
 be used to check if the array is still valid or must be updated.
 """
 cdef struct IndexedArrayWrapper:
-    intp* data
+    intp* array
     intp num_elements
     intp num_conditions
 
