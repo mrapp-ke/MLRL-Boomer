@@ -17,11 +17,15 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     cdef float64[::1] sums_of_gradients
 
+    cdef float64[::1] accumulated_sums_of_gradients
+
     cdef float64[::1] total_sums_of_gradients
 
     cdef float64[::1, :] hessians
 
     cdef float64[::1] sums_of_hessians
+
+    cdef float64[::1] accumulated_sums_of_hessians
 
     cdef float64[::1] total_sums_of_hessians
 
@@ -40,6 +44,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
     cdef void begin_search(self, intp[::1] label_indices)
 
     cdef void update_search(self, intp example_index, uint32 weight)
+
+    cdef void reset_search(self)
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
 

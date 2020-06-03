@@ -199,6 +199,10 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
             sums_of_gradients[c] = 0
             sums_of_hessians[c] = 0
 
+        # Reset the accumulated sums of gradients and hessians to None...
+        self.accumulated_sums_of_gradients = None
+        self.accumulated_sums_of_hessians = None
+
         # Store the given label indices...
         self.label_indices = label_indices
 
@@ -220,6 +224,39 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
             l = get_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
             sums_of_hessians[c] += (weight * hessians[example_index, l])
+
+    cdef void reset_search(self):
+        # Class members
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        # The number of labels
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        # Temporary variables
+        cdef intp c
+
+        # Update the arrays that store the accumulated sums of gradients and hessians...
+        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
+        cdef float64[::1] accumulated_sums_of_hessians
+
+        if accumulated_sums_of_gradients is None:
+            accumulated_sums_of_gradients = array_float64(num_labels)
+            self.accumulated_sums_of_gradients = accumulated_sums_of_gradients
+            accumulated_sums_of_hessians = array_float64(num_labels)
+            self.accumulated_sums_of_hessians = accumulated_sums_of_hessians
+
+            for c in range(num_labels):
+                accumulated_sums_of_gradients[c] = sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+                accumulated_sums_of_hessians[c] = sums_of_hessians[c]
+                sums_of_hessians[c] = 0
+        else:
+            accumulated_sums_of_hessians = self.accumulated_sums_of_hessians
+
+            for c in range(num_labels):
+                accumulated_sums_of_gradients[c] += sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+                accumulated_sums_of_hessians[c] += sums_of_hessians[c]
+                sums_of_hessians[c] = 0
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         # Class members

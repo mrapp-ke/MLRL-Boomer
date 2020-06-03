@@ -27,6 +27,9 @@ cdef class DifferentiableLoss(Loss):
     cdef void update_search(self, intp example_index, uint32 weight):
         pass
 
+    cdef void reset_search(self):
+        pass
+
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
         pass
 
@@ -54,6 +57,9 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
         pass
 
     cdef void update_search(self, intp example_index, uint32 weight):
+        pass
+
+    cdef void reset_search(self):
         pass
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
@@ -86,6 +92,9 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
         pass
 
     cdef void update_search(self, intp example_index, uint32 weight):
+        pass
+
+    cdef void reset_search(self):
         pass
 
     cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
