@@ -7,6 +7,9 @@ from boomer.algorithm._arrays cimport array_intp, array_float64, get_index
 from boomer.algorithm.losses cimport LabelIndependentPrediction
 from boomer.algorithm.lift_functions cimport LiftFunction
 
+from libc.stdlib cimport qsort
+from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
+
 cdef class HeadCandidate:
     """
     Stores information about a potential head of a rule.
@@ -126,6 +129,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef intp num_labels = predicted_scores.shape[0]
         cdef HeadCandidate candidate
         cdef float64[::1] candidate_predicted_scores
+        cdef intp[::1] candidate_label_indices
         cdef intp[::1] sorted_indices = array_intp(num_labels)
         cdef intp sorted_label_indices_length = 0
         cdef intp best_head_candidate_length = 0
@@ -134,27 +138,11 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
         cdef LiftFunction lift = self.lift
 
-        # Insertion sort
-        for c in range(0, num_labels):
-            for c2 in range(0, num_labels):
-                # TODO Tie-breaking
-                if c2 >= sorted_label_indices_length or quality_scores[sorted_indices[c2]] > quality_scores[c]:
-                    # Shift
-                    for c3 in range(sorted_label_indices_length - 1, c2 - 1, -1):
-                        sorted_indices[c3 + 1] = sorted_indices[c3]
-
-                    # Insert
-                    sorted_indices[c2] = c
-                    sorted_label_indices_length += 1
-
-                    break
+        __argsort(quality_scores, sorted_indices)
 
         maximum_lift = lift.get_max_lift()
         for c in range(0, num_labels):
             # select the top element of sorted_label_indices excluding labels already contained
-
-            should_continue = True
-
             total_quality_score += quality_scores[sorted_indices[c]]
 
             quality_score = (1 - (1 - total_quality_score) * lift.eval(c + 1)) / (c + 1)
@@ -251,3 +239,44 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
         cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered)
         return prediction
+
+
+cdef inline void __argsort(float64[::1] values, intp[::1] sorted_array):
+    """
+    Sorts the indices of an float64-array in ascending order
+    
+    :param values:         An array of dtype float, shape `(num_examples)`, representing the values of the array to
+                           argsort
+    :param sorted_array:   An array of dtype intp, shape `(num_examples)`, to store the sorted indices
+    :return:               A pointer to a C-array of type intp, representing the sorted indices of the array
+    """
+    cdef intp num_values = values.shape[0]
+    cdef IndexedValue* tmp_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
+    cdef intp i
+
+    try:
+        for i in range(num_values):
+            tmp_array[i].index = i
+            tmp_array[i].value = values[i]
+
+        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
+
+        for i in range(num_values):
+            sorted_array[i] = tmp_array[i].index
+    finally:
+        free(tmp_array)
+
+
+cdef int __compare_indexed_value(const void* a, const void* b) nogil:
+    """
+    Compares the values of two structs of type `IndexedValue`.
+    
+    :param a:          A pointer to the first struct
+    :param b:          A pointer to the second struct
+    :return:           1 if the value of the first struct is smaller than the value of the second struct, 0 if both
+                       values are equal, or -1 if the value of the first struct is greater than the value of the second
+                       struct
+    """
+    cdef float64 v1 = (<IndexedValue*>a).value
+    cdef float64 v2 = (<IndexedValue*>b).value
+    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
