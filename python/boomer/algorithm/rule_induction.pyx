@@ -501,6 +501,66 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_comparator = Comparator.NEQ
                             best_condition_threshold = previous_threshold
 
+                    # If the sum of weights of all examples that have been iterated so far is less than the sum of of
+                    # weights of all examples, this means that there are examples with (sparse), i.e. zero, feature
+                    # values. In such case, we must explicitly test conditions that separate these examples from the
+                    # ones that have already been iterated...
+                    if accumulated_sum_of_weights > 0 and accumulated_sum_of_weights < total_sum_of_weights:
+                        # If the feature is nominal, we must reset the loss function once again to ensure that the
+                        # accumulated state includes all examples that have been processed so far...
+                        if nominal:
+                            loss.reset_search()
+                            first_r = num_indexed_values - 1
+
+                        # Find and evaluate the best head for the current refinement, if the condition
+                        # `f > previous_threshold / 2` (or the condition `f != 0` in case of a nominal feature) is
+                        # used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, False, nominal)
+
+                        # If the refinement is better than the current rule...
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = first_r
+                            best_condition_end = -1
+                            best_condition_previous = previous_r
+                            best_condition_feature_index = f
+                            best_condition_sparse = True
+                            best_condition_covered_weights = accumulated_sum_of_weights
+                            best_condition_indexed_array = indexed_array
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+
+                            if nominal:
+                                best_condition_comparator = Comparator.NEQ
+                                best_condition_threshold = 0.0
+                            else:
+                                best_condition_comparator = Comparator.GR
+                                best_condition_threshold = previous_threshold / 2.0
+
+                        # Find and evaluate the best head for the current refinement, if the condition
+                        # `f <= previous_threshold / 2` (or `f == 0` in case of a nominal feature) is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, True, nominal)
+
+                        # If the refinement is better than the current rule...
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = first_r
+                            best_condition_end = -1
+                            best_condition_previous = previous_r
+                            best_condition_feature_index = f
+                            best_condition_sparse = True
+                            best_condition_covered_weights = (total_sum_of_weights - accumulated_sum_of_weights)
+                            best_condition_indexed_array = indexed_array
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+
+                            if nominal:
+                                best_condition_comparator = Comparator.EQ
+                                best_condition_threshold = 0.0
+                            else:
+                                best_condition_comparator = Comparator.LEQ
+                                best_condition_threshold = previous_threshold / 2.0
+
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
                     # predicts...
