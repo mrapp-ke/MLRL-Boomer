@@ -241,6 +241,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef bint found_refinement = True
         cdef Comparator best_condition_comparator
         cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_feature_index
+        cdef bint best_condition_sparse
         cdef float32 best_condition_threshold
         cdef intp best_condition_covered_weights
         cdef IndexedArray* best_condition_indexed_array
@@ -407,6 +408,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_end = r
                                     best_condition_previous = previous_r
                                     best_condition_feature_index = f
+                                    best_condition_sparse = False
                                     best_condition_covered_weights = sum_of_weights
                                     best_condition_indexed_array = indexed_array
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
@@ -430,6 +432,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     best_condition_end = r
                                     best_condition_previous = previous_r
                                     best_condition_feature_index = f
+                                    best_condition_sparse = False
                                     best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
                                     best_condition_indexed_array = indexed_array
                                     best_condition_indexed_array_wrapper = indexed_array_wrapper
@@ -472,6 +475,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_end = -1
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
+                            best_condition_sparse = False
                             best_condition_covered_weights = sum_of_weights
                             best_condition_indexed_array = indexed_array
                             best_condition_indexed_array_wrapper = indexed_array_wrapper
@@ -490,6 +494,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_end = -1
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
+                            best_condition_sparse = False
                             best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
                             best_condition_indexed_array = indexed_array
                             best_condition_indexed_array_wrapper = indexed_array_wrapper
@@ -521,9 +526,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     covered_examples_target = __filter_current_indices(best_condition_indexed_array,
                                                                        best_condition_indexed_array_wrapper,
                                                                        best_condition_start, best_condition_end,
-                                                                       best_condition_comparator, num_conditions,
-                                                                       covered_examples_mask, covered_examples_target,
-                                                                       loss, weights)
+                                                                       best_condition_comparator, best_condition_sparse,
+                                                                       num_conditions, covered_examples_mask,
+                                                                       covered_examples_target, loss, weights)
                     total_sum_of_weights = best_condition_covered_weights
 
                     if total_sum_of_weights <= min_coverage:
@@ -656,7 +661,7 @@ cdef inline intp __adjust_split(IndexedArray* indexed_array, intp position_start
 
 cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
                                             intp condition_start, intp condition_end, Comparator condition_comparator,
-                                            intp num_conditions, uint32[::1] covered_examples_mask,
+                                            bint sparse, intp num_conditions, uint32[::1] covered_examples_mask,
                                             uint32 covered_examples_target, Loss loss, uint32[::1] weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
@@ -675,6 +680,8 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
                                     that has been passed to the loss function when searching for the new condition (must
                                     be smaller than `condition_start`)
     :param condition_comparator:    The type of the operator that is used by the new condition
+    :param sparse                   1, if the new condition separates all examples with sparse feature values from the
+                                    remaining ones, 0 otherwise
     :param num_conditions:          The total number of conditions in the rule's body (including the new one)
     :param covered_examples_mask:   An array of dtype uint, shape `(num_examples)` that is used to keep track of the
                                     indices of the examples that are covered by the previous rule. It will be updated by
