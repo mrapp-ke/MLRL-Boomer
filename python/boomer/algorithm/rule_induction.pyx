@@ -705,6 +705,9 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
         updated_target = num_conditions
         loss.begin_instance_sub_sampling()
 
+        # Retain the indices at positions (condition_end, condition_start] and set the corresponding values in
+        # `covered_examples_mask` to `num_conditions`, which marks them as covered (because
+        # `updated_target == num_conditions`)...
         for r in range(condition_start, condition_end, -1):
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
@@ -717,17 +720,26 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
         updated_target = covered_examples_target
 
         if condition_comparator == Comparator.NEQ:
+            # Retain the indices at positions (condition_start, num_indexed_values), while leaving the corresponding
+            # values in `covered_examples_mask` untouched, such that all previously covered examples in said range are
+            # still marked as covered, while previously uncovered examples are still marked as uncovered...
             for r in range(num_indexed_values - 1, condition_start, -1):
                 filtered_array[i].index = indexed_values[r].index
                 filtered_array[i].value = indexed_values[r].value
                 i -= 1
 
+        # Discard the indices at positions (condition_end, condition_start] and set the corresponding values in
+        # `covered_examples_mask` to `num_conditions`, which marks them as uncovered (because
+        # `updated_target != num_conditions`)...
         for r in range(condition_start, condition_end, -1):
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
             weight = 1 if weights is None else weights[index]
             loss.update_sub_sample(index, weight, True)
 
+        # Retain the indices at positions [condition_end, 0], while leaving the corresponding values in
+        # `covered_examples_mask` untouched, such that all previously covered examples in said range are still marked as
+        # covered, while previously uncovered examples are still marked as uncovered...
         for r in range(condition_end, -1, -1):
             filtered_array[i].index = indexed_values[r].index
             filtered_array[i].value = indexed_values[r].value
