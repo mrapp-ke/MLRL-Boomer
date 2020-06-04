@@ -131,10 +131,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef float64[::1] candidate_predicted_scores
         cdef intp[::1] candidate_label_indices
         cdef intp[::1] sorted_indices = array_intp(num_labels)
-        cdef intp sorted_label_indices_length = 0
         cdef intp best_head_candidate_length = 0
         cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift
-        cdef intp should_continue, no_improvement, c, c2, c3, l
+        cdef intp c
 
         cdef LiftFunction lift = self.lift
 
@@ -171,17 +170,17 @@ cdef class PartialHeadRefinement(HeadRefinement):
                                               best_quality_score)
             return candidate
         elif best_quality_score < best_head.quality_score:
-                if best_head.label_indices.shape[0] != best_head_candidate_length:
-                    best_head.label_indices = array_intp(best_head_candidate_length)
-                    best_head.predicted_scores = array_float64(best_head_candidate_length)
+            if best_head.label_indices.shape[0] != best_head_candidate_length:
+                best_head.label_indices = array_intp(best_head_candidate_length)
+                best_head.predicted_scores = array_float64(best_head_candidate_length)
 
-                # Modify the `best_head` and return it...
-                for c in range(best_head_candidate_length):
-                    best_head.label_indices[c] = get_index(sorted_indices[c], label_indices)
-                    best_head.predicted_scores[c] = predicted_scores[sorted_indices[c]]
+            # Modify the `best_head` and return it...
+            for c in range(best_head_candidate_length):
+                best_head.label_indices[c] = get_index(sorted_indices[c], label_indices)
+                best_head.predicted_scores[c] = predicted_scores[sorted_indices[c]]
 
-                best_head.quality_score = best_quality_score
-                return best_head
+            best_head.quality_score = best_quality_score
+            return best_head
         else:
             # Return None, as the quality_score of the found head is worse than that of `best_head`...
             return None
