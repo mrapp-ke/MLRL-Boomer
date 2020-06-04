@@ -151,7 +151,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
                 best_quality_score = quality_score
 
-            max_score = total_quality_score * maximum_lift
+            max_score = quality_score * maximum_lift
 
             if max_score < best_quality_score:
                 # prunable by decomposition
