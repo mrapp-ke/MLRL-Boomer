@@ -130,14 +130,14 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef HeadCandidate candidate
         cdef float64[::1] candidate_predicted_scores
         cdef intp[::1] candidate_label_indices
-        cdef intp[::1] sorted_indices = array_intp(num_labels)
+        cdef intp[::1] sorted_indices
         cdef intp best_head_candidate_length = 0
         cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift
         cdef intp c
 
         cdef LiftFunction lift = self.lift
 
-        __argsort(quality_scores, sorted_indices)
+        sorted_indices = __argsort(quality_scores)
 
         maximum_lift = lift.get_max_lift()
         for c in range(0, num_labels):
@@ -245,7 +245,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         return prediction
 
 
-cdef inline void __argsort(float64[::1] values, intp[::1] sorted_array):
+cdef inline intp[::1] __argsort(float64[::1] values):
     """
     Sorts the indices of an float64-array in ascending order
     
@@ -256,6 +256,7 @@ cdef inline void __argsort(float64[::1] values, intp[::1] sorted_array):
     """
     cdef intp num_values = values.shape[0]
     cdef IndexedValue* tmp_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
+    cdef intp[::1] sorted_array = array_intp(num_values)
     cdef intp i
 
     try:
@@ -269,6 +270,8 @@ cdef inline void __argsort(float64[::1] values, intp[::1] sorted_array):
             sorted_array[i] = tmp_array[i].index
     finally:
         free(tmp_array)
+
+    return sorted_array
 
 
 cdef int __compare_indexed_value(const void* a, const void* b) nogil:
