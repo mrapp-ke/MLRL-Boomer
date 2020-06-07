@@ -78,6 +78,7 @@ cdef class HammingLoss(Heuristic):
 
         if num_total_labels == 0:
             return 1
+
         return num_incorrect_labels / num_total_labels
 
 
@@ -96,6 +97,7 @@ cdef class Precision(Heuristic):
 
         if num_covered_labels == 0:
             return 1
+
         return num_incorrect_labels / num_covered_labels
 
 
@@ -115,4 +117,5 @@ cdef class Recall(Heuristic):
 
         if num_equal == 0:
             return 1
+
         return num_uncovered_equal / num_equal
