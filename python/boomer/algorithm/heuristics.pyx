@@ -68,7 +68,7 @@ cdef class HammingLoss(Heuristic):
     A heuristic that measures the fraction of incorrectly predicted labels among all labels.
 
     It calculates as `(CIP + CRN + URN + URP) / (CIN + CIP + CRN + CRP + UIN + UIP + URN + URP)`, where the division by
-    zero evaluates to 1, per definition.
+    zero evaluates to 1, by definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -86,7 +86,7 @@ cdef class Precision(Heuristic):
     A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
 
     It calculates as `1 - ((CIN + CRP) / (CIN + CIP + CRN + CRP)) = (CIP + CRN) / (CIN + CIP + CRN + CRP)`, where the
-    division by zero evaluates to 1, per definition.
+    division by zero evaluates to 1, by definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -105,7 +105,7 @@ cdef class Recall(Heuristic):
     would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
 
     It calculates as `1 - ((CIN + CRP) / (CIN + CRP + UIN + URP)) = (UIN + URP) / (CIN + CRP + UIN + URP)`, where the
-    division by zero evaluates to 1, per definition.
+    division by zero evaluates to 1, by definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
