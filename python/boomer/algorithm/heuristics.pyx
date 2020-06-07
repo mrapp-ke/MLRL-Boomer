@@ -47,6 +47,7 @@ cdef class Heuristic:
         """
         pass
 
+
 cdef class HammingLoss(Heuristic):
     """
     A heuristic that calculates as the Hamming loss, i.e., as the fraction of correctly predicted labels among all
@@ -61,6 +62,7 @@ cdef class HammingLoss(Heuristic):
         if num_total_labels == 0:
             return 1
         return num_correct_labels / num_total_labels
+
 
 cdef class Precision(Heuristic):
     """
