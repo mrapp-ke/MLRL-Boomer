@@ -65,8 +65,10 @@ cdef class Heuristic:
 
 cdef class HammingLoss(Heuristic):
     """
-    A heuristic that calculates as the Hamming loss, i.e., as the fraction of correctly predicted labels among all
-    labels.
+    A heuristic that measures the fraction of incorrectly predicted labels among all labels.
+
+    It calculates as `(CIP + CRN + URN + URP) / (CIN + CIP + CRN + CRP + UIN + UIP + URN + URP)`, where the division by
+    zero evaluates to 1, per definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
