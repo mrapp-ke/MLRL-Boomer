@@ -8,7 +8,6 @@ Provides classes that implement strategies for pruning classification rules.
 from boomer.algorithm._arrays cimport array_intp
 from boomer.algorithm.rule_induction cimport Comparator
 from boomer.algorithm.losses cimport Prediction
-from boomer.algorithm.head_refinement cimport compare_quality_scores
 
 from cython.operator cimport dereference, postincrement
 
@@ -123,7 +122,7 @@ cdef class IREP(Pruning):
         cdef uint32 weight
         cdef float64 quality_score
         cdef Prediction prediction
-        cdef intp n, c, r, i, index, num_labels, cmp
+        cdef intp n, c, r, i, index, num_labels
 
         # We process the original rule's conditions (except for the last one) in the order they have been learned. At
         # each iteration we calculate the overall quality score of a rule that only contains the conditions processed so
@@ -205,9 +204,8 @@ cdef class IREP(Pruning):
             # quality score known so far (reaching the same quality score with fewer conditions is also considered an
             # improvement)...
             quality_score = prediction.overall_quality_score
-            cmp = compare_quality_scores(quality_score, best_quality_score)
 
-            if cmp > 0 or (num_pruned_conditions == 0 and cmp >= 0):
+            if quality_score < best_quality_score or (num_pruned_conditions == 0 and quality_score <= best_quality_score):
                 best_quality_score = quality_score
                 best_covered_example_indices = covered_example_indices
                 best_num_examples = num_examples
