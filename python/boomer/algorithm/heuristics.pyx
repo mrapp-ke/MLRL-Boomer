@@ -83,8 +83,10 @@ cdef class HammingLoss(Heuristic):
 
 cdef class Precision(Heuristic):
     """
-    A heuristic that calculates as `1 - prec`, where `prec` corresponds to the precision metric, i.e., as the fraction
-    of incorrectly predicted labels among all covered labels.
+    A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
+
+    It calculates as `1 - ((CIP + CRN) / (CIN + CIP + CRN + CRP))`, where the division by zero evaluates to 1, per
+    definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
