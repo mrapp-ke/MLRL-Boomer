@@ -97,3 +97,22 @@ cdef class Precision(Heuristic):
         if num_covered_labels == 0:
             return 1
         return num_incorrect_labels / num_covered_labels
+
+
+cdef class Recall(Heuristic):
+    """
+    A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is (or
+    would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
+
+    It calculates as `1 - ((CIN + CRP) / (CIN + CRP + UIN + URP)) = (UIN + URP) / (CIN + CRP + UIN + URP)`, where the
+    division by zero evaluates to 1, per definition.
+    """
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        cdef float64 num_uncovered_equal = uin + urp
+        cdef float64 num_equal = num_uncovered_equal + cin + crp
+
+        if num_equal == 0:
+            return 1
+        return num_uncovered_equal / num_equal
