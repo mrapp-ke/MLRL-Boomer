@@ -16,12 +16,12 @@ cdef class Heuristic:
         """
         Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix.
 
-        A confusion matrix consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN, URP. According to this
-        notation, the individual symbols have the following meaning:
+        A confusion matrix consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual
+        symbols used in this notation have the following meaning:
 
         - The first symbol denotes whether an element corresponds to labels that are covered (C) or uncovered (U) by the
           rule.
-        - The second symbol denotes relevant (R) and irrelevant (I) labels according to the ground truth.
+        - The second symbol denotes relevant (R) or irrelevant (I) labels according to the ground truth.
         - The third symbol denotes labels for which the prediction in the rule's head is positive (P) or negative (N).
 
         Real numbers may be used for the individual elements, if different weights are assigned to the corresponding
@@ -64,8 +64,8 @@ cdef class HammingLoss(Heuristic):
 
 cdef class Precision(Heuristic):
     """
-    A heuristic that calculates as 1 - prec, where prec corresponds to the precision metric, i.e., as the fraction of
-    incorrectly predicted labels among all covered labels.
+    A heuristic that calculates as `1 - prec`, where `prec` corresponds to the precision metric, i.e., as the fraction
+    of incorrectly predicted labels among all covered labels.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
