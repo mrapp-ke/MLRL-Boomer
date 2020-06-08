@@ -1,9 +1,14 @@
 """
 Implements different heuristics for assessing the quality of single- or multi-label rules based on confusion matrices.
-Given the elements of a confusion matrix, a heuristic calculates a quality score in [0, 1]. All heuristics must be
-implemented as loss functions, i.e., rules with a smaller quality score are better than those with a large quality
-score.
+Given the elements of a confusion matrix, a heuristic calculates a quality score in [0, 1].
+
+All heuristics must be implemented as loss functions, i.e., rules with a smaller quality score are better than those
+with a large quality score.
+
+All heuristics must treat positive and negative labels equally, i.e., if the ground truth and a rule's predictions would
+be inverted, the resulting quality scores must be the same as before.
 """
+from libc.math cimport isinf, pow
 
 
 cdef class Heuristic:
@@ -16,13 +21,28 @@ cdef class Heuristic:
         """
         Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix.
 
-        A confusion matrix consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN, URP. According to this
-        notation, the individual symbols have the following meaning:
+        According to the notation in http://www.ke.tu-darmstadt.de/bibtex/publications/show/3201, a confusion matrix
+        consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols used in this
+        notation have the following meaning:
 
-        - The first symbol denotes whether an element corresponds to labels that are covered (C) or uncovered (U) by the
-          rule.
-        - The second symbol denotes relevant (R) and irrelevant (I) labels according to the ground truth.
+        - The first symbol denotes whether the corresponding labels are covered (C) or uncovered (U) by the rule.
+        - The second symbol denotes relevant (R) or irrelevant (I) labels according to the ground truth.
         - The third symbol denotes labels for which the prediction in the rule's head is positive (P) or negative (N).
+
+        This results in the terminology given in the following table:
+
+                   | ground-   |           |
+                   | truth     | predicted |
+        -----------|-----------|-----------|-----
+         covered   |         0 |         0 | CIN
+                   |         0 |         1 | CIP
+                   |         1 |         0 | CRN
+                   |         1 |         1 | CRP
+        -----------|-----------|-----------|-----
+         uncovered |         0 |         0 | UIN
+                   |         0 |         1 | UIP
+                   |         1 |         0 | URN
+                   |         1 |         1 | URP
 
         Real numbers may be used for the individual elements, if different weights are assigned to the corresponding
         labels.
@@ -47,32 +67,158 @@ cdef class Heuristic:
         """
         pass
 
+
 cdef class HammingLoss(Heuristic):
     """
-    A heuristic that calculates as the Hamming loss, i.e., as the fraction of correctly predicted labels among all
-    labels.
+    A heuristic that measures the fraction of incorrectly predicted labels among all labels.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
-        cdef float64 num_correct_labels = cip + crn + urn + urp
-        cdef float64 num_total_labels = num_correct_labels + cin + crp + uin + uip
+        cdef float64 num_incorrect = cip + crn + urn + urp
+        cdef float64 num_total = num_incorrect + cin + crp + uin + uip
 
-        if num_total_labels == 0:
+        if num_total == 0:
             return 1
-        return num_correct_labels / num_total_labels
+
+        return num_incorrect / num_total
+
 
 cdef class Precision(Heuristic):
     """
-    A heuristic that calculates as 1 - prec, where prec corresponds to the precision metric, i.e., as the fraction of
-    incorrectly predicted labels among all covered labels.
+    A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
-        cdef float64 num_incorrect_labels = cip + crn
-        cdef float64 num_covered_labels = num_incorrect_labels + cin + crp
+        cdef float64 num_covered_incorrect = cip + crn
+        cdef float64 num_covered = num_covered_incorrect + cin + crp
 
-        if num_covered_labels == 0:
+        if num_covered == 0:
             return 1
-        return num_incorrect_labels / num_covered_labels
+
+        return num_covered_incorrect / num_covered
+
+
+cdef class Recall(Heuristic):
+    """
+    A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is (or
+    would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
+    """
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        cdef float64 num_uncovered_equal = uin + urp
+        cdef float64 num_equal = num_uncovered_equal + cin + crp
+
+        if num_equal == 0:
+            return 1
+
+        return num_uncovered_equal / num_equal
+
+
+cdef class WeightedRelativeAccuracy(Heuristic):
+    """
+    A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
+    """
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        cdef float64 num_covered_equal = cin + crp
+        cdef float64 num_uncovered_equal = uin + urp
+        cdef float64 num_equal = num_uncovered_equal + num_covered_equal
+        cdef float64 num_covered = num_covered_equal + cip + crn
+        cdef float64 num_uncovered = num_uncovered_equal + uip + urn
+        cdef float64 num_total = num_covered + num_uncovered
+
+        if num_covered == 0 or num_total == 0:
+            return 1
+
+        return 1 - ((num_covered / num_total) * ((num_covered_equal / num_covered) - (num_equal / num_total)))
+
+
+cdef class FMeasure(Heuristic):
+    """
+    A heuristic that calculates as the (weighted) harmonic mean between the heuristics `Precision` and `Recall`, where
+    the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both heuristics are weighed
+    equally. If `beta = 0`, the heuristics is equivalent to `Precision`. As `beta` approaches infinity, the heuristic
+    becomes equivalent to `Recall`.
+    """
+
+    def __cinit__(self, float64 beta = 0.5):
+        """
+        :param beta: The value of the beta-parameter. Must be at least 0
+        """
+        self.beta = beta
+        self.recall = Recall()
+        self.precision = Precision()
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        cdef float64 beta = self.beta
+        cdef Heuristic heuristic
+        cdef float64 num_covered_equal, beta_pow, denominator
+
+        if isinf(beta):
+            # Equivalent to recall
+            heuristic = self.recall
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+        elif beta > 0:
+            # Weighted harmonic mean between recall and precision
+            num_covered_equal = cin + crp
+            beta_pow = pow(beta, 2)
+            denominator = ((1 + beta_pow) * num_covered_equal) + (beta_pow * (uin + urp)) + (cip + crn)
+
+            if denominator == 0:
+                return 1
+
+            return 1 - (((1 + beta_pow) * num_covered_equal) / denominator)
+        else:
+            # Equivalent to precision
+            heuristic = self.precision
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+
+
+cdef class MEstimate(Heuristic):
+    """
+    A heuristic that allows to trade off between the heuristics `Precision` and `WeightedRelativeAccuracy`. The
+    `m`-parameter allows to control the trade-off between both heuristics. If `m = 0`, the heuristic is equivalent to
+    `Precision`. As `m` approaches infinity, the isometrics of the heuristic become equivalent to those of
+    `WeightedRelativeAccuracy`.
+    """
+
+    def __cinit__(self, float64 m = 22.466):
+        """
+        :param m: The value of the m-parameter. Must be at least 0
+        """
+        self.m = m
+        self.wra = WeightedRelativeAccuracy()
+        self.precision = Precision()
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        cdef float64 m = self.m
+        cdef Heuristic heuristic
+        cdef float64 num_covered_equal, num_uncovered_equal, num_covered, num_equal, num_total, denominator
+
+        if isinf(m):
+            # Equivalent to weighted relative accuracy
+            heuristic = self.wra
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+        elif m > 0:
+            # Trade-off between weighted relative accuracy and precision
+            num_covered_equal = cin + crp
+            num_covered = num_covered_equal + cip + crn
+            denominator = num_covered + m
+
+            if denominator == 0:
+                return 1
+
+            num_uncovered_equal = uin + urp
+            num_equal = num_covered_equal + num_uncovered_equal
+            num_total = num_covered + num_uncovered_equal + uip + urn
+            return 1 - ((num_covered_equal + (m * (num_equal / num_total))) / denominator)
+        else:
+            # Equivalent to precision
+            heuristic = self.precision
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
