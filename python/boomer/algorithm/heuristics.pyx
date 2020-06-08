@@ -225,7 +225,6 @@ cdef class MEstimate(Heuristic):
             return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
         elif m > 0:
             # Trade-off between weighted relative accuracy and precision
-
             num_covered_correct = cin + crp
             num_covered = num_covered_correct + cip + crn
             denominator = num_covered + m
