@@ -13,7 +13,7 @@ cdef class Pruning:
     # Functions:
 
     cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices)
+                            uint32[::1] covered_examples_mask, uint32 covered_examples_target, intp[::1] label_indices)
 
     cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions)
 
@@ -26,7 +26,9 @@ cdef class IREP(Pruning):
 
     cdef intp[::1] label_indices
 
-    cdef intp[::1] covered_example_indices
+    cdef uint32[::1] covered_examples_mask
+
+    cdef uint32[::1] covered_examples_target
 
     cdef Loss loss
 
@@ -37,6 +39,6 @@ cdef class IREP(Pruning):
     # Functions:
 
     cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices)
+                            uint32[::1] covered_examples_mask, uint32 covered_examples_target, intp[::1] label_indices)
 
     cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions)
