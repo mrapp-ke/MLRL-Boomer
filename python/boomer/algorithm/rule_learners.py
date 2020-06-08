@@ -14,7 +14,8 @@ from boomer.algorithm.coverage_losses import CoverageLoss
 from boomer.algorithm.differentiable_losses import DifferentiableLoss, DecomposableDifferentiableLoss
 from boomer.algorithm.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.algorithm.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
-from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision
+from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision, Recall, WeightedRelativeAccuracy, FMeasure, \
+    MEstimate
 from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
 from boomer.algorithm.losses import Loss
@@ -49,6 +50,14 @@ AVERAGING_LABEL_WISE = 'label-wise-averaging'
 HEURISTIC_PRECISION = 'precision'
 
 HEURISTIC_HAMMING_LOSS = 'hamming-loss'
+
+HEURISTIC_RECALL = 'recall'
+
+HEURISTIC_WRA = 'weighted-relative-accuracy'
+
+HEURISTIC_F_MEASURE = 'f-measure'
+
+HEURISTIC_M_ESTIMATE = 'm-estimate'
 
 LABEL_SUB_SAMPLING_RANDOM = 'random-label-selection'
 
@@ -513,7 +522,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
-        if int(self.label_sub_sampling) != -1:
+        if self.label_sub_sampling is not None:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
             name += '_label-sub-sampling-num-samples=' + str(self.label_sub_sampling_num_samples)
         if self.instance_sub_sampling is not None:
@@ -579,6 +588,14 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return Precision()
         elif heuristic == HEURISTIC_HAMMING_LOSS:
             return HammingLoss()
+        elif heuristic == HEURISTIC_RECALL:
+            return Recall()
+        elif heuristic == HEURISTIC_WRA:
+            return WeightedRelativeAccuracy()
+        elif heuristic == HEURISTIC_F_MEASURE:
+            return FMeasure()
+        elif heuristic == HEURISTIC_M_ESTIMATE:
+            return MEstimate()
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
     def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
