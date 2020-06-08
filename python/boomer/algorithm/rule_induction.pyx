@@ -243,7 +243,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp best_condition_start, best_condition_end, best_condition_previous, best_condition_feature_index
         cdef bint best_condition_sparse
         cdef float32 best_condition_threshold
-        cdef intp best_condition_covered_weights
+        cdef uint32 best_condition_covered_weights
         cdef IndexedArray* best_condition_indexed_array
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
@@ -272,13 +272,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp c, f, r, i, first_r, previous_r
 
         # Sub-sample examples, if necessary...
-        cdef pair[uint32[::1], intp] instance_sub_sampling_result
+        cdef pair[uint32[::1], uint32] instance_sub_sampling_result
         cdef uint32[::1] weights
-        cdef intp total_sum_of_weights, sum_of_weights, accumulated_sum_of_weights
+        cdef uint32 total_sum_of_weights, sum_of_weights, accumulated_sum_of_weights
 
         if instance_sub_sampling is None:
             weights = None
-            total_sum_of_weights = num_examples
+            total_sum_of_weights = <uint32>num_examples
         else:
             instance_sub_sampling_result = instance_sub_sampling.sub_sample(num_examples, rng)
             weights = instance_sub_sampling_result.first
