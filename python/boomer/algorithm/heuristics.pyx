@@ -156,30 +156,27 @@ cdef class FMeasure(Heuristic):
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
         cdef float64 beta = self.beta
-        cdef Heuristic precision, recall
-        cdef float64 r, p, beta_pow, denominator
+        cdef Heuristic heuristic
+        cdef float64 num_covered_equal, beta_pow, denominator
 
         if isinf(beta):
             # Equivalent to recall
-            recall = self.recall
-            return recall.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            heuristic = self.recall
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
         elif beta > 0:
             # Weighted harmonic mean between recall and precision
-            recall = self.recall
-            precision = self.precision
-            r = recall.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
-            p = precision.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            num_covered_equal = cin + crp
             beta_pow = pow(beta, 2)
-            denominator = beta_pow * p + r
+            denominator = ((1 + beta_pow) * num_covered_equal) + (beta_pow * (uin + urp)) + (cip + crn)
 
             if denominator == 0:
                 return 1
 
-            return ((1 + beta_pow) * p * r) / denominator
+            return 1 - (((1 + beta_pow) * num_covered_equal) / denominator)
         else:
             # Equivalent to precision
-            precision = self.precision
-            return precision.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            heuristic = self.precision
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
 
 
 cdef class MEstimate(Heuristic):
