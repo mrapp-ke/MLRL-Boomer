@@ -146,15 +146,10 @@ cdef class WeightedRelativeAccuracy(Heuristic):
         cdef float64 num_uncovered = num_uncovered_equal + uip + urn
         cdef float64 num_total = num_covered + num_uncovered
 
-        if num_total == 0:
+        if num_covered == 0 or num_total == 0:
             return 1
 
-        cdef float64 diff = (num_covered / num_total) - (num_equal / num_total)
-
-        if diff == 0:
-            return 1
-
-        return num_uncovered / (num_total * diff)
+        return 1 - ((num_covered / num_total) * ((num_covered_equal / num_covered) - (num_equal / num_total)))
 
 
 cdef class FMeasure(Heuristic):
