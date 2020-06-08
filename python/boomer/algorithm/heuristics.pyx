@@ -127,10 +127,10 @@ cdef class WeightedRelativeAccuracy(Heuristic):
     A heuristic that measures as the fraction of uncovered labels among all labels weighted by the difference between
     the fraction of covered labels and the fraction of labels for which the rule's prediction is (or would be) correct.
 
-    It calculates as `1 - ((CIN + CIP + CRN + CRP) / (num_labels * (frac_covered - frac_equal))
-    = (UIN + UIP + URN + URP) / (num_labels * (frac_covered - frac_equal))`, where `num_labels
-    = CIN + CIP + CRN + CRP + UIN + UIP + URN + URP`, `frac_covered = (CIN + CIP + CRN + CRP) / num_labels` and
-    `frac_equal = (CIN + CRP + UIN + URP) / num_labels`. The division by zero evaluates to 1, by definition.
+    It calculates as `1 - ((CIN + CIP + CRN + CRP) / (num_total * (frac_covered - frac_equal))
+    = (UIN + UIP + URN + URP) / (num_total * (frac_covered - frac_equal))`, where `num_total
+    = CIN + CIP + CRN + CRP + UIN + UIP + URN + URP`, `frac_covered = (CIN + CIP + CRN + CRP) / num_total` and
+    `frac_equal = (CIN + CRP + UIN + URP) / num_total`. The division by zero evaluates to 1, by definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -140,17 +140,17 @@ cdef class WeightedRelativeAccuracy(Heuristic):
         cdef float64 num_equal = num_uncovered_equal + num_covered_equal
         cdef float64 num_covered = num_covered_equal + cip + crn
         cdef float64 num_uncovered = num_uncovered_equal + uip + urn
-        cdef float64 num_labels = num_covered + num_uncovered
+        cdef float64 num_total = num_covered + num_uncovered
 
-        if num_labels == 0:
+        if num_total == 0:
             return 1
 
-        cdef float64 diff = (num_covered / num_labels) - (num_equal / num_labels)
+        cdef float64 diff = (num_covered / num_total) - (num_equal / num_total)
 
         if diff == 0:
             return 1
 
-        return num_uncovered / (num_labels * diff)
+        return num_uncovered / (num_total * diff)
 
 
 cdef class FMeasure(Heuristic):
