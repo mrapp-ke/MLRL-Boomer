@@ -161,7 +161,7 @@ cdef class FMeasure(Heuristic):
     the heuristic becomes equivalent to `Recall`.
     """
 
-    def __cinit__(self, float64 beta):
+    def __cinit__(self, float64 beta = 1.0):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
@@ -205,7 +205,7 @@ cdef class MEstimate(Heuristic):
     `Precision`. As `m` approaches infinity, the heuristic becomes equivalent to `WeightedRelativeAccuracy`.
     """
 
-    def __cinit__(self, float64 m):
+    def __cinit__(self, float64 m = 22.466):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
