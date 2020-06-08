@@ -75,7 +75,7 @@ cdef class HammingLoss(Heuristic):
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
         cdef float64 num_incorrect = cip + crn + urn + urp
-        cdef float64 num_total = num_incorrect_labels + cin + crp + uin + uip
+        cdef float64 num_total = num_incorrect + cin + crp + uin + uip
 
         if num_total == 0:
             return 1
@@ -93,13 +93,13 @@ cdef class Precision(Heuristic):
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
-        cdef float64 num_incorrect = cip + crn
-        cdef float64 num_covered = num_incorrect_labels + cin + crp
+        cdef float64 num_covered_incorrect = cip + crn
+        cdef float64 num_covered = num_covered_incorrect + cin + crp
 
         if num_covered == 0:
             return 1
 
-        return num_incorrect / num_covered
+        return num_covered_incorrect / num_covered
 
 
 cdef class Recall(Heuristic):
