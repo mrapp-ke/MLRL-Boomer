@@ -71,9 +71,6 @@ cdef class Heuristic:
 cdef class HammingLoss(Heuristic):
     """
     A heuristic that measures the fraction of incorrectly predicted labels among all labels.
-
-    It calculates as `(CIP + CRN + URN + URP) / (CIN + CIP + CRN + CRP + UIN + UIP + URN + URP)`, where the division by
-    zero evaluates to 1, by definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -90,9 +87,6 @@ cdef class HammingLoss(Heuristic):
 cdef class Precision(Heuristic):
     """
     A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
-
-    It calculates as `1 - ((CIN + CRP) / (CIN + CIP + CRN + CRP)) = (CIP + CRN) / (CIN + CIP + CRN + CRP)`, where the
-    division by zero evaluates to 1, by definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -110,9 +104,6 @@ cdef class Recall(Heuristic):
     """
     A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is (or
     would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
-
-    It calculates as `1 - ((CIN + CRP) / (CIN + CRP + UIN + URP)) = (UIN + URP) / (CIN + CRP + UIN + URP)`, where the
-    division by zero evaluates to 1, by definition.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -128,13 +119,7 @@ cdef class Recall(Heuristic):
 
 cdef class WeightedRelativeAccuracy(Heuristic):
     """
-    A heuristic that measures as the fraction of uncovered labels among all labels weighted by the difference between
-    the fraction of covered labels and the fraction of labels for which the rule's prediction is (or would be) correct.
-
-    It calculates as `1 - ((CIN + CIP + CRN + CRP) / (num_total * (frac_covered - frac_equal))
-    = (UIN + UIP + URN + URP) / (num_total * (frac_covered - frac_equal))`, where `num_total
-    = CIN + CIP + CRN + CRP + UIN + UIP + URN + URP`, `frac_covered = (CIN + CIP + CRN + CRP) / num_total` and
-    `frac_equal = (CIN + CRP + UIN + URP) / num_total`. The division by zero evaluates to 1, by definition.
+    A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -156,8 +141,8 @@ cdef class FMeasure(Heuristic):
     """
     A heuristic that calculates as the (weighted) harmonic mean between the heuristics `Precision` and `Recall`, where
     the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both heuristics are weighed
-    equally. As `beta` approaches zero, the heuristics becomes equivalent to `Precision`. As `beta` approaches infinity,
-    the heuristic becomes equivalent to `Recall`.
+    equally. If `beta = 0`, the heuristics is equivalent to `Precision`. As `beta` approaches infinity, the heuristic
+    becomes equivalent to `Recall`.
     """
 
     def __cinit__(self, float64 beta = 1.0):
