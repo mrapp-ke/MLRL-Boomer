@@ -28,7 +28,7 @@ cdef class IREP(Pruning):
 
     cdef uint32[::1] covered_examples_mask
 
-    cdef uint32[::1] covered_examples_target
+    cdef uint32 covered_examples_target
 
     cdef Loss loss
 
