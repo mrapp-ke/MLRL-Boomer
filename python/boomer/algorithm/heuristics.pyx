@@ -145,7 +145,7 @@ cdef class FMeasure(Heuristic):
     becomes equivalent to `Recall`.
     """
 
-    def __cinit__(self, float64 beta = 1.0):
+    def __cinit__(self, float64 beta = 0.5):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
