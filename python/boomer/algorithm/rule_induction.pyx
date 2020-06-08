@@ -762,7 +762,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
 
     # Determine the number of elements in the filtered array...
     if sparse and (condition_comparator == Comparator.LEQ or condition_comparator == Comparator.EQ):
-        num_elements = 0
+        num_elements = condition_end + 1
     else:
         num_elements = condition_start - condition_end
 
