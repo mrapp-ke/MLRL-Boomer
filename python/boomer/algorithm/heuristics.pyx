@@ -186,7 +186,8 @@ cdef class MEstimate(Heuristic):
     """
     A heuristic that allows to trade off between the heuristics `Precision` and `WeightedRelativeAccuracy`. The
     `m`-parameter allows to control the trade-off between both heuristics. If `m = 0`, the heuristic is equivalent to
-    `Precision`. As `m` approaches infinity, the heuristic becomes equivalent to `WeightedRelativeAccuracy`.
+    `Precision`. As `m` approaches infinity, the isometrics of the heuristic become equivalent to those of
+    `WeightedRelativeAccuracy`.
     """
 
     def __cinit__(self, float64 m = 22.466):
