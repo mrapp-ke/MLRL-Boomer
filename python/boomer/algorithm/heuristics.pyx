@@ -4,6 +4,7 @@ Given the elements of a confusion matrix, a heuristic calculates a quality score
 implemented as loss functions, i.e., rules with a smaller quality score are better than those with a large quality
 score.
 """
+from libc.math cimport isinf, pow
 
 
 cdef class Heuristic:
@@ -150,3 +151,48 @@ cdef class WeightedRelativeAccuracy(Heuristic):
             return 1
 
         return num_uncovered / (num_labels * diff)
+
+
+cdef class FMeasure(Heuristic):
+    """
+    A heuristic that calculates as the (weighted) harmonic mean between the heuristics `Precision` and `Recall`, where
+    the parameter `beta` allows to trade-off between both heuristics. If `beta == 1`, both heuristics are weighed
+    equally. As `beta` approaches zero, the heuristics becomes equivalent to `Precision`. As `beta` approaches infinity,
+    the heuristic becomes equivalent to `Recall`.
+    """
+
+    def __cinit__(self, float64 beta):
+        """
+        :param beta: The value of the beta-parameter. Must be at least 0
+        """
+        self.beta = beta
+        self.recall = Recall()
+        self.precision = Precision()
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        cdef float64 beta = self.beta
+        cdef Heuristic precision, recall
+        cdef float64 r, p, beta_pow, denominator
+
+        if isinf(beta):
+            # Equivalent to recall
+            recall = self.recall
+            return recall.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+        if beta > 0:
+            # Weighted harmonic mean between recall and precision
+            recall = self.recall
+            precision = self.precision
+            r = recall.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            p = precision.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            beta_pow = pow(beta, 2)
+            denominator = beta_pow * p + r
+
+            if denominator == 0:
+                return 1
+
+            return ((1 + beta_pow) * p * r) / denominator
+        else:
+            # Equivalent to precision
+            precision = self.precision
+            precision.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
