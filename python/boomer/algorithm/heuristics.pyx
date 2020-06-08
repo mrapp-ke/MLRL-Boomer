@@ -205,7 +205,7 @@ cdef class MEstimate(Heuristic):
     `Precision`. As `m` approaches infinity, the heuristic becomes equivalent to `WeightedRelativeAccuracy`.
     """
 
-    cdef __cinit__(self, float64 m):
+    def __cinit__(self, float64 m):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
