@@ -195,4 +195,4 @@ cdef class FMeasure(Heuristic):
         else:
             # Equivalent to precision
             precision = self.precision
-            precision.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            return precision.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
