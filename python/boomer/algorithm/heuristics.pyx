@@ -179,7 +179,7 @@ cdef class FMeasure(Heuristic):
             # Equivalent to recall
             recall = self.recall
             return recall.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
-        if beta > 0:
+        elif beta > 0:
             # Weighted harmonic mean between recall and precision
             recall = self.recall
             precision = self.precision
