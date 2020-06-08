@@ -156,7 +156,7 @@ cdef class WeightedRelativeAccuracy(Heuristic):
 cdef class FMeasure(Heuristic):
     """
     A heuristic that calculates as the (weighted) harmonic mean between the heuristics `Precision` and `Recall`, where
-    the parameter `beta` allows to trade-off between both heuristics. If `beta == 1`, both heuristics are weighed
+    the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both heuristics are weighed
     equally. As `beta` approaches zero, the heuristics becomes equivalent to `Precision`. As `beta` approaches infinity,
     the heuristic becomes equivalent to `Recall`.
     """
@@ -196,3 +196,47 @@ cdef class FMeasure(Heuristic):
             # Equivalent to precision
             precision = self.precision
             return precision.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+
+
+cdef class MEstimate(Heuristic):
+    """
+    A heuristic that allows to trade off the heuristics `Precision` and `WeightedRelativeAccuracy`. The `m`-parameter
+    allows to control the trade-off between both heuristics. If `m = 0`, the heuristic is equivalent to `Precision`. As
+    `m` approaches infinity, the heuristic becomes equivalent to `WeightedRelativeAccuracy`.
+    """
+
+    cdef __cinit__(self, float64 m):
+        """
+        :param m: The value of the m-parameter. Must be at least 0
+        """
+        self.m = m
+        self.wra = WeightedRelativeAccuracy()
+        self.precision = Precision()
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp):
+        cdef float64 m = self.m
+        cdef Heuristic heuristic
+        cdef float64 num_covered_correct, num_covered, denominator, num_equal, num_total
+
+        if isinf(m):
+            # Equivalent to weighted relative accuracy
+            heuristic = self.wra
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+        elif m > 0:
+            # Trade-off between weighted relative accuracy and precision
+
+            num_covered_correct = cin + crp
+            num_covered = num_covered_correct + cip + crn
+            denominator = num_covered + m
+
+            if denominator == 0:
+                return 1
+
+            num_equal = num_covered_correct + uin + urp
+            num_total = num_covered + uin + uip + urn + urp
+            return 1 - ((num_covered_correct + (m * num_equal / num_total)) / denominator)
+        else:
+            # Equivalent to precision
+            heuristic = self.precision
+            return heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
