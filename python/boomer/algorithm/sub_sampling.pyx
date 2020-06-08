@@ -17,7 +17,7 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
         """
         Creates and returns a sub-sample of the available training examples.
 
@@ -43,7 +43,7 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
         cdef intp num_samples = <intp>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
@@ -59,9 +59,9 @@ cdef class Bagging(InstanceSubSampling):
             # Update weight at the selected index...
             weights[random_index] += 1
 
-        cdef pair[uint32[::1], intp] result  # Stack-allocated pair
+        cdef pair[uint32[::1], uint32] result  # Stack-allocated pair
         result.first = weights
-        result.second = num_samples
+        result.second = <uint32>num_samples
         return result
 
 
@@ -78,13 +78,13 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
         cdef intp num_samples = <intp>(sample_size * num_examples)
         cdef uint32[::1] weights = __sample_weights_without_replacement(num_examples, num_samples, rng)
-        cdef pair[uint32[::1], intp] result  # Stack-allocated pair
+        cdef pair[uint32[::1], uint32] result  # Stack-allocated pair
         result.first = weights
-        result.second = num_samples
+        result.second = <uint32>num_samples
         return result
 
 
