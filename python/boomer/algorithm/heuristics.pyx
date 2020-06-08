@@ -200,9 +200,9 @@ cdef class FMeasure(Heuristic):
 
 cdef class MEstimate(Heuristic):
     """
-    A heuristic that allows to trade off the heuristics `Precision` and `WeightedRelativeAccuracy`. The `m`-parameter
-    allows to control the trade-off between both heuristics. If `m = 0`, the heuristic is equivalent to `Precision`. As
-    `m` approaches infinity, the heuristic becomes equivalent to `WeightedRelativeAccuracy`.
+    A heuristic that allows to trade off between the heuristics `Precision` and `WeightedRelativeAccuracy`. The
+    `m`-parameter allows to control the trade-off between both heuristics. If `m = 0`, the heuristic is equivalent to
+    `Precision`. As `m` approaches infinity, the heuristic becomes equivalent to `WeightedRelativeAccuracy`.
     """
 
     cdef __cinit__(self, float64 m):
