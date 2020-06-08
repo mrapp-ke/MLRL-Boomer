@@ -80,14 +80,17 @@ cdef class IREP(Pruning):
         cdef intp i
 
         # Reset the loss function...
+        loss.begin_instance_sub_sampling()
         loss.begin_search(label_indices)
 
         # Tell the loss function about all examples in the prune set that are covered by the given rule...
         for i in range(num_examples):
-            if covered_examples_mask[i] == covered_examples_target:
-                weight = weights[i]
+            weight = weights[i]
 
-                if weight == 0:
+            if weight == 0:
+                loss.update_sub_sample(i, 1, False)
+
+                if covered_examples_mask[i] == covered_examples_target:
                     loss.update_search(i, 1)
 
         # Calculate the optimal scores to be predicted by the given rule, as well as its overall quality score,  based
