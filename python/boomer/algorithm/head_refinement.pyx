@@ -137,10 +137,6 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
         cdef LiftFunction lift = self.lift
 
-        if label_indices is not None and predicted_scores.shape[0] != label_indices.shape[0]:
-            print("ERROR")
-            exit(1)
-
         if label_indices is None:
             sorted_indices = __argsort(quality_scores)
 
