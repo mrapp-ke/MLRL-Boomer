@@ -137,6 +137,10 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
         cdef LiftFunction lift = self.lift
 
+        if label_indices is not None and predicted_scores.shape[0] != label_indices.shape[0]:
+            print("ERROR")
+            exit(1)
+
         if label_indices is None:
             sorted_indices = __argsort(quality_scores)
 
@@ -186,10 +190,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
             return candidate
         elif best_quality_score < best_head.quality_score:
             if best_head.label_indices.shape[0] != best_head_candidate_length:
+                best_head.label_indices = array_intp(best_head_candidate_length)
                 best_head.predicted_scores = array_float64(best_head_candidate_length)
-
-            # label_indices array is recreated each time to prevent side-effects
-            best_head.label_indices = array_intp(best_head_candidate_length)
 
             # Modify the `best_head` and return it...
             if label_indices is None:
