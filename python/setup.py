@@ -9,7 +9,8 @@ extensions = [
 compiler_directives = {
     'boundscheck': False,
     'wraparound': False,
-    'cdivision': True
+    'cdivision': True,
+    'initializedcheck': False
 }
 
 setup(name='boomer',
