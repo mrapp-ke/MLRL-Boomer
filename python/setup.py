@@ -3,7 +3,7 @@ from Cython.Build import cythonize
 from setuptools import setup, Extension
 
 # True, if annotated Cython source files that highlight Python interactions should be created
-ANNOTATE = False
+ANNOTATE = True
 
 # True, if all Cython compiler optimizations should be disabled
 DEBUG = False
