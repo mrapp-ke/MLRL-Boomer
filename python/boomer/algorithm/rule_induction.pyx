@@ -479,7 +479,7 @@ cdef inline intp* __argsort_by_feature_values(float32[::1] feature_values):
             tmp_array[i].index = i
             tmp_array[i].value = feature_values[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
+        qsort(tmp_array, num_values, sizeof(IndexedValue), &compare_indexed_value)
         sorted_array = <intp*>malloc(num_values * sizeof(intp))
 
         for i in range(num_values):

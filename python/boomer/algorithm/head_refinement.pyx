@@ -9,7 +9,7 @@ from boomer.algorithm.lift_functions cimport LiftFunction
 
 from libc.stdlib cimport qsort
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
-from boomer.algorithm.rule_induction cimport __compare_indexed_value
+from boomer.algorithm.rule_induction cimport compare_indexed_value
 
 cdef class HeadCandidate:
     """
@@ -284,7 +284,7 @@ cdef inline intp[::1] __argsort(float64[::1] values):
             tmp_array[i].index = i
             tmp_array[i].value = values[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
+        qsort(tmp_array, num_values, sizeof(IndexedValue), &compare_indexed_value)
 
         for i in range(num_values):
             sorted_array[i] = tmp_array[i].index
