@@ -99,7 +99,7 @@ cdef inline bint test_condition(float32 threshold, Comparator comparator, float3
         return feature_value != threshold
 
 
-cdef inline int __compare_indexed_value(const void* a, const void* b) nogil:
+cdef inline int compare_indexed_value(const void* a, const void* b) nogil:
     """
     Compares the values of two structs of type `IndexedValue`.
 
