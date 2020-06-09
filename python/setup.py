@@ -2,6 +2,10 @@ import numpy
 from Cython.Build import cythonize
 from setuptools import setup, Extension
 
+# True, if annotated Cython source files that highlight Python interactions should be created
+ANNOTATE = False
+
+# True, if all Cython compiler optimizations should be disabled
 DEBUG = False
 
 extensions = [
@@ -35,6 +39,6 @@ setup(name='boomer',
           'xgboost>=1.1.0'
       ],
       python_requires='>=3.7',
-      ext_modules=cythonize(extensions, language_level='3', annotate=DEBUG, compiler_directives=compiler_directives),
+      ext_modules=cythonize(extensions, language_level='3', annotate=ANNOTATE, compiler_directives=compiler_directives),
       include_dirs=[numpy.get_include()],
       zip_safe=False)
