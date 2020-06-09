@@ -15,7 +15,8 @@ from boomer.algorithm.differentiable_losses import DifferentiableLoss, Decomposa
 from boomer.algorithm.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.algorithm.head_refinement import SingleLabelHeadRefinement, FullHeadRefinement, HeadRefinement, \
     PartialHeadRefinement
-from boomer.algorithm.heuristics import HammingLoss, Precision, Heuristic
+from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision, Recall, WeightedRelativeAccuracy, FMeasure, \
+    MEstimate
 from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
 from boomer.algorithm.losses import Loss
@@ -52,6 +53,14 @@ AVERAGING_LABEL_WISE = 'label-wise-averaging'
 HEURISTIC_PRECISION = 'precision'
 
 HEURISTIC_HAMMING_LOSS = 'hamming-loss'
+
+HEURISTIC_RECALL = 'recall'
+
+HEURISTIC_WRA = 'weighted-relative-accuracy'
+
+HEURISTIC_F_MEASURE = 'f-measure'
+
+HEURISTIC_M_ESTIMATE = 'm-estimate'
 
 LABEL_SUB_SAMPLING_RANDOM = 'random-label-selection'
 
@@ -590,6 +599,14 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return Precision()
         elif heuristic == HEURISTIC_HAMMING_LOSS:
             return HammingLoss()
+        elif heuristic == HEURISTIC_RECALL:
+            return Recall()
+        elif heuristic == HEURISTIC_WRA:
+            return WeightedRelativeAccuracy()
+        elif heuristic == HEURISTIC_F_MEASURE:
+            return FMeasure()
+        elif heuristic == HEURISTIC_M_ESTIMATE:
+            return MEstimate()
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
     def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
