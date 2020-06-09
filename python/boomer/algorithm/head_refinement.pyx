@@ -126,7 +126,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef intp num_labels = predicted_scores.shape[0]
+        cdef intp num_labels
         cdef HeadCandidate candidate
         cdef float64[::1] candidate_predicted_scores
         cdef intp[::1] candidate_label_indices
@@ -138,6 +138,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef LiftFunction lift = self.lift
 
         if label_indices is None:
+            num_labels = predicted_scores.shape[0]
+
             sorted_indices = __argsort(quality_scores)
 
             maximum_lift = lift.get_max_lift()
@@ -158,6 +160,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
                     # prunable by decomposition
                     break
         else:
+            num_labels = label_indices.shape[0]
+
             for c in range(0, num_labels):
                 # select the top element of sorted_label_indices excluding labels already contained
                 total_quality_score += quality_scores[c]
