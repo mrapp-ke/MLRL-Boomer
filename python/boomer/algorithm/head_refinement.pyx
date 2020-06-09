@@ -177,9 +177,14 @@ cdef class PartialHeadRefinement(HeadRefinement):
             best_head.label_indices = array_intp(best_head_candidate_length)
 
             # Modify the `best_head` and return it...
-            for c in range(best_head_candidate_length):
-                best_head.label_indices[c] = get_index(sorted_indices[c], label_indices)
-                best_head.predicted_scores[c] = predicted_scores[sorted_indices[c]]
+            if label_indices is None:
+                for c in range(best_head_candidate_length):
+                    best_head.label_indices[c] = get_index(sorted_indices[c], label_indices)
+                    best_head.predicted_scores[c] = predicted_scores[sorted_indices[c]]
+            else:
+                for c in range(best_head_candidate_length):
+                    best_head.label_indices[c] = label_indices[c]
+                    best_head.predicted_scores[c] = predicted_scores[c]
 
             best_head.quality_score = best_quality_score
             return best_head
