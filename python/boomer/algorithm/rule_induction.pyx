@@ -759,16 +759,19 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     """
     cdef IndexedValue* indexed_values = dereference(indexed_array).data
     cdef intp num_indexed_values = dereference(indexed_array).num_elements
-    cdef intp num_elements
+    cdef intp num_elements = condition_start - condition_end
+    cdef bint covered
 
-    # Determine the number of elements in the filtered array...
-    if sparse and (condition_comparator == Comparator.LEQ or condition_comparator == Comparator.EQ):
-        num_elements = condition_end + 1
+    # Determine whether the examples in range [condition_start, condition_end) are covered by the condition or not...
+    if condition_comparator == Comparator.GR:
+        covered = True
+    elif not sparse and condition_comparator == Comparator.EQ:
+        covered = True
+    elif sparse and condition_comparator == Comparator.NEQ:
+        covered = True
     else:
-        num_elements = condition_start - condition_end
-
-        if condition_comparator == Comparator.LEQ or (not sparse and condition_comparator == Comparator.NEQ):
-            num_elements = num_indexed_values - num_elements
+        covered = False
+        num_elements = num_indexed_values - num_elements
 
     # Allocate filtered array...
     cdef IndexedValue* filtered_array = NULL
@@ -780,7 +783,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     cdef uint32 updated_target, weight
     cdef intp r, index
 
-    if condition_comparator == Comparator.GR or (not sparse and condition_comparator == Comparator.EQ) or (sparse and condition_comparator == Comparator.NEQ):
+    if covered:
         updated_target = num_conditions
         loss.begin_instance_sub_sampling()
 
