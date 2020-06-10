@@ -365,8 +365,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     else:
                         nominal = False
 
-                    # Reset the loss function when processing a new feature...
+                    # Tell the loss function to start a new search when processing a new feature...
                     loss.begin_search(label_indices)
+
                     sum_of_weights = 0
                     accumulated_sum_of_weights = 0
                     first_r = num_indexed_values - 1
