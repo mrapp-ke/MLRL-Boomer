@@ -748,11 +748,8 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     :param indexed_array_wrapper:   A pointer to a struct of type `IndexedArrayWrapper` that should be used to store the
                                     filtered array
     :param condition_start:         The element in `indexed_values` that corresponds to the first example (inclusive)
-                                    that has been passed to the loss function when searching for the new condition (must
-                                    be greater than `condition_end`)
+                                    that has been passed to the loss function when searching for the new condition
     :param condition_end:           The element in `indexed_values` that corresponds to the last example (exclusive)
-                                    that has been passed to the loss function when searching for the new condition (must
-                                    be smaller than `condition_start`)
     :param condition_comparator:    The type of the operator that is used by the new condition
     :param covered                  1, if the examples in range [condition_start, condition_end) are covered by the new
                                     condition and the remaining ones are not, 0, if the examples in said range are not
@@ -773,6 +770,9 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     """
     cdef IndexedValue* indexed_values = dereference(indexed_array).data
     cdef intp num_indexed_values = dereference(indexed_array).num_elements
+    cdef bint descending = condition_end < condition_start
+    cdef uint32 updated_target, weight
+    cdef intp start, end, direction, i, r, index
 
     # Determine the number of elements in the filtered array...
     cdef intp num_elements = abs(condition_start - condition_end)
@@ -786,53 +786,63 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     if num_elements > 0:
         filtered_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
 
-    cdef intp i = num_elements - 1
-    cdef uint32 updated_target, weight
-    cdef intp r, index
+    if descending:
+        direction = -1
+        i = num_elements - 1
+    else:
+        direction = 1
+        i = 0
 
     if covered:
         updated_target = num_conditions
         loss.begin_instance_sub_sampling()
 
-        # Retain the indices at positions (condition_end, condition_start] and set the corresponding values in
+        # Retain the indices at positions [condition_start, condition_end) and set the corresponding values in
         # `covered_examples_mask` to `num_conditions`, which marks them as covered (because
         # `updated_target == num_conditions`)...
-        for r in range(condition_start, condition_end, -1):
+        for r in range(condition_start, condition_end, direction):
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
             weight = 1 if weights is None else weights[index]
             loss.update_sub_sample(index, weight, False)
-            i -= 1
+            i += direction
     else:
         updated_target = covered_examples_target
 
+        if descending:
+            start = num_indexed_values - 1
+            end = -1
+        else:
+            start = 0
+            end = num_indexed_values
+
         if condition_comparator == Comparator.NEQ:
-            # Retain the indices at positions (condition_start, num_indexed_values), while leaving the corresponding
-            # values in `covered_examples_mask` untouched, such that all previously covered examples in said range are
-            # still marked as covered, while previously uncovered examples are still marked as uncovered...
-            for r in range(num_indexed_values - 1, condition_start, -1):
+            # Retain the indices at positions [start, condition_start), while leaving the corresponding values in
+            # `covered_examples_mask` untouched, such that all previously covered examples in said range are still
+            # marked as covered, while previously uncovered examples are still marked as uncovered...
+            for r in range(start, condition_start, direction):
                 filtered_array[i].index = indexed_values[r].index
                 filtered_array[i].value = indexed_values[r].value
-                i -= 1
+                i += direction
 
-        # Discard the indices at positions (condition_end, condition_start] and set the corresponding values in
+        # Discard the indices at positions [condition_start, condition_end) and set the corresponding values in
         # `covered_examples_mask` to `num_conditions`, which marks them as uncovered (because
         # `updated_target != num_conditions`)...
-        for r in range(condition_start, condition_end, -1):
+        for r in range(condition_start, condition_end, direction):
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
             weight = 1 if weights is None else weights[index]
             loss.update_sub_sample(index, weight, True)
 
-        # Retain the indices at positions [condition_end, 0], while leaving the corresponding values in
+        # Retain the indices at positions [condition_end, end), while leaving the corresponding values in
         # `covered_examples_mask` untouched, such that all previously covered examples in said range are still marked as
         # covered, while previously uncovered examples are still marked as uncovered...
-        for r in range(condition_end, -1, -1):
+        for r in range(condition_end, end, direction):
             filtered_array[i].index = indexed_values[r].index
             filtered_array[i].value = indexed_values[r].value
-            i -= 1
+            i += direction
 
     cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
 
