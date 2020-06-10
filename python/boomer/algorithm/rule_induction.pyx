@@ -382,10 +382,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             # Tell the loss function that the example will be covered by upcoming refinements...
                             loss.update_search(i, weight)
                             sum_of_weights += weight
-                            accumulated_sum_of_weights += weight
                             previous_threshold = indexed_values[r].value
                             previous_r = r
                             break
+
+                    accumulated_sum_of_weights = sum_of_weights
 
                     # Traverse the remaining examples in descending order...
                     if sum_of_weights > 0:
