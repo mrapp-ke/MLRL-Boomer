@@ -276,7 +276,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef pair[uint32[::1], uint32] instance_sub_sampling_result
         cdef uint32[::1] weights
         cdef uint32 total_sum_of_weights, sum_of_weights, accumulated_sum_of_weights
-        cdef uint32 accumulated_sum_of_weights_negative
+        cdef uint32 accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
 
         if instance_sub_sampling is None:
             weights = None
@@ -619,6 +619,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             best_condition_covered = False
                             best_condition_comparator = Comparator.NEQ
                             best_condition_threshold = previous_threshold
+
+                    total_accumulated_sum_of_weights = accumulated_sum_of_weights_negative + accumulated_sum_of_weights
 
                     # If the sum of weights of all examples that have been iterated so far is less than the sum of of
                     # weights of all examples, this means that there are examples with (sparse), i.e. zero, feature
