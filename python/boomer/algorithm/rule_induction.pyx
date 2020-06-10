@@ -581,7 +581,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # the covered from the uncovered examples. However, when taking into account the examples that are
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_condition_end` and therefore must be adjusted...
-                    if weights is not None and best_condition_previous - best_condition_end > 1:
+                    if weights is not None and abs(best_condition_previous - best_condition_end) > 1:
                         best_condition_end = __adjust_split(best_condition_indexed_array, best_condition_end,
                                                             best_condition_previous, best_condition_threshold)
 
@@ -684,37 +684,45 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline intp __adjust_split(IndexedArray* indexed_array, intp position_start, intp position_end, float32 threshold):
+cdef inline intp __adjust_split(IndexedArray* indexed_array, intp condition_end, intp condition_previous,
+                                float32 threshold):
     """
     Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
     not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
-    the examples in ascending order until the next example that is contained in the current sub-sample is encountered,
-    to see if they satisfy the new condition or not.
+    the examples in ascending or descending order, depending on whether `condition_end` is smaller than
+    `condition_previous` or vice versa, until the next example that is contained in the current sub-sample is
+    encountered, to see if they satisfy the new condition or not.
 
-    :param indexed_array:   A pointer to a struct of type `IndexedArray` that stores a pointer to a C-array containing
-                            the indices of the training examples and the corresponding feature values, as well as the
-                            number of elements in said array
-    :param position_start:  The position that separates the covered from the uncovered examples (when only taking into
-                            account the examples that are contained in the sample). This is the position to start at
-    :param position_end:    The position to stop at (exclusive, must be greater than `position_start`)
-    :param threshold:       The threshold of the condition
-    :return:                The adjusted position that separates the covered from the uncovered examples with respect to
-                            the examples that are not contained in the sample
+    :param indexed_array:       A pointer to a struct of type `IndexedArray` that stores a pointer to a C-array
+                                containing the indices of the training examples and the corresponding feature values, as
+                                well as the number of elements in said array
+    :param condition_end:       The position that separates the covered from the uncovered examples (when only taking
+                                into account the examples that are contained in the sample). This is the position to
+                                start at
+    :param condition_previous:  The position to stop at (exclusive)
+    :param threshold:           The threshold of the condition
+    :return:                    The adjusted position that separates the covered from the uncovered examples with
+                                respect to the examples that are not contained in the sample
     """
     cdef IndexedValue* indexed_values = dereference(indexed_array).data
-    cdef intp adjusted_position = position_start
+    cdef intp adjusted_position = condition_end
+    cdef bint ascending = condition_end < condition_previous
+    cdef intp direction = 1 if ascending else -1
     cdef float32 feature_value
+    cdef bint adjust
     cdef intp r
 
-    # Traverse the examples in ascending order until we encounter an example that is contained in the current
-    # sub-sample...
-    for r in range(position_start + 1, position_end):
+    # Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
+    # current sub-sample...
+    for r in range(condition_end + direction, condition_previous, direction):
+        # Check if the current position should be adjusted, or not. This is the case, if the feature value of the
+        # current example is smaller than or equal to the given `threshold` (or greater than the `threshold`, if we
+        # traverse in descending direction).
         feature_value = indexed_values[r].value
+        adjust = (feature_value <= threshold if ascending else feature_value > threshold)
 
-        if feature_value <= threshold:
-            # The feature value at `position_start` is guaranteed to be smaller than or equal to the given `threshold`.
-            # If this does also apply to the feature value of a preceding example, it is not separated from the example
-            # at `position_start`. Hence, we are not done yet and continue by updating the adjusted position...
+        if adjust:
+            # Update the adjusted position and continue...
             adjusted_position = r
         else:
             # If we have found the first example that is separated from the example at the position we started at, we
