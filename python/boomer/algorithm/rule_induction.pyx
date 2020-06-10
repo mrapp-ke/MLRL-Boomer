@@ -732,6 +732,64 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 best_condition_comparator = Comparator.LEQ
                                 best_condition_threshold = previous_threshold / 2.0
 
+                    # If the feature is numerical and there are other examples than those with feature values < 0 that
+                    # have been processed earlier, we must evaluate additional conditions that separate the examples
+                    # with feature values < 0 from the remaining ones (unlike in the nominal case, these conditions
+                    # cannot be evaluated earlier, because it remains unclear what the thresholds of the conditions
+                    # should be until the examples with feature values >= 0 have been processed).
+                    if not nominal and accumulated_sum_of_weights_negative > 0 and accumulated_sum_of_weights_negative < total_sum_of_weights:
+                        # Find and evaluate the best head for the current refinement, if the condition that uses the <=
+                        # operator is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, False, True)
+
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = 0
+                            best_condition_end = (last_negative_r + 1)
+                            best_condition_previous = previous_r_negative
+                            best_condition_feature_index = f
+                            best_condition_covered_weights = accumulated_sum_of_weights_negative
+                            best_condition_indexed_array = indexed_array
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+                            best_condition_covered = True
+                            best_condition_comparator = Comparator.LEQ
+
+                            if total_accumulated_sum_of_weights < total_sum_of_weights:
+                                # If the condition separates an example with feature value < 0 from an (sparse) example
+                                # with feature value == 0
+                                best_condition_threshold = previous_threshold_negative / 2.0
+                            else:
+                                # If the condition separates an examples with feature value < 0 from an example with
+                                # feature value > 0
+                                best_condition_threshold = previous_threshold_negative + (abs(previous_threshold - previous_threshold_negative) / 2.0)
+
+                        # Find and evaluate the best head for the current refinement, if the condition that uses the >
+                        # operator is used...
+                        current_head = head_refinement.find_head(head, label_indices, loss, True, True)
+
+                        if current_head is not None:
+                            found_refinement = True
+                            head = current_head
+                            best_condition_start = 0
+                            best_condition_end = (last_negative_r + 1)
+                            best_condition_previous = previous_r_negative
+                            best_condition_feature_index = f
+                            best_condition_covered_weights = (total_sum_of_weights - accumulated_sum_of_weights_negative)
+                            best_condition_indexed_array = indexed_array
+                            best_condition_indexed_array_wrapper = indexed_array_wrapper
+                            best_condition_covered = False
+                            best_condition_comparator = Comparator.GR
+
+                            if total_accumulated_sum_of_weights < total_sum_of_weights:
+                                # If the condition separates an example with feature value < 0 from an (sparse) example
+                                # with feature value == 0
+                                best_condition_threshold = previous_threshold_negative / 2.0
+                            else:
+                                # If the condition separates an examples with feature value < 0 from an example with
+                                # feature value > 0
+                                best_condition_threshold = previous_threshold_negative + (abs(previous_threshold - previous_threshold_negative) / 2.0)
+
                 if found_refinement:
                     # If a refinement has been found, add the new condition and update the labels for which the rule
                     # predicts...
