@@ -370,7 +370,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     loss.begin_search(label_indices)
 
                     sum_of_weights = 0
-                    accumulated_sum_of_weights = 0
                     first_r = num_indexed_values - 1
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
