@@ -388,78 +388,79 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             break
 
                     # Traverse the remaining examples in descending order...
-                    for r in range(r - 1, -1, -1):
-                        i = indexed_values[r].index
-                        weight = 1 if weights is None else weights[i]
+                    if sum_of_weights > 0:
+                        for r in range(r - 1, -1, -1):
+                            i = indexed_values[r].index
+                            weight = 1 if weights is None else weights[i]
 
-                        # Do only consider examples that are included in the current sub-sample...
-                        if weight > 0:
-                            current_threshold = indexed_values[r].value
+                            # Do only consider examples that are included in the current sub-sample...
+                            if weight > 0:
+                                current_threshold = indexed_values[r].value
 
-                            # Split points between examples with the same feature value must not be considered...
-                            if previous_threshold != current_threshold:
-                                # Find and evaluate the best head for the current refinement, if a condition that uses
-                                # the > operator (or the == operator in case of a nominal feature) is used...
-                                current_head = head_refinement.find_head(head, label_indices, loss, False, False)
+                                # Split points between examples with the same feature value must not be considered...
+                                if previous_threshold != current_threshold:
+                                    # Find and evaluate the best head for the current refinement, if a condition that
+                                    # uses the > operator (or the == operator in case of a nominal feature) is used...
+                                    current_head = head_refinement.find_head(head, label_indices, loss, False, False)
 
-                                # If the refinement is better than the current rule...
-                                if current_head is not None:
-                                    found_refinement = True
-                                    head = current_head
-                                    best_condition_start = first_r
-                                    best_condition_end = r
-                                    best_condition_previous = previous_r
-                                    best_condition_feature_index = f
-                                    best_condition_covered_weights = sum_of_weights
-                                    best_condition_indexed_array = indexed_array
-                                    best_condition_indexed_array_wrapper = indexed_array_wrapper
-                                    best_condition_covered = True
+                                    # If the refinement is better than the current rule...
+                                    if current_head is not None:
+                                        found_refinement = True
+                                        head = current_head
+                                        best_condition_start = first_r
+                                        best_condition_end = r
+                                        best_condition_previous = previous_r
+                                        best_condition_feature_index = f
+                                        best_condition_covered_weights = sum_of_weights
+                                        best_condition_indexed_array = indexed_array
+                                        best_condition_indexed_array_wrapper = indexed_array_wrapper
+                                        best_condition_covered = True
 
+                                        if nominal:
+                                            best_condition_comparator = Comparator.EQ
+                                            best_condition_threshold = previous_threshold
+                                        else:
+                                            best_condition_comparator = Comparator.GR
+                                            best_condition_threshold = (previous_threshold + current_threshold) / 2.0
+
+                                    # Find and evaluate the best head for the current refinement, if a condition that
+                                    # uses the <= operator (or the != operator in case of a nominal feature) is used...
+                                    current_head = head_refinement.find_head(head, label_indices, loss, True, False)
+
+                                    # If the refinement is better than the current rule...
+                                    if current_head is not None:
+                                        found_refinement = True
+                                        head = current_head
+                                        best_condition_start = first_r
+                                        best_condition_end = r
+                                        best_condition_previous = previous_r
+                                        best_condition_feature_index = f
+                                        best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
+                                        best_condition_indexed_array = indexed_array
+                                        best_condition_indexed_array_wrapper = indexed_array_wrapper
+                                        best_condition_covered = False
+
+                                        if nominal:
+                                            best_condition_comparator = Comparator.NEQ
+                                            best_condition_threshold = previous_threshold
+                                        else:
+                                            best_condition_comparator = Comparator.LEQ
+                                            best_condition_threshold = (previous_threshold + current_threshold) / 2.0
+
+                                    # Reset the loss function in case of a nominal feature, as the previous examples
+                                    # will not be covered by the next condition...
                                     if nominal:
-                                        best_condition_comparator = Comparator.EQ
-                                        best_condition_threshold = previous_threshold
-                                    else:
-                                        best_condition_comparator = Comparator.GR
-                                        best_condition_threshold = (previous_threshold + current_threshold) / 2.0
+                                        loss.reset_search()
+                                        sum_of_weights = 0
+                                        first_r = r
 
-                                # Find and evaluate the best head for the current refinement, if a condition that uses
-                                # the <= operator (or the != operator in case of a nominal feature) is used...
-                                current_head = head_refinement.find_head(head, label_indices, loss, True, False)
+                                previous_threshold = current_threshold
+                                previous_r = r
 
-                                # If the refinement is better than the current rule...
-                                if current_head is not None:
-                                    found_refinement = True
-                                    head = current_head
-                                    best_condition_start = first_r
-                                    best_condition_end = r
-                                    best_condition_previous = previous_r
-                                    best_condition_feature_index = f
-                                    best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
-                                    best_condition_indexed_array = indexed_array
-                                    best_condition_indexed_array_wrapper = indexed_array_wrapper
-                                    best_condition_covered = False
-
-                                    if nominal:
-                                        best_condition_comparator = Comparator.NEQ
-                                        best_condition_threshold = previous_threshold
-                                    else:
-                                        best_condition_comparator = Comparator.LEQ
-                                        best_condition_threshold = (previous_threshold + current_threshold) / 2.0
-
-                                # Reset the loss function in case of a nominal feature, as the previous examples will
-                                # not be covered by the next condition...
-                                if nominal:
-                                    loss.reset_search()
-                                    sum_of_weights = 0
-                                    first_r = r
-
-                            previous_threshold = current_threshold
-                            previous_r = r
-
-                            # Tell the loss function that the example will be covered by upcoming refinements...
-                            loss.update_search(i, weight)
-                            sum_of_weights += weight
-                            accumulated_sum_of_weights += weight
+                                # Tell the loss function that the example will be covered by upcoming refinements...
+                                loss.update_search(i, weight)
+                                sum_of_weights += weight
+                                accumulated_sum_of_weights += weight
 
                     # If the feature is nominal and the examples that have been iterated so far do not all have the same
                     # feature value, we must evaluate additional conditions `f == previous_threshold` and
