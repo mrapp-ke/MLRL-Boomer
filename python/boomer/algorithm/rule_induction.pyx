@@ -622,11 +622,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     total_accumulated_sum_of_weights = accumulated_sum_of_weights_negative + accumulated_sum_of_weights
 
-                    # If the sum of weights of all examples that have been iterated so far is less than the sum of of
-                    # weights of all examples, this means that there are examples with (sparse), i.e. zero, feature
-                    # values. In such case, we must explicitly test conditions that separate these examples from the
-                    # ones that have already been iterated...
-                    if accumulated_sum_of_weights > 0 and accumulated_sum_of_weights < total_sum_of_weights:
+                    # If the sum of weights of all examples that have been iterated so far (including those with feature
+                    # values < 0 and those with feature values >= 0) is less than the sum of of weights of all examples,
+                    # this means that there are examples with sparse, i.e. zero, feature values. In such case, we must
+                    # explicitly test conditions that separate these examples from the ones that have already been
+                    # iterated...
+                    if total_accumulated_sum_of_weights > 0 and total_accumulated_sum_of_weights < total_sum_of_weights:
                         # If the feature is nominal, we must reset the loss function once again to ensure that the
                         # accumulated state includes all examples that have been processed so far...
                         if nominal:
@@ -643,18 +644,21 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             found_refinement = True
                             head = current_head
                             best_condition_start = first_r
-                            best_condition_end = last_negative_r
-                            best_condition_previous = previous_r
                             best_condition_feature_index = f
-                            best_condition_covered_weights = accumulated_sum_of_weights
                             best_condition_indexed_array = indexed_array
                             best_condition_indexed_array_wrapper = indexed_array_wrapper
                             best_condition_covered = True
 
                             if nominal:
+                                best_condition_end = -1
+                                best_condition_previous = -1
+                                best_condition_covered_weights = total_accumulated_sum_of_weights
                                 best_condition_comparator = Comparator.NEQ
                                 best_condition_threshold = 0.0
                             else:
+                                best_condition_end = last_negative_r
+                                best_condition_previous = previous_r
+                                best_condition_covered_weights = accumulated_sum_of_weights
                                 best_condition_comparator = Comparator.GR
                                 best_condition_threshold = previous_threshold / 2.0
 
@@ -667,18 +671,21 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             found_refinement = True
                             head = current_head
                             best_condition_start = first_r
-                            best_condition_end = last_negative_r
-                            best_condition_previous = previous_r
                             best_condition_feature_index = f
-                            best_condition_covered_weights = (total_sum_of_weights - accumulated_sum_of_weights)
                             best_condition_indexed_array = indexed_array
                             best_condition_indexed_array_wrapper = indexed_array_wrapper
                             best_condition_covered = False
 
                             if nominal:
+                                best_condition_end = -1
+                                best_condition_previous = -1
+                                best_condition_covered_weights = (total_sum_of_weights - total_accumulated_sum_of_weights)
                                 best_condition_comparator = Comparator.EQ
                                 best_condition_threshold = 0.0
                             else:
+                                best_condition_end = last_negative_r
+                                best_condition_previous = previous_r
+                                best_condition_covered_weights = (total_sum_of_weights - accumulated_sum_of_weights)
                                 best_condition_comparator = Comparator.LEQ
                                 best_condition_threshold = previous_threshold / 2.0
 
