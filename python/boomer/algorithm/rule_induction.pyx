@@ -268,14 +268,15 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef HeadCandidate current_head
         cdef Prediction prediction
         cdef float64[::1] predicted_scores
-        cdef float32 previous_threshold, current_threshold
+        cdef float32 previous_threshold, current_threshold, previous_threshold_negative
         cdef uint32 weight
-        cdef intp c, f, r, i, first_r, previous_r, last_negative_r
+        cdef intp c, f, r, i, first_r, previous_r, last_negative_r, previous_r_negative
 
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], uint32] instance_sub_sampling_result
         cdef uint32[::1] weights
         cdef uint32 total_sum_of_weights, sum_of_weights, accumulated_sum_of_weights
+        cdef uint32 accumulated_sum_of_weights_negative
 
         if instance_sub_sampling is None:
             weights = None
@@ -477,6 +478,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         # Reset the loss function, if any examples with feature value < 0 have been processed...
                         loss.reset_search()
+
+                    previous_threshold_negative = previous_threshold
+                    previous_r_negative = previous_r
+                    accumulated_sum_of_weights_negative = accumulated_sum_of_weights
 
                     # We continue by processing all examples with feature values >= 0...
                     sum_of_weights = 0
