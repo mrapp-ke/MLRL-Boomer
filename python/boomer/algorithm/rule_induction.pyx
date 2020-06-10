@@ -729,7 +729,8 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
     values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the new rule.
-    The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
+    The filtered array is stored in a given struct of type `IndexedArrayWrapper` and the given loss function is updated
+    accordingly.
 
     :param indexed_array:           A pointer to a struct of type `IndexedArray` that stores a pointer to the C-array to
                                     be filtered, as well as the number of elements in said array
