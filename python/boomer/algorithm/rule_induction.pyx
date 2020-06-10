@@ -270,7 +270,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef float64[::1] predicted_scores
         cdef float32 previous_threshold, current_threshold
         cdef uint32 weight
-        cdef intp c, f, r, i, first_r, previous_r
+        cdef intp c, f, r, i, first_r, previous_r, last_negative_r
 
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], uint32] instance_sub_sampling_result
@@ -371,9 +371,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     sum_of_weights = 0
                     first_r = num_indexed_values - 1
+                    last_negative_r = -1
 
                     # Traverse examples in descending order until the first example with weight > 0 is encountered...
-                    for r in range(first_r, -1, -1):
+                    for r in range(first_r, last_negative_r, -1):
                         i = indexed_values[r].index
                         weight = 1 if weights is None else weights[i]
 
@@ -389,7 +390,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # Traverse the remaining examples in descending order...
                     if sum_of_weights > 0:
-                        for r in range(r - 1, -1, -1):
+                        for r in range(r - 1, last_negative_r, -1):
                             i = indexed_values[r].index
                             weight = 1 if weights is None else weights[i]
 
@@ -475,7 +476,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             found_refinement = True
                             head = current_head
                             best_condition_start = first_r
-                            best_condition_end = -1
+                            best_condition_end = last_negative_r
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
                             best_condition_covered_weights = sum_of_weights
@@ -494,7 +495,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             found_refinement = True
                             head = current_head
                             best_condition_start = first_r
-                            best_condition_end = -1
+                            best_condition_end = last_negative_r
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
                             best_condition_covered_weights = (total_sum_of_weights - sum_of_weights)
@@ -525,7 +526,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             found_refinement = True
                             head = current_head
                             best_condition_start = first_r
-                            best_condition_end = -1
+                            best_condition_end = last_negative_r
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
                             best_condition_covered_weights = accumulated_sum_of_weights
@@ -549,7 +550,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             found_refinement = True
                             head = current_head
                             best_condition_start = first_r
-                            best_condition_end = -1
+                            best_condition_end = last_negative_r
                             best_condition_previous = previous_r
                             best_condition_feature_index = f
                             best_condition_covered_weights = (total_sum_of_weights - accumulated_sum_of_weights)
