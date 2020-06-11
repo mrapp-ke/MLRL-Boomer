@@ -36,8 +36,6 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The number of samples to be used for label sub-sampling')
     p.add_argument('--instance-sub-sampling', type=optional_string, default=INSTANCE_SUB_SAMPLING_BAGGING,
                    help='The name of the strategy to be used for instance sub-sampling or None')
-    p.add_argument('--instance-sub-sampling-sample-size', type=float, default=0.0,
-                   help='The fraction of examples to be used for instance sub-sampling')
     p.add_argument('--feature-sub-sampling', type=optional_string, default=FEATURE_SUB_SAMPLING_RANDOM,
                    help='The name of the strategy to be used for feature sub-sampling or None')
     p.add_argument('--feature-sub-sampling-sample-size', type=float, default=0.0,
