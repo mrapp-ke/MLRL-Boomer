@@ -32,8 +32,6 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The duration in seconds after which the induction of rules should be canceled or -1')
     p.add_argument('--label-sub-sampling', type=optional_string, default=None,
                    help='The name of the strategy to be used for label sub-sampling or None')
-    p.add_argument('--label-sub-sampling-num-samples', type=int, default=1,
-                   help='The number of samples to be used for label sub-sampling')
     p.add_argument('--instance-sub-sampling', type=optional_string, default=None,
                    help='The name of the strategy to be used for instance sub-sampling or None')
     p.add_argument('--feature-sub-sampling', type=optional_string, default=None,
@@ -54,7 +52,6 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
     return SeparateAndConquerRuleLearner(model_dir=params.model_dir, max_rules=params.max_rules,
                                          time_limit=params.time_limit, loss=params.loss, heuristic=params.heuristic,
                                          pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
-                                         label_sub_sampling_num_samples=params.label_sub_sampling_num_samples,
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          feature_sub_sampling=params.feature_sub_sampling,
                                          head_refinement=params.head_refinement, min_coverage=params.min_coverage,
