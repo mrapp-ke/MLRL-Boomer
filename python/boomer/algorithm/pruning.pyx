@@ -5,7 +5,7 @@
 
 Provides classes that implement strategies for pruning classification rules.
 """
-from boomer.algorithm._arrays cimport float32, float64
+from boomer.algorithm._arrays cimport float32, float64, array_uint32
 from boomer.algorithm.losses cimport Prediction
 from boomer.algorithm.rule_induction cimport Comparator, IndexedValue
 
@@ -99,6 +99,11 @@ cdef class IREP(Pruning):
         cdef uint32[::1] best_covered_examples_mask = covered_examples_mask
         cdef uint32 best_covered_examples_target = covered_examples_target
         cdef intp num_pruned_conditions = 0
+
+        # Initialize array that is used to keep track of the examples that are covered by the current rule...
+        cdef uint32[::1] current_covered_examples_mask = array_uint32(num_examples)
+        current_covered_examples_mask[:] = 0
+        cdef uint32 current_covered_examples_target = 0
 
         # We process the existing rule's conditions (except for the last one) in the order they have been learned. At
         # each iteration, we calculate the quality score of a rule that only contains the conditions processed so far
