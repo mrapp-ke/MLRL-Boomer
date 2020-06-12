@@ -13,7 +13,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
     cdef Heuristic heuristic
 
     cdef float64[::1, :] uncovered_labels
-    
+
     cdef uint8[::1] minority_labels
 
     cdef uint8[::1, :] true_labels

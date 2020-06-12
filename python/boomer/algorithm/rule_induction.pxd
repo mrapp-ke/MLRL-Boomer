@@ -121,3 +121,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
                           intp min_coverage, intp max_conditions, RNG rng)
+
+
+cdef inline int compare_indexed_value(const void* a, const void* b) nogil:
+    """
+    Compares the values of two structs of type `IndexedValue`.
+
+    :param a:   A pointer to the first struct
+    :param b:   A pointer to the second struct
+    :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
+                equal, or 1 if the value of the first struct is greater than the value of the second struct
+    """
+    cdef float32 v1 = (<IndexedValue*>a).value
+    cdef float32 v2 = (<IndexedValue*>b).value
+    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
