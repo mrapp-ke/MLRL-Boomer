@@ -5,8 +5,11 @@
 
 Provides classes that implement strategies for pruning classification rules.
 """
-from boomer.algorithm._arrays cimport float64
+from boomer.algorithm._arrays cimport float32, float64
 from boomer.algorithm.losses cimport Prediction
+from boomer.algorithm.rule_induction cimport Comparator
+
+from cython.operator cimport dereference, postincrement
 
 
 cdef class Pruning:
@@ -61,10 +64,15 @@ cdef class IREP(Pruning):
                                          Loss loss, HeadRefinement head_refinement):
         # The total number of training examples
         cdef intp num_examples = covered_examples_mask.shape[0]
+        # The number of conditions of the existing rule
+        cdef intp num_conditions = conditions.size()
         # Temporary variables
         cdef Prediction prediction
+        cdef Condition condition
+        cdef Comparator comparator
+        cdef float32 threshold
         cdef uint32 weight
-        cdef intp i
+        cdef intp feature_index, i, n
 
         # Reset the loss function...
         loss.begin_instance_sub_sampling()
@@ -84,6 +92,20 @@ cdef class IREP(Pruning):
         # the prune set...
         prediction = head_refinement.evaluate_predictions(loss, False, False)
         cdef float64 original_quality_score = prediction.overall_quality_score
+
+        # We process the existing rule's conditions (except for the last one) in the order they have been learned. At
+        # each iteration, we calculate the quality score of a rule that only contains the conditions processed so far
+        # and keep track of the best rule...
+        cdef list[Condition].iterator iterator = conditions.begin()
+
+        for n in range(num_conditions - 1):
+            # Obtain properties of the current condition...
+            condition = dereference(iterator)
+            feature_index = condition.feature_index
+            threshold = condition.threshold
+            comparator = condition.comparator
+
+            postincrement(iterator)
 
         # TODO Implement pruning
 
