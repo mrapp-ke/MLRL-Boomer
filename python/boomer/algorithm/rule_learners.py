@@ -329,17 +329,17 @@ class Boomer(MLRuleLearner):
                                                     new classification rule is learned. Must be 'random-label-selection'
                                                     or None, if no sub-sampling should be used. Additional arguments may
                                                     be provided as a dictionary, e.g.
-                                                    `random-label-selection{`num_samples`:5}`
+                                                    `random-label-selection{\"num_samples\":5}`
         :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
                                                     each time a new classification rule is learned. Must be `bagging`,
                                                     `random-instance-selection` or None, if no sub-sampling should be
                                                     used. Additional arguments may be provided as a dictionary, e.g.
-                                                    `bagging{'sample_size':0.5}`
+                                                    `bagging{\"sample_size\":0.5}`
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
                                                     or None, if no sub-sampling should be used. Additional argument may
                                                     be provided as a dictionary, e.g.
-                                                    `random-feature-selection{sample_size:0.5}`
+                                                    `random-feature-selection{\"sample_size\":0.5}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
@@ -501,17 +501,17 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     new classification rule is learned. Must be 'random-label-selection'
                                                     or None, if no sub-sampling should be used. Additional arguments may
                                                     be provided as a dictionary, e.g.
-                                                    `random-label-selection{`num_samples`:5}`
+                                                    `random-label-selection{\"num_samples\":5}`
         :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
                                                     each time a new classification rule is learned. Must be `bagging`,
                                                     `random-instance-selection` or None, if no sub-sampling should be
                                                     used. Additional arguments may be provided as a dictionary, e.g.
-                                                    `bagging{'sample_size':0.5}`
+                                                    `bagging{\"sample_size\":0.5}`
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
                                                     or None, if no sub-sampling should be used. Additional argument may
                                                     be provided as a dictionary, e.g.
-                                                    `random-feature-selection{sample_size:0.5}`
+                                                    `random-feature-selection{\"sample_size\":0.5}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param min_coverage:                        The minimum number of training examples that must be covered by a
