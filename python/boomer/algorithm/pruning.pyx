@@ -5,11 +5,8 @@
 
 Provides classes that implement strategies for pruning classification rules.
 """
-from boomer.algorithm._arrays cimport array_intp
-from boomer.algorithm.rule_induction cimport Comparator
+from boomer.algorithm._arrays cimport float64
 from boomer.algorithm.losses cimport Prediction
-
-from cython.operator cimport dereference, postincrement
 
 
 cdef class Pruning:
@@ -62,7 +59,34 @@ cdef class IREP(Pruning):
                                          list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Loss loss, HeadRefinement head_refinement):
-        # TODO Implement
+        # The total number of training examples
+        cdef intp num_examples = covered_examples_mask.shape[0]
+        # Temporary variables
+        cdef Prediction prediction
+        cdef uint32 weight
+        cdef intp i
+
+        # Reset the loss function...
+        loss.begin_instance_sub_sampling()
+        loss.begin_search(label_indices)
+
+        # Tell the loss function about all examples in the prune set that are covered by the existing rule...
+        for i in range(num_examples):
+            weight = weights[i]
+
+            if weight == 0:
+                loss.update_sub_sample(i, 1, False)
+
+                if covered_examples_mask[i] == covered_examples_target:
+                    loss.update_search(i, 1)
+
+        # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
+        # the prune set...
+        prediction = head_refinement.evaluate_predictions(loss, False, False)
+        cdef float64 original_quality_score = prediction.overall_quality_score
+
+        # TODO Implement pruning
+
         cdef pair[uint32[::1], uint32] result
         result.first = covered_examples_mask
         result.second = covered_examples_target
