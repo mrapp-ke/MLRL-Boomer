@@ -5,11 +5,13 @@ Provides classes that implement strategies for finding the heads of rules.
 """
 from boomer.algorithm._arrays cimport array_intp, array_float64, get_index
 from boomer.algorithm.losses cimport LabelIndependentPrediction
+from boomer.algorithm.rule_induction cimport IndexedValue, compare_indexed_value
 from boomer.algorithm.lift_functions cimport LiftFunction
 
 from libc.stdlib cimport qsort
+
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
-from boomer.algorithm.rule_induction cimport compare_indexed_value
+
 
 cdef class HeadCandidate:
     """
@@ -131,8 +133,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
     def __cinit__(self, LiftFunction lift):
         self.lift = lift
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
-        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
+                                 bint accumulated):
+        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels
@@ -218,8 +221,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
             # Return None, as the quality_score of the found head is worse than that of `best_head`...
             return None
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
-        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
+        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
         return prediction
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
