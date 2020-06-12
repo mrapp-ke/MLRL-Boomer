@@ -94,6 +94,7 @@ cdef class IREP(Pruning):
         # the prune set...
         prediction = head_refinement.evaluate_predictions(loss, False, False)
         cdef float64 original_quality_score = prediction.overall_quality_score
+        cdef intp num_pruned_conditions = 0
 
         # We process the existing rule's conditions (except for the last one) in the order they have been learned. At
         # each iteration, we calculate the quality score of a rule that only contains the conditions processed so far
@@ -113,9 +114,14 @@ cdef class IREP(Pruning):
             indexed_values = dereference(indexed_array).data
             num_indexed_values = dereference(indexed_array).num_elements
 
+            # TODO Implement pruning
+
             postincrement(iterator)
 
-        # TODO Implement pruning
+        # Remove the pruned conditions...
+        while num_pruned_conditions > 0:
+            conditions.pop_back()
+            num_pruned_conditions -= 1
 
         cdef pair[uint32[::1], uint32] result
         result.first = covered_examples_mask
