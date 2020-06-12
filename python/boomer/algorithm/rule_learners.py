@@ -80,6 +80,10 @@ ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
 ARGUMENT_NUM_SAMPLES = 'num_samples'
 
+ARGUMENT_BETA = 'beta'
+
+ARGUMENT_M = 'm'
+
 
 def _create_label_sub_sampling(label_sub_sampling: str, stats: Stats) -> LabelSubSampling:
     if label_sub_sampling is None:
@@ -498,7 +502,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     used
         :param lift_function:                       The lift function to use. Must be `peak`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
-        :param heuristic:                           The heuristic to be minimized. Must be `precision` or `hamming-loss`
+        :param heuristic:                           The heuristic to be minimized. Must be `precision`, `hamming-loss`,
+                                                    `recall`, `weighted-relative-accuracy`, `f-measure` or `m-estimate`.
+                                                    Additional arguments may be provided as a dictionary, e.g.
+                                                    `f-measure{\"beta\":1.0}`
         :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
                                                     new classification rule is learned. Must be 'random-label-selection'
                                                     or None, if no sub-sampling should be used. Additional arguments may
@@ -598,19 +605,23 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
+        prefix, args = _parse_prefix_and_dict(heuristic, [HEURISTIC_PRECISION, HEURISTIC_HAMMING_LOSS, HEURISTIC_RECALL,
+                                                          HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE])
 
-        if heuristic == HEURISTIC_PRECISION:
+        if prefix == HEURISTIC_PRECISION:
             return Precision()
-        elif heuristic == HEURISTIC_HAMMING_LOSS:
+        elif prefix == HEURISTIC_HAMMING_LOSS:
             return HammingLoss()
-        elif heuristic == HEURISTIC_RECALL:
+        elif prefix == HEURISTIC_RECALL:
             return Recall()
-        elif heuristic == HEURISTIC_WRA:
+        elif prefix == HEURISTIC_WRA:
             return WeightedRelativeAccuracy()
-        elif heuristic == HEURISTIC_F_MEASURE:
-            return FMeasure()
-        elif heuristic == HEURISTIC_M_ESTIMATE:
-            return MEstimate()
+        elif prefix == HEURISTIC_F_MEASURE:
+            beta = _get_float_argument(args, ARGUMENT_BETA, 0.5, lambda x: x >= 0)
+            return FMeasure(beta)
+        elif prefix == HEURISTIC_M_ESTIMATE:
+            m = _get_float_argument(args, ARGUMENT_M, 22.466, lambda x: x >= 0)
+            return MEstimate(m)
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
     def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
