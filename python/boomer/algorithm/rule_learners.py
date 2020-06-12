@@ -175,7 +175,7 @@ def __get_sample_size(args: dict, default: float) -> float:
     if args is not None and key in args:
         sample_size = float(args[key])
 
-        if sample_size < 0 or sample_size > 1:
+        if sample_size <= 0 or sample_size > 1:
             raise ValueError('Invalid value given for parameter \'sample_size\': ' + str(sample_size))
 
         return sample_size
