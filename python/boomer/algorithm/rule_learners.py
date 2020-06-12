@@ -76,15 +76,20 @@ PRUNING_IREP = 'irep'
 
 LIFT_FUNCTION_PEAK = 'peak'
 
+ARGUMENT_SAMPLE_SIZE = 'sample_size'
+
+ARGUMENT_NUM_SAMPLES = 'num_samples'
+
 
 def _create_label_sub_sampling(label_sub_sampling: str, stats: Stats) -> LabelSubSampling:
     if label_sub_sampling is None:
         return None
     else:
-        prefix, args = __parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
+        prefix, args = _parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
 
         if prefix == LABEL_SUB_SAMPLING_RANDOM:
-            return RandomLabelSubsetSelection(__get_num_samples(args, 1, stats))
+            num_samples = _get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < stats.num_labels)
+            return RandomLabelSubsetSelection(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
 
@@ -92,13 +97,15 @@ def _create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSamp
     if instance_sub_sampling is None:
         return None
     else:
-        prefix, args = __parse_prefix_and_dict(instance_sub_sampling,
-                                               [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
+        prefix, args = _parse_prefix_and_dict(instance_sub_sampling,
+                                              [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
 
         if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
-            return Bagging(__get_sample_size(args, 1.0))
+            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 < x <= 1)
+            return Bagging(sample_size)
         elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
-            return RandomInstanceSubsetSelection(__get_sample_size(args, 0.66))
+            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 < x < 1)
+            return RandomInstanceSubsetSelection(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
@@ -106,10 +113,11 @@ def _create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSamplin
     if feature_sub_sampling is None:
         return None
     else:
-        prefix, args = __parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SUB_SAMPLING_RANDOM])
+        prefix, args = _parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SUB_SAMPLING_RANDOM])
 
         if prefix == FEATURE_SUB_SAMPLING_RANDOM:
-            return RandomFeatureSubsetSelection(__get_sample_size(args, 0.0))
+            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
+            return RandomFeatureSubsetSelection(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
 
@@ -153,37 +161,7 @@ def _create_max_conditions(max_conditions: int) -> int:
     return max_conditions
 
 
-def __get_num_samples(args: dict, default: int, stats: Stats) -> int:
-    key = 'num_samples'
-
-    if args is not None and key in args:
-        num_samples = int(args[key])
-
-        if num_samples < 1 or num_samples >= stats.num_labels:
-            raise ValueError('Value given for parameter \'num_samples\' (' + str(
-                num_samples) + ') must be at least 1 and less than the number of labels in the data set (' + str(
-                stats.num_labels) + ')')
-
-        return num_samples
-
-    return default
-
-
-def __get_sample_size(args: dict, default: float) -> float:
-    key = 'sample_size'
-
-    if args is not None and key in args:
-        sample_size = float(args[key])
-
-        if sample_size <= 0 or sample_size > 1:
-            raise ValueError('Invalid value given for parameter \'sample_size\': ' + str(sample_size))
-
-        return sample_size
-
-    return default
-
-
-def __parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
+def _parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
     for prefix in prefixes:
         if string.startswith(prefix):
             suffix = string[len(prefix):].strip()
@@ -194,6 +172,30 @@ def __parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
             return prefix, {}
 
     return None, None
+
+
+def _get_int_argument(args: dict, key: str, default: int, validation) -> int:
+    if args is not None and key in args:
+        value = int(args[key])
+
+        if validation is not None and not validation(value):
+            raise ValueError('Invalid value given for int argument \'' + key + '\': ' + str(value))
+
+        return value
+
+    return default
+
+
+def _get_float_argument(args: dict, key: str, default: float, validation) -> float:
+    if args is not None and key in args:
+        value = float(args[key])
+
+        if validation is not None and not validation(value):
+            raise ValueError('Invalid value given for float argument \'' + key + '\': ' + str(value))
+
+        return value
+
+    return default
 
 
 class MLRuleLearner(MLLearner, NominalAttributeLearner):
