@@ -23,7 +23,7 @@ from boomer.algorithm.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.algorithm.losses import Loss
 from boomer.algorithm.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.algorithm.pruning import Pruning, IREP
-from boomer.algorithm.rule_induction import DenseThresholdProvider, SparseThresholdProvider, ExactGreedyRuleInduction
+from boomer.algorithm.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix, ExactGreedyRuleInduction
 from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.algorithm.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
@@ -181,10 +181,10 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
             x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
-            threshold_provider = SparseThresholdProvider(x_data, x_row_indices, x_col_indices)
+            feature_matrix = SparseFeatureMatrix(x_data, x_row_indices, x_col_indices)
         else:
             x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
-            threshold_provider = DenseThresholdProvider(x)
+            feature_matrix = DenseFeatureMatrix(x)
 
         num_examples = x.shape[0]
         num_features = x.shape[1]
@@ -200,7 +200,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(stats)
-        return sequential_rule_induction.induce_rules(nominal_attribute_indices, threshold_provider, num_examples,
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, num_examples,
                                                       num_features, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
