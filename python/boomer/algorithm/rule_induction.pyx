@@ -273,7 +273,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp c, f, r, i, first_r, previous_r, last_negative_r, previous_r_negative
 
         # Sub-sample examples, if necessary...
-        cdef pair[uint32[::1], uint32] instance_sub_sampling_result
+        cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
         cdef uint32[::1] weights
         cdef uint32 total_sum_of_weights, sum_of_weights, accumulated_sum_of_weights
         cdef uint32 accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
@@ -282,9 +282,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             weights = None
             total_sum_of_weights = <uint32>num_examples
         else:
-            instance_sub_sampling_result = instance_sub_sampling.sub_sample(num_examples, rng)
-            weights = instance_sub_sampling_result.first
-            total_sum_of_weights = instance_sub_sampling_result.second
+            uint32_array_scalar_pair = instance_sub_sampling.sub_sample(num_examples, rng)
+            weights = uint32_array_scalar_pair.first
+            total_sum_of_weights = uint32_array_scalar_pair.second
 
         # Notify the loss function about the examples that are included in the sub-sample...
         loss.begin_instance_sub_sampling()
