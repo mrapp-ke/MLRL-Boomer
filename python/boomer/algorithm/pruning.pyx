@@ -93,7 +93,11 @@ cdef class IREP(Pruning):
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
         prediction = head_refinement.evaluate_predictions(loss, False, False)
-        cdef float64 original_quality_score = prediction.overall_quality_score
+
+        # Initialize variables that are used to keep track of the best rule...
+        cdef float64 best_quality_score = prediction.overall_quality_score
+        cdef uint32[::1] best_covered_examples_mask = covered_examples_mask
+        cdef uint32 best_covered_examples_target = covered_examples_target
         cdef intp num_pruned_conditions = 0
 
         # We process the existing rule's conditions (except for the last one) in the order they have been learned. At
@@ -124,6 +128,6 @@ cdef class IREP(Pruning):
             num_pruned_conditions -= 1
 
         cdef pair[uint32[::1], uint32] result
-        result.first = covered_examples_mask
-        result.second = covered_examples_target
+        result.first = best_covered_examples_mask
+        result.second = best_covered_examples_target
         return result
