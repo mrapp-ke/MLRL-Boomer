@@ -14,8 +14,8 @@ cdef class SequentialRuleInduction:
     rules.
     """
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                              intp num_examples, intp num_features, uint8[::1, :] y, uint32 random_state):
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,
+                              uint32 random_state):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -23,8 +23,6 @@ cdef class SequentialRuleInduction:
                                             indices of all nominal attributes (in ascending order)
         :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
                                             of the training examples
-        :param num_examples:                The total number of training examples
-        :param num_features:                The total number of features
         :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
                                             the labels of the training examples
         :param random_state:                The seed to be used by RNGs
@@ -80,8 +78,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                              intp num_examples, intp num_features, uint8[::1, :] y, uint32 random_state):
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,
+                              uint32 random_state):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleInduction rule_induction = self.rule_induction
@@ -114,10 +112,9 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule
-            rule = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_examples, num_features,
-                                              num_labels, head_refinement, loss, label_sub_sampling,
-                                              instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
-                                              min_coverage, max_conditions, rng)
+            rule = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
+                                              loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                              pruning, shrinkage, min_coverage, max_conditions, rng)
             rule_list.append(rule)
             num_rules += 1
 

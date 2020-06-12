@@ -49,6 +49,8 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
                   training examples
         """
+        self.num_examples = x.shape[0]
+        self.num_features = x.shape[1]
         self.x = x
 
     cdef IndexedArray* get_sorted_feature_values(self, intp feature_index):
@@ -80,8 +82,11 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
     The feature matrix must be given in compressed sparse column (CSC) format.
     """
 
-    def __cinit__(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices):
+    def __cinit__(self, intp num_examples, intp num_features, float32[::1] x_data, intp[::1] x_row_indices,
+                  intp[::1] x_col_indices):
         """
+        :param num_examples:    The total number of examples
+        :param num_features:    The total number of features
         :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples
         :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
@@ -90,6 +95,8 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
                                 element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
                                 at the last position is equal to `num_non_zero_feature_values`
         """
+        self.num_examples = num_examples
+        self.num_features = num_features
         self.x_data = x_data
         self.x_row_indices = x_row_indices
         self.x_col_indices = x_col_indices
@@ -144,11 +151,10 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_examples,
-                          intp num_features, intp num_labels, HeadRefinement head_refinement, Loss loss,
-                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                          intp min_coverage, intp max_conditions, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -158,8 +164,6 @@ cdef class RuleInduction:
                                             features are available
         :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of
                                             the training examples
-        :param num_examples:                The total number of training examples
-        :param num_features:                The total number of features
         :param num_labels:                  The total number of labels
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
@@ -215,11 +219,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Rule rule = Rule.__new__(Rule, body, head)
         return rule
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_examples,
-                          intp num_features, intp num_labels, HeadRefinement head_refinement, Loss loss,
-                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                          intp min_coverage, intp max_conditions, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
+        # The total number of training examples
+        cdef intp num_examples = feature_matrix.num_examples
+        # The total number of features
+        cdef intp num_features = feature_matrix.num_features
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
