@@ -1,5 +1,5 @@
 from boomer.algorithm._arrays cimport uint8, uint32, intp, float32
-from boomer.algorithm.rule_induction cimport ThresholdProvider, RuleInduction
+from boomer.algorithm.rule_induction cimport FeatureMatrix, RuleInduction
 from boomer.algorithm.head_refinement cimport HeadRefinement
 from boomer.algorithm.losses cimport Loss
 from boomer.algorithm.pruning cimport Pruning
@@ -11,8 +11,8 @@ cdef class SequentialRuleInduction:
 
     # Functions:
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
-                              intp num_examples, intp num_features, uint8[::1, :] y, uint32 random_state)
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,
+                              uint32 random_state)
 
 
 cdef class RuleListInduction(SequentialRuleInduction):
@@ -45,5 +45,5 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
     # Functions:
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
-                              intp num_examples, intp num_features, uint8[::1, :] y, uint32 random_state)
+    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,
+                              uint32 random_state)

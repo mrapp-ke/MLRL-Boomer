@@ -21,12 +21,12 @@ from cython.operator cimport dereference, postincrement
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
-cdef class ThresholdProvider:
+cdef class FeatureMatrix:
     """
-    A base class for all classes that allow to access the thresholds that can potentially be used by conditions.
+    A base class for all classes that provide column-wise access to the feature values of the training examples.
     """
 
-    cdef IndexedArray* get_thresholds(self, intp feature_index):
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index):
         """
         Creates and returns a pointer to a struct of type `IndexedArray` that stores the indices of training examples,
         as well as their feature values, for a specific feature, sorted in ascending order by the feature values.
@@ -37,10 +37,9 @@ cdef class ThresholdProvider:
         pass
 
 
-cdef class DenseThresholdProvider(ThresholdProvider):
+cdef class DenseFeatureMatrix(FeatureMatrix):
     """
-    Allows to access the thresholds that can potentially be used by conditions based on the feature values of all
-    training examples.
+    Implements column-wise access to the feature values of the training examples based on a dense feature matrix.
 
     The feature matrix must be given as a dense Fortran-contiguous array.
     """
@@ -50,9 +49,11 @@ cdef class DenseThresholdProvider(ThresholdProvider):
         :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
                   training examples
         """
+        self.num_examples = x.shape[0]
+        self.num_features = x.shape[1]
         self.x = x
 
-    cdef IndexedArray* get_thresholds(self, intp feature_index):
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index):
         # Class members
         cdef float32[::1, :] x = self.x
         # The number of elements to be returned
@@ -74,16 +75,18 @@ cdef class DenseThresholdProvider(ThresholdProvider):
         return indexed_array
 
 
-cdef class SparseThresholdProvider(ThresholdProvider):
+cdef class SparseFeatureMatrix(FeatureMatrix):
     """
-    Allows to access the thresholds that can potentially be used by conditions based on the feature values of all
-    training examples.
+    Implements column-wise access to the feature values of the training examples based on a sparse feature matrix.
 
     The feature matrix must be given in compressed sparse column (CSC) format.
     """
 
-    def __cinit__(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices):
+    def __cinit__(self, intp num_examples, intp num_features, float32[::1] x_data, intp[::1] x_row_indices,
+                  intp[::1] x_col_indices):
         """
+        :param num_examples:    The total number of examples
+        :param num_features:    The total number of features
         :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples
         :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
@@ -92,11 +95,13 @@ cdef class SparseThresholdProvider(ThresholdProvider):
                                 element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
                                 at the last position is equal to `num_non_zero_feature_values`
         """
+        self.num_examples = num_examples
+        self.num_features = num_features
         self.x_data = x_data
         self.x_row_indices = x_row_indices
         self.x_col_indices = x_col_indices
 
-    cdef IndexedArray* get_thresholds(self, intp feature_index):
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index):
         # Class members
         cdef float32[::1] x_data = self.x_data
         cdef intp[::1] x_row_indices = self.x_row_indices
@@ -146,11 +151,10 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
-                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
-                          Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                          intp min_coverage, intp max_conditions, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -158,10 +162,8 @@ cdef class RuleInduction:
         :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
                                             indices of all nominal features (in ascending order) or None, if no nominal
                                             features are available
-        :param threshold_provider:          A `ThresholdProvider` that allows to access the thresholds that can
-                                            potentially be used by conditions
-        :param num_examples:                The total number of training examples
-        :param num_features:                The total number of features
+        :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of
+                                            the training examples
         :param num_labels:                  The total number of labels
         :param head_refinement:             The strategy that is used to find the heads of rules
         :param loss:                        The loss function to be minimized
@@ -217,11 +219,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef Rule rule = Rule.__new__(Rule, body, head)
         return rule
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, ThresholdProvider threshold_provider,
-                          intp num_examples, intp num_features, intp num_labels, HeadRefinement head_refinement,
-                          Loss loss, LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage,
-                          intp min_coverage, intp max_conditions, RNG rng):
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
+        # The total number of training examples
+        cdef intp num_examples = feature_matrix.num_examples
+        # The total number of features
+        cdef intp num_features = feature_matrix.num_features
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -343,7 +348,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         indexed_array = dereference(cache_global)[f]
 
                         if indexed_array == NULL:
-                            indexed_array = threshold_provider.get_thresholds(f)
+                            indexed_array = feature_matrix.get_sorted_feature_values(f)
                             dereference(cache_global)[f] = indexed_array
 
                     # Filter indices, if only a subset of the contained examples is covered...
