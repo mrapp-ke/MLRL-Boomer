@@ -7,7 +7,7 @@ Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.algorithm._arrays cimport float32, float64
 from boomer.algorithm.losses cimport Prediction
-from boomer.algorithm.rule_induction cimport Comparator
+from boomer.algorithm.rule_induction cimport Comparator, IndexedValue
 
 from cython.operator cimport dereference, postincrement
 
@@ -72,7 +72,9 @@ cdef class IREP(Pruning):
         cdef Comparator comparator
         cdef float32 threshold
         cdef uint32 weight
-        cdef intp feature_index, i, n
+        cdef IndexedArray* indexed_array
+        cdef IndexedValue* indexed_values
+        cdef intp feature_index, num_indexed_values, i, n
 
         # Reset the loss function...
         loss.begin_instance_sub_sampling()
@@ -104,6 +106,12 @@ cdef class IREP(Pruning):
             feature_index = condition.feature_index
             threshold = condition.threshold
             comparator = condition.comparator
+
+            # Obtain the example indices and corresponding feature values for the feature, the current condition
+            # corresponds to...
+            indexed_array = dereference(sorted_feature_values_map)[feature_index]
+            indexed_values = dereference(indexed_array).data
+            num_indexed_values = dereference(indexed_array).num_elements
 
             postincrement(iterator)
 
