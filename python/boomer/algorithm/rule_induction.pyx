@@ -835,12 +835,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
-                        # TODO revise pruning
-                        pruning.begin_pruning(weights, loss, head_refinement, covered_examples_mask,
-                                              covered_examples_target, label_indices)
-                        #covered_example_indices = pruning.prune(x, cache_global, conditions)
-                        #num_covered = covered_example_indices.shape[0]
-                        print('pruning not supported right now')
+                        uint32_array_scalar_pair = pruning.prune(cache_global, conditions, covered_examples_mask,
+                                                                 covered_examples_target, weights, label_indices, loss,
+                                                                 head_refinement)
+                        covered_examples_mask = uint32_array_scalar_pair.first
+                        covered_examples_target = uint32_array_scalar_pair.second
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
