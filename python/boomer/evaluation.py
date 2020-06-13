@@ -86,7 +86,7 @@ class EvaluationResult:
     """
 
     def __init__(self):
-        self.measures: Set[str] = set()
+        self.measures: List[str] = list()
         self.results: List[Dict[str, float]] = None
 
     def put(self, name: str, score: float, fold: int, num_folds: int):
@@ -104,7 +104,7 @@ class EvaluationResult:
         elif len(self.results) != num_folds:
             raise AssertionError('Inconsistent number of total folds given')
 
-        self.measures.add(name)
+        self.measures.append(name)
         values = self.results[fold]
         values[name] = score
         self.results[fold] = values
