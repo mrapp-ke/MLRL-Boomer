@@ -39,7 +39,7 @@ cdef class Bagging(InstanceSubSampling):
     def __cinit__(self, float32 sample_size = 1.0):
         """
         :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-                            60 % of the available examples)
+                            60 % of the available examples). Must be in (0, 1]
         """
         self.sample_size = sample_size
 
@@ -74,7 +74,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
     def __cinit__(self, float32 sample_size = 0.66):
         """
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-                           60 % of the available examples)
+                           60 % of the available examples). Must be in (0, 1)
         """
         self.sample_size = sample_size
 
@@ -113,8 +113,8 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
     def __cinit__(self, float32 sample_size = 0.0):
         """
         :param sample_size: The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
-                            60 % of the available features) or 0, if the default sample size
-                            floor(log2(num_features - 1) + 1) should be used
+                            60 % of the available features). Must be in (0, 1) or 0, if the default sample size
+                            `floor(log2(num_features - 1) + 1)` should be used
         """
         self.sample_size = sample_size
 
