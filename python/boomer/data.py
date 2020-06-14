@@ -186,11 +186,17 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     """
     One-hot encodes the nominal attributes contained in a data set, if any.
 
-    :param x:           The features of the examples in the data set
-    :param y:           The labels of the examples in the data set
+    If the given feature matrix is sparse, it will be converted into a dense matrix. Also, the attributes of the given
+    meta data will be removed, as they become invalid by applying one-hot-encoding.
+
+    :param x:           A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_examples, num_features)`, representing the
+                        features of the examples in the data set
+    :param y:           A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_examples, num_labels)`, representing the
+                        labels of the examples in the data set
     :param meta_data:   The meta data of the data set
     :param encoder:     The 'ColumnTransformer' to be used or None, if a new encoder should be created
-    :return:            The encoded features of the given examples and the encoder that has been used
+    :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
+                        of the given examples, as well as the encoder that has been used
     """
     nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
     num_nominal_attributes = len(nominal_indices)
