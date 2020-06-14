@@ -13,7 +13,7 @@ from typing import List
 
 import arff
 import numpy as np
-from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, csr_matrix
+from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, csr_matrix, issparse
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from skmultilearn.dataset import save_to_arff
@@ -198,7 +198,9 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
              (len(meta_data.attributes) - num_nominal_attributes))
 
     if num_nominal_attributes > 0:
-        x = x.toarray()
+        if issparse(x):
+            x = x.toarray()
+
         old_shape = x.shape
 
         if encoder is None:
