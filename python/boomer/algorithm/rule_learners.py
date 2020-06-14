@@ -105,7 +105,7 @@ def _create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSamp
                                               [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
 
         if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
-            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 < x <= 1)
+            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
             return Bagging(sample_size)
         elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
             sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 < x < 1)
