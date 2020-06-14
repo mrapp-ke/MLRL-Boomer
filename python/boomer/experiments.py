@@ -74,4 +74,5 @@ class Experiment(CrossValidation, ABC):
         model_printer = self.model_printer
 
         if model_printer is not None:
-            model_printer.print(learner_name, current_learner, current_fold=current_fold, num_folds=num_folds)
+            model_printer.print(learner_name, meta_data, current_learner, current_fold=current_fold,
+                                num_folds=num_folds)

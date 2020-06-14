@@ -13,9 +13,9 @@ import numpy as np
 from boomer.algorithm.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
 from boomer.algorithm.model import Theory
+from boomer.data import MetaData
 from boomer.io import clear_directory, open_writable_txt_file
 from boomer.learners import MLLearner
-from boomer.stats import Stats
 
 
 class ModelPrinterOutput(ABC):
@@ -48,30 +48,30 @@ class ModelPrinter(ABC):
         """
         self.outputs = args
 
-    def print(self, experiment_name: str, learner: MLLearner, current_fold: int, num_folds: int):
+    def print(self, experiment_name: str, meta_data: MetaData, learner: MLLearner, current_fold: int, num_folds: int):
         """
         Prints a textual representation of a `MLLearner`'s model.
 
         :param experiment_name: The name of the experiment
+        :param meta_data:       The meta data of the training data set
         :param learner:         The learner
         :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
         :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
-        stats = learner.stats_
         model = learner.model_
-        text = self._format_model(stats, model)
+        text = self._format_model(meta_data, model)
 
         for output in self.outputs:
             output.write_model(experiment_name, text, num_folds, current_fold if num_folds > 1 else None)
 
     @abstractmethod
-    def _format_model(self, stats: Stats, model) -> str:
+    def _format_model(self, meta_data: MetaData, model) -> str:
         """
         Must be implemented by subclasses in order to create a textual representation of a model.
 
-        :param stats:   Statistics about the training data set
-        :param model:   The model
-        :return:        The textual representation of the given model
+        :param meta_data:   The meta data of the training data set
+        :param model:       The model
+        :return:            The textual representation of the given model
         """
         pass
 
@@ -117,20 +117,20 @@ class RulePrinter(ModelPrinter):
     def __init__(self, *args: ModelPrinterOutput):
         super().__init__(*args)
 
-    def _format_model(self, stats: Stats, model) -> str:
+    def _format_model(self, meta_data: MetaData, model) -> str:
         if isinstance(model, list):
-            return format_theory(stats, model)
+            return format_theory(meta_data, model)
         else:
             raise ValueError('Unsupported model type: ' + type(model).__name__)
 
 
-def format_theory(stats: Stats, theory: Theory) -> str:
+def format_theory(meta_data: MetaData, theory: Theory) -> str:
     """
     Formats a specific theory as a text.
 
-    :param stats:   Statistics about the training data set
-    :param theory:  The theory to be formatted
-    :return:        The text
+    :param meta_data:   The meta data of the training data set
+    :param theory:      The theory to be formatted
+    :return:            The text
     """
     text = ''
 
@@ -138,22 +138,22 @@ def format_theory(stats: Stats, theory: Theory) -> str:
         if len(text) > 0:
             text += '\n'
 
-        text += format_rule(stats, rule)
+        text += format_rule(meta_data, rule)
 
     return text
 
 
-def format_rule(stats: Stats, rule: Rule) -> str:
+def format_rule(meta_data: MetaData, rule: Rule) -> str:
     """
     Formats a specific rule as a text.
 
-    :param stats:   Statistics about the training data set
-    :param rule:    The rule to be formatted
-    :return:        The text
+    :param meta_data:   The meta data of the training data set
+    :param rule:        The rule to be formatted
+    :return:            The text
     """
     text = __format_body(rule.body)
     text += ' -> '
-    text += __format_head(stats, rule.head)
+    text += __format_head(meta_data, rule.head)
     return text
 
 
@@ -221,18 +221,18 @@ def __format_conditions(feature_indices: np.ndarray, thresholds: np.ndarray, ope
     return text
 
 
-def __format_head(stats: Stats, head: Head) -> str:
+def __format_head(meta_data: MetaData, head: Head) -> str:
     """
     Formats the head of a rule as a text.
 
-    :param stats:   Statistics about the training data set
-    :param head:    The head to be formatted
-    :return:        The text
+    :param meta_data:   The meta data of the training data set
+    :param head:        The head to be formatted
+    :return:            The text
     """
     if isinstance(head, FullHead):
         return '(' + __format_full_head(head) + ')'
     elif isinstance(head, PartialHead):
-        return '(' + __format_partial_head(stats, head) + ')'
+        return '(' + __format_partial_head(meta_data, head) + ')'
     else:
         raise ValueError('Head has unknown type: ' + type(head).__name__)
 
@@ -256,19 +256,20 @@ def __format_full_head(head: FullHead) -> str:
     return text
 
 
-def __format_partial_head(stats: Stats, head: PartialHead) -> str:
+def __format_partial_head(meta_data: MetaData, head: PartialHead) -> str:
     """
     Formats the partial head of a rule as a text.
 
-    :param stats:   Statistics about the training data set
-    :param head:    The partial head to be formatted
-    :return:        The text
+    :param meta_data:   The meta data of the training data set
+    :param head:        The partial head to be formatted
+    :return:            The text
     """
     text = ''
     scores = np.asarray(head.scores)
     label_indices = np.asarray(head.label_indices)
+    num_labels = len(meta_data.label_names)
 
-    for i in range(stats.num_labels):
+    for i in range(num_labels):
         if len(text) > 0:
             text += ', '
 
