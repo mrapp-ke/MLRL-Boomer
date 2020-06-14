@@ -82,7 +82,7 @@ class CrossValidation(Randomized, ABC):
                                                       data_set_name + '.xml')
 
         if data_set.use_one_hot_encoding:
-            x, _ = one_hot_encode(x, y, meta_data)
+            x, _, meta_data = one_hot_encode(x, y, meta_data)
             nominal_attribute_indices = None
         else:
             nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
@@ -143,7 +143,7 @@ class CrossValidation(Randomized, ABC):
                                                                   data_set_name + '.xml')
 
         if use_one_hot_encoding:
-            train_x, encoder = one_hot_encode(train_x, train_y, meta_data)
+            train_x, encoder, meta_data = one_hot_encode(train_x, train_y, meta_data)
             nominal_attribute_indices = None
         else:
             encoder = None

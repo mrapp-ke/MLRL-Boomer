@@ -186,8 +186,9 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     """
     One-hot encodes the nominal attributes contained in a data set, if any.
 
-    If the given feature matrix is sparse, it will be converted into a dense matrix. Also, the attributes of the given
-    meta data will be removed, as they become invalid by applying one-hot-encoding.
+    If the given feature matrix is sparse, it will be converted into a dense matrix. Also, an updated variant of the
+    given meta data, where the attributes have been removed, will be returned, as the original attributes become invalid
+    by applying one-hot-encoding.
 
     :param x:           A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_examples, num_features)`, representing the
                         features of the examples in the data set
@@ -196,7 +197,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :param meta_data:   The meta data of the data set
     :param encoder:     The 'ColumnTransformer' to be used or None, if a new encoder should be created
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
-                        of the given examples, as well as the encoder that has been used
+                        of the given examples, the encoder that has been used, as well as the updated meta data
     """
     nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
     num_nominal_attributes = len(nominal_indices)
@@ -218,12 +219,13 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
 
         x = encoder.transform(x)
         new_shape = x.shape
+        updated_meta_data = MetaData([], meta_data.label_names, meta_data.labels_at_start)
         log.info('Original data set contained %s attributes, one-hot encoded data set contains %s attributes',
                  old_shape[1], new_shape[1])
-        return x, encoder
+        return x, encoder, updated_meta_data
     else:
         log.debug('No need to apply one-hot encoding, as the data set does not contain any nominal attributes.')
-        return x, None
+        return x, None, meta_data
 
 
 def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData, label_dtype) -> (lil_matrix, lil_matrix):
