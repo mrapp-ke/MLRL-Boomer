@@ -124,13 +124,18 @@ class RulePrinter(ModelPrinter):
             raise ValueError('Unsupported model type: ' + type(model).__name__)
 
 
-def format_theory(meta_data: MetaData, theory: Theory) -> str:
+def format_theory(meta_data: MetaData, theory: Theory, print_feature_names: bool = True,
+                  print_label_names: bool = True) -> str:
     """
     Formats a specific theory as a text.
 
-    :param meta_data:   The meta data of the training data set
-    :param theory:      The theory to be formatted
-    :return:            The text
+    :param meta_data:           The meta data of the training data set
+    :param theory:              The theory to be formatted
+    :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
+                                features should be printed
+    :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
+                                labels should be printed
+    :return:                    The text
     """
     text = ''
 
@@ -138,81 +143,107 @@ def format_theory(meta_data: MetaData, theory: Theory) -> str:
         if len(text) > 0:
             text += '\n'
 
-        text += format_rule(meta_data, rule)
+        text += format_rule(meta_data, rule, print_feature_names=print_feature_names,
+                            print_label_names=print_label_names)
 
     return text
 
 
-def format_rule(meta_data: MetaData, rule: Rule) -> str:
+def format_rule(meta_data: MetaData, rule: Rule, print_feature_names: bool = True,
+                print_label_names: bool = True) -> str:
     """
     Formats a specific rule as a text.
 
-    :param meta_data:   The meta data of the training data set
-    :param rule:        The rule to be formatted
-    :return:            The text
+    :param meta_data:           The meta data of the training data set
+    :param rule:                The rule to be formatted
+    :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
+                                features should be printed
+    :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
+                                labels should be printed
+    :return:                    The text
     """
-    text = __format_body(rule.body)
+    text = __format_body(meta_data, rule.body, print_feature_names=print_feature_names)
     text += ' -> '
-    text += __format_head(meta_data, rule.head)
+    text += __format_head(meta_data, rule.head, print_label_names=print_label_names)
     return text
 
 
-def __format_body(body: Body) -> str:
+def __format_body(meta_data: MetaData, body: Body, print_feature_names: bool) -> str:
     """
     Formats the body of a rule as a text.
 
-    :param body:    The body to be formatted
-    :return:        The text
+    :param meta_data:           The meta data of the training data set
+    :param body:                The body to be formatted
+    :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
+                                features should be printed
+    :return:                    The text
     """
     if isinstance(body, EmptyBody):
         return '{}'
     elif isinstance(body, ConjunctiveBody):
-        return '{' + __format_conjunctive_body(body) + '}'
+        return '{' + __format_conjunctive_body(meta_data, body, print_feature_names=print_feature_names) + '}'
     else:
         raise ValueError('Body has unknown type: ' + type(body).__name__)
 
 
-def __format_conjunctive_body(body: ConjunctiveBody) -> str:
+def __format_conjunctive_body(meta_data: MetaData, body: ConjunctiveBody, print_feature_names: bool) -> str:
     """
     Formats the conjunctive body of a rule as a text.
 
-    :param body:    The conjunctive body to be formatted
-    :return:        The text
+    :param meta_data:           The meta data of the training data set
+    :param body:                The conjunctive body to be formatted
+    :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
+                                features should be printed
+    :return:                    The text
     """
     text = ''
 
     if body.leq_feature_indices is not None and body.leq_thresholds is not None:
-        text = __format_conditions(np.asarray(body.leq_feature_indices), np.asarray(body.leq_thresholds), '<=', text)
+        text = __format_conditions(meta_data, np.asarray(body.leq_feature_indices), np.asarray(body.leq_thresholds),
+                                   '<=', text, print_feature_names=print_feature_names)
 
     if body.gr_feature_indices is not None and body.gr_thresholds is not None:
-        text = __format_conditions(np.asarray(body.gr_feature_indices), np.asarray(body.gr_thresholds), '>', text)
+        text = __format_conditions(meta_data, np.asarray(body.gr_feature_indices), np.asarray(body.gr_thresholds),
+                                   '>', text, print_feature_names=print_feature_names)
 
     if body.eq_feature_indices is not None and body.eq_thresholds is not None:
-        text = __format_conditions(np.asarray(body.eq_feature_indices), np.asarray(body.eq_thresholds), '==', text)
+        text = __format_conditions(meta_data, np.asarray(body.eq_feature_indices), np.asarray(body.eq_thresholds),
+                                   '==', text, print_feature_names=print_feature_names)
 
     if body.neq_feature_indices is not None and body.neq_thresholds is not None:
-        text = __format_conditions(np.asarray(body.neq_feature_indices), np.asarray(body.neq_thresholds), '!=', text)
+        text = __format_conditions(meta_data, np.asarray(body.neq_feature_indices), np.asarray(body.neq_thresholds),
+                                   '!=', text, print_feature_names=print_feature_names)
 
     return text
 
 
-def __format_conditions(feature_indices: np.ndarray, thresholds: np.ndarray, operator: str, text: str) -> str:
+def __format_conditions(meta_data: MetaData, feature_indices: np.ndarray, thresholds: np.ndarray, operator: str,
+                        text: str, print_feature_names: bool) -> str:
     """
     Formats conditions that are contained by the body of a rule and the textual representation to an existing text.
 
-    :param feature_indices: An array of dtype int, shape `(num_conditions)`, representing the feature indices that
-                            correspond to the conditions
-    :param thresholds:      An array of dtype float, shape `(num_conditions)`, representing the thresholds used by the
-                            conditions
-    :param operator:        A textual representation of the operator that is used by the conditions
-    :param text:            The text, the textual representation of the conditions should be appended to
-    :return:                The given text including the appended text
+    :param meta_data:           The meta data of the training data set
+    :param feature_indices:     An array of dtype int, shape `(num_conditions)`, representing the feature indices that
+                                correspond to the conditions
+    :param thresholds:          An array of dtype float, shape `(num_conditions)`, representing the thresholds used by
+                                the conditions
+    :param operator:            A textual representation of the operator that is used by the conditions
+    :param text:                The text, the textual representation of the conditions should be appended to
+    :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
+                                features should be printed
+    :return:                    The given text including the appended text
     """
     for i in range(feature_indices.shape[0]):
         if len(text) > 0:
             text += ' & '
 
-        text += str(feature_indices[i])
+        feature_index = feature_indices[i]
+
+        if print_feature_names and len(meta_data.attributes) > feature_index:
+            text += meta_data.attributes[feature_index].attribute_name
+        else:
+            text += str(feature_index)
+
         text += ' '
         text += operator
         text += ' '
@@ -221,28 +252,33 @@ def __format_conditions(feature_indices: np.ndarray, thresholds: np.ndarray, ope
     return text
 
 
-def __format_head(meta_data: MetaData, head: Head) -> str:
+def __format_head(meta_data: MetaData, head: Head, print_label_names: bool) -> str:
     """
     Formats the head of a rule as a text.
 
-    :param meta_data:   The meta data of the training data set
-    :param head:        The head to be formatted
-    :return:            The text
+    :param meta_data:           The meta data of the training data set
+    :param head:                The head to be formatted
+    :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
+                                labels should be printed
+    :return:                    The text
     """
     if isinstance(head, FullHead):
-        return '(' + __format_full_head(head) + ')'
+        return '(' + __format_full_head(meta_data, head, print_label_names=print_label_names) + ')'
     elif isinstance(head, PartialHead):
-        return '(' + __format_partial_head(meta_data, head) + ')'
+        return '(' + __format_partial_head(meta_data, head, print_label_names=print_label_names) + ')'
     else:
         raise ValueError('Head has unknown type: ' + type(head).__name__)
 
 
-def __format_full_head(head: FullHead) -> str:
+def __format_full_head(meta_data: MetaData, head: FullHead, print_label_names: bool) -> str:
     """
     Formats the full head of a rule as a text.
 
-    :param head:    The full head to be formatted
-    :return:        The text
+    :param meta_data:           The meta data of the training data set
+    :param head:                The full head to be formatted
+    :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
+                                labels should be printed
+    :return:                    The text
     """
     text = ''
     scores = np.asarray(head.scores)
@@ -251,33 +287,43 @@ def __format_full_head(head: FullHead) -> str:
         if len(text) > 0:
             text += ', '
 
+        if print_label_names and len(meta_data.label_names) > i:
+            text += meta_data.label_names[i]
+        else:
+            text += str(i)
+
+        text += ' = '
         text += '{0:.2f}'.format(scores[i])
 
     return text
 
 
-def __format_partial_head(meta_data: MetaData, head: PartialHead) -> str:
+def __format_partial_head(meta_data: MetaData, head: PartialHead, print_label_names: bool) -> str:
     """
     Formats the partial head of a rule as a text.
 
-    :param meta_data:   The meta data of the training data set
-    :param head:        The partial head to be formatted
-    :return:            The text
+    :param meta_data:           The meta data of the training data set
+    :param head:                The partial head to be formatted
+    :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
+                                labels should be printed
+    :return:                    The text
     """
     text = ''
     scores = np.asarray(head.scores)
     label_indices = np.asarray(head.label_indices)
-    num_labels = len(meta_data.label_names)
 
-    for i in range(num_labels):
+    for i in range(label_indices.shape[0]):
         if len(text) > 0:
             text += ', '
 
-        label_index = np.argwhere(label_indices == i)
+        label_index = label_indices[i]
 
-        if np.size(label_index) > 0:
-            text += '{0:.2f}'.format(scores[label_index.item()])
+        if print_label_names and len(meta_data.label_names) > label_index:
+            text += meta_data.label_names[label_index]
         else:
-            text += '?'
+            text += str(label_index)
+
+        text += ' = '
+        text += '{0:.2f}'.format(scores[i])
 
     return text
