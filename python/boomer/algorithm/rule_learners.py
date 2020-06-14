@@ -7,6 +7,7 @@ Provides a scikit-multilearn implementation of "BOOMER" -- an algorithm for lear
 classification rules. The classifier is composed of several modules, e.g., for rule induction and prediction.
 """
 from abc import abstractmethod
+from ast import literal_eval
 from typing import List
 
 import numpy as np
@@ -19,19 +20,20 @@ from boomer.algorithm.heuristics import Heuristic, HammingLoss, Precision, Recal
     MEstimate
 from boomer.algorithm.label_wise_averaging import LabelWiseAveraging
 from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
+from boomer.algorithm.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.algorithm.losses import Loss
 from boomer.algorithm.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.algorithm.pruning import IREP, Pruning
 from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
 from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.algorithm.shrinkage import ConstantShrinkage, Shrinkage
-from boomer.algorithm.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
     UncoveredLabelsCriterion
 from boomer.algorithm.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection
 from boomer.algorithm.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection
 from boomer.algorithm.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
+
 from boomer.algorithm.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.stats import Stats
@@ -74,45 +76,51 @@ PRUNING_IREP = 'irep'
 
 LIFT_FUNCTION_PEAK = 'peak'
 
+ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
-def _create_label_sub_sampling(label_sub_sampling: str, num_samples: int, stats: Stats) -> LabelSubSampling:
+ARGUMENT_NUM_SAMPLES = 'num_samples'
+
+ARGUMENT_BETA = 'beta'
+
+ARGUMENT_M = 'm'
+
+
+def _create_label_sub_sampling(label_sub_sampling: str, stats: Stats) -> LabelSubSampling:
     if label_sub_sampling is None:
         return None
     else:
-        if num_samples < 1 or num_samples >= stats.num_labels:
-            raise ValueError('Value given for parameter \'label_sub_sampling_num_samples\' (' + str(
-                num_samples) + ') must be at least 1 and less than the number of labels in the data set (' + str(
-                stats.num_labels) + ')')
+        prefix, args = _parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
 
-        if label_sub_sampling == LABEL_SUB_SAMPLING_RANDOM:
+        if prefix == LABEL_SUB_SAMPLING_RANDOM:
+            num_samples = _get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < stats.num_labels)
             return RandomLabelSubsetSelection(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
 
-def _create_instance_sub_sampling(instance_sub_sampling: str, sample_size: float) -> InstanceSubSampling:
+def _create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampling:
     if instance_sub_sampling is None:
         return None
     else:
-        if sample_size < 0 or sample_size >= 1:
-            raise ValueError(
-                'Invalid value given for parameter \'instance_sub_sampling_sample_size\': ' + str(sample_size))
+        prefix, args = _parse_prefix_and_dict(instance_sub_sampling,
+                                              [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
 
-        if instance_sub_sampling == INSTANCE_SUB_SAMPLING_BAGGING:
-            return Bagging(sample_size if sample_size > 0 else 1.0)
-        elif instance_sub_sampling == INSTANCE_SUB_SAMPLING_RANDOM:
-            return RandomInstanceSubsetSelection(sample_size if sample_size > 0 else 0.66)
+        if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
+            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+            return Bagging(sample_size)
+        elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
+            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 < x < 1)
+            return RandomInstanceSubsetSelection(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
-def _create_feature_sub_sampling(feature_sub_sampling: str, sample_size: float) -> FeatureSubSampling:
+def _create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling:
     if feature_sub_sampling is None:
         return None
     else:
-        if sample_size < 0 or sample_size >= 1:
-            raise ValueError(
-                'Invalid value given for parameter \'feature_sub_sampling_sample_size\': ' + str(sample_size))
+        prefix, args = _parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SUB_SAMPLING_RANDOM])
 
-        if feature_sub_sampling == FEATURE_SUB_SAMPLING_RANDOM:
+        if prefix == FEATURE_SUB_SAMPLING_RANDOM:
+            sample_size = _get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
             return RandomFeatureSubsetSelection(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
@@ -155,6 +163,43 @@ def _create_max_conditions(max_conditions: int) -> int:
         raise ValueError('Invalid value given for parameter \'max_conditions\'' + str(max_conditions))
 
     return max_conditions
+
+
+def _parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
+    for prefix in prefixes:
+        if string.startswith(prefix):
+            suffix = string[len(prefix):].strip()
+
+            if len(suffix) > 0:
+                return prefix, literal_eval(suffix)
+
+            return prefix, {}
+
+    return None, None
+
+
+def _get_int_argument(args: dict, key: str, default: int, validation) -> int:
+    if args is not None and key in args:
+        value = int(args[key])
+
+        if validation is not None and not validation(value):
+            raise ValueError('Invalid value given for int argument \'' + key + '\': ' + str(value))
+
+        return value
+
+    return default
+
+
+def _get_float_argument(args: dict, key: str, default: float, validation) -> float:
+    if args is not None and key in args:
+        value = float(args[key])
+
+        if validation is not None and not validation(value):
+            raise ValueError('Invalid value given for float argument \'' + key + '\': ' + str(value))
+
+        return value
+
+    return default
 
 
 class MLRuleLearner(MLLearner, NominalAttributeLearner):
@@ -272,11 +317,9 @@ class Boomer(MLRuleLearner):
 
     def __init__(self, model_dir: str = None, max_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
-                 label_sub_sampling_num_samples: int = 1, instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
-                 instance_sub_sampling_sample_size: float = 0.0,
-                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, feature_sub_sampling_sample_size: float = 0.0,
-                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0,
-                 min_coverage: int = 1, max_conditions: int = -1):
+                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
+                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
+                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -290,22 +333,19 @@ class Boomer(MLRuleLearner):
                                                     `example-wise-logistic-loss`
         :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
                                                     new classification rule is learned. Must be 'random-label-selection'
-                                                    or None, if no sub-sampling should be used
-        :param label_sub_sampling_num_samples:      The number of samples to be used for sub-sampling the labels. Must
-                                                    be at least 1
+                                                    or None, if no sub-sampling should be used. Additional arguments may
+                                                    be provided as a dictionary, e.g.
+                                                    `random-label-selection{\"num_samples\":5}`
         :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
                                                     each time a new classification rule is learned. Must be `bagging`,
                                                     `random-instance-selection` or None, if no sub-sampling should be
-                                                    used
-        :param instance_sub_sampling_sample_size:   The fraction of examples to be included when sub-sampling the
-                                                    training examples. Must be in (0, 1) or 0, if the default value
-                                                    should be used
+                                                    used. Additional arguments may be provided as a dictionary, e.g.
+                                                    `bagging{\"sample_size\":0.5}`
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
-                                                    or None, if no sub-sampling should be used
-        :param feature_sub_sampling_sample_size:    The fraction of features to be included when sub-sampling the
-                                                    features. Must be in (0, 1) or 0, if the default value should be
-                                                    used
+                                                    or None, if no sub-sampling should be used. Additional argument may
+                                                    be provided as a dictionary, e.g.
+                                                    `random-feature-selection{\"sample_size\":0.5}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
@@ -325,11 +365,8 @@ class Boomer(MLRuleLearner):
         self.head_refinement = head_refinement
         self.loss = loss
         self.label_sub_sampling = label_sub_sampling
-        self.label_sub_sampling_num_samples = label_sub_sampling_num_samples
         self.instance_sub_sampling = instance_sub_sampling
-        self.instance_sub_sampling_sample_size = instance_sub_sampling_sample_size
         self.feature_sub_sampling = feature_sub_sampling
-        self.feature_sub_sampling_sample_size = feature_sub_sampling_sample_size
         self.pruning = pruning
         self.shrinkage = shrinkage
         self.l2_regularization_weight = l2_regularization_weight
@@ -346,15 +383,10 @@ class Boomer(MLRuleLearner):
         name += '_loss=' + str(self.loss)
         if self.label_sub_sampling is not None:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
-            name += '_label-sub-sampling-num-samples=' + str(self.label_sub_sampling_num_samples)
         if self.instance_sub_sampling is not None:
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
-            if int(self.instance_sub_sampling_sample_size) > 0:
-                name += '_instance-sub-sampling-sample-size=' + str(self.instance_sub_sampling_sample_size)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
-            if int(self.feature_sub_sampling_sample_size) > 0:
-                name += '_feature_sub_sampling=' + str(self.feature_sub_sampling_sample_size)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
         if 0.0 < float(self.shrinkage) < 1.0:
@@ -375,11 +407,8 @@ class Boomer(MLRuleLearner):
             'head_refinement': self.head_refinement,
             'loss': self.loss,
             'label_sub_sampling': self.label_sub_sampling,
-            'label_sub_sampling_num_samples': self.label_sub_sampling_num_samples,
             'instance_sub_sampling': self.instance_sub_sampling,
-            'instance_sub_sampling_sample_size': self.instance_sub_sampling_sample_size,
             'feature_sub_sampling': self.feature_sub_sampling,
-            'feature_sub_sampling_sample_size': self.feature_sub_sampling_sample_size,
             'pruning': self.pruning,
             'shrinkage': self.shrinkage,
             'l2_regularization_weight': self.l2_regularization_weight,
@@ -397,12 +426,9 @@ class Boomer(MLRuleLearner):
         loss = self.__create_loss(l2_regularization_weight)
         head_refinement = self.__create_head_refinement(loss)
         stopping_criteria = _create_stopping_criteria(int(self.max_rules), int(self.time_limit))
-        label_sub_sampling = _create_label_sub_sampling(self.label_sub_sampling,
-                                                        int(self.label_sub_sampling_num_samples), stats)
-        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling,
-                                                              int(self.instance_sub_sampling_sample_size))
-        feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling,
-                                                            int(self.feature_sub_sampling_sample_size))
+        label_sub_sampling = _create_label_sub_sampling(self.label_sub_sampling, stats)
+        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
+        feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = _create_pruning(self.pruning)
         shrinkage = self.__create_shrinkage()
         min_coverage = _create_min_coverage(self.min_coverage)
@@ -464,38 +490,37 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
-                 label_sub_sampling_num_samples: int = 1, instance_sub_sampling: str = None,
-                 instance_sub_sampling_sample_size: float = 0.0, feature_sub_sampling: str = None,
-                 feature_sub_sampling_sample_size: float = 0.0, pruning: str = None, min_coverage: int = 1,
-                 max_conditions: int = -1):
+                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
+                 min_coverage: int = 1, max_conditions: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
         :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
-                                                    `single-label`, `partial` or None, if the default strategy should be used
-        :param lift_function:               The lift function to use. Must be `peak`
+                                                    `single-label`, `partial` or None, if the default strategy should be
+                                                    used
+        :param lift_function:                       The lift function to use. Must be `peak`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
-        :param heuristic:                           The heuristic to be minimized. Must be `precision` or `hamming-loss`
+        :param heuristic:                           The heuristic to be minimized. Must be `precision`, `hamming-loss`,
+                                                    `recall`, `weighted-relative-accuracy`, `f-measure` or `m-estimate`.
+                                                    Additional arguments may be provided as a dictionary, e.g.
+                                                    `f-measure{\"beta\":1.0}`
         :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
                                                     new classification rule is learned. Must be 'random-label-selection'
-                                                    or None, if no sub-sampling should be used
-        :param label_sub_sampling_num_samples:      The number of samples to be used for sub-sampling the labels. Must
-                                                    be at least 1
+                                                    or None, if no sub-sampling should be used. Additional arguments may
+                                                    be provided as a dictionary, e.g.
+                                                    `random-label-selection{\"num_samples\":5}`
         :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
                                                     each time a new classification rule is learned. Must be `bagging`,
                                                     `random-instance-selection` or None, if no sub-sampling should be
-                                                    used
-        :param instance_sub_sampling_sample_size:   The fraction of examples to be included when sub-sampling the
-                                                    training examples. Must be in (0, 1) or 0, if the default value
-                                                    should be used
+                                                    used. Additional arguments may be provided as a dictionary, e.g.
+                                                    `bagging{\"sample_size\":0.5}`
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
-                                                    or None, if no sub-sampling should be used
-        :param feature_sub_sampling_sample_size:    The fraction of features to be included when sub-sampling the
-                                                    features. Must be in (0, 1) or 0, if the default value should be
-                                                    used
+                                                    or None, if no sub-sampling should be used. Additional argument may
+                                                    be provided as a dictionary, e.g.
+                                                    `random-feature-selection{\"sample_size\":0.5}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param min_coverage:                        The minimum number of training examples that must be covered by a
@@ -512,11 +537,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.loss = loss
         self.heuristic = heuristic
         self.label_sub_sampling = label_sub_sampling
-        self.label_sub_sampling_num_samples = label_sub_sampling_num_samples
         self.instance_sub_sampling = instance_sub_sampling
-        self.instance_sub_sampling_sample_size = instance_sub_sampling_sample_size
         self.feature_sub_sampling = feature_sub_sampling
-        self.feature_sub_sampling_sample_size = feature_sub_sampling_sample_size
         self.pruning = pruning
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
@@ -533,15 +555,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         name += '_heuristic=' + str(self.heuristic)
         if self.label_sub_sampling is not None:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
-            name += '_label-sub-sampling-num-samples=' + str(self.label_sub_sampling_num_samples)
         if self.instance_sub_sampling is not None:
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
-            if int(self.instance_sub_sampling_sample_size) > 0:
-                name += '_instance-sub-sampling-sample-size=' + str(self.instance_sub_sampling_sample_size)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
-            if int(self.feature_sub_sampling_sample_size) > 0:
-                name += '_feature_sub_sampling=' + str(self.feature_sub_sampling_sample_size)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
         if int(self.min_coverage) > 1:
@@ -560,11 +577,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             'loss': self.loss,
             'heuristic': self.heuristic,
             'label_sub_sampling': self.label_sub_sampling,
-            'label_sub_sampling_num_samples': self.label_sub_sampling_num_samples,
             'instance_sub_sampling': self.instance_sub_sampling,
-            'instance_sub_sampling_sample_size': self.instance_sub_sampling_sample_size,
             'feature_sub_sampling': self.feature_sub_sampling,
-            'feature_sub_sampling_sample_size': self.feature_sub_sampling_sample_size,
             'pruning': self.pruning,
             'min_coverage': self.min_coverage,
             'max_conditions': self.max_conditions
@@ -577,12 +591,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         loss = self.__create_loss(heuristic)
         lift_function = self.__create_lift_function(stats)
         head_refinement = self.__create_head_refinement(lift_function)
-        label_sub_sampling = _create_label_sub_sampling(self.label_sub_sampling,
-                                                        int(self.label_sub_sampling_num_samples), stats)
-        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling,
-                                                              self.instance_sub_sampling_sample_size)
-        feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling,
-                                                            int(self.feature_sub_sampling_sample_size))
+        label_sub_sampling = _create_label_sub_sampling(self.label_sub_sampling, stats)
+        instance_sub_sampling = _create_instance_sub_sampling(self.instance_sub_sampling)
+        feature_sub_sampling = _create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = _create_pruning(self.pruning)
         min_coverage = _create_min_coverage(self.min_coverage)
         max_conditions = _create_max_conditions(self.max_conditions)
@@ -594,19 +605,23 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
+        prefix, args = _parse_prefix_and_dict(heuristic, [HEURISTIC_PRECISION, HEURISTIC_HAMMING_LOSS, HEURISTIC_RECALL,
+                                                          HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE])
 
-        if heuristic == HEURISTIC_PRECISION:
+        if prefix == HEURISTIC_PRECISION:
             return Precision()
-        elif heuristic == HEURISTIC_HAMMING_LOSS:
+        elif prefix == HEURISTIC_HAMMING_LOSS:
             return HammingLoss()
-        elif heuristic == HEURISTIC_RECALL:
+        elif prefix == HEURISTIC_RECALL:
             return Recall()
-        elif heuristic == HEURISTIC_WRA:
+        elif prefix == HEURISTIC_WRA:
             return WeightedRelativeAccuracy()
-        elif heuristic == HEURISTIC_F_MEASURE:
-            return FMeasure()
-        elif heuristic == HEURISTIC_M_ESTIMATE:
-            return MEstimate()
+        elif prefix == HEURISTIC_F_MEASURE:
+            beta = _get_float_argument(args, ARGUMENT_BETA, 0.5, lambda x: x >= 0)
+            return FMeasure(beta)
+        elif prefix == HEURISTIC_M_ESTIMATE:
+            m = _get_float_argument(args, ARGUMENT_M, 22.466, lambda x: x >= 0)
+            return MEstimate(m)
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
     def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
