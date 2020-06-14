@@ -115,6 +115,10 @@ cdef class RuleListInduction(SequentialRuleInduction):
             rule = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
                                               loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                               pruning, shrinkage, min_coverage, max_conditions, rng)
+
+            if rule is None:
+                break
+
             rule_list.append(rule)
             num_rules += 1
 
