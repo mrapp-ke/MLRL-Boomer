@@ -78,8 +78,8 @@ class CrossValidation(Randomized, ABC):
                  num_folds)
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, data_set_name + ".arff",
-                                                      data_set_name + ".xml")
+        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, data_set_name + '.arff',
+                                                      data_set_name + '.xml')
 
         if data_set.use_one_hot_encoding:
             x, _ = one_hot_encode(x, y, meta_data)
