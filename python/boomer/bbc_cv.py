@@ -39,6 +39,9 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         self.configuration = None
         self.store_true_labels = True
         self.require_dense = [True, True]
+        self.predictions = []
+        self.configurations = []
+        self.true_labels = None
 
     def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
                             test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
@@ -200,6 +203,9 @@ class BbcCv(Randomized):
         self.adapter = adapter
         self.bootstrapping = bootstrapping
         self.learner = learner
+        self.prediction_matrix_ = None
+        self.ground_truth_matrix_ = None
+        self.configurations_ = None
 
     def store_predictions(self):
         configurations = self.configurations
