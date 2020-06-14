@@ -16,6 +16,7 @@ from sklearn.utils import check_random_state
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
+from boomer.data import MetaData
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.interfaces import Randomized
 from boomer.learners import MLLearner
@@ -43,8 +44,8 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         self.configurations = []
         self.true_labels = None
 
-    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
-                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
+                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         num_total_examples = test_x.shape[0] + (0 if test_indices is None else train_x.shape[0])
         num_labels = test_y.shape[1]
 
@@ -271,8 +272,8 @@ class CV(CrossValidation):
         self.configurations = configurations
         self.observer = observer
 
-    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
-                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
+                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         configurations = self.configurations
         prediction_matrix = self.prediction_matrix
         ground_truth_matrix = self.ground_truth_matrix
