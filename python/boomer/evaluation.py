@@ -104,7 +104,8 @@ class EvaluationResult:
         elif len(self.results) != num_folds:
             raise AssertionError('Inconsistent number of total folds given')
 
-        self.measures.append(name)
+        if name not in self.measures:
+            self.measures.append(name)
         values = self.results[fold]
         values[name] = score
         self.results[fold] = values
