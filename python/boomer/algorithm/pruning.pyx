@@ -121,7 +121,7 @@ cdef class IREP(Pruning):
             indexed_values = dereference(indexed_array).data
             num_indexed_values = dereference(indexed_array).num_elements
 
-            # Tell the loss function to start a new search...
+            # Tell the loss function to start a new search when processing a new condition...
             loss.begin_search(label_indices)
 
             # TODO update_search
