@@ -74,7 +74,8 @@ cdef class IREP(Pruning):
         cdef float64 current_quality_score
         cdef IndexedArray* indexed_array
         cdef IndexedValue* indexed_values
-        cdef intp feature_index, num_indexed_values, i, n
+        cdef intp feature_index, num_indexed_values, i, n, r, start, end
+        cdef bint uncovered
 
         # Tell the loss function to start a new search...
         loss.begin_instance_sub_sampling()
@@ -124,12 +125,39 @@ cdef class IREP(Pruning):
             # Tell the loss function to start a new search when processing a new condition...
             loss.begin_search(label_indices)
 
-            # TODO update_search
+            # Find the range [start, end) that either contains all covered or uncovered examples...
+            end = __upper_bound(indexed_values, num_indexed_values, threshold)
+
+            if comparator == Comparator.EQ or comparator == Comparator.NEQ:
+                start = __lower_bound(indexed_values, end, threshold)
+
+                if end - start == 0:
+                    start = 0
+                    end = num_indexed_values
+                    uncovered = (comparator == Comparator.EQ)
+                else:
+                    uncovered = (comparator == Comparator.NEQ)
+            else:
+                if indexed_values[end].value > 0:
+                    start = end
+                    end = num_indexed_values
+                    uncovered = (comparator == Comparator.LEQ)
+                else:
+                    start = 0
+                    uncovered = (comparator == Comparator.GR)
+
+            # Tell the loss function about the examples in range [start, end)...
+            for r in range(start, end):
+                i = indexed_values[r].index
+
+                # We must only consider examples that are currently covered and contained in the prune set...
+                if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
+                    loss.update_search(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
-            # TODO evaluate_predictions
-            current_quality_score = 0
+            prediction = head_refinement.evaluate_predictions(loss, uncovered, False)
+            current_quality_score = prediction.overall_quality_score
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
                 best_quality_score = current_quality_score
@@ -137,7 +165,19 @@ cdef class IREP(Pruning):
                 best_covered_examples_target = current_covered_examples_target
                 num_pruned_conditions = (num_conditions - n)
 
-            # TODO update_sub_sample
+            # If at least one condition remains to be processed, we must update the array that is used to keep track of
+            # the covered examples and notify the loss function about the updated sub-sample...
+            if (n + 1) < num_conditions:
+                if not uncovered:
+                    loss.begin_instance_sub_sampling()
+                    current_covered_examples_target = n
+
+                for r in range(start, end):
+                    i = indexed_values[r].index
+
+                    if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
+                        loss.update_sub_sample(i, 1, uncovered)
+                        current_covered_examples_mask[i] = n
 
             postincrement(iterator)
 
