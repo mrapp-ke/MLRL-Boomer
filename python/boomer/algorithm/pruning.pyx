@@ -76,7 +76,7 @@ cdef class IREP(Pruning):
         cdef IndexedValue* indexed_values
         cdef intp feature_index, num_indexed_values, i, n
 
-        # Reset the loss function...
+        # Tell the loss function to start a new search...
         loss.begin_instance_sub_sampling()
         loss.begin_search(label_indices)
 
