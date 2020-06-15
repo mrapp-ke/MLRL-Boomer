@@ -3,13 +3,13 @@
 import argparse
 import logging as log
 import os.path as path
-from typing import List
 
 import numpy as np
 from skmultilearn.base import MLClassifierBase
 
 from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.algorithm.rule_learners import Boomer
+from boomer.data import MetaData
 from boomer.evaluation import HAMMING_LOSS, SUBSET_01_LOSS
 from boomer.persistence import ModelPersistence
 from boomer.plots import LossMinimizationCurve
@@ -31,8 +31,8 @@ class Plotter(CrossValidation, MLClassifierBase):
         self.learner = learner
         self.plot = LossMinimizationCurve(data_set.data_set_name, HAMMING_LOSS, SUBSET_01_LOSS)
 
-    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
-                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
+                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         # Create a dense representation of the training data
         train_x = np.ascontiguousarray(self._ensure_input_format(train_x), dtype=DTYPE_FLOAT32)
         train_y = self._ensure_input_format(train_y)
