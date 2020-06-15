@@ -8,10 +8,10 @@ Provides classes for performing experiments.
 """
 import logging as log
 from abc import ABC
-from typing import List
 
 from sklearn.base import clone
 
+from boomer.data import MetaData, AttributeType
 from boomer.evaluation import Evaluation
 from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.parameters import ParameterInput
@@ -42,8 +42,8 @@ class Experiment(CrossValidation, ABC):
         log.info('Starting experiment \"' + self.base_learner.get_name() + '\"...')
         super().run()
 
-    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
-                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
+                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         base_learner = self.base_learner
         current_learner = clone(base_learner)
 
@@ -60,7 +60,7 @@ class Experiment(CrossValidation, ABC):
         current_learner.fold = current_fold
 
         if isinstance(current_learner, NominalAttributeLearner):
-            current_learner.nominal_attribute_indices = nominal_attribute_indices
+            current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         current_learner.fit(train_x, train_y)
         learner_name = current_learner.get_name()
@@ -74,4 +74,5 @@ class Experiment(CrossValidation, ABC):
         model_printer = self.model_printer
 
         if model_printer is not None:
-            model_printer.print(learner_name, current_learner, current_fold=current_fold, num_folds=num_folds)
+            model_printer.print(learner_name, meta_data, current_learner, current_fold=current_fold,
+                                num_folds=num_folds)
