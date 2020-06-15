@@ -152,20 +152,59 @@ cdef class IREP(Pruning):
         return result
 
 
-cdef inline bint __test_condition(float32 threshold, Comparator comparator, float32 feature_value):
+cdef inline intp __upper_bound(IndexedValue* indexed_values, intp num_indexed_values, float32 threshold):
     """
-    Returns whether a given feature value satisfies a certain condition.
+    Returns the index of the first example in `indexed_values` with feature value > threshold. If no such example is
+    found, `num_indexed_values` is returned.
 
-    :param threshold:       The threshold of the condition
-    :param comparator:      The operator that is used by the condition
-    :param feature_value:   The feature value
-    :return:                1, if the feature value satisfies the condition, 0 otherwise
+    :param indexed_values:      A pointer to a C-array of type `IndexedValue`, storing the indices and feature values of
+                                examples
+    :param num_indexed_values:  The number of leading elements in `indexed_values` to be considered
+    :param threshold:           The threshold
+    :return:                    The index of the first example in `indexed_values` with feature value > threshold or
+                                `num_indexed_values`, if no such example is found
     """
-    if comparator == Comparator.LEQ:
-        return feature_value <= threshold
-    elif comparator == Comparator.GR:
-        return feature_value > threshold
-    elif comparator == Comparator.EQ:
-        return feature_value == threshold
-    else:
-        return feature_value != threshold
+    cdef intp first = 0
+    cdef intp last = num_indexed_values
+    cdef intp pivot
+    cdef float32 pivot_value
+
+    while first < last:
+        pivot = first + ((last - first) / 2)
+        pivot_value = indexed_values[pivot].value
+
+        if threshold >= pivot_value:
+            first = pivot + 1
+        else:
+            last = pivot
+
+    return first
+
+
+cdef inline intp __lower_bound(IndexedValue* indexed_values, intp num_indexed_values, float32 threshold):
+    """
+    Returns the index of the first example in `indexed_values` with feature value >= threshold. If no such example is
+    found, `num_indexed_values` is returned.
+
+    :param indexed_values:      A pointer to a C-array of type `IndexedValue`, storing the indices and feature values of
+                                examples
+    :param num_indexed_values:  The number of leading elements in `indexed_values` to be considered
+    :param threshold:           The threshold
+    :return:                    The index of the first example in `indexed_values` with feature value >= threshold or
+                                `num_indexed_values`, if no such example is found
+    """
+    cdef intp first = 0
+    cdef intp last = num_indexed_values
+    cdef intp pivot
+    cdef float32 pivot_value
+
+    while first < last:
+        pivot = first + ((last - first) / 2)
+        pivot_value = indexed_values[pivot].value
+
+        if threshold <= pivot_value:
+            last = pivot
+        else:
+            first = pivot + 1
+
+    return first
