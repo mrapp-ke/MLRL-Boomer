@@ -72,7 +72,6 @@ cdef class IREP(Pruning):
         cdef Comparator comparator
         cdef float32 threshold
         cdef float64 current_quality_score
-        cdef uint32 weight
         cdef IndexedArray* indexed_array
         cdef IndexedValue* indexed_values
         cdef intp feature_index, num_indexed_values, i, n
@@ -83,9 +82,7 @@ cdef class IREP(Pruning):
 
         # Tell the loss function about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
-            weight = weights[i]
-
-            if weight == 0:
+            if weights[i] == 0:
                 loss.update_sub_sample(i, 1, False)
 
                 if covered_examples_mask[i] == covered_examples_target:
