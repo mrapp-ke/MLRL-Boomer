@@ -110,7 +110,7 @@ cdef class IREP(Pruning):
         # and keep track of the best rule...
         cdef list[Condition].iterator iterator = conditions.begin()
 
-        for n in range(num_conditions - 1):
+        for n in range(1, num_conditions):
             # Obtain properties of the current condition...
             condition = dereference(iterator)
             feature_index = condition.feature_index
