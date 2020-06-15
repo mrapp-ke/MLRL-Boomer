@@ -71,6 +71,7 @@ cdef class IREP(Pruning):
         cdef Condition condition
         cdef Comparator comparator
         cdef float32 threshold
+        cdef float64 current_quality_score
         cdef uint32 weight
         cdef IndexedArray* indexed_array
         cdef IndexedValue* indexed_values
@@ -123,7 +124,23 @@ cdef class IREP(Pruning):
             indexed_values = dereference(indexed_array).data
             num_indexed_values = dereference(indexed_array).num_elements
 
-            # TODO Implement pruning
+            # Tell the loss function to start a new search...
+            loss.begin_search(label_indices)
+
+            # TODO update_search
+
+            # Check if the quality score of the current rule is better than the best quality score known so far
+            # (reaching the same quality score with fewer conditions is also considered an improvement)...
+            # TODO evaluate_predictions
+            current_quality_score = 0
+
+            if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
+                best_quality_score = current_quality_score
+                best_covered_examples_mask[:] = current_covered_examples_mask
+                best_covered_examples_target = current_covered_examples_target
+                num_pruned_conditions = (num_conditions - n)
+
+            # TODO update_sub_sample
 
             postincrement(iterator)
 
