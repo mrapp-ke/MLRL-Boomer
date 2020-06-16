@@ -23,8 +23,8 @@ from boomer.algorithm.label_wise_losses import LabelWiseSquaredErrorLoss, LabelW
 from boomer.algorithm.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.algorithm.losses import Loss
 from boomer.algorithm.prediction import Predictor, DensePredictor, Aggregation, SignFunction
-from boomer.algorithm.pruning import IREP, Pruning
-from boomer.algorithm.rule_induction import ExactGreedyRuleInduction
+from boomer.algorithm.pruning import Pruning, IREP
+from boomer.algorithm.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix, ExactGreedyRuleInduction
 from boomer.algorithm.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.algorithm.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.algorithm.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
@@ -217,10 +217,20 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
     def _fit(self, stats: Stats, x, y, random_state: int):
         x, y = self._validate_data(x, y, accept_sparse=True, multi_output=True)
+        sparse_format = 'csc'
+        enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
+        x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
 
-        # Create a dense representation of the training data
-        x = self._ensure_input_format(x)
-        y = self._ensure_output_format(y)
+        if issparse(x):
+            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
+            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
+            x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
+            feature_matrix = SparseFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
+        else:
+            x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
+            feature_matrix = DenseFeatureMatrix(x)
+
+        y = np.asfortranarray(self._ensure_output_format(y), dtype=DTYPE_UINT8)
 
         # Create an array that contains the indices of all nominal attributes, if any
         nominal_attribute_indices = self.nominal_attribute_indices
@@ -230,13 +240,9 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         else:
             nominal_attribute_indices = None
 
-        # Convert feature and label matrices into Fortran-contiguous arrays
-        x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
-        y = np.asfortranarray(y, dtype=DTYPE_UINT8)
-
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(stats)
-        return sequential_rule_induction.induce_rules(nominal_attribute_indices, x, y, random_state)
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, y, random_state)
 
     def _predict(self, model, stats: Stats, x, random_state: int):
         x = self._validate_data(x, reset=False, accept_sparse=True)
@@ -253,7 +259,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             num_features = x.shape[1]
             return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, num_labels, model)
         else:
-            x = np.ascontiguousarray(self._ensure_input_format(x), dtype=DTYPE_FLOAT32)
+            x = np.ascontiguousarray(x, dtype=DTYPE_FLOAT32)
             return predictor.predict(x, num_labels, model)
 
     @staticmethod

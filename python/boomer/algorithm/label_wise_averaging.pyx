@@ -65,12 +65,13 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         confusion_matrices_default[:, :] = 0
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef intp num_labels = minority_labels.shape[0]
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64 signed_weight = -<float64>weight if remove else weight
         cdef intp c
         cdef uint8 true_label, predicted_label
 
@@ -81,14 +82,14 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
                 if true_label == 0:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _IN] += weight
+                        confusion_matrices_default[c, _IN] += signed_weight
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _IP] += weight
+                        confusion_matrices_default[c, _IP] += signed_weight
                 elif true_label == 1:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _RN] += weight
+                        confusion_matrices_default[c, _RN] += signed_weight
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _RP] += weight
+                        confusion_matrices_default[c, _RP] += signed_weight
 
     cdef void begin_search(self, intp[::1] label_indices):
         cdef LabelIndependentPrediction prediction = self.prediction
@@ -111,6 +112,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
             prediction.quality_scores = quality_scores
 
         confusion_matrices_covered[:, :] = 0
+        self.accumulated_confusion_matrices_covered = None
         self.label_indices = label_indices
 
     cdef void update_search(self, intp example_index, uint32 weight):
@@ -140,14 +142,44 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                     elif predicted_label == 1:
                         confusion_matrices_covered[c, _RP] += weight
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
+        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef intp num_labels = confusion_matrices_covered.shape[0]
+        cdef float64[::1, :] accumulated_confusion_matrices_covered = self.accumulated_confusion_matrices_covered
+        cdef intp c
+
+        if accumulated_confusion_matrices_covered is None:
+            accumulated_confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
+            self.accumulated_confusion_matrices_covered = accumulated_confusion_matrices_covered
+
+            for c in range(num_labels):
+                accumulated_confusion_matrices_covered[c, _IN] = confusion_matrices_covered[c, _IN]
+                confusion_matrices_covered[c, _IN] = 0
+                accumulated_confusion_matrices_covered[c, _IP] = confusion_matrices_covered[c, _IP]
+                confusion_matrices_covered[c, _IP] = 0
+                accumulated_confusion_matrices_covered[c, _RN] = confusion_matrices_covered[c, _RN]
+                confusion_matrices_covered[c, _RN] = 0
+                accumulated_confusion_matrices_covered[c, _RP] = confusion_matrices_covered[c, _RP]
+                confusion_matrices_covered[c, _RP] = 0
+        else:
+            for c in range(num_labels):
+                accumulated_confusion_matrices_covered[c, _IN] += confusion_matrices_covered[c, _IN]
+                confusion_matrices_covered[c, _IN] = 0
+                accumulated_confusion_matrices_covered[c, _IP] += confusion_matrices_covered[c, _IP]
+                confusion_matrices_covered[c, _IP] = 0
+                accumulated_confusion_matrices_covered[c, _RN] += confusion_matrices_covered[c, _RN]
+                confusion_matrices_covered[c, _RN] = 0
+                accumulated_confusion_matrices_covered[c, _RP] += confusion_matrices_covered[c, _RP]
+                confusion_matrices_covered[c, _RP] = 0
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64 overall_quality_score = 0
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef intp[::1] label_indices = self.label_indices
-        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef float64[::1, :] confusion_matrices_covered = self.accumulated_confusion_matrices_covered if accumulated else self.confusion_matrices_covered
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef intp num_labels = confusion_matrices_covered.shape[0]
         cdef intp c, l
@@ -185,28 +217,22 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
         return prediction
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
         cdef intp num_labels = predicted_scores.shape[0]
-        cdef intp num_covered = covered_example_indices.shape[0]
-        cdef intp r, c, l, i
+        cdef intp c, l
 
         # Only the labels that are predicted by the new rule must be considered
         for c in range(num_labels):
             l = get_index(c, label_indices)
 
-            # Only the examples that are covered by the new rule must be considered
-            for r in range(num_covered):
-                i = covered_example_indices[r]
+            if uncovered_labels[example_index, l] == 1:
+                uncovered_labels[example_index, l] = 0
 
-                if uncovered_labels[i, l] == 1:
-                    uncovered_labels[i, l] = 0
-
-                    if minority_labels[l] == true_labels[i, l]:
-                        sum_uncovered_labels = sum_uncovered_labels - 1
+                if minority_labels[l] == true_labels[example_index, l]:
+                    sum_uncovered_labels = sum_uncovered_labels - 1
 
         self.sum_uncovered_labels = sum_uncovered_labels

@@ -6,7 +6,7 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.algorithm._arrays cimport array_intp
-from boomer.algorithm.rule_induction cimport test_condition, Comparator
+from boomer.algorithm.rule_induction cimport Comparator
 from boomer.algorithm.losses cimport Prediction
 
 from cython.operator cimport dereference, postincrement
@@ -20,7 +20,7 @@ cdef class Pruning:
     """
 
     cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices):
+                            uint32[::1] covered_examples_mask, uint32 covered_examples_target, intp[::1] label_indices):
         """
         Calculates the quality score of an existing rule, based on the examples that are contained in the prune set,
         i.e., based on all examples whose weight is 0.
@@ -35,9 +35,10 @@ cdef class Pruning:
                                         grow set
         :param loss:                    The `Loss` to be minimized
         :param head_refinement:         The strategy that is used to find the heads of rules
-        :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
-                                        of all training examples that are covered by the rule, regardless of whether
-                                        they are included in the prune set or grow set
+        :param covered_examples_mask:   An array of dtype uint, shape `(num_examples)` that is used to keep track of the
+                                        indices of the examples that are covered by the existing rule
+        :param covered_examples_target: The value that is used to mark those elements in `covered_examples_mask` that
+                                        are covered by the existing rule
         :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
                                         of the labels for which the rule predicts or None, if the rule predicts for all
                                         labels
@@ -73,23 +74,28 @@ cdef class IREP(Pruning):
     """
 
     cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices):
+                            uint32[::1] covered_examples_mask, uint32 covered_examples_target, intp[::1] label_indices):
+        cdef intp num_examples = covered_examples_mask.shape[0]
         cdef uint32 weight
         cdef intp i
 
         # Reset the loss function...
+        loss.begin_instance_sub_sampling()
         loss.begin_search(label_indices)
 
         # Tell the loss function about all examples in the prune set that are covered by the given rule...
-        for i in covered_example_indices:
+        for i in range(num_examples):
             weight = weights[i]
 
             if weight == 0:
-                loss.update_search(i, 1)
+                loss.update_sub_sample(i, 1, False)
+
+                if covered_examples_mask[i] == covered_examples_target:
+                    loss.update_search(i, 1)
 
         # Calculate the optimal scores to be predicted by the given rule, as well as its overall quality score,  based
         # on the prune set...
-        cdef Prediction prediction = head_refinement.evaluate_predictions(loss, 0)
+        cdef Prediction prediction = head_refinement.evaluate_predictions(loss, False, False)
 
         # Cache the overall quality score of the given rule based on the prune set...
         cdef float64 original_quality_score = prediction.overall_quality_score
@@ -97,7 +103,8 @@ cdef class IREP(Pruning):
 
         # Cache arguments that will be used in the `prune` function...
         self.label_indices = label_indices
-        self.covered_example_indices = covered_example_indices
+        self.covered_examples_mask = covered_examples_mask
+        self.covered_examples_target = covered_examples_target
         self.loss = loss
         self.head_refinement = head_refinement
         self.weights = weights
@@ -157,7 +164,7 @@ cdef class IREP(Pruning):
                     index = sorted_indices[r]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, comparator, feature_value):
+                    if __test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
@@ -179,7 +186,7 @@ cdef class IREP(Pruning):
                     index = covered_example_indices[r]
                     feature_value = x[index, c]
 
-                    if test_condition(threshold, comparator, feature_value):
+                    if __test_condition(threshold, comparator, feature_value):
                         # If the example satisfies the condition, we remember its index...
                         new_covered_example_indices[i] = index
                         i += 1
@@ -198,7 +205,7 @@ cdef class IREP(Pruning):
 
             # Calculate the optimal scores to be predicted by a rule that only contains the conditions processed so far,
             # as well as its overall quality score, based on the prune set...
-            prediction = head_refinement.evaluate_predictions(loss, 0)
+            prediction = head_refinement.evaluate_predictions(loss, False, False)
 
             # Check if the overall quality score of the current rule based on the prune set is better than the best
             # quality score known so far (reaching the same quality score with fewer conditions is also considered an
@@ -219,3 +226,22 @@ cdef class IREP(Pruning):
             num_pruned_conditions -= 1
 
         return best_covered_example_indices[0:best_num_examples]
+
+
+cdef inline bint __test_condition(float32 threshold, Comparator comparator, float32 feature_value):
+    """
+    Returns whether a given feature value satisfies a certain condition.
+
+    :param threshold:       The threshold of the condition
+    :param comparator:      The operator that is used by the condition
+    :param feature_value:   The feature value
+    :return:                1, if the feature value satisfies the condition, 0 otherwise
+    """
+    if comparator == Comparator.LEQ:
+        return feature_value <= threshold
+    elif comparator == Comparator.GR:
+        return feature_value > threshold
+    elif comparator == Comparator.EQ:
+        return feature_value == threshold
+    else:
+        return feature_value != threshold

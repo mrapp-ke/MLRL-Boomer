@@ -5,11 +5,13 @@ Provides classes that implement strategies for finding the heads of rules.
 """
 from boomer.algorithm._arrays cimport array_intp, array_float64, get_index
 from boomer.algorithm.losses cimport LabelIndependentPrediction
+from boomer.algorithm.rule_induction cimport IndexedValue, compare_indexed_value
 from boomer.algorithm.lift_functions cimport LiftFunction
 
 from libc.stdlib cimport qsort
+
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
-from boomer.algorithm.rule_induction cimport compare_indexed_value
+
 
 cdef class HeadCandidate:
     """
@@ -36,7 +38,8 @@ cdef class HeadRefinement:
     A base class for all classes that allow to find the best single- or multi-label head for a rule.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
+                                 bint accumulated):
         """
         Finds and returns the best head for a rule given a specific loss function.
 
@@ -54,12 +57,15 @@ cdef class HeadRefinement:
         :param uncovered:       0, if the rule for which the head should be found covers all examples that have been
                                 provided to the loss function so far, 1, if the rule covers all examples that have not
                                 been provided yet
+        :param accumulated:     0, if the rule covers all examples that have been provided since the loss function has
+                                been reset for the last time, 1, if the rule covers all examples that have been provided
+                                so far
         :return:                A 'HeadCandidate' that stores information about the head that has been found, if the
                                 head is better than `best_head`, None otherwise
         """
         pass
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
+    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
         """
         Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, given a
         specific loss function.
@@ -71,6 +77,9 @@ cdef class HeadRefinement:
         :param uncovered:       0, if the rule for which the optimal scores should be calculated covers all examples
                                 that have been provided to the loss function so far, 1, if the rule covers all examples
                                 that have not been provided yet
+        :param accumulated      0, if the rule covers all examples that have been provided since the loss function has
+                                been reset for the last time, 1, if the rule covers all examples that have been provided
+                                so far
         :return:                A `Prediction` that stores the optimal scores to be predicted by the rule, as well as
                                 its overall quality score
         """
@@ -82,8 +91,9 @@ cdef class FullHeadRefinement(HeadRefinement):
     Allows to find the best multi-label head that predicts for all labels.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
-        cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
+                                 bint accumulated):
+        cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64 overall_quality_score = prediction.overall_quality_score
         cdef intp num_labels = predicted_scores.shape[0]
@@ -114,8 +124,8 @@ cdef class FullHeadRefinement(HeadRefinement):
         # Return None, as the quality score of the found head is worse than that of `best_head`...
         return None
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
-        cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered)
+    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
+        cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered, accumulated)
         return prediction
 
 cdef class PartialHeadRefinement(HeadRefinement):
@@ -123,8 +133,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
     def __cinit__(self, LiftFunction lift):
         self.lift = lift
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
-        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
+                                 bint accumulated):
+        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels
@@ -210,8 +221,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
             # Return None, as the quality_score of the found head is worse than that of `best_head`...
             return None
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
-        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
+        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
         return prediction
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
@@ -219,8 +230,9 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     Allows to find the best single-label head that predicts for a single label.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered):
-        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
+                                 bint accumulated):
+        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels = predicted_scores.shape[0]
@@ -260,8 +272,8 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         # Return None, as the quality_score of the found head is worse than that of `best_head`...
         return None
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered):
-        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered)
+    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
+        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
         return prediction
 
 

@@ -21,14 +21,22 @@ cdef struct IndexedValue:
 
 
 """
-A struct that contains a pointer to a C-array of type intp, representing the indices of the training examples that are
-covered by a rule. The attribute `num_elements` specifies how many elements the array contains. The attribute
-`num_conditions` specifies how many conditions the rule contained when the struct was updated for the last time. It may
-be used to check if the array is still valid or must be updated.
+A struct that contains a pointer to a C-array of type `IndexedValue`. The attribute `num_elements` specifies how many
+elements the array contains.
 """
-cdef struct IndexArray:
-    intp* data
+cdef struct IndexedArray:
+    IndexedValue* data
     intp num_elements
+
+
+"""
+A struct that contains a pointer to a struct of type `IndexedArray`, representing the indices and feature values of the
+training examples that are covered by a rule. The attribute `num_conditions` specifies how many conditions the rule
+contained when the array was updated for the last time. It may be used to check if the array is still valid or must be
+updated.
+"""
+cdef struct IndexedArrayWrapper:
+    IndexedArray* array
     intp num_conditions
 
 
@@ -52,13 +60,52 @@ cdef struct Condition:
     float32 threshold
 
 
+cdef class FeatureMatrix:
+
+    # Attributes:
+
+    cdef readonly intp num_examples
+
+    cdef readonly intp num_features
+
+    # Functions:
+
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index)
+
+
+cdef class DenseFeatureMatrix(FeatureMatrix):
+
+    # Attributes:
+
+    cdef float32[::1, :] x
+
+    # Functions:
+
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index)
+
+
+cdef class SparseFeatureMatrix(FeatureMatrix):
+
+    # Attributes:
+
+    cdef float32[::1] x_data
+
+    cdef intp[::1] x_row_indices
+
+    cdef intp[::1] x_col_indices
+
+    # Functions:
+
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index)
+
+
 cdef class RuleInduction:
 
     # Functions:
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng)
@@ -68,35 +115,16 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef map[intp, intp*]* sorted_indices_map_global
+    cdef map[intp, IndexedArray*]* cache_global
 
     # Functions:
 
     cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, float32[::1, :] x, uint8[::1, :] y,
+    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng)
-
-
-cdef inline bint test_condition(float32 threshold, Comparator comparator, float32 feature_value):
-    """
-    Returns whether a given feature value satisfies a certain condition.
-
-    :param threshold:       The threshold of the condition
-    :param comparator:      The operator that is used by the condition
-    :param feature_value:   The feature value
-    :return:                1, if the feature value satisfies the condition, 0 otherwise
-    """
-    if comparator == Comparator.LEQ:
-        return feature_value <= threshold
-    elif comparator == Comparator.GR:
-        return feature_value > threshold
-    elif comparator == Comparator.EQ:
-        return feature_value == threshold
-    else:
-        return feature_value != threshold
 
 
 cdef inline int compare_indexed_value(const void* a, const void* b) nogil:
