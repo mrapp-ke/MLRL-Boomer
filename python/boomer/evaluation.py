@@ -212,7 +212,7 @@ class EvaluationLogOutput(EvaluationOutput):
         if fold is None or self.output_individual_folds:
             text = ''
 
-            for measure in evaluation_result.measures:
+            for measure in sorted(evaluation_result.measures):
                 if len(text) > 0:
                     text += '\n'
 
