@@ -199,7 +199,7 @@ cdef class MEstimate(Heuristic):
                                            float64 uip, float64 urn, float64 urp):
         cdef float64 m = self.m
         cdef Heuristic heuristic
-        cdef float64 num_covered_equal, num_uncovered_equal, num_covered, num_equal, num_total, denominator
+        cdef float64 num_covered_equal, num_uncovered_equal, num_covered, num_equal, num_total
 
         if isinf(m):
             # Equivalent to weighted relative accuracy
@@ -210,14 +210,13 @@ cdef class MEstimate(Heuristic):
             num_covered_equal = cin + crp
             num_covered = num_covered_equal + cip + crn
             num_uncovered_equal = uin + urp
-            denominator = num_covered + m
             num_total = num_covered + num_uncovered_equal + uip + urn
 
-            if denominator == 0 or num_total == 0:
+            if num_total == 0:
                 return 1
 
             num_equal = num_covered_equal + num_uncovered_equal
-            return 1 - ((num_covered_equal + (m * (num_equal / num_total))) / denominator)
+            return 1 - ((num_covered_equal + (m * (num_equal / num_total))) / (num_covered + m))
         else:
             # Equivalent to precision
             heuristic = self.precision
