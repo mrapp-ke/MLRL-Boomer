@@ -34,6 +34,8 @@ if __name__ == '__main__':
                         help='True, if the predictions should be stored as CSV files, False otherwise')
     parser.add_argument('--parameter-dir', type=optional_string, default=None,
                         help='The path of the directory, parameter settings should be loaded from')
+    parser.add_argument('--evaluate-training-data', type=boolean_string, default=False,
+                        help='True, if the models should be evaluated on the training data, False otherwise')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
@@ -64,8 +66,10 @@ if __name__ == '__main__':
         raise ValueError('Invalid argument given: ' + str(transformation_method))
 
     parameter_input = parameter_input
-    evaluation = ClassificationEvaluation(EvaluationLogOutput(), *evaluation_outputs)
+    train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
+    test_evaluation = ClassificationEvaluation(*evaluation_outputs)
     data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=True)
-    experiment = Experiment(learner, evaluation, data_set=data_set, num_folds=args.folds,
-                            current_fold=args.current_fold, parameter_input=parameter_input)
+    experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
+                            data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
+                            parameter_input=parameter_input)
     experiment.run()
