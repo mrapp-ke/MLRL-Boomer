@@ -212,7 +212,7 @@ cdef class MEstimate(Heuristic):
             num_uncovered_equal = uin + urp
             num_total = num_covered + num_uncovered_equal + uip + urn
 
-            if num_total == 0:
+            if num_covered == 0:
                 return 1
 
             num_equal = num_covered_equal + num_uncovered_equal
