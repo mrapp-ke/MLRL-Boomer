@@ -209,14 +209,14 @@ cdef class MEstimate(Heuristic):
             # Trade-off between weighted relative accuracy and precision
             num_covered_equal = cin + crp
             num_covered = num_covered_equal + cip + crn
+            num_uncovered_equal = uin + urp
             denominator = num_covered + m
+            num_total = num_covered + num_uncovered_equal + uip + urn
 
-            if denominator == 0:
+            if denominator == 0 or num_total == 0:
                 return 1
 
-            num_uncovered_equal = uin + urp
             num_equal = num_covered_equal + num_uncovered_equal
-            num_total = num_covered + num_uncovered_equal + uip + urn
             return 1 - ((num_covered_equal + (m * (num_equal / num_total))) / denominator)
         else:
             # Equivalent to precision
