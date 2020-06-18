@@ -86,7 +86,7 @@ class EvaluationResult:
     """
 
     def __init__(self):
-        self.measures: List[str] = list()
+        self.measures: Set[str] = set()
         self.results: List[Dict[str, float]] = None
 
     def put(self, name: str, score: float, fold: int, num_folds: int):
@@ -104,8 +104,7 @@ class EvaluationResult:
         elif len(self.results) != num_folds:
             raise AssertionError('Inconsistent number of total folds given')
 
-        if name not in self.measures:
-            self.measures.append(name)
+        self.measures.add(name)
         values = self.results[fold]
         values[name] = score
         self.results[fold] = values
@@ -213,7 +212,7 @@ class EvaluationLogOutput(EvaluationOutput):
         if fold is None or self.output_individual_folds:
             text = ''
 
-            for measure in evaluation_result.measures:
+            for measure in sorted(evaluation_result.measures):
                 if len(text) > 0:
                     text += '\n'
 
