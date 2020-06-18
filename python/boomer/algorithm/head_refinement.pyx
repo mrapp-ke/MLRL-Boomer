@@ -282,7 +282,7 @@ cdef inline intp[::1] __argsort(float64[::1] values):
     try:
         for i in range(num_values):
             tmp_array[i].index = i
-            tmp_array[i].value = values[i]
+            tmp_array[i].value = <float32> values[i]
 
         qsort(tmp_array, num_values, sizeof(IndexedValue), &compare_indexed_value)
 

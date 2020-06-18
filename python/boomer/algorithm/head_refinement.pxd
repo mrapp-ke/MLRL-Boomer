@@ -3,13 +3,6 @@ from boomer.algorithm.lift_functions cimport LiftFunction
 from boomer.algorithm.losses cimport Loss, Prediction
 
 
-"""
-A struct that stores a value of type float64 and a corresponding index that refers to the (original) position of the
-value in an array.
-"""
-cdef struct IndexedValue:
-    intp index
-    float64 value
 
 cdef class HeadCandidate:
 
