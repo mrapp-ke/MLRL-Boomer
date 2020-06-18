@@ -3,9 +3,10 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-from boomer.algorithm._arrays cimport array_intp, array_float64, get_index
+from boomer.algorithm._arrays cimport array_intp, array_float64, get_index, float32
 from boomer.algorithm.losses cimport LabelIndependentPrediction
 from boomer.algorithm.lift_functions cimport LiftFunction
+from boomer.algorithm.rule_induction cimport IndexedValue
 
 from libc.stdlib cimport qsort
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
