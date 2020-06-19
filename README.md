@@ -16,8 +16,10 @@ The algorithm that is provided by this project currently supports the following 
 * The rules may predict for a single label, or for all labels (which enables to model local label dependencies).
 * When learning a new rule, random samples of the training examples, features or labels may be used, including different techniques such as sampling with or without replacement.
 * The impact of individual rules on the ensemble can be controlled using shrinkage.
+* Hyper-parameters provide fine-grained control over the specificity/generality of rules.
 * The conditions of a recently induced rule can be pruned based on a hold-out set.  
-* The algorithm currently only supports numerical or ordinal features. Nominal features can be handled by using one-hot encoding. 
+* The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
+* Dense and sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets. 
 
 ## Project structure
 
