@@ -11,6 +11,7 @@ cdef struct IndexedValue:
     intp index
     float64 value
 
+
 cdef class HeadCandidate:
 
     # Attributes:
