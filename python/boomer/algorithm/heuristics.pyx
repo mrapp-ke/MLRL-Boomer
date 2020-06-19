@@ -19,7 +19,9 @@ cdef class Heuristic:
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
         """
-        Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix.
+        Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix. All elements must be
+        equal to or greater than 0. If a rule does not cover any elements, i.e., if CIN + CIP + CRN + CRP == 0, the
+        worst possible quality score 1 must be returned.
 
         According to the notation in http://www.ke.tu-darmstadt.de/bibtex/publications/show/3201, a confusion matrix
         consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols used in this
@@ -45,7 +47,7 @@ cdef class Heuristic:
                    |         1 |         1 | URP
 
         Real numbers may be used for the individual elements, if different weights are assigned to the corresponding
-        labels. All elements must be equal to or greater than 0.
+        labels.
 
         :param cin: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which
                     the prediction in the rule's head is negative (N)
