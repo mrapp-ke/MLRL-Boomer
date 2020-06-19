@@ -5,11 +5,9 @@ Provides classes that implement strategies for finding the heads of rules.
 """
 from boomer.algorithm._arrays cimport array_intp, array_float64, get_index
 from boomer.algorithm.losses cimport LabelIndependentPrediction
-from boomer.algorithm.lift_functions cimport LiftFunction
 
 from libc.stdlib cimport qsort
 from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
-from boomer.algorithm.rule_induction cimport compare_indexed_value
 
 cdef class HeadCandidate:
     """
@@ -284,7 +282,7 @@ cdef inline intp[::1] __argsort(float64[::1] values):
             tmp_array[i].index = i
             tmp_array[i].value = values[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedValue), &compare_indexed_value)
+        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
 
         for i in range(num_values):
             sorted_array[i] = tmp_array[i].index
@@ -292,3 +290,17 @@ cdef inline intp[::1] __argsort(float64[::1] values):
         free(tmp_array)
 
     return sorted_array
+
+
+cdef int __compare_indexed_value(const void* a, const void* b) nogil:
+    """
+    Compares the values of two structs of type `IndexedValue`.
+
+    :param a:   A pointer to the first struct
+    :param b:   A pointer to the second struct
+    :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
+                equal, or 1 if the value of the first struct is greater than the value of the second struct
+    """
+    cdef float64 v1 = (<IndexedValue*>a).value
+    cdef float64 v2 = (<IndexedValue*>b).value
+    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
