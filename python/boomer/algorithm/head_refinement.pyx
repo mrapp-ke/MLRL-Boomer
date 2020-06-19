@@ -157,9 +157,10 @@ cdef class PartialHeadRefinement(HeadRefinement):
             maximum_lift = lift.get_max_lift()
             for c in range(0, num_labels):
                 # select the top element of sorted_label_indices excluding labels already contained
-                total_quality_score += quality_scores[sorted_indices[c]]
+                total_quality_score += 1 - quality_scores[sorted_indices[c]]
 
-                quality_score = (1 - (1 - total_quality_score) * lift.eval(c + 1)) / (c + 1)
+                quality_score = 1 - (total_quality_score / (c + 1)) * lift.eval(c + 1)
+
 
                 if best_head_candidate_length == 0 or quality_score < best_quality_score:
                     best_head_candidate_length = c + 1
@@ -176,9 +177,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
             for c in range(0, num_labels):
                 # select the top element of sorted_label_indices excluding labels already contained
-                total_quality_score += quality_scores[c]
+                total_quality_score += 1 - quality_scores[c]
 
-            best_quality_score = (1 - (1 - total_quality_score) * lift.eval(num_labels)) / num_labels
+            best_quality_score = 1 - (total_quality_score/num_labels) * lift.eval(num_labels)
 
             best_head_candidate_length = label_indices.shape[0]
 
