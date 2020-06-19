@@ -19,7 +19,9 @@ cdef class Heuristic:
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
         """
-        Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix.
+        Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix. All elements must be
+        equal to or greater than 0. If a rule does not cover any elements, i.e., if CIN + CIP + CRN + CRP == 0, the
+        worst possible quality score 1 must be returned.
 
         According to the notation in http://www.ke.tu-darmstadt.de/bibtex/publications/show/3201, a confusion matrix
         consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols used in this
@@ -75,12 +77,15 @@ cdef class HammingLoss(Heuristic):
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
-        cdef float64 num_incorrect = cip + crn + urn + urp
-        cdef float64 num_total = num_incorrect + cin + crp + uin + uip
+        cdef float64 num_covered_incorrect = cip + crn
+        cdef float64 num_covered_correct = cin + crp
+        cdef float64 num_covered = num_covered_incorrect + num_covered_correct
 
-        if num_total == 0:
+        if num_covered == 0:
             return 1
 
+        cdef float64 num_incorrect = num_covered_incorrect + urn + urp
+        cdef float64 num_total = num_incorrect + num_covered_correct + uin + uip
         return num_incorrect / num_total
 
 
@@ -199,7 +204,7 @@ cdef class MEstimate(Heuristic):
                                            float64 uip, float64 urn, float64 urp):
         cdef float64 m = self.m
         cdef Heuristic heuristic
-        cdef float64 num_covered_equal, num_uncovered_equal, num_covered, num_equal, num_total, denominator
+        cdef float64 num_covered_equal, num_uncovered_equal, num_covered, num_equal, num_total
 
         if isinf(m):
             # Equivalent to weighted relative accuracy
@@ -209,15 +214,14 @@ cdef class MEstimate(Heuristic):
             # Trade-off between weighted relative accuracy and precision
             num_covered_equal = cin + crp
             num_covered = num_covered_equal + cip + crn
-            denominator = num_covered + m
 
-            if denominator == 0:
+            if num_covered == 0:
                 return 1
 
             num_uncovered_equal = uin + urp
-            num_equal = num_covered_equal + num_uncovered_equal
             num_total = num_covered + num_uncovered_equal + uip + urn
-            return 1 - ((num_covered_equal + (m * (num_equal / num_total))) / denominator)
+            num_equal = num_covered_equal + num_uncovered_equal
+            return 1 - ((num_covered_equal + (m * (num_equal / num_total))) / (num_covered + m))
         else:
             # Equivalent to precision
             heuristic = self.precision
