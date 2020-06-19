@@ -2,6 +2,12 @@
 
 This project provides a scikit-learn implementation of "BOOMER" - an algorithm for learning gradient boosted multi-label classification rules.
 
+The algorithm was first published in the following paper:
+
+*Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science. Springer, Cham*  
+
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
+
 ## Project structure
 
 ```
