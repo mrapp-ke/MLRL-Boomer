@@ -8,6 +8,17 @@ The algorithm was first published in the following paper:
 
 If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
 
+## Features
+
+The algorithm that is provided by this project currently supports the following features to learn an ensemble of boosted classification rules:
+
+* Different label-wise or example-wise loss functions can be minimized during training.
+* The rules may predict for a single label, or for all labels (which enables to model local label dependencies).
+* When learning a new rule, random samples of the training examples, features or labels may be used, including different techniques such as sampling with or without replacement.
+* The impact of individual rules on the ensemble can be controlled using shrinkage.
+* The conditions of a recently induced rule can be pruned based on a hold-out set.  
+* The algorithm currently only supports numerical or ordinal features. Nominal features can be handled by using one-hot encoding. 
+
 ## Project structure
 
 ```
