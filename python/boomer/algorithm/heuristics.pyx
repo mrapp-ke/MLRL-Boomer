@@ -77,12 +77,15 @@ cdef class HammingLoss(Heuristic):
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp):
-        cdef float64 num_incorrect = cip + crn + urn + urp
-        cdef float64 num_total = num_incorrect + cin + crp + uin + uip
+        cdef float64 num_covered_incorrect = cip + crn
+        cdef float64 num_covered_correct = cin + crp
+        cdef float64 num_covered = num_covered_incorrect + num_covered_correct
 
-        if num_total == 0:
+        if num_covered == 0:
             return 1
 
+        cdef float64 num_incorrect = num_covered_incorrect + urn + urp
+        cdef float64 num_total = num_incorrect + num_covered_correct + uin + uip
         return num_incorrect / num_total
 
 
