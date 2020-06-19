@@ -45,7 +45,7 @@ cdef class Heuristic:
                    |         1 |         1 | URP
 
         Real numbers may be used for the individual elements, if different weights are assigned to the corresponding
-        labels.
+        labels. All elements must be equal to or greater than 0.
 
         :param cin: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which
                     the prediction in the rule's head is negative (N)
@@ -212,7 +212,7 @@ cdef class MEstimate(Heuristic):
             num_uncovered_equal = uin + urp
             num_total = num_covered + num_uncovered_equal + uip + urn
 
-            if num_covered == 0:
+            if total == 0:
                 return 1
 
             num_equal = num_covered_equal + num_uncovered_equal
