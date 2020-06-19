@@ -22,7 +22,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
     p.add_argument('--model-dir', type=optional_string, default=None,
                    help='The path of the directory where models should be saved')
     p.add_argument('--dataset', type=str, help='The name of the data set to be used')
-    p.add_argument('--one-hot-encoding', type=boolean_string, default=True,
+    p.add_argument('--one-hot-encoding', type=boolean_string, default=False,
                    help='True, if one-hot-encoding should be used, False otherwise')
     p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
     p.add_argument('--current-fold', type=current_fold_string, default=-1,
@@ -70,6 +70,8 @@ if __name__ == '__main__':
                         help='True, if the induced rules should be stored in TXT files, False otherwise')
     parser.add_argument('--parameter-dir', type=optional_string, default=None,
                         help='The path of the directory, parameter settings should be loaded from')
+    parser.add_argument('--evaluate-training-data', type=boolean_string, default=False,
+                        help='True, if the models should be evaluated on the training data, False otherwise')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
@@ -92,9 +94,10 @@ if __name__ == '__main__':
     learner = create_learner(args)
     parameter_input = parameter_input
     model_printer = RulePrinter(*model_printer_outputs) if len(model_printer_outputs) > 0 else None
-    evaluation = ClassificationEvaluation(*evaluation_outputs)
+    train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
+    test_evaluation = ClassificationEvaluation(*evaluation_outputs)
     data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
-    experiment = Experiment(learner, evaluation, data_set=data_set, num_folds=args.folds,
-                            current_fold=args.current_fold, parameter_input=parameter_input,
-                            model_printer=model_printer)
+    experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
+                            data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
+                            parameter_input=parameter_input, model_printer=model_printer)
     experiment.run()

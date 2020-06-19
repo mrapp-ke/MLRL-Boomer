@@ -11,11 +11,10 @@ import logging as log
 import os.path as path
 from abc import ABC, abstractmethod
 from timeit import default_timer as timer
-from typing import List
 
 from sklearn.model_selection import KFold
 
-from boomer.data import AttributeType, load_data_set_and_meta_data, load_data_set, one_hot_encode
+from boomer.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 from boomer.interfaces import Randomized
 
 
@@ -78,14 +77,11 @@ class CrossValidation(Randomized, ABC):
                  num_folds)
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, data_set_name + ".arff",
-                                                      data_set_name + ".xml")
+        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, data_set_name + '.arff',
+                                                      data_set_name + '.xml')
 
         if data_set.use_one_hot_encoding:
-            x, _ = one_hot_encode(x, y, meta_data)
-            nominal_attribute_indices = None
-        else:
-            nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
+            x, _, meta_data = one_hot_encode(x, y, meta_data)
 
         # Cross validate
         if current_fold < 0:
@@ -111,8 +107,8 @@ class CrossValidation(Randomized, ABC):
                 test_y = y[test_indices]
 
                 # Train & evaluate classifier
-                self._train_and_evaluate(nominal_attribute_indices, train_indices, train_x, train_y, test_indices,
-                                         test_x, test_y, first_fold=first_fold, current_fold=i, last_fold=last_fold,
+                self._train_and_evaluate(meta_data, train_indices, train_x, train_y, test_indices, test_x, test_y,
+                                         first_fold=first_fold, current_fold=i, last_fold=last_fold,
                                          num_folds=num_folds)
 
             i += 1
@@ -143,11 +139,9 @@ class CrossValidation(Randomized, ABC):
                                                                   data_set_name + '.xml')
 
         if use_one_hot_encoding:
-            train_x, encoder = one_hot_encode(train_x, train_y, meta_data)
-            nominal_attribute_indices = None
+            train_x, encoder, meta_data = one_hot_encode(train_x, train_y, meta_data)
         else:
             encoder = None
-            nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         # Load test data
         if test_data_exists:
@@ -161,28 +155,26 @@ class CrossValidation(Randomized, ABC):
             test_y = train_y
 
         # Train and evaluate classifier
-        self._train_and_evaluate(nominal_attribute_indices, None, train_x, train_y, None, test_x, test_y, first_fold=0,
+        self._train_and_evaluate(meta_data, None, train_x, train_y, None, test_x, test_y, first_fold=0,
                                  current_fold=0, last_fold=0, num_folds=1)
 
     @abstractmethod
-    def _train_and_evaluate(self, nominal_attribute_indices: List[int], train_indices, train_x, train_y, test_indices,
-                            test_x, test_y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
+                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         """
         The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
         test set.
 
-        :param nominal_attribute_indices:   A list that contains the indices of all nominal attributes (in ascending
-                                            order) or None, if no nominal attributes are contained in the data set
-        :param train_indices:               The indices of the training examples or None, if no cross validation is used
-        :param train_x:                     The feature matrix of the training examples
-        :param train_y:                     The label matrix of the training examples
-        :param test_indices:                The indices of the test examples or None, if no cross validation is used
-        :param test_x:                      The feature matrix of the test examples
-        :param test_y:                      The label matrix of the test examples
-        :param first_fold:                  The first fold or 0, if no cross validation is used
-        :param current_fold:                The current fold starting at 0, or 0 if no cross validation is used
-        :param last_fold:                   The last fold or 0, if no cross validation is used
-        :param num_folds:                   The total number of cross validation folds or 1, if no cross validation is
-                                            used
+        :param meta_data:       The meta data of the training data set
+        :param train_indices:   The indices of the training examples or None, if no cross validation is used
+        :param train_x:         The feature matrix of the training examples
+        :param train_y:         The label matrix of the training examples
+        :param test_indices:    The indices of the test examples or None, if no cross validation is used
+        :param test_x:          The feature matrix of the test examples
+        :param test_y:          The label matrix of the test examples
+        :param first_fold:      The first fold or 0, if no cross validation is used
+        :param current_fold:    The current fold starting at 0, or 0 if no cross validation is used
+        :param last_fold:       The last fold or 0, if no cross validation is used
+        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
         pass
