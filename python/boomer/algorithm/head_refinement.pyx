@@ -126,6 +126,7 @@ cdef class FullHeadRefinement(HeadRefinement):
         cdef Prediction prediction = loss.evaluate_label_dependent_predictions(uncovered, accumulated)
         return prediction
 
+
 cdef class PartialHeadRefinement(HeadRefinement):
 
     def __cinit__(self, LiftFunction lift):
@@ -222,6 +223,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
     cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
         cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
         return prediction
+
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
