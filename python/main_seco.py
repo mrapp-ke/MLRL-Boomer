@@ -5,7 +5,7 @@ import logging as log
 
 from args import current_fold_string
 from args import optional_string, log_level, boolean_string
-from boomer.algorithm.rule_learners import AVERAGING_LABEL_WISE, HEURISTIC_PRECISION
+from boomer.algorithm.rule_learners import AVERAGING_LABEL_WISE, HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK
 from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
@@ -46,6 +46,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The minimum number of training examples that must be covered by a rule')
     p.add_argument('--max-conditions', type=int, default=-1,
                    help='The maximum number of conditions to be included in a rule\'s body or -1')
+    p.add_argument('--lift-function', type=optional_string, default=LIFT_FUNCTION_PEAK,
+                   help='The lift function to be used')
 
 
 def create_learner(params) -> SeparateAndConquerRuleLearner:
@@ -55,7 +57,7 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          feature_sub_sampling=params.feature_sub_sampling,
                                          head_refinement=params.head_refinement, min_coverage=params.min_coverage,
-                                         max_conditions=params.max_conditions)
+                                         max_conditions=params.max_conditions, lift_function=params.lift_function)
 
 
 if __name__ == '__main__':
