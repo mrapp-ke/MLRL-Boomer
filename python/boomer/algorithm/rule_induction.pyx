@@ -71,7 +71,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
             sorted_array[i].index = i
             sorted_array[i].value = x[i, feature_index]
 
-        qsort(sorted_array, num_elements, sizeof(IndexedValue), &compare_indexed_value)
+        qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
         return indexed_array
 
 
@@ -129,7 +129,7 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
                 sorted_array[i].value = x_data[j]
                 i += 1
 
-            qsort(sorted_array, num_elements, sizeof(IndexedValue), &compare_indexed_value)
+            qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
 
         dereference(indexed_array).data = sorted_array
         return indexed_array
@@ -883,6 +883,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 free(indexed_array)
                 free(indexed_array_wrapper)
                 postincrement(cache_local_iterator)
+
+
+cdef int __compare_indexed_value(const void* a, const void* b) nogil:
+    """
+    Compares the values of two structs of type `IndexedValue`.
+
+    :param a:   A pointer to the first struct
+    :param b:   A pointer to the second struct
+    :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
+                equal, or 1 if the value of the first struct is greater than the value of the second struct
+    """
+    cdef float32 v1 = (<IndexedValue*>a).value
+    cdef float32 v2 = (<IndexedValue*>b).value
+    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
 
 
 cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):

@@ -2,6 +2,25 @@
 
 This project provides a scikit-learn implementation of "BOOMER" - an algorithm for learning gradient boosted multi-label classification rules.
 
+The algorithm was first published in the following paper:
+
+*Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science. Springer, Cham*  
+
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
+
+## Features
+
+The algorithm that is provided by this project currently supports the following features to learn an ensemble of boosted classification rules:
+
+* Different label-wise or example-wise loss functions can be minimized during training (optionally using L2 regularization).
+* The rules may predict for a single label, or for all labels (which enables to model local label dependencies).
+* When learning a new rule, random samples of the training examples, features or labels may be used, including different techniques such as sampling with or without replacement.
+* The impact of individual rules on the ensemble can be controlled using shrinkage.
+* Hyper-parameters provide fine-grained control over the specificity/generality of rules.
+* The conditions of a recently induced rule can be pruned based on a hold-out set.  
+* The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
+* Dense and sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets. 
+
 ## Project structure
 
 ```
@@ -72,6 +91,7 @@ In order to run an experiment, the following command line arguments must be prov
 | `--store-predictions`        | Yes       | `False`                    | `True`, if the predictions for the individual test examples should be stored as `.csv` files (they may become very large), `False` otherwise. Does only have an effect if the parameter `--output-dir` is specified.                                           |
 | `--print-rules`              | Yes       | `False`                    | `True`, if the induced rules should be printed on the console, `False` otherwise.                                                                                                                                                                              |
 | `--store-rules`              | Yes       | `False`                    | `True`, if the induced rules should be stores as a `.txt` file, `False` otherwise. Does only have an effect if the parameter `--output-dir` is specified.                                                                                                      |
+| `--evaluate-training-data`   | Yes       | `False`                    | `True`, if the models should not also be evaluated on the test data, but also on the training data, `False` otherwise.                                                                                                                                         |
 | `--model-dir`                | Yes       | `None`                     | The path of the directory where models (`.model` files) are located.                                                                                                                                                                                           |
 | `--parameter-dir`            | Yes       | `None`                     | The path of the directory, parameter settings (`.csv` files) should be loaded from.                                                                                                                                                                            |
 | `--folds`                    | Yes       | `1`                        | The total number of folds to be used for cross-validation or `1`, if no cross validation should be used.                                                                                                                                                       |
