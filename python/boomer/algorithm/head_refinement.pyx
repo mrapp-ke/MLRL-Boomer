@@ -5,7 +5,6 @@ Provides classes that implement strategies for finding the heads of rules.
 """
 from boomer.algorithm._arrays cimport array_intp, array_float64, get_index
 from boomer.algorithm.losses cimport LabelIndependentPrediction
-from boomer.algorithm.lift_functions cimport LiftFunction
 
 from libc.stdlib cimport qsort
 
