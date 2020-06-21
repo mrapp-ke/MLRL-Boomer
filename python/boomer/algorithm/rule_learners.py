@@ -644,17 +644,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
         prefix, args = _parse_prefix_and_dict(lift_function, [LIFT_FUNCTION_PEAK])
 
-        peak_label = _get_int_argument(args, ARGUMENT_PEAK_LABEL, int(stats.num_labels / 2) + 1,
-                                       lambda x: 1 <= x <= stats.num_labels)
-        max_lift = _get_float_argument(args, ARGUMENT_MAX_LIFT, 2.0, lambda x: x >= 1)
-        curvature = _get_float_argument(args, ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
-
-        if args is not None:
-            for key in args.keys():
-                if key not in [ARGUMENT_PEAK_LABEL, ARGUMENT_MAX_LIFT, ARGUMENT_CURVATURE]:
-                    raise ValueError('Invalid argument given for parameter \'lift_function\': ' + str(key))
-
         if prefix == LIFT_FUNCTION_PEAK:
+            peak_label = _get_int_argument(args, ARGUMENT_PEAK_LABEL, int(stats.num_labels / 2) + 1,
+                                           lambda x: 1 <= x <= stats.num_labels)
+            max_lift = _get_float_argument(args, ARGUMENT_MAX_LIFT, 2.0, lambda x: x >= 1)
+            curvature = _get_float_argument(args, ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
             return PeakLiftFunction(stats.num_labels, peak_label, max_lift, curvature)
 
         raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
