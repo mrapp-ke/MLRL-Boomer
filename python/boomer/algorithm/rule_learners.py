@@ -508,7 +508,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     used
         :param lift_function:                       The lift function to use. Must be `peak`. Additional arguments may
                                                     be provided as a dictionary, e.g.
-                                                    `peak{\"peak_label\":10, \"max_lift\": 2.0, \"curvature\": 1.0}`
+                                                    `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                           The heuristic to be minimized. Must be `precision`, `hamming-loss`,
                                                     `recall`, `weighted-relative-accuracy`, `f-measure` or `m-estimate`.
