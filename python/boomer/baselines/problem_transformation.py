@@ -11,8 +11,8 @@ from sklearn.base import BaseEstimator
 from sklearn.multioutput import ClassifierChain
 from skmultilearn.problem_transform import BinaryRelevance, LabelPowerset
 
-from boomer.learners import MLLearner, Learner
-from boomer.stats import Stats
+from boomer.common import MLLearner, Learner
+from boomer.common.stats import Stats
 
 
 class ProblemTransformationLearner(MLLearner):

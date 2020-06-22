@@ -19,7 +19,7 @@ from sklearn.preprocessing import OneHotEncoder
 from skmultilearn.dataset import save_to_arff
 from xml.dom import minidom
 
-from boomer.algorithm.model import DTYPE_UINT8, DTYPE_FLOAT32
+from boomer.common import DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.io import write_xml_file
 
 

@@ -9,11 +9,11 @@ import scipy.stats as stats
 from skmultilearn.problem_transform import LabelPowerset
 
 from args import optional_string, log_level, string_list, float_list, int_list, target_measure, boolean_string
-from boomer.algorithm.model import DTYPE_FLOAT64
-from boomer.algorithm.rule_learners import Boomer
-from boomer.algorithm.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
-    LOSS_LABEL_WISE_LOGISTIC, HEAD_REFINEMENT_SINGLE
 from boomer.bbc_cv import BbcCv, BbcCvAdapter, BbcCvObserver, DefaultBbcCvObserver, DefaultBootstrapping
+from boomer.common import DTYPE_FLOAT64
+from boomer.common.rule_learners import Boomer
+from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
+    LOSS_LABEL_WISE_LOGISTIC, HEAD_REFINEMENT_SINGLE
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.training import DataSet
 

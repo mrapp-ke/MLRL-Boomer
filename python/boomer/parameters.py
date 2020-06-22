@@ -11,8 +11,8 @@ from abc import abstractmethod
 
 from sklearn.model_selection import KFold
 
+from boomer.common import Randomized
 from boomer.data import MetaData
-from boomer.interfaces import Randomized
 from boomer.io import clear_directory
 from boomer.io import open_readable_csv_file, create_csv_dict_writer
 from boomer.io import open_writable_csv_file, create_csv_dict_reader
