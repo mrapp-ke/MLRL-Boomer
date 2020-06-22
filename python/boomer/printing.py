@@ -12,10 +12,10 @@ from abc import ABC, abstractmethod
 import numpy as np
 from boomer.algorithm.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
-from boomer.algorithm.model import Theory
+from boomer.common import MLLearner
+from boomer.common import Theory
 from boomer.data import MetaData
 from boomer.io import clear_directory, open_writable_txt_file
-from boomer.learners import MLLearner
 
 
 class ModelPrinterOutput(ABC):
