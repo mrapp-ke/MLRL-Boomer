@@ -16,7 +16,7 @@ from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 from skmultilearn.base import MLClassifierBase
 
-from boomer.common import Randomized
+from boomer.common.interfaces import Randomized
 from boomer.common.stats import Stats
 from boomer.persistence import ModelPersistence
 
