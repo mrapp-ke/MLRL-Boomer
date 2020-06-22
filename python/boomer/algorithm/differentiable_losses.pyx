@@ -18,7 +18,7 @@ cdef class DifferentiableLoss(Loss):
     cdef void begin_instance_sub_sampling(self):
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):
@@ -27,14 +27,16 @@ cdef class DifferentiableLoss(Loss):
     cdef void update_search(self, intp example_index, uint32 weight):
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         pass
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
+        pass
+
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         pass
 
 cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
@@ -48,7 +50,7 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
     cdef void begin_instance_sub_sampling(self):
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):
@@ -57,16 +59,18 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
     cdef void update_search(self, intp example_index, uint32 weight):
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
+        pass
+
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
         # In case of a decomposable loss, the label-dependent predictions are the same as the label-independent
         # predictions...
-        return self.evaluate_label_independent_predictions(uncovered)
+        return self.evaluate_label_independent_predictions(uncovered, accumulated)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         pass
 
 
@@ -81,7 +85,7 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
     cdef void begin_instance_sub_sampling(self):
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         pass
 
     cdef void begin_search(self, intp[::1] label_indices):
@@ -90,12 +94,14 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
     cdef void update_search(self, intp example_index, uint32 weight):
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         pass
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
+        pass
+
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         pass

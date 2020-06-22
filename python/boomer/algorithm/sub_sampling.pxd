@@ -8,7 +8,7 @@ cdef class InstanceSubSampling:
 
     # Functions:
 
-    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng)
+    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class Bagging(InstanceSubSampling):
@@ -19,7 +19,7 @@ cdef class Bagging(InstanceSubSampling):
 
     # Functions:
 
-    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng)
+    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
@@ -29,7 +29,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
     # Functions:
 
-    cdef pair[uint32[::1], intp] sub_sample(self, intp num_examples, RNG rng)
+    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng)
 
 
 cdef class FeatureSubSampling:

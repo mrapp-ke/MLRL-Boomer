@@ -5,9 +5,9 @@
 
 Provides classes that implement strategies for pruning classification rules.
 """
-from boomer.algorithm._arrays cimport array_intp
-from boomer.algorithm.rule_induction cimport test_condition, Comparator
+from boomer.algorithm._arrays cimport float32, float64, array_uint32
 from boomer.algorithm.losses cimport Prediction
+from boomer.algorithm.rule_induction cimport Comparator, IndexedValue
 
 from cython.operator cimport dereference, postincrement
 
@@ -19,46 +19,32 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices):
+    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+                                         list[Condition] conditions, uint32[::1] covered_examples_mask,
+                                         uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
+                                         Loss loss, HeadRefinement head_refinement):
         """
-        Calculates the quality score of an existing rule, based on the examples that are contained in the prune set,
-        i.e., based on all examples whose weight is 0.
+        Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is pruned
+        by removing individual conditions in a way that improves over its original quality score as measured on the
+        "prune set".
 
-        This function must be called prior to calling any other function provided by this class. It calculates and
-        caches the original quality score of the existing rule before it is pruned. When invoking the function `prune`
-        afterwards, the rule is pruned by removing individual conditions in a way that improves over the original
-        quality score, if possible.
-
-        :param weights:                 An array of dtype int, shape `(num_examples)`, representing the weights of all
-                                        training examples, regardless of whether they are included in the prune set or
-                                        grow set
-        :param loss:                    The `Loss` to be minimized
-        :param head_refinement:         The strategy that is used to find the heads of rules
-        :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
-                                        of all training examples that are covered by the rule, regardless of whether
-                                        they are included in the prune set or grow set
-        :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
-                                        of the labels for which the rule predicts or None, if the rule predicts for all
-                                        labels
-        """
-        pass
-
-    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions):
-        """
-        Prunes the conditions of a rule by modifying a given list of conditions in-place.
-
-        :param x:                   An array of dtype float, shape `(num_examples, num_features)`, representing the
-                                    features of all training examples, regardless of whether they are included in the
-                                    prune set or grow set
-        :param sorted_indices_map:  A pointer to a map that maps feature indices to arrays of dtype int, shape
-                                    `(num_examples)`, representing the indices of all training examples, regardless of
-                                    whether they are included in the grow or prune set, when sorted in ascending order
-                                    according to their feature values
-        :param conditions:          A list that contains the rule's conditions
-        :return:                    An array of dtype int, shape `(num_covered_examples)`, representing the indices of
-                                    all training examples that are covered by the pruned rule, regardless of whether
-                                    they are included in the prune set or grow set
+        :param sorted_feature_values_map:   A pointer to a map that maps feature indices to structs of type
+                                            `IndexedArray`, storing the indices of all training examples, as well as
+                                            their values for the respective feature, sorted in ascending order by the
+                                            feature values
+        :param conditions:                  A list that contains the conditions of the existing rule
+        :param covered_examples_mask:       An array of dtype uint, shape `(num_examples)` that is used to keep track of
+                                            the indices of the examples that are covered by the existing rule
+        :param covered_examples_target:     The value that is used to mark those elements in `covered_examples_mask`
+                                            that are covered by the existing rule
+        :param weights:                     An array of dtype int, shape `(num_examples)`, representing the weights of
+                                            all training examples, regardless of whether they are included in the prune
+                                            set or grow set
+        :param label_indices:               An array of dtype int, shape `(num_predicted_labels)`, representing the
+                                            indices of the labels for which the existing rule predicts or None, if the
+                                            rule predicts for all labels
+        :param loss:                        The loss function to be minimized
+        :param head_refinement:             The strategy that is used to find the heads of rules
         """
         pass
 
@@ -72,144 +58,126 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices):
-        cdef uint32 weight
-        cdef intp i
+    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+                                         list[Condition] conditions, uint32[::1] covered_examples_mask,
+                                         uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
+                                         Loss loss, HeadRefinement head_refinement):
+        # The total number of training examples
+        cdef intp num_examples = covered_examples_mask.shape[0]
+        # The number of conditions of the existing rule
+        cdef intp num_conditions = conditions.size()
+        # Temporary variables
+        cdef Prediction prediction
+        cdef Condition condition
+        cdef Comparator comparator
+        cdef float32 threshold
+        cdef float64 current_quality_score
+        cdef IndexedArray* indexed_array
+        cdef IndexedValue* indexed_values
+        cdef intp feature_index, num_indexed_values, i, n, r, start, end
+        cdef bint uncovered
 
-        # Reset the loss function...
+        # Tell the loss function to start a new search...
+        loss.begin_instance_sub_sampling()
         loss.begin_search(label_indices)
 
-        # Tell the loss function about all examples in the prune set that are covered by the given rule...
-        for i in covered_example_indices:
-            weight = weights[i]
+        # Tell the loss function about all examples in the prune set that are covered by the existing rule...
+        for i in range(num_examples):
+            if weights[i] == 0:
+                loss.update_sub_sample(i, 1, False)
 
-            if weight == 0:
-                loss.update_search(i, 1)
+                if covered_examples_mask[i] == covered_examples_target:
+                    loss.update_search(i, 1)
 
-        # Calculate the optimal scores to be predicted by the given rule, as well as its overall quality score,  based
-        # on the prune set...
-        cdef Prediction prediction = head_refinement.evaluate_predictions(loss, 0)
+        # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
+        # the prune set...
+        prediction = head_refinement.evaluate_predictions(loss, False, False)
 
-        # Cache the overall quality score of the given rule based on the prune set...
-        cdef float64 original_quality_score = prediction.overall_quality_score
-        self.original_quality_score = original_quality_score
-
-        # Cache arguments that will be used in the `prune` function...
-        self.label_indices = label_indices
-        self.covered_example_indices = covered_example_indices
-        self.loss = loss
-        self.head_refinement = head_refinement
-        self.weights = weights
-
-    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions):
-        cdef intp[::1] label_indices = self.label_indices
-        cdef Loss loss = self.loss
-        cdef HeadRefinement head_refinement = self.head_refinement
-        cdef uint32[::1] weights = self.weights
-        cdef intp num_conditions = conditions.size()
-        cdef intp num_examples = x.shape[0]
-        cdef float64 best_quality_score = self.original_quality_score
-        cdef intp[::1] best_covered_example_indices = self.covered_example_indices
-        cdef intp best_num_examples = best_covered_example_indices.shape[0]
+        # Initialize variables that are used to keep track of the best rule...
+        cdef float64 best_quality_score = prediction.overall_quality_score
+        cdef uint32[::1] best_covered_examples_mask = covered_examples_mask
+        cdef uint32 best_covered_examples_target = covered_examples_target
         cdef intp num_pruned_conditions = 0
-        cdef list[Condition].iterator iterator = conditions.begin()
-        cdef Condition condition
-        cdef float32 threshold, feature_value
-        cdef Comparator comparator
-        cdef intp* sorted_indices_array
-        cdef intp[::1] sorted_indices, covered_example_indices, new_covered_example_indices
-        cdef uint32 weight
-        cdef float64 quality_score
-        cdef Prediction prediction
-        cdef intp n, c, r, i, index, num_labels
 
-        # We process the original rule's conditions (except for the last one) in the order they have been learned. At
-        # each iteration we calculate the overall quality score of a rule that only contains the conditions processed so
-        # far and keep track of the best one...
-        for n in range(num_conditions - 1):
+        # Initialize array that is used to keep track of the examples that are covered by the current rule...
+        cdef uint32[::1] current_covered_examples_mask = array_uint32(num_examples)
+        current_covered_examples_mask[:] = 0
+        cdef uint32 current_covered_examples_target = 0
+
+        # We process the existing rule's conditions (except for the last one) in the order they have been learned. At
+        # each iteration, we calculate the quality score of a rule that only contains the conditions processed so far
+        # and keep track of the best rule...
+        cdef list[Condition].iterator iterator = conditions.begin()
+
+        for n in range(1, num_conditions):
             # Obtain properties of the current condition...
             condition = dereference(iterator)
-            c = condition.feature_index
+            feature_index = condition.feature_index
             threshold = condition.threshold
             comparator = condition.comparator
 
-            # Obtain sorted indices for the feature used by the current condition...
-            sorted_indices_array = dereference(sorted_indices_map)[c]
-            sorted_indices = <intp[:num_examples]>sorted_indices_array
+            # Obtain the example indices and corresponding feature values for the feature, the current condition
+            # corresponds to...
+            indexed_array = dereference(sorted_feature_values_map)[feature_index]
+            indexed_values = dereference(indexed_array).data
+            num_indexed_values = dereference(indexed_array).num_elements
 
-            # Reset the loss function...
+            # Tell the loss function to start a new search when processing a new condition...
             loss.begin_search(label_indices)
 
-            # Initialize the array that contains the indices of the examples that satisfy the current condition (and all
-            # previously processed conditions). At this point we don't know how many examples are exactly covered. For
-            # this reason, the array's size is set to largest possible value, which is `num_examples`. If fewer examples
-            # are covered, only the leading elements are set, the remaining ones remain undefined.
-            new_covered_example_indices = array_intp(num_examples)
-            i = 0
+            # Find the range [start, end) that either contains all covered or uncovered examples...
+            end = __upper_bound(indexed_values, num_indexed_values, threshold)
 
-            if n == 0:
-                # For the first condition, we traverse the examples in the order of their feature values. The order of
-                # traversing depends on the condition's operator. If the condition uses the > operator, we traverse in
-                # descending order, i.e., we start with the example with the greatest feature value. Otherwise, we
-                # traverse in ascending order, i.e., we start with the example with the smallest feature value.
-                for r in (range(num_examples - 1, -1, -1) if comparator == Comparator.GR else range(num_examples)):
-                    index = sorted_indices[r]
-                    feature_value = x[index, c]
+            if comparator == Comparator.EQ or comparator == Comparator.NEQ:
+                start = __lower_bound(indexed_values, end, threshold)
 
-                    if test_condition(threshold, comparator, feature_value):
-                        # If the example satisfies the condition, we remember its index...
-                        new_covered_example_indices[i] = index
-                        i += 1
-
-                        # If the example is contained in the prune set, i.e., if its weight is 0, we update the loss
-                        # function...
-                        weight = weights[index]
-
-                        if weight == 0:
-                            loss.update_search(index, 1)
-                    elif comparator == Comparator.LEQ or comparator == Comparator.GR:
-                        # If the condition uses the <= or the > operator and the example does not satisfy the condition,
-                        # we are done, because the remaining ones will not satisfy the condition either...
-                        break
+                if end - start == 0:
+                    start = 0
+                    end = num_indexed_values
+                    uncovered = (comparator == Comparator.EQ)
+                else:
+                    uncovered = (comparator == Comparator.NEQ)
             else:
-                # For the remaining conditions we traverse the indices of the examples that satisfy all previously
-                # processed conditions and check if they also satisfy the current one...
-                for r in range(num_examples):
-                    index = covered_example_indices[r]
-                    feature_value = x[index, c]
+                if indexed_values[end].value > 0:
+                    start = end
+                    end = num_indexed_values
+                    uncovered = (comparator == Comparator.LEQ)
+                else:
+                    start = 0
+                    uncovered = (comparator == Comparator.GR)
 
-                    if test_condition(threshold, comparator, feature_value):
-                        # If the example satisfies the condition, we remember its index...
-                        new_covered_example_indices[i] = index
-                        i += 1
+            # Tell the loss function about the examples in range [start, end)...
+            for r in range(start, end):
+                i = indexed_values[r].index
 
-                        # If the example is contained in the prune set, i.e., if its weight is 0, we update the loss
-                        # function...
-                        weight = weights[index]
+                # We must only consider examples that are currently covered and contained in the prune set...
+                if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
+                    loss.update_search(i, 1)
 
-                        if weight == 0:
-                            loss.update_search(index, 1)
+            # Check if the quality score of the current rule is better than the best quality score known so far
+            # (reaching the same quality score with fewer conditions is also considered an improvement)...
+            prediction = head_refinement.evaluate_predictions(loss, uncovered, False)
+            current_quality_score = prediction.overall_quality_score
 
-            # Update the number of covered examples (this is important, because otherwise we don't know how many of the
-            # leading elements in `covered_example_indices` are set)...
-            num_examples = i
-            covered_example_indices = new_covered_example_indices
+            if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
+                best_quality_score = current_quality_score
+                best_covered_examples_mask[:] = current_covered_examples_mask
+                best_covered_examples_target = current_covered_examples_target
+                num_pruned_conditions = (num_conditions - n)
 
-            # Calculate the optimal scores to be predicted by a rule that only contains the conditions processed so far,
-            # as well as its overall quality score, based on the prune set...
-            prediction = head_refinement.evaluate_predictions(loss, 0)
+            # If at least one condition remains to be processed, we must update the array that is used to keep track of
+            # the covered examples and notify the loss function about the updated sub-sample...
+            if (n + 1) < num_conditions:
+                if not uncovered:
+                    loss.begin_instance_sub_sampling()
+                    current_covered_examples_target = n
 
-            # Check if the overall quality score of the current rule based on the prune set is better than the best
-            # quality score known so far (reaching the same quality score with fewer conditions is also considered an
-            # improvement)...
-            quality_score = prediction.overall_quality_score
+                for r in range(start, end):
+                    i = indexed_values[r].index
 
-            if quality_score < best_quality_score or (num_pruned_conditions == 0 and quality_score <= best_quality_score):
-                best_quality_score = quality_score
-                best_covered_example_indices = covered_example_indices
-                best_num_examples = num_examples
-                num_pruned_conditions = num_conditions - (n + 1)
+                    if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
+                        loss.update_sub_sample(i, 1, uncovered)
+                        current_covered_examples_mask[i] = n
 
             postincrement(iterator)
 
@@ -218,4 +186,65 @@ cdef class IREP(Pruning):
             conditions.pop_back()
             num_pruned_conditions -= 1
 
-        return best_covered_example_indices[0:best_num_examples]
+        cdef pair[uint32[::1], uint32] result
+        result.first = best_covered_examples_mask
+        result.second = best_covered_examples_target
+        return result
+
+
+cdef inline intp __upper_bound(IndexedValue* indexed_values, intp num_indexed_values, float32 threshold):
+    """
+    Returns the index of the first example in `indexed_values` with feature value > threshold. If no such example is
+    found, `num_indexed_values` is returned.
+
+    :param indexed_values:      A pointer to a C-array of type `IndexedValue`, storing the indices and feature values of
+                                examples
+    :param num_indexed_values:  The number of leading elements in `indexed_values` to be considered
+    :param threshold:           The threshold
+    :return:                    The index of the first example in `indexed_values` with feature value > threshold or
+                                `num_indexed_values`, if no such example is found
+    """
+    cdef intp first = 0
+    cdef intp last = num_indexed_values
+    cdef intp pivot
+    cdef float32 pivot_value
+
+    while first < last:
+        pivot = first + ((last - first) / 2)
+        pivot_value = indexed_values[pivot].value
+
+        if threshold >= pivot_value:
+            first = pivot + 1
+        else:
+            last = pivot
+
+    return first
+
+
+cdef inline intp __lower_bound(IndexedValue* indexed_values, intp num_indexed_values, float32 threshold):
+    """
+    Returns the index of the first example in `indexed_values` with feature value >= threshold. If no such example is
+    found, `num_indexed_values` is returned.
+
+    :param indexed_values:      A pointer to a C-array of type `IndexedValue`, storing the indices and feature values of
+                                examples
+    :param num_indexed_values:  The number of leading elements in `indexed_values` to be considered
+    :param threshold:           The threshold
+    :return:                    The index of the first example in `indexed_values` with feature value >= threshold or
+                                `num_indexed_values`, if no such example is found
+    """
+    cdef intp first = 0
+    cdef intp last = num_indexed_values
+    cdef intp pivot
+    cdef float32 pivot_value
+
+    while first < last:
+        pivot = first + ((last - first) / 2)
+        pivot_value = indexed_values[pivot].value
+
+        if threshold <= pivot_value:
+            last = pivot
+        else:
+            first = pivot + 1
+
+    return first

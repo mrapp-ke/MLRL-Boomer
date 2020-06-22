@@ -172,7 +172,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         total_sums_of_gradients[:] = 0
         total_sums_of_hessians[:] = 0
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -180,20 +180,22 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
         # The number of gradients/hessians...
         cdef intp num_elements = gradients.shape[1]
+        # The given weight multiplied by 1 or -1, depending on the argument `remove`
+        cdef float64 signed_weight = -<float64>weight if remove else weight
         # Temporary variables
         cdef intp c
 
         # For each label, add the gradient of the example at the given index (weighted by the given weight) to the total
         # sums of gradients...
         for c in range(num_elements):
-            total_sums_of_gradients[c] += (weight * gradients[example_index, c])
+            total_sums_of_gradients[c] += (signed_weight * gradients[example_index, c])
 
         # Add the hessians of the example at the given index (weighted by the given weight) to the total sums of
         # hessians...
         num_elements = hessians.shape[1]
 
         for c in range(num_elements):
-            total_sums_of_hessians[c] += (weight * hessians[example_index, c])
+            total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
 
     cdef void begin_search(self, intp[::1] label_indices):
         # Determine the number of gradients and hessians to be considered by the upcoming search...
@@ -226,6 +228,10 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         sums_of_gradients[:] = 0
         sums_of_hessians[:] = 0
 
+        # Reset the accumulated sums of gradients and hessians to None...
+        self.accumulated_sums_of_gradients = None
+        self.accumulated_sums_of_hessians = None
+
         # Store the given label indices...
         self.label_indices = label_indices
 
@@ -255,14 +261,52 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 sums_of_hessians[i] += (weight * hessians[example_index, l2])
                 i += 1
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
+        # Class members
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        # The number of gradients
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        # The number of hessians
+        cdef intp num_hessians = sums_of_hessians.shape[0]
+        # Temporary variables
+        cdef intp c
+        # Update the arrays that store the accumulated sums of gradients and hessians...
+        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
+        cdef float64[::1] accumulated_sums_of_hessians
+
+        if accumulated_sums_of_gradients is None:
+            accumulated_sums_of_gradients = array_float64(num_gradients)
+            self.accumulated_sums_of_gradients = accumulated_sums_of_gradients
+            accumulated_sums_of_hessians = array_float64(num_hessians)
+            self.accumulated_sums_of_hessians = accumulated_sums_of_hessians
+
+            for c in range(num_gradients):
+                accumulated_sums_of_gradients[c] = sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+
+            for c in range(num_hessians):
+                accumulated_sums_of_hessians[c] = sums_of_hessians[c]
+                sums_of_hessians[c] = 0
+        else:
+            accumulated_sums_of_hessians = self.accumulated_sums_of_hessians
+
+            for c in range(num_gradients):
+                accumulated_sums_of_gradients[c] += sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+
+            for c in range(num_hessians):
+                accumulated_sums_of_hessians[c] += sums_of_hessians[c]
+                sums_of_hessians[c] = 0
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
         cdef intp num_gradients = sums_of_gradients.shape[0]
 
@@ -318,12 +362,12 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return prediction
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef Prediction prediction = <Prediction>self.prediction
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
         cdef intp num_gradients = sums_of_gradients.shape[0]
         # Temporary variables
@@ -368,15 +412,12 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return prediction
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
         cdef float64[::1, :] expected_scores = self.expected_scores
         cdef float64[::1, :] current_scores = self.current_scores
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1, :] hessians = self.hessians
-        # The number of covered examples
-        cdef intp num_covered = covered_example_indices.shape[0]
         # The total number of labels
         cdef intp num_labels = gradients.shape[1]
         # The number of predicted labels
@@ -385,61 +426,57 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         cdef float64[::1] exponentials = array_float64(num_labels)
         # Temporary variables
         cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow, tmp
-        cdef intp r, c, c2, l, i, j
+        cdef intp c, c2, l, j
 
-        # Only the examples that are covered by the new rule must be considered...
-        for r in range(num_covered):
-            i = covered_example_indices[r]
+        # Traverse the labels for which the new rule predicts to update the currently predicted scores...
+        for c in range(num_predicted_labels):
+            l = get_index(c, label_indices)
+            current_scores[example_index, l] += predicted_scores[c]
 
-            # Traverse the labels for which the new rule predicts to update the currently predicted scores...
-            for c in range(num_predicted_labels):
-                l = get_index(c, label_indices)
-                current_scores[i, l] += predicted_scores[c]
+        # Traverse the labels of the current example to create arrays of expected scores and exponentials that are
+        # shared among the upcoming calculations of gradients and hessians...
+        sum_of_exponentials = 1
 
-            # Traverse the labels of the current example to create arrays of expected scores and exponentials that are
-            # shared among the upcoming calculations of gradients and hessians...
-            sum_of_exponentials = 1
+        for c in range(num_labels):
+            expected_score = expected_scores[example_index, c]
+            exponential = exp(-expected_score * current_scores[example_index, c])
+            exponentials[c] = exponential
+            sum_of_exponentials += exponential
 
-            for c in range(num_labels):
-                expected_score = expected_scores[i, c]
-                exponential = exp(-expected_score * current_scores[i, c])
-                exponentials[c] = exponential
-                sum_of_exponentials += exponential
+        sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
 
-            sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
+        # Traverse the labels again to update the gradients and hessians...
+        j = 0
 
-            # Traverse the labels again to update the gradients and hessians...
-            j = 0
+        for c in range(num_labels):
+            expected_score = expected_scores[example_index, c]
+            exponential = exponentials[c]
+            score = current_scores[example_index, c]
 
-            for c in range(num_labels):
-                expected_score = expected_scores[i, c]
-                exponential = exponentials[c]
-                score = current_scores[i, c]
+            # Calculate the first derivative (gradient) of the loss function with respect to the current label and add
+            # it to the matrix of gradients...
+            tmp = gradients[example_index, c]
+            tmp = (expected_score * exponential) / sum_of_exponentials
+            # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using the
+            # sums of gradients as the ordinates for solving a system of linear equations in the function
+            # `evaluate_label_dependent_predictions`, the sign must be inverted again...
+            gradients[example_index, c] = tmp
 
-                # Calculate the first derivative (gradient) of the loss function with respect to the current label and
-                # add it to the matrix of gradients...
-                tmp = gradients[i, c]
-                tmp = (expected_score * exponential) / sum_of_exponentials
-                # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
-                # the sums of gradients as the ordinates for solving a system of linear equations in the function
-                # `evaluate_label_dependent_predictions`, the sign must be inverted again...
-                gradients[i, c] = tmp
-
-                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-                # each of the other labels and add them to the matrix of hessians...
-                for c2 in range(c):
-                    tmp = hessians[i, j]
-                    tmp = exp(-expected_scores[i, c2] * current_scores[i, c2] - expected_score * score)
-                    tmp = (expected_scores[i, c2] * expected_score * tmp) / sum_of_exponentials_pow
-                    hessians[i, j] = -tmp
-                    j += 1
-
-                # Calculate the second derivative (hessian) of the loss function with respect to the current label and
-                # add it to the matrix of hessians...
-                tmp = hessians[i, j]
-                tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
-                hessians[i, j] = tmp
+            # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
+            # each of the other labels and add them to the matrix of hessians...
+            for c2 in range(c):
+                tmp = hessians[example_index, j]
+                tmp = exp(-expected_scores[example_index, c2] * current_scores[example_index, c2] - expected_score * score)
+                tmp = (expected_scores[example_index, c2] * expected_score * tmp) / sum_of_exponentials_pow
+                hessians[example_index, j] = -tmp
                 j += 1
+
+            # Calculate the second derivative (hessian) of the loss function with respect to the current label and add
+            # it to the matrix of hessians...
+            tmp = hessians[example_index, j]
+            tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
+            hessians[example_index, j] = tmp
+            j += 1
 
 
 cdef inline intp __triangular_number(intp n):

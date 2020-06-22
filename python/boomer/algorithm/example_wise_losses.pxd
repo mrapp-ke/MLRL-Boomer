@@ -17,11 +17,15 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     cdef float64[::1] sums_of_gradients
 
+    cdef float64[::1] accumulated_sums_of_gradients
+
     cdef float64[::1] total_sums_of_gradients
 
     cdef float64[::1, :] hessians
 
     cdef float64[::1] sums_of_hessians
+
+    cdef float64[::1] accumulated_sums_of_hessians
 
     cdef float64[::1] total_sums_of_hessians
 
@@ -35,15 +39,16 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     cdef void begin_instance_sub_sampling(self)
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight)
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove)
 
     cdef void begin_search(self, intp[::1] label_indices)
 
     cdef void update_search(self, intp example_index, uint32 weight)
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered)
+    cdef void reset_search(self)
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered)
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated)
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores)
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated)
+
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
