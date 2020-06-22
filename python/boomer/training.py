@@ -14,7 +14,7 @@ from timeit import default_timer as timer
 
 from sklearn.model_selection import KFold
 
-from boomer.common import Randomized
+from boomer.common.interfaces import Randomized
 from boomer.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 
 

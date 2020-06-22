@@ -10,10 +10,10 @@ import logging as log
 from abc import ABC, abstractmethod
 
 import numpy as np
-from boomer.algorithm.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
+from boomer.common.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
-from boomer.common import MLLearner
-from boomer.common import Theory
+from boomer.common.learners import MLLearner
+from boomer.common.model import Theory
 from boomer.data import MetaData
 from boomer.io import clear_directory, open_writable_txt_file
 
