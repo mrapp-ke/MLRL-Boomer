@@ -13,8 +13,9 @@ from typing import List
 import numpy as np
 from boomer.boosting.differentiable_losses import DifferentiableLoss, DecomposableDifferentiableLoss
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
+from boomer.boosting.head_refinement import FullHeadRefinement
 from boomer.boosting.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
-from boomer.common.head_refinement import SingleLabelHeadRefinement, FullHeadRefinement, HeadRefinement
+from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.common.pruning import Pruning, IREP
