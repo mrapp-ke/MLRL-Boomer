@@ -22,8 +22,7 @@ from boomer.common.pruning import Pruning, IREP
 from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix, ExactGreedyRuleInduction
 from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
-from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion, \
-    UncoveredLabelsCriterion
+from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
     RandomInstanceSubsetSelection, LabelSubSampling, RandomLabelSubsetSelection
 from boomer.seco.coverage_losses import CoverageLoss
@@ -32,6 +31,7 @@ from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, We
     MEstimate
 from boomer.seco.label_wise_averaging import LabelWiseAveraging
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
+from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 
 from boomer.common import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
