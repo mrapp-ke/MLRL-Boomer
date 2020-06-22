@@ -76,6 +76,12 @@ PRUNING_IREP = 'irep'
 
 LIFT_FUNCTION_PEAK = 'peak'
 
+ARGUMENT_PEAK_LABEL = 'peak_label'
+
+ARGUMENT_MAX_LIFT = 'max_lift'
+
+ARGUMENT_CURVATURE = 'curvature'
+
 ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
 ARGUMENT_NUM_SAMPLES = 'num_samples'
@@ -506,7 +512,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
                                                     `single-label`, `partial` or None, if the default strategy should be
                                                     used
-        :param lift_function:                       The lift function to use. Must be `peak`
+        :param lift_function:                       The lift function to use. Must be `peak`. Additional arguments may
+                                                    be provided as a dictionary, e.g.
+                                                    `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                           The heuristic to be minimized. Must be `precision`, `hamming-loss`,
                                                     `recall`, `weighted-relative-accuracy`, `f-measure` or `m-estimate`.
@@ -640,9 +648,15 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def __create_lift_function(self, stats: Stats) -> LiftFunction:
         lift_function = self.lift_function
 
-        if lift_function == LIFT_FUNCTION_PEAK:
-            # TODO: Example configuration, target labels are half number of labels rounded up
-            return PeakLiftFunction(stats.num_labels, int(stats.num_labels / 2) + 1, 2.0, 1.0)
+        prefix, args = _parse_prefix_and_dict(lift_function, [LIFT_FUNCTION_PEAK])
+
+        if prefix == LIFT_FUNCTION_PEAK:
+            peak_label = _get_int_argument(args, ARGUMENT_PEAK_LABEL, int(stats.num_labels / 2) + 1,
+                                           lambda x: 1 <= x <= stats.num_labels)
+            max_lift = _get_float_argument(args, ARGUMENT_MAX_LIFT, 2.0, lambda x: x >= 1)
+            curvature = _get_float_argument(args, ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
+            return PeakLiftFunction(stats.num_labels, peak_label, max_lift, curvature)
+
         raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
 
     def __create_head_refinement(self, lift_function: LiftFunction) -> HeadRefinement:
