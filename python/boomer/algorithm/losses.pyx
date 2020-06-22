@@ -73,7 +73,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight):
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         """
         Notifies the loss function about an example that should be considered in the following for learning a new rule
         or refining an existing one.
@@ -82,6 +82,9 @@ cdef class Loss:
         have been selected via instance sub-sampling, immediately after the invocation of the function
         `begin_instance_sub_sampling`.
 
+        Alternatively, this function may be used to indicate that an example, which has previously been passed to this
+        function, should not be considered anymore by setting the argument `remove` accordingly.
+
         This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
         and store local information that is required by the other functions that will be called later, e.g. statistics
         about the ground truth labels of these particular examples. Any information computed by this function is
@@ -89,6 +92,8 @@ cdef class Loss:
 
         :param example_index:   The index of an example that should be considered
         :param weight:          The weight of the example that should be considered
+        :param remove:          0, if the example should be considered, 1, if the example should not be considered
+                                anymore
         """
         pass
 
@@ -127,19 +132,42 @@ cdef class Loss:
         This function is supposed to update any internal state that relates to the examples that are covered current
         condition, i.e., to compute and store local information that is required by the other functions that will be
         called later, e.g. statistics about the ground truth labels of the covered examples. Any information computed by
-        this function is expected to be reset when invoking the function `begin_search` for the next time.
+        this function is expected to be reset when invoking the function `begin_search` or `reset_search` for the next
+        time.
 
         :param example_index:   The index of the covered example
         :param weight:          The weight of the covered example
         """
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered):
+    cdef void reset_search(self):
+        """
+        Resets the internal state that has been updated by preceding calls to the `update_search` function to the state
+        after the `begin_search` function was called for the last time. Unlike a call to the `begin_search` function,
+        which has the same effect, the current state is not purged entirely, but it is cached and made available for use
+        by the functions `evaluate_label_dependent_predictions` and `evaluate_label_independent_predictions` (if the
+        function argument `accumulated` is set accordingly).
+
+        The information that is cached by this function is expected to be reset when the function `begin_search` is
+        called for the next time. Before that, this function may be invoked multiple times (with one or several calls to
+        `update_search` in between), which is supposed to update the previously cached state by accumulating the new
+        one, i.e., when calling `begin_search` for the next time, the accumulated cached state should be the same as if
+        `reset_search` would not have been called at all.
+        """
+        pass
+
+    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
-        been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
-        is considered to cover all examples that belong to the difference between the examples that have been provided
-        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
+        been provided so far via the function `update_search`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
+        between the examples that have been provided via the function `update_sub_sample` and the examples that have
+        been provided via the function `update_search`.
+
+        If the argument `accumulated` is 1, all examples that have been provided since the last call to the function
+        `begin_search` are taken into account even if the function `reset_search` has been called before. If the latter
+        has not been invoked, the argument does not have any effect.
 
         The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
         be predicted for an individual label is calculated independently from the other labels, i.e., in case of a
@@ -150,17 +178,26 @@ cdef class Loss:
                             1, if the rule covers all examples that belong to the difference between the examples that
                             have been provided via the function `update_sub_sample` and the examples that have been
                             provided via the function `update_search`
+        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
+                            since the function `reset_search` has been called for the last time, 1, if the rule covers
+                            all examples that have been provided since the last call to the function `begin_search`
         :return:            A `LabelIndependentPrediction` that stores the scores to be predicted by the rule for each
                             considered label, as well as the corresponding quality scores
         """
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered):
+    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
-        been provided so far via the function `update_search`. Alternatively, if the argument `uncovered` is 1, the rule
-        is considered to cover all examples that belong to the difference between the examples that have been provided
-        via the function `update_sub_sample` and the examples that have been provided via the function `update_search`.
+        been provided so far via the function `update_search`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
+        between the examples that have been provided via the function `update_sub_sample` and the examples that have
+        been provided via the function `update_search`.
+
+        If the argument `accumulated` is 1, all examples that have been provided since the last call to the function
+        `begin_search` are taken into account even if the function `reset_search` has been called before. If the latter
+        has not been invoked, the argument does not have any effect.
 
         The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
         be predicted for an individual label is calculated with respect to the predictions for the other labels. In case
@@ -173,28 +210,29 @@ cdef class Loss:
                             1, if the rule covers all examples that belong to the difference between the examples that
                             have been provided via the function `update_sub_sample` and the examples that have been
                             provided via the function `update_search`
+        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
+                            since the function `reset_search` has been called for the last time, 1, if the rule covers
+                            all examples that have been provided since the last call to the function `begin_search`
         :return:            A `Prediction` that stores the optimal scores to be predicted by the rule for each
                             considered label, as well as its overall quality score
         """
         pass
 
-    cdef void apply_predictions(self, intp[::1] covered_example_indices, intp[::1] label_indices,
-                                float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         """
-        Notifies the loss function that a new rule has been induced.
+        Notifies the loss function about the predictions of a new rule that has been induced.
 
-        This function must be called before learning the next rule, i.e., prior to the next invocation of the function
-        `begin_instance_sub_sampling`.
+        This function must be called for each example that is covered by the new rule before learning the next rule,
+        i.e., prior to the next invocation of the function `begin_instance_sub_sampling`.
 
         This function is supposed to update any internal state that depends on the predictions of already induced rules.
 
-        :param covered_example_indices: An array of dtype int, shape `(num_covered_examples)`, representing the indices
-                                        of the examples that are covered by the newly induced rule, regardless of
-                                        whether they are contained in the sub-sample or not
-        :param label_indices:           An array of dtype int, shape `(num_predicted_labels)`, representing the indices
-                                        of the labels for which the newly induced rule predicts or None, if the rule
-                                        predicts for all labels
-        :param predicted_scores:        An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                        that are predicted by the newly induced rule
+        :param example_index:       The index of an example that is covered by the newly induced rule, regardless of
+                                    whether it is contained in the sub-sample or not
+        :param label_indices:       An array of dtype int, shape `(num_predicted_labels)`, representing the indices of
+                                    the labels for which the newly induced rule predicts or None, if the rule predicts
+                                    for all labels
+        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
+                                    that are predicted by the newly induced rule
         """
         pass

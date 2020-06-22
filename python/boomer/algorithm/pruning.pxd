@@ -1,10 +1,11 @@
 # distutils: language=c++
-from boomer.algorithm._arrays cimport intp, uint32, float32, float64
-from boomer.algorithm.rule_induction cimport Condition
+from boomer.algorithm._arrays cimport intp, uint32
+from boomer.algorithm.rule_induction cimport Condition, IndexedArray
 from boomer.algorithm.losses cimport Loss
 from boomer.algorithm.head_refinement cimport HeadRefinement
 
 from libcpp.list cimport list
+from libcpp.pair cimport pair
 from libcpp.unordered_map cimport unordered_map as map
 
 
@@ -12,31 +13,17 @@ cdef class Pruning:
 
     # Functions:
 
-    cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices)
-
-    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions)
+    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+                                         list[Condition] conditions, uint32[::1] covered_examples_mask,
+                                         uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
+                                         Loss loss, HeadRefinement head_refinement)
 
 
 cdef class IREP(Pruning):
 
-    # Attributes:
-
-    cdef float64 original_quality_score
-
-    cdef intp[::1] label_indices
-
-    cdef intp[::1] covered_example_indices
-
-    cdef Loss loss
-
-    cdef HeadRefinement head_refinement
-
-    cdef uint32[::1] weights
-
     # Functions:
 
-    cdef void begin_pruning(self, uint32[::1] weights, Loss loss, HeadRefinement head_refinement,
-                            intp[::1] covered_example_indices, intp[::1] label_indices)
-
-    cdef intp[::1] prune(self, float32[::1, :] x, map[intp, intp*]* sorted_indices_map, list[Condition] conditions)
+    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+                                         list[Condition] conditions, uint32[::1] covered_examples_mask,
+                                         uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
+                                         Loss loss, HeadRefinement head_refinement)
