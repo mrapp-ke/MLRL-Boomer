@@ -10,7 +10,7 @@ from args import log_level, optional_string, float_list, int_list, target_measur
 from boomer.baselines.problem_transformation import BRLearner, LPLearner, CCLearner
 from boomer.baselines.xgboost import XGBoost
 from boomer.bbc_cv import BbcCv, BbcCvAdapter, DefaultBbcCvObserver, DefaultBootstrapping
-from boomer.common import DTYPE_FLOAT64
+from boomer.common.model import DTYPE_FLOAT64
 from boomer.training import DataSet
 
 
