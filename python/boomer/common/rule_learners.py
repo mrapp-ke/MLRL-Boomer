@@ -14,8 +14,7 @@ import numpy as np
 from boomer.boosting.differentiable_losses import DifferentiableLoss, DecomposableDifferentiableLoss
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.boosting.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
-from boomer.common.head_refinement import SingleLabelHeadRefinement, FullHeadRefinement, HeadRefinement, \
-    PartialHeadRefinement
+from boomer.common.head_refinement import SingleLabelHeadRefinement, FullHeadRefinement, HeadRefinement
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.common.pruning import Pruning, IREP
@@ -27,6 +26,7 @@ from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCrite
 from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
     RandomInstanceSubsetSelection, LabelSubSampling, RandomLabelSubsetSelection
 from boomer.seco.coverage_losses import CoverageLoss
+from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, WeightedRelativeAccuracy, FMeasure, \
     MEstimate
 from boomer.seco.label_wise_averaging import LabelWiseAveraging
