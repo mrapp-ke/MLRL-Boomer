@@ -40,7 +40,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
     def __cinit__(self, bint default_rule_at_end, RuleInduction rule_induction, HeadRefinement head_refinement,
                   Loss loss, list stopping_criteria, LabelSubSampling label_sub_sampling,
                   InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
-                  Shrinkage shrinkage, intp min_coverage, intp max_conditions):
+                  Shrinkage shrinkage, intp min_coverage, intp max_conditions, intp max_head_refinements):
         """
         :param default_rule_at_end:     True, if the default rule should be located at the end, False, if it should be
                                         located at the start
@@ -64,6 +64,9 @@ cdef class RuleListInduction(SequentialRuleInduction):
                                         at least 1
         :param max_conditions:          The maximum number of conditions to be included in a rule's body. Must be at
                                         least 1 or -1, if the number of conditions should not be restricted
+        :param max_head_refinements:    The maximum number of times the head of a rule may be refined after a new
+                                        condition has been added to its body. Must be at least 1 or -1, if the number of
+                                        refinements should not be restricted
         """
         self.default_rule_at_end = default_rule_at_end
         self.rule_induction = rule_induction
@@ -77,6 +80,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.shrinkage = shrinkage
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
+        self.max_head_refinements = max_head_refinements
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,
                               uint32 random_state):
@@ -93,6 +97,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef Shrinkage shrinkage = self.shrinkage
         cdef intp min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
+        cdef intp max_head_refinements = self.max_head_refinements
         cdef RNG rng = RNG.__new__(RNG, random_state)
         # The total number of labels
         cdef intp num_labels = y.shape[1]
@@ -114,7 +119,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
             # Induce a new rule
             rule = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
                                               loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                              pruning, shrinkage, min_coverage, max_conditions, rng)
+                                              pruning, shrinkage, min_coverage, max_conditions, max_head_refinements,
+                                              rng)
 
             if rule is None:
                 break
