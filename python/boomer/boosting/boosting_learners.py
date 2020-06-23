@@ -13,14 +13,14 @@ from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinem
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
-from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
-from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
-
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
 from boomer.common.rule_learners import MLRuleLearner
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
-    create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage
+    create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
+    create_max_head_refinements
+from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
+from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.common.stats import Stats
 
 HEAD_REFINEMENT_FULL = 'full'
@@ -42,7 +42,8 @@ class Boomer(MLRuleLearner):
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
-                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1):
+                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
+                 max_head_refinements: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -81,6 +82,9 @@ class Boomer(MLRuleLearner):
         :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
                                                     Must be at least 1 or -1, if the number of conditions should not be
                                                     restricted
+        :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
+                                                    a new condition has been added to its body. Must be at least 1 or
+                                                    -1, if the number of refinements should not be restricted
         """
         super().__init__(model_dir)
         self.max_rules = max_rules
@@ -95,6 +99,7 @@ class Boomer(MLRuleLearner):
         self.l2_regularization_weight = l2_regularization_weight
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
+        self.max_head_refinements = max_head_refinements
 
     def get_model_prefix(self) -> str:
         return 'boomer'
@@ -120,6 +125,8 @@ class Boomer(MLRuleLearner):
             name += '_min-coverage=' + str(self.min_coverage)
         if int(self.max_conditions) != -1:
             name += '_max-conditions=' + str(self.max_conditions)
+        if int(self.max_head_refinements) != 1:
+            name += '_max-head-refinements=' + str(self.max_head_refinements)
         return name
 
     def get_params(self, deep=True):
@@ -136,7 +143,8 @@ class Boomer(MLRuleLearner):
             'shrinkage': self.shrinkage,
             'l2_regularization_weight': self.l2_regularization_weight,
             'min_coverage': self.min_coverage,
-            'max_conditions': self.max_conditions
+            'max_conditions': self.max_conditions,
+            'max_head_refinements': self.max_head_refinements
         })
         return params
 
@@ -156,9 +164,10 @@ class Boomer(MLRuleLearner):
         shrinkage = self.__create_shrinkage()
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
+        max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         return RuleListInduction(False, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
                                  instance_sub_sampling, feature_sub_sampling, pruning, shrinkage, min_coverage,
-                                 max_conditions)
+                                 max_conditions, max_head_refinements)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)

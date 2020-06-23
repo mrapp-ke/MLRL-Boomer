@@ -10,18 +10,18 @@ from ast import literal_eval
 from typing import List
 
 import numpy as np
-from boomer.common.prediction import Predictor
-from boomer.common.pruning import Pruning, IREP
-from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix
-from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
-from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
-    RandomInstanceSubsetSelection, LabelSubSampling, RandomLabelSubsetSelection
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 
 from boomer.common.learners import MLLearner, NominalAttributeLearner
 from boomer.common.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
+from boomer.common.prediction import Predictor
+from boomer.common.pruning import Pruning, IREP
+from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix
+from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.stats import Stats
+from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
+from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
+    RandomInstanceSubsetSelection, LabelSubSampling, RandomLabelSubsetSelection
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 
@@ -118,6 +118,13 @@ def create_max_conditions(max_conditions: int) -> int:
         raise ValueError('Invalid value given for parameter \'max_conditions\'' + str(max_conditions))
 
     return max_conditions
+
+
+def create_max_head_refinements(max_head_refinements: int) -> int:
+    if max_head_refinements != -1 and max_head_refinements < 1:
+        raise ValueError('Invalid value given for parameter \'max_head_refinements\'' + str(max_head_refinements))
+
+    return max_head_refinements
 
 
 def parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
