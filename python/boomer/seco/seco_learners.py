@@ -15,7 +15,6 @@ from boomer.common.rule_learners import MLRuleLearner
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
     create_max_head_refinements, parse_prefix_and_dict, get_int_argument, get_float_argument
-from boomer.common.stats import Stats
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -159,13 +158,13 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         })
         return params
 
-    def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
+    def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()
         heuristic = self.__create_heuristic()
         loss = self.__create_loss(heuristic)
-        lift_function = self.__create_lift_function(stats)
+        lift_function = self.__create_lift_function(num_labels)
         head_refinement = self.__create_head_refinement(lift_function)
-        label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, stats)
+        label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = create_pruning(self.pruning)
@@ -206,17 +205,17 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return LabelWiseAveraging(heuristic)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_lift_function(self, stats: Stats) -> LiftFunction:
+    def __create_lift_function(self, num_labels: int) -> LiftFunction:
         lift_function = self.lift_function
 
         prefix, args = parse_prefix_and_dict(lift_function, [LIFT_FUNCTION_PEAK])
 
         if prefix == LIFT_FUNCTION_PEAK:
-            peak_label = get_int_argument(args, ARGUMENT_PEAK_LABEL, int(stats.num_labels / 2) + 1,
-                                          lambda x: 1 <= x <= stats.num_labels)
+            peak_label = get_int_argument(args, ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1,
+                                          lambda x: 1 <= x <= num_labels)
             max_lift = get_float_argument(args, ARGUMENT_MAX_LIFT, 2.0, lambda x: x >= 1)
             curvature = get_float_argument(args, ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
-            return PeakLiftFunction(stats.num_labels, peak_label, max_lift, curvature)
+            return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
         raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
 
