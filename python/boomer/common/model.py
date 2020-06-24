@@ -5,10 +5,7 @@
 
 Provides classes for representing the model learned by a classifier or ranker.
 """
-from typing import List
-
 import numpy as np
-from boomer.common.rules import Rule
 
 DTYPE_INTP = np.intp
 
@@ -19,7 +16,3 @@ DTYPE_UINT32 = np.uint32
 DTYPE_FLOAT32 = np.float32
 
 DTYPE_FLOAT64 = np.float64
-
-
-# Type alias for a theory, which is a list containing several rules
-Theory = List[Rule]

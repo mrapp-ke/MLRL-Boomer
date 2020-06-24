@@ -1,7 +1,13 @@
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
-from boomer.common.prediction import Predictor, DensePredictor, Aggregation, SignFunction
+from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
+from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
+from boomer.common.rule_learners import MLRuleLearner
+from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
+    create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
+    create_max_head_refinements, parse_prefix_and_dict, get_int_argument, get_float_argument
 from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
+from boomer.common.stats import Stats
 from boomer.seco.coverage_losses import CoverageLoss
 from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, WeightedRelativeAccuracy, FMeasure, \
@@ -9,13 +15,6 @@ from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, We
 from boomer.seco.label_wise_averaging import LabelWiseAveraging
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
-
-from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
-from boomer.common.rule_learners import MLRuleLearner
-from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
-    create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, parse_prefix_and_dict, get_int_argument, get_float_argument
-from boomer.common.stats import Stats
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -174,9 +173,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
-        return RuleListInduction(True, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
-                                 instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
-                                 max_conditions, max_head_refinements)
+        return RuleListInduction(True, True, rule_induction, head_refinement, loss, stopping_criteria,
+                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, None,
+                                 min_coverage, max_conditions, max_head_refinements)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
@@ -232,4 +231,4 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self) -> Predictor:
-        return DensePredictor(Aggregation(use_mask=True), SignFunction())
+        return DensePredictor(SignFunction())
