@@ -78,9 +78,10 @@ cdef class ConjunctiveBody(Body):
     for nominal conditions, respectively.
     """
 
-    def __cinit__(self, intp[::1] leq_feature_indices, float32[::1] leq_thresholds, intp[::1] gr_feature_indices,
-                  float32[::1] gr_thresholds, intp[::1] eq_feature_indices, float32[::1] eq_thresholds,
-                  intp[::1] neq_feature_indices, float32[::1] neq_thresholds):
+    def __cinit__(self, intp[::1] leq_feature_indices = None, float32[::1] leq_thresholds = None,
+                  intp[::1] gr_feature_indices = None, float32[::1] gr_thresholds = None,
+                  intp[::1] eq_feature_indices = None, float32[::1] eq_thresholds = None,
+                  intp[::1] neq_feature_indices = None, float32[::1] neq_thresholds = None):
         """
         :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the indices of the
                                     features, the numerical conditions that use the <= operator correspond to or None,
@@ -266,7 +267,7 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    def __cinit__(self, float64[::1] scores):
+    def __cinit__(self, float64[::1] scores = None):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                         rule for each label
@@ -299,7 +300,7 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    def __cinit__(self, intp[::1] label_indices, float64[::1] scores):
+    def __cinit__(self, intp[::1] label_indices = None, float64[::1] scores = None):
         """
         :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
                                 labels for which the rule predicts
@@ -339,7 +340,7 @@ cdef class Rule:
     A rule consisting of a body and head.
     """
 
-    def __cinit__(self, Body body, Head head):
+    def __cinit__(self, Body body = None, Head head= None):
         """
         :param body:    The body of the rule
         :param head:    The head of the rule
@@ -436,6 +437,12 @@ cdef class RuleModel:
     A base class for all rule-based models.
     """
 
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
     cdef void add_rule(self, Rule rule):
         """
         Adds a new rule to the model.
@@ -485,7 +492,7 @@ cdef class RuleList(RuleModel):
     A model that stores several rules in a list.
     """
 
-    def __cinit__(self, bint use_mask):
+    def __cinit__(self, bint use_mask = False):
         """
         :param use_mask: True, if only one rule is allowed to predict per label, False otherwise
         """
