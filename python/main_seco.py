@@ -46,6 +46,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The minimum number of training examples that must be covered by a rule')
     p.add_argument('--max-conditions', type=int, default=-1,
                    help='The maximum number of conditions to be included in a rule\'s body or -1')
+    p.add_argument('--max-head-refinements', type=int, default=1,
+                   help='The maximum number of times the head of a rule may be refined or -1')
     p.add_argument('--lift-function', type=optional_string, default=LIFT_FUNCTION_PEAK,
                    help='The lift function to be used')
 
@@ -57,7 +59,8 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          feature_sub_sampling=params.feature_sub_sampling,
                                          head_refinement=params.head_refinement, min_coverage=params.min_coverage,
-                                         max_conditions=params.max_conditions, lift_function=params.lift_function)
+                                         max_conditions=params.max_conditions, lift_function=params.lift_function,
+                                         max_head_refinements=params.max_head_refinements)
 
 
 if __name__ == '__main__':

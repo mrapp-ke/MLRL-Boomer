@@ -43,6 +43,8 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
     cdef intp max_conditions
 
+    cdef intp max_head_refinements
+
     # Functions:
 
     cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,

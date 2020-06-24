@@ -48,6 +48,8 @@ def configure_argument_parser(p: argparse.ArgumentParser):
                    help='The minimum number of training examples that must be covered by a rule')
     p.add_argument('--max-conditions', type=int, default=-1,
                    help='The maximum number of conditions to be included in a rule\'s body or -1')
+    p.add_argument('--max-head-refinements', type=int, default=1,
+                   help='The maximum number of times the head of a rule may be refined or -1')
 
 
 def create_learner(params) -> Boomer:
@@ -56,7 +58,8 @@ def create_learner(params) -> Boomer:
                   instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
                   feature_sub_sampling=params.feature_sub_sampling,
                   head_refinement=params.head_refinement, l2_regularization_weight=params.l2_regularization_weight,
-                  min_coverage=params.min_coverage, max_conditions=params.max_conditions)
+                  min_coverage=params.min_coverage, max_conditions=params.max_conditions,
+                  max_head_refinements=params.max_head_refinements)
 
 
 if __name__ == '__main__':
