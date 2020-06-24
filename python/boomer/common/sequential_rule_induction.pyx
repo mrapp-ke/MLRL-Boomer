@@ -4,7 +4,7 @@
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common._random cimport RNG
-from boomer.common.rules cimport Rule
+from boomer.common.rules cimport Rule, RuleList
 from boomer.common.stopping_criteria cimport StoppingCriterion
 
 
@@ -14,8 +14,8 @@ cdef class SequentialRuleInduction:
     rules.
     """
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,
-                              uint32 random_state):
+    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
+                                 uint8[::1, :] y, uint32 random_state):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -37,13 +37,15 @@ cdef class RuleListInduction(SequentialRuleInduction):
     also includes a default rule, which may be located at the beginning or the end of the list.
     """
 
-    def __cinit__(self, bint default_rule_at_end, RuleInduction rule_induction, HeadRefinement head_refinement,
-                  Loss loss, list stopping_criteria, LabelSubSampling label_sub_sampling,
-                  InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
-                  Shrinkage shrinkage, intp min_coverage, intp max_conditions, intp max_head_refinements):
+    def __cinit__(self, bint default_rule_at_end, bint use_mask, RuleInduction rule_induction,
+                  HeadRefinement head_refinement, Loss loss, list stopping_criteria,
+                  LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                  FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, intp min_coverage,
+                  intp max_conditions, intp max_head_refinements):
         """
         :param default_rule_at_end:     True, if the default rule should be located at the end, False, if it should be
                                         located at the start
+        :param use_mask:                True, if only one rule should be allowed to predict per label, False otherwise
         :param rule_induction:          The algorithm that should be used to induce rules
         :param head_refinement:         The strategy that should be used to find the heads of rules
         :param loss:                    The loss function to be minimized
@@ -69,6 +71,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
                                         refinements should not be restricted
         """
         self.default_rule_at_end = default_rule_at_end
+        self.use_mask = use_mask
         self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.loss = loss
@@ -82,10 +85,11 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
 
-    cpdef object induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, uint8[::1, :] y,
-                              uint32 random_state):
+    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
+                                 uint8[::1, :] y, uint32 random_state):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
+        cdef bint use_mask = self.use_mask
         cdef RuleInduction rule_induction = self.rule_induction
         cdef HeadRefinement head_refinement = self.head_refinement
         cdef Loss loss = self.loss
@@ -102,7 +106,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
         # The total number of labels
         cdef intp num_labels = y.shape[1]
         # The list that contains the induced rules
-        cdef list rule_list = []
+        cdef RuleModel model = RuleList.__new__(RuleList, use_mask)
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
         # Temporary variables
@@ -113,7 +117,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
         default_rule = rule_induction.induce_default_rule(y, loss)
 
         if not default_rule_at_end:
-            rule_list.append(default_rule)
+            model.add_rule(default_rule)
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule
@@ -125,13 +129,13 @@ cdef class RuleListInduction(SequentialRuleInduction):
             if rule is None:
                 break
 
-            rule_list.append(rule)
+            model.add_rule(rule)
             num_rules += 1
 
         if default_rule_at_end:
-            rule_list.append(default_rule)
+            model.add_rule(default_rule)
 
-        return rule_list
+        return model
 
 
 cdef inline bint __should_continue(list stopping_criteria, intp num_rules):

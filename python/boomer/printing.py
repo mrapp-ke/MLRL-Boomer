@@ -10,10 +10,9 @@ import logging as log
 from abc import ABC, abstractmethod
 
 import numpy as np
-from boomer.common.rules import Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 
 from boomer.common.learners import MLLearner
-from boomer.common.model import Theory
+from boomer.common.rules import RuleModel, RuleList, Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
 from boomer.data import MetaData
 from boomer.io import clear_directory, open_writable_txt_file
 
@@ -118,35 +117,26 @@ class RulePrinter(ModelPrinter):
         super().__init__(*args)
 
     def _format_model(self, meta_data: MetaData, model) -> str:
-        if isinstance(model, list):
-            return format_theory(meta_data, model)
-        else:
-            raise ValueError('Unsupported model type: ' + type(model).__name__)
+        return format_model(meta_data, model)
 
 
-def format_theory(meta_data: MetaData, theory: Theory, print_feature_names: bool = True,
-                  print_label_names: bool = True) -> str:
+def format_model(meta_data: MetaData, model: RuleModel, print_feature_names: bool = True,
+                 print_label_names: bool = True) -> str:
     """
-    Formats a specific theory as a text.
+    Formats a specific rule-based model as a text.
 
     :param meta_data:           The meta data of the training data set
-    :param theory:              The theory to be formatted
+    :param model:               The model to be formatted
     :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
                                 features should be printed
     :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
                                 labels should be printed
     :return:                    The text
     """
-    text = ''
-
-    for rule in theory:
-        if len(text) > 0:
-            text += '\n'
-
-        text += format_rule(meta_data, rule, print_feature_names=print_feature_names,
-                            print_label_names=print_label_names)
-
-    return text
+    if isinstance(model, RuleList):
+        return __format_rule_list(meta_data, model, print_feature_names, print_label_names)
+    else:
+        raise ValueError('Model has unknown type: ' + type(model).__name__)
 
 
 def format_rule(meta_data: MetaData, rule: Rule, print_feature_names: bool = True,
@@ -165,6 +155,31 @@ def format_rule(meta_data: MetaData, rule: Rule, print_feature_names: bool = Tru
     text = __format_body(meta_data, rule.body, print_feature_names=print_feature_names)
     text += ' -> '
     text += __format_head(meta_data, rule.head, print_label_names=print_label_names)
+    return text
+
+
+def __format_rule_list(meta_data: MetaData, rule_list: RuleList, print_feature_names: bool,
+                       print_label_names: bool = True) -> str:
+    """
+    Formats a specific rule list as a text.
+
+    :param meta_data:           The meta data of the training data set
+    :param rule_list:           The rule list to be formatted
+    :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
+                                features should be printed
+    :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
+                                labels should be printed
+    :return:                    The text
+    """
+    text = ''
+
+    for rule in rule_list.rules:
+        if len(text) > 0:
+            text += '\n'
+
+        text += format_rule(meta_data, rule, print_feature_names=print_feature_names,
+                            print_label_names=print_label_names)
+
     return text
 
 
