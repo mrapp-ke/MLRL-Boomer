@@ -193,7 +193,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         else:
             feature_matrix = DenseFeatureMatrix(x)
 
-        num_labels = y.shape[len(y.shape) - 1]
+        num_labels = y.shape[1] if len(y.shape) > 1 else 1
         self.num_labels_ = num_labels
 
         # Create an array that contains the indices of all nominal attributes, if any
