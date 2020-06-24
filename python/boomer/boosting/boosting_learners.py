@@ -13,15 +13,15 @@ from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinem
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, Aggregation, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
+from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
+from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
+
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
 from boomer.common.rule_learners import MLRuleLearner
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
     create_max_head_refinements
-from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
-from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
-from boomer.common.stats import Stats
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -151,13 +151,13 @@ class Boomer(MLRuleLearner):
     def _create_predictor(self) -> Predictor:
         return DensePredictor(Aggregation(), SignFunction())
 
-    def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
+    def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         loss = self.__create_loss(l2_regularization_weight)
         head_refinement = self.__create_head_refinement(loss)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
-        label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, stats)
+        label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = create_pruning(self.pruning)
