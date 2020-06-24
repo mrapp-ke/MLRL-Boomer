@@ -11,9 +11,9 @@ from abc import ABC
 
 from sklearn.base import clone
 
+from boomer.common.learners import MLLearner, NominalAttributeLearner
 from boomer.data import MetaData, AttributeType
 from boomer.evaluation import Evaluation
-from boomer.learners import MLLearner, NominalAttributeLearner
 from boomer.parameters import ParameterInput
 from boomer.printing import ModelPrinter
 from boomer.training import CrossValidation, DataSet

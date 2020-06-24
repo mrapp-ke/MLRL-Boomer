@@ -4,9 +4,8 @@ import argparse
 import logging as log
 
 from args import optional_string, log_level, boolean_string, current_fold_string
-from boomer.algorithm.rule_learners import Boomer
-from boomer.algorithm.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
-    LOSS_LABEL_WISE_LOGISTIC
+from boomer.boosting.boosting_learners import Boomer, LOSS_LABEL_WISE_LOGISTIC
+from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput

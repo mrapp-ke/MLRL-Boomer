@@ -7,8 +7,8 @@ import os.path as path
 import numpy as np
 from skmultilearn.base import MLClassifierBase
 
-from boomer.algorithm.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
-from boomer.algorithm.rule_learners import Boomer
+from boomer.boosting.boosting_learners import Boomer
+from boomer.common.model import Theory, DTYPE_FLOAT32, DTYPE_FLOAT64
 from boomer.data import MetaData
 from boomer.evaluation import HAMMING_LOSS, SUBSET_01_LOSS
 from boomer.persistence import ModelPersistence

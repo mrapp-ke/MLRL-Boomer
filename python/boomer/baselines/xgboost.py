@@ -9,7 +9,7 @@ from math import log2, floor
 
 from xgboost import XGBClassifier
 
-from boomer.learners import Learner
+from boomer.common import Learner
 
 
 class XGBoost(Learner):
