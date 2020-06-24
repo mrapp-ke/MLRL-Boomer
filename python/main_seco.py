@@ -5,12 +5,12 @@ import logging as log
 
 from args import current_fold_string
 from args import optional_string, log_level, boolean_string
-from boomer.algorithm.rule_learners import AVERAGING_LABEL_WISE, HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK
-from boomer.algorithm.rule_learners import SeparateAndConquerRuleLearner
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
 from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
+from boomer.seco.seco_learners import SeparateAndConquerRuleLearner, AVERAGING_LABEL_WISE, HEURISTIC_PRECISION, \
+    LIFT_FUNCTION_PEAK
 from boomer.training import DataSet
 
 
