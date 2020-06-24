@@ -485,7 +485,7 @@ cdef class RuleList(RuleModel):
     A model that stores several rules in a list.
     """
 
-    def __cinit__(self, bint use_mask = False):
+    def __cinit__(self, bint use_mask):
         """
         :param use_mask: True, if only one rule is allowed to predict per label, False otherwise
         """
