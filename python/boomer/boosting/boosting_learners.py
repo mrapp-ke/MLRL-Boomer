@@ -129,25 +129,6 @@ class Boomer(MLRuleLearner):
             name += '_max-head-refinements=' + str(self.max_head_refinements)
         return name
 
-    def get_params(self, deep=True):
-        params = super().get_params(deep)
-        params.update({
-            'max_rules': self.max_rules,
-            'time_limit': self.time_limit,
-            'head_refinement': self.head_refinement,
-            'loss': self.loss,
-            'label_sub_sampling': self.label_sub_sampling,
-            'instance_sub_sampling': self.instance_sub_sampling,
-            'feature_sub_sampling': self.feature_sub_sampling,
-            'pruning': self.pruning,
-            'shrinkage': self.shrinkage,
-            'l2_regularization_weight': self.l2_regularization_weight,
-            'min_coverage': self.min_coverage,
-            'max_conditions': self.max_conditions,
-            'max_head_refinements': self.max_head_refinements
-        })
-        return params
-
     def _create_predictor(self) -> Predictor:
         return DensePredictor(Aggregation(), SignFunction())
 
