@@ -154,7 +154,8 @@ cdef class RuleInduction:
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
+                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
+                          intp max_head_refinements, RNG rng):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -181,6 +182,9 @@ cdef class RuleInduction:
                                             Must be at least 1
         :param max_conditions:              The maximum number of conditions to be included in the rule's body. Must be
                                             at least 1 or -1, if the number of conditions should not be restricted
+        :param max_head_refinements:        The maximum number of times the head of a rule may be refined after a new 
+                                            condition has been added to its body. Must be at least 1 or -1, if the 
+                                            number of refinements should not be restricted
         :param rng:                         The random number generator to be used
         :return:                            The rule that has been induced or None, if no rule could be induced
         """
@@ -222,7 +226,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions, RNG rng):
+                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
+                          intp max_head_refinements, RNG rng):
         # The total number of training examples
         cdef intp num_examples = feature_matrix.num_examples
         # The total number of features
@@ -796,13 +801,15 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 best_condition_threshold = previous_threshold_negative + (abs(previous_threshold - previous_threshold_negative) / 2.0)
 
                 if found_refinement:
-                    # If a refinement has been found, add the new condition and update the labels for which the rule
-                    # predicts...
+                    # If a refinement has been found, add the new condition...
                     conditions.push_back(__make_condition(best_condition_feature_index, best_condition_comparator,
                                                           best_condition_threshold))
                     num_conditions += 1
                     num_conditions_per_comparator[<intp>best_condition_comparator] += 1
-                    label_indices = head.label_indices
+
+                    if max_head_refinements > 0 and num_conditions >= max_head_refinements:
+                        # Keep the labels for which the rule predicts, if the head should not be further refined...
+                        label_indices = head.label_indices
 
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
@@ -835,6 +842,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # all features are constant.
                 return None
             else:
+                label_indices = head.label_indices
                 predicted_scores = head.predicted_scores
 
                 if weights is not None:

@@ -14,7 +14,7 @@ from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
 from boomer.common.rule_learners import MLRuleLearner
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    parse_prefix_and_dict, get_int_argument, get_float_argument
+    create_max_head_refinements, parse_prefix_and_dict, get_int_argument, get_float_argument
 from boomer.common.stats import Stats
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
@@ -56,7 +56,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                  lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
-                 min_coverage: int = 1, max_conditions: int = -1):
+                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -95,6 +95,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
                                                     Must be at least 1 or -1, if the number of conditions should not be
                                                     restricted
+        :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
+                                                    a new condition has been added to its body. Must be at least 1 or
+                                                    -1, if the number of refinements should not be restricted
         """
         super().__init__(model_dir)
         self.max_rules = max_rules
@@ -109,6 +112,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.pruning = pruning
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
+        self.max_head_refinements = max_head_refinements
 
     def get_model_prefix(self) -> str:
         return 'seco'
@@ -132,6 +136,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_min-coverage=' + str(self.min_coverage)
         if int(self.max_conditions) != -1:
             name += '_max-conditions=' + str(self.max_conditions)
+        if int(self.max_head_refinements) != 1:
+            name += '_max-head-refinements=' + str(self.max_head_refinements)
         return name
 
     def get_params(self, deep=True):
@@ -148,7 +154,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             'feature_sub_sampling': self.feature_sub_sampling,
             'pruning': self.pruning,
             'min_coverage': self.min_coverage,
-            'max_conditions': self.max_conditions
+            'max_conditions': self.max_conditions,
+            'max_head_refinements': self.max_head_refinements
         })
         return params
 
@@ -164,11 +171,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         pruning = create_pruning(self.pruning)
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
+        max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
         return RuleListInduction(True, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
                                  instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
-                                 max_conditions)
+                                 max_conditions, max_head_refinements)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
