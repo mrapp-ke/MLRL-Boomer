@@ -139,25 +139,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_max-head-refinements=' + str(self.max_head_refinements)
         return name
 
-    def get_params(self, deep=True):
-        params = super().get_params(deep)
-        params.update({
-            'max_rules': self.max_rules,
-            'time_limit': self.time_limit,
-            'head_refinement': self.head_refinement,
-            'lift_function': self.lift_function,
-            'loss': self.loss,
-            'heuristic': self.heuristic,
-            'label_sub_sampling': self.label_sub_sampling,
-            'instance_sub_sampling': self.instance_sub_sampling,
-            'feature_sub_sampling': self.feature_sub_sampling,
-            'pruning': self.pruning,
-            'min_coverage': self.min_coverage,
-            'max_conditions': self.max_conditions,
-            'max_head_refinements': self.max_head_refinements
-        })
-        return params
-
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()
         heuristic = self.__create_heuristic()

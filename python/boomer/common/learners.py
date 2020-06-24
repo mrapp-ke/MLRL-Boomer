@@ -32,15 +32,6 @@ class Learner(BaseEstimator, Randomized):
     A base class for all single- or multi-label classifiers or rankers.
     """
 
-    def set_params(self, **parameters):
-        params = self.get_params()
-        for parameter, value in parameters.items():
-            if parameter in params.keys():
-                setattr(self, parameter, value)
-            else:
-                raise ValueError('Invalid parameter: ' + str(parameter))
-        return self
-
     def get_model_name(self) -> str:
         """
         Returns the name that should be used to save the model of the classifier or ranker to a file.
@@ -118,11 +109,6 @@ class MLLearner(Learner):
         if persistence is not None:
             persistence.save_model(model, model_name=self.get_model_name(), file_name_suffix=self.get_model_prefix(),
                                    fold=self.fold)
-
-    def get_params(self, deep=True):
-        return {
-            'model_dir': self.model_dir
-        }
 
     def fit(self, x, y):
         # Load theory from disk, if possible
