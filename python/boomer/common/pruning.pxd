@@ -1,6 +1,7 @@
 # distutils: language=c++
 from boomer.common._arrays cimport intp, uint32
-from boomer.common.rule_induction cimport Condition, IndexedArray
+from boomer.common.rules cimport Condition
+from boomer.common.rule_induction cimport IndexedArray
 from boomer.common.losses cimport Loss
 from boomer.common.head_refinement cimport HeadRefinement
 

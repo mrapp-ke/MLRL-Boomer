@@ -1,6 +1,26 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float32, float64
 
 
+"""
+An enum that specifies all possible types of operators used by a condition of a rule.
+"""
+cdef enum Comparator:
+    LEQ = 0
+    GR = 1
+    EQ = 2
+    NEQ = 3
+
+
+"""
+A struct that represents a condition of a rule. It consists of the index of the feature the condition corresponds to,
+the type of the operator that is used by the condition, as well as a threshold.
+"""
+cdef struct Condition:
+    intp feature_index
+    Comparator comparator
+    float32 threshold
+
+
 cdef class Body:
 
     # Functions:
