@@ -1,7 +1,7 @@
 # distutils: language=c++
 from boomer.common._arrays cimport intp, uint8, float32
 from boomer.common._random cimport RNG
-from boomer.common.rules cimport Rule
+from boomer.common.rules cimport ModelBuilder
 from boomer.common.losses cimport Loss
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
@@ -83,13 +83,13 @@ cdef class RuleInduction:
 
     # Functions:
 
-    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
+    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng)
+                          intp max_head_refinements, RNG rng, ModelBuilder model_builder)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
@@ -100,10 +100,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Functions:
 
-    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss)
+    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng)
+                          intp max_head_refinements, RNG rng, ModelBuilder model_builder)

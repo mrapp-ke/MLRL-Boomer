@@ -106,37 +106,27 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef RNG rng = RNG.__new__(RNG, random_state)
         # The total number of labels
         cdef intp num_labels = y.shape[1]
-        # The list that contains the induced rules
-        cdef RuleModel model = RuleList.__new__(RuleList, use_mask)
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
         # Temporary variables
-        cdef Rule default_rule, rule
-        cdef bint should_continue
+        cdef bint success
 
-        # Induce default rule
-        default_rule = rule_induction.induce_default_rule(y, loss)
-
-        if not default_rule_at_end:
-            model.add_rule(default_rule)
+        # Induce default rule...
+        rule_induction.induce_default_rule(y, loss, model_builder)
 
         while __should_continue(stopping_criteria, num_rules):
-            # Induce a new rule
-            rule = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
-                                              loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                              pruning, shrinkage, min_coverage, max_conditions, max_head_refinements,
-                                              rng)
+            # Induce a new rule...
+            success = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
+                                                 loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                                 pruning, shrinkage, min_coverage, max_conditions, max_head_refinements,
+                                                 rng, model_builder)
 
-            if rule is None:
+            if not success:
                 break
 
-            model.add_rule(rule)
             num_rules += 1
 
-        if default_rule_at_end:
-            model.add_rule(default_rule)
-
-        return model
+        return model_builder.build_model()
 
 
 cdef inline bint __should_continue(list stopping_criteria, intp num_rules):
