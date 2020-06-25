@@ -15,7 +15,7 @@ cdef class SequentialRuleInduction:
     """
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state):
+                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -26,6 +26,7 @@ cdef class SequentialRuleInduction:
         :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
                                             the labels of the training examples
         :param random_state:                The seed to be used by RNGs
+        :param model_builder:               The builder that should be used to build the model
         :return:                            A model that contains the induced classification rules
         """
         pass
@@ -86,7 +87,7 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.max_head_refinements = max_head_refinements
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state):
+                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder):
         # Class members
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef bint use_mask = self.use_mask

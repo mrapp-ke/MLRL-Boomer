@@ -3,6 +3,7 @@
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
+from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.seco.coverage_losses import CoverageLoss
 from boomer.seco.head_refinement import PartialHeadRefinement
@@ -140,6 +141,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         if int(self.max_head_refinements) != 1:
             name += '_max-head-refinements=' + str(self.max_head_refinements)
         return name
+
+    def _create_model_builder(self) -> ModelBuilder:
+        return RuleListBuilder()
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()

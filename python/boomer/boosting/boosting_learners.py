@@ -13,6 +13,7 @@ from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinem
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
+from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
 
@@ -131,6 +132,9 @@ class Boomer(MLRuleLearner):
 
     def _create_predictor(self) -> Predictor:
         return DensePredictor(SignFunction())
+
+    def _create_model_builder(self) -> ModelBuilder:
+        return RuleListBuilder()
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()
