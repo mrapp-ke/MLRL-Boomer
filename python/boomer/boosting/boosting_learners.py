@@ -14,7 +14,7 @@ from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
-from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
+from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
@@ -150,9 +150,9 @@ class Boomer(MLRuleLearner):
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
-        return RuleListInduction(False, False, rule_induction, head_refinement, loss, stopping_criteria,
-                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, shrinkage,
-                                 min_coverage, max_conditions, max_head_refinements)
+        return SequentialRuleInduction(False, False, rule_induction, head_refinement, loss, stopping_criteria,
+                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                       shrinkage, min_coverage, max_conditions, max_head_refinements)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)

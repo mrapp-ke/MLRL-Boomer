@@ -10,14 +10,6 @@ from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling,
 
 cdef class SequentialRuleInduction:
 
-    # Functions:
-
-    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder)
-
-
-cdef class RuleListInduction(SequentialRuleInduction):
-
     # Attributes:
 
     cdef bint default_rule_at_end
