@@ -5,8 +5,8 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, array_float32, get_index
-from boomer.common.rules cimport Condition, Comparator, Head, FullHead, PartialHead, EmptyBody, ConjunctiveBody
+from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, get_index
+from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.losses cimport Prediction
 
@@ -140,22 +140,22 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
+    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder):
         """
         Induces the default rule that minimizes a certain loss function with respect to the given ground truth labels.
 
-        :param y:       An array of dtype float, shape `(num_examples, num_labels)`, representing the ground truth
-                        labels of the training examples
-        :param loss:    The loss function to be minimized
-        :return:        The default rule that has been induced
+        :param y:               An array of dtype float, shape `(num_examples, num_labels)`, representing the ground
+                                truth labels of the training examples
+        :param loss:            The loss function to be minimized
+        :param model_builder:   The builder, the default rule should be added to
         """
         pass
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng):
+                          intp max_head_refinements, RNG rng, ModelBuilder model_builder):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
         examples it covers.
@@ -186,7 +186,8 @@ cdef class RuleInduction:
                                             condition has been added to its body. Must be at least 1 or -1, if the 
                                             number of refinements should not be restricted
         :param rng:                         The random number generator to be used
-        :return:                            The rule that has been induced or None, if no rule could be induced
+        :param model_builder:               The builder, the rule should be added to
+        :return:                            1, if a rule has been induced, 0 otherwise
         """
         pass
 
@@ -216,18 +217,15 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef Rule induce_default_rule(self, uint8[::1, :] y, Loss loss):
+    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder):
         cdef float64[::1] scores = loss.calculate_default_scores(y)
-        cdef FullHead head = FullHead.__new__(FullHead, scores)
-        cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
-        cdef Rule rule = Rule.__new__(Rule, body, head)
-        return rule
+        model_builder.set_default_rule(scores)
 
-    cdef Rule induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng):
+                          intp max_head_refinements, RNG rng, ModelBuilder model_builder):
         # The total number of training examples
         cdef intp num_examples = feature_matrix.num_examples
         # The total number of features
@@ -840,7 +838,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             if head is None:
                 # No rule could be induced, because no useful condition could be found. This is for example the case, if
                 # all features are constant.
-                return None
+                return False
             else:
                 label_indices = head.label_indices
                 predicted_scores = head.predicted_scores
@@ -874,8 +872,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if covered_examples_mask[r] == covered_examples_target:
                         loss.apply_prediction(r, label_indices, predicted_scores)
 
-                # Build and return the induced rule...
-                return __build_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
+                # Add the induced rule to the model...
+                model_builder.add_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
+                return True
         finally:
             # Free memory occupied by the arrays stored in `cache_local`...
             cache_local_iterator = cache_local.begin()
@@ -1153,74 +1152,3 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
     dereference(filtered_indexed_array).num_elements = i
     dereference(indexed_array_wrapper).array = filtered_indexed_array
     dereference(indexed_array_wrapper).num_conditions = num_conditions
-
-
-cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_scores,
-                              double_linked_list[Condition] conditions, intp[::1] num_conditions_per_comparator):
-    """
-    Builds and returns a rule.
-
-    :param label_indices:                   An array of dtype int, shape `(num_predicted_labels)`, representing the
-                                            indices of the labels for which the rule predicts or None, if the rule
-                                            predicts for all labels
-    :param predicted_scores:                An array of dtype float, shape `(num_predicted_labels)`, representing the
-                                            scores that are predicted by the rule
-    :param conditions:                      A list that contains the rule's conditions
-    :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of conditions
-                                            that use a specific operator
-    return:                                 The rule that has been built
-    """
-    cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
-    cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    num_conditions = num_conditions_per_comparator[<intp>Comparator.GR]
-    cdef intp[::1] gr_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] gr_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    num_conditions = num_conditions_per_comparator[<intp>Comparator.EQ]
-    cdef intp[::1] eq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] eq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
-    cdef intp[::1] neq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
-    cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    cdef double_linked_list[Condition].iterator iterator = conditions.begin()
-    cdef intp leq_i = 0
-    cdef intp gr_i = 0
-    cdef intp eq_i = 0
-    cdef intp neq_i = 0
-    cdef Condition condition
-    cdef Comparator comparator
-
-    while iterator != conditions.end():
-        condition = dereference(iterator)
-        comparator = condition.comparator
-
-        if comparator == Comparator.LEQ:
-           leq_feature_indices[leq_i] = condition.feature_index
-           leq_thresholds[leq_i] = condition.threshold
-           leq_i += 1
-        elif comparator == Comparator.GR:
-           gr_feature_indices[gr_i] = condition.feature_index
-           gr_thresholds[gr_i] = condition.threshold
-           gr_i += 1
-        elif comparator == Comparator.EQ:
-           eq_feature_indices[eq_i] = condition.feature_index
-           eq_thresholds[eq_i] = condition.threshold
-           eq_i += 1
-        else:
-           neq_feature_indices[neq_i] = condition.feature_index
-           neq_thresholds[neq_i] = condition.threshold
-           neq_i += 1
-
-        postincrement(iterator)
-
-    cdef ConjunctiveBody rule_body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
-                                                             gr_feature_indices, gr_thresholds, eq_feature_indices,
-                                                             eq_thresholds, neq_feature_indices, neq_thresholds)
-    cdef Head rule_head
-
-    if label_indices is None:
-        rule_head = FullHead.__new__(FullHead, predicted_scores)
-    else:
-        rule_head = PartialHead.__new__(PartialHead, label_indices, predicted_scores)
-
-    return Rule.__new__(Rule, rule_body, rule_head)
