@@ -1,4 +1,7 @@
+# distutils: language=c++
 from boomer.common._arrays cimport uint8, uint32, intp, float32, float64
+
+from libcpp.list cimport list as double_linked_list
 
 
 """
@@ -145,3 +148,15 @@ cdef class RuleList(RuleModel):
 
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                                      intp num_features, intp num_labels)
+
+
+cdef class ModelBuilder:
+
+    # Functions:
+
+    cdef void set_default_rule(self, float64[::1] scores)
+
+    cdef void add_rule(self, intp[::1] label_indices, float64[::1] scores, double_linked_list[Condition] conditions,
+                       intp[::1] num_conditions_per_comparator)
+
+    cdef RuleModel build_model(self)
