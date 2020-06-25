@@ -164,6 +164,16 @@ cdef class ModelBuilder:
 
 cdef class RuleListBuilder(ModelBuilder):
 
+    # Attributes:
+
+    cdef readonly bint use_mask
+
+    cdef readonly bint default_rule_at_end
+
+    cdef RuleList rule_list
+
+    cdef Rule default_rule
+
     # Functions:
 
     cdef void set_default_rule(self, float64[::1] scores)

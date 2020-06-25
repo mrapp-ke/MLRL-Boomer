@@ -143,7 +143,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return name
 
     def _create_model_builder(self) -> ModelBuilder:
-        return RuleListBuilder()
+        return RuleListBuilder(use_mask=True, default_rule_at_end=True)
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         rule_induction = ExactGreedyRuleInduction()
