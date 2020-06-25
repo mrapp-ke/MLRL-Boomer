@@ -12,10 +12,6 @@ cdef class SequentialRuleInduction:
 
     # Attributes:
 
-    cdef bint default_rule_at_end
-
-    cdef bint use_mask
-
     cdef RuleInduction rule_induction
 
     cdef HeadRefinement head_refinement
