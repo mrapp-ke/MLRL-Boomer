@@ -150,9 +150,9 @@ class Boomer(MLRuleLearner):
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
-        return SequentialRuleInduction(False, False, rule_induction, head_refinement, loss, stopping_criteria,
-                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                       shrinkage, min_coverage, max_conditions, max_head_refinements)
+        return SequentialRuleInduction(rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
+                                       instance_sub_sampling, feature_sub_sampling, pruning, shrinkage, min_coverage,
+                                       max_conditions, max_head_refinements)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)

@@ -14,15 +14,11 @@ cdef class SequentialRuleInduction:
     `ModelBuilder`.
     """
 
-    def __cinit__(self, bint default_rule_at_end, bint use_mask, RuleInduction rule_induction,
-                  HeadRefinement head_refinement, Loss loss, list stopping_criteria,
+    def __cinit__(self, RuleInduction rule_induction, HeadRefinement head_refinement, Loss loss, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, intp min_coverage,
                   intp max_conditions, intp max_head_refinements):
         """
-        :param default_rule_at_end:     True, if the default rule should be located at the end, False, if it should be
-                                        located at the start
-        :param use_mask:                True, if only one rule should be allowed to predict per label, False otherwise
         :param rule_induction:          The algorithm that should be used to induce rules
         :param head_refinement:         The strategy that should be used to find the heads of rules
         :param loss:                    The loss function to be minimized
@@ -47,8 +43,6 @@ cdef class SequentialRuleInduction:
                                         condition has been added to its body. Must be at least 1 or -1, if the number of
                                         refinements should not be restricted
         """
-        self.default_rule_at_end = default_rule_at_end
-        self.use_mask = use_mask
         self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.loss = loss
@@ -77,8 +71,6 @@ cdef class SequentialRuleInduction:
         :param model_builder:               The builder that should be used to build the model
         :return:                            A model that contains the induced classification rules
         """
-        cdef bint default_rule_at_end = self.default_rule_at_end
-        cdef bint use_mask = self.use_mask
         cdef RuleInduction rule_induction = self.rule_induction
         cdef HeadRefinement head_refinement = self.head_refinement
         cdef Loss loss = self.loss
