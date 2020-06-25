@@ -10,18 +10,18 @@ from ast import literal_eval
 from typing import List
 
 import numpy as np
-from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
-
-from boomer.common.learners import MLLearner, NominalAttributeLearner
-from boomer.common.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
 from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.common.stats import Stats
 from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
     RandomInstanceSubsetSelection, LabelSubSampling, RandomLabelSubsetSelection
+from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
+from sklearn.utils import check_array
+
+from boomer.common.learners import MLLearner, NominalAttributeLearner
+from boomer.common.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 
@@ -40,14 +40,14 @@ ARGUMENT_SAMPLE_SIZE = 'sample_size'
 ARGUMENT_NUM_SAMPLES = 'num_samples'
 
 
-def create_label_sub_sampling(label_sub_sampling: str, stats: Stats) -> LabelSubSampling:
+def create_label_sub_sampling(label_sub_sampling: str, num_labels: int) -> LabelSubSampling:
     if label_sub_sampling is None:
         return None
     else:
         prefix, args = parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
 
         if prefix == LABEL_SUB_SAMPLING_RANDOM:
-            num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < stats.num_labels)
+            num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
             return RandomLabelSubsetSelection(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
@@ -167,21 +167,23 @@ def get_float_argument(args: dict, key: str, default: float, validation) -> floa
 class MLRuleLearner(MLLearner, NominalAttributeLearner):
     """
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
+
+    Attributes
+        num_labels_ The number of labels in the training data set
     """
 
     def __init__(self, model_dir: str):
         super().__init__(model_dir)
-        # By default, we use dense feature matrices (first value) and label matrices (second value)
-        self.require_dense = [True, True]
 
     def get_model_prefix(self) -> str:
         return 'rules'
 
-    def _fit(self, stats: Stats, x, y, random_state: int):
-        x, y = self._validate_data(x, y, accept_sparse=True, multi_output=True)
+    def _fit(self, x, y):
         sparse_format = 'csc'
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
-        x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
+        x = self._validate_data((x if enforce_sparse else np.asfortranarray(x.toarray(order='F'))),
+                                accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
+        y = check_array(np.asfortranarray(y.toarray(order='F')), ensure_2d=False, dtype=DTYPE_UINT8)
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
@@ -189,10 +191,10 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
             feature_matrix = SparseFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
-            x = np.asfortranarray(x, dtype=DTYPE_FLOAT32)
             feature_matrix = DenseFeatureMatrix(x)
 
-        y = np.asfortranarray(self._ensure_output_format(y), dtype=DTYPE_UINT8)
+        num_labels = y.shape[1] if len(y.shape) > 1 else 1
+        self.num_labels_ = num_labels
 
         # Create an array that contains the indices of all nominal attributes, if any
         nominal_attribute_indices = self.nominal_attribute_indices
@@ -203,15 +205,16 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             nominal_attribute_indices = None
 
         # Induce rules
-        sequential_rule_induction = self._create_sequential_rule_induction(stats)
-        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, y, random_state)
+        sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, y, self.random_state)
 
-    def _predict(self, model, stats: Stats, x, random_state: int):
-        x = self._validate_data(x, reset=False, accept_sparse=True)
+    def _predict(self, x):
         sparse_format = 'csr'
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
-        x = self._ensure_input_format(x, enforce_sparse=enforce_sparse, sparse_format=sparse_format)
-        num_labels = stats.num_labels
+        x = self._validate_data((x if enforce_sparse else np.ascontiguousarray(x.toarray(order='C'))), reset=False,
+                                accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
+        num_labels = self.num_labels_
+        model = self.model_
         predictor = self._create_predictor()
 
         if issparse(x):
@@ -221,7 +224,6 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
             num_features = x.shape[1]
             return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, num_labels, model)
         else:
-            x = np.ascontiguousarray(x, dtype=DTYPE_FLOAT32)
             return predictor.predict(x, num_labels, model)
 
     @staticmethod
@@ -266,12 +268,12 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_sequential_rule_induction(self, stats: Stats) -> SequentialRuleInduction:
+    def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         """
         Must be implemented by subclasses in order to create the algorithm that should be used for sequential rule
         induction.
 
-        :param stats:   Statistics about the training data set
-        :return:        The algorithm for sequential rule induction that has been created
+        :param num_labels:  The number of labels in the training data set
+        :return:            The algorithm for sequential rule induction that has been created
         """
         pass
