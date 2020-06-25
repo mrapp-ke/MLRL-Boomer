@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
