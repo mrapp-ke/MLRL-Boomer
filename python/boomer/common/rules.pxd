@@ -160,3 +160,15 @@ cdef class ModelBuilder:
                        intp[::1] num_conditions_per_comparator)
 
     cdef RuleModel build_model(self)
+
+
+cdef class RuleListBuilder(ModelBuilder):
+
+    # Functions:
+
+    cdef void set_default_rule(self, float64[::1] scores)
+
+    cdef void add_rule(self, intp[::1] label_indices, float64[::1] scores, double_linked_list[Condition] conditions,
+                       intp[::1] num_conditions_per_comparator)
+
+    cdef RuleModel build_model(self)

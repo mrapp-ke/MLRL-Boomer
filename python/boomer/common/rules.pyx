@@ -3,7 +3,9 @@
 
 Provides model classes that are used to build rule-based models.
 """
-from boomer.common._arrays cimport array_uint32, array_float32, c_matrix_uint8, c_matrix_float64
+from boomer.common._arrays cimport array_uint32, array_intp, array_float32, c_matrix_uint8, c_matrix_float64
+
+from cython.operator cimport dereference, postincrement
 
 import numpy as np
 
@@ -598,3 +600,93 @@ cdef class ModelBuilder:
         :return: The model that has been built
         """
         pass
+
+
+cdef class RuleListBuilder(ModelBuilder):
+    """
+    A builder that allows to incrementally build a `RuleList`.
+    """
+
+    def __cinit__(self):
+        self.rule_list = None
+
+    cdef void set_default_rule(self, float64[::1] scores):
+        cdef FullHead head = FullHead.__new__(FullHead, scores)
+        cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
+        cdef Rule rule = Rule.__new__(Rule, body, head)
+        cdef RuleList rule_list = self.rule_list
+
+        if rule_list is None:
+            rule_list = RuleList.__new__(RuleList)
+            self.rule_list = rule_list
+
+        rule_list.add_rule(rule)
+
+    cdef void add_rule(self, intp[::1] label_indices, float64[::1] scores, double_linked_list[Condition] conditions,
+                       intp[::1] num_conditions_per_comparator):
+        cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
+        cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+        num_conditions = num_conditions_per_comparator[<intp>Comparator.GR]
+        cdef intp[::1] gr_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef float32[::1] gr_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+        num_conditions = num_conditions_per_comparator[<intp>Comparator.EQ]
+        cdef intp[::1] eq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef float32[::1] eq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+        num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
+        cdef intp[::1] neq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
+        cdef double_linked_list[Condition].iterator iterator = conditions.begin()
+        cdef intp leq_i = 0
+        cdef intp gr_i = 0
+        cdef intp eq_i = 0
+        cdef intp neq_i = 0
+        cdef Condition condition
+        cdef Comparator comparator
+
+        while iterator != conditions.end():
+            condition = dereference(iterator)
+            comparator = condition.comparator
+
+            if comparator == Comparator.LEQ:
+               leq_feature_indices[leq_i] = condition.feature_index
+               leq_thresholds[leq_i] = condition.threshold
+               leq_i += 1
+            elif comparator == Comparator.GR:
+               gr_feature_indices[gr_i] = condition.feature_index
+               gr_thresholds[gr_i] = condition.threshold
+               gr_i += 1
+            elif comparator == Comparator.EQ:
+               eq_feature_indices[eq_i] = condition.feature_index
+               eq_thresholds[eq_i] = condition.threshold
+               eq_i += 1
+            else:
+               neq_feature_indices[neq_i] = condition.feature_index
+               neq_thresholds[neq_i] = condition.threshold
+               neq_i += 1
+
+            postincrement(iterator)
+
+        cdef ConjunctiveBody body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
+                                                            gr_feature_indices, gr_thresholds, eq_feature_indices,
+                                                            eq_thresholds, neq_feature_indices, neq_thresholds)
+        cdef Head head
+
+        if label_indices is None:
+            head = FullHead.__new__(FullHead, scores)
+        else:
+            head = PartialHead.__new__(PartialHead, label_indices, scores)
+
+        cdef rule = Rule.__new__(Rule, body, head)
+        cdef RuleList rule_list = self.rule_list
+
+        if rule_list is None:
+            rule_list = RuleList.__new__(RuleList)
+            self.rule_list = rule_list
+
+        rule_list.add_rule(rule)
+
+    cdef RuleModel build_model(self):
+        cdef RuleModel model = self.rule_list
+        self.rule_list = None
+        return model
