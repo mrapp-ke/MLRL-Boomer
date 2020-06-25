@@ -14,10 +14,8 @@ from typing import List
 
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
-from skmultilearn.base import MLClassifierBase
 
 from boomer.common.interfaces import Randomized
-from boomer.common.stats import Stats
 from boomer.persistence import ModelPersistence
 
 
@@ -33,15 +31,6 @@ class Learner(BaseEstimator, Randomized):
     """
     A base class for all single- or multi-label classifiers or rankers.
     """
-
-    def set_params(self, **parameters):
-        params = self.get_params()
-        for parameter, value in parameters.items():
-            if parameter in params.keys():
-                setattr(self, parameter, value)
-            else:
-                raise ValueError('Invalid parameter: ' + str(parameter))
-        return self
 
     def get_model_name(self) -> str:
         """
@@ -64,13 +53,12 @@ class Learner(BaseEstimator, Randomized):
         pass
 
 
-class MLLearner(Learner, MLClassifierBase):
+class MLLearner(Learner):
     """
     A base class for all multi-label classifiers or rankers.
 
     Attributes
         fold    The current fold or None, if no cross validation is used
-        stats_  Statistics about the training data set
         model_  The model
     """
 
@@ -122,16 +110,7 @@ class MLLearner(Learner, MLClassifierBase):
             persistence.save_model(model, model_name=self.get_model_name(), file_name_suffix=self.get_model_prefix(),
                                    fold=self.fold)
 
-    def get_params(self, deep=True):
-        return {
-            'model_dir': self.model_dir
-        }
-
     def fit(self, x, y):
-        # Obtain information about the training data
-        stats = Stats.create_stats(x, y)
-        self.stats_ = stats
-
         # Load theory from disk, if possible
         persistence = self.__create_persistence()
         model = self.__load_model(persistence)
@@ -141,7 +120,7 @@ class MLLearner(Learner, MLClassifierBase):
             start_time = timer()
 
             # Fit model
-            model = self._fit(stats, x, y, self.random_state)
+            model = self._fit(x, y)
 
             # Save model to disk
             self.__save_model(persistence, model)
@@ -156,7 +135,7 @@ class MLLearner(Learner, MLClassifierBase):
     def predict(self, x):
         check_is_fitted(self)
         log.info("Making a prediction for %s query instances...", x.shape[0])
-        return self._predict(self.model_, self.stats_, x, self.random_state)
+        return self._predict(x)
 
     @abstractmethod
     def get_model_prefix(self) -> str:
@@ -168,31 +147,26 @@ class MLLearner(Learner, MLClassifierBase):
         pass
 
     @abstractmethod
-    def _fit(self, stats: Stats, x, y, random_state: int):
+    def _fit(self, x, y):
         """
         Trains a new model on the given training data.
 
-        :param stats:           Statistics about the training data set
-        :param x:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`,
-                                representing the feature values of the training examples
-        :param y:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`,
-                                representing the labels of the training examples
-        :param random_state:    The seed to be used by RNGs
-        :return:                The model that has been trained
+        :param x:   A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`, representing the
+                    feature values of the training examples
+        :param y:   A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`, representing the
+                    labels of the training examples
+        :return:    The model that has been trained
         """
         pass
 
     @abstractmethod
-    def _predict(self, model, stats: Stats, x, random_state: int):
+    def _predict(self, x):
         """
         Makes a prediction for given query examples.
 
-        :param model:           The model that should be used for making a prediction
-        :param stats:           Statistics about the training data set
-        :param x:               A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`,
-                                representing the feature values of the query examples
-        :param random_state:    The seed to be used by RNGs
-        :return:                A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`,
-                                representing the labels predicted for the given query examples
+        :param x:   A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`, representing the
+                    feature values of the query examples
+        :return:    A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`, representing the
+                    labels predicted for the given query examples
         """
         pass
