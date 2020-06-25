@@ -559,3 +559,42 @@ cdef class RuleList(RuleModel):
             n += 1
 
         return predictions
+
+
+cdef class ModelBuilder:
+    """
+    A base class for all builders that allow to incrementally build a `RuleModel`.
+    """
+
+    cdef void set_default_rule(self, float64[::1] scores):
+        """
+        Sets the default rule of the model.
+
+        :param scores: An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
+                       default rule for each label
+        """
+        pass
+
+    cdef void add_rule(self, intp[::1] label_indices, float64[::1] scores, double_linked_list[Condition] conditions,
+                       intp[::1] num_conditions_per_comparator):
+        """
+        Adds a new rule to the model.
+
+        :param label_indices:                   An array of dtype int, shape `(num_predicted_labels)`, representing the
+                                                indices of the labels for which the rule predicts or None, if the rule
+                                                predicts for all labels
+        :param scores:                          An array of dtype float, shape `(num_predicted_labels)`, representing
+                                                the scores that are predicted by the rule
+        :param conditions:                      A list that contains the rule's conditions
+        :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of
+                                                conditions that use a specific operator
+        """
+        pass
+
+    cdef RuleModel build_model(self):
+        """
+        Builds and returns the model.
+
+        :return: The model that has been built
+        """
+        pass
