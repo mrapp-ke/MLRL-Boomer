@@ -570,7 +570,7 @@ cdef class ModelBuilder:
 
     cdef void set_default_rule(self, float64[::1] scores):
         """
-        Sets the default rule of the model.
+        Initializes the model and sets its default rule.
 
         :param scores: An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                        default rule for each label
@@ -607,20 +607,26 @@ cdef class RuleListBuilder(ModelBuilder):
     A builder that allows to incrementally build a `RuleList`.
     """
 
-    def __cinit__(self):
+    def __cinit__(self, bint use_mask = False, bint default_rule_at_end = False):
+        self.use_mask = use_mask
+        self.default_rule_at_end = default_rule_at_end
         self.rule_list = None
+        self.default_rule = None
 
     cdef void set_default_rule(self, float64[::1] scores):
+        cdef bint use_mask = self.use_mask
+        cdef bint default_rule_at_end = self.default_rule_at_end
+        cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
         cdef FullHead head = FullHead.__new__(FullHead, scores)
         cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
-        cdef Rule rule = Rule.__new__(Rule, body, head)
-        cdef RuleList rule_list = self.rule_list
+        cdef Rule default_rule = Rule.__new__(Rule, body, head)
 
-        if rule_list is None:
-            rule_list = RuleList.__new__(RuleList)
-            self.rule_list = rule_list
+        if default_rule_at_end:
+            self.default_rule = default_rule
+        else:
+            rule_list.add_rule(default_rule)
 
-        rule_list.add_rule(rule)
+        self.rule_list = rule_list
 
     cdef void add_rule(self, intp[::1] label_indices, float64[::1] scores, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
@@ -679,14 +685,15 @@ cdef class RuleListBuilder(ModelBuilder):
 
         cdef rule = Rule.__new__(Rule, body, head)
         cdef RuleList rule_list = self.rule_list
-
-        if rule_list is None:
-            rule_list = RuleList.__new__(RuleList)
-            self.rule_list = rule_list
-
         rule_list.add_rule(rule)
 
     cdef RuleModel build_model(self):
-        cdef RuleModel model = self.rule_list
+        cdef RuleList rule_list = self.rule_list
+        cdef Rule default_rule = self.default_rule
+
+        if default_rule is not None:
+            rule_list.add_rule(default_rule)
+
         self.rule_list = None
-        return model
+        self.default_rule = None
+        return rule_list
