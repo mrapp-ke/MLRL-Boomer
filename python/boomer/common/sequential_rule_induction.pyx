@@ -10,32 +10,8 @@ from boomer.common.stopping_criteria cimport StoppingCriterion
 
 cdef class SequentialRuleInduction:
     """
-    A base class for all algorithms that allow to sequentially induce models that consist of several classification
-    rules.
-    """
-
-    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder):
-        """
-        Creates and returns a model that consists of several classification rules.
-
-        :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_features)`, representing the
-                                            indices of all nominal attributes (in ascending order)
-        :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
-                                            of the training examples
-        :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
-                                            the labels of the training examples
-        :param random_state:                The seed to be used by RNGs
-        :param model_builder:               The builder that should be used to build the model
-        :return:                            A model that contains the induced classification rules
-        """
-        pass
-
-
-cdef class RuleListInduction(SequentialRuleInduction):
-    """
-    Allows to sequentially induce classification rules that are stored in a list in the order of their induction. This
-    also includes a default rule, which may be located at the beginning or the end of the list.
+    Allows to sequentially induce classification rules, including a default rule, that are added to a model using a
+    `ModelBuilder`.
     """
 
     def __cinit__(self, bint default_rule_at_end, bint use_mask, RuleInduction rule_induction,
@@ -88,7 +64,19 @@ cdef class RuleListInduction(SequentialRuleInduction):
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
                                  uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder):
-        # Class members
+        """
+        Creates and returns a model that consists of several classification rules.
+
+        :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_features)`, representing the
+                                            indices of all nominal attributes (in ascending order)
+        :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
+                                            of the training examples
+        :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
+                                            the labels of the training examples
+        :param random_state:                The seed to be used by RNGs
+        :param model_builder:               The builder that should be used to build the model
+        :return:                            A model that contains the induced classification rules
+        """
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef bint use_mask = self.use_mask
         cdef RuleInduction rule_induction = self.rule_induction
