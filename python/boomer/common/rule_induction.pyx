@@ -13,7 +13,7 @@ from boomer.common.losses cimport Prediction
 from libc.math cimport abs
 from libc.stdlib cimport qsort
 
-from libcpp.list cimport list
+from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
 
 from cython.operator cimport dereference, postincrement
@@ -235,7 +235,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # The head of the induced rule
         cdef HeadCandidate head = None
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
-        cdef list[Condition] conditions
+        cdef double_linked_list[Condition] conditions
         # The total number of conditions
         cdef intp num_conditions = 0
         # An array representing the number of conditions per type of operator
@@ -1155,8 +1155,8 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
     dereference(indexed_array_wrapper).num_conditions = num_conditions
 
 
-cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_scores, list[Condition] conditions,
-                              intp[::1] num_conditions_per_comparator):
+cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_scores,
+                              double_linked_list[Condition] conditions, intp[::1] num_conditions_per_comparator):
     """
     Builds and returns a rule.
 
@@ -1182,7 +1182,7 @@ cdef inline Rule __build_rule(intp[::1] label_indices, float64[::1] predicted_sc
     num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
     cdef intp[::1] neq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
     cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-    cdef list[Condition].iterator iterator = conditions.begin()
+    cdef double_linked_list[Condition].iterator iterator = conditions.begin()
     cdef intp leq_i = 0
     cdef intp gr_i = 0
     cdef intp eq_i = 0
