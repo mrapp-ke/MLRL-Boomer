@@ -53,7 +53,7 @@ class Experiment(CrossValidation, ABC):
         base_learner = self.base_learner
         current_learner = clone(base_learner)
 
-        # Apply parameter setting, if necessary
+        # Apply parameter setting, if necessary...
         parameter_input = self.parameter_input
 
         if parameter_input is not None:
@@ -63,13 +63,13 @@ class Experiment(CrossValidation, ABC):
 
         learner_name = current_learner.get_name()
 
-        # Train classifier
+        # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         current_learner.fit(train_x, train_y)
 
-        # Obtain and evaluate predictions for training data, if necessary
+        # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
 
         if evaluation is not None:
@@ -77,7 +77,7 @@ class Experiment(CrossValidation, ABC):
             evaluation.evaluate('train_' + learner_name, predictions, train_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds)
 
-        # Obtain and evaluate predictions for test data, if necessary
+        # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
 
         if evaluation is not None:
@@ -85,7 +85,7 @@ class Experiment(CrossValidation, ABC):
             evaluation.evaluate('test_' + learner_name, predictions, test_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds)
 
-        # Print model, if necessary
+        # Print model, if necessary...
         model_printer = self.model_printer
 
         if model_printer is not None:
