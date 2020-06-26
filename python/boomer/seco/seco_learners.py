@@ -1,5 +1,5 @@
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
-from boomer.common.prediction import Predictor, DensePredictor, Aggregation, SignFunction
+from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.sequential_rule_induction import SequentialRuleInduction, RuleListInduction
 from boomer.seco.coverage_losses import CoverageLoss
@@ -154,9 +154,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
-        return RuleListInduction(True, rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
-                                 instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
-                                 max_conditions, max_head_refinements)
+        return RuleListInduction(True, True, rule_induction, head_refinement, loss, stopping_criteria,
+                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, None,
+                                 min_coverage, max_conditions, max_head_refinements)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
@@ -212,4 +212,4 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self) -> Predictor:
-        return DensePredictor(Aggregation(use_mask=True), SignFunction())
+        return DensePredictor(SignFunction())
