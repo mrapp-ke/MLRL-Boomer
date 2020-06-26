@@ -82,9 +82,11 @@ class ArgumentParserBuilder:
     A builder that allows to configure an `ArgumentParser` that accepts commonly used command-line arguments.
     """
 
-    def __init__(self, description: str):
+    def __init__(self, description: str, **kwargs):
         parser = ArgumentParser(description=description)
-        parser.add_argument('--log-level', type=log_level, default='info', help='The log level to be used')
+        parser.add_argument('--log-level', type=log_level,
+                            default=ArgumentParserBuilder.__get_or_default('log_level', 'info', **kwargs),
+                            help='The log level to be used')
         self.parser = parser
 
     def add_random_state_argument(self, **kwargs) -> 'ArgumentParserBuilder':
