@@ -13,18 +13,17 @@ from typing import List
 import numpy as np
 from sklearn.base import clone
 from sklearn.utils import check_random_state
-from skmultilearn.base import MLClassifierBase
 
-from boomer.common.interfaces import Randomized
-from boomer.common.learners import MLLearner
-from boomer.common.model import DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
+from boomer.common.arrays import DTYPE_INTP, DTYPE_UINT8
+from boomer.common.learners import Learner
 from boomer.data import MetaData
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from boomer.interfaces import Randomized
 from boomer.persistence import ModelPersistence
 from boomer.training import CrossValidation, DataSet
 
 
-class BbcCvAdapter(CrossValidation, MLClassifierBase):
+class BbcCvAdapter(CrossValidation):
     """
     An adapter that must be implemented for each type of model to be used with BBC-CV to obtain predictions for given
     test examples.
@@ -47,11 +46,7 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
     def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
                             first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         num_total_examples = test_x.shape[0] + (0 if test_indices is None else train_x.shape[0])
-        num_labels = test_y.shape[1]
-
-        # Create a dense representation of the test data
-        test_x = np.ascontiguousarray(self._ensure_input_format(test_x), dtype=DTYPE_FLOAT32)
-        test_y = self._ensure_input_format(test_y)
+        num_labels = test_y.shape[1] if len(test_y.shape) > 1 else 1
 
         # Update true labels, if necessary...
         if self.store_true_labels:
@@ -71,12 +66,8 @@ class BbcCvAdapter(CrossValidation, MLClassifierBase):
         # Load theory...
         current_learner = clone(self.learner)
         current_learner.set_params(**self.configuration)
-        current_learner.random_state = self.random_state
-        current_learner.fold = current_fold
         model_name = current_learner.get_name()
-        file_name_suffix = current_learner.get_model_prefix()
-        model = self.persistence.load_model(model_name=model_name, file_name_suffix=file_name_suffix, fold=current_fold,
-                                            raise_exception=True)
+        model = self.persistence.load_model(model_name=model_name, fold=current_fold, raise_exception=True)
 
         predictions = self.predictions
         configurations = self.configurations
@@ -193,7 +184,7 @@ class BbcCv(Randomized):
     """
 
     def __init__(self, configurations: List[dict], adapter: BbcCvAdapter, bootstrapping: Bootstrapping,
-                 learner: MLLearner):
+                 learner: Learner):
         """
         :param configurations:  A list that contains the configurations to be evaluated
         :param adapter:         The `BbcCvAdapter` to be used
