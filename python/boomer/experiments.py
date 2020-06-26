@@ -63,7 +63,6 @@ class Experiment(CrossValidation, ABC):
 
         # Train classifier
         current_learner.random_state = self.random_state
-        current_learner.fold = current_fold
 
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
