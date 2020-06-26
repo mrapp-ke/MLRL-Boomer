@@ -182,9 +182,9 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
     def _fit(self, x, y):
         sparse_format = 'csc'
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
-        x = self._validate_data((x if enforce_sparse else np.asfortranarray(x.toarray(order='F'))),
+        x = self._validate_data((x if enforce_sparse else x.toarray(order='F')),
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
-        y = check_array(np.asfortranarray(y.toarray(order='F')), ensure_2d=False, dtype=DTYPE_UINT8)
+        y = check_array(y.toarray(order='F'), ensure_2d=False, dtype=DTYPE_UINT8)
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
@@ -214,7 +214,7 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
     def _predict(self, x):
         sparse_format = 'csr'
         enforce_sparse = MLRuleLearner.__should_enforce_sparse(x, sparse_format=sparse_format)
-        x = self._validate_data((x if enforce_sparse else np.ascontiguousarray(x.toarray(order='C'))), reset=False,
+        x = self._validate_data((x if enforce_sparse else x.toarray(order='C')), reset=False,
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
         num_labels = self.num_labels_
         model = self.model_
