@@ -66,7 +66,6 @@ class BbcCvAdapter(CrossValidation):
         # Load theory...
         current_learner = clone(self.learner)
         current_learner.set_params(**self.configuration)
-        current_learner.random_state = self.random_state
         model_name = current_learner.get_name()
         model = self.persistence.load_model(model_name=model_name, fold=current_fold, raise_exception=True)
 

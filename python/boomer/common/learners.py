@@ -14,8 +14,6 @@ from typing import List
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 
-from boomer.common.interfaces import Randomized
-
 
 class NominalAttributeLearner(ABC):
     """
@@ -25,7 +23,7 @@ class NominalAttributeLearner(ABC):
     nominal_attribute_indices: List[int] = None
 
 
-class Learner(BaseEstimator, Randomized):
+class Learner(BaseEstimator):
     """
     A base class for all single- or multi-label classifiers or rankers.
 
