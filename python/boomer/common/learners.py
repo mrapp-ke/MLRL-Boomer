@@ -28,7 +28,25 @@ class NominalAttributeLearner(ABC):
 class Learner(BaseEstimator, Randomized):
     """
     A base class for all single- or multi-label classifiers or rankers.
+
+    Attributes
+        model_  The model
     """
+
+    def fit(self, x, y):
+        log.info('Fitting model...')
+        start_time = timer()
+        model = self._fit(x, y)
+        end_time = timer()
+        run_time = end_time - start_time
+        log.info('Successfully fit model in %s seconds', run_time)
+        self.model_ = model
+        return self
+
+    def predict(self, x):
+        check_is_fitted(self)
+        log.info("Making a prediction for %s query instances...", x.shape[0])
+        return self._predict(x)
 
     @abstractmethod
     def get_name(self) -> str:
@@ -38,34 +56,6 @@ class Learner(BaseEstimator, Randomized):
         :return: The name of the classifier or ranker
         """
         pass
-
-
-class MLLearner(Learner):
-    """
-    A base class for all multi-label classifiers or rankers.
-
-    Attributes
-        model_  The model
-    """
-
-    def fit(self, x, y):
-        log.info('Fitting model...')
-        start_time = timer()
-
-        # Fit model
-        model = self._fit(x, y)
-
-        end_time = timer()
-        run_time = end_time - start_time
-        log.info('Successfully fit model in %s seconds', run_time)
-
-        self.model_ = model
-        return self
-
-    def predict(self, x):
-        check_is_fitted(self)
-        log.info("Making a prediction for %s query instances...", x.shape[0])
-        return self._predict(x)
 
     @abstractmethod
     def _fit(self, x, y):
