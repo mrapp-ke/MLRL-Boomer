@@ -15,9 +15,9 @@ from sklearn.base import clone
 from sklearn.utils import check_random_state
 from skmultilearn.base import MLClassifierBase
 
+from boomer.common.arrays import DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.common.interfaces import Randomized
 from boomer.common.learners import Learner
-from boomer.common.model import DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.data import MetaData
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.persistence import ModelPersistence
