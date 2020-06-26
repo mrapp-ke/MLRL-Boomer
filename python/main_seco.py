@@ -105,4 +105,5 @@ if __name__ == '__main__':
     experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
                             data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
                             parameter_input=parameter_input, model_printer=model_printer)
+    experiment.random_state = args.random_state
     experiment.run()
