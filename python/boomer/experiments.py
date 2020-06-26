@@ -61,12 +61,13 @@ class Experiment(CrossValidation, ABC):
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
 
+        learner_name = current_learner.get_name()
+
         # Train classifier
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         current_learner.fit(train_x, train_y)
-        learner_name = current_learner.get_name()
 
         # Obtain and evaluate predictions for training data, if necessary
         evaluation = self.train_evaluation
