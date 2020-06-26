@@ -3,6 +3,8 @@
 
 Provides model classes that are used to build rule-based models.
 """
+from boomer.common._arrays cimport array_uint32, array_float32, c_matrix_uint8, c_matrix_float64
+
 import numpy as np
 
 
@@ -76,9 +78,10 @@ cdef class ConjunctiveBody(Body):
     for nominal conditions, respectively.
     """
 
-    def __cinit__(self, intp[::1] leq_feature_indices, float32[::1] leq_thresholds, intp[::1] gr_feature_indices,
-                  float32[::1] gr_thresholds, intp[::1] eq_feature_indices, float32[::1] eq_thresholds,
-                  intp[::1] neq_feature_indices, float32[::1] neq_thresholds):
+    def __cinit__(self, intp[::1] leq_feature_indices = None, float32[::1] leq_thresholds = None,
+                  intp[::1] gr_feature_indices = None, float32[::1] gr_thresholds = None,
+                  intp[::1] eq_feature_indices = None, float32[::1] eq_thresholds = None,
+                  intp[::1] neq_feature_indices = None, float32[::1] neq_thresholds = None):
         """
         :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the indices of the
                                     features, the numerical conditions that use the <= operator correspond to or None,
@@ -264,7 +267,7 @@ cdef class FullHead(Head):
     A full head that assigns a numerical score to each label.
     """
 
-    def __cinit__(self, float64[::1] scores):
+    def __cinit__(self, float64[::1] scores = None):
         """
         :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
                         rule for each label
@@ -297,7 +300,7 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    def __cinit__(self, intp[::1] label_indices, float64[::1] scores):
+    def __cinit__(self, intp[::1] label_indices = None, float64[::1] scores = None):
         """
         :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
                                 labels for which the rule predicts
@@ -337,7 +340,7 @@ cdef class Rule:
     A rule consisting of a body and head.
     """
 
-    def __cinit__(self, Body body, Head head):
+    def __cinit__(self, Body body = None, Head head= None):
         """
         :param body:    The body of the rule
         :param head:    The head of the rule
@@ -353,7 +356,7 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cpdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
+    cdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
         """
         Applies the rule's prediction to a matrix of predictions for all examples it covers. Optionally, the prediction
         can be restricted to certain examples and labels.
@@ -379,9 +382,9 @@ cdef class Rule:
                 mask_row = None if mask is None else mask[r, :]
                 head.predict(predictions[r, :], mask_row)
 
-    cpdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
-                      float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
-                      uint8[:, ::1] mask = None):
+    cdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
+                     float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
+                     uint8[:, ::1] mask = None):
         """
         Applies the rule's predictions to a matrix of predictions for all examples it covers. Optionally, the prediction
         can be restricted to certain examples and labels.
@@ -427,3 +430,132 @@ cdef class Rule:
                 head.predict(predictions[r, :], mask_row)
 
             current_n += 1
+
+
+cdef class RuleModel:
+    """
+    A base class for all rule-based models.
+    """
+
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
+    cdef void add_rule(self, Rule rule):
+        """
+        Adds a new rule to the model.
+        
+        :param rule: The rule to be added
+        """
+        pass
+
+    cdef float64[:, ::1] predict(self, float32[:, ::1] x, intp num_labels):
+        """
+        Aggregates and returns the predictions provided by several rules.
+
+        The feature matrix must be given as a dense C-contiguous array.
+        
+        :param x:           An array of dtype float, shape `(num_examples, num_features)`, representing the features of
+                            the examples to predict for
+        :param num_labels:  The total number of labels
+        :return:            An array of dtype float, shape `(num_examples, num_labels)`, representing the predictions
+                            for individual examples and labels
+        """
+        pass
+
+    cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+                                     intp num_features, intp num_labels):
+        """
+        Aggregates and returns the predictions provided by several rules.
+
+        The feature matrix must be given in compressed sparse row (CSR) format.
+        
+        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples 
+        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
+                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
+                                index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+                                column-indices of the examples, the values in `x_data` correspond to
+        :param num_features:    The total number of features
+        :param num_labels:      The total number of labels
+        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                predictions for individual examples and labels
+        """
+        pass
+
+
+cdef class RuleList(RuleModel):
+    """
+    A model that stores several rules in a list.
+    """
+
+    def __cinit__(self, bint use_mask = False):
+        """
+        :param use_mask: True, if only one rule is allowed to predict per label, False otherwise
+        """
+        self.use_mask = use_mask
+        self.rules = []
+
+    def __getstate__(self):
+        return self.use_mask, self.rules
+
+    def __setstate__(self, state):
+        use_mask, rules = state
+        self.use_mask = use_mask
+        self.rules = rules
+
+    cdef void add_rule(self, Rule rule):
+        cdef list rules = self.rules
+        rules.append(rule)
+
+    cdef float64[:, ::1] predict(self, float32[:, ::1] x, intp num_labels):
+        cdef intp num_examples = x.shape[0]
+        cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
+        predictions[:, :] = 0
+        cdef bint use_mask = self.use_mask
+        cdef uint8[:, ::1] mask
+
+        if use_mask:
+            mask = c_matrix_uint8(num_examples, num_labels)
+            mask[:, :] = True
+        else:
+            mask = None
+
+        cdef list rules = self.rules
+        cdef Rule rule
+
+        for rule in rules:
+            rule.predict(x, predictions, mask)
+
+        return predictions
+
+    cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+                                     intp num_features, intp num_labels):
+        cdef intp num_examples = x_row_indices.shape[0] - 1
+        cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
+        predictions[:, :] = 0
+        cdef bint use_mask = self.use_mask
+        cdef uint8[:, ::1] mask
+
+        if use_mask:
+            mask = c_matrix_uint8(num_examples, num_labels)
+            mask[:, :] = True
+        else:
+            mask = None
+
+        cdef float32[::1] tmp_array1 = array_float32(num_features)
+        cdef uint32[::1] tmp_array2 = array_uint32(num_features)
+        tmp_array2[:] = 0
+        cdef uint32 n = 1
+        cdef list rules = self.rules
+        cdef Rule rule
+
+        for rule in rules:
+            rule.predict_csr(x_data, x_row_indices, x_col_indices, num_features, tmp_array1, tmp_array2, n, predictions,
+                             mask)
+            n += 1
+
+        return predictions
