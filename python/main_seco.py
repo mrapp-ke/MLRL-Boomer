@@ -8,6 +8,7 @@ from args import optional_string, log_level, boolean_string
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
+from boomer.persistence import ModelPersistence
 from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from boomer.seco.seco_learners import SeparateAndConquerRuleLearner, AVERAGING_LABEL_WISE, HEURISTIC_PRECISION, \
     LIFT_FUNCTION_PEAK
@@ -53,7 +54,7 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 
 
 def create_learner(params) -> SeparateAndConquerRuleLearner:
-    return SeparateAndConquerRuleLearner(model_dir=params.model_dir, max_rules=params.max_rules,
+    return SeparateAndConquerRuleLearner(random_state=params.random_state, max_rules=params.max_rules,
                                          time_limit=params.time_limit, loss=params.loss, heuristic=params.heuristic,
                                          pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
                                          instance_sub_sampling=params.instance_sub_sampling,
@@ -96,6 +97,8 @@ if __name__ == '__main__':
         if args.store_rules:
             model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=False))
 
+    model_dir = args.model_dir
+    persistence = None if model_dir is None else ModelPersistence(model_dir)
     learner = create_learner(args)
     parameter_input = parameter_input
     model_printer = RulePrinter(*model_printer_outputs) if len(model_printer_outputs) > 0 else None
@@ -104,5 +107,6 @@ if __name__ == '__main__':
     data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
     experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
                             data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
-                            parameter_input=parameter_input, model_printer=model_printer)
+                            parameter_input=parameter_input, model_printer=model_printer, persistence=persistence)
+    experiment.random_state = args.random_state
     experiment.run()

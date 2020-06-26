@@ -10,9 +10,9 @@ import logging as log
 from abc import ABC, abstractmethod
 
 import numpy as np
-
-from boomer.common.learners import MLLearner
 from boomer.common.rules import RuleModel, RuleList, Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
+
+from boomer.common.learners import Learner
 from boomer.data import MetaData
 from boomer.io import clear_directory, open_writable_txt_file
 
@@ -47,7 +47,7 @@ class ModelPrinter(ABC):
         """
         self.outputs = args
 
-    def print(self, experiment_name: str, meta_data: MetaData, learner: MLLearner, current_fold: int, num_folds: int):
+    def print(self, experiment_name: str, meta_data: MetaData, learner: Learner, current_fold: int, num_folds: int):
         """
         Prints a textual representation of a `MLLearner`'s model.
 

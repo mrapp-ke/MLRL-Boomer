@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes for representing the model learned by a classifier or ranker.
+Provides type definitions for arrays.
 """
 import numpy as np
 

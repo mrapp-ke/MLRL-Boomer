@@ -39,7 +39,7 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, model_dir: str = None, max_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
+    def __init__(self, random_state: int = 1, max_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
@@ -87,7 +87,7 @@ class Boomer(MLRuleLearner):
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
         """
-        super().__init__(model_dir)
+        super().__init__(random_state)
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
@@ -101,9 +101,6 @@ class Boomer(MLRuleLearner):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
-
-    def get_model_prefix(self) -> str:
-        return 'boomer'
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -128,6 +125,8 @@ class Boomer(MLRuleLearner):
             name += '_max-conditions=' + str(self.max_conditions)
         if int(self.max_head_refinements) != 1:
             name += '_max-head-refinements=' + str(self.max_head_refinements)
+        if int(self.random_state) != 1:
+            name += '_random_state=' + str(self.random_state)
         return name
 
     def _create_predictor(self) -> Predictor:

@@ -54,7 +54,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     rules.
     """
 
-    def __init__(self, model_dir: str = None, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
+    def __init__(self, random_state: int = 1, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
                  lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
@@ -101,7 +101,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
         """
-        super().__init__(model_dir)
+        super().__init__(random_state)
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
@@ -115,9 +115,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
-
-    def get_model_prefix(self) -> str:
-        return 'seco'
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -140,6 +137,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_max-conditions=' + str(self.max_conditions)
         if int(self.max_head_refinements) != 1:
             name += '_max-head-refinements=' + str(self.max_head_refinements)
+        if int(self.random_state) != 1:
+            name += '_random_state=' + str(self.random_state)
         return name
 
     def _create_model_builder(self) -> ModelBuilder:
