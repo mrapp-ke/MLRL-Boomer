@@ -15,10 +15,10 @@ from sklearn.base import clone
 from sklearn.utils import check_random_state
 
 from boomer.common.arrays import DTYPE_INTP, DTYPE_UINT8
-from boomer.common.interfaces import Randomized
 from boomer.common.learners import Learner
 from boomer.data import MetaData
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from boomer.interfaces import Randomized
 from boomer.persistence import ModelPersistence
 from boomer.training import CrossValidation, DataSet
 
