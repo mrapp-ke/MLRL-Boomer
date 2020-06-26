@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp
-from boomer.common.rules cimport RuleModel
+from boomer.common.rules cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport FeatureMatrix, RuleInduction
 from boomer.common.head_refinement cimport HeadRefinement
 from boomer.common.losses cimport Loss
@@ -10,19 +10,7 @@ from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling,
 
 cdef class SequentialRuleInduction:
 
-    # Functions:
-
-    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state)
-
-
-cdef class RuleListInduction(SequentialRuleInduction):
-
     # Attributes:
-
-    cdef bint default_rule_at_end
-
-    cdef bint use_mask
 
     cdef RuleInduction rule_induction
 
@@ -51,4 +39,4 @@ cdef class RuleListInduction(SequentialRuleInduction):
     # Functions:
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state)
+                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder)
