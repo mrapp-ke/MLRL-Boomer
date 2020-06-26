@@ -205,6 +205,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         num_labels_ The number of labels in the training data set
     """
 
+    def __init__(self, random_state: int):
+        """
+        :param random_state: The seed to be used by RNGs
+        """
+        super().__init__()
+        self.random_state = random_state
+
     def _fit(self, x, y):
         sparse_format = 'csc'
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format)

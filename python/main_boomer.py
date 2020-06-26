@@ -53,12 +53,12 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 
 
 def create_learner(params) -> Boomer:
-    return Boomer(max_rules=params.max_rules, time_limit=params.time_limit, loss=params.loss, pruning=params.pruning,
-                  label_sub_sampling=params.label_sub_sampling, instance_sub_sampling=params.instance_sub_sampling,
-                  shrinkage=params.shrinkage, feature_sub_sampling=params.feature_sub_sampling,
-                  head_refinement=params.head_refinement, l2_regularization_weight=params.l2_regularization_weight,
-                  min_coverage=params.min_coverage, max_conditions=params.max_conditions,
-                  max_head_refinements=params.max_head_refinements)
+    return Boomer(random_state=params.random_state, max_rules=params.max_rules, time_limit=params.time_limit,
+                  loss=params.loss, pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
+                  instance_sub_sampling=params.instance_sub_sampling, shrinkage=params.shrinkage,
+                  feature_sub_sampling=params.feature_sub_sampling, head_refinement=params.head_refinement,
+                  l2_regularization_weight=params.l2_regularization_weight, min_coverage=params.min_coverage,
+                  max_conditions=params.max_conditions, max_head_refinements=params.max_head_refinements)
 
 
 if __name__ == '__main__':

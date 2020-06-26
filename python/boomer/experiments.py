@@ -62,8 +62,6 @@ class Experiment(CrossValidation, ABC):
             log.info('Successfully applied parameter setting: %s', params)
 
         # Train classifier
-        current_learner.random_state = self.random_state
-
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 

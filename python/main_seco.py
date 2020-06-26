@@ -53,9 +53,9 @@ def configure_argument_parser(p: argparse.ArgumentParser):
 
 
 def create_learner(params) -> SeparateAndConquerRuleLearner:
-    return SeparateAndConquerRuleLearner(max_rules=params.max_rules, time_limit=params.time_limit, loss=params.loss,
-                                         heuristic=params.heuristic, pruning=params.pruning,
-                                         label_sub_sampling=params.label_sub_sampling,
+    return SeparateAndConquerRuleLearner(random_state=params.random_state, max_rules=params.max_rules,
+                                         time_limit=params.time_limit, loss=params.loss, heuristic=params.heuristic,
+                                         pruning=params.pruning, label_sub_sampling=params.label_sub_sampling,
                                          instance_sub_sampling=params.instance_sub_sampling,
                                          feature_sub_sampling=params.feature_sub_sampling,
                                          head_refinement=params.head_refinement, min_coverage=params.min_coverage,
