@@ -1,56 +1,15 @@
 #!/usr/bin/python
 
-import argparse
 import logging as log
 
-from args import current_fold_string
-from args import optional_string, log_level, boolean_string
+from args import ArgumentParserBuilder
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
 from boomer.persistence import ModelPersistence
 from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
-from boomer.seco.seco_learners import SeparateAndConquerRuleLearner, AVERAGING_LABEL_WISE, HEURISTIC_PRECISION, \
-    LIFT_FUNCTION_PEAK
+from boomer.seco.seco_learners import SeparateAndConquerRuleLearner
 from boomer.training import DataSet
-
-
-def configure_argument_parser(p: argparse.ArgumentParser):
-    p.add_argument('--log-level', type=log_level, default='info', help='The log level to be used')
-    p.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
-    p.add_argument('--output-dir', type=optional_string, default=None,
-                   help='The path of the directory into which results should be written')
-    p.add_argument('--model-dir', type=optional_string, default=None,
-                   help='The path of the directory where models should be saved')
-    p.add_argument('--dataset', type=str, help='The name of the data set to be used')
-    p.add_argument('--one-hot-encoding', type=boolean_string, default=False,
-                   help='True, if one-hot-encoding should be used, False otherwise')
-    p.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
-    p.add_argument('--current-fold', type=current_fold_string, default=-1,
-                   help='The cross validation fold to be performed')
-    p.add_argument('--max-rules', type=int, default=500, help='The maximum number of rules to be induced or -1')
-    p.add_argument('--time-limit', type=int, default=-1,
-                   help='The duration in seconds after which the induction of rules should be canceled or -1')
-    p.add_argument('--label-sub-sampling', type=optional_string, default=None,
-                   help='The name of the strategy to be used for label sub-sampling or None')
-    p.add_argument('--instance-sub-sampling', type=optional_string, default=None,
-                   help='The name of the strategy to be used for instance sub-sampling or None')
-    p.add_argument('--feature-sub-sampling', type=optional_string, default=None,
-                   help='The name of the strategy to be used for feature sub-sampling or None')
-    p.add_argument('--pruning', type=optional_string, default=None,
-                   help='The name of the strategy to be used for pruning or None')
-    p.add_argument('--loss', type=str, default=AVERAGING_LABEL_WISE, help='The name of the loss function to be used')
-    p.add_argument('--heuristic', type=str, default=HEURISTIC_PRECISION, help='The name of the heuristic to be used')
-    p.add_argument('--head-refinement', type=optional_string, default=None,
-                   help='The name of the strategy to be used for finding the heads of rules')
-    p.add_argument('--min-coverage', type=int, default=1,
-                   help='The minimum number of training examples that must be covered by a rule')
-    p.add_argument('--max-conditions', type=int, default=-1,
-                   help='The maximum number of conditions to be included in a rule\'s body or -1')
-    p.add_argument('--max-head-refinements', type=int, default=1,
-                   help='The maximum number of times the head of a rule may be refined or -1')
-    p.add_argument('--lift-function', type=optional_string, default=LIFT_FUNCTION_PEAK,
-                   help='The lift function to be used')
 
 
 def create_learner(params) -> SeparateAndConquerRuleLearner:
@@ -65,19 +24,9 @@ def create_learner(params) -> SeparateAndConquerRuleLearner:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='A multi-label classification experiment using Separate and Conquer')
-    configure_argument_parser(parser)
-    parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
-    parser.add_argument('--store-predictions', type=boolean_string, default=False,
-                        help='True, if the predictions should be stored as CSV files, False otherwise')
-    parser.add_argument('--print-rules', type=boolean_string, default=True,
-                        help='True, if the induced rules should be printed on the console, False otherwise')
-    parser.add_argument('--store-rules', type=boolean_string, default=False,
-                        help='True, if the induced rules should be stored in TXT files, False otherwise')
-    parser.add_argument('--parameter-dir', type=optional_string, default=None,
-                        help='The path of the directory, parameter settings should be loaded from')
-    parser.add_argument('--evaluate-training-data', type=boolean_string, default=False,
-                        help='True, if the models should be evaluated on the training data, False otherwise')
+    parser = ArgumentParserBuilder(description='A multi-label classification experiment using Separate and Conquer') \
+        .add_seco_learner_arguments() \
+        .build()
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)

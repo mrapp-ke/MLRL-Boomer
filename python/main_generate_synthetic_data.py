@@ -46,13 +46,12 @@ command line arguments must be specified:
     --dependent-error=False
     --one-error=True
 """
-import argparse
 import logging as log
 
 import numpy as np
 from scipy.stats import bernoulli
 
-from args import log_level, boolean_string
+from args import boolean_string, ArgumentParserBuilder
 from boomer.data import save_data_set_and_meta_data
 
 
@@ -238,8 +237,9 @@ if __name__ == '__main__':
     the error terms to disturb the labels of a certain example are chosen to be the same. This results in a data set 
     where the labels are conditionally dependent on each other.
     """
-    parser = argparse.ArgumentParser(description='Allows to generate synthetic multi-label datasets')
-    parser.add_argument('--log-level', type=log_level, default='info', help='The log level to be used')
+    parser = ArgumentParserBuilder(description='Allows to generate synthetic multi-label data sets') \
+        .add_random_state_argument() \
+        .build()
     parser.add_argument('--output-dir', type=str,
                         help='The path of the directory into which generated dataset should be written')
     parser.add_argument('--num-examples', type=int, default=1000, help='The number of examples to be generated')
@@ -254,7 +254,6 @@ if __name__ == '__main__':
                         help='True, if the error for the labels of an example should be the same, False otherwise')
     parser.add_argument('--one-error', type=boolean_string, default=False,
                         help='True, if exactly one error should be made per example, False otherwise')
-    parser.add_argument('--random-state', type=int, default=1, help='The seed to be used by RNGs')
     args = parser.parse_args()
     log.basicConfig(level=args.log_level)
     log.info('Configuration: %s', args)
@@ -269,4 +268,4 @@ if __name__ == '__main__':
     meta_data = save_data_set_and_meta_data(args.output_dir, arff_file_name=dataset_name + '.arff',
                                             xml_file_name=dataset_name + '.xml', x=features, y=labels)
     log.info('The generated data set contains %s examples, %s attributes and %s labels', features.shape[0],
-             len(meta_data.attributes), len(meta_data.labels))
+             len(meta_data.attributes), len(meta_data.label_names))
