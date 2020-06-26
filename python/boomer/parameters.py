@@ -21,7 +21,7 @@ from boomer.training import CrossValidation, DataSet
 
 class ParameterSearch(Randomized, ABC):
     """
-    A base class for all classes that allow to search for optimal parameters given a training data set.
+    A base class for all classes that implement strategies to search for optimal parameters given a training data set.
     """
 
     @abstractmethod
@@ -212,8 +212,8 @@ class ParameterTuning(CrossValidation):
     def __init__(self, data_set: DataSet, num_folds: int, current_fold: int,
                  parameter_search: ParameterSearch, *args: ParameterOutput):
         """
-        :param parameter_search:
-        :param args:
+        :param parameter_search:    The strategy to be used to search for optimal parameters
+        :param args:                The outputs, the parameter settings should be written to
         """
         super().__init__(data_set, num_folds, current_fold)
         self.parameter_search = parameter_search
