@@ -205,12 +205,6 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
         num_labels_ The number of labels in the training data set
     """
 
-    def __init__(self, model_dir: str):
-        super().__init__(model_dir)
-
-    def get_model_prefix(self) -> str:
-        return 'rules'
-
     def _fit(self, x, y):
         sparse_format = 'csc'
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format)
