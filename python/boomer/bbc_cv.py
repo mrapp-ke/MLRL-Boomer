@@ -68,9 +68,7 @@ class BbcCvAdapter(CrossValidation):
         current_learner.set_params(**self.configuration)
         current_learner.random_state = self.random_state
         model_name = current_learner.get_name()
-        file_name_suffix = current_learner.get_model_prefix()
-        model = self.persistence.load_model(model_name=model_name, file_name_suffix=file_name_suffix, fold=current_fold,
-                                            raise_exception=True)
+        model = self.persistence.load_model(model_name=model_name, fold=current_fold, raise_exception=True)
 
         predictions = self.predictions
         configurations = self.configurations
