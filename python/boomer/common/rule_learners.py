@@ -21,8 +21,8 @@ from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSe
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
+from boomer.common.arrays import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 from boomer.common.learners import Learner, NominalAttributeLearner
-from boomer.common.model import DTYPE_UINT8, DTYPE_INTP, DTYPE_FLOAT32
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 
