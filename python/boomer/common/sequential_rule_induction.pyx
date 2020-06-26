@@ -10,42 +10,15 @@ from boomer.common.stopping_criteria cimport StoppingCriterion
 
 cdef class SequentialRuleInduction:
     """
-    A base class for all algorithms that allow to sequentially induce models that consist of several classification
-    rules.
+    Allows to sequentially induce classification rules, including a default rule, that are added to a model using a
+    `ModelBuilder`.
     """
 
-    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state):
-        """
-        Creates and returns a model that consists of several classification rules.
-
-        :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_features)`, representing the
-                                            indices of all nominal attributes (in ascending order)
-        :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
-                                            of the training examples
-        :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
-                                            the labels of the training examples
-        :param random_state:                The seed to be used by RNGs
-        :return:                            A model that contains the induced classification rules
-        """
-        pass
-
-
-cdef class RuleListInduction(SequentialRuleInduction):
-    """
-    Allows to sequentially induce classification rules that are stored in a list in the order of their induction. This
-    also includes a default rule, which may be located at the beginning or the end of the list.
-    """
-
-    def __cinit__(self, bint default_rule_at_end, bint use_mask, RuleInduction rule_induction,
-                  HeadRefinement head_refinement, Loss loss, list stopping_criteria,
+    def __cinit__(self, RuleInduction rule_induction, HeadRefinement head_refinement, Loss loss, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, intp min_coverage,
                   intp max_conditions, intp max_head_refinements):
         """
-        :param default_rule_at_end:     True, if the default rule should be located at the end, False, if it should be
-                                        located at the start
-        :param use_mask:                True, if only one rule should be allowed to predict per label, False otherwise
         :param rule_induction:          The algorithm that should be used to induce rules
         :param head_refinement:         The strategy that should be used to find the heads of rules
         :param loss:                    The loss function to be minimized
@@ -70,8 +43,6 @@ cdef class RuleListInduction(SequentialRuleInduction):
                                         condition has been added to its body. Must be at least 1 or -1, if the number of
                                         refinements should not be restricted
         """
-        self.default_rule_at_end = default_rule_at_end
-        self.use_mask = use_mask
         self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.loss = loss
@@ -86,10 +57,20 @@ cdef class RuleListInduction(SequentialRuleInduction):
         self.max_head_refinements = max_head_refinements
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state):
-        # Class members
-        cdef bint default_rule_at_end = self.default_rule_at_end
-        cdef bint use_mask = self.use_mask
+                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder):
+        """
+        Creates and returns a model that consists of several classification rules.
+
+        :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_features)`, representing the
+                                            indices of all nominal attributes (in ascending order)
+        :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
+                                            of the training examples
+        :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
+                                            the labels of the training examples
+        :param random_state:                The seed to be used by RNGs
+        :param model_builder:               The builder that should be used to build the model
+        :return:                            A model that contains the induced classification rules
+        """
         cdef RuleInduction rule_induction = self.rule_induction
         cdef HeadRefinement head_refinement = self.head_refinement
         cdef Loss loss = self.loss
@@ -105,37 +86,27 @@ cdef class RuleListInduction(SequentialRuleInduction):
         cdef RNG rng = RNG.__new__(RNG, random_state)
         # The total number of labels
         cdef intp num_labels = y.shape[1]
-        # The list that contains the induced rules
-        cdef RuleModel model = RuleList.__new__(RuleList, use_mask)
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
         # Temporary variables
-        cdef Rule default_rule, rule
-        cdef bint should_continue
+        cdef bint success
 
-        # Induce default rule
-        default_rule = rule_induction.induce_default_rule(y, loss)
-
-        if not default_rule_at_end:
-            model.add_rule(default_rule)
+        # Induce default rule...
+        rule_induction.induce_default_rule(y, loss, model_builder)
 
         while __should_continue(stopping_criteria, num_rules):
-            # Induce a new rule
-            rule = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
-                                              loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                              pruning, shrinkage, min_coverage, max_conditions, max_head_refinements,
-                                              rng)
+            # Induce a new rule...
+            success = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
+                                                 loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                                 pruning, shrinkage, min_coverage, max_conditions, max_head_refinements,
+                                                 rng, model_builder)
 
-            if rule is None:
+            if not success:
                 break
 
-            model.add_rule(rule)
             num_rules += 1
 
-        if default_rule_at_end:
-            model.add_rule(default_rule)
-
-        return model
+        return model_builder.build_model()
 
 
 cdef inline bint __should_continue(list stopping_criteria, intp num_rules):

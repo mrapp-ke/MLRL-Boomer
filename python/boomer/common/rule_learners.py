@@ -13,6 +13,7 @@ import numpy as np
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
 from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix
+from boomer.common.rules import ModelBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
@@ -206,7 +207,9 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
-        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, y, self.random_state)
+        model_builder = self._create_model_builder()
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, y, self.random_state,
+                                                      model_builder)
 
     def _predict(self, x):
         sparse_format = 'csr'
@@ -275,5 +278,13 @@ class MLRuleLearner(MLLearner, NominalAttributeLearner):
 
         :param num_labels:  The number of labels in the training data set
         :return:            The algorithm for sequential rule induction that has been created
+        """
+        pass
+
+    def _create_model_builder(self) -> ModelBuilder:
+        """
+        Must be implemented by subclasses in order to create the builder that should be used for building the model.
+
+        :return: The builder that has been created
         """
         pass

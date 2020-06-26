@@ -6,8 +6,9 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
+from boomer.common.rules cimport Comparator
 from boomer.common.losses cimport Prediction
-from boomer.common.rule_induction cimport Comparator, IndexedValue
+from boomer.common.rule_induction cimport IndexedValue
 
 from cython.operator cimport dereference, postincrement
 
@@ -20,7 +21,7 @@ cdef class Pruning:
     """
 
     cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
-                                         list[Condition] conditions, uint32[::1] covered_examples_mask,
+                                         double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Loss loss, HeadRefinement head_refinement):
         """
@@ -59,7 +60,7 @@ cdef class IREP(Pruning):
     """
 
     cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
-                                         list[Condition] conditions, uint32[::1] covered_examples_mask,
+                                         double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Loss loss, HeadRefinement head_refinement):
         # The total number of training examples
@@ -107,7 +108,7 @@ cdef class IREP(Pruning):
         # We process the existing rule's conditions (except for the last one) in the order they have been learned. At
         # each iteration, we calculate the quality score of a rule that only contains the conditions processed so far
         # and keep track of the best rule...
-        cdef list[Condition].iterator iterator = conditions.begin()
+        cdef double_linked_list[Condition].iterator iterator = conditions.begin()
 
         for n in range(1, num_conditions):
             # Obtain properties of the current condition...
