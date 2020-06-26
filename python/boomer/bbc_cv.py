@@ -16,7 +16,7 @@ from sklearn.utils import check_random_state
 from skmultilearn.base import MLClassifierBase
 
 from boomer.common.interfaces import Randomized
-from boomer.common.learners import MLLearner
+from boomer.common.learners import Learner
 from boomer.common.model import DTYPE_INTP, DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.data import MetaData
 from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
@@ -192,7 +192,7 @@ class BbcCv(Randomized):
     """
 
     def __init__(self, configurations: List[dict], adapter: BbcCvAdapter, bootstrapping: Bootstrapping,
-                 learner: MLLearner):
+                 learner: Learner):
         """
         :param configurations:  A list that contains the configurations to be evaluated
         :param adapter:         The `BbcCvAdapter` to be used

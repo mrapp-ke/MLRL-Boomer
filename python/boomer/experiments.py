@@ -11,7 +11,7 @@ from abc import ABC
 
 from sklearn.base import clone
 
-from boomer.common.learners import MLLearner, NominalAttributeLearner
+from boomer.common.learners import Learner, NominalAttributeLearner
 from boomer.data import MetaData, AttributeType
 from boomer.evaluation import Evaluation
 from boomer.parameters import ParameterInput
@@ -25,7 +25,7 @@ class Experiment(CrossValidation, ABC):
     validation or separate training and test sets.
     """
 
-    def __init__(self, base_learner: MLLearner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
+    def __init__(self, base_learner: Learner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
                  train_evaluation: Evaluation = None, test_evaluation: Evaluation = None,
                  parameter_input: ParameterInput = None, model_printer: ModelPrinter = None):
         """
