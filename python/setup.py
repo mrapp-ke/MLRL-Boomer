@@ -20,7 +20,7 @@ compiler_directives = {
 }
 
 setup(name='boomer',
-      version='0.1.0',
+      version='0.2.0',
       description='BOOMER - An algorithm for learning gradient boosted multi-label classification rules',
       url='https://github.com/mrapp-ke/Boomer',
       author='Michael Rapp',
