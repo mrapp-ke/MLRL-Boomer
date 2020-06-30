@@ -9,7 +9,7 @@ from boomer.common.pruning cimport Pruning
 from boomer.common.shrinkage cimport Shrinkage
 from boomer.common.head_refinement cimport HeadRefinement
 
-from libcpp.unordered_map cimport unordered_map as map
+from libcpp.unordered_map cimport unordered_map
 
 
 """
@@ -88,7 +88,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef map[intp, IndexedArray*]* cache_global
+    cdef unordered_map[intp, IndexedArray*]* cache_global
 
     # Functions:
 
