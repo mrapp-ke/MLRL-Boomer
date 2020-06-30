@@ -20,7 +20,7 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Loss loss, HeadRefinement head_refinement):
@@ -59,7 +59,7 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Loss loss, HeadRefinement head_refinement):

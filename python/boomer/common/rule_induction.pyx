@@ -203,11 +203,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.cache_global = new map[intp, IndexedArray*]()
+        self.cache_global = new unordered_map[intp, IndexedArray*]()
 
     def __dealloc__(self):
-        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
-        cdef map[intp, IndexedArray*].iterator cache_global_iterator = dereference(cache_global).begin()
+        cdef unordered_map[intp, IndexedArray*]* cache_global = self.cache_global
+        cdef unordered_map[intp, IndexedArray*].iterator cache_global_iterator = dereference(cache_global).begin()
         cdef IndexedArray* indexed_array
 
         while cache_global_iterator != dereference(cache_global).end():
@@ -258,10 +258,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the examples that should be used for finding the best refinement
-        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
+        cdef unordered_map[intp, IndexedArray*]* cache_global = self.cache_global
         cdef IndexedArray* indexed_array
-        cdef map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
-        cdef map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
+        cdef unordered_map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
+        cdef unordered_map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
         cdef IndexedFloat32* indexed_values
         cdef intp num_indexed_values
