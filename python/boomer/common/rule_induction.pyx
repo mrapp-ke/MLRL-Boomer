@@ -6,6 +6,7 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, get_index
+from boomer.common._sparse cimport compare_indexed_float32
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.losses cimport Prediction
@@ -71,7 +72,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
             sorted_array[i].index = i
             sorted_array[i].value = x[i, feature_index]
 
-        qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &__compare_indexed_value)
+        qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
         return indexed_array
 
 
@@ -129,7 +130,7 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
                 sorted_array[i].value = x_data[j]
                 i += 1
 
-            qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &__compare_indexed_value)
+            qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
 
         dereference(indexed_array).data = sorted_array
         return indexed_array
@@ -890,20 +891,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 free(indexed_array)
                 free(indexed_array_wrapper)
                 postincrement(cache_local_iterator)
-
-
-cdef int __compare_indexed_value(const void* a, const void* b) nogil:
-    """
-    Compares the values of two structs of type `IndexedFloat32`.
-
-    :param a:   A pointer to the first struct
-    :param b:   A pointer to the second struct
-    :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
-                equal, or 1 if the value of the first struct is greater than the value of the second struct
-    """
-    cdef float32 v1 = (<IndexedFloat32*>a).value
-    cdef float32 v2 = (<IndexedFloat32*>b).value
-    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
 
 
 cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
