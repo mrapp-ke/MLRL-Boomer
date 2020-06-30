@@ -1,4 +1,5 @@
-from boomer.common._arrays cimport array_intp, array_float64, get_index
+from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
+from boomer.common._sparse cimport IndexedFloat64
 from boomer.common.losses cimport LabelIndependentPrediction
 
 from libc.stdlib cimport qsort
@@ -114,7 +115,7 @@ cdef inline intp[::1] __argsort(float64[::1] values):
     :return:               A pointer to a C-array of type intp, representing the sorted indices of the array
     """
     cdef intp num_values = values.shape[0]
-    cdef IndexedValue* tmp_array = <IndexedValue*>malloc(num_values * sizeof(IndexedValue))
+    cdef IndexedFloat64* tmp_array = <IndexedFloat64*>malloc(num_values * sizeof(IndexedFloat64))
     cdef intp[::1] sorted_array = array_intp(num_values)
     cdef intp i
 
@@ -123,7 +124,7 @@ cdef inline intp[::1] __argsort(float64[::1] values):
             tmp_array[i].index = i
             tmp_array[i].value = values[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedValue), &__compare_indexed_value)
+        qsort(tmp_array, num_values, sizeof(IndexedFloat64), &__compare_indexed_value)
 
         for i in range(num_values):
             sorted_array[i] = tmp_array[i].index
@@ -135,13 +136,13 @@ cdef inline intp[::1] __argsort(float64[::1] values):
 
 cdef int __compare_indexed_value(const void* a, const void* b) nogil:
     """
-    Compares the values of two structs of type `IndexedValue`.
+    Compares the values of two structs of type `IndexedFloat64`.
 
     :param a:   A pointer to the first struct
     :param b:   A pointer to the second struct
     :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
                 equal, or 1 if the value of the first struct is greater than the value of the second struct
     """
-    cdef float64 v1 = (<IndexedValue*>a).value
-    cdef float64 v2 = (<IndexedValue*>b).value
+    cdef float64 v1 = (<IndexedFloat64*>a).value
+    cdef float64 v2 = (<IndexedFloat64*>b).value
     return -1 if v1 < v2 else (0 if v1 == v2 else 1)
