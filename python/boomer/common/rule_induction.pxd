@@ -1,6 +1,6 @@
 # distutils: language=c++
 from boomer.common._arrays cimport intp, uint8, float32
-from boomer.common._sparse cimport IndexedFloat32
+from boomer.common._tuples cimport IndexedFloat32
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.losses cimport Loss
