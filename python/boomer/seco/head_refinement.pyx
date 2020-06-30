@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
-from boomer.common._sparse cimport IndexedFloat64, compare_indexed_float64
+from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
 from boomer.common.losses cimport LabelIndependentPrediction
 
 from libc.stdlib cimport qsort

@@ -6,7 +6,7 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, get_index
-from boomer.common._sparse cimport compare_indexed_float32
+from boomer.common._tuples cimport compare_indexed_float32
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.losses cimport Prediction

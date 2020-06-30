@@ -1,3 +1,8 @@
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides type definitions and utility functions for tuples.
+"""
 from boomer.common._arrays cimport intp, float32, float64
 
 
