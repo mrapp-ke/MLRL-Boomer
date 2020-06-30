@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides type definitions and utility functions for creating arrays.
+Provides type definitions and utility functions for one- and two-dimensional arrays.
 """
 from cython.view cimport array as cvarray
 
