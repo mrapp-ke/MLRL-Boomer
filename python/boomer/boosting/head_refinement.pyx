@@ -11,9 +11,9 @@ cdef class FullHeadRefinement(HeadRefinement):
     Allows to find the best multi-label head that predicts for all labels.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
-                                 bint accumulated):
-        cdef Prediction prediction = loss.calculate_example_wise_prediction(uncovered, accumulated)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
+                                 PredictionSearch prediction_search, bint uncovered, bint accumulated):
+        cdef Prediction prediction = prediction_search.calculate_example_wise_prediction(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64 overall_quality_score = prediction.overall_quality_score
         cdef intp num_labels = predicted_scores.shape[0]
@@ -44,6 +44,6 @@ cdef class FullHeadRefinement(HeadRefinement):
         # Return None, as the quality score of the found head is worse than that of `best_head`...
         return None
 
-    cdef Prediction calculate_prediction(self, Loss loss, bint uncovered, bint accumulated):
-        cdef Prediction prediction = loss.calculate_example_wise_prediction(uncovered, accumulated)
+    cdef Prediction calculate_prediction(self, PredictionSearch prediction_search, bint uncovered, bint accumulated):
+        cdef Prediction prediction = prediction_search.calculate_example_wise_prediction(uncovered, accumulated)
         return prediction

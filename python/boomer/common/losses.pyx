@@ -32,6 +32,151 @@ cdef class LabelWisePrediction(Prediction):
         self.quality_scores = None
 
 
+cdef class PredictionSearch:
+    """
+    A base class for all classes that allow to search for predictions that minimize a loss when refining a rule.
+    """
+
+    cdef void update_search(self, intp example_index, uint32 weight):
+        """
+        Notifies the search about an example that is covered by the condition that is currently considered for refining
+        a rule.
+
+        This function must be called repeatedly for each example that is covered by the current condition, immediately
+        after the invocation of the function `Loss#begin_search`. Each of these examples must have been provided earlier
+        via the function `Loss#update_sub_sample`.
+
+        This function is supposed to update any internal state of the search that relates to the examples that are
+        covered current condition, i.e., to compute and store local information that is required by the other functions
+        that will be called later, e.g. statistics about the ground truth labels of the covered examples. Any
+        information computed by this function is expected to be reset when invoking the function `reset_search` for the
+        next time.
+
+        :param example_index:   The index of the covered example
+        :param weight:          The weight of the covered example
+        """
+        pass
+
+    cdef void reset_search(self):
+        """
+        Resets the internal state of the search that has been updated by preceding calls to the `update_search` function
+        to the state when the search was started via the function `Loss#begin_search`. When calling this function, the
+        current state is not purged entirely, but it is cached and made available for use by the functions
+        `calculate_example_wise_prediction` and `calculate_label_wise_prediction` (if the function argument
+        `accumulated` is set accordingly).
+
+        This function may be invoked multiple times (with one or several calls to `update_search` in between), which is
+        supposed to update the previously cached state by accumulating the new one, i.e., the accumulated cached state
+        should be the same as if `reset_search` would not have been called at all.
+        """
+        pass
+
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        """
+        Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
+        been provided to the search so far via the function `update_search`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
+        between the examples that have been provided via the function `update_sub_sample` and the examples that have
+        been provided via the function `update_search`.
+
+        If the argument `accumulated` is 1, all examples that have been provided since the search has been started via
+        the function `Loss#begin_search` are taken into account even if the function `reset_search` has been called
+        before. If the latter has not been invoked, the argument does not have any effect.
+
+        The calculated scores correspond to the subset of labels that has been provided when starting the search via the
+        function `Loss#begin_search`. The score to be predicted for an individual label is calculated independently from
+        the other labels, i.e., in case of a non-decomposable loss function, it is assumed that the rule will not
+        predict for the other labels. In addition to each score, a quality score, which assesses the quality of the
+        prediction for the respective label, is returned.
+
+        :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
+                            1, if the rule covers all examples that belong to the difference between the examples that
+                            have been provided via the function `Loss#update_sub_sample` and the examples that have been
+                            provided via the function `update_search`
+        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
+                            since the function `reset_search` has been called for the last time, 1, if the rule covers
+                            all examples that have been provided since the search has been started via the the function
+                            `Loss#begin_search`
+        :return:            A `LabelWisePrediction` that stores the scores to be predicted by the rule for each
+                            considered label, as well as the corresponding quality scores
+        """
+        pass
+
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+        """
+        Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
+        been provided to the search so far via the function `update_search`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
+        between the examples that have been provided via the function `update_sub_sample` and the examples that have
+        been provided via the function `update_search`.
+
+        If the argument `accumulated` is 1, all examples that have been provided since the search has been started via
+        the function `Loss#begin_search` are taken into account even if the function `reset_search` has been called
+        before. If the latter has not been invoked, the argument does not have any effect.
+
+        The calculated scores correspond to the subset of labels that has been provided when starting the search via the
+        function `Loss#begin_search`. The score to be predicted for an individual label is calculated with respect to
+        the predictions for the other labels. In case of a decomposable loss function, i.e., if the labels are
+        considered independently from each other, this function is equivalent to the function
+        `calculate_label_wise_prediction`. In addition to the scores, an overall quality score, which assesses the
+        quality of the predictions for all labels in terms of a single score, is returned.
+
+        :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
+                            1, if the rule covers all examples that belong to the difference between the examples that
+                            have been provided via the function `Loss#update_sub_sample` and the examples that have been
+                            provided via the function `update_search`
+        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
+                            since the function `reset_search` has been called for the last time, 1, if the rule covers
+                            all examples that have been provided since the search has been started via the function
+                            `Loss#begin_search`
+        :return:            A `Prediction` that stores the scores to be predicted by the rule for each considered label,
+                            as well as an overall quality score
+        """
+        pass
+
+
+cdef class DecomposablePredictionSearch(PredictionSearch):
+    """
+    A base class for all classes that allow to search for predictions that minimize a decomposable loss when refining a
+    rule.
+    """
+
+    cdef void update_search(self, intp example_index, uint32 weight):
+        pass
+
+    cdef void reset_search(self):
+        pass
+
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        pass
+
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+        # In case of a decomposable loss, the label-dependent predictions are the same as the label-independent
+        # predictions...
+        return self.calculate_label_wise_prediction(uncovered, accumulated)
+
+
+cdef class NonDecomposablePredictionSearch(PredictionSearch):
+    """
+    A base class for all classes that allow to search for predictions that minimize a non-decomposable loss when
+    refining a rule.
+    """
+
+    cdef void update_search(self, intp example_index, uint32 weight):
+        pass
+
+    cdef void reset_search(self):
+        pass
+
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        pass
+
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+        pass
+
+
 cdef class Loss:
     """
     A base class for all (surrogate) loss functions to be minimized locally by the rules learned during training.
@@ -104,123 +249,22 @@ cdef class Loss:
         """
         pass
 
-    cdef void begin_search(self, intp[::1] label_indices):
+    cdef PredictionSearch begin_search(self, intp[::1] label_indices):
         """
-        Notifies the loss function that a new search for the best refinement of a rule, i.e., the best condition to be
-        added to its body, should be started. The examples that are covered by such a condition must be provided via
-        subsequent calls to the function `update_search`.
+        Starts a new search for loss-minimizing predictions by the refinement of a rule. The examples that are covered
+        by such a refinement must be provided via subsequent calls to the function `RefinementSearch#update_search`.
 
-        This function must be called each time a new condition is considered, unless the new condition covers all
-        examples previously provided via calls to the function `update_search`.
-
-        This function is supposed to reset any internal state that only holds for the examples covered by a previously
-        considered condition and therefore becomes invalid when different examples are covered by another condition,
-        e.g. statistics about the ground truth labels of the covered examples.
+        This function must be called each time a new refinement is considered, unless the new refinement covers all
+        examples previously provided via calls to the function `RefinementSearch#update_search`.
 
         Optionally, a subset of the available labels may be specified via the argument `label_indices`. In such case,
-        only the specified labels will be considered by the functions that will be called later. When calling this
-        function again, a different set of labels may be specified.
+        only the specified labels will be considered by the search. When calling this function again to start another
+        search from scratch, a different set of labels may be specified.
 
-        :param label_indices: An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
-                              labels for which the refined rule should predict or None, if the rule may predict for all
-                              labels
-        """
-        pass
-
-    cdef void update_search(self, intp example_index, uint32 weight):
-        """
-        Notifies the loss function about an example that is covered by the condition that is currently considered for
-        refining a rule.
-
-        This function must be called repeatedly for each example that is covered by the current condition, immediately
-        after the invocation of the function `begin_search`. Each of these examples must have been provided earlier via
-        the function `update_sub_sample`.
-
-        This function is supposed to update any internal state that relates to the examples that are covered current
-        condition, i.e., to compute and store local information that is required by the other functions that will be
-        called later, e.g. statistics about the ground truth labels of the covered examples. Any information computed by
-        this function is expected to be reset when invoking the function `begin_search` or `reset_search` for the next
-        time.
-
-        :param example_index:   The index of the covered example
-        :param weight:          The weight of the covered example
-        """
-        pass
-
-    cdef void reset_search(self):
-        """
-        Resets the internal state that has been updated by preceding calls to the `update_search` function to the state
-        after the `begin_search` function was called for the last time. Unlike a call to the `begin_search` function,
-        which has the same effect, the current state is not purged entirely, but it is cached and made available for use
-        by the functions `calculate_example_wise_prediction` and `calculate_label_wise_prediction` (if the function
-        argument `accumulated` is set accordingly).
-
-        The information that is cached by this function is expected to be reset when the function `begin_search` is
-        called for the next time. Before that, this function may be invoked multiple times (with one or several calls to
-        `update_search` in between), which is supposed to update the previously cached state by accumulating the new
-        one, i.e., when calling `begin_search` for the next time, the accumulated cached state should be the same as if
-        `reset_search` would not have been called at all.
-        """
-        pass
-
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        """
-        Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
-        been provided so far via the function `update_search`.
-
-        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
-        between the examples that have been provided via the function `update_sub_sample` and the examples that have
-        been provided via the function `update_search`.
-
-        If the argument `accumulated` is 1, all examples that have been provided since the last call to the function
-        `begin_search` are taken into account even if the function `reset_search` has been called before. If the latter
-        has not been invoked, the argument does not have any effect.
-
-        The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
-        be predicted for an individual label is calculated independently from the other labels, i.e., in case of a
-        non-decomposable loss function, it is assumed that the rule will abstain for the other labels. In addition to
-        each score, a quality score, which assesses the quality of the prediction for the respective label, is returned.
-
-        :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
-                            1, if the rule covers all examples that belong to the difference between the examples that
-                            have been provided via the function `update_sub_sample` and the examples that have been
-                            provided via the function `update_search`
-        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
-                            since the function `reset_search` has been called for the last time, 1, if the rule covers
-                            all examples that have been provided since the last call to the function `begin_search`
-        :return:            A `LabelWisePrediction` that stores the scores to be predicted by the rule for each
-                            considered label, as well as the corresponding quality scores
-        """
-        pass
-
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
-        """
-        Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
-        been provided so far via the function `update_search`.
-
-        If the argument `uncovered` is 1, the rule is considered to cover all examples that belong to the difference
-        between the examples that have been provided via the function `update_sub_sample` and the examples that have
-        been provided via the function `update_search`.
-
-        If the argument `accumulated` is 1, all examples that have been provided since the last call to the function
-        `begin_search` are taken into account even if the function `reset_search` has been called before. If the latter
-        has not been invoked, the argument does not have any effect.
-
-        The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
-        be predicted for an individual label is calculated with respect to the predictions for the other labels. In case
-        of a decomposable loss function, i.e., if the labels are considered independently from each other, this function
-        is equivalent to the function `calculate_label_wise_prediction`. In addition to the scores, an overall quality
-        score, which assesses the quality of the predictions for all labels in terms of a single score, is returned.
-
-        :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
-                            1, if the rule covers all examples that belong to the difference between the examples that
-                            have been provided via the function `update_sub_sample` and the examples that have been
-                            provided via the function `update_search`
-        :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
-                            since the function `reset_search` has been called for the last time, 1, if the rule covers
-                            all examples that have been provided since the last call to the function `begin_search`
-        :return:            A `Prediction` that stores the optimal scores to be predicted by the rule for each
-                            considered label, as well as its overall quality score
+        :param label_indices:   An array of dtype int, shape `(num_considered_labels)`, representing the indices of the
+                                labels that should be considered by the search or None, if all labels should be
+                                considered
+        :return:                A new object of type `RefinementSearch` to be used to conduct the search
         """
         pass
 
