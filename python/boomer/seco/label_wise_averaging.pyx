@@ -12,9 +12,9 @@ cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
     Allows to search for predictions that minimize a label-wise decomposable coverage loss when refining a rule.
     """
 
-    def __cinit__(self, Heuristic heuristic, intp[::1] label_indices, uint8[::1, :] true_labels,
-                  float64[::1, :] uncovered_labels, uint8[::1] minority_labels,
-                  float64[::1, :] confusion_matrices_default):
+    def __cinit__(self, Heuristic heuristic, intp[::1] label_indices, const uint8[::1, :] true_labels,
+                  const float64[::1, :] uncovered_labels, const uint8[::1] minority_labels,
+                  const float64[::1, :] confusion_matrices_default):
         """
         :param heuristic:                   The heuristic to be used
         :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
@@ -49,9 +49,9 @@ cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
         self.prediction = prediction
 
     cdef void update_search(self, intp example_index, uint32 weight):
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef uint8[::1] minority_labels = self.minority_labels
-        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef const float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef const uint8[::1] minority_labels = self.minority_labels
+        cdef const uint8[::1, :] true_labels = self.true_labels
         cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
         cdef intp[::1] label_indices = self.label_indices
         cdef intp num_labels = confusion_matrices_covered.shape[0]
@@ -110,10 +110,10 @@ cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64 overall_quality_score = 0
-        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef const uint8[::1] minority_labels = self.minority_labels
         cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1, :] confusion_matrices_covered = self.accumulated_confusion_matrices_covered if accumulated else self.confusion_matrices_covered
-        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef const float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef intp num_labels = confusion_matrices_covered.shape[0]
         cdef intp c, l
         cdef Heuristic heuristic = self.heuristic
