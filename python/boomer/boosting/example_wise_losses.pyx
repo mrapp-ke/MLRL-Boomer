@@ -19,8 +19,9 @@ cdef class ExampleWiseLogisticLossPredictionSearch(NonDecomposablePredictionSear
     Allows to search for predictions that minimize an example-wise differentiable loss when refining a rule.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight, intp[::1] label_indices, float64[::1, :] gradients,
-                  float64[::1] total_sums_of_gradients, float64[::1, :] hessians, float64[::1] total_sums_of_hessians):
+    def __cinit__(self, float64 l2_regularization_weight, intp[::1] label_indices, const float64[::1, :] gradients,
+                  const float64[::1] total_sums_of_gradients, const float64[::1, :] hessians,
+                  const float64[::1] total_sums_of_hessians):
         """
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             optimal scores to be predicted by rules
@@ -58,9 +59,9 @@ cdef class ExampleWiseLogisticLossPredictionSearch(NonDecomposablePredictionSear
 
     cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
-        cdef float64[::1, :] gradients = self.gradients
+        cdef const float64[::1, :] gradients = self.gradients
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1, :] hessians = self.hessians
+        cdef const float64[::1, :] hessians = self.hessians
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         cdef intp[::1] label_indices = self.label_indices
         # The number of gradients considered by the current search
@@ -142,7 +143,7 @@ cdef class ExampleWiseLogisticLossPredictionSearch(NonDecomposablePredictionSear
         # The overall quality score, i.e. the sum of the quality scores for each label plus the L2 regularization term
         cdef float64 overall_quality_score = 0
         # Temporary variables
-        cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
+        cdef const float64[::1] total_sums_of_gradients, total_sums_of_hessians
         cdef intp[::1] label_indices
         cdef float64 sum_of_gradients, sum_of_hessians, score, score_pow
         cdef intp c, c2, l, l2
@@ -192,7 +193,8 @@ cdef class ExampleWiseLogisticLossPredictionSearch(NonDecomposablePredictionSear
         # The number of gradients considered by the current search
         cdef intp num_gradients = sums_of_gradients.shape[0]
         # Temporary variables
-        cdef float64[::1] gradients, hessians, total_sums_of_gradients, total_sums_of_hessians
+        cdef const float64[::1] total_sums_of_gradients, total_sums_of_hessians
+        cdef float64[::1] gradients, hessians,
         cdef intp[::1] label_indices
         cdef intp num_hessians, c, c2, l, l2, i, offset
 

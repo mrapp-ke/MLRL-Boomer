@@ -11,13 +11,13 @@ cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
 
     cdef Heuristic heuristic
 
-    cdef uint8[::1, :] true_labels
+    cdef const uint8[::1, :] true_labels
 
-    cdef float64[::1, :] uncovered_labels
+    cdef const float64[::1, :] uncovered_labels
 
-    cdef uint8[::1] minority_labels
+    cdef const uint8[::1] minority_labels
 
-    cdef float64[::1, :] confusion_matrices_default
+    cdef const float64[::1, :] confusion_matrices_default
 
     cdef float64[::1, :] confusion_matrices_covered
 
