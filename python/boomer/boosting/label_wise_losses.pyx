@@ -47,7 +47,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
                                          more conservative, setting it to 0 turns off L2 regularization entirely
         """
         self.l2_regularization_weight = l2_regularization_weight
-        self.prediction = LabelIndependentPrediction.__new__(LabelIndependentPrediction)
+        self.prediction = LabelWisePrediction.__new__(LabelWisePrediction)
         self.sums_of_gradients = None
         self.sums_of_hessians = None
 
@@ -176,7 +176,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
         # To avoid array-recreation each time the search will be updated, the arrays for storing the sums of gradients
         # and hessians, as well as the arrays for storing predictions and quality scores, are initialized once at this
         # point. If the arrays from the previous search have the correct size, they are reused.
-        cdef LabelIndependentPrediction prediction = self.prediction
+        cdef LabelWisePrediction prediction = self.prediction
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64[::1] sums_of_hessians
         cdef float64[::1] predicted_scores
@@ -258,10 +258,10 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
                 accumulated_sums_of_hessians[c] += sums_of_hessians[c]
                 sums_of_hessians[c] = 0
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef LabelIndependentPrediction prediction = self.prediction
+        cdef LabelWisePrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients

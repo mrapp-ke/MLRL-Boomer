@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
-from boomer.common.losses cimport LabelIndependentPrediction
+from boomer.common.losses cimport LabelWisePrediction
 
 from libc.stdlib cimport qsort
 
@@ -14,7 +14,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
                                  bint accumulated):
-        cdef LabelIndependentPrediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
+        cdef LabelWisePrediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels

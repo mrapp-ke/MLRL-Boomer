@@ -15,7 +15,7 @@ cdef class Prediction(DefaultPrediction):
     cdef float64 overall_quality_score
 
 
-cdef class LabelIndependentPrediction(Prediction):
+cdef class LabelWisePrediction(Prediction):
 
     # Attributes:
 
@@ -38,7 +38,7 @@ cdef class Loss:
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
