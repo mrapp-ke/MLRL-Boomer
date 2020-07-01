@@ -191,8 +191,6 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
             prediction.quality_scores = quality_scores
         else:
             sums_of_hessians = self.sums_of_hessians
-            predicted_scores = prediction.predicted_scores
-            quality_scores = prediction.quality_scores
 
         # Reset the sums of gradients and hessians to 0...
         for c in range(num_labels):
