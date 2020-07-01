@@ -862,7 +862,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         if covered_examples_mask[r] == covered_examples_target:
                             loss.update_search(r, 1)
 
-                    prediction = head_refinement.evaluate_predictions(loss, False, False)
+                    prediction = head_refinement.calculate_prediction(loss, False, False)
                     predicted_scores[:] = prediction.predicted_scores
 
                 # Apply shrinkage, if necessary...

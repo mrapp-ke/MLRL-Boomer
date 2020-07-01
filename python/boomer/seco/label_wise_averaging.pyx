@@ -174,7 +174,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                 accumulated_confusion_matrices_covered[c, _RP] += confusion_matrices_covered[c, _RP]
                 confusion_matrices_covered[c, _RP] = 0
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
+    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         cdef LabelIndependentPrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores

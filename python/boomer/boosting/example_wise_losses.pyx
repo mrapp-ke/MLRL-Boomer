@@ -135,7 +135,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 tmp = (expected_score * exponential) / sum_of_exponentials
                 # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
                 # the sums of gradients as the ordinates for solving a system of linear equations in the function
-                # `evaluate_label_dependent_predictions`, the sign must be inverted again...
+                # `calculate_example_wise_prediction`, the sign must be inverted again...
                 gradients[r, c] = tmp
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
@@ -301,7 +301,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 accumulated_sums_of_hessians[c] += sums_of_hessians[c]
                 sums_of_hessians[c] = 0
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
+    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef LabelIndependentPrediction prediction = self.prediction
@@ -364,7 +364,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return prediction
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef Prediction prediction = <Prediction>self.prediction
@@ -461,7 +461,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
             tmp = (expected_score * exponential) / sum_of_exponentials
             # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using the
             # sums of gradients as the ordinates for solving a system of linear equations in the function
-            # `evaluate_label_dependent_predictions`, the sign must be inverted again...
+            # `calculate_example_wise_prediction`, the sign must be inverted again...
             gradients[example_index, c] = tmp
 
             # Calculate the second derivatives (hessians) of the loss function with respect to the current label and

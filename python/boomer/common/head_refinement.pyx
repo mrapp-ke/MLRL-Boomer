@@ -59,7 +59,7 @@ cdef class HeadRefinement:
         """
         pass
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
+    cdef Prediction calculate_prediction(self, Loss loss, bint uncovered, bint accumulated):
         """
         Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, given a
         specific loss function.
@@ -87,7 +87,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
                                  bint accumulated):
-        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
+        cdef LabelIndependentPrediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels = predicted_scores.shape[0]
@@ -127,6 +127,6 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         # Return None, as the quality_score of the found head is worse than that of `best_head`...
         return None
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
-        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
+    cdef Prediction calculate_prediction(self, Loss loss, bint uncovered, bint accumulated):
+        cdef Prediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction

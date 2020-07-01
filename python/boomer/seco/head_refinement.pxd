@@ -15,4 +15,4 @@ cdef class PartialHeadRefinement(HeadRefinement):
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
                                  bint accumulated)
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated)
+    cdef Prediction calculate_prediction(self, Loss loss, bint uncovered, bint accumulated)

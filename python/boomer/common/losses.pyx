@@ -152,8 +152,8 @@ cdef class Loss:
         Resets the internal state that has been updated by preceding calls to the `update_search` function to the state
         after the `begin_search` function was called for the last time. Unlike a call to the `begin_search` function,
         which has the same effect, the current state is not purged entirely, but it is cached and made available for use
-        by the functions `evaluate_label_dependent_predictions` and `evaluate_label_independent_predictions` (if the
-        function argument `accumulated` is set accordingly).
+        by the functions `calculate_example_wise_prediction` and `calculate_label_wise_prediction` (if the function
+        argument `accumulated` is set accordingly).
 
         The information that is cached by this function is expected to be reset when the function `begin_search` is
         called for the next time. Before that, this function may be invoked multiple times (with one or several calls to
@@ -163,7 +163,7 @@ cdef class Loss:
         """
         pass
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
+    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided so far via the function `update_search`.
@@ -193,7 +193,7 @@ cdef class Loss:
         """
         pass
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided so far via the function `update_search`.
@@ -209,9 +209,8 @@ cdef class Loss:
         The calculated scores correspond to the subset of labels provided via the function `begin_search`. The score to
         be predicted for an individual label is calculated with respect to the predictions for the other labels. In case
         of a decomposable loss function, i.e., if the labels are considered independently from each other, this function
-        is equivalent to the function `evaluate_label_independent_predictions`. In addition to the scores, an overall
-        quality score, which assesses the quality of the predictions for all labels in terms of a single score, is
-        returned.
+        is equivalent to the function `calculate_label_wise_prediction`. In addition to the scores, an overall quality
+        score, which assesses the quality of the predictions for all labels in terms of a single score, is returned.
 
         :param uncovered:   0, if the rule covers all examples that have been provided via the function `update_search`,
                             1, if the rule covers all examples that belong to the difference between the examples that
