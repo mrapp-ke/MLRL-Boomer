@@ -30,7 +30,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         self.sums_of_gradients = None
         self.sums_of_hessians = None
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         # The weight to be used for L2 regularization
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of examples
@@ -88,7 +88,9 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 i += 1
 
         # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
-        cdef float64[::1] scores = __dsysv_float64(coefficients, ordinates, l2_regularization_weight)
+        cdef float64[::1] predicted_scores = __dsysv_float64(coefficients, ordinates, l2_regularization_weight)
+        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
+        prediction.predicted_scores = predicted_scores
 
         # We must traverse each example again to calculate the updated gradients and hessians based on the calculated
         # scores...
@@ -104,7 +106,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # A matrix that stores the currently predicted scores for each example and label
         cdef float64[::1, :] current_scores = fortran_matrix_float64(num_examples, num_labels)
         # Temporary variables
-        cdef float64 exponential, tmp, score
+        cdef float64 exponential, tmp, predicted_score
 
         for r in range(num_examples):
             # Traverse the labels of the current example once to create arrays of expected scores and exponentials that
@@ -113,7 +115,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
             for c in range(num_labels):
                 expected_score = expected_scores[r, c]
-                exponential = exp(-expected_score * scores[c])
+                exponential = exp(-expected_score * predicted_scores[c])
                 exponentials[c] = exponential
                 sum_of_exponentials += exponential
 
@@ -125,8 +127,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
             for c in range(num_labels):
                 expected_score = expected_scores[r, c]
                 exponential = exponentials[c]
-                score = scores[c]
-                current_scores[r, c] = score
+                predicted_score = predicted_scores[c]
+                current_scores[r, c] = predicted_score
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
                 # add it to the matrix of gradients...
@@ -139,7 +141,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
                 for c2 in range(c):
-                    tmp = exp(-expected_scores[r, c2] * scores[c2] - expected_score * score)
+                    tmp = exp(-expected_scores[r, c2] * predicted_scores[c2] - expected_score * predicted_score)
                     tmp = (expected_scores[r, c2] * expected_score * tmp) / sum_of_exponentials_pow
                     hessians[r, i] = -tmp
                     i += 1
@@ -162,7 +164,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         self.expected_scores = expected_scores
         self.current_scores = current_scores
 
-        return scores
+        return prediction
 
     cdef void begin_instance_sub_sampling(self):
         # Class members

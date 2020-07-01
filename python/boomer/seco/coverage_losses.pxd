@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport Loss, Prediction, LabelIndependentPrediction
+from boomer.common.losses cimport Loss, DefaultPrediction, Prediction, LabelIndependentPrediction
 
 
 cdef class CoverageLoss(Loss):
@@ -10,7 +10,7 @@ cdef class CoverageLoss(Loss):
 
     # Functions:
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y)
 
     cdef void begin_instance_sub_sampling(self)
 
@@ -33,7 +33,7 @@ cdef class DecomposableCoverageLoss(CoverageLoss):
 
     # Functions:
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y)
 
     cdef void begin_instance_sub_sampling(self)
 

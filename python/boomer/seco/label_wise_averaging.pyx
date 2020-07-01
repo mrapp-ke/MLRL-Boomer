@@ -17,10 +17,12 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         self.confusion_matrices_covered = None
         self.heuristic = heuristic
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         cdef intp num_examples = y.shape[0]
         cdef intp num_labels = y.shape[1]
         cdef float64[::1] default_rule = array_float64(num_labels)
+        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
+        prediction.predicted_scores = default_rule
         cdef uint8[::1] minority_labels = array_uint8(num_labels)
         cdef float64[::1, :] uncovered_labels = fortran_matrix_float64(num_examples, num_labels)
         cdef float64[::1, :] confusion_matrices_default = fortran_matrix_float64(num_labels, 4)
@@ -59,7 +61,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         self.minority_labels = minority_labels
         self.true_labels = y
 
-        return default_rule
+        return prediction
 
     cdef void begin_instance_sub_sampling(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default

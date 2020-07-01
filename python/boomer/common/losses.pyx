@@ -45,7 +45,7 @@ cdef class Loss:
     the individual functions.
     """
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         """
         Calculates the loss-minimizing scores to be predicted by the default rule, i.e., a rule that covers all
         examples, for each label.
@@ -59,8 +59,7 @@ cdef class Loss:
 
         :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
                     examples according to the ground truth
-        :return:    An array of dtype float, shape `(num_labels)`, representing the scores to be predicted by the
-                    default rule for each label
+        :return:    A `DefaultPrediction` that stores the scores to be predicted by the default rule for each label
         """
         pass
 

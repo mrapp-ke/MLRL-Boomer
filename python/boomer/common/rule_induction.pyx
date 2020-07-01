@@ -9,7 +9,7 @@ from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, ge
 from boomer.common._tuples cimport compare_indexed_float32
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.losses cimport Prediction
+from boomer.common.losses cimport DefaultPrediction, Prediction
 
 from libc.math cimport abs
 from libc.stdlib cimport qsort
@@ -219,8 +219,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         del self.cache_global
 
     cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder):
-        cdef float64[::1] scores = loss.calculate_default_scores(y)
-        model_builder.set_default_rule(scores)
+        cdef DefaultPrediction prediction = loss.calculate_default_scores(y)
+        cdef float64[::1] predicted_scores = prediction.predicted_scores
+        model_builder.set_default_rule(predicted_scores)
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,

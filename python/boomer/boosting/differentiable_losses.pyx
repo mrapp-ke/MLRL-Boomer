@@ -12,7 +12,7 @@ cdef class DifferentiableLoss(Loss):
     boosting algorithm.
     """
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         pass
 
     cdef void begin_instance_sub_sampling(self):
@@ -44,7 +44,7 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
     A base class for all (label-wise) decomposable differentiable loss functions.
     """
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         pass
 
     cdef void begin_instance_sub_sampling(self):
@@ -79,7 +79,7 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
     A base class for all (label-wise) non-decomposable differentiable loss functions.
     """
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         pass
 
     cdef void begin_instance_sub_sampling(self):
