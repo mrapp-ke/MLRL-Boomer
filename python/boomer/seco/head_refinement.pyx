@@ -107,12 +107,12 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
 cdef inline intp[::1] __argsort(float64[::1] values):
     """
-    Sorts the indices of an float64-array in ascending order
+    Creates and returns an array that stores the indices of the elements in a given array when sorted in ascending 
+    order.
 
-    :param values:         An array of dtype float, shape `(num_examples)`, representing the values of the array to
-                           argsort
-    :param sorted_array:   An array of dtype intp, shape `(num_examples)`, to store the sorted indices
-    :return:               A pointer to a C-array of type intp, representing the sorted indices of the array
+    :param values:  An array of dtype float, shape `(num_elements)`, representing the values of the array to be sorted
+    :return:        An array of dtype int, shape `(num_elements)`, representing the indices of the values in the given 
+                    array when sorted in ascending order
     """
     cdef intp num_values = values.shape[0]
     cdef IndexedFloat64* tmp_array = <IndexedFloat64*>malloc(num_values * sizeof(IndexedFloat64))
