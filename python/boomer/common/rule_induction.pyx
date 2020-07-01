@@ -10,8 +10,8 @@ from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.losses cimport Prediction
 
-from libc.math cimport abs
-from libc.stdlib cimport qsort
+from libc.math cimport fabs
+from libc.stdlib cimport abs, qsort
 
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
@@ -770,7 +770,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             else:
                                 # If the condition separates an examples with feature value < 0 from an example with
                                 # feature value > 0
-                                best_condition_threshold = previous_threshold_negative + (abs(previous_threshold - previous_threshold_negative) / 2.0)
+                                best_condition_threshold = previous_threshold_negative + (fabs(previous_threshold - previous_threshold_negative) / 2.0)
 
                         # Find and evaluate the best head for the current refinement, if the condition that uses the >
                         # operator is used...
@@ -796,7 +796,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             else:
                                 # If the condition separates an examples with feature value < 0 from an example with
                                 # feature value > 0
-                                best_condition_threshold = previous_threshold_negative + (abs(previous_threshold - previous_threshold_negative) / 2.0)
+                                best_condition_threshold = previous_threshold_negative + (fabs(previous_threshold - previous_threshold_negative) / 2.0)
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
