@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport Prediction, LabelIndependentPrediction
+from boomer.common.losses cimport DefaultPrediction, Prediction, LabelIndependentPrediction
 from boomer.seco.coverage_losses cimport DecomposableCoverageLoss
 from boomer.seco.heuristics cimport Heuristic
 
@@ -28,7 +28,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
     # Functions:
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y)
 
     cdef void begin_instance_sub_sampling(self)
 

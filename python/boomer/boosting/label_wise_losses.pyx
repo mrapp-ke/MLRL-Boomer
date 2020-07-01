@@ -51,7 +51,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
         self.sums_of_gradients = None
         self.sums_of_hessians = None
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         # The weight to be used for L2 regularization
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of examples
@@ -71,9 +71,11 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = array_float64(num_labels)
         # An array that stores the scores that are predicted by the default rule
-        cdef float64[::1] scores = array_float64(num_labels)
+        cdef float64[::1] predicted_scores = array_float64(num_labels)
+        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
+        prediction.predicted_scores = predicted_scores
         # Temporary variables
-        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, score, tmp
+        cdef float64 sum_of_gradients, sum_of_hessians, expected_score, predicted_score, tmp
         cdef intp c, r
 
         for c in range(num_labels):
@@ -95,23 +97,23 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
                 sum_of_hessians += tmp
 
             # Calculate optimal score to be predicted by the default rule for the current label...
-            score = -sum_of_gradients / (sum_of_hessians + l2_regularization_weight)
-            scores[c] = score
+            predicted_score = -sum_of_gradients / (sum_of_hessians + l2_regularization_weight)
+            predicted_scores[c] = predicted_score
 
             # Traverse column again to calculate updated gradients based on the calculated score...
             for r in range(num_examples):
                 expected_score = expected_scores[r, c]
 
                 # Calculate updated gradient for the current example and label...
-                tmp = self._gradient(expected_score, score)
+                tmp = self._gradient(expected_score, predicted_score)
                 gradients[r, c] = tmp
 
                 # Calculate updated gradient for the current example and label...
-                tmp = self._hessian(expected_score, score)
+                tmp = self._hessian(expected_score, predicted_score)
                 hessians[r, c] = tmp
 
                 # Store the score that is currently predicted for the current example and label...
-                current_scores[r, c] = score
+                current_scores[r, c] = predicted_score
 
         # Store the gradients...
         self.gradients = gradients
@@ -125,7 +127,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
         self.expected_scores = expected_scores
         self.current_scores = current_scores
 
-        return scores
+        return prediction
 
     cdef void begin_instance_sub_sampling(self):
         # Class members

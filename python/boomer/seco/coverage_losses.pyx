@@ -12,7 +12,7 @@ cdef class CoverageLoss(Loss):
     on sequential covering, such as e.g. a separate-and-conquer algorithm.
     """
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         pass
 
     cdef void begin_instance_sub_sampling(self):
@@ -45,7 +45,7 @@ cdef class DecomposableCoverageLoss(CoverageLoss):
     A base class for all (label-wise) decomposable coverage loss functions.
     """
 
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
         pass
 
     cdef void begin_instance_sub_sampling(self):
