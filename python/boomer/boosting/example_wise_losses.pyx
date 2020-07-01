@@ -398,16 +398,16 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
             hessians = sums_of_hessians
 
         # Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-        cdef float64[::1] scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
-        prediction.predicted_scores = scores
+        cdef float64[::1] predicted_scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
+        prediction.predicted_scores = predicted_scores
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-        cdef float64 overall_quality_score = -__ddot_float64(scores, gradients)
-        cdef float64[::1] tmp = __dspmv_float64(hessians, scores)
-        overall_quality_score += 0.5 * __ddot_float64(scores, tmp)
+        cdef float64 overall_quality_score = -__ddot_float64(predicted_scores, gradients)
+        cdef float64[::1] tmp = __dspmv_float64(hessians, predicted_scores)
+        overall_quality_score += 0.5 * __ddot_float64(predicted_scores, tmp)
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(scores)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
 
         return prediction
