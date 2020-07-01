@@ -219,7 +219,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         del self.cache_global
 
     cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder):
-        cdef DefaultPrediction prediction = loss.calculate_default_scores(y)
+        cdef DefaultPrediction prediction = loss.calculate_default_prediction(y)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         model_builder.set_default_rule(predicted_scores)
 
