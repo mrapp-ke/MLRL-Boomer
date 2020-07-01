@@ -35,7 +35,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y)
 
     cdef void begin_instance_sub_sampling(self)
 

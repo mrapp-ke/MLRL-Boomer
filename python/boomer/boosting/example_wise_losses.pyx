@@ -30,7 +30,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         self.sums_of_gradients = None
         self.sums_of_hessians = None
 
-    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y):
         # The weight to be used for L2 regularization
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of examples
@@ -346,7 +346,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
-            # Note: As the sign of the gradients was inverted in the function `calculate_default_scores`, it must be
+            # Note: As the sign of the gradients was inverted in the function `calculate_default_prediction`, it must be
             # reverted again in the following.
             score = sum_of_hessians + l2_regularization_weight
             score = sum_of_gradients / score if score != 0 else 0

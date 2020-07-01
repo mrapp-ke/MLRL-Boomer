@@ -45,7 +45,7 @@ cdef class Loss:
     the individual functions.
     """
 
-    cdef DefaultPrediction calculate_default_scores(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y):
         """
         Calculates the loss-minimizing scores to be predicted by the default rule, i.e., a rule that covers all
         examples, for each label.
