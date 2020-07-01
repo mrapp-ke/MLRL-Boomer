@@ -32,50 +32,50 @@ cdef class HeadRefinement:
     A base class for all classes that allow to find the best single- or multi-label head for a rule.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
-                                 bint accumulated):
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
+                                 PredictionSearch prediction_search, bint uncovered, bint accumulated):
         """
-        Finds and returns the best head for a rule given a specific loss function.
+        Finds and returns the best head for a rule given the predictions that are provided by a `PredictionSearch`.
 
-        The loss function must have been prepared properly via calls to the functions `begin_search` and
-        `update_search`.
+        The `PredictionSearch` must have been prepared properly via calls to the function
+        `PredictionSearch#update_search`.
 
-        :param best_head:       The `HeadCandidate` that corresponds to the best rule known so far (as found in the
-                                previous or current refinement iteration) or None, if no such rule is available yet. The
-                                new head must be better than this one, otherwise it is discarded. If the new head is
-                                better, this `HeadCandidate` will be modified accordingly instead of creating a new
-                                instance to avoid unnecessary memory allocations
-        :param label_indices:   An array of dtype int, shape `(num_labels)`, representing the indices of the labels for
-                                which the head may predict or None, if the head may predict for all labels
-        :param loss:            The `Loss` to be minimized
-        :param uncovered:       0, if the rule for which the head should be found covers all examples that have been
-                                provided to the loss function so far, 1, if the rule covers all examples that have not
-                                been provided yet
-        :param accumulated:     0, if the rule covers all examples that have been provided since the loss function has
-                                been reset for the last time, 1, if the rule covers all examples that have been provided
-                                so far
-        :return:                A 'HeadCandidate' that stores information about the head that has been found, if the
-                                head is better than `best_head`, None otherwise
+        :param best_head:           The `HeadCandidate` that corresponds to the best rule known so far (as found in the
+                                    previous or current refinement iteration) or None, if no such rule is available yet.
+                                    The new head must be better than this one, otherwise it is discarded. If the new
+                                    head is better, this `HeadCandidate` will be modified accordingly instead of
+                                    creating a new instance to avoid unnecessary memory allocations
+        :param label_indices:       An array of dtype int, shape `(num_labels)`, representing the indices of the labels
+                                    for which the head may predict or None, if the head may predict for all labels
+        :param prediction_search:   The `PredictionSearch` that should be used
+        :param uncovered:           0, if the rule for which the head should be found covers all examples that have been
+                                    provided to the `PredictionSearch` so far, 1, if the rule covers all examples that
+                                    have not been provided yet
+        :param accumulated:         0, if the rule covers all examples that have been provided since the
+                                    `PredictionSearch` has been reset for the last time, 1, if the rule covers all
+                                    examples that have been provided so far
+        :return:                    A 'HeadCandidate' that stores information about the head that has been found, if the
+                                    head is better than `best_head`, None otherwise
         """
         pass
 
-    cdef Prediction calculate_prediction(self, Loss loss, bint uncovered, bint accumulated):
+    cdef Prediction calculate_prediction(self, PredictionSearch prediction_search, bint uncovered, bint accumulated):
         """
-        Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, given a
-        specific loss function.
+        Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, using a
+        `PredictionSearch`.
 
-        The loss function must have been prepared properly via calls to the functions `begin_search` and
-        `update_search`.
+        The `PredictionSearch` must have been prepared properly via calls to the function
+        `PredictionSearch#update_search`.
 
-        :param loss:            The `Loss` to be minimized
-        :param uncovered:       0, if the rule for which the optimal scores should be calculated covers all examples
-                                that have been provided to the loss function so far, 1, if the rule covers all examples
-                                that have not been provided yet
-        :param accumulated      0, if the rule covers all examples that have been provided since the loss function has
-                                been reset for the last time, 1, if the rule covers all examples that have been provided
-                                so far
-        :return:                A `Prediction` that stores the optimal scores to be predicted by the rule, as well as
-                                its overall quality score
+        :param prediction_search:   The `PredictionSearch` that should be used
+        :param uncovered:           0, if the rule for which the optimal scores should be calculated covers all examples
+                                    that have been provided to the `PredictionSearch` so far, 1, if the rule covers all
+                                    examples that have not been provided yet
+        :param accumulated          0, if the rule covers all examples that have been provided since the
+                                    `PredictionSearch` has been reset for the last time, 1, if the rule covers all
+                                    examples that have been  provided so far
+        :return:                    A `Prediction` that stores the optimal scores to be predicted by the rule, as well
+                                    as its overall quality score
         """
         pass
 
@@ -85,9 +85,9 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     Allows to find the best single-label head that predicts for a single label.
     """
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
-                                 bint accumulated):
-        cdef LabelWisePrediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
+                                 PredictionSearch prediction_search, bint uncovered, bint accumulated):
+        cdef LabelWisePrediction prediction = prediction_search.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels = predicted_scores.shape[0]
@@ -127,6 +127,6 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         # Return None, as the quality_score of the found head is worse than that of `best_head`...
         return None
 
-    cdef Prediction calculate_prediction(self, Loss loss, bint uncovered, bint accumulated):
-        cdef Prediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
+    cdef Prediction calculate_prediction(self, PredictionSearch prediction_search, bint uncovered, bint accumulated):
+        cdef Prediction prediction = prediction_search.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction
