@@ -175,10 +175,10 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
         # and hessians, as well as the arrays for storing predictions and quality scores, are initialized once at this
         # point. If the arrays from the previous search have the correct size, they are reused.
         cdef LabelIndependentPrediction prediction = self.prediction
-        cdef float64[::1] predicted_scores
-        cdef float64[::1] quality_scores
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64[::1] sums_of_hessians
+        cdef float64[::1] predicted_scores
+        cdef float64[::1] quality_scores
 
         if sums_of_gradients is None or sums_of_gradients.shape[0] != num_labels:
             sums_of_gradients = array_float64(num_labels)
