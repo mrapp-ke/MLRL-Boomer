@@ -5,13 +5,21 @@ Provides base classes for all (surrogate) loss functions to be minimized locally
 """
 
 
-cdef class Prediction:
+cdef class DefaultPrediction:
+    """
+    Stores the default rule's predictions for each label.
+    """
+
+    def __cinit__(self):
+        self.predicted_scores = None
+
+
+cdef class Prediction(DefaultPrediction):
     """
     Assesses the overall quality of a rule's predictions for one or several labels.
     """
 
     def __cinit__(self):
-        self.predicted_scores = None
         self.overall_quality_score = 0
 
 

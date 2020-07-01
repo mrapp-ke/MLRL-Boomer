@@ -1,11 +1,16 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
 
 
-cdef class Prediction:
+cdef class DefaultPrediction:
 
     # Attributes:
 
     cdef float64[::1] predicted_scores
+
+
+cdef class Prediction(DefaultPrediction):
+
+    # Attributes:
 
     cdef float64 overall_quality_score
 
