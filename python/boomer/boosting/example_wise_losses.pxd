@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport DefaultPrediction, Prediction, LabelIndependentPrediction
+from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.differentiable_losses cimport NonDecomposableDifferentiableLoss
 
 
@@ -31,7 +31,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     cdef intp[::1] label_indices
 
-    cdef LabelIndependentPrediction prediction
+    cdef LabelWisePrediction prediction
 
     # Functions:
 
@@ -47,7 +47,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 

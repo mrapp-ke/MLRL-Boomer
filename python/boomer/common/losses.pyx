@@ -23,7 +23,7 @@ cdef class Prediction(DefaultPrediction):
         self.overall_quality_score = 0
 
 
-cdef class LabelIndependentPrediction(Prediction):
+cdef class LabelWisePrediction(Prediction):
     """
     Assesses the quality of a rule's predictions for one or several labels independently from each other.
     """
@@ -163,7 +163,7 @@ cdef class Loss:
         """
         pass
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided so far via the function `update_search`.
@@ -188,7 +188,7 @@ cdef class Loss:
         :param accumulated: 0, if the rule covers all examples that have been provided via the function `update_search`
                             since the function `reset_search` has been called for the last time, 1, if the rule covers
                             all examples that have been provided since the last call to the function `begin_search`
-        :return:            A `LabelIndependentPrediction` that stores the scores to be predicted by the rule for each
+        :return:            A `LabelWisePrediction` that stores the scores to be predicted by the rule for each
                             considered label, as well as the corresponding quality scores
         """
         pass

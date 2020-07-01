@@ -13,7 +13,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
     """
 
     def __cinit__(self, Heuristic heuristic):
-        self.prediction = LabelIndependentPrediction.__new__(LabelIndependentPrediction)
+        self.prediction = LabelWisePrediction.__new__(LabelWisePrediction)
         self.confusion_matrices_covered = None
         self.heuristic = heuristic
 
@@ -94,7 +94,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                         confusion_matrices_default[c, _RP] += signed_weight
 
     cdef void begin_search(self, intp[::1] label_indices):
-        cdef LabelIndependentPrediction prediction = self.prediction
+        cdef LabelWisePrediction prediction = self.prediction
         cdef float64[::1] predicted_scores
         cdef float64[::1] quality_scores
         cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
@@ -174,8 +174,8 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                 accumulated_confusion_matrices_covered[c, _RP] += confusion_matrices_covered[c, _RP]
                 confusion_matrices_covered[c, _RP] = 0
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        cdef LabelIndependentPrediction prediction = self.prediction
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        cdef LabelWisePrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64 overall_quality_score = 0

@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport Loss, DefaultPrediction, Prediction, LabelIndependentPrediction
+from boomer.common.losses cimport Loss, DefaultPrediction, Prediction, LabelWisePrediction
 
 from libc.math cimport pow
 
@@ -20,7 +20,7 @@ cdef class DifferentiableLoss(Loss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
@@ -43,7 +43,7 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
@@ -66,7 +66,7 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 

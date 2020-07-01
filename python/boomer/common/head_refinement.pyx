@@ -4,7 +4,7 @@
 Provides classes that implement strategies for finding the heads of rules.
 """
 from boomer.common._arrays cimport array_intp, array_float64, get_index
-from boomer.common.losses cimport LabelIndependentPrediction
+from boomer.common.losses cimport LabelWisePrediction
 
 
 cdef class HeadCandidate:
@@ -87,7 +87,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
                                  bint accumulated):
-        cdef LabelIndependentPrediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
+        cdef LabelWisePrediction prediction = loss.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels = predicted_scores.shape[0]

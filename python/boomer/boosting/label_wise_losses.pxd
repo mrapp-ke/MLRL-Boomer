@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport DefaultPrediction, Prediction, LabelIndependentPrediction
+from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.differentiable_losses cimport DecomposableDifferentiableLoss
 
 
@@ -31,7 +31,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
     cdef intp[::1] label_indices
 
-    cdef LabelIndependentPrediction prediction
+    cdef LabelWisePrediction prediction
 
     # Functions:
 
@@ -51,7 +51,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
@@ -76,7 +76,7 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
@@ -101,6 +101,6 @@ cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)

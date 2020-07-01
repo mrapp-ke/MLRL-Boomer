@@ -30,7 +30,7 @@ cdef class CoverageLoss(Loss):
     cdef void reset_search(self):
         pass
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         pass
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
@@ -63,7 +63,7 @@ cdef class DecomposableCoverageLoss(CoverageLoss):
     cdef void reset_search(self):
         pass
 
-    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         pass
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
