@@ -20,9 +20,9 @@ cdef class DifferentiableLoss(Loss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated)
+    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated)
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
@@ -43,9 +43,9 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated)
+    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated)
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
@@ -66,9 +66,9 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef void reset_search(self)
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated)
+    cdef LabelIndependentPrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated)
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 

@@ -92,7 +92,7 @@ cdef class IREP(Pruning):
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        prediction = head_refinement.evaluate_predictions(loss, False, False)
+        prediction = head_refinement.calculate_prediction(loss, False, False)
 
         # Initialize variables that are used to keep track of the best rule...
         cdef float64 best_quality_score = prediction.overall_quality_score
@@ -157,7 +157,7 @@ cdef class IREP(Pruning):
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
-            prediction = head_refinement.evaluate_predictions(loss, uncovered, False)
+            prediction = head_refinement.calculate_prediction(loss, uncovered, False)
             current_quality_score = prediction.overall_quality_score
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
