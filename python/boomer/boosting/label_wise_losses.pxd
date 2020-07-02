@@ -8,27 +8,27 @@ cdef class LabelWiseLossFunction:
 
     # Functions:
 
-    cdef float64 gradient(self, float64 expected_score, float64 predicted_score)
+    cdef float64 gradient(self, uint8 true_label, float64 predicted_score)
 
-    cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
+    cdef float64 hessian(self, uint8 true_label, float64 predicted_score)
 
 
 cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
-    cdef float64 gradient(self, float64 expected_score, float64 predicted_score)
+    cdef float64 gradient(self, uint8 true_label, float64 predicted_score)
 
-    cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
+    cdef float64 hessian(self, uint8 true_label, float64 predicted_score)
 
 
 cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
-    cdef float64 gradient(self, float64 expected_score, float64 predicted_score)
+    cdef float64 gradient(self, uint8 true_label, float64 predicted_score)
 
-    cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
+    cdef float64 hessian(self, uint8 true_label, float64 predicted_score)
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
@@ -76,7 +76,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     cdef float64 l2_regularization_weight
 
-    cdef float64[:, ::1] expected_scores
+    cdef uint8[:, ::1] true_labels
 
     cdef float64[:, ::1] current_scores
 
