@@ -12,7 +12,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     Allows to search for the best refinement of a rule according to a coverage loss that uses label-wise averaging.
     """
 
-    def __cinit__(self, Heuristic heuristic, intp[::1] label_indices, const uint8[::1, :] true_labels,
+    def __cinit__(self, Heuristic heuristic, intp[::1] label_indices, const uint8[:, ::1] true_labels,
                   const float64[::1, :] uncovered_labels, const uint8[::1] minority_labels,
                   const float64[::1, :] confusion_matrices_default):
         """
@@ -51,7 +51,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     cdef void update_search(self, intp example_index, uint32 weight):
         cdef const float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef const uint8[::1] minority_labels = self.minority_labels
-        cdef const uint8[::1, :] true_labels = self.true_labels
+        cdef const uint8[:, ::1] true_labels = self.true_labels
         cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
         cdef intp[::1] label_indices = self.label_indices
         cdef intp num_labels = confusion_matrices_covered.shape[0]
@@ -162,7 +162,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
         """
         self.heuristic = heuristic
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y):
         cdef intp num_examples = y.shape[0]
         cdef intp num_labels = y.shape[1]
         cdef float64[::1] default_rule = array_float64(num_labels)
@@ -214,7 +214,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef uint8[:, ::1] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef intp num_labels = minority_labels.shape[0]
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
@@ -240,7 +240,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         cdef Heuristic heuristic = self.heuristic
-        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef uint8[:, ::1] true_labels = self.true_labels
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
@@ -249,7 +249,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef uint8[:, ::1] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
         cdef intp num_labels = predicted_scores.shape[0]

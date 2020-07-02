@@ -39,4 +39,4 @@ cdef class SequentialRuleInduction:
     # Functions:
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder)
+                                 uint8[:, ::1] y, uint32 random_state, ModelBuilder model_builder)

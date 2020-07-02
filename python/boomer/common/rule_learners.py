@@ -217,7 +217,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format)
         x = self._validate_data((x if enforce_sparse else x.toarray(order='F')),
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
-        y = check_array(y.toarray(order='F'), ensure_2d=False, dtype=DTYPE_UINT8)
+        y = check_array(y.toarray(order='C'), ensure_2d=False, dtype=DTYPE_UINT8)
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)

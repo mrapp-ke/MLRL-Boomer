@@ -234,7 +234,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         self.loss_function = loss_function
         self.l2_regularization_weight = l2_regularization_weight
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y):
         # A label-wise differentiable loss function to be minimized
         cdef LabelWiseLossFunction loss_function = self.loss_function
         # The weight to be used for L2 regularization

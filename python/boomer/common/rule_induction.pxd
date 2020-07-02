@@ -75,7 +75,7 @@ cdef class RuleInduction:
 
     # Functions:
 
-    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder)
+    cdef void induce_default_rule(self, uint8[:, ::1] y, Loss loss, ModelBuilder model_builder)
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
@@ -92,7 +92,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Functions:
 
-    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder)
+    cdef void induce_default_rule(self, uint8[:, ::1] y, Loss loss, ModelBuilder model_builder)
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,

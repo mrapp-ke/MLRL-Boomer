@@ -57,7 +57,7 @@ cdef class SequentialRuleInduction:
         self.max_head_refinements = max_head_refinements
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[::1, :] y, uint32 random_state, ModelBuilder model_builder):
+                                 uint8[:, ::1] y, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 

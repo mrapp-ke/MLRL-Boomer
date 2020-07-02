@@ -11,7 +11,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef Heuristic heuristic
 
-    cdef const uint8[::1, :] true_labels
+    cdef const uint8[:, ::1] true_labels
 
     cdef const float64[::1, :] uncovered_labels
 
@@ -48,13 +48,13 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     cdef uint8[::1] minority_labels
 
-    cdef uint8[::1, :] true_labels
+    cdef uint8[:, ::1] true_labels
 
     cdef float64[::1, :] confusion_matrices_default
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y)
 
     cdef void begin_instance_sub_sampling(self)
 
