@@ -141,7 +141,7 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, uint8[:, ::1] y, Loss loss, ModelBuilder model_builder):
         """
         Induces the default rule that minimizes a certain loss function with respect to the given ground truth labels.
 
@@ -218,7 +218,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, uint8[::1, :] y, Loss loss, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, uint8[:, ::1] y, Loss loss, ModelBuilder model_builder):
         cdef DefaultPrediction prediction = loss.calculate_default_prediction(y)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         model_builder.set_default_rule(predicted_scores)

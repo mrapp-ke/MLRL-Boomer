@@ -251,7 +251,7 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         """
         self.l2_regularization_weight = l2_regularization_weight
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y):
         # The weight to be used for L2 regularization
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of examples
