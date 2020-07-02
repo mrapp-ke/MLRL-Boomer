@@ -8,7 +8,7 @@ Provides classes that implement strategies for pruning classification rules.
 from boomer.common._arrays cimport float32, float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
-from boomer.common.losses cimport PredictionSearch, Prediction
+from boomer.common.losses cimport RefinementSearch, Prediction
 
 from cython.operator cimport dereference, postincrement
 
@@ -80,7 +80,7 @@ cdef class IREP(Pruning):
 
         # Tell the loss function to start a new search...
         loss.begin_instance_sub_sampling()
-        cdef PredictionSearch prediction_search = loss.begin_search(label_indices)
+        cdef RefinementSearch refinement_search = loss.begin_search(label_indices)
 
         # Tell the loss function about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -88,11 +88,11 @@ cdef class IREP(Pruning):
                 loss.update_sub_sample(i, 1, False)
 
                 if covered_examples_mask[i] == covered_examples_target:
-                    prediction_search.update_search(i, 1)
+                    refinement_search.update_search(i, 1)
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        prediction = head_refinement.calculate_prediction(prediction_search, False, False)
+        prediction = head_refinement.calculate_prediction(refinement_search, False, False)
 
         # Initialize variables that are used to keep track of the best rule...
         cdef float64 best_quality_score = prediction.overall_quality_score
@@ -124,7 +124,7 @@ cdef class IREP(Pruning):
             num_indexed_values = dereference(indexed_array).num_elements
 
             # Tell the loss function to start a new search when processing a new condition...
-            prediction_search = loss.begin_search(label_indices)
+            refinement_search = loss.begin_search(label_indices)
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)
@@ -153,11 +153,11 @@ cdef class IREP(Pruning):
 
                 # We must only consider examples that are currently covered and contained in the prune set...
                 if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
-                    prediction_search.update_search(i, 1)
+                    refinement_search.update_search(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
-            prediction = head_refinement.calculate_prediction(prediction_search, uncovered, False)
+            prediction = head_refinement.calculate_prediction(refinement_search, uncovered, False)
             current_quality_score = prediction.overall_quality_score
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):

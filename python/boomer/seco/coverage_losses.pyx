@@ -21,7 +21,7 @@ cdef class CoverageLoss(Loss):
     cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         pass
 
-    cdef PredictionSearch begin_search(self, intp[::1] label_indices):
+    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         pass
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):

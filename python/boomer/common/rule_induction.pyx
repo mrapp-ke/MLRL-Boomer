@@ -9,7 +9,7 @@ from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, ge
 from boomer.common._tuples cimport compare_indexed_float32
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.losses cimport PredictionSearch, DefaultPrediction, Prediction
+from boomer.common.losses cimport RefinementSearch, DefaultPrediction, Prediction
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, qsort
@@ -275,7 +275,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef bint nominal
 
         # Temporary variables
-        cdef PredictionSearch prediction_search
+        cdef RefinementSearch refinement_search
         cdef HeadCandidate current_head
         cdef Prediction prediction
         cdef float64[::1] predicted_scores
@@ -379,7 +379,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         nominal = False
 
                     # Tell the loss function to start a new search when processing a new feature...
-                    prediction_search = loss.begin_search(label_indices)
+                    refinement_search = loss.begin_search(label_indices)
 
                     # In the following, we start by processing all examples with feature values < 0...
                     sum_of_weights = 0
@@ -400,7 +400,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         if weight > 0:
                             # Tell the loss function that the example will be covered by upcoming refinements...
-                            prediction_search.update_search(i, weight)
+                            refinement_search.update_search(i, weight)
                             sum_of_weights += weight
                             previous_threshold = current_threshold
                             previous_r = r
@@ -426,7 +426,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 if previous_threshold != current_threshold:
                                     # Find and evaluate the best head for the current refinement, if a condition that
                                     # uses the <= operator (or the == operator in case of a nominal feature) is used...
-                                    current_head = head_refinement.find_head(head, label_indices, prediction_search,
+                                    current_head = head_refinement.find_head(head, label_indices, refinement_search,
                                                                              False, False)
 
                                     # If the refinement is better than the current rule...
@@ -451,7 +451,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                                     # Find and evaluate the best head for the current refinement, if a condition that
                                     # uses the > operator (or the != operator in case of a nominal feature) is used...
-                                    current_head = head_refinement.find_head(head, label_indices, prediction_search,
+                                    current_head = head_refinement.find_head(head, label_indices, refinement_search,
                                                                              True, False)
 
                                     # If the refinement is better than the current rule...
@@ -477,7 +477,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     # Reset the loss function in case of a nominal feature, as the previous examples
                                     # will not be covered by the next condition...
                                     if nominal:
-                                        prediction_search.reset_search()
+                                        refinement_search.reset_search()
                                         sum_of_weights = 0
                                         first_r = r
 
@@ -485,7 +485,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 previous_r = r
 
                                 # Tell the loss function that the example will be covered by upcoming refinements...
-                                prediction_search.update_search(i, weight)
+                                refinement_search.update_search(i, weight)
                                 sum_of_weights += weight
                                 accumulated_sum_of_weights += weight
 
@@ -496,8 +496,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                or accumulated_sum_of_weights < total_sum_of_weights):
                             # Find and evaluate the best head for the current refinement, if a condition that uses the
                             # == operator is used...
-                            current_head = head_refinement.find_head(head, label_indices, prediction_search,
-                                                                     False, False)
+                            current_head = head_refinement.find_head(head, label_indices, refinement_search, False,
+                                                                     False)
 
                             # If the refinement is better than the current rule...
                             if current_head is not None:
@@ -516,8 +516,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                             # Find and evaluate the best head for the current refinement, if a condition that uses the !=
                             # operator is used...
-                            current_head = head_refinement.find_head(head, label_indices, prediction_search,
-                                                                     True, False)
+                            current_head = head_refinement.find_head(head, label_indices, refinement_search, True,
+                                                                     False)
 
                             # If the refinement is better than the current rule...
                             if current_head is not None:
@@ -535,7 +535,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 best_condition_threshold = previous_threshold
 
                         # Reset the loss function, if any examples with feature value < 0 have been processed...
-                        prediction_search.reset_search()
+                        refinement_search.reset_search()
 
                     previous_threshold_negative = previous_threshold
                     previous_r_negative = previous_r
@@ -553,7 +553,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         if weight > 0:
                             # Tell the loss function that the example will be covered by upcoming refinements...
-                            prediction_search.update_search(i, weight)
+                            refinement_search.update_search(i, weight)
                             sum_of_weights += weight
                             previous_threshold = indexed_values[r].value
                             previous_r = r
@@ -575,7 +575,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 if previous_threshold != current_threshold:
                                     # Find and evaluate the best head for the current refinement, if a condition that
                                     # uses the > operator (or the == operator in case of a nominal feature) is used...
-                                    current_head = head_refinement.find_head(head, label_indices, prediction_search,
+                                    current_head = head_refinement.find_head(head, label_indices, refinement_search,
                                                                              False, False)
 
                                     # If the refinement is better than the current rule...
@@ -600,7 +600,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                                     # Find and evaluate the best head for the current refinement, if a condition that
                                     # uses the <= operator (or the != operator in case of a nominal feature) is used...
-                                    current_head = head_refinement.find_head(head, label_indices, prediction_search,
+                                    current_head = head_refinement.find_head(head, label_indices, refinement_search,
                                                                              True, False)
 
                                     # If the refinement is better than the current rule...
@@ -626,7 +626,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     # Reset the loss function in case of a nominal feature, as the previous examples
                                     # will not be covered by the next condition...
                                     if nominal:
-                                        prediction_search.reset_search()
+                                        refinement_search.reset_search()
                                         sum_of_weights = 0
                                         first_r = r
 
@@ -634,7 +634,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 previous_r = r
 
                                 # Tell the loss function that the example will be covered by upcoming refinements...
-                                prediction_search.update_search(i, weight)
+                                refinement_search.update_search(i, weight)
                                 sum_of_weights += weight
                                 accumulated_sum_of_weights += weight
 
@@ -644,7 +644,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if nominal and sum_of_weights > 0 and sum_of_weights < accumulated_sum_of_weights:
                         # Find and evaluate the best head for the current refinement, if a condition that uses the ==
                         # operator is used...
-                        current_head = head_refinement.find_head(head, label_indices, prediction_search, False, False)
+                        current_head = head_refinement.find_head(head, label_indices, refinement_search, False, False)
 
                         # If the refinement is better than the current rule...
                         if current_head is not None:
@@ -663,7 +663,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         # Find and evaluate the best head for the current refinement, if a condition that uses the !=
                         # operator is used...
-                        current_head = head_refinement.find_head(head, label_indices, prediction_search, True, False)
+                        current_head = head_refinement.find_head(head, label_indices, refinement_search, True, False)
 
                         # If the refinement is better than the current rule...
                         if current_head is not None:
@@ -691,13 +691,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         # If the feature is nominal, we must reset the loss function once again to ensure that the
                         # accumulated state includes all examples that have been processed so far...
                         if nominal:
-                            prediction_search.reset_search()
+                            refinement_search.reset_search()
                             first_r = num_indexed_values - 1
 
                         # Find and evaluate the best head for the current refinement, if the condition
                         # `f > previous_threshold / 2` (or the condition `f != 0` in case of a nominal feature) is
                         # used...
-                        current_head = head_refinement.find_head(head, label_indices, prediction_search, False, nominal)
+                        current_head = head_refinement.find_head(head, label_indices, refinement_search, False, nominal)
 
                         # If the refinement is better than the current rule...
                         if current_head is not None:
@@ -724,7 +724,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         # Find and evaluate the best head for the current refinement, if the condition
                         # `f <= previous_threshold / 2` (or `f == 0` in case of a nominal feature) is used...
-                        current_head = head_refinement.find_head(head, label_indices, prediction_search, True, nominal)
+                        current_head = head_refinement.find_head(head, label_indices, refinement_search, True, nominal)
 
                         # If the refinement is better than the current rule...
                         if current_head is not None:
@@ -757,7 +757,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if not nominal and accumulated_sum_of_weights_negative > 0 and accumulated_sum_of_weights_negative < total_sum_of_weights:
                         # Find and evaluate the best head for the current refinement, if the condition that uses the <=
                         # operator is used...
-                        current_head = head_refinement.find_head(head, label_indices, prediction_search, False, True)
+                        current_head = head_refinement.find_head(head, label_indices, refinement_search, False, True)
 
                         if current_head is not None:
                             found_refinement = True
@@ -783,7 +783,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         # Find and evaluate the best head for the current refinement, if the condition that uses the >
                         # operator is used...
-                        current_head = head_refinement.find_head(head, label_indices, prediction_search, True, True)
+                        current_head = head_refinement.find_head(head, label_indices, refinement_search, True, True)
 
                         if current_head is not None:
                             found_refinement = True
@@ -863,13 +863,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
-                    prediction_search = loss.begin_search(label_indices)
+                    refinement_search = loss.begin_search(label_indices)
 
                     for r in range(num_examples):
                         if covered_examples_mask[r] == covered_examples_target:
-                            prediction_search.update_search(r, 1)
+                            refinement_search.update_search(r, 1)
 
-                    prediction = head_refinement.calculate_prediction(prediction_search, False, False)
+                    prediction = head_refinement.calculate_prediction(refinement_search, False, False)
                     predicted_scores[:] = prediction.predicted_scores
 
                 # Apply shrinkage, if necessary...

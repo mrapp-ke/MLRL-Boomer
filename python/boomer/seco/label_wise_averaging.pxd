@@ -1,11 +1,11 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport PredictionSearch, DecomposablePredictionSearch
+from boomer.common.losses cimport RefinementSearch, DecomposableRefinementSearch
 from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.coverage_losses cimport CoverageLoss
 from boomer.seco.heuristics cimport Heuristic
 
 
-cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
+cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     # Attributes:
 
@@ -60,6 +60,6 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove)
 
-    cdef PredictionSearch begin_search(self, intp[::1] label_indices)
+    cdef RefinementSearch begin_search(self, intp[::1] label_indices)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)

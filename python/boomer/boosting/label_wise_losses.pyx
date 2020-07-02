@@ -11,7 +11,7 @@ from libc.math cimport pow, exp
 
 cdef class LabelWiseDifferentiableFunction:
     """
-    A base class for all label-wise differentiable loss functions.
+    A base class for all differentiable loss functions that are applied label-wise.
     """
 
     cdef float64 gradient(self, float64 expected_score, float64 predicted_score):
@@ -43,7 +43,7 @@ cdef class LabelWiseDifferentiableFunction:
 
 cdef class LabelWiseLogisticLossFunction(LabelWiseDifferentiableFunction):
     """
-    A multi-label variant of the logistic loss that is applied to each label individually.
+    A multi-label variant of the logistic loss that is applied label-wise.
     """
 
     cdef float64 gradient(self, float64 expected_score, float64 predicted_score):
@@ -56,7 +56,7 @@ cdef class LabelWiseLogisticLossFunction(LabelWiseDifferentiableFunction):
 
 cdef class LabelWiseSquaredErrorLossFunction(LabelWiseDifferentiableFunction):
     """
-    A multi-label variant of the squared error loss that is applied to each label individually.
+    A multi-label variant of the squared error loss that is applied label-wise.
     """
 
     cdef float64 gradient(self, float64 expected_score, float64 predicted_score):
@@ -66,9 +66,10 @@ cdef class LabelWiseSquaredErrorLossFunction(LabelWiseDifferentiableFunction):
         return 2
 
 
-cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
+cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     """
-    Allows to search for predictions that minimize a label-wise decomposable differentiable loss when refining a rule.
+    Allows to search for the best refinement of a rule according to a differentiable loss function that is applied
+    label-wise.
     """
 
     def __cinit__(self, LabelWiseDifferentiableFunction loss_function, float64 l2_regularization_weight,
@@ -220,7 +221,8 @@ cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
 
 cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
     """
-    A differentiable loss functions that is applied label-wise.
+    Allows to locally minimize a differentiable (surrogate) loss function that is applied label-wise by the rules that
+    are learned by a boosting algorithm.
     """
 
     def __cinit__(self, LabelWiseDifferentiableFunction loss_function, float64 l2_regularization_weight):
@@ -347,14 +349,14 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
             total_sums_of_gradients[c] += (signed_weight * gradients[example_index, c])
             total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
 
-    cdef PredictionSearch begin_search(self, intp[::1] label_indices):
+    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         cdef LabelWiseDifferentiableFunction loss_function = self.loss_function
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        return LabelWisePredictionSearch.__new__(LabelWisePredictionSearch, loss_function, l2_regularization_weight,
+        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, loss_function, l2_regularization_weight,
                                                  label_indices, gradients, total_sums_of_gradients, hessians,
                                                  total_sums_of_hessians)
 
