@@ -4,7 +4,7 @@ from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePredic
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
 
 
-cdef class LabelWiseDifferentiableFunction:
+cdef class LabelWiseLossFunction:
 
     # Functions:
 
@@ -13,7 +13,7 @@ cdef class LabelWiseDifferentiableFunction:
     cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
 
 
-cdef class LabelWiseLogisticLossFunction(LabelWiseDifferentiableFunction):
+cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
@@ -22,7 +22,7 @@ cdef class LabelWiseLogisticLossFunction(LabelWiseDifferentiableFunction):
     cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
 
 
-cdef class LabelWiseSquaredErrorLossFunction(LabelWiseDifferentiableFunction):
+cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
@@ -35,7 +35,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     # Attributes:
 
-    cdef LabelWiseDifferentiableFunction loss_function
+    cdef LabelWiseLossFunction loss_function
 
     cdef float64 l2_regularization_weight
 
@@ -74,7 +74,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     # Attributes:
 
-    cdef LabelWiseDifferentiableFunction loss_function
+    cdef LabelWiseLossFunction loss_function
 
     cdef float64 l2_regularization_weight
 
