@@ -7,9 +7,9 @@ DEF _RN = 2
 DEF _RP = 3
 
 
-cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
+cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     """
-    Allows to search for predictions that minimize a label-wise decomposable coverage loss when refining a rule.
+    Allows to search for the best refinement of a rule according to a coverage loss that uses label-wise averaging.
     """
 
     def __cinit__(self, Heuristic heuristic, intp[::1] label_indices, const uint8[::1, :] true_labels,
@@ -152,7 +152,8 @@ cdef class LabelWisePredictionSearch(DecomposablePredictionSearch):
 
 cdef class LabelWiseAveraging(CoverageLoss):
     """
-    A coverage loss that results from applying a heuristic label-wise.
+    Allows to locally minimize a coverage loss that uses label-wise averaging by the rules that are learned by an
+    algorithm based on sequential covering.
     """
 
     def __cinit__(self, Heuristic heuristic):
@@ -237,13 +238,13 @@ cdef class LabelWiseAveraging(CoverageLoss):
                     elif predicted_label == 1:
                         confusion_matrices_default[c, _RP] += signed_weight
 
-    cdef PredictionSearch begin_search(self, intp[::1] label_indices):
+    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         cdef Heuristic heuristic = self.heuristic
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        return LabelWisePredictionSearch.__new__(LabelWisePredictionSearch, heuristic, label_indices, true_labels,
+        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, heuristic, label_indices, true_labels,
                                                  uncovered_labels, minority_labels, confusion_matrices_default)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):

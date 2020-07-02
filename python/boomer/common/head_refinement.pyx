@@ -33,12 +33,12 @@ cdef class HeadRefinement:
     """
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
-                                 PredictionSearch prediction_search, bint uncovered, bint accumulated):
+                                 RefinementSearch refinement_search, bint uncovered, bint accumulated):
         """
-        Finds and returns the best head for a rule given the predictions that are provided by a `PredictionSearch`.
+        Finds and returns the best head for a rule given the predictions that are provided by a `RefinementSearch`.
 
-        The `PredictionSearch` must have been prepared properly via calls to the function
-        `PredictionSearch#update_search`.
+        The `RefinementSearch` must have been prepared properly via calls to the function
+        `RefinementSearch#update_search`.
 
         :param best_head:           The `HeadCandidate` that corresponds to the best rule known so far (as found in the
                                     previous or current refinement iteration) or None, if no such rule is available yet.
@@ -47,32 +47,32 @@ cdef class HeadRefinement:
                                     creating a new instance to avoid unnecessary memory allocations
         :param label_indices:       An array of dtype int, shape `(num_labels)`, representing the indices of the labels
                                     for which the head may predict or None, if the head may predict for all labels
-        :param prediction_search:   The `PredictionSearch` that should be used
+        :param refinement_search:   The `RefinementSearch` that should be used
         :param uncovered:           0, if the rule for which the head should be found covers all examples that have been
-                                    provided to the `PredictionSearch` so far, 1, if the rule covers all examples that
+                                    provided to the `RefinementSearch` so far, 1, if the rule covers all examples that
                                     have not been provided yet
         :param accumulated:         0, if the rule covers all examples that have been provided since the
-                                    `PredictionSearch` has been reset for the last time, 1, if the rule covers all
+                                    `RefinementSearch` has been reset for the last time, 1, if the rule covers all
                                     examples that have been provided so far
         :return:                    A 'HeadCandidate' that stores information about the head that has been found, if the
                                     head is better than `best_head`, None otherwise
         """
         pass
 
-    cdef Prediction calculate_prediction(self, PredictionSearch prediction_search, bint uncovered, bint accumulated):
+    cdef Prediction calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
         """
         Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, using a
-        `PredictionSearch`.
+        `RefinementSearch`.
 
-        The `PredictionSearch` must have been prepared properly via calls to the function
-        `PredictionSearch#update_search`.
+        The `RefinementSearch` must have been prepared properly via calls to the function
+        `RefinementSearch#update_search`.
 
-        :param prediction_search:   The `PredictionSearch` that should be used
+        :param refinement_search:   The `RefinementSearch` that should be used
         :param uncovered:           0, if the rule for which the optimal scores should be calculated covers all examples
-                                    that have been provided to the `PredictionSearch` so far, 1, if the rule covers all
+                                    that have been provided to the `RefinementSearch` so far, 1, if the rule covers all
                                     examples that have not been provided yet
         :param accumulated          0, if the rule covers all examples that have been provided since the
-                                    `PredictionSearch` has been reset for the last time, 1, if the rule covers all
+                                    `RefinementSearch` has been reset for the last time, 1, if the rule covers all
                                     examples that have been  provided so far
         :return:                    A `Prediction` that stores the optimal scores to be predicted by the rule, as well
                                     as its overall quality score
@@ -86,8 +86,8 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
 
     cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
-                                 PredictionSearch prediction_search, bint uncovered, bint accumulated):
-        cdef LabelWisePrediction prediction = prediction_search.calculate_label_wise_prediction(uncovered, accumulated)
+                                 RefinementSearch refinement_search, bint uncovered, bint accumulated):
+        cdef LabelWisePrediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels = predicted_scores.shape[0]
@@ -127,6 +127,6 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         # Return None, as the quality_score of the found head is worse than that of `best_head`...
         return None
 
-    cdef Prediction calculate_prediction(self, PredictionSearch prediction_search, bint uncovered, bint accumulated):
-        cdef Prediction prediction = prediction_search.calculate_label_wise_prediction(uncovered, accumulated)
+    cdef Prediction calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
+        cdef Prediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction

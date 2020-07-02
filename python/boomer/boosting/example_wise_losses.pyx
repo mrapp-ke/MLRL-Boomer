@@ -14,9 +14,10 @@ from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
 
-cdef class ExampleWiseLogisticLossPredictionSearch(NonDecomposablePredictionSearch):
+cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSearch):
     """
-    Allows to search for predictions that minimize an example-wise differentiable loss when refining a rule.
+    Allows to search for the best refinement of a rule according to a differentiable loss function that is applied
+    example-wise.
     """
 
     def __cinit__(self, float64 l2_regularization_weight, intp[::1] label_indices, const float64[::1, :] gradients,
@@ -238,7 +239,8 @@ cdef class ExampleWiseLogisticLossPredictionSearch(NonDecomposablePredictionSear
 
 cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
     """
-    A multi-label variant of the logistic loss that is applied example-wise.
+    Allows to locally minimize a differentiable (surrogate) loss function that is applied example-wise by the rules that
+    are learned by a boosting algorithm.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):
@@ -418,13 +420,13 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         for c in range(num_elements):
             total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
 
-    cdef PredictionSearch begin_search(self, intp[::1] label_indices):
+    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        return ExampleWiseLogisticLossPredictionSearch.__new__(ExampleWiseLogisticLossPredictionSearch,
+        return ExampleWiseLogisticLossRefinementSearch.__new__(ExampleWiseLogisticLossRefinementSearch,
                                                                l2_regularization_weight, label_indices, gradients,
                                                                total_sums_of_gradients, hessians,
                                                                total_sums_of_hessians)

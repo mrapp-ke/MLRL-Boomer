@@ -32,9 +32,9 @@ cdef class LabelWisePrediction(Prediction):
         self.quality_scores = None
 
 
-cdef class PredictionSearch:
+cdef class RefinementSearch:
     """
-    A base class for all classes that allow to search for predictions that minimize a loss when refining a rule.
+    A base class for all classes that allow to search for the best refinement of a rule according to a certain loss.
     """
 
     cdef void update_search(self, intp example_index, uint32 weight):
@@ -137,10 +137,10 @@ cdef class PredictionSearch:
         pass
 
 
-cdef class DecomposablePredictionSearch(PredictionSearch):
+cdef class DecomposableRefinementSearch(RefinementSearch):
     """
-    A base class for all classes that allow to search for predictions that minimize a decomposable loss when refining a
-    rule.
+    A base class for all classes that allow to search for the best refinement of a rule according to a (label-wise)
+    decomposable loss.
     """
 
     cdef void update_search(self, intp example_index, uint32 weight):
@@ -153,15 +153,14 @@ cdef class DecomposablePredictionSearch(PredictionSearch):
         pass
 
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
-        # In case of a decomposable loss, the label-dependent predictions are the same as the label-independent
-        # predictions...
+        # In case of a decomposable loss, the example-wise predictions are the same as the label-wise predictions...
         return self.calculate_label_wise_prediction(uncovered, accumulated)
 
 
-cdef class NonDecomposablePredictionSearch(PredictionSearch):
+cdef class NonDecomposableRefinementSearch(RefinementSearch):
     """
-    A base class for all classes that allow to search for predictions that minimize a non-decomposable loss when
-    refining a rule.
+    A base class for all classes that allow to search for the best refinement of a rule according to a (label-wise)
+    non-decomposable loss.
     """
 
     cdef void update_search(self, intp example_index, uint32 weight):
@@ -249,10 +248,10 @@ cdef class Loss:
         """
         pass
 
-    cdef PredictionSearch begin_search(self, intp[::1] label_indices):
+    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         """
-        Starts a new search for loss-minimizing predictions by the refinement of a rule. The examples that are covered
-        by such a refinement must be provided via subsequent calls to the function `RefinementSearch#update_search`.
+        Starts a new search for the best refinement of a rule. The examples that are covered by such a refinement must
+        be provided via subsequent calls to the function `RefinementSearch#update_search`.
 
         This function must be called each time a new refinement is considered, unless the new refinement covers all
         examples previously provided via calls to the function `RefinementSearch#update_search`.
