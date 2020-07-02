@@ -259,7 +259,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
         prediction.predicted_scores = predicted_scores
         # Temporary variables
-        cdef float64 sum_of_gradients, sum_of_hessians, predicted_score, tmp
+        cdef float64 sum_of_gradients, sum_of_hessians, predicted_score
         cdef uint8 true_label
         cdef intp c, r
 
@@ -272,12 +272,10 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
                 true_label = y[r, c]
 
                 # Calculate gradient for the current example and label...
-                tmp = loss_function.gradient(true_label, 0)
-                sum_of_gradients += tmp
+                sum_of_gradients += loss_function.gradient(true_label, 0)
 
                 # Calculate hessian for the current example and label...
-                tmp = loss_function.hessian(true_label, 0)
-                sum_of_hessians += tmp
+                sum_of_hessians += loss_function.hessian(true_label, 0)
 
             # Calculate optimal score to be predicted by the default rule for the current label...
             predicted_score = -sum_of_gradients / (sum_of_hessians + l2_regularization_weight)
@@ -288,12 +286,10 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
                 true_label = y[r, c]
 
                 # Calculate updated gradient for the current example and label...
-                tmp = loss_function.gradient(true_label, predicted_score)
-                gradients[r, c] = tmp
+                gradients[r, c] = loss_function.gradient(true_label, predicted_score)
 
                 # Calculate updated gradient for the current example and label...
-                tmp = loss_function.hessian(true_label, predicted_score)
-                hessians[r, c] = tmp
+                hessians[r, c] = loss_function.hessian(true_label, predicted_score)
 
                 # Store the score that is currently predicted for the current example and label...
                 current_scores[r, c] = predicted_score
