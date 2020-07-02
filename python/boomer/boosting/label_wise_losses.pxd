@@ -39,7 +39,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef float64 l2_regularization_weight
 
-    cdef intp[::1] label_indices
+    cdef const intp[::1] label_indices
 
     cdef const float64[::1, :] gradients
 

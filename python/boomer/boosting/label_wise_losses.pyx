@@ -73,8 +73,9 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     """
 
     def __cinit__(self, LabelWiseLossFunction loss_function, float64 l2_regularization_weight,
-                  intp[::1] label_indices, const float64[::1, :] gradients, const float64[::1] total_sums_of_gradients,
-                  const float64[::1, :] hessians, const float64[::1] total_sums_of_hessians):
+                  const intp[::1] label_indices, const float64[::1, :] gradients,
+                  const float64[::1] total_sums_of_gradients, const float64[::1, :] hessians,
+                  const float64[::1] total_sums_of_hessians):
         """
         :param loss_function:               A label-wise differentiable loss function to be minimized by the search
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
@@ -122,7 +123,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef const float64[::1, :] hessians = self.hessians
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
-        cdef intp[::1] label_indices = self.label_indices
+        cdef const intp[::1] label_indices = self.label_indices
         # The number of labels considered by the current search
         cdef intp num_labels = sums_of_gradients.shape[0]
         # Temporary variables
@@ -182,7 +183,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef float64 overall_quality_score = 0
         # Temporary variables
         cdef const float64[::1] total_sums_of_gradients, total_sums_of_hessians
-        cdef intp[::1] label_indices
+        cdef const intp[::1] label_indices
         cdef float64 sum_of_gradients, sum_of_hessians, score, score_pow
         cdef intp c, l
 
