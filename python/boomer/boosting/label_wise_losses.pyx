@@ -72,12 +72,10 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     label-wise.
     """
 
-    def __cinit__(self, LabelWiseLossFunction loss_function, float64 l2_regularization_weight,
-                  const intp[::1] label_indices, const float64[::1, :] gradients,
-                  const float64[::1] total_sums_of_gradients, const float64[::1, :] hessians,
-                  const float64[::1] total_sums_of_hessians):
+    def __cinit__(self, float64 l2_regularization_weight, const intp[::1] label_indices,
+                  const float64[::1, :] gradients, const float64[::1] total_sums_of_gradients,
+                  const float64[::1, :] hessians, const float64[::1] total_sums_of_hessians):
         """
-        :param loss_function:               A label-wise differentiable loss function to be minimized by the search
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             optimal scores to be predicted by rules
         :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
@@ -94,7 +92,6 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                             hessians of all examples, which should be considered by the search, for each
                                             label
         """
-        self.loss_function = loss_function
         self.l2_regularization_weight = l2_regularization_weight
         self.label_indices = label_indices
         self.gradients = gradients
@@ -351,15 +348,13 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
             total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
-        cdef LabelWiseLossFunction loss_function = self.loss_function
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, loss_function, l2_regularization_weight,
-                                                 label_indices, gradients, total_sums_of_gradients, hessians,
-                                                 total_sums_of_hessians)
+        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, l2_regularization_weight, label_indices,
+                                                 gradients, total_sums_of_gradients, hessians, total_sums_of_hessians)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
