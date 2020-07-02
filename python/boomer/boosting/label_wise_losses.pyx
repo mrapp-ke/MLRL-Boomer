@@ -3,7 +3,7 @@
 
 Provides classes that implement loss functions that are applied example- and label-wise.
 """
-from boomer.common._arrays cimport array_float64, fortran_matrix_float64, get_index
+from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from boomer.boosting.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
 
 from libc.math cimport pow, exp
@@ -73,8 +73,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     """
 
     def __cinit__(self, float64 l2_regularization_weight, const intp[::1] label_indices,
-                  const float64[::1, :] gradients, const float64[::1] total_sums_of_gradients,
-                  const float64[::1, :] hessians, const float64[::1] total_sums_of_hessians):
+                  const float64[:, ::1] gradients, const float64[::1] total_sums_of_gradients,
+                  const float64[:, ::1] hessians, const float64[::1] total_sums_of_hessians):
         """
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             optimal scores to be predicted by rules
@@ -116,9 +116,9 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
-        cdef const float64[::1, :] gradients = self.gradients
+        cdef const float64[:, ::1] gradients = self.gradients
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef const float64[::1, :] hessians = self.hessians
+        cdef const float64[:, ::1] hessians = self.hessians
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
         cdef const intp[::1] label_indices = self.label_indices
         # The number of labels considered by the current search
@@ -244,15 +244,15 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         # The number of labels
         cdef intp num_labels = y.shape[1]
         # A matrix that stores the expected scores for each example and label according to the ground truth
-        cdef float64[::1, :] expected_scores = fortran_matrix_float64(num_examples, num_labels)
+        cdef float64[:, ::1] expected_scores = c_matrix_float64(num_examples, num_labels)
         # A matrix that stores the currently predicted scores for each example and label
-        cdef float64[::1, :] current_scores = fortran_matrix_float64(num_examples, num_labels)
+        cdef float64[:, ::1] current_scores = c_matrix_float64(num_examples, num_labels)
         # A matrix that stores the gradients for each example and label
-        cdef float64[::1, :] gradients = fortran_matrix_float64(num_examples, num_labels)
+        cdef float64[:, ::1] gradients = c_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of gradients
         cdef float64[::1] total_sums_of_gradients = array_float64(num_labels)
         # A matrix that stores the hessians for each example and label
-        cdef float64[::1, :] hessians = fortran_matrix_float64(num_examples, num_labels)
+        cdef float64[:, ::1] hessians = c_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = array_float64(num_labels)
         # An array that stores the scores that are predicted by the default rule
@@ -330,9 +330,9 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         # Class members
-        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[:, ::1] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1, :] hessians = self.hessians
+        cdef float64[:, ::1] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
         # The number of labels
         cdef intp num_labels = total_sums_of_gradients.shape[0]
@@ -349,9 +349,9 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef float64[::1, :] gradients = self.gradients
+        cdef float64[:, ::1] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1, :] hessians = self.hessians
+        cdef float64[:, ::1] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
         return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, l2_regularization_weight, label_indices,
                                                  gradients, total_sums_of_gradients, hessians, total_sums_of_hessians)
@@ -359,10 +359,10 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
         cdef LabelWiseLossFunction loss_function = self.loss_function
-        cdef float64[::1, :] gradients = self.gradients
-        cdef float64[::1, :] hessians = self.hessians
-        cdef float64[::1, :] expected_scores = self.expected_scores
-        cdef float64[::1, :] current_scores = self.current_scores
+        cdef float64[:, ::1] gradients = self.gradients
+        cdef float64[:, ::1] hessians = self.hessians
+        cdef float64[:, ::1] expected_scores = self.expected_scores
+        cdef float64[:, ::1] current_scores = self.current_scores
         # The number of predicted labels
         cdef intp num_labels = predicted_scores.shape[0]
         # Temporary variables
