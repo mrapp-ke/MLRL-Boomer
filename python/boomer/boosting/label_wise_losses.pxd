@@ -35,8 +35,6 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     # Attributes:
 
-    cdef LabelWiseLossFunction loss_function
-
     cdef float64 l2_regularization_weight
 
     cdef const intp[::1] label_indices
