@@ -474,7 +474,6 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
 
             # Calculate the first derivative (gradient) of the loss function with respect to the current label and add
             # it to the matrix of gradients...
-            tmp = gradients[example_index, c]
             tmp = (expected_score * exponential) / sum_of_exponentials
             # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using the
             # sums of gradients as the ordinates for solving a system of linear equations in the function
@@ -484,7 +483,6 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
             # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
             # each of the other labels and add them to the matrix of hessians...
             for c2 in range(c):
-                tmp = hessians[example_index, j]
                 tmp = exp(-expected_scores[example_index, c2] * current_scores[example_index, c2] - expected_score * score)
                 tmp = (expected_scores[example_index, c2] * expected_score * tmp) / sum_of_exponentials_pow
                 hessians[example_index, j] = -tmp
@@ -492,7 +490,6 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
 
             # Calculate the second derivative (hessian) of the loss function with respect to the current label and add
             # it to the matrix of hessians...
-            tmp = hessians[example_index, j]
             tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
             hessians[example_index, j] = tmp
             j += 1
