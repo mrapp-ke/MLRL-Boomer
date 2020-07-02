@@ -9,7 +9,7 @@ from boomer.boosting.differentiable_losses cimport _convert_label_into_score, _l
 from libc.math cimport pow, exp
 
 
-cdef class LabelWiseDifferentiableFunction:
+cdef class LabelWiseLossFunction:
     """
     A base class for all differentiable loss functions that are applied label-wise.
     """
@@ -41,7 +41,7 @@ cdef class LabelWiseDifferentiableFunction:
         pass
 
 
-cdef class LabelWiseLogisticLossFunction(LabelWiseDifferentiableFunction):
+cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
     """
     A multi-label variant of the logistic loss that is applied label-wise.
     """
@@ -54,7 +54,7 @@ cdef class LabelWiseLogisticLossFunction(LabelWiseDifferentiableFunction):
         return (pow(expected_score, 2) * exponential) / pow(1 + exponential, 2)
 
 
-cdef class LabelWiseSquaredErrorLossFunction(LabelWiseDifferentiableFunction):
+cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
     """
     A multi-label variant of the squared error loss that is applied label-wise.
     """
@@ -72,7 +72,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     label-wise.
     """
 
-    def __cinit__(self, LabelWiseDifferentiableFunction loss_function, float64 l2_regularization_weight,
+    def __cinit__(self, LabelWiseLossFunction loss_function, float64 l2_regularization_weight,
                   intp[::1] label_indices, const float64[::1, :] gradients, const float64[::1] total_sums_of_gradients,
                   const float64[::1, :] hessians, const float64[::1] total_sums_of_hessians):
         """
@@ -225,7 +225,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
     are learned by a boosting algorithm.
     """
 
-    def __cinit__(self, LabelWiseDifferentiableFunction loss_function, float64 l2_regularization_weight):
+    def __cinit__(self, LabelWiseLossFunction loss_function, float64 l2_regularization_weight):
         """
         :param loss_function:               A label-wise differentiable loss function to be minimized
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
@@ -238,7 +238,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y):
         # A label-wise differentiable loss function to be minimized
-        cdef LabelWiseDifferentiableFunction loss_function = self.loss_function
+        cdef LabelWiseLossFunction loss_function = self.loss_function
         # The weight to be used for L2 regularization
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of examples
@@ -350,7 +350,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
             total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
-        cdef LabelWiseDifferentiableFunction loss_function = self.loss_function
+        cdef LabelWiseLossFunction loss_function = self.loss_function
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -362,7 +362,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
-        cdef LabelWiseDifferentiableFunction loss_function = self.loss_function
+        cdef LabelWiseLossFunction loss_function = self.loss_function
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1, :] hessians = self.hessians
         cdef float64[::1, :] expected_scores = self.expected_scores
