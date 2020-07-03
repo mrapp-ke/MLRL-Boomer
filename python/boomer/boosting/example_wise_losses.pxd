@@ -1,4 +1,5 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float64
+from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common.losses cimport LabelMatrix
 from boomer.common.losses cimport RefinementSearch, NonDecomposableRefinementSearch
 from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
@@ -8,16 +9,18 @@ cdef class ExampleWiseLossFunction:
 
     # Functions:
 
-    cdef void calculate_gradients_and_hessians(self, uint8[::1] true_labels, float64[::1] predicted_scores,
-                                               float64[::1] gradients, float64[::1] hessians)
+    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
+                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64[::1] hessians)
 
 
 cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
 
     # Functions:
 
-    cdef void calculate_gradients_and_hessians(self, uint8[::1] true_labels, float64[::1] predicted_scores,
-                                               float64[::1] gradients, float64[::1] hessians)
+    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
+                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64[::1] hessians)
 
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
@@ -65,7 +68,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
     cdef float64 l2_regularization_weight
 
-    cdef uint8[:, ::1] true_labels
+    cdef LabelMatrix label_matrix
 
     cdef float64[:, ::1] current_scores
 
@@ -79,7 +82,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y)
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 

@@ -10,6 +10,7 @@ from ast import literal_eval
 from typing import List
 
 import numpy as np
+from boomer.common.losses import DenseLabelMatrix
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
 from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix
@@ -218,6 +219,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x = self._validate_data((x if enforce_sparse else x.toarray(order='F')),
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
         y = check_array(y.toarray(order='C'), ensure_2d=False, dtype=DTYPE_UINT8)
+        label_matrix = DenseLabelMatrix(y)
+        num_labels = label_matrix.num_labels
+        self.num_labels_ = num_labels
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
@@ -226,9 +230,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             feature_matrix = SparseFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
             feature_matrix = DenseFeatureMatrix(x)
-
-        num_labels = y.shape[1] if len(y.shape) > 1 else 1
-        self.num_labels_ = num_labels
 
         # Create an array that contains the indices of all nominal attributes, if any
         nominal_attribute_indices = self.nominal_attribute_indices
@@ -241,8 +242,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         # Induce rules
         sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
         model_builder = self._create_model_builder()
-        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, y, self.random_state,
-                                                      model_builder)
+        return sequential_rule_induction.induce_rules(nominal_attribute_indices, feature_matrix, label_matrix,
+                                                      self.random_state, model_builder)
 
     def _predict(self, x):
         sparse_format = 'csr'

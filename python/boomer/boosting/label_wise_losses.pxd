@@ -1,4 +1,5 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float64
+from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common.losses cimport LabelMatrix
 from boomer.common.losses cimport RefinementSearch, DecomposableRefinementSearch
 from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
@@ -10,21 +11,24 @@ cdef class LabelWiseLossFunction:
 
     # Functions:
 
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, uint8 true_label, float64 predicted_score)
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score)
 
 
 cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, uint8 true_label, float64 predicted_score)
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score)
 
 
 cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, uint8 true_label, float64 predicted_score)
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score)
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
@@ -72,7 +76,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     cdef float64 l2_regularization_weight
 
-    cdef uint8[:, ::1] true_labels
+    cdef LabelMatrix label_matrix
 
     cdef float64[:, ::1] current_scores
 
@@ -86,7 +90,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y)
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 
