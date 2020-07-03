@@ -1,5 +1,7 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport Loss, RefinementSearch, DefaultPrediction, Prediction, LabelWisePrediction
+from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common.losses cimport LabelMatrix
+from boomer.common.losses cimport Loss, RefinementSearch
+from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 
 from libc.math cimport pow
 
@@ -8,7 +10,7 @@ cdef class DifferentiableLoss(Loss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y)
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 

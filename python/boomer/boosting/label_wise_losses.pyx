@@ -5,7 +5,7 @@
 
 Provides classes that implement loss functions that are applied label-wise.
 """
-from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
+from boomer.common._arrays cimport uint8, array_float64, c_matrix_float64, get_index
 from boomer.boosting.differentiable_losses cimport _l2_norm_pow
 
 from libc.math cimport pow, exp
@@ -16,12 +16,15 @@ cdef class LabelWiseLossFunction:
     A base class for all (decomposable) loss functions that are applied label-wise.
     """
 
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, uint8 true_label, float64 predicted_score):
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score):
         """
         Must be implemented by subclasses to calculate the gradient (first derivative) and hessian (second derivative)
         of the loss function for a certain example and label.
 
-        :param true_label:      A scalar of dtype uint8, representing the true label according to the ground truth
+        :param label_matrix:    A `LabelMatrix` that provides random access to the labels of the training examples
+        :param example_index:   The index of the example for which the gradient and hessian should be calculated
+        :param label_index:     The index of the label for which the gradient and hessian should be calculated
         :param predicted_score: A scalar of dtype float64, representing the score that is predicted for the respective
                                 example and label
         :return:                A pair that contains two scalars of dtype float64, representing the gradient and the
@@ -35,7 +38,9 @@ cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
     A multi-label variant of the logistic loss that is applied label-wise.
     """
 
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, uint8 true_label, float64 predicted_score):
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score):
+        cdef true_label = label_matrix.get_label(example_index, label_index)
         cdef float64 expected_score = 1 if true_label else -1
         cdef float64 exponential = exp(expected_score * predicted_score)
         cdef float64 gradient = -expected_score / (1 + exponential)
@@ -51,7 +56,9 @@ cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
     A multi-label variant of the squared error loss that is applied label-wise.
     """
 
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, uint8 true_label, float64 predicted_score):
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score):
+        cdef true_label = label_matrix.get_label(example_index, label_index)
         cdef float64 expected_score = 1 if true_label else -1
         cdef float64 gradient = 2 * predicted_score - 2 * expected_score
         cdef float64 hessian = 2
@@ -229,15 +236,15 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         self.loss_function = loss_function
         self.l2_regularization_weight = l2_regularization_weight
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y):
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
         # A label-wise loss function to be minimized
         cdef LabelWiseLossFunction loss_function = self.loss_function
         # The weight to be used for L2 regularization
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of examples
-        cdef intp num_examples = y.shape[0]
+        cdef intp num_examples = label_matrix.num_examples
         # The number of labels
-        cdef intp num_labels = y.shape[1]
+        cdef intp num_labels = label_matrix.num_labels
         # A matrix that stores the currently predicted scores for each example and label
         cdef float64[:, ::1] current_scores = c_matrix_float64(num_examples, num_labels)
         # A matrix that stores the gradients for each example and label
@@ -255,7 +262,6 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         # Temporary variables
         cdef pair[float64, float64] gradient_and_hessian
         cdef float64 gradient, sum_of_gradients, hessian, sum_of_hessians, predicted_score
-        cdef uint8 true_label
         cdef intp c, r
 
         for c in range(num_labels):
@@ -265,8 +271,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
             for r in range(num_examples):
                 # Calculate the gradient and hessian for the current example and label...
-                true_label = y[r, c]
-                gradient_and_hessian = loss_function.calculate_gradient_and_hessian(true_label, 0)
+                gradient_and_hessian = loss_function.calculate_gradient_and_hessian(label_matrix, r, c, 0)
                 gradient = gradient_and_hessian.first
                 sum_of_gradients += gradient
                 hessian = gradient_and_hessian.second
@@ -279,8 +284,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
             # Traverse column again to calculate updated gradients based on the calculated score...
             for r in range(num_examples):
                 # Calculate the updated gradient and hessian for the current example and label...
-                true_label = y[r, c]
-                gradient_and_hessian = loss_function.calculate_gradient_and_hessian(true_label, predicted_score)
+                gradient_and_hessian = loss_function.calculate_gradient_and_hessian(label_matrix, r, c, predicted_score)
                 gradient = gradient_and_hessian.first
                 gradients[r, c] = gradient
                 hessian = gradient_and_hessian.second
@@ -297,8 +301,8 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
 
-        # Store the true labels and the currently predicted scores...
-        self.true_labels = y
+        # Store the label matrix and the currently predicted scores...
+        self.label_matrix = label_matrix
         self.current_scores = current_scores
 
         return prediction
@@ -348,7 +352,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
         cdef LabelWiseLossFunction loss_function = self.loss_function
-        cdef uint8[:, ::1] true_labels = self.true_labels
+        cdef LabelMatrix label_matrix = self.label_matrix
         cdef float64[:, ::1] current_scores = self.current_scores
         cdef float64[:, ::1] gradients = self.gradients
         cdef float64[:, ::1] hessians = self.hessians
@@ -357,13 +361,11 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         # Temporary variables
         cdef pair[float64, float64] gradient_and_hessian
         cdef float64 predicted_score, current_score, gradient, hessian
-        cdef uint8 true_label
         cdef intp c, l
 
         # Only the labels that are predicted by the new rule must be considered...
         for c in range(num_predicted_labels):
             l = get_index(c, label_indices)
-            true_label = true_labels[example_index, l]
             predicted_score = predicted_scores[c]
 
             # Update the score that is currently predicted for the current example and label...
@@ -371,7 +373,8 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
             current_scores[example_index, l] = current_score
 
             # Update the gradient and hessian for the current example and label...
-            gradient_and_hessian = loss_function.calculate_gradient_and_hessian(true_label, current_score)
+            gradient_and_hessian = loss_function.calculate_gradient_and_hessian(label_matrix, example_index, l,
+                                                                                current_score)
             gradient = gradient_and_hessian.first
             gradients[example_index, l] = gradient
             hessian = gradient_and_hessian.second

@@ -12,7 +12,7 @@ cdef class CoverageLoss(Loss):
     on sequential covering, such as e.g. a separate-and-conquer algorithm.
     """
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y):
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
         pass
 
     cdef void begin_instance_sub_sampling(self):

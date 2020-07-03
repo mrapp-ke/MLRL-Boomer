@@ -1,4 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
+from boomer.common.losses cimport LabelMatrix
 from boomer.common.losses cimport RefinementSearch, DecomposableRefinementSearch
 from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.coverage_losses cimport CoverageLoss
@@ -11,7 +12,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef Heuristic heuristic
 
-    cdef const uint8[:, ::1] true_labels
+    cdef LabelMatrix label_matrix
 
     cdef const float64[::1, :] uncovered_labels
 
@@ -48,13 +49,13 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     cdef uint8[::1] minority_labels
 
-    cdef uint8[:, ::1] true_labels
+    cdef LabelMatrix label_matrix
 
     cdef float64[::1, :] confusion_matrices_default
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y)
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 
