@@ -49,7 +49,7 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
         cdef intp num_labels = true_labels.shape[0]
         cdef float64 sum_of_exponentials = 1
         # Temporary variables
-        cdef float64 expected_score, expected_score2, predicted_score, predicted_score2, exponential, gradient, hessian
+        cdef float64 expected_score, expected_score2, predicted_score, predicted_score2, exponential, tmp
         cdef uint8 true_label
         cdef intp c, c2
 
@@ -72,22 +72,22 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
             predicted_score = predicted_scores[c]
             exponential = exponentials[c]
 
-            gradient = (-expected_score * exponential) / sum_of_exponentials
-            gradients[c] = gradient
+            tmp = (-expected_score * exponential) / sum_of_exponentials
+            gradients[c] = tmp
 
             for c2 in range(c):
                 true_label = true_labels[c2]
                 expected_score2 = 1 if true_label else -1
                 predicted_score2 = predicted_scores[c2]
-                hessian = exp((-expected_score2 * predicted_score2) - (expected_score * predicted_score))
-                hessian = -expected_score2 * expected_score * hessian
-                hessian = hessian / sum_of_exponentials_pow
-                hessians[j] = hessian
+                tmp = exp((-expected_score2 * predicted_score2) - (expected_score * predicted_score))
+                tmp = -expected_score2 * expected_score * tmp
+                tmp = tmp / sum_of_exponentials_pow
+                hessians[j] = tmp
                 j += 1
 
-            hessian = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential))
-            hessian = hessian / sum_of_exponentials_pow
-            hessians[j] = hessian
+            tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential))
+            tmp = tmp / sum_of_exponentials_pow
+            hessians[j] = tmp
             j += 1
 
 
