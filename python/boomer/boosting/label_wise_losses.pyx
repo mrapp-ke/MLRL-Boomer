@@ -356,7 +356,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         cdef intp num_predicted_labels = predicted_scores.shape[0]
         # Temporary variables
         cdef pair[float64, float64] gradient_and_hessian
-        cdef float64 predicted_score, current_score
+        cdef float64 predicted_score, current_score, gradient, hessian
         cdef uint8 true_label
         cdef intp c, l
 
