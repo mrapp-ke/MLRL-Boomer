@@ -26,6 +26,8 @@ cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSear
 
     cdef float64 l2_regularization_weight
 
+    cdef const intp[::1] label_indices
+
     cdef const float64[::1, :] gradients
 
     cdef const float64[::1] total_sums_of_gradients
@@ -41,8 +43,6 @@ cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSear
     cdef float64[::1] sums_of_hessians
 
     cdef float64[::1] accumulated_sums_of_hessians
-
-    cdef intp[::1] label_indices
 
     cdef LabelWisePrediction prediction
 
