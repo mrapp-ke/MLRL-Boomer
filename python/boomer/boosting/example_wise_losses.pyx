@@ -293,13 +293,12 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         cdef intp num_examples = y.shape[0]
         # The number of labels
         cdef intp num_labels = y.shape[1]
-        # A matrix that stores the expected scores for each example and label according to the ground truth
-        cdef float64[::1, :] expected_scores = fortran_matrix_float64(num_examples, num_labels)
         # Pre-calculated values
         cdef float64 sum_of_exponentials = num_labels + 1
         cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
         # Temporary variables
-        cdef float64 expected_score
+        cdef uint8 true_label
+        cdef float64 expected_score, expected_score2
         cdef intp r, c, c2, i
 
         # We find the optimal scores to be predicted by the default rule for each label by solving a system of linear
@@ -318,15 +317,12 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
 
         # Example-wise calculate the gradients and hessians and add them to the arrays of ordinates and coefficients...
         for r in range(num_examples):
-            # Traverse the labels of the current example once to convert the ground truth labels into expected scores...
-            for c in range(num_labels):
-                expected_scores[r, c] = _convert_label_into_score(y[r, c])
-
-            # Traverse the labels again to calculate the gradients and hessians...
+            # Traverse the labels of the current example to calculate the gradients and hessians...
             i = 0
 
             for c in range(num_labels):
-                expected_score = expected_scores[r, c]
+                true_label = y[r, c]
+                expected_score = 1 if true_label else -1
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
                 # add it to the array of ordinates...
@@ -335,7 +331,9 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add it to the matrix of coefficients...
                 for c2 in range(c):
-                    coefficients[i] -= (expected_scores[r, c2] * expected_score) / sum_of_exponentials_pow
+                    true_label = y[r, c2]
+                    expected_score2 = 1 if true_label else -1
+                    coefficients[i] -= (expected_score2 * expected_score) / sum_of_exponentials_pow
                     i += 1
 
                 # Calculate the second derivative (hessian) of the loss function with respect to the current label and
@@ -365,12 +363,13 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         cdef float64 exponential, tmp, predicted_score
 
         for r in range(num_examples):
-            # Traverse the labels of the current example once to create arrays of expected scores and exponentials that
-            # are shared among the upcoming calculations of gradients and hessians...
+            # Traverse the labels of the current example once to create an array of exponentials that are shared among
+            # the upcoming calculations of gradients and hessians...
             sum_of_exponentials = 1
 
             for c in range(num_labels):
-                expected_score = expected_scores[r, c]
+                true_label = y[r, c]
+                expected_score = 1 if true_label else -1
                 exponential = exp(-expected_score * predicted_scores[c])
                 exponentials[c] = exponential
                 sum_of_exponentials += exponential
@@ -381,7 +380,8 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
             i = 0
 
             for c in range(num_labels):
-                expected_score = expected_scores[r, c]
+                true_label = y[r, c]
+                expected_score = 1 if true_label else -1
                 exponential = exponentials[c]
                 predicted_score = predicted_scores[c]
                 current_scores[r, c] = predicted_score
@@ -397,8 +397,10 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add them to the matrix of hessians...
                 for c2 in range(c):
-                    tmp = exp(-expected_scores[r, c2] * predicted_scores[c2] - expected_score * predicted_score)
-                    tmp = (expected_scores[r, c2] * expected_score * tmp) / sum_of_exponentials_pow
+                    true_label = y[r, c2]
+                    expected_score2 = 1 if true_label else -1
+                    tmp = exp(-expected_score2 * predicted_scores[c2] - expected_score * predicted_score)
+                    tmp = (expected_score2 * expected_score * tmp) / sum_of_exponentials_pow
                     hessians[r, i] = -tmp
                     i += 1
 
@@ -416,8 +418,8 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
 
-        # Store the expected and currently predicted scores...
-        self.expected_scores = expected_scores
+        # Store the true labels and the currently predicted scores...
+        self.true_labels = y
         self.current_scores = current_scores
 
         return prediction
@@ -468,7 +470,7 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
-        cdef float64[::1, :] expected_scores = self.expected_scores
+        cdef uint8[:, ::1] true_labels = self.true_labels
         cdef float64[::1, :] current_scores = self.current_scores
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1, :] hessians = self.hessians
@@ -479,7 +481,8 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         # An array for caching pre-calculated values
         cdef float64[::1] exponentials = array_float64(num_labels)
         # Temporary variables
-        cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow, tmp
+        cdef float64 expected_score, expected_score2, exponential, score, sum_of_exponentials, sum_of_exponentials_pow, tmp
+        cdef uint8 true_label
         cdef intp c, c2, l, j
 
         # Traverse the labels for which the new rule predicts to update the currently predicted scores...
@@ -487,12 +490,13 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
             l = get_index(c, label_indices)
             current_scores[example_index, l] += predicted_scores[c]
 
-        # Traverse the labels of the current example to create arrays of expected scores and exponentials that are
-        # shared among the upcoming calculations of gradients and hessians...
+        # Traverse the labels of the current example to create an array of exponentials that are shared among the
+        # upcoming calculations of gradients and hessians...
         sum_of_exponentials = 1
 
         for c in range(num_labels):
-            expected_score = expected_scores[example_index, c]
+            true_label = true_labels[example_index, c]
+            expected_score = 1 if true_label else -1
             exponential = exp(-expected_score * current_scores[example_index, c])
             exponentials[c] = exponential
             sum_of_exponentials += exponential
@@ -503,7 +507,8 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         j = 0
 
         for c in range(num_labels):
-            expected_score = expected_scores[example_index, c]
+            true_label = true_labels[example_index, c]
+            expected_score = 1 if true_label else -1
             exponential = exponentials[c]
             score = current_scores[example_index, c]
 
@@ -518,8 +523,10 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
             # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
             # each of the other labels and add them to the matrix of hessians...
             for c2 in range(c):
-                tmp = exp(-expected_scores[example_index, c2] * current_scores[example_index, c2] - expected_score * score)
-                tmp = (expected_scores[example_index, c2] * expected_score * tmp) / sum_of_exponentials_pow
+                true_label = true_labels[example_index, c2]
+                expected_score2 = 1 if true_label else -1
+                tmp = exp(-expected_score2 * current_scores[example_index, c2] - expected_score * score)
+                tmp = (expected_score2 * expected_score * tmp) / sum_of_exponentials_pow
                 hessians[example_index, j] = -tmp
                 j += 1
 

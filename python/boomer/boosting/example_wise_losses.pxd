@@ -63,7 +63,7 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
 
     cdef float64 l2_regularization_weight
 
-    cdef float64[::1, :] expected_scores
+    cdef uint8[:, ::1] true_labels
 
     cdef float64[::1, :] current_scores
 
