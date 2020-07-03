@@ -4,7 +4,7 @@
 Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.common._arrays cimport array_float64, c_matrix_float64, fortran_matrix_float64, get_index
-from boomer.boosting.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
+from boomer.boosting.differentiable_losses cimport _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
 

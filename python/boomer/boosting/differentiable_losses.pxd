@@ -19,19 +19,6 @@ cdef class DifferentiableLoss(Loss):
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
 
 
-cdef inline float64 _convert_label_into_score(uint8 label):
-    """
-    Converts a label {0, 1} into an expected score {-1, 1}.
-
-    :param label:   A scalar of dtype `uint8`, representing the label
-    :return:        A scalar of dtype `float64`, representing the expected score
-    """
-    if label > 0:
-        return label
-    else:
-        return -1
-
-
 cdef inline float64 _l2_norm_pow(float64[::1] a):
     """
     Computes and returns the square of the L2 norm of a specific vector, i.e. the sum of the squares of its elements. To
