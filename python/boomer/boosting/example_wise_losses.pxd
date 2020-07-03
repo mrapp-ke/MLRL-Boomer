@@ -4,6 +4,22 @@ from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePredic
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
 
 
+cdef class ExampleWiseLossFunction:
+
+    # Functions:
+
+    cdef void calculate_gradients_and_hessians(self, uint8[::1] true_labels, float64[::1] predicted_scores,
+                                               float64[::1] gradients, float64[::1] hessians)
+
+
+cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
+
+    # Functions:
+
+    cdef void calculate_gradients_and_hessians(self, uint8[::1] true_labels, float64[::1] predicted_scores,
+                                               float64[::1] gradients, float64[::1] hessians)
+
+
 cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSearch):
 
     # Attributes:
