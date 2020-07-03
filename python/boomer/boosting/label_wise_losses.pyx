@@ -13,7 +13,7 @@ from libc.math cimport pow, exp
 
 cdef class LabelWiseLossFunction:
     """
-    A base class for all differentiable loss functions that are applied label-wise.
+    A base class for all (decomposable) loss functions that are applied label-wise.
     """
 
     cdef pair[float64, float64] calculate_gradient_and_hessian(self, uint8 true_label, float64 predicted_score):
