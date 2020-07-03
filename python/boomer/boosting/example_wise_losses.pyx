@@ -46,7 +46,50 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
 
     cdef void calculate_gradients_and_hessians(self, uint8[::1] true_labels, float64[::1] predicted_scores,
                                                float64[::1] gradients, float64[::1] hessians):
-        pass
+        cdef intp num_labels = true_labels.shape[0]
+        cdef float64 sum_of_exponentials = 1
+        # Temporary variables
+        cdef float64 expected_score, expected_score2, predicted_score, predicted_score2, exponential, gradient, hessian
+        cdef uint8 true_label
+        cdef intp c, c2
+
+        cdef float64[::1] exponentials = array_float64(num_labels) # TODO do not allocate each time
+
+        for c in range(num_labels):
+            true_label = true_labels[c]
+            expected_score = 1 if true_label else -1
+            predicted_score = predicted_scores[c]
+            exponential = exp(-expected_score * predicted_score)
+            exponentials[c] = exponential
+            sum_of_exponentials += exponential
+
+        cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
+        cdef intp j = 0
+
+        for c in range(num_labels):
+            true_label = true_labels[c]
+            expected_score = 1 if true_label else -1
+            predicted_score = predicted_scores[c]
+            exponential = exponentials[c]
+
+            gradient = (-expected_score * exponential) / sum_of_exponentials
+            gradients[c] = gradient
+
+            for c2 in range(c):
+                true_label = true_labels[c2]
+                expected_score2 = 1 if true_label else -1
+                predicted_score2 = predicted_scores[c2]
+                hessian = exp((-expected_score2 * predicted_score2) - (expected_score * predicted_score))
+                hessian = -expected_score2 * expected_score * hessian
+                hessian = hessian / sum_of_exponentials_pow
+                hessians[j] = hessian
+                j += 1
+
+            hessian = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential))
+            hessian = hessian / sum_of_exponentials_pow
+            hessians[j] = hessian
+            j += 1
+
 
 
 cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSearch):
