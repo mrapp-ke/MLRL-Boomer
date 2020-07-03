@@ -20,7 +20,7 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
                                                float64[::1] gradients, float64[::1] hessians)
 
 
-cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSearch):
+cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
     # Attributes:
 
@@ -57,9 +57,11 @@ cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSear
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
-cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
+cdef class ExampleWiseLoss(DifferentiableLoss):
 
     # Attributes:
+
+    cdef ExampleWiseLossFunction loss_function
 
     cdef float64 l2_regularization_weight
 

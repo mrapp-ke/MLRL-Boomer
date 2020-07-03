@@ -92,7 +92,7 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
 
 
 
-cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSearch):
+cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
     """
     Allows to search for the best refinement of a rule according to a differentiable loss function that is applied
     example-wise.
@@ -315,18 +315,21 @@ cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSear
         return prediction
 
 
-cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
+cdef class ExampleWiseLoss(DifferentiableLoss):
     """
     Allows to locally minimize a differentiable (surrogate) loss function that is applied example-wise by the rules that
     are learned by a boosting algorithm.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight):
+    def __cinit__(self, ExampleWiseLossFunction loss_function, float64 l2_regularization_weight):
         """
-        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the optimal
-                                         scores to be predicted by rules. Increasing this value causes the model to be
-                                         more conservative, setting it to 0 turns of L2 regularization entirely
+        :param loss_function:               An example-wise loss function to be minimized
+        :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
+                                            optimal scores to be predicted by rules. Increasing this value causes the
+                                            model to be more conservative, setting it to 0 turns of L2 regularization
+                                            entirely
         """
+        self.loss_function = loss_function
         self.l2_regularization_weight = l2_regularization_weight
 
     cdef DefaultPrediction calculate_default_prediction(self, uint8[:, ::1] y):
@@ -506,10 +509,8 @@ cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[:, ::1] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        return ExampleWiseLogisticLossRefinementSearch.__new__(ExampleWiseLogisticLossRefinementSearch,
-                                                               l2_regularization_weight, label_indices, gradients,
-                                                               total_sums_of_gradients, hessians,
-                                                               total_sums_of_hessians)
+        return ExampleWiseRefinementSearch.__new__(ExampleWiseRefinementSearch, l2_regularization_weight, label_indices,
+                                                   gradients, total_sums_of_gradients, hessians, total_sums_of_hessians)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
