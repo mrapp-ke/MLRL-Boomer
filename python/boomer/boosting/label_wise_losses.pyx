@@ -353,7 +353,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         cdef float64[:, ::1] gradients = self.gradients
         cdef float64[:, ::1] hessians = self.hessians
         # The number of predicted labels
-        cdef intp num_labels = predicted_scores.shape[0]
+        cdef intp num_predicted_labels = predicted_scores.shape[0]
         # Temporary variables
         cdef pair[float64, float64] gradient_and_hessian
         cdef float64 predicted_score, current_score
@@ -361,7 +361,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         cdef intp c, l
 
         # Only the labels that are predicted by the new rule must be considered...
-        for c in range(num_labels):
+        for c in range(num_predicted_labels):
             l = get_index(c, label_indices)
             true_label = true_labels[example_index, l]
             predicted_score = predicted_scores[c]
