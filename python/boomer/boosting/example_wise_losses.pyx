@@ -91,7 +91,6 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
             j += 1
 
 
-
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
     """
     Allows to search for the best refinement of a rule according to a differentiable loss function that is applied
