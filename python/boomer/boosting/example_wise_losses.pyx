@@ -508,68 +508,25 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
+        cdef ExampleWiseLossFunction loss_function = self.loss_function
         cdef uint8[:, ::1] true_labels = self.true_labels
         cdef float64[:, ::1] current_scores = self.current_scores
         cdef float64[:, ::1] gradients = self.gradients
         cdef float64[:, ::1] hessians = self.hessians
-        # The total number of labels
-        cdef intp num_labels = gradients.shape[1]
         # The number of predicted labels
         cdef intp num_predicted_labels = predicted_scores.shape[0]
-        # An array for caching pre-calculated values
-        cdef float64[::1] exponentials = array_float64(num_labels)
         # Temporary variables
-        cdef float64 expected_score, expected_score2, exponential, score, sum_of_exponentials, sum_of_exponentials_pow, tmp
-        cdef uint8 true_label
-        cdef intp c, c2, l, j
+        cdef intp c, l
 
-        # Traverse the labels for which the new rule predicts to update the currently predicted scores...
+        # Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
+        # example at the given index...
         for c in range(num_predicted_labels):
             l = get_index(c, label_indices)
             current_scores[example_index, l] += predicted_scores[c]
 
-        # Traverse the labels of the current example to create an array of exponentials that are shared among the
-        # upcoming calculations of gradients and hessians...
-        sum_of_exponentials = 1
-
-        for c in range(num_labels):
-            true_label = true_labels[example_index, c]
-            expected_score = 1 if true_label else -1
-            exponential = exp(-expected_score * current_scores[example_index, c])
-            exponentials[c] = exponential
-            sum_of_exponentials += exponential
-
-        sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
-
-        # Traverse the labels again to update the gradients and hessians...
-        j = 0
-
-        for c in range(num_labels):
-            true_label = true_labels[example_index, c]
-            expected_score = 1 if true_label else -1
-            exponential = exponentials[c]
-            score = current_scores[example_index, c]
-
-            # Calculate the first derivative (gradient) of the loss function with respect to the current label and add
-            # it to the matrix of gradients...
-            tmp = (-expected_score * exponential) / sum_of_exponentials
-            gradients[example_index, c] = tmp
-
-            # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-            # each of the other labels and add them to the matrix of hessians...
-            for c2 in range(c):
-                true_label = true_labels[example_index, c2]
-                expected_score2 = 1 if true_label else -1
-                tmp = exp(-expected_score2 * current_scores[example_index, c2] - expected_score * score)
-                tmp = (expected_score2 * expected_score * tmp) / sum_of_exponentials_pow
-                hessians[example_index, j] = -tmp
-                j += 1
-
-            # Calculate the second derivative (hessian) of the loss function with respect to the current label and add
-            # it to the matrix of hessians...
-            tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
-            hessians[example_index, j] = tmp
-            j += 1
+        # Update the gradients and hessians for the example at the given index...
+        loss_function.calculate_gradients_and_hessians(true_labels[example_index, :], current_scores[example_index, :],
+                                                       gradients[example_index, :], hessians[example_index, :])
 
 
 cdef inline intp __triangular_number(intp n):
