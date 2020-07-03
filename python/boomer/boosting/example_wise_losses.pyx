@@ -14,6 +14,41 @@ from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
 
+cdef class ExampleWiseLossFunction:
+    """
+    A base class for all (non-decomposable) loss functions that are applied example-wise.
+    """
+
+    cdef void calculate_gradients_and_hessians(self, uint8[::1] true_labels, float64[::1] predicted_scores,
+                                               float64[::1] gradients, float64[::1] hessians):
+        """
+        Must be implemented by subclasses to calculate the gradients (first derivatives) and hessians (second
+        derivatives) of the loss function for each label of a certain example.
+
+        :param true_labels:         An array of dtype uint8, shape `(num_labels)`, representing the true labels of the
+                                    respective example according to the ground truth
+        :param predicted_scores:    An array of dtype float64, shape `(num_labels)`, representing the scores that are
+                                    predicted for each label of the respective example
+        :param gradients:           An array of dtype float64, shape `(num_labels)`, the gradients that have been
+                                    calculated should be written to
+        :param hessians:            An array of dtype float64, shape `(num_labels * (num_labels + 1) / 2)`, the hessians
+                                    that have been calculated should be written to
+        """
+        pass
+
+
+cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
+    """
+    A multi-label variant of the logistic loss that is applied example-wise.
+    """
+
+    # Functions:
+
+    cdef void calculate_gradients_and_hessians(self, uint8[::1] true_labels, float64[::1] predicted_scores,
+                                               float64[::1] gradients, float64[::1] hessians):
+        pass
+
+
 cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSearch):
     """
     Allows to search for the best refinement of a rule according to a differentiable loss function that is applied
