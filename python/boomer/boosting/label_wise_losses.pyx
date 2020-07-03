@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that implement loss functions that are applied example- and label-wise.
+Provides classes that implement loss functions that are applied label-wise.
 """
 from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from boomer.boosting.differentiable_losses cimport _l2_norm_pow
