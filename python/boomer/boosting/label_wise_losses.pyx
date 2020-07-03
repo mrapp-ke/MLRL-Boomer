@@ -220,7 +220,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     def __cinit__(self, LabelWiseLossFunction loss_function, float64 l2_regularization_weight):
         """
-        :param loss_function:               A label-wise differentiable loss function to be minimized
+        :param loss_function:               A label-wise loss function to be minimized
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             optimal scores to be predicted by rules. Increasing this value causes the
                                             model to be more conservative, setting it to 0 turns of L2 regularization
