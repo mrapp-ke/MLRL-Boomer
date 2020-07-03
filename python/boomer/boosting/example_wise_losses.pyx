@@ -245,15 +245,13 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
                 sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
-            # Note: As the sign of the gradients was inverted in the function `calculate_default_prediction`, it must be
-            # reverted again in the following.
             score = sum_of_hessians + l2_regularization_weight
-            score = sum_of_gradients / score if score != 0 else 0
+            score = -sum_of_gradients / score if score != 0 else 0
             predicted_scores[c] = score
 
             # Calculate the quality score for the current label...
             score_pow = pow(score, 2)
-            score = (-sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
+            score = (sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
             quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
             overall_quality_score += score
 
@@ -304,7 +302,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         prediction.predicted_scores = predicted_scores
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-        cdef float64 overall_quality_score = -__ddot_float64(predicted_scores, gradients)
+        cdef float64 overall_quality_score = __ddot_float64(predicted_scores, gradients)
         cdef float64[::1] tmp = __dspmv_float64(hessians, predicted_scores)
         overall_quality_score += 0.5 * __ddot_float64(predicted_scores, tmp)
 
@@ -372,7 +370,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
                 # add it to the array of ordinates...
-                ordinates[c] += expected_score / sum_of_exponentials
+                ordinates[c] += -expected_score / sum_of_exponentials
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
                 # each of the other labels and add it to the matrix of coefficients...
@@ -434,10 +432,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
                 # Calculate the first derivative (gradient) of the loss function with respect to the current label and
                 # add it to the matrix of gradients...
-                tmp = (expected_score * exponential) / sum_of_exponentials
-                # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
-                # the sums of gradients as the ordinates for solving a system of linear equations in the function
-                # `calculate_example_wise_prediction`, the sign must be inverted again...
+                tmp = (-expected_score * exponential) / sum_of_exponentials
                 gradients[r, c] = tmp
 
                 # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
@@ -558,10 +553,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
             # Calculate the first derivative (gradient) of the loss function with respect to the current label and add
             # it to the matrix of gradients...
-            tmp = (expected_score * exponential) / sum_of_exponentials
-            # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using the
-            # sums of gradients as the ordinates for solving a system of linear equations in the function
-            # `calculate_example_wise_prediction`, the sign must be inverted again...
+            tmp = (-expected_score * exponential) / sum_of_exponentials
             gradients[example_index, c] = tmp
 
             # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
@@ -643,7 +635,7 @@ cdef inline float64[::1] __dspmv_float64(float64[::1] a, float64[::1] x):
     return y
 
 
-cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1] ordinates,
+cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1] inverted_ordinates,
                                          float64 l2_regularization_weight):
     """
     Computes and returns the solution to a system of linear equations A * X = B using LAPACK's DSYSV solver (see
@@ -666,7 +658,9 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
 
     :param coefficients:                An array of dtype `float64`, shape `num_equations * (num_equations + 1) // 2)`,
                                         representing coefficients
-    :param ordinates:                   An array of dtype `float64`, shape `(num_equations)`, representing the ordinates
+    :param inverted_ordinates:          An array of dtype `float64`, shape `(num_equations)`, representing the inverted
+                                        ordinates, i.e., ordinates * -1. The sign of the elements in this array will be
+                                        inverted to when creating the matrix B
     :param l2_regularization_weight:    A scalar of dtype `float64`, representing the weight of the L2 regularization
     :return:                            An array of dtype `float64`, shape `(num_equations)`, representing the solution
                                         to the system of linear equations
@@ -675,7 +669,7 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
     cdef float64 tmp
     cdef intp r, c, i
     # The number of linear equations
-    cdef int n = ordinates.shape[0]
+    cdef int n = inverted_ordinates.shape[0]
     # Create the array A by copying the array `coefficients`. DSYSV requires the array A to be Fortran-contiguous...
     cdef float64[::1, :] a = fortran_matrix_float64(n, n)
     i = 0
@@ -690,12 +684,12 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
             a[r, c] = tmp
             i += 1
 
-    # Create the array B by copying the array `ordinates`. It will be overwritten with the solution to the system of
-    # linear equations. DSYSV requires the array B to be Fortran-contiguous...
+    # Create the array B by copying the array `inverted_ordinates` and inverting its elements. It will be overwritten
+    # with the solution to the system of linear equations. DSYSV requires the array B to be Fortran-contiguous...
     cdef float64[::1, :] b = fortran_matrix_float64(n, 1)
 
     for r in range(n):
-        b[r, 0] = ordinates[r]
+        b[r, 0] = -inverted_ordinates[r]
 
     # 'U' if the upper-right triangle of A should be used, 'L' if the lower-left triangle should be used
     cdef char* uplo = 'U'
