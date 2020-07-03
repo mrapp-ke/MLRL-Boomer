@@ -24,7 +24,7 @@ cdef class LabelWiseLossFunction:
         :param true_label:      A scalar of dtype uint8, representing the true label according to the ground truth
         :param predicted_score: A scalar of dtype float64, representing the score that is predicted for the respective
                                 example and label
-        :return:                A pair that contains two scalar of dtype float64, representing the gradient and the
+        :return:                A pair that contains two scalars of dtype float64, representing the gradient and the
                                 hessian that have been calculated
         """
         pass
