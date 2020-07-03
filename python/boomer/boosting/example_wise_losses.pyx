@@ -53,14 +53,12 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
         cdef uint8 true_label
         cdef intp c, c2
 
-        cdef float64[::1] exponentials = array_float64(num_labels) # TODO do not allocate each time
-
         for c in range(num_labels):
             true_label = true_labels[c]
             expected_score = 1 if true_label else -1
             predicted_score = predicted_scores[c]
             exponential = exp(-expected_score * predicted_score)
-            exponentials[c] = exponential
+            gradients[c] = exponential  # Temporarily store the exponential in the existing output array
             sum_of_exponentials += exponential
 
         cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
@@ -70,7 +68,7 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
             true_label = true_labels[c]
             expected_score = 1 if true_label else -1
             predicted_score = predicted_scores[c]
-            exponential = exponentials[c]
+            exponential = gradients[c]
 
             tmp = (-expected_score * exponential) / sum_of_exponentials
             gradients[c] = tmp
