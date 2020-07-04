@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides type definitions and utility functions for creating arrays.
+Provides type definitions and utility functions for one- and two-dimensional arrays.
 """
 from cython.view cimport array as cvarray
 
@@ -29,6 +29,7 @@ ELSE:
     DEF FORMAT_FLOAT32 = 'f'
     DEF FORMAT_FLOAT64 = 'd'
 
+
 cdef inline cvarray array_intp(intp num_elements):
     """
     Creates and returns a new C-contiguous array of dtype `intp`, shape `(num_elements)`.
@@ -41,6 +42,7 @@ cdef inline cvarray array_intp(intp num_elements):
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_INTP, MODE_C_CONTIGUOUS)
     return array
 
+
 cdef inline cvarray array_uint8(intp num_elements):
     """
     Creates and returns a new C-contiguous array of dtype `uint8`, shape `(num_elements)`.
@@ -51,6 +53,7 @@ cdef inline cvarray array_uint8(intp num_elements):
     cdef intp itemsize = sizeof(uint8)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT8, MODE_C_CONTIGUOUS)
     return array
+
 
 cdef inline cvarray array_uint32(intp num_elements):
     """
@@ -64,6 +67,7 @@ cdef inline cvarray array_uint32(intp num_elements):
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT32, MODE_C_CONTIGUOUS)
     return array
 
+
 cdef inline cvarray array_float32(intp num_elements):
     """
     Creates and returns a new C-contiguous array of dtype `float32`, shape `(num_elements)`.
@@ -76,6 +80,7 @@ cdef inline cvarray array_float32(intp num_elements):
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT32, MODE_C_CONTIGUOUS)
     return array
 
+
 cdef inline cvarray array_float64(intp num_elements):
     """
     Creates and returns a new C-contiguous array of dtype `float64`, shape `(num_elements)`.
@@ -87,6 +92,7 @@ cdef inline cvarray array_float64(intp num_elements):
     cdef intp itemsize = sizeof(float64)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
+
 
 cdef inline cvarray fortran_matrix_float64(intp num_rows, intp num_cols):
     """

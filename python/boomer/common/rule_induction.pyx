@@ -6,6 +6,7 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, get_index
+from boomer.common._tuples cimport compare_indexed_float32
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.losses cimport Prediction
@@ -59,7 +60,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         # The number of elements to be returned
         cdef intp num_elements = x.shape[0]
         # The array to be returned
-        cdef IndexedValue* sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+        cdef IndexedFloat32* sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
         # The struct to be returned
         cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
         dereference(indexed_array).num_elements = num_elements
@@ -71,7 +72,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
             sorted_array[i].index = i
             sorted_array[i].value = x[i, feature_index]
 
-        qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
+        qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
         return indexed_array
 
 
@@ -116,12 +117,12 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
         cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
         dereference(indexed_array).num_elements = num_elements
         # The array to be returned
-        cdef IndexedValue* sorted_array = NULL
+        cdef IndexedFloat32* sorted_array = NULL
         # Temporary variables
         cdef intp i, j
 
         if num_elements > 0:
-            sorted_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+            sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
             i = 0
 
             for j in range(start, end):
@@ -129,7 +130,7 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
                 sorted_array[i].value = x_data[j]
                 i += 1
 
-            qsort(sorted_array, num_elements, sizeof(IndexedValue), &__compare_indexed_value)
+            qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
 
         dereference(indexed_array).data = sorted_array
         return indexed_array
@@ -202,11 +203,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.cache_global = new map[intp, IndexedArray*]()
+        self.cache_global = new unordered_map[intp, IndexedArray*]()
 
     def __dealloc__(self):
-        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
-        cdef map[intp, IndexedArray*].iterator cache_global_iterator = dereference(cache_global).begin()
+        cdef unordered_map[intp, IndexedArray*]* cache_global = self.cache_global
+        cdef unordered_map[intp, IndexedArray*].iterator cache_global_iterator = dereference(cache_global).begin()
         cdef IndexedArray* indexed_array
 
         while cache_global_iterator != dereference(cache_global).end():
@@ -257,12 +258,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the examples that should be used for finding the best refinement
-        cdef map[intp, IndexedArray*]* cache_global = self.cache_global
+        cdef unordered_map[intp, IndexedArray*]* cache_global = self.cache_global
         cdef IndexedArray* indexed_array
-        cdef map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
-        cdef map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
+        cdef unordered_map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
+        cdef unordered_map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
-        cdef IndexedValue* indexed_values
+        cdef IndexedFloat32* indexed_values
         cdef intp num_indexed_values
 
         # Variables for specifying the features that should be used for finding the best refinement
@@ -892,20 +893,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(cache_local_iterator)
 
 
-cdef int __compare_indexed_value(const void* a, const void* b) nogil:
-    """
-    Compares the values of two structs of type `IndexedValue`.
-
-    :param a:   A pointer to the first struct
-    :param b:   A pointer to the second struct
-    :return:    -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
-                equal, or 1 if the value of the first struct is greater than the value of the second struct
-    """
-    cdef float32 v1 = (<IndexedValue*>a).value
-    cdef float32 v2 = (<IndexedValue*>b).value
-    return -1 if v1 < v2 else (0 if v1 == v2 else 1)
-
-
 cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
@@ -941,7 +928,7 @@ cdef inline intp __adjust_split(IndexedArray* indexed_array, intp condition_end,
     :return:                    The adjusted position that separates the covered from the uncovered examples with
                                 respect to the examples that are not contained in the sample
     """
-    cdef IndexedValue* indexed_values = dereference(indexed_array).data
+    cdef IndexedFloat32* indexed_values = dereference(indexed_array).data
     cdef intp adjusted_position = condition_end
     cdef bint ascending = condition_end < condition_previous
     cdef intp direction = 1 if ascending else -1
@@ -1008,7 +995,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     :return:                        The value that is used to mark those elements in the updated `covered_examples_mask`
                                     that are covered by the new rule
     """
-    cdef IndexedValue* indexed_values = dereference(indexed_array).data
+    cdef IndexedFloat32* indexed_values = dereference(indexed_array).data
     cdef intp num_indexed_values = dereference(indexed_array).num_elements
     cdef bint descending = condition_end < condition_start
     cdef uint32 updated_target, weight
@@ -1022,10 +1009,10 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
         num_elements = num_indexed_values - num_elements
 
     # Allocate filtered array...
-    cdef IndexedValue* filtered_array = NULL
+    cdef IndexedFloat32* filtered_array = NULL
 
     if num_elements > 0:
-        filtered_array = <IndexedValue*>malloc(num_elements * sizeof(IndexedValue))
+        filtered_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
 
     if descending:
         direction = -1
@@ -1128,21 +1115,21 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
                                     covered by the previous rule
     """
     cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
-    cdef IndexedValue* filtered_array = NULL
+    cdef IndexedFloat32* filtered_array = NULL
 
     if filtered_indexed_array != NULL:
         filtered_array = dereference(filtered_indexed_array).data
 
     cdef intp max_elements = dereference(indexed_array).num_elements
     cdef intp i = 0
-    cdef IndexedValue* indexed_values
+    cdef IndexedFloat32* indexed_values
     cdef intp r, index
 
     if max_elements > 0:
         indexed_values = dereference(indexed_array).data
 
         if filtered_array == NULL:
-            filtered_array = <IndexedValue*>malloc(max_elements * sizeof(IndexedValue))
+            filtered_array = <IndexedFloat32*>malloc(max_elements * sizeof(IndexedFloat32))
 
         for r in range(max_elements):
             index = indexed_values[r].index
@@ -1156,7 +1143,7 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
         free(filtered_array)
         filtered_array = NULL
     elif i < max_elements:
-        filtered_array = <IndexedValue*>realloc(filtered_array, i * sizeof(IndexedValue))
+        filtered_array = <IndexedFloat32*>realloc(filtered_array, i * sizeof(IndexedFloat32))
 
     if filtered_indexed_array == NULL:
         filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))

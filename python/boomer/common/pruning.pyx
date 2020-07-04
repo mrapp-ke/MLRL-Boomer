@@ -6,9 +6,9 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
+from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
 from boomer.common.losses cimport Prediction
-from boomer.common.rule_induction cimport IndexedValue
 
 from cython.operator cimport dereference, postincrement
 
@@ -20,7 +20,7 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Loss loss, HeadRefinement head_refinement):
@@ -59,7 +59,7 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, map[intp, IndexedArray*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Loss loss, HeadRefinement head_refinement):
@@ -74,7 +74,7 @@ cdef class IREP(Pruning):
         cdef float32 threshold
         cdef float64 current_quality_score
         cdef IndexedArray* indexed_array
-        cdef IndexedValue* indexed_values
+        cdef IndexedFloat32* indexed_values
         cdef intp feature_index, num_indexed_values, i, n, r, start, end
         cdef bint uncovered
 
@@ -193,13 +193,13 @@ cdef class IREP(Pruning):
         return result
 
 
-cdef inline intp __upper_bound(IndexedValue* indexed_values, intp num_indexed_values, float32 threshold):
+cdef inline intp __upper_bound(IndexedFloat32* indexed_values, intp num_indexed_values, float32 threshold):
     """
     Returns the index of the first example in `indexed_values` with feature value > threshold. If no such example is
     found, `num_indexed_values` is returned.
 
-    :param indexed_values:      A pointer to a C-array of type `IndexedValue`, storing the indices and feature values of
-                                examples
+    :param indexed_values:      A pointer to a C-array of type `IndexedFloat32`, storing the indices and feature values 
+                                of examples
     :param num_indexed_values:  The number of leading elements in `indexed_values` to be considered
     :param threshold:           The threshold
     :return:                    The index of the first example in `indexed_values` with feature value > threshold or
@@ -222,13 +222,13 @@ cdef inline intp __upper_bound(IndexedValue* indexed_values, intp num_indexed_va
     return first
 
 
-cdef inline intp __lower_bound(IndexedValue* indexed_values, intp num_indexed_values, float32 threshold):
+cdef inline intp __lower_bound(IndexedFloat32* indexed_values, intp num_indexed_values, float32 threshold):
     """
     Returns the index of the first example in `indexed_values` with feature value >= threshold. If no such example is
     found, `num_indexed_values` is returned.
 
-    :param indexed_values:      A pointer to a C-array of type `IndexedValue`, storing the indices and feature values of
-                                examples
+    :param indexed_values:      A pointer to a C-array of type `IndexedFloat32`, storing the indices and feature values 
+                                of examples
     :param num_indexed_values:  The number of leading elements in `indexed_values` to be considered
     :param threshold:           The threshold
     :return:                    The index of the first example in `indexed_values` with feature value >= threshold or
