@@ -1,5 +1,6 @@
 # distutils: language=c++
 from boomer.common._arrays cimport intp, uint8, float32
+from boomer.common._tuples cimport IndexedFloat32
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.losses cimport Loss
@@ -8,24 +9,15 @@ from boomer.common.pruning cimport Pruning
 from boomer.common.shrinkage cimport Shrinkage
 from boomer.common.head_refinement cimport HeadRefinement
 
-from libcpp.unordered_map cimport unordered_map as map
+from libcpp.unordered_map cimport unordered_map
 
 
 """
-A struct that stores a value of type float32 and a corresponding index that refers to the (original) position of the
-value in an array.
-"""
-cdef struct IndexedValue:
-    intp index
-    float32 value
-
-
-"""
-A struct that contains a pointer to a C-array of type `IndexedValue`. The attribute `num_elements` specifies how many
+A struct that contains a pointer to a C-array of type `IndexedFloat32`. The attribute `num_elements` specifies how many
 elements the array contains.
 """
 cdef struct IndexedArray:
-    IndexedValue* data
+    IndexedFloat32* data
     intp num_elements
 
 
@@ -96,7 +88,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef map[intp, IndexedArray*]* cache_global
+    cdef unordered_map[intp, IndexedArray*]* cache_global
 
     # Functions:
 
