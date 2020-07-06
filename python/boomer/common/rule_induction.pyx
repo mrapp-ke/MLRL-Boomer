@@ -11,8 +11,8 @@ from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.losses cimport Prediction
 
-from libc.math cimport abs
-from libc.stdlib cimport qsort
+from libc.math cimport fabs
+from libc.stdlib cimport abs, qsort
 
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
@@ -771,7 +771,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             else:
                                 # If the condition separates an examples with feature value < 0 from an example with
                                 # feature value > 0
-                                best_condition_threshold = previous_threshold_negative + (abs(previous_threshold - previous_threshold_negative) / 2.0)
+                                best_condition_threshold = previous_threshold_negative + (fabs(previous_threshold - previous_threshold_negative) / 2.0)
 
                         # Find and evaluate the best head for the current refinement, if the condition that uses the >
                         # operator is used...
@@ -797,7 +797,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             else:
                                 # If the condition separates an examples with feature value < 0 from an example with
                                 # feature value > 0
-                                best_condition_threshold = previous_threshold_negative + (abs(previous_threshold - previous_threshold_negative) / 2.0)
+                                best_condition_threshold = previous_threshold_negative + (fabs(previous_threshold - previous_threshold_negative) / 2.0)
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
@@ -932,16 +932,19 @@ cdef inline intp __adjust_split(IndexedArray* indexed_array, intp condition_end,
     cdef intp adjusted_position = condition_end
     cdef bint ascending = condition_end < condition_previous
     cdef intp direction = 1 if ascending else -1
+    cdef intp start = condition_end + direction
+    cdef intp num_steps = abs(start - condition_previous)
     cdef float32 feature_value
     cdef bint adjust
-    cdef intp r
+    cdef intp i, r
 
     # Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
     # current sub-sample...
-    for r in range(condition_end + direction, condition_previous, direction):
+    for i in range(num_steps):
         # Check if the current position should be adjusted, or not. This is the case, if the feature value of the
         # current example is smaller than or equal to the given `threshold` (or greater than the `threshold`, if we
         # traverse in descending direction).
+        r = start + (i * direction)
         feature_value = indexed_values[r].value
         adjust = (feature_value <= threshold if ascending else feature_value > threshold)
 
@@ -996,10 +999,11 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     cdef intp num_indexed_values = dereference(indexed_array).num_elements
     cdef bint descending = condition_end < condition_start
     cdef uint32 updated_target, weight
-    cdef intp start, end, direction, i, r, index
+    cdef intp start, end, direction, i, r, j, index, num_steps
 
     # Determine the number of elements in the filtered array...
-    cdef intp num_elements = abs(condition_start - condition_end)
+    cdef intp num_condition_steps = abs(condition_start - condition_end)
+    cdef intp num_elements = num_condition_steps
 
     if not covered:
         num_elements = num_indexed_values - num_elements
@@ -1024,7 +1028,9 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
         # Retain the indices at positions [condition_start, condition_end) and set the corresponding values in
         # `covered_examples_mask` to `num_conditions`, which marks them as covered (because
         # `updated_target == num_conditions`)...
-        for r in range(condition_start, condition_end, direction):
+
+        for j in range(num_condition_steps):
+            r = condition_start + (j * direction)
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
             filtered_array[i].index = index
@@ -1046,7 +1052,10 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
             # Retain the indices at positions [start, condition_start), while leaving the corresponding values in
             # `covered_examples_mask` untouched, such that all previously covered examples in said range are still
             # marked as covered, while previously uncovered examples are still marked as uncovered...
-            for r in range(start, condition_start, direction):
+            num_steps = abs(start - condition_start)
+
+            for j in range(num_steps):
+                r = start + (j * direction)
                 filtered_array[i].index = indexed_values[r].index
                 filtered_array[i].value = indexed_values[r].value
                 i += direction
@@ -1054,7 +1063,8 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
         # Discard the indices at positions [condition_start, condition_end) and set the corresponding values in
         # `covered_examples_mask` to `num_conditions`, which marks them as uncovered (because
         # `updated_target != num_conditions`)...
-        for r in range(condition_start, condition_end, direction):
+        for j in range(num_condition_steps):
+            r = condition_start + (j * direction)
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
             weight = 1 if weights is None else weights[index]
@@ -1063,7 +1073,10 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
         # Retain the indices at positions [condition_end, end), while leaving the corresponding values in
         # `covered_examples_mask` untouched, such that all previously covered examples in said range are still marked as
         # covered, while previously uncovered examples are still marked as uncovered...
-        for r in range(condition_end, end, direction):
+        num_steps = abs(condition_end - end)
+
+        for j in range(num_steps):
+            r = condition_end + (j * direction)
             filtered_array[i].index = indexed_values[r].index
             filtered_array[i].value = indexed_values[r].value
             i += direction
