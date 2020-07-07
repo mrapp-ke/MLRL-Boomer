@@ -68,6 +68,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef intp label_index, example_index
+        cdef uint8 true_label, predicted_label
 
         self.confusion_matrices_subsample_default[:] = 0
         confusion_matrices_default[:] = 0
