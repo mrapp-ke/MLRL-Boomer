@@ -20,6 +20,8 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
     cdef float64[::1, :] confusion_matrices_default
 
+    cdef float64[::1, :] confusion_matrices_subsample_default
+
     cdef float64[::1, :] confusion_matrices_covered
 
     cdef float64[::1, :] accumulated_confusion_matrices_covered
