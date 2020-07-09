@@ -12,7 +12,7 @@ cdef class CoverageLoss(Loss):
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef void begin_instance_sub_sampling(self)
+    cdef void reset_examples(self)
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove)
 
@@ -35,7 +35,7 @@ cdef class DecomposableCoverageLoss(CoverageLoss):
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef void begin_instance_sub_sampling(self)
+    cdef void reset_examples(self)
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove)
 

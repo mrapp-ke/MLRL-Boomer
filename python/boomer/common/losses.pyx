@@ -56,7 +56,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void begin_instance_sub_sampling(self):
+    cdef void reset_examples(self):
         """
         Notifies the loss function that the examples, which should be considered in the following for learning a new
         rule or refining an existing one, have changed. The indices of the respective examples must be provided via
@@ -79,8 +79,7 @@ cdef class Loss:
         or refining an existing one.
 
         This function must be called repeatedly for each example that should be considered, e.g., for all examples that
-        have been selected via instance sub-sampling, immediately after the invocation of the function
-        `begin_instance_sub_sampling`.
+        have been selected via instance sub-sampling, immediately after the invocation of the function `reset_examples`.
 
         Alternatively, this function may be used to indicate that an example, which has previously been passed to this
         function, should not be considered anymore by setting the argument `remove` accordingly.
@@ -223,7 +222,7 @@ cdef class Loss:
         Notifies the loss function about the predictions of a new rule that has been induced.
 
         This function must be called for each example that is covered by the new rule before learning the next rule,
-        i.e., prior to the next invocation of the function `begin_instance_sub_sampling`.
+        i.e., prior to the next invocation of the function `reset_examples`.
 
         This function is supposed to update any internal state that depends on the predictions of already induced rules.
 
