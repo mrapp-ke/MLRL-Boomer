@@ -9,7 +9,8 @@ ANNOTATE = True
 DEBUG = False
 
 sources = [
-    '**/*.pyx'
+    '**/*.pyx',
+    'boomer/common/cpp/sparse.cpp'
 ]
 
 extensions = [
