@@ -1,4 +1,3 @@
-# distutils: language=c++
 from boomer.common._arrays cimport intp, float32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common._random cimport RNG
