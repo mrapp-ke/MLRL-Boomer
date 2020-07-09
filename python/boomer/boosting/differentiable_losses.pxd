@@ -12,6 +12,8 @@ cdef class DifferentiableLoss(Loss):
 
     cdef void reset_examples(self)
 
+    cdef void add_sampled_example(self, intp example_index, uint32 weight)
+
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
     cdef void begin_search(self, intp[::1] label_indices)
@@ -35,6 +37,8 @@ cdef class DecomposableDifferentiableLoss(DifferentiableLoss):
 
     cdef void reset_examples(self)
 
+    cdef void add_sampled_example(self, intp example_index, uint32 weight)
+
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
     cdef void begin_search(self, intp[::1] label_indices)
@@ -57,6 +61,8 @@ cdef class NonDecomposableDifferentiableLoss(DifferentiableLoss):
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
     cdef void reset_examples(self)
+
+    cdef void add_sampled_example(self, intp example_index, uint32 weight)
 
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
