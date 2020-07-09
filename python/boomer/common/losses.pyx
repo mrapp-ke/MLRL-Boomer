@@ -42,6 +42,44 @@ cdef class DenseLabelMatrix(LabelMatrix):
         return y[example_index, label_index]
 
 
+cdef class SparseLabelMatrix(LabelMatrix):
+    """
+    Implements random access to the labels of the training examples based on a sparse label matrix.
+
+    The label matrix must be given as a `scipy.sparse.lil_matrix` and will internally be converted to the dictionary of
+    keys (DOK) format.
+    """
+
+    def __cinit__(self, intp num_examples, intp num_labels, list[::1] rows):
+        """
+        :param num_examples:    The total number of examples
+        :param num_labels:      The total number of labels
+        :param rows:            An array of dtype `list`, shape `(num_rows)`, storing a list for each example containing
+                                the column indices of all non-zero labels
+        """
+        self.num_examples = num_examples
+        self.num_labels = num_labels
+        cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
+        cdef intp num_rows = rows.shape[0]
+        cdef list col_indices
+        cdef uint32 r, c
+
+        for r in range(num_rows):
+            col_indices = rows[r]
+
+            for c in col_indices:
+                dok_matrix.addValue(r, c)
+
+        self.dok_matrix = dok_matrix
+
+    def __dealloc__(self):
+        del self.dok_matrix
+
+    cdef uint8 get_label(self, intp example_index, intp label_index):
+        cdef BinaryDokMatrix* dok_matrix = self.dok_matrix
+        return dok_matrix.getValue(<uint32>example_index, <uint32>label_index)
+
+
 cdef class DefaultPrediction:
     """
     Stores the default rule's predictions for each label.
