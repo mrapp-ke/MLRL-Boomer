@@ -85,7 +85,7 @@ cdef class IREP(Pruning):
         # Tell the loss function about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
             if weights[i] == 0:
-                loss.update_sub_sample(i, 1, False)
+                loss.update_covered_example(i, 1, False)
 
                 if covered_examples_mask[i] == covered_examples_target:
                     loss.update_search(i, 1)
@@ -177,7 +177,7 @@ cdef class IREP(Pruning):
                     i = indexed_values[r].index
 
                     if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
-                        loss.update_sub_sample(i, 1, uncovered)
+                        loss.update_covered_example(i, 1, uncovered)
                         current_covered_examples_mask[i] = n
 
             postincrement(iterator)

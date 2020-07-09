@@ -34,7 +34,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
     cdef void reset_examples(self)
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove)
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
     cdef void begin_search(self, intp[::1] label_indices)
 
