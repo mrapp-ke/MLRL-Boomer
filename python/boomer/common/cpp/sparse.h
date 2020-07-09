@@ -29,43 +29,11 @@ namespace sparse {
         private:
 
             /**
-             * The width of the matrix.
-             */
-            uint32 width_;
-
-            /**
-             * The height of the matrix.
-             */
-            uint32 height_;
-
-            /**
              * An unordered set that stores pairs of rows and columns, indicating the positions of non-zero elements.
              */
             std::unordered_set<std::pair<uint32, uint32>, PairHash> data_;
 
         public:
-
-            /**
-             * Creates a new matrix width a specific width and height. Initially, all elements are set to zero.
-             *
-             * @param width     The width of the matrix
-             * @param height    The height of the matrix
-             */
-            BinaryDokMatrix(uint32 width, uint32 height);
-
-            /**
-             * Returns the width of the matrix.
-             *
-             * @return The width of the matrix
-             */
-            uint32 getWidth();
-
-            /**
-             * Returns the height of the matrix.
-             *
-             * @return The height of the matrix
-             */
-            uint32 getHeight();
 
             /**
              * Sets a non-zero value to element at a specific position.
