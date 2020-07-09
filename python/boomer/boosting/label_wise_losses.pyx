@@ -1,5 +1,3 @@
-# distutils: language=c++
-
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
