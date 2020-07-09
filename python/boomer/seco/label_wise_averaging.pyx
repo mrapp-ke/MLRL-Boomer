@@ -14,20 +14,25 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     def __cinit__(self, Heuristic heuristic, intp[::1] label_indices, const uint8[::1, :] true_labels,
                   const float64[::1, :] uncovered_labels, const uint8[::1] minority_labels,
-                  const float64[::1, :] confusion_matrices_default):
+                  const float64[::1, :] confusion_matrices_default,
+                  const float64[::1, :] confusion_matrices_subsample_default):
         """
-        :param heuristic:                   The heuristic to be used
-        :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
-                                            indices of the labels that should be considered by the search or None, if
-                                            all labels should be considered
-        :param true_labels:                 An array of dtype uint, shape `(num_examples, num_labels)`, representing the
-                                            true labels according to the ground truth
-        :param uncovered_labels:            An array of dtype float, shape `(num_examples, num_labels)`, indicating
-                                            which each examples and labels remain to be covered
-        :param minority_labels:             An array of dtype uint, shape `(num_labels)`, representing the minority
-                                            class for each label
-        :param confusion_matrices_default:  An array of dtype float, shape `(4, num_labels)`, representing a confusion
-                                            matrix that stores the elements of all examples per label
+        :param heuristic:                               The heuristic to be used
+        :param label_indices:                           An array of dtype int, shape `(num_considered_labels)`,
+                                                        representing the indices of the labels that should be considered
+                                                        by the search or None, if all labels should be considered
+        :param true_labels:                             An array of dtype uint, shape `(num_examples, num_labels)`,
+                                                        representing the true labels according to the ground truth
+        :param uncovered_labels:                        An array of dtype float, shape `(num_examples, num_labels)`,
+                                                        indicating which each examples and labels remain to be covered
+        :param minority_labels:                         An array of dtype uint, shape `(num_labels)`, representing the
+                                                        minority class for each label
+        :param confusion_matrices_default:              An array of dtype float, shape `(4, num_labels)`, representing a
+                                                        confusion matrix that stores the elements of all examples per
+                                                        label
+        :param confusion_matrices_subsample_default:    An array of dtype float, shape `(4, num_labels)`, representing a
+                                                        confusion matrix that stores the elements of the examples that
+                                                        are covered by the current rule per label
         """
         self.heuristic = heuristic
         self.label_indices = label_indices
@@ -35,6 +40,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         self.uncovered_labels = uncovered_labels
         self.minority_labels = minority_labels
         self.confusion_matrices_default = confusion_matrices_default
+        self.confusion_matrices_subsample_default = confusion_matrices_subsample_default
         self.accumulated_confusion_matrices_covered = None
         cdef LabelWisePrediction prediction = LabelWisePrediction.__new__(LabelWisePrediction)
         cdef intp num_labels = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
@@ -271,8 +277,10 @@ cdef class LabelWiseAveraging(CoverageLoss):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
         return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, heuristic, label_indices, true_labels,
-                                                 uncovered_labels, minority_labels, confusion_matrices_default)
+                                                 uncovered_labels, minority_labels, confusion_matrices_default,
+                                                 confusion_matrices_subsample_default)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
