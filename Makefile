@@ -11,7 +11,7 @@ clean_compile:
 	find python/ -type f -name "*.so" -delete
 	find python/ -type f -name "*.c" -delete
 	find python/ -type f -name "*.pyd" -delete
-	find python/ -type f -name "*.cpp" -delete
+	find python/ -type f -name "*.cpp" -not -path "**/cpp/*" -delete
 	find python/ -type f -name "*.html" -delete
 
 clean: clean_compile clean_venv
