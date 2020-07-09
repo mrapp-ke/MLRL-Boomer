@@ -114,6 +114,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef intp[::1] label_indices = self.label_indices
         cdef float64[::1, :] confusion_matrices_covered = self.accumulated_confusion_matrices_covered if accumulated else self.confusion_matrices_covered
         cdef const float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef const float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
         cdef intp num_labels = confusion_matrices_covered.shape[0]
         cdef intp c, l
         cdef Heuristic heuristic = self.heuristic
@@ -123,14 +124,14 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
             predicted_scores[c] = <float64> minority_labels[l]
             if uncovered:
                 quality_scores[c] = heuristic.evaluate_confusion_matrix(
-                    confusion_matrices_default[l, _IN] - confusion_matrices_covered[c, _IN],
-                    confusion_matrices_default[l, _IP] - confusion_matrices_covered[c, _IP],
-                    confusion_matrices_default[l, _RN] - confusion_matrices_covered[c, _RN],
-                    confusion_matrices_default[l, _RP] - confusion_matrices_covered[c, _RP],
-                    confusion_matrices_covered[c, _IN],
-                    confusion_matrices_covered[c, _IP],
-                    confusion_matrices_covered[c, _RN],
-                    confusion_matrices_covered[c, _RP]
+                    confusion_matrices_subsample_default[l, _IN] - confusion_matrices_covered[c, _IN],
+                    confusion_matrices_subsample_default[l, _IP] - confusion_matrices_covered[c, _IP],
+                    confusion_matrices_subsample_default[l, _RN] - confusion_matrices_covered[c, _RN],
+                    confusion_matrices_subsample_default[l, _RP] - confusion_matrices_covered[c, _RP],
+                    confusion_matrices_covered[c, _IN] + confusion_matrices_default[l, _IN] - confusion_matrices_subsample_default[l, _IN],
+                    confusion_matrices_covered[c, _IP] + confusion_matrices_default[l, _IP] - confusion_matrices_subsample_default[l, _IP],
+                    confusion_matrices_covered[c, _RN] + confusion_matrices_default[l, _RN] - confusion_matrices_subsample_default[l, _RN],
+                    confusion_matrices_covered[c, _RP] + confusion_matrices_default[l, _RP] - confusion_matrices_subsample_default[l, _RP],
                 )
             else:
                 quality_scores[c] = heuristic.evaluate_confusion_matrix(
@@ -170,7 +171,6 @@ cdef class LabelWiseAveraging(CoverageLoss):
         prediction.predicted_scores = default_rule
         cdef uint8[::1] minority_labels = array_uint8(num_labels)
         cdef float64[::1, :] uncovered_labels = fortran_matrix_float64(num_examples, num_labels)
-        cdef float64[::1, :] confusion_matrices_default = fortran_matrix_float64(num_labels, 4)
         cdef float64 threshold = num_examples / 2.0
         cdef float64 sum_uncovered_labels = 0
         cdef uint8 true_label, predicted_label
@@ -195,7 +195,8 @@ cdef class LabelWiseAveraging(CoverageLoss):
                     sum_uncovered_labels = sum_uncovered_labels + 1
 
 
-        self.confusion_matrices_default = confusion_matrices_default
+        self.confusion_matrices_default = fortran_matrix_float64(num_labels, 4)
+        self.confusion_matrices_subsample_default = fortran_matrix_float64(num_labels, 4)
 
         # this stores a matrix which corresponds to the uncovered labels of all examples, where uncovered labels are
         # represented by a one and covered examples are represented by a zero
@@ -210,14 +211,40 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     cdef void begin_instance_sub_sampling(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        confusion_matrices_default[:, :] = 0
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef intp num_examples = true_labels.shape[0]
+        cdef intp num_labels = true_labels.shape[1]
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef intp label_index, example_index
+        cdef uint8 true_label, predicted_label
+
+        self.confusion_matrices_subsample_default[:] = 0
+        confusion_matrices_default[:] = 0
+
+        for label_index in range(num_labels):
+            for example_index in range(num_examples):
+                if uncovered_labels[example_index, label_index] > 0:
+                    true_label = true_labels[example_index, label_index]
+                    predicted_label = minority_labels[label_index]
+
+                    if true_label == 0:
+                        if predicted_label == 0:
+                            confusion_matrices_default[label_index, _IN] += 1
+                        elif predicted_label == 1:
+                            confusion_matrices_default[label_index, _IP] += 1
+                    elif true_label == 1:
+                        if predicted_label == 0:
+                            confusion_matrices_default[label_index, _RN] += 1
+                        elif predicted_label == 1:
+                            confusion_matrices_default[label_index, _RP] += 1
 
     cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef intp num_labels = minority_labels.shape[0]
-        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
         cdef float64 signed_weight = -<float64>weight if remove else weight
         cdef intp c
         cdef uint8 true_label, predicted_label
@@ -229,14 +256,14 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
                 if true_label == 0:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _IN] += signed_weight
+                        confusion_matrices_subsample_default[c, _IN] += signed_weight
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _IP] += signed_weight
+                        confusion_matrices_subsample_default[c, _IP] += signed_weight
                 elif true_label == 1:
                     if predicted_label == 0:
-                        confusion_matrices_default[c, _RN] += signed_weight
+                        confusion_matrices_subsample_default[c, _RN] += signed_weight
                     elif predicted_label == 1:
-                        confusion_matrices_default[c, _RP] += signed_weight
+                        confusion_matrices_subsample_default[c, _RP] += signed_weight
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         cdef Heuristic heuristic = self.heuristic
