@@ -1,4 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
+from boomer.common._sparse cimport BinaryDokMatrix
 
 
 cdef class LabelMatrix:
@@ -19,6 +20,17 @@ cdef class DenseLabelMatrix(LabelMatrix):
     # Attributes:
 
     cdef uint8[:, ::1] y
+
+    # Functions:
+
+    cdef uint8 get_label(self, intp example_index, intp label_index)
+
+
+cdef class SparseLabelMatrix(LabelMatrix):
+
+    # Attributes:
+
+    cdef BinaryDokMatrix* dok_matrix
 
     # Functions:
 
