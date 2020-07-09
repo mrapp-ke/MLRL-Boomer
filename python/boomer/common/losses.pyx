@@ -60,7 +60,7 @@ cdef class Loss:
         """
         Notifies the loss function that the examples, which should be considered in the following for learning a new
         rule or refining an existing one, have changed. The indices of the respective examples must be provided via
-        subsequent calls to the function `update_sub_sample`.
+        subsequent calls to the function `update_covered_example`.
 
         This function must be invoked before a new rule is learned from scratch (as each rule may be learned on a
         different sub-sample of the training data), as well as each time an existing rule has been refined, i.e.
@@ -73,10 +73,10 @@ cdef class Loss:
         """
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
         """
-        Notifies the loss function about an example that should be considered in the following for learning a new rule
-        or refining an existing one.
+        Notifies the loss function about an example that is covered by an existing rule and therefore should be
+        considered in the following for refining the existing rule.
 
         This function must be called repeatedly for each example that should be considered, e.g., for all examples that
         have been selected via instance sub-sampling, immediately after the invocation of the function `reset_examples`.
