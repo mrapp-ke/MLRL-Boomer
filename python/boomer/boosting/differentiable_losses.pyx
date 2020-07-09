@@ -18,6 +18,10 @@ cdef class DifferentiableLoss(Loss):
     cdef void reset_examples(self):
         pass
 
+    cdef void add_sampled_example(self, intp example_index, uint32 weight):
+        # This function is equivalent to the function `update_covered_example`...
+        self.update_covered_example(example_index, weight, False)
+
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
         pass
 
