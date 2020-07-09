@@ -13,13 +13,14 @@ If you use the algorithm in a scientific publication, we would appreciate citati
 The algorithm that is provided by this project currently supports the following features to learn an ensemble of boosted classification rules:
 
 * Different label-wise or example-wise loss functions can be minimized during training (optionally using L2 regularization).
-* The rules may predict for a single label, or for all labels (which enables to model local label dependencies).
-* When learning a new rule, random samples of the training examples, features or labels may be used, including different techniques such as sampling with or without replacement.
+* The rules may predict for a single label or for all labels (which enables to model local label dependencies).
+* When learning a new rule, random samples of the training examples, features or labels may be used (including different techniques such as sampling with or without replacement).
 * The impact of individual rules on the ensemble can be controlled using shrinkage.
-* Hyper-parameters provide fine-grained control over the specificity/generality of rules.
-* The conditions of a recently induced rule can be pruned based on a hold-out set.  
+* Hyper-parameters that provide fine-grained control over the specificity/generality of rules are available.
+* The conditions of rules can be pruned based on a hold-out set.  
 * The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
-* Dense and sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets. 
+* Dense and sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
+* Dense and sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets. 
 
 ## Project structure
 
