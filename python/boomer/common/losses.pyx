@@ -78,8 +78,8 @@ cdef class Loss:
         Notifies the loss function about an example that is covered by an existing rule and therefore should be
         considered in the following for refining the existing rule.
 
-        This function must be called repeatedly for each example that should be considered, e.g., for all examples that
-        have been selected via instance sub-sampling, immediately after the invocation of the function `reset_examples`.
+        This function must be called repeatedly for each example that is covered by the existing rule immediately after
+        the invocation of the function `reset_examples`.
 
         Alternatively, this function may be used to indicate that an example, which has previously been passed to this
         function, should not be considered anymore by setting the argument `remove` accordingly.
@@ -87,7 +87,7 @@ cdef class Loss:
         This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
         and store local information that is required by the other functions that will be called later, e.g. statistics
         about the ground truth labels of these particular examples. Any information computed by this function is
-        expected to be reset when invoking the function `begin_instance_sub_sample` for the next time.
+        expected to be reset when invoking the function `reset_examples` for the next time.
 
         :param example_index:   The index of an example that should be considered
         :param weight:          The weight of the example that should be considered
