@@ -1,4 +1,3 @@
-# distutils: language=c++
 from boomer.common._arrays cimport uint8, uint32, intp, float32, float64
 
 from libcpp.list cimport list as double_linked_list

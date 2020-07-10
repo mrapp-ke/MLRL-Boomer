@@ -1,5 +1,7 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float64
-from boomer.common.losses cimport Loss, RefinementSearch, DefaultPrediction, Prediction, LabelWisePrediction
+from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common.losses cimport LabelMatrix
+from boomer.common.losses cimport Loss, RefinementSearch
+from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 
 from libc.math cimport pow
 
@@ -8,7 +10,7 @@ cdef class DifferentiableLoss(Loss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 
@@ -17,19 +19,6 @@ cdef class DifferentiableLoss(Loss):
     cdef RefinementSearch begin_search(self, intp[::1] label_indices)
 
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
-
-
-cdef inline float64 _convert_label_into_score(uint8 label):
-    """
-    Converts a label {0, 1} into an expected score {-1, 1}.
-
-    :param label:   A scalar of dtype `uint8`, representing the label
-    :return:        A scalar of dtype `float64`, representing the expected score
-    """
-    if label > 0:
-        return label
-    else:
-        return -1
 
 
 cdef inline float64 _l2_norm_pow(float64[::1] a):

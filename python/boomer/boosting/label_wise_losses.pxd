@@ -1,34 +1,34 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float64
+from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common.losses cimport LabelMatrix
 from boomer.common.losses cimport RefinementSearch, DecomposableRefinementSearch
 from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
+
+from libcpp.pair cimport pair
 
 
 cdef class LabelWiseLossFunction:
 
     # Functions:
 
-    cdef float64 gradient(self, float64 expected_score, float64 predicted_score)
-
-    cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score)
 
 
 cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
-    cdef float64 gradient(self, float64 expected_score, float64 predicted_score)
-
-    cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score)
 
 
 cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
 
     # Functions:
 
-    cdef float64 gradient(self, float64 expected_score, float64 predicted_score)
-
-    cdef float64 hessian(self, float64 expected_score, float64 predicted_score)
+    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
+                                                               intp label_index, float64 predicted_score)
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
@@ -39,7 +39,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef const intp[::1] label_indices
 
-    cdef const float64[::1, :] gradients
+    cdef const float64[:, ::1] gradients
 
     cdef const float64[::1] total_sums_of_gradients
 
@@ -47,7 +47,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef float64[::1] accumulated_sums_of_gradients
 
-    cdef const float64[::1, :] hessians
+    cdef const float64[:, ::1] hessians
 
     cdef const float64[::1] total_sums_of_hessians
 
@@ -76,21 +76,21 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     cdef float64 l2_regularization_weight
 
-    cdef float64[::1, :] expected_scores
+    cdef LabelMatrix label_matrix
 
-    cdef float64[::1, :] current_scores
+    cdef float64[:, ::1] current_scores
 
-    cdef float64[::1, :] gradients
+    cdef float64[:, ::1] gradients
 
     cdef float64[::1] total_sums_of_gradients
 
-    cdef float64[::1, :] hessians
+    cdef float64[:, ::1] hessians
 
     cdef float64[::1] total_sums_of_hessians
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 
