@@ -13,13 +13,14 @@ If you use the algorithm in a scientific publication, we would appreciate citati
 The algorithm that is provided by this project currently supports the following features to learn an ensemble of boosted classification rules:
 
 * Different label-wise or example-wise loss functions can be minimized during training (optionally using L2 regularization).
-* The rules may predict for a single label, or for all labels (which enables to model local label dependencies).
-* When learning a new rule, random samples of the training examples, features or labels may be used, including different techniques such as sampling with or without replacement.
+* The rules may predict for a single label or for all labels (which enables to model local label dependencies).
+* When learning a new rule, random samples of the training examples, features or labels may be used (including different techniques such as sampling with or without replacement).
 * The impact of individual rules on the ensemble can be controlled using shrinkage.
-* Hyper-parameters provide fine-grained control over the specificity/generality of rules.
-* The conditions of a recently induced rule can be pruned based on a hold-out set.  
+* Hyper-parameters that provide fine-grained control over the specificity/generality of rules are available.
+* The conditions of rules can be pruned based on a hold-out set.  
 * The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
-* Dense and sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets. 
+* Dense and sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
+* Dense and sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets. 
 
 ## Project structure
 
@@ -38,10 +39,10 @@ The algorithm that is provided by this project currently supports the following 
             | ...
         | ...
     |-- main_boomer.py                  Can be used to start an experiment, i.e., to train and evaluate a model, using BOOMER
-    |-- main_boomer_bbc_cv.py           Can be used to evaluate existing BOOMER models using "Bootstrap Bias Corrected Cross Validation" (BBC-CV)
-    |-- main_boomer_plots.py            Can be used to plot visualizations of the performance of an existing BOOMER model
     |-- main_generate_synthetic_data.py Can be used to generate synthetic data sets
+    |-- main_seco.py                    Can be used to start an experiment, i.e., to train and evaluate a model using the separate-and-conquer algorithm
     |-- setup.py                        Distutil definition of the library for installation via pip
+    |-- ...
 |-- slurm                               Directory that contains bash scripts for running jobs using the Slurm workload manager
     |-- ...
 |-- Makefile                            Makefile for compiling the Cython source files and installing a Python virtual environment
@@ -90,12 +91,12 @@ In order to run an experiment, the following command line arguments must be prov
 |------------------------------|-----------|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `--data-dir`                 | No        | `None`                     | The path of the directory where the data sets are located.                                                                                                                                                                                                     |
 | `--dataset`                  | No        | `None`                     | The name of the data set file (without suffix).                                                                                                                                                                                                                |
-| `--one-hot-encoding`         | Yes       | `True`                     | `True`, if one-hot-encoding should be used for nominal attributes, `False` otherwise.                                                                                                                                                                          |
+| `--one-hot-encoding`         | Yes       | `False`                    | `True`, if one-hot-encoding should be used for nominal attributes, `False` otherwise.                                                                                                                                                                          |
 | `--output-dir`               | Yes       | `None`                     | The path of the directory into which the experimental results (`.csv` files) should be written.                                                                                                                                                                |
 | `--store-predictions`        | Yes       | `False`                    | `True`, if the predictions for the individual test examples should be stored as `.csv` files (they may become very large), `False` otherwise. Does only have an effect if the parameter `--output-dir` is specified.                                           |
 | `--print-rules`              | Yes       | `False`                    | `True`, if the induced rules should be printed on the console, `False` otherwise.                                                                                                                                                                              |
-| `--store-rules`              | Yes       | `False`                    | `True`, if the induced rules should be stores as a `.txt` file, `False` otherwise. Does only have an effect if the parameter `--output-dir` is specified.                                                                                                      |
-| `--evaluate-training-data`   | Yes       | `False`                    | `True`, if the models should not also be evaluated on the test data, but also on the training data, `False` otherwise.                                                                                                                                         |
+| `--store-rules`              | Yes       | `False`                    | `True`, if the induced rules should be stored as a `.txt` file, `False` otherwise. Does only have an effect if the parameter `--output-dir` is specified.                                                                                                      |
+| `--evaluate-training-data`   | Yes       | `False`                    | `True`, if the models should not only be evaluated on the test data, but also on the training data, `False` otherwise.                                                                                                                                         |
 | `--model-dir`                | Yes       | `None`                     | The path of the directory where models (`.model` files) are located.                                                                                                                                                                                           |
 | `--parameter-dir`            | Yes       | `None`                     | The path of the directory, parameter settings (`.csv` files) should be loaded from.                                                                                                                                                                            |
 | `--folds`                    | Yes       | `1`                        | The total number of folds to be used for cross-validation or `1`, if no cross validation should be used.                                                                                                                                                       |

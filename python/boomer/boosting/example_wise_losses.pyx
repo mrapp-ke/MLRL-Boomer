@@ -3,8 +3,8 @@
 
 Provides classes that implement loss functions that are applied example-wise.
 """
-from boomer.common._arrays cimport array_float64, fortran_matrix_float64, get_index
-from boomer.boosting.differentiable_losses cimport _convert_label_into_score, _l2_norm_pow
+from boomer.common._arrays cimport uint8, array_float64, c_matrix_float64, fortran_matrix_float64, get_index
+from boomer.boosting.differentiable_losses cimport _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
 
@@ -14,234 +14,134 @@ from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
 
-cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
+cdef class ExampleWiseLossFunction:
+    """
+    A base class for all (non-decomposable) loss functions that are applied example-wise.
+    """
+
+    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
+                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64[::1] hessians):
+        """
+        Must be implemented by subclasses to calculate the gradients (first derivatives) and hessians (second
+        derivatives) of the loss function for each label of a certain example.
+
+        :param label_matrix:        A `LabelMatrix` that provides random access to the labels of the training examples
+        :param example_index:       The index of the example for which the gradients and hessians should be calculated
+        :param predicted_scores:    An array of dtype float64, shape `(num_labels)`, representing the scores that are
+                                    predicted for each label of the respective example
+        :param gradients:           An array of dtype float64, shape `(num_labels)`, the gradients that have been
+                                    calculated should be written to
+        :param hessians:            An array of dtype float64, shape `(num_labels * (num_labels + 1) / 2)`, the hessians
+                                    that have been calculated should be written to
+        """
+        pass
+
+
+cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
     """
     A multi-label variant of the logistic loss that is applied example-wise.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight):
+    # Functions:
+
+    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
+                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64[::1] hessians):
+        cdef intp num_labels = label_matrix.num_labels
+        cdef float64 sum_of_exponentials = 1
+        # Temporary variables
+        cdef float64 expected_score, expected_score2, predicted_score, predicted_score2, exponential, tmp
+        cdef uint8 true_label
+        cdef intp c, c2
+
+        for c in range(num_labels):
+            true_label = label_matrix.get_label(example_index, c)
+            expected_score = 1 if true_label else -1
+            predicted_score = predicted_scores[c]
+            exponential = exp(-expected_score * predicted_score)
+            gradients[c] = exponential  # Temporarily store the exponential in the existing output array
+            sum_of_exponentials += exponential
+
+        cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
+        cdef intp j = 0
+
+        for c in range(num_labels):
+            true_label = label_matrix.get_label(example_index, c)
+            expected_score = 1 if true_label else -1
+            predicted_score = predicted_scores[c]
+            exponential = gradients[c]
+
+            tmp = (-expected_score * exponential) / sum_of_exponentials
+            gradients[c] = tmp
+
+            for c2 in range(c):
+                true_label = label_matrix.get_label(example_index, c2)
+                expected_score2 = 1 if true_label else -1
+                predicted_score2 = predicted_scores[c2]
+                tmp = exp((-expected_score2 * predicted_score2) - (expected_score * predicted_score))
+                tmp = -expected_score2 * expected_score * tmp
+                tmp = tmp / sum_of_exponentials_pow
+                hessians[j] = tmp
+                j += 1
+
+            tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential))
+            tmp = tmp / sum_of_exponentials_pow
+            hessians[j] = tmp
+            j += 1
+
+
+cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
+    """
+    Allows to search for the best refinement of a rule according to a differentiable loss function that is applied
+    example-wise.
+    """
+
+    def __cinit__(self, float64 l2_regularization_weight, const intp[::1] label_indices,
+                  const float64[:, ::1] gradients, const float64[::1] total_sums_of_gradients,
+                  const float64[:, ::1] hessians, const float64[::1] total_sums_of_hessians):
         """
-        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the optimal
-                                         scores to be predicted by rules. Increasing this value causes the model to be
-                                         more conservative, setting it to 0 turns of L2 regularization entirely
+        :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
+                                            optimal scores to be predicted by rules
+        :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
+                                            indices of the labels that should be considered by the search or None, if
+                                            all labels should be considered
+        :param gradients:                   An array of dtype float, shape `(num_examples, num_labels)`, representing
+                                            the gradient for each example and label
+        :param total_sums_of_gradients:     An array of dtype float, shape `(num_labels)`, representing the sum of the
+                                            gradients of all examples, which should be considered by the search, for
+                                            each label
+        :param hessians:                    An array of dtype float, shape `(num_examples, num_hessians)`, representing
+                                            the hessian for each example and label
+        :param total_sums_of_hessians:      An array of dtype float, shape `(num_hessians)`, representing the sum of the
+                                            hessians of all examples, which should be considered by the search, for each
+                                            label
         """
         self.l2_regularization_weight = l2_regularization_weight
-        self.prediction = LabelIndependentPrediction.__new__(LabelIndependentPrediction)
-        self.sums_of_gradients = None
-        self.sums_of_hessians = None
-
-    cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y):
-        # The weight to be used for L2 regularization
-        cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        # The number of examples
-        cdef intp num_examples = y.shape[0]
-        # The number of labels
-        cdef intp num_labels = y.shape[1]
-        # A matrix that stores the expected scores for each example and label according to the ground truth
-        cdef float64[::1, :] expected_scores = fortran_matrix_float64(num_examples, num_labels)
-        # Pre-calculated values
-        cdef float64 sum_of_exponentials = num_labels + 1
-        cdef float64 sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
-        # Temporary variables
-        cdef float64 expected_score
-        cdef intp r, c, c2, i
-
-        # We find the optimal scores to be predicted by the default rule for each label by solving a system of linear
-        # equations A * X = B with one equation per label. A is a two-dimensional (symmetrical) matrix of coefficients,
-        # B is an one-dimensional array of ordinates, and X is an one-dimensional array of unknowns to be determined.
-        # The ordinates result from the gradients of the loss function, whereas the coefficients result from the
-        # hessians. As the matrix of coefficients is symmetrical, we must only compute the hessians that correspond to
-        # the upper-right triangle of the matrix and leave the remaining elements unspecified. For reasons of space
-        # efficiency, we store the hessians in an one-dimensional array by appending the columns of the matrix of
-        # coefficients to each other and omitting the unspecified elements.
-        cdef float64[::1] ordinates = array_float64(num_labels)
-        ordinates[:] = 0
-        cdef intp num_hessians = __triangular_number(num_labels)  # The number of elements in the upper-right triangle
-        cdef float64[::1] coefficients = array_float64(num_hessians)
-        coefficients[:] = 0
-
-        # Example-wise calculate the gradients and hessians and add them to the arrays of ordinates and coefficients...
-        for r in range(num_examples):
-            # Traverse the labels of the current example once to convert the ground truth labels into expected scores...
-            for c in range(num_labels):
-                expected_scores[r, c] = _convert_label_into_score(y[r, c])
-
-            # Traverse the labels again to calculate the gradients and hessians...
-            i = 0
-
-            for c in range(num_labels):
-                expected_score = expected_scores[r, c]
-
-                # Calculate the first derivative (gradient) of the loss function with respect to the current label and
-                # add it to the array of ordinates...
-                ordinates[c] += expected_score / sum_of_exponentials
-
-                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-                # each of the other labels and add it to the matrix of coefficients...
-                for c2 in range(c):
-                    coefficients[i] -= (expected_scores[r, c2] * expected_score) / sum_of_exponentials_pow
-                    i += 1
-
-                # Calculate the second derivative (hessian) of the loss function with respect to the current label and
-                # add it to the diagonal of the matrix of coefficients...
-                coefficients[i] += (fabs(expected_score) * num_labels) / sum_of_exponentials_pow
-                i += 1
-
-        # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
-        cdef float64[::1] scores = __dsysv_float64(coefficients, ordinates, l2_regularization_weight)
-
-        # We must traverse each example again to calculate the updated gradients and hessians based on the calculated
-        # scores...
-        cdef float64[::1] exponentials = ordinates # Reuse existing array instead of allocating a new one
-        # A matrix that stores the gradients
-        cdef float64[::1, :] gradients = fortran_matrix_float64(num_examples, num_labels)
-        # An array that stores the column-wise sums of the matrix of gradients
-        cdef float64[::1] total_sums_of_gradients = array_float64(num_labels)
-        # A matrix that stores the hessians
-        cdef float64[::1, :] hessians = fortran_matrix_float64(num_examples, num_hessians)
-        # An array that stores the column-wise sums of the matrix of hessians
-        cdef float64[::1] total_sums_of_hessians = coefficients # Reuse existing array instead of allocating a new one
-        # A matrix that stores the currently predicted scores for each example and label
-        cdef float64[::1, :] current_scores = fortran_matrix_float64(num_examples, num_labels)
-        # Temporary variables
-        cdef float64 exponential, tmp, score
-
-        for r in range(num_examples):
-            # Traverse the labels of the current example once to create arrays of expected scores and exponentials that
-            # are shared among the upcoming calculations of gradients and hessians...
-            sum_of_exponentials = 1
-
-            for c in range(num_labels):
-                expected_score = expected_scores[r, c]
-                exponential = exp(-expected_score * scores[c])
-                exponentials[c] = exponential
-                sum_of_exponentials += exponential
-
-            sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
-
-            # Traverse the labels again to calculate the gradients and hessians...
-            i = 0
-
-            for c in range(num_labels):
-                expected_score = expected_scores[r, c]
-                exponential = exponentials[c]
-                score = scores[c]
-                current_scores[r, c] = score
-
-                # Calculate the first derivative (gradient) of the loss function with respect to the current label and
-                # add it to the matrix of gradients...
-                tmp = (expected_score * exponential) / sum_of_exponentials
-                # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using
-                # the sums of gradients as the ordinates for solving a system of linear equations in the function
-                # `evaluate_label_dependent_predictions`, the sign must be inverted again...
-                gradients[r, c] = tmp
-
-                # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-                # each of the other labels and add them to the matrix of hessians...
-                for c2 in range(c):
-                    tmp = exp(-expected_scores[r, c2] * scores[c2] - expected_score * score)
-                    tmp = (expected_scores[r, c2] * expected_score * tmp) / sum_of_exponentials_pow
-                    hessians[r, i] = -tmp
-                    i += 1
-
-                # Calculate the second derivative (hessian) of the loss function with respect to the current label and
-                # add it to the diagonal of the matrix of hessians...
-                tmp = (fabs(expected_score) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
-                hessians[r, i] = tmp
-                i += 1
-
-        # Store the gradients...
+        self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
-
-        # Store the hessians...
+        cdef intp num_elements = gradients.shape[1] if label_indices is None else label_indices.shape[0]
+        cdef float64[::1] sums_of_gradients = array_float64(num_elements)
+        sums_of_gradients[:] = 0
+        self.sums_of_gradients = sums_of_gradients
+        self.accumulated_sums_of_gradients = None
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
-
-        # Store the expected and currently predicted scores...
-        self.expected_scores = expected_scores
-        self.current_scores = current_scores
-
-        return scores
-
-    cdef void begin_instance_sub_sampling(self):
-        # Class members
-        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        # Reset total sums of gradients and hessians to 0...
-        total_sums_of_gradients[:] = 0
-        total_sums_of_hessians[:] = 0
-
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
-        # Class members
-        cdef float64[::1, :] gradients = self.gradients
-        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1, :] hessians = self.hessians
-        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        # The number of gradients/hessians...
-        cdef intp num_elements = gradients.shape[1]
-        # The given weight multiplied by 1 or -1, depending on the argument `remove`
-        cdef float64 signed_weight = -<float64>weight if remove else weight
-        # Temporary variables
-        cdef intp c
-
-        # For each label, add the gradient of the example at the given index (weighted by the given weight) to the total
-        # sums of gradients...
-        for c in range(num_elements):
-            total_sums_of_gradients[c] += (signed_weight * gradients[example_index, c])
-
-        # Add the hessians of the example at the given index (weighted by the given weight) to the total sums of
-        # hessians...
-        num_elements = hessians.shape[1]
-
-        for c in range(num_elements):
-            total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
-
-    cdef void begin_search(self, intp[::1] label_indices):
-        # Determine the number of gradients and hessians to be considered by the upcoming search...
-        cdef float64[::1, :] gradients
-        cdef intp num_gradients
-
-        if label_indices is None:
-            gradients = self.gradients
-            num_gradients = gradients.shape[1]
-        else:
-            num_gradients = label_indices.shape[0]
-
-        # To avoid array-recreation each time the search will be updated, the arrays for storing the sums of gradients
-        # and hessians are initialized once at this point. If the arrays from the previous search have the correct size,
-        # they are reused.
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians
-        cdef intp num_hessians
-
-        if sums_of_gradients is None or sums_of_gradients.shape[0] != num_gradients:
-            sums_of_gradients = array_float64(num_gradients)
-            self.sums_of_gradients = sums_of_gradients
-            num_hessians = __triangular_number(num_gradients)
-            sums_of_hessians = array_float64(num_hessians)
-            self.sums_of_hessians = sums_of_hessians
-        else:
-            sums_of_hessians = self.sums_of_hessians
-
-        # Reset the sums of gradients and hessians to 0...
-        sums_of_gradients[:] = 0
+        num_elements = __triangular_number(num_elements)
+        cdef float64[::1] sums_of_hessians = array_float64(num_elements)
         sums_of_hessians[:] = 0
-
-        # Reset the accumulated sums of gradients and hessians to None...
-        self.accumulated_sums_of_gradients = None
+        self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
-
-        # Store the given label indices...
-        self.label_indices = label_indices
+        self.prediction = LabelWisePrediction.__new__(LabelWisePrediction)
 
     cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
-        cdef float64[::1, :] gradients = self.gradients
+        cdef const float64[:, ::1] gradients = self.gradients
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1, :] hessians = self.hessians
+        cdef const float64[:, ::1] hessians = self.hessians
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
-        cdef intp[::1] label_indices = self.label_indices
+        cdef const intp[::1] label_indices = self.label_indices
         # The number of gradients considered by the current search
         cdef intp num_gradients = sums_of_gradients.shape[0]
         # Temporary variables
@@ -299,10 +199,10 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 accumulated_sums_of_hessians[c] += sums_of_hessians[c]
                 sums_of_hessians[c] = 0
 
-    cdef LabelIndependentPrediction evaluate_label_independent_predictions(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef LabelIndependentPrediction prediction = self.prediction
+        cdef LabelWisePrediction prediction = self.prediction
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
@@ -321,8 +221,8 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # The overall quality score, i.e. the sum of the quality scores for each label plus the L2 regularization term
         cdef float64 overall_quality_score = 0
         # Temporary variables
-        cdef float64[::1] total_sums_of_gradients, total_sums_of_hessians
-        cdef intp[::1] label_indices
+        cdef const float64[::1] total_sums_of_gradients, total_sums_of_hessians
+        cdef const intp[::1] label_indices
         cdef float64 sum_of_gradients, sum_of_hessians, score, score_pow
         cdef intp c, c2, l, l2
 
@@ -344,15 +244,13 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
                 sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
-            # Note: As the sign of the gradients was inverted in the function `calculate_default_scores`, it must be
-            # reverted again in the following.
             score = sum_of_hessians + l2_regularization_weight
-            score = sum_of_gradients / score if score != 0 else 0
+            score = -sum_of_gradients / score if score != 0 else 0
             predicted_scores[c] = score
 
             # Calculate the quality score for the current label...
             score_pow = pow(score, 2)
-            score = (-sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
+            score = (sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
             quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
             overall_quality_score += score
 
@@ -362,7 +260,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return prediction
 
-    cdef Prediction evaluate_label_dependent_predictions(self, bint uncovered, bint accumulated):
+    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         cdef Prediction prediction = <Prediction>self.prediction
@@ -371,8 +269,9 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         # The number of gradients considered by the current search
         cdef intp num_gradients = sums_of_gradients.shape[0]
         # Temporary variables
-        cdef float64[::1] gradients, hessians, total_sums_of_gradients, total_sums_of_hessians
-        cdef intp[::1] label_indices
+        cdef const float64[::1] total_sums_of_gradients, total_sums_of_hessians
+        cdef float64[::1] gradients, hessians,
+        cdef const intp[::1] label_indices
         cdef intp num_hessians, c, c2, l, l2, i, offset
 
         if uncovered:
@@ -398,85 +297,166 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
             hessians = sums_of_hessians
 
         # Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-        cdef float64[::1] scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
-        prediction.predicted_scores = scores
+        cdef float64[::1] predicted_scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
+        prediction.predicted_scores = predicted_scores
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-        cdef float64 overall_quality_score = -__ddot_float64(scores, gradients)
-        cdef float64[::1] tmp = __dspmv_float64(hessians, scores)
-        overall_quality_score += 0.5 * __ddot_float64(scores, tmp)
+        cdef float64 overall_quality_score = __ddot_float64(predicted_scores, gradients)
+        cdef float64[::1] tmp = __dspmv_float64(hessians, predicted_scores)
+        overall_quality_score += 0.5 * __ddot_float64(predicted_scores, tmp)
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(scores)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
         prediction.overall_quality_score = overall_quality_score
 
         return prediction
 
+
+cdef class ExampleWiseLoss(DifferentiableLoss):
+    """
+    Allows to locally minimize a differentiable (surrogate) loss function that is applied example-wise by the rules that
+    are learned by a boosting algorithm.
+    """
+
+    def __cinit__(self, ExampleWiseLossFunction loss_function, float64 l2_regularization_weight):
+        """
+        :param loss_function:               An example-wise loss function to be minimized
+        :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
+                                            optimal scores to be predicted by rules. Increasing this value causes the
+                                            model to be more conservative, setting it to 0 turns of L2 regularization
+                                            entirely
+        """
+        self.loss_function = loss_function
+        self.l2_regularization_weight = l2_regularization_weight
+
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
+        # An example-wise loss function to be minimized
+        cdef ExampleWiseLossFunction loss_function = self.loss_function
+        # The weight to be used for L2 regularization
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
+        # The number of examples
+        cdef intp num_examples = label_matrix.num_examples
+        # The number of labels
+        cdef intp num_labels = label_matrix.num_labels
+        # The number of hessians
+        cdef intp num_hessians = __triangular_number(num_labels)
+        # A matrix that stores the gradients for each example
+        cdef float64[:, ::1] gradients = c_matrix_float64(num_examples, num_labels)
+        # An array that stores the column-wise sums of the matrix of gradients
+        cdef float64[::1] total_sums_of_gradients = array_float64(num_labels)
+        total_sums_of_gradients[:] = 0
+        # A matrix that stores the hessians for each example
+        cdef float64[:, ::1] hessians = c_matrix_float64(num_examples, num_hessians)
+        # An array that stores the column-wise sums of the matrix of hessians
+        cdef float64[::1] total_sums_of_hessians = array_float64(num_hessians)
+        total_sums_of_hessians[:] = 0
+        # A matrix that stores the currently predicted scores for each example and label
+        cdef float64[:, ::1] current_scores = c_matrix_float64(num_examples, num_labels)
+        # An array that stores the scores that are predicted by the default rule
+        cdef float64[::1] predicted_scores = array_float64(num_labels)
+        predicted_scores[:] = 0
+        # Temporary variables
+        cdef intp r, c
+
+        # Traverse each example to calculate the initial gradients and hessians...
+        for r in range(num_examples):
+            loss_function.calculate_gradients_and_hessians(label_matrix, r, predicted_scores, gradients[r, :],
+                                                           hessians[r, :])
+
+            for c in range(num_labels):
+                total_sums_of_gradients[c] += gradients[r, c]
+
+            for c in range(num_hessians):
+                total_sums_of_hessians[c] += hessians[r, c]
+
+        # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
+        predicted_scores = __dsysv_float64(total_sums_of_hessians, total_sums_of_gradients, l2_regularization_weight)
+        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
+        prediction.predicted_scores = predicted_scores
+
+        # Traverse each example again to calculate the updated gradients and hessians based on the calculated scores...
+        for r in range(num_examples):
+            current_scores[r, :] = predicted_scores
+            loss_function.calculate_gradients_and_hessians(label_matrix, r, predicted_scores, gradients[r, :],
+                                                           hessians[r, :])
+
+        # Store the gradients...
+        self.gradients = gradients
+        self.total_sums_of_gradients = total_sums_of_gradients
+
+        # Store the hessians...
+        self.hessians = hessians
+        self.total_sums_of_hessians = total_sums_of_hessians
+
+        # Store the label matrix and the currently predicted scores...
+        self.label_matrix = label_matrix
+        self.current_scores = current_scores
+
+        return prediction
+
+    cdef void begin_instance_sub_sampling(self):
+        # Class members
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        # Reset total sums of gradients and hessians to 0...
+        total_sums_of_gradients[:] = 0
+        total_sums_of_hessians[:] = 0
+
+    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
+        # Class members
+        cdef float64[:, ::1] gradients = self.gradients
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[:, ::1] hessians = self.hessians
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        # The number of gradients/hessians...
+        cdef intp num_elements = gradients.shape[1]
+        # The given weight multiplied by 1 or -1, depending on the argument `remove`
+        cdef float64 signed_weight = -<float64>weight if remove else weight
+        # Temporary variables
+        cdef intp c
+
+        # For each label, add the gradient of the example at the given index (weighted by the given weight) to the total
+        # sums of gradients...
+        for c in range(num_elements):
+            total_sums_of_gradients[c] += (signed_weight * gradients[example_index, c])
+
+        # Add the hessians of the example at the given index (weighted by the given weight) to the total sums of
+        # hessians...
+        num_elements = hessians.shape[1]
+
+        for c in range(num_elements):
+            total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
+
+    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
+        cdef float64[:, ::1] gradients = self.gradients
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[:, ::1] hessians = self.hessians
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        return ExampleWiseRefinementSearch.__new__(ExampleWiseRefinementSearch, l2_regularization_weight, label_indices,
+                                                   gradients, total_sums_of_gradients, hessians, total_sums_of_hessians)
+
     cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
         # Class members
-        cdef float64[::1, :] expected_scores = self.expected_scores
-        cdef float64[::1, :] current_scores = self.current_scores
-        cdef float64[::1, :] gradients = self.gradients
-        cdef float64[::1, :] hessians = self.hessians
-        # The total number of labels
-        cdef intp num_labels = gradients.shape[1]
+        cdef ExampleWiseLossFunction loss_function = self.loss_function
+        cdef LabelMatrix label_matrix = self.label_matrix
+        cdef float64[:, ::1] current_scores = self.current_scores
+        cdef float64[:, ::1] gradients = self.gradients
+        cdef float64[:, ::1] hessians = self.hessians
         # The number of predicted labels
         cdef intp num_predicted_labels = predicted_scores.shape[0]
-        # An array for caching pre-calculated values
-        cdef float64[::1] exponentials = array_float64(num_labels)
         # Temporary variables
-        cdef float64 expected_score, exponential, score, sum_of_exponentials, sum_of_exponentials_pow, tmp
-        cdef intp c, c2, l, j
+        cdef intp c, l
 
-        # Traverse the labels for which the new rule predicts to update the currently predicted scores...
+        # Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
+        # example at the given index...
         for c in range(num_predicted_labels):
             l = get_index(c, label_indices)
             current_scores[example_index, l] += predicted_scores[c]
 
-        # Traverse the labels of the current example to create arrays of expected scores and exponentials that are
-        # shared among the upcoming calculations of gradients and hessians...
-        sum_of_exponentials = 1
-
-        for c in range(num_labels):
-            expected_score = expected_scores[example_index, c]
-            exponential = exp(-expected_score * current_scores[example_index, c])
-            exponentials[c] = exponential
-            sum_of_exponentials += exponential
-
-        sum_of_exponentials_pow = pow(sum_of_exponentials, 2)
-
-        # Traverse the labels again to update the gradients and hessians...
-        j = 0
-
-        for c in range(num_labels):
-            expected_score = expected_scores[example_index, c]
-            exponential = exponentials[c]
-            score = current_scores[example_index, c]
-
-            # Calculate the first derivative (gradient) of the loss function with respect to the current label and add
-            # it to the matrix of gradients...
-            tmp = gradients[example_index, c]
-            tmp = (expected_score * exponential) / sum_of_exponentials
-            # Note: The sign of the gradient is inverted (from negative to positive), because otherwise, when using the
-            # sums of gradients as the ordinates for solving a system of linear equations in the function
-            # `evaluate_label_dependent_predictions`, the sign must be inverted again...
-            gradients[example_index, c] = tmp
-
-            # Calculate the second derivatives (hessians) of the loss function with respect to the current label and
-            # each of the other labels and add them to the matrix of hessians...
-            for c2 in range(c):
-                tmp = hessians[example_index, j]
-                tmp = exp(-expected_scores[example_index, c2] * current_scores[example_index, c2] - expected_score * score)
-                tmp = (expected_scores[example_index, c2] * expected_score * tmp) / sum_of_exponentials_pow
-                hessians[example_index, j] = -tmp
-                j += 1
-
-            # Calculate the second derivative (hessian) of the loss function with respect to the current label and add
-            # it to the matrix of hessians...
-            tmp = hessians[example_index, j]
-            tmp = (pow(expected_score, 2) * exponential * (sum_of_exponentials - exponential)) / sum_of_exponentials_pow
-            hessians[example_index, j] = tmp
-            j += 1
+        # Update the gradients and hessians for the example at the given index...
+        loss_function.calculate_gradients_and_hessians(label_matrix, example_index, current_scores[example_index, :],
+                                                       gradients[example_index, :], hessians[example_index, :])
 
 
 cdef inline intp __triangular_number(intp n):
@@ -541,7 +521,7 @@ cdef inline float64[::1] __dspmv_float64(float64[::1] a, float64[::1] x):
     return y
 
 
-cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1] ordinates,
+cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1] inverted_ordinates,
                                          float64 l2_regularization_weight):
     """
     Computes and returns the solution to a system of linear equations A * X = B using LAPACK's DSYSV solver (see
@@ -564,7 +544,9 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
 
     :param coefficients:                An array of dtype `float64`, shape `num_equations * (num_equations + 1) // 2)`,
                                         representing coefficients
-    :param ordinates:                   An array of dtype `float64`, shape `(num_equations)`, representing the ordinates
+    :param inverted_ordinates:          An array of dtype `float64`, shape `(num_equations)`, representing the inverted
+                                        ordinates, i.e., ordinates * -1. The sign of the elements in this array will be
+                                        inverted to when creating the matrix B
     :param l2_regularization_weight:    A scalar of dtype `float64`, representing the weight of the L2 regularization
     :return:                            An array of dtype `float64`, shape `(num_equations)`, representing the solution
                                         to the system of linear equations
@@ -573,7 +555,7 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
     cdef float64 tmp
     cdef intp r, c, i
     # The number of linear equations
-    cdef int n = ordinates.shape[0]
+    cdef int n = inverted_ordinates.shape[0]
     # Create the array A by copying the array `coefficients`. DSYSV requires the array A to be Fortran-contiguous...
     cdef float64[::1, :] a = fortran_matrix_float64(n, n)
     i = 0
@@ -588,12 +570,12 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
             a[r, c] = tmp
             i += 1
 
-    # Create the array B by copying the array `ordinates`. It will be overwritten with the solution to the system of
-    # linear equations. DSYSV requires the array B to be Fortran-contiguous...
+    # Create the array B by copying the array `inverted_ordinates` and inverting its elements. It will be overwritten
+    # with the solution to the system of linear equations. DSYSV requires the array B to be Fortran-contiguous...
     cdef float64[::1, :] b = fortran_matrix_float64(n, 1)
 
     for r in range(n):
-        b[r, 0] = ordinates[r]
+        b[r, 0] = -inverted_ordinates[r]
 
     # 'U' if the upper-right triangle of A should be used, 'L' if the lower-left triangle should be used
     cdef char* uplo = 'U'
