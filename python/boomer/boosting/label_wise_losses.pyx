@@ -38,7 +38,7 @@ cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
 
     cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
                                                                intp label_index, float64 predicted_score):
-        cdef true_label = label_matrix.get_label(example_index, label_index)
+        cdef uint8 true_label = label_matrix.get_label(example_index, label_index)
         cdef float64 expected_score = 1 if true_label else -1
         cdef float64 exponential = exp(expected_score * predicted_score)
         cdef float64 gradient = -expected_score / (1 + exponential)
@@ -56,7 +56,7 @@ cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
 
     cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
                                                                intp label_index, float64 predicted_score):
-        cdef true_label = label_matrix.get_label(example_index, label_index)
+        cdef uint8 true_label = label_matrix.get_label(example_index, label_index)
         cdef float64 expected_score = 1 if true_label else -1
         cdef float64 gradient = 2 * predicted_score - 2 * expected_score
         cdef float64 hessian = 2
