@@ -1,4 +1,3 @@
-# distutils: language=c++
 from boomer.common._arrays cimport intp, uint32
 from boomer.common.rules cimport Condition
 from boomer.common.rule_induction cimport IndexedArray
