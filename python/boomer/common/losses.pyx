@@ -5,6 +5,81 @@ Provides base classes for all (surrogate) loss functions to be minimized locally
 """
 
 
+cdef class LabelMatrix:
+    """
+    A base class for all classes that provide random access to the labels of the training examples.
+    """
+
+    cdef uint8 get_label(self, intp example_index, intp label_index):
+        """
+        Returns whether a specific label of the example at a given index is relevant or irrelevant.
+
+        :param example_index:   The index of the example
+        :param label_index:     The index of the label
+        :return:                1, if the label is relevant, 0 otherwise
+        """
+        pass
+
+
+cdef class DenseLabelMatrix(LabelMatrix):
+    """
+    Implements random access to the labels of the training examples based on a dense label matrix.
+
+    The label matrix must be given as a dense C-contiguous array.
+    """
+
+    def __cinit__(self, uint8[:, ::1] y):
+        """
+        :param y: An array of dtype uint8, shape `(num_examples, num_labels)`, representing the labels of the training
+                  examples
+        """
+        self.y = y
+        self.num_examples = y.shape[0]
+        self.num_labels = y.shape[1]
+
+    cdef uint8 get_label(self, intp example_index, intp label_index):
+        cdef uint8[:, ::1] y = self.y
+        return y[example_index, label_index]
+
+
+cdef class SparseLabelMatrix(LabelMatrix):
+    """
+    Implements random access to the labels of the training examples based on a sparse label matrix.
+
+    The label matrix must be given as a `scipy.sparse.lil_matrix` and will internally be converted to the dictionary of
+    keys (DOK) format.
+    """
+
+    def __cinit__(self, intp num_examples, intp num_labels, list[::1] rows):
+        """
+        :param num_examples:    The total number of examples
+        :param num_labels:      The total number of labels
+        :param rows:            An array of dtype `list`, shape `(num_rows)`, storing a list for each example containing
+                                the column indices of all non-zero labels
+        """
+        self.num_examples = num_examples
+        self.num_labels = num_labels
+        cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
+        cdef intp num_rows = rows.shape[0]
+        cdef list col_indices
+        cdef uint32 r, c
+
+        for r in range(num_rows):
+            col_indices = rows[r]
+
+            for c in col_indices:
+                dok_matrix.addValue(r, c)
+
+        self.dok_matrix = dok_matrix
+
+    def __dealloc__(self):
+        del self.dok_matrix
+
+    cdef uint8 get_label(self, intp example_index, intp label_index):
+        cdef BinaryDokMatrix* dok_matrix = self.dok_matrix
+        return dok_matrix.getValue(<uint32>example_index, <uint32>label_index)
+
+
 cdef class DefaultPrediction:
     """
     Stores the default rule's predictions for each label.
@@ -189,7 +264,7 @@ cdef class Loss:
     the individual functions.
     """
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y):
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
         """
         Calculates the loss-minimizing scores to be predicted by the default rule, i.e., a rule that covers all
         examples, for each label.
@@ -201,9 +276,9 @@ cdef class Loss:
         instantiation of this class, i.e., to compute and store global information that is required by the other
         functions that will be called later, e.g. overall statistics about the given ground truth labels.
 
-        :param y:   An array of dtype float, shape `(num_examples, num_labels)`, representing the labels of the training
-                    examples according to the ground truth
-        :return:    A `DefaultPrediction` that stores the scores to be predicted by the default rule for each label
+        :param label_matrix:    A `LabelMatrix` that provides random access to the labels of the training examples
+        :return:                A `DefaultPrediction` that stores the scores to be predicted by the default rule for
+                                each label
         """
         pass
 

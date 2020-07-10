@@ -1,10 +1,29 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float64
+from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common.losses cimport LabelMatrix
 from boomer.common.losses cimport RefinementSearch, NonDecomposableRefinementSearch
 from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
 
 
-cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSearch):
+cdef class ExampleWiseLossFunction:
+
+    # Functions:
+
+    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
+                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64[::1] hessians)
+
+
+cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
+
+    # Functions:
+
+    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
+                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64[::1] hessians)
+
+
+cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
     # Attributes:
 
@@ -12,7 +31,7 @@ cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSear
 
     cdef const intp[::1] label_indices
 
-    cdef const float64[::1, :] gradients
+    cdef const float64[:, ::1] gradients
 
     cdef const float64[::1] total_sums_of_gradients
 
@@ -20,7 +39,7 @@ cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSear
 
     cdef float64[::1] accumulated_sums_of_gradients
 
-    cdef const float64[::1, :] hessians
+    cdef const float64[:, ::1] hessians
 
     cdef const float64[::1] total_sums_of_hessians
 
@@ -41,27 +60,29 @@ cdef class ExampleWiseLogisticLossRefinementSearch(NonDecomposableRefinementSear
     cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
-cdef class ExampleWiseLogisticLoss(DifferentiableLoss):
+cdef class ExampleWiseLoss(DifferentiableLoss):
 
     # Attributes:
 
+    cdef ExampleWiseLossFunction loss_function
+
     cdef float64 l2_regularization_weight
 
-    cdef float64[::1, :] expected_scores
+    cdef LabelMatrix label_matrix
 
-    cdef float64[::1, :] current_scores
+    cdef float64[:, ::1] current_scores
 
-    cdef float64[::1, :] gradients
+    cdef float64[:, ::1] gradients
 
     cdef float64[::1] total_sums_of_gradients
 
-    cdef float64[::1, :] hessians
+    cdef float64[:, ::1] hessians
 
     cdef float64[::1] total_sums_of_hessians
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, uint8[::1, :] y)
+    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 
