@@ -57,7 +57,7 @@ cdef class SequentialRuleInduction:
         self.max_head_refinements = max_head_refinements
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 uint8[:, ::1] y, uint32 random_state, ModelBuilder model_builder):
+                                 LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -65,8 +65,8 @@ cdef class SequentialRuleInduction:
                                             indices of all nominal attributes (in ascending order)
         :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
                                             of the training examples
-        :param y:                           An array of dtype int, shape `(num_examples, num_labels)`, representing
-                                            the labels of the training examples
+        :param label_matrix:                A `LabelMatrix` that provides random access to the labels of the training
+                                            examples
         :param random_state:                The seed to be used by RNGs
         :param model_builder:               The builder that should be used to build the model
         :return:                            A model that contains the induced classification rules
@@ -85,14 +85,14 @@ cdef class SequentialRuleInduction:
         cdef intp max_head_refinements = self.max_head_refinements
         cdef RNG rng = RNG.__new__(RNG, random_state)
         # The total number of labels
-        cdef intp num_labels = y.shape[1]
+        cdef intp num_labels = label_matrix.num_labels
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
         # Temporary variables
         cdef bint success
 
         # Induce default rule...
-        rule_induction.induce_default_rule(y, loss, model_builder)
+        rule_induction.induce_default_rule(label_matrix, loss, model_builder)
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule...

@@ -8,8 +8,14 @@ ANNOTATE = True
 # True, if all Cython compiler optimizations should be disabled
 DEBUG = False
 
+sources = [
+    '**/*.pyx',
+    'boomer/common/cpp/sparse.cpp'
+]
+
 extensions = [
-    Extension(name='*', sources=['**/*.pyx'], define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")])
+    Extension(name='*', sources=sources, language='c++',
+              define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")])
 ]
 
 compiler_directives = {
