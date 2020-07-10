@@ -5,10 +5,11 @@
 
 Provides a scikit-learn implementations of boosting algorithms
 """
-from boomer.boosting.differentiable_losses import DifferentiableLoss, DecomposableDifferentiableLoss
-from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
+from boomer.boosting.differentiable_losses import DifferentiableLoss
+from boomer.boosting.example_wise_losses import ExampleWiseLoss, ExampleWiseLogisticLossFunction
 from boomer.boosting.head_refinement import FullHeadRefinement
-from boomer.boosting.label_wise_losses import LabelWiseSquaredErrorLoss, LabelWiseLogisticLoss
+from boomer.boosting.label_wise_losses import LabelWiseDifferentiableLoss, LabelWiseSquaredErrorLossFunction, \
+    LabelWiseLogisticLossFunction
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
@@ -166,18 +167,18 @@ class Boomer(MLRuleLearner):
         loss = self.loss
 
         if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
-            return LabelWiseSquaredErrorLoss(l2_regularization_weight)
+            return LabelWiseDifferentiableLoss(LabelWiseSquaredErrorLossFunction(), l2_regularization_weight)
         elif loss == LOSS_LABEL_WISE_LOGISTIC:
-            return LabelWiseLogisticLoss(l2_regularization_weight)
+            return LabelWiseDifferentiableLoss(LabelWiseLogisticLossFunction(), l2_regularization_weight)
         elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
-            return ExampleWiseLogisticLoss(l2_regularization_weight)
+            return ExampleWiseLoss(ExampleWiseLogisticLossFunction(), l2_regularization_weight)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
         head_refinement = self.head_refinement
 
         if head_refinement is None:
-            if isinstance(loss, DecomposableDifferentiableLoss):
+            if isinstance(loss, LabelWiseDifferentiableLoss):
                 return SingleLabelHeadRefinement()
             else:
                 return FullHeadRefinement()

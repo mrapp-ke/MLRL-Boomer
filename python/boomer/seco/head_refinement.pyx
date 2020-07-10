@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
-from boomer.common.losses cimport LabelIndependentPrediction
+from boomer.common.losses cimport LabelWisePrediction
 
 from libc.stdlib cimport qsort
 
@@ -12,9 +12,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
     def __cinit__(self, LiftFunction lift):
         self.lift = lift
 
-    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices, Loss loss, bint uncovered,
-                                 bint accumulated):
-        cdef LabelIndependentPrediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
+    cdef HeadCandidate find_head(self, HeadCandidate best_head, intp[::1] label_indices,
+                                 RefinementSearch refinement_search, bint uncovered, bint accumulated):
+        cdef LabelWisePrediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64[::1] predicted_scores = prediction.predicted_scores
         cdef float64[::1] quality_scores = prediction.quality_scores
         cdef intp num_labels
@@ -36,9 +36,10 @@ cdef class PartialHeadRefinement(HeadRefinement):
             maximum_lift = lift.get_max_lift()
             for c in range(0, num_labels):
                 # select the top element of sorted_label_indices excluding labels already contained
-                total_quality_score += quality_scores[sorted_indices[c]]
+                total_quality_score += 1 - quality_scores[sorted_indices[c]]
 
-                quality_score = (1 - (1 - total_quality_score) * lift.eval(c + 1)) / (c + 1)
+                quality_score = 1 - (total_quality_score / (c + 1)) * lift.eval(c + 1)
+
 
                 if best_head_candidate_length == 0 or quality_score < best_quality_score:
                     best_head_candidate_length = c + 1
@@ -55,9 +56,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
             for c in range(0, num_labels):
                 # select the top element of sorted_label_indices excluding labels already contained
-                total_quality_score += quality_scores[c]
+                total_quality_score += 1 - quality_scores[c]
 
-            best_quality_score = (1 - (1 - total_quality_score) * lift.eval(num_labels)) / num_labels
+            best_quality_score = 1 - (total_quality_score / num_labels) * lift.eval(num_labels)
 
             best_head_candidate_length = label_indices.shape[0]
 
@@ -100,8 +101,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
             # Return None, as the quality_score of the found head is worse than that of `best_head`...
             return None
 
-    cdef Prediction evaluate_predictions(self, Loss loss, bint uncovered, bint accumulated):
-        cdef Prediction prediction = loss.evaluate_label_independent_predictions(uncovered, accumulated)
+    cdef Prediction calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
+        cdef Prediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction
 
 

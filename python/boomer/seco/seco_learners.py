@@ -199,7 +199,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         if prefix == LIFT_FUNCTION_PEAK:
             peak_label = get_int_argument(args, ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1,
                                           lambda x: 1 <= x <= num_labels)
-            max_lift = get_float_argument(args, ARGUMENT_MAX_LIFT, 2.0, lambda x: x >= 1)
+            max_lift = get_float_argument(args, ARGUMENT_MAX_LIFT, 1.5, lambda x: x >= 1)
             curvature = get_float_argument(args, ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
