@@ -1100,7 +1100,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
 
 cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
                                       intp num_conditions, uint32[::1] covered_examples_mask,
-                                      uint32 covered_examples_target):
+                                      uint32 covered_examples_target) nogil:
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the current
