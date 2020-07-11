@@ -41,7 +41,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
     The feature matrix must be given as a dense Fortran-contiguous array.
     """
 
-    def __cinit__(self, float32[::1, :] x):
+    def __cinit__(self, const float32[::1, :] x):
         """
         :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
                   training examples
@@ -52,7 +52,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
         # Class members
-        cdef float32[::1, :] x = self.x
+        cdef const float32[::1, :] x = self.x
         # The number of elements to be returned
         cdef intp num_elements = x.shape[0]
         # The array to be returned
@@ -79,8 +79,8 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
     The feature matrix must be given in compressed sparse column (CSC) format.
     """
 
-    def __cinit__(self, intp num_examples, intp num_features, float32[::1] x_data, intp[::1] x_row_indices,
-                  intp[::1] x_col_indices):
+    def __cinit__(self, intp num_examples, intp num_features, const float32[::1] x_data, const intp[::1] x_row_indices,
+                  const intp[::1] x_col_indices):
         """
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
@@ -100,9 +100,9 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
 
     cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
         # Class members
-        cdef float32[::1] x_data = self.x_data
-        cdef intp[::1] x_row_indices = self.x_row_indices
-        cdef intp[::1] x_col_indices = self.x_col_indices
+        cdef const float32[::1] x_data = self.x_data
+        cdef const intp[::1] x_row_indices = self.x_row_indices
+        cdef const intp[::1] x_col_indices = self.x_col_indices
         # The index of the first element in `x_data` and `x_row_indices` that corresponds to the given feature index
         cdef intp start = x_col_indices[feature_index]
         # The index of the last element in `x_data` and `x_row_indices` that corresponds to the given feature index

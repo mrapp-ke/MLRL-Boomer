@@ -48,7 +48,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     # Attributes:
 
-    cdef float32[::1, :] x
+    cdef const float32[::1, :] x
 
     # Functions:
 
@@ -59,11 +59,11 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
 
     # Attributes:
 
-    cdef float32[::1] x_data
+    cdef const float32[::1] x_data
 
-    cdef intp[::1] x_row_indices
+    cdef const intp[::1] x_row_indices
 
-    cdef intp[::1] x_col_indices
+    cdef const intp[::1] x_col_indices
 
     # Functions:
 
