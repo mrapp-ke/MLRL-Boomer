@@ -6,7 +6,7 @@ cdef class Predictor:
 
     # Functions:
 
-    cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel rules)
+    cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel model)
 
     cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                              intp num_features, intp num_labels, RuleModel model)
@@ -20,7 +20,7 @@ cdef class DensePredictor(Predictor):
 
     # Functions:
 
-    cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel rules)
+    cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel model)
 
     cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
                              intp num_features, intp num_labels, RuleModel model)
