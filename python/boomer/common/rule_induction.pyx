@@ -23,7 +23,7 @@ cdef class FeatureMatrix:
     A base class for all classes that provide column-wise access to the feature values of the training examples.
     """
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index):
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
         """
         Creates and returns a pointer to a struct of type `IndexedArray` that stores the indices of training examples,
         as well as their feature values, for a specific feature, sorted in ascending order by the feature values.
@@ -50,7 +50,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         self.num_features = x.shape[1]
         self.x = x
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index):
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
         # Class members
         cdef float32[::1, :] x = self.x
         # The number of elements to be returned
@@ -98,7 +98,7 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
         self.x_row_indices = x_row_indices
         self.x_col_indices = x_col_indices
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index):
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
         # Class members
         cdef float32[::1] x_data = self.x_data
         cdef intp[::1] x_row_indices = self.x_row_indices
