@@ -2,9 +2,7 @@ from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
 from boomer.common.losses cimport LabelWisePrediction
 
-from libc.stdlib cimport qsort
-
-from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
+from libc.stdlib cimport qsort, malloc, free
 
 
 cdef class PartialHeadRefinement(HeadRefinement):
