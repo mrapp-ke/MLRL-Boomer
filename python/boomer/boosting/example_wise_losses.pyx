@@ -7,8 +7,7 @@ from boomer.common._arrays cimport uint8, array_float64, c_matrix_float64, fortr
 from boomer.boosting.differentiable_losses cimport _l2_norm_pow
 
 from libc.math cimport pow, exp, fabs
-
-from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Free as free
+from libc.stdlib cimport malloc, free
 
 from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv

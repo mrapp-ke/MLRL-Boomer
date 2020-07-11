@@ -10,14 +10,12 @@ from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.losses cimport RefinementSearch, DefaultPrediction, Prediction
 
 from libc.math cimport fabs
-from libc.stdlib cimport abs, qsort
+from libc.stdlib cimport abs, qsort, malloc, realloc, free
 
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
 
 from cython.operator cimport dereference, postincrement
-
-from cpython.mem cimport PyMem_Malloc as malloc, PyMem_Realloc as realloc, PyMem_Free as free
 
 
 cdef class FeatureMatrix:
