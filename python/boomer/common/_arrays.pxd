@@ -136,7 +136,7 @@ cdef inline cvarray c_matrix_uint8(intp num_rows, intp num_cols):
     return array
 
 
-cdef inline intp get_index(intp i, const intp[::1] indices):
+cdef inline intp get_index(intp i, const intp[::1] indices) nogil:
     """
     Retrieves and returns the i-th index from an array of indices, if such an array is available. Otherwise i is
     returned.
