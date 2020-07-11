@@ -41,7 +41,7 @@ cdef class FeatureMatrix:
 
     # Functions:
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index)
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
 
 
 cdef class DenseFeatureMatrix(FeatureMatrix):
@@ -52,7 +52,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index)
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
 
 
 cdef class SparseFeatureMatrix(FeatureMatrix):
@@ -67,7 +67,7 @@ cdef class SparseFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index)
+    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
 
 
 cdef class RuleInduction:
