@@ -19,7 +19,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
 
     # Attributes:
 
-    cdef uint8[:, ::1] y
+    cdef const uint8[:, ::1] y
 
     # Functions:
 

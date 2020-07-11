@@ -28,7 +28,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
     The label matrix must be given as a dense C-contiguous array.
     """
 
-    def __cinit__(self, uint8[:, ::1] y):
+    def __cinit__(self, const uint8[:, ::1] y):
         """
         :param y: An array of dtype uint8, shape `(num_examples, num_labels)`, representing the labels of the training
                   examples
@@ -38,7 +38,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
         self.num_labels = y.shape[1]
 
     cdef uint8 get_label(self, intp example_index, intp label_index):
-        cdef uint8[:, ::1] y = self.y
+        cdef const uint8[:, ::1] y = self.y
         return y[example_index, label_index]
 
 
