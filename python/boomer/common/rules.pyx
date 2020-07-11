@@ -358,7 +358,7 @@ cdef class Rule:
         self.body = body
         self.head = head
 
-    cdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
+    cpdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask = None):
         """
         Applies the rule's prediction to a matrix of predictions for all examples it covers. Optionally, the prediction
         can be restricted to certain examples and labels.
