@@ -36,7 +36,7 @@ namespace sparse {
         public:
 
             /**
-             * Sets a non-zero value to element at a specific position.
+             * Sets the element at a specific position to a non-zero value.
              *
              * @param row       The row of the element to be set
              * @param column    The column of the element to be set
