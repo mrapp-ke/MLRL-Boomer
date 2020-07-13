@@ -59,12 +59,12 @@ class SecoBbcCbAdapter(BbcCvAdapter):
                     rule.predict(test_x, masked_predictions)
                     current_predictions[test_indices, :] = masked_predictions
 
-            current_config['max_rules'] = (n + 1)
-
             if min_rules <= (n + 1) <= max_rules - 1 and (n + 1) % step_size == 0:
                 c += 1
 
-                if len(predictions) > c:
+                current_config['max_rules'] = (n + 1)
+
+                if c < len(predictions):
                     old_predictions = current_predictions
                     current_predictions = predictions[c]
 
@@ -93,16 +93,13 @@ def _create_learner(args):
 
 
 def _create_configurations() -> List[dict]:
-    max_rules_values: List[int] = [1, 2]
     result: List[dict] = []
 
-    for max_rules in max_rules_values:
-        configuration = {
-            'max_rules': max_rules,
-            'head_refinement': 'partial',
-            'heuristic': 'f-measure',
-        }
-        result.append(configuration)
+    configuration = {
+        'head_refinement': 'partial',
+        'heuristic': 'f-measure',
+    }
+    result.append(configuration)
 
     return result
 
@@ -116,7 +113,7 @@ class BbcCvRunnable(Runnable):
                            use_one_hot_encoding=args.one_hot_encoding)
         adapter = SecoBbcCbAdapter(data_set=data_set, num_folds=args.folds, model_dir=args.model_dir,
                                    min_rules=5, max_rules=50,
-                                   step_size_rules=5)
+                                   step_size_rules=1)
         bbc_cv = BbcCv(configurations, adapter, DefaultBootstrapping(5), learner)
         bbc_cv.random_state = args.random_state
         bbc_cv.store_predictions()
