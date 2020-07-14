@@ -79,7 +79,7 @@ cdef class IREP(Pruning):
         cdef bint uncovered
 
         # Tell the loss function to start a new search...
-        loss.reset_examples()
+        loss.reset_sampled_examples()
         loss.begin_search(label_indices)
 
         # Tell the loss function about all examples in the prune set that are covered by the existing rule...
@@ -170,7 +170,7 @@ cdef class IREP(Pruning):
             # the covered examples and notify the loss function about the updated sub-sample...
             if (n + 1) < num_conditions:
                 if not uncovered:
-                    loss.reset_examples()
+                    loss.reset_covered_examples()
                     current_covered_examples_target = n
 
                 for r in range(start, end):
