@@ -846,7 +846,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 return False
             else:
                 num_predictions = head.numPredictions_
-                label_indices = <intp[:num_predictions]>head.labelIndices_
+                label_indices = <intp[:num_predictions]>head.labelIndices_ if head.labelIndices_ != NULL else None
                 predicted_scores = <float64[:num_predictions]>head.predictedScores_
 
                 if weights is not None:
