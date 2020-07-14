@@ -882,7 +882,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 model_builder.add_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
                 return True
         finally:
-            del current_head
             del head
 
             # Free memory occupied by the arrays stored in `cache_local`...
