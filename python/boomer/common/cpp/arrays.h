@@ -6,5 +6,5 @@
 typedef unsigned long int uint64;
 typedef unsigned int uint32;
 typedef bool uint8;
-typedef long long int intp;
+typedef long int intp;
 typedef double float64;
