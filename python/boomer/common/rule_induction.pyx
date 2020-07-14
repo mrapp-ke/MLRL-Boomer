@@ -293,11 +293,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             total_sum_of_weights = uint32_array_scalar_pair.second
 
         # Notify the loss function about the examples that are included in the sub-sample...
-        loss.begin_instance_sub_sampling()
+        loss.reset_examples()
 
         for i in range(num_examples):
             weight = 1 if weights is None else weights[i]
-            loss.update_sub_sample(i, weight, False)
+            loss.add_sampled_example(i, weight)
 
         # Sub-sample labels, if necessary...
         cdef intp[::1] label_indices
@@ -1026,12 +1026,11 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
 
     if covered:
         updated_target = num_conditions
-        loss.begin_instance_sub_sampling()
+        loss.reset_examples()
 
         # Retain the indices at positions [condition_start, condition_end) and set the corresponding values in
         # `covered_examples_mask` to `num_conditions`, which marks them as covered (because
         # `updated_target == num_conditions`)...
-
         for j in range(num_condition_steps):
             r = condition_start + (j * direction)
             index = indexed_values[r].index
@@ -1039,7 +1038,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
             weight = 1 if weights is None else weights[index]
-            loss.update_sub_sample(index, weight, False)
+            loss.update_covered_example(index, weight, False)
             i += direction
     else:
         updated_target = covered_examples_target
@@ -1071,7 +1070,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
             index = indexed_values[r].index
             covered_examples_mask[index] = num_conditions
             weight = 1 if weights is None else weights[index]
-            loss.update_sub_sample(index, weight, True)
+            loss.update_covered_example(index, weight, True)
 
         # Retain the indices at positions [condition_end, end), while leaving the corresponding values in
         # `covered_examples_mask` untouched, such that all previously covered examples in said range are still marked as
