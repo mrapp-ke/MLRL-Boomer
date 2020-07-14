@@ -305,7 +305,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
         return prediction
 
-    cdef void reset_search(self):
+    cdef void reset_examples(self):
         # Class members
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
