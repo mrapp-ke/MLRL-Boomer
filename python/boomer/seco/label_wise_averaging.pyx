@@ -60,7 +60,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
 
         return default_rule
 
-    cdef void begin_instance_sub_sampling(self):
+    cdef void reset_examples(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef intp num_examples = true_labels.shape[0]
@@ -90,7 +90,7 @@ cdef class LabelWiseAveraging(DecomposableCoverageLoss):
                         elif predicted_label == 1:
                             confusion_matrices_default[label_index, _RP] += 1
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1, :] true_labels = self.true_labels
         cdef uint8[::1] minority_labels = self.minority_labels

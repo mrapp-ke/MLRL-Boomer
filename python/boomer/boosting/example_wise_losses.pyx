@@ -164,7 +164,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
 
         return scores
 
-    cdef void begin_instance_sub_sampling(self):
+    cdef void reset_examples(self):
         # Class members
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
@@ -172,7 +172,7 @@ cdef class ExampleWiseLogisticLoss(NonDecomposableDifferentiableLoss):
         total_sums_of_gradients[:] = 0
         total_sums_of_hessians[:] = 0
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
         # Class members
         cdef float64[::1, :] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
