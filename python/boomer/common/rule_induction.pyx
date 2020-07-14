@@ -812,7 +812,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                         # Keep the labels for which the rule predicts, if the head should not be further refined...
                         num_predictions = head.numPredictions_
-                        label_indices = <intp[:num_predictions]>head.labelIndices_
+                        label_indices = <intp[:num_predictions]>head.labelIndices_ if head.labelIndices_ != NULL else None
 
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
