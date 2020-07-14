@@ -216,7 +216,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
         return prediction
 
-    cdef void begin_instance_sub_sampling(self):
+    cdef void reset_examples(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef LabelMatrix label_matrix = self.label_matrix
         cdef intp num_examples = label_matrix.num_examples
@@ -246,7 +246,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
                         elif predicted_label == 1:
                             confusion_matrices_default[label_index, _RP] += 1
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef LabelMatrix label_matrix = self.label_matrix
         cdef uint8[::1] minority_labels = self.minority_labels

@@ -14,9 +14,11 @@ cdef class CoverageLoss(Loss):
 
     cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
 
-    cdef void begin_instance_sub_sampling(self)
+    cdef void reset_examples(self)
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove)
+    cdef void add_sampled_example(self, intp example_index, uint32 weight)
+
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices)
 

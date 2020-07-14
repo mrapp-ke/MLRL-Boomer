@@ -282,11 +282,11 @@ cdef class Loss:
         """
         pass
 
-    cdef void begin_instance_sub_sampling(self):
+    cdef void reset_examples(self):
         """
         Notifies the loss function that the examples, which should be considered in the following for learning a new
         rule or refining an existing one, have changed. The indices of the respective examples must be provided via
-        subsequent calls to the function `update_sub_sample`.
+        subsequent calls to the function `add_sampled_example` or `update_covered_example`.
 
         This function must be invoked before a new rule is learned from scratch (as each rule may be learned on a
         different sub-sample of the training data), as well as each time an existing rule has been refined, i.e.
@@ -299,14 +299,31 @@ cdef class Loss:
         """
         pass
 
-    cdef void update_sub_sample(self, intp example_index, uint32 weight, bint remove):
+    cdef void add_sampled_example(self, intp example_index, uint32 weight):
         """
-        Notifies the loss function about an example that should be considered in the following for learning a new rule
-        or refining an existing one.
+        Notifies the loss function about an example that is contained in the sub-sample that should be considered in the
+        following for learning a new rule.
 
-        This function must be called repeatedly for each example that should be considered, e.g., for all examples that
-        have been selected via instance sub-sampling, immediately after the invocation of the function
-        `begin_instance_sub_sampling`.
+        This function must be called repeatedly for each example that should be considered, i.e., for all examples that
+        have been selected via instance sub-sampling, immediately after the invocation of the function `reset_examples`.
+
+        This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
+        and store local information that is required by the other functions that will be called later, e.g. statistics
+        about the ground truth labels of these particular examples. Any information computed by this function is
+        expected to be reset when invoking the function `reset_examples` for the next time.
+
+        :param example_index:   The index of an example that should be considered
+        :param weight:          The weight of the example that should be considered
+        """
+        pass
+
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
+        """
+        Notifies the loss function about an example that is covered by an existing rule and therefore should be
+        considered in the following for refining the existing rule.
+
+        This function must be called repeatedly for each example that is covered by the existing rule immediately after
+        the invocation of the function `reset_examples`.
 
         Alternatively, this function may be used to indicate that an example, which has previously been passed to this
         function, should not be considered anymore by setting the argument `remove` accordingly.
@@ -314,7 +331,7 @@ cdef class Loss:
         This function is supposed to update any internal state that relates to the considered examples, i.e., to compute
         and store local information that is required by the other functions that will be called later, e.g. statistics
         about the ground truth labels of these particular examples. Any information computed by this function is
-        expected to be reset when invoking the function `begin_instance_sub_sample` for the next time.
+        expected to be reset when invoking the function `reset_examples` for the next time.
 
         :param example_index:   The index of an example that should be considered
         :param weight:          The weight of the example that should be considered
@@ -347,7 +364,7 @@ cdef class Loss:
         Notifies the loss function about the predictions of a new rule that has been induced.
 
         This function must be called for each example that is covered by the new rule before learning the next rule,
-        i.e., prior to the next invocation of the function `begin_instance_sub_sampling`.
+        i.e., prior to the next invocation of the function `reset_examples`.
 
         This function is supposed to update any internal state that depends on the predictions of already induced rules.
 
