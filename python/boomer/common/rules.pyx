@@ -3,7 +3,8 @@
 
 Provides model classes that are used to build rule-based models.
 """
-from boomer.common._arrays cimport array_uint32, array_intp, array_float32, c_matrix_uint8, c_matrix_float64
+from boomer.common._arrays cimport array_uint32, array_intp, array_float32, array_float64
+from boomer.common._arrays cimport c_matrix_uint8, c_matrix_float64
 
 from cython.operator cimport dereference, postincrement
 
@@ -676,12 +677,19 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef ConjunctiveBody body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
                                                             gr_feature_indices, gr_thresholds, eq_feature_indices,
                                                             eq_thresholds, neq_feature_indices, neq_thresholds)
+
+        cdef intp num_predictions = scores.shape[0]
+        cdef float64[::1] head_scores = array_float64(num_predictions)
+        head_scores[:] = scores
+        cdef intp[::1] head_label_indices
         cdef Head head
 
         if label_indices is None:
-            head = FullHead.__new__(FullHead, scores)
+            head = FullHead.__new__(FullHead, head_scores)
         else:
-            head = PartialHead.__new__(PartialHead, label_indices, scores)
+            head_label_indices = array_intp(num_predictions)
+            head_label_indices[:] = label_indices
+            head = PartialHead.__new__(PartialHead, head_label_indices, head_scores)
 
         cdef rule = Rule.__new__(Rule, body, head)
         cdef RuleList rule_list = self.rule_list
