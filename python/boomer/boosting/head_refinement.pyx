@@ -32,6 +32,8 @@ cdef class FullHeadRefinement(HeadRefinement):
                 candidate_predicted_scores[c] = predicted_scores[c]
 
             if label_indices is not None:
+                candidate_label_indices = <intp*>malloc(num_labels * sizeof(intp))
+
                 for c in range(num_labels):
                     candidate_label_indices[c] = label_indices[c]
 
