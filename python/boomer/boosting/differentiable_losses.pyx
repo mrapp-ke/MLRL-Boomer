@@ -12,7 +12,7 @@ cdef class DifferentiableLoss(Loss):
     boosting algorithm.
     """
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         pass
 
     cdef void begin_instance_sub_sampling(self):

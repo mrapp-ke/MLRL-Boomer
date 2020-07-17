@@ -1,5 +1,7 @@
 from boomer.common._arrays cimport array_float64, fortran_matrix_float64, array_uint8, get_index
 
+from libc.stdlib cimport malloc
+
 
 DEF _IN = 0
 DEF _IP = 1
@@ -169,12 +171,10 @@ cdef class LabelWiseAveraging(CoverageLoss):
         """
         self.heuristic = heuristic
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         cdef intp num_examples = label_matrix.num_examples
         cdef intp num_labels = label_matrix.num_labels
-        cdef float64[::1] default_rule = array_float64(num_labels)
-        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
-        prediction.predicted_scores = default_rule
+        cdef float64* default_rule = <float64*>malloc(num_labels * sizeof(float64))
         cdef uint8[::1] minority_labels = array_uint8(num_labels)
         cdef float64[::1, :] uncovered_labels = fortran_matrix_float64(num_examples, num_labels)
         cdef float64 threshold = num_examples / 2.0
@@ -182,7 +182,8 @@ cdef class LabelWiseAveraging(CoverageLoss):
         cdef uint8 true_label
         cdef intp r, c
 
-        default_rule[:] = 0
+        for c in range(num_labels):
+            default_rule[c] = 0
 
         for c in range(num_labels):
             # the default rule predicts the majority-class (label-wise)
@@ -214,7 +215,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
         self.minority_labels = minority_labels
         self.label_matrix = label_matrix
 
-        return prediction
+        return new DefaultPrediction(num_labels, default_rule)
 
     cdef void begin_instance_sub_sampling(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
