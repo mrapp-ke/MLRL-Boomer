@@ -328,7 +328,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         self.loss_function = loss_function
         self.l2_regularization_weight = l2_regularization_weight
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         # An example-wise loss function to be minimized
         cdef ExampleWiseLossFunction loss_function = self.loss_function
         # The weight to be used for L2 regularization
@@ -370,8 +370,6 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
         # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
         predicted_scores = __dsysv_float64(total_sums_of_hessians, total_sums_of_gradients, l2_regularization_weight)
-        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
-        prediction.predicted_scores = predicted_scores
 
         # Traverse each example again to calculate the updated gradients and hessians based on the calculated scores...
         for r in range(num_examples):
@@ -391,7 +389,13 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         self.label_matrix = label_matrix
         self.current_scores = current_scores
 
-        return prediction
+        # TODO avoid copying array
+        cdef float64* predicted_scores2 = <float64*>malloc(num_labels * sizeof(float64))
+
+        for r in range(num_labels):
+            predicted_scores2[r] = predicted_scores[r]
+
+        return new DefaultPrediction(num_labels, predicted_scores2)
 
     cdef void begin_instance_sub_sampling(self):
         # Class members

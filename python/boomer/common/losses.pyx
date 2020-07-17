@@ -80,7 +80,7 @@ cdef class SparseLabelMatrix(LabelMatrix):
         return dok_matrix.getValue(<uint32>example_index, <uint32>label_index)
 
 
-cdef class DefaultPrediction:
+cdef class DefaultPredictionOld:
     """
     Stores the default rule's predictions for each label.
     """
@@ -89,7 +89,7 @@ cdef class DefaultPrediction:
         self.predicted_scores = None
 
 
-cdef class Prediction(DefaultPrediction):
+cdef class Prediction(DefaultPredictionOld):
     """
     Assesses the overall quality of a rule's predictions for one or several labels.
     """
@@ -264,7 +264,7 @@ cdef class Loss:
     the individual functions.
     """
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         """
         Calculates the loss-minimizing scores to be predicted by the default rule, i.e., a rule that covers all
         examples, for each label.
@@ -277,8 +277,8 @@ cdef class Loss:
         functions that will be called later, e.g. overall statistics about the given ground truth labels.
 
         :param label_matrix:    A `LabelMatrix` that provides random access to the labels of the training examples
-        :return:                A `DefaultPrediction` that stores the scores to be predicted by the default rule for
-                                each label
+        :return:                A pointer to an object of type `DefaultPrediction` that stores the scores to be
+                                predicted by the default rule for each label
         """
         pass
 

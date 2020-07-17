@@ -4,11 +4,11 @@ from boomer.common._sparse cimport BinaryDokMatrix
 
 cdef extern from "cpp/losses.h" namespace "losses":
 
-    cdef cppclass DefaultPrediction2:
+    cdef cppclass DefaultPrediction:
 
         # Constructors:
 
-        DefaultPrediction2(intp numPredictions, float64* predictedScores) except +
+        DefaultPrediction(intp numPredictions, float64* predictedScores) except +
 
         # Attributes:
 
@@ -52,14 +52,14 @@ cdef class SparseLabelMatrix(LabelMatrix):
     cdef uint8 get_label(self, intp example_index, intp label_index)
 
 
-cdef class DefaultPrediction:
+cdef class DefaultPredictionOld:
 
     # Attributes:
 
     cdef float64[::1] predicted_scores
 
 
-cdef class Prediction(DefaultPrediction):
+cdef class Prediction(DefaultPredictionOld):
 
     # Attributes:
 
@@ -110,7 +110,7 @@ cdef class Loss:
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 
