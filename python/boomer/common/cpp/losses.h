@@ -22,7 +22,7 @@ namespace losses {
              * @param predictedScores   A pointer to an array of type float64, shape `(numPredictions)`, representing
              *                          the predicted scores
              */
-            DefaultPrediction(intp numPredictions, intp* predictedScores);
+            DefaultPrediction(intp numPredictions, float64* predictedScores);
 
             /**
              * Frees the memory occupied by the array `predictedScores_`.
@@ -37,7 +37,7 @@ namespace losses {
             /**
              * A pointer to an array of type intp, shape `(numPredictions_)`, representing the predicted scores.
              */
-            intp* predictedScores_;
+            float64* predictedScores_;
 
     };
 
@@ -56,7 +56,7 @@ namespace losses {
                                             representing the predicted scores
              * @param overallQualityScore   A score that assesses the overall quality of the predictions
              */
-            Prediction(intp numPredictions, intp* predictedScores, float64 overallQualityScore);
+            Prediction(intp numPredictions, float64* predictedScores, float64 overallQualityScore);
 
             /**
              * A score that assesses the quality of the predictions.
@@ -82,7 +82,7 @@ namespace losses {
              *                              representing the quality scores for individual labels
              * @param overallQualityScore   A score that assesses the overall quality of the predictions
              */
-            LabelWisePrediction(intp numPredictions, intp* predictedScores, float64* qualityScores,
+            LabelWisePrediction(intp numPredictions, float64* predictedScores, float64* qualityScores,
                                 float64 overallQualityScore);
 
             /**
