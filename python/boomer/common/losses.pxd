@@ -17,29 +17,6 @@ cdef extern from "cpp/losses.h" namespace "losses":
         float64* predictedScores_
 
 
-    cdef cppclass Prediction2(DefaultPrediction2):
-
-        # Constructors:
-
-        Prediction2(intp numPredictions, float64* predictedScores, float64 overallQualityScore) except +
-
-        # Attributes:
-
-        float64 overallQualityScore_
-
-
-    cdef cppclass LabelWisePrediction2(Prediction2):
-
-        # Constructors:
-
-        LabelWisePrediction2(intp numPredictions, float64* predictedScores, float64* qualityScores,
-                             float64 overallQualityScore) except +
-
-        # Attributes:
-
-        float64* qualityScores_
-
-
 cdef class LabelMatrix:
 
     # Attributes:
