@@ -4,8 +4,7 @@
 using namespace head_refinement;
 
 
-HeadCandidate::HeadCandidate(intp numPredictions, intp* labelIndices, float64* predictedScores,
-                                  float64 qualityScore) {
+HeadCandidate::HeadCandidate(intp numPredictions, intp* labelIndices, float64* predictedScores, float64 qualityScore) {
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
     predictedScores_ = predictedScores;
