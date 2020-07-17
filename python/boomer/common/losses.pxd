@@ -8,7 +8,7 @@ cdef extern from "cpp/losses.h" namespace "losses":
 
         # Constructors:
 
-        DefaultPrediction(intp numPredictions, float64* predictedScores) except +
+        DefaultPrediction2(intp numPredictions, float64* predictedScores) except +
 
         # Attributes:
 
@@ -21,7 +21,7 @@ cdef extern from "cpp/losses.h" namespace "losses":
 
         # Constructors:
 
-        Prediction(intp numPredictions, float64* predictedScores, float64 overallQualityScore) except +
+        Prediction2(intp numPredictions, float64* predictedScores, float64 overallQualityScore) except +
 
         # Attributes:
 
@@ -32,8 +32,8 @@ cdef extern from "cpp/losses.h" namespace "losses":
 
         # Constructors:
 
-        LabelWisePrediction(intp numPredictions, float64* predictedScores, float64* qualityScores,
-                            float64 overallQualityScore) except +
+        LabelWisePrediction2(intp numPredictions, float64* predictedScores, float64* qualityScores,
+                             float64 overallQualityScore) except +
 
         # Attributes:
 
