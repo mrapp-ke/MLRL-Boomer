@@ -12,10 +12,10 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, intp[::1] label_indices,
                                   RefinementSearch refinement_search, bint uncovered, bint accumulated):
-        cdef LabelWisePrediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef intp num_labels
+        cdef LabelWisePrediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
+        cdef float64* predicted_scores = prediction.predictedScores_
+        cdef float64* quality_scores = prediction.qualityScores_
+        cdef intp num_predictions
         cdef HeadCandidate* candidate
         cdef float64* candidate_predicted_scores
         cdef intp* candidate_label_indices
@@ -27,12 +27,12 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef LiftFunction lift = self.lift
 
         if label_indices is None:
-            num_labels = predicted_scores.shape[0]
+            num_predictions = prediction.numPredictions_
 
-            sorted_indices = __argsort(quality_scores)
+            sorted_indices = __argsort(quality_scores, num_predictions)
 
             maximum_lift = lift.get_max_lift()
-            for c in range(0, num_labels):
+            for c in range(0, num_predictions):
                 # select the top element of sorted_label_indices excluding labels already contained
                 total_quality_score += 1 - quality_scores[sorted_indices[c]]
 
@@ -50,13 +50,13 @@ cdef class PartialHeadRefinement(HeadRefinement):
                     # prunable by decomposition
                     break
         else:
-            num_labels = label_indices.shape[0]
+            num_predictions = label_indices.shape[0]
 
-            for c in range(0, num_labels):
+            for c in range(0, num_predictions):
                 # select the top element of sorted_label_indices excluding labels already contained
                 total_quality_score += 1 - quality_scores[c]
 
-            best_quality_score = 1 - (total_quality_score / num_labels) * lift.eval(num_labels)
+            best_quality_score = 1 - (total_quality_score / num_predictions) * lift.eval(num_predictions)
 
             best_head_candidate_length = label_indices.shape[0]
 
@@ -99,33 +99,34 @@ cdef class PartialHeadRefinement(HeadRefinement):
             # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
             return NULL
 
-    cdef Prediction calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
-        cdef Prediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
+    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
+        cdef Prediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction
 
 
-cdef inline intp[::1] __argsort(float64[::1] values):
+cdef inline intp[::1] __argsort(float64* a, intp num_elements):
     """
     Creates and returns an array that stores the indices of the elements in a given array when sorted in ascending 
     order.
 
-    :param values:  An array of dtype float, shape `(num_elements)`, representing the values of the array to be sorted
-    :return:        An array of dtype int, shape `(num_elements)`, representing the indices of the values in the given 
-                    array when sorted in ascending order
+    :param a:               A pointer to an array of type float64, shape `(num_elements)`, representing the values of
+                            the array to be sorted
+    :param num_elements:    The number of elements in the array `a`
+    :return:                An array of dtype intp, shape `(num_elements)`, representing the indices of the values in
+                            the given array when sorted in ascending order
     """
-    cdef intp num_values = values.shape[0]
-    cdef IndexedFloat64* tmp_array = <IndexedFloat64*>malloc(num_values * sizeof(IndexedFloat64))
-    cdef intp[::1] sorted_array = array_intp(num_values)
+    cdef IndexedFloat64* tmp_array = <IndexedFloat64*>malloc(num_elements * sizeof(IndexedFloat64))
+    cdef intp[::1] sorted_array = array_intp(num_elements)
     cdef intp i
 
     try:
-        for i in range(num_values):
+        for i in range(num_elements):
             tmp_array[i].index = i
-            tmp_array[i].value = values[i]
+            tmp_array[i].value = a[i]
 
-        qsort(tmp_array, num_values, sizeof(IndexedFloat64), &compare_indexed_float64)
+        qsort(tmp_array, num_elements, sizeof(IndexedFloat64), &compare_indexed_float64)
 
-        for i in range(num_values):
+        for i in range(num_elements):
             sorted_array[i] = tmp_array[i].index
     finally:
         free(tmp_array)

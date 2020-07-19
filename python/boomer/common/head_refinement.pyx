@@ -43,7 +43,7 @@ cdef class HeadRefinement:
         """
         pass
 
-    cdef Prediction calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
         """
         Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, using a
         `RefinementSearch`.
@@ -58,8 +58,8 @@ cdef class HeadRefinement:
         :param accumulated          0, if the rule covers all examples that have been provided since the
                                     `RefinementSearch` has been reset for the last time, 1, if the rule covers all
                                     examples that have been  provided so far
-        :return:                    A `Prediction` that stores the optimal scores to be predicted by the rule, as well
-                                    as its overall quality score
+        :return:                    A pointer to an object of type `Prediction` that stores the optimal scores to be
+                                    predicted by the rule, as well as its overall quality score
         """
         pass
 
@@ -71,10 +71,10 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, intp[::1] label_indices,
                                   RefinementSearch refinement_search, bint uncovered, bint accumulated):
-        cdef LabelWisePrediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
-        cdef intp num_labels = predicted_scores.shape[0]
+        cdef LabelWisePrediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
+        cdef intp num_predictions = prediction.numPredictions_
+        cdef float64* predicted_scores = prediction.predictedScores_
+        cdef float64* quality_scores = prediction.qualityScores_
         cdef intp best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
         cdef HeadCandidate* candidate
@@ -84,7 +84,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         cdef intp c
 
         # Find the best single-label head...
-        for c in range(1, num_labels):
+        for c in range(1, num_predictions):
             quality_score = quality_scores[c]
 
             if quality_score < best_quality_score:
@@ -110,6 +110,6 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
         return NULL
 
-    cdef Prediction calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
-        cdef Prediction prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
+    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
+        cdef Prediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction

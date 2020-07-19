@@ -44,17 +44,18 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         self.confusion_matrices_default = confusion_matrices_default
         self.confusion_matrices_subsample_default = confusion_matrices_subsample_default
         self.accumulated_confusion_matrices_covered = None
-        cdef LabelWisePrediction prediction = LabelWisePrediction.__new__(LabelWisePrediction)
         cdef intp num_labels = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
         cdef float64[::1, :] confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
         confusion_matrices_covered[:, :] = 0
         self.confusion_matrices_covered = confusion_matrices_covered
         self.accumulated_confusion_matrices_covered = None
-        cdef float64[::1] predicted_scores = array_float64(num_labels)
-        prediction.predicted_scores = predicted_scores
-        cdef float64[::1] quality_scores = array_float64(num_labels)
-        prediction.quality_scores = quality_scores
+        cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef float64* quality_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_labels, predicted_scores, quality_scores, 0)
         self.prediction = prediction
+
+    def __dealloc__(self):
+        del self.prediction
 
     cdef void update_search(self, intp example_index, uint32 weight):
         cdef const float64[::1, :] uncovered_labels = self.uncovered_labels
@@ -113,10 +114,10 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                 accumulated_confusion_matrices_covered[c, _RP] += confusion_matrices_covered[c, _RP]
                 confusion_matrices_covered[c, _RP] = 0
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        cdef LabelWisePrediction prediction = self.prediction
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        cdef LabelWisePrediction* prediction = self.prediction
+        cdef float64* predicted_scores = prediction.predictedScores_
+        cdef float64* quality_scores = prediction.qualityScores_
         cdef float64 overall_quality_score = 0
         cdef const uint8[::1] minority_labels = self.minority_labels
         cdef intp[::1] label_indices = self.label_indices
@@ -155,7 +156,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
             overall_quality_score += quality_scores[c]
 
-        prediction.overall_quality_score = overall_quality_score / num_labels
+        prediction.overallQualityScore_ = overall_quality_score / num_labels
         return prediction
 
 

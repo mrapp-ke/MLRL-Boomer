@@ -120,19 +120,23 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
-        cdef intp num_elements = gradients.shape[1] if label_indices is None else label_indices.shape[0]
-        cdef float64[::1] sums_of_gradients = array_float64(num_elements)
+        cdef intp num_gradients = gradients.shape[1] if label_indices is None else label_indices.shape[0]
+        cdef float64[::1] sums_of_gradients = array_float64(num_gradients)
         sums_of_gradients[:] = 0
         self.sums_of_gradients = sums_of_gradients
         self.accumulated_sums_of_gradients = None
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
-        num_elements = __triangular_number(num_elements)
-        cdef float64[::1] sums_of_hessians = array_float64(num_elements)
+        cdef intp num_hessians = __triangular_number(num_gradients)
+        cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
-        self.prediction = LabelWisePrediction.__new__(LabelWisePrediction)
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, NULL, NULL, 0)
+        self.prediction = prediction
+
+    def __dealloc__(self):
+        del self.prediction
 
     cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
@@ -198,12 +202,13 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
                 accumulated_sums_of_hessians[c] += sums_of_hessians[c]
                 sums_of_hessians[c] = 0
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef LabelWisePrediction prediction = self.prediction
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef LabelWisePrediction* prediction = self.prediction
+        cdef intp num_predictions = prediction.numPredictions_
+        cdef float64* predicted_scores = prediction.predictedScores_
+        cdef float64* quality_scores = prediction.qualityScores_
         cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
@@ -211,11 +216,11 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
         # To avoid array recreation each time this function is called, the arrays for storing predictions and quality
         # scores are only (re-)initialized if they have not been initialized yet, or if they have the wrong size.
-        if predicted_scores is None or predicted_scores.shape[0] != num_gradients:
-            predicted_scores = array_float64(num_gradients)
-            prediction.predicted_scores = predicted_scores
-            quality_scores = array_float64(num_gradients)
-            prediction.quality_scores = quality_scores
+        if predicted_scores == NULL or num_predictions != num_gradients:
+            predicted_scores = <float64*>malloc(num_gradients * sizeof(float64))
+            prediction.predictedScores_ = predicted_scores
+            quality_scores = <float64*>malloc(num_gradients * sizeof(float64))
+            prediction.qualityScores_ = quality_scores
 
         # The overall quality score, i.e. the sum of the quality scores for each label plus the L2 regularization term
         cdef float64 overall_quality_score = 0
@@ -254,15 +259,15 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
-        prediction.overall_quality_score = overall_quality_score
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(<float64[:num_gradients]>predicted_scores)
+        prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef Prediction prediction = <Prediction>self.prediction
+        cdef Prediction* prediction = <Prediction*>self.prediction
         cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
@@ -297,7 +302,14 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
         # Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
         cdef float64[::1] predicted_scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
-        prediction.predicted_scores = predicted_scores
+
+        # TODO Avoid copying array
+        cdef float64* predicted_scores2 = <float64*>malloc(num_gradients * sizeof(float64))
+
+        for c in range(num_gradients):
+            predicted_scores2[c] = predicted_scores[c]
+
+        prediction.predictedScores_ = predicted_scores2
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
         cdef float64 overall_quality_score = __ddot_float64(predicted_scores, gradients)
@@ -306,7 +318,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
         # Add the L2 regularization term to the overall quality score...
         overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
-        prediction.overall_quality_score = overall_quality_score
+        prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
 
