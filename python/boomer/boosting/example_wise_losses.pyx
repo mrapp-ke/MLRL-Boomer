@@ -19,7 +19,7 @@ cdef class ExampleWiseLossFunction:
     """
 
     cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64* predicted_scores, float64[::1] gradients,
                                                float64[::1] hessians):
         """
         Must be implemented by subclasses to calculate the gradients (first derivatives) and hessians (second
@@ -27,11 +27,11 @@ cdef class ExampleWiseLossFunction:
 
         :param label_matrix:        A `LabelMatrix` that provides random access to the labels of the training examples
         :param example_index:       The index of the example for which the gradients and hessians should be calculated
-        :param predicted_scores:    An array of dtype float64, shape `(num_labels)`, representing the scores that are
-                                    predicted for each label of the respective example
-        :param gradients:           An array of dtype float64, shape `(num_labels)`, the gradients that have been
+        :param predicted_scores:    A pointer to an array of type `float64`, shape `(num_labels)`, representing the
+                                    scores that are predicted for each label of the respective example
+        :param gradients:           An array of dtype `float64`, shape `(num_labels)`, the gradients that have been
                                     calculated should be written to
-        :param hessians:            An array of dtype float64, shape `(num_labels * (num_labels + 1) / 2)`, the hessians
+        :param hessians:            An array of dtype `float64`, shape `(num_labels * (num_labels + 1) / 2)`, the hessians
                                     that have been calculated should be written to
         """
         pass
@@ -45,7 +45,7 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
     # Functions:
 
     cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64[::1] predicted_scores, float64[::1] gradients,
+                                               float64* predicted_scores, float64[::1] gradients,
                                                float64[::1] hessians):
         cdef intp num_labels = label_matrix.num_labels
         cdef float64 sum_of_exponentials = 1
@@ -120,19 +120,23 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
-        cdef intp num_elements = gradients.shape[1] if label_indices is None else label_indices.shape[0]
-        cdef float64[::1] sums_of_gradients = array_float64(num_elements)
+        cdef intp num_gradients = gradients.shape[1] if label_indices is None else label_indices.shape[0]
+        cdef float64[::1] sums_of_gradients = array_float64(num_gradients)
         sums_of_gradients[:] = 0
         self.sums_of_gradients = sums_of_gradients
         self.accumulated_sums_of_gradients = None
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
-        num_elements = __triangular_number(num_elements)
-        cdef float64[::1] sums_of_hessians = array_float64(num_elements)
+        cdef intp num_hessians = __triangular_number(num_gradients)
+        cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
-        self.prediction = LabelWisePrediction.__new__(LabelWisePrediction)
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, NULL, NULL, 0)
+        self.prediction = prediction
+
+    def __dealloc__(self):
+        del self.prediction
 
     cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
@@ -198,12 +202,13 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
                 accumulated_sums_of_hessians[c] += sums_of_hessians[c]
                 sums_of_hessians[c] = 0
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef LabelWisePrediction prediction = self.prediction
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef LabelWisePrediction* prediction = self.prediction
+        cdef intp num_predictions = prediction.numPredictions_
+        cdef float64* predicted_scores = prediction.predictedScores_
+        cdef float64* quality_scores = prediction.qualityScores_
         cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
@@ -211,11 +216,11 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
         # To avoid array recreation each time this function is called, the arrays for storing predictions and quality
         # scores are only (re-)initialized if they have not been initialized yet, or if they have the wrong size.
-        if predicted_scores is None or predicted_scores.shape[0] != num_gradients:
-            predicted_scores = array_float64(num_gradients)
-            prediction.predicted_scores = predicted_scores
-            quality_scores = array_float64(num_gradients)
-            prediction.quality_scores = quality_scores
+        if predicted_scores == NULL or num_predictions != num_gradients:
+            predicted_scores = <float64*>malloc(num_gradients * sizeof(float64))
+            prediction.predictedScores_ = predicted_scores
+            quality_scores = <float64*>malloc(num_gradients * sizeof(float64))
+            prediction.qualityScores_ = quality_scores
 
         # The overall quality score, i.e. the sum of the quality scores for each label plus the L2 regularization term
         cdef float64 overall_quality_score = 0
@@ -254,15 +259,15 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
-        prediction.overall_quality_score = overall_quality_score
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_gradients)
+        prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef Prediction prediction = <Prediction>self.prediction
+        cdef Prediction* prediction = <Prediction*>self.prediction
         cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of gradients considered by the current search
@@ -296,17 +301,17 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
             hessians = sums_of_hessians
 
         # Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-        cdef float64[::1] predicted_scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
-        prediction.predicted_scores = predicted_scores
+        cdef float64* predicted_scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
+        prediction.predictedScores_ = predicted_scores
 
         # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-        cdef float64 overall_quality_score = __ddot_float64(predicted_scores, gradients)
-        cdef float64[::1] tmp = __dspmv_float64(hessians, predicted_scores)
-        overall_quality_score += 0.5 * __ddot_float64(predicted_scores, tmp)
+        cdef float64 overall_quality_score = __ddot_float64(predicted_scores, &gradients[0], num_gradients)
+        cdef float64* tmp = __dspmv_float64(&hessians[0], predicted_scores, num_gradients)
+        overall_quality_score += 0.5 * __ddot_float64(predicted_scores, tmp, num_gradients)
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
-        prediction.overall_quality_score = overall_quality_score
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_gradients)
+        prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
 
@@ -328,7 +333,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         self.loss_function = loss_function
         self.l2_regularization_weight = l2_regularization_weight
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         # An example-wise loss function to be minimized
         cdef ExampleWiseLossFunction loss_function = self.loss_function
         # The weight to be used for L2 regularization
@@ -352,10 +357,12 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         # A matrix that stores the currently predicted scores for each example and label
         cdef float64[:, ::1] current_scores = c_matrix_float64(num_examples, num_labels)
         # An array that stores the scores that are predicted by the default rule
-        cdef float64[::1] predicted_scores = array_float64(num_labels)
-        predicted_scores[:] = 0
+        cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
         # Temporary variables
         cdef intp r, c
+
+        for c in range(num_labels):
+            predicted_scores[c] = 0
 
         # Traverse each example to calculate the initial gradients and hessians...
         for r in range(num_examples):
@@ -370,12 +377,12 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
         # Compute the optimal scores to be predicted by the default rule by solving the system of linear equations...
         predicted_scores = __dsysv_float64(total_sums_of_hessians, total_sums_of_gradients, l2_regularization_weight)
-        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
-        prediction.predicted_scores = predicted_scores
 
         # Traverse each example again to calculate the updated gradients and hessians based on the calculated scores...
         for r in range(num_examples):
-            current_scores[r, :] = predicted_scores
+            for c in range(num_labels):
+                current_scores[r, c] = predicted_scores[c]
+
             loss_function.calculate_gradients_and_hessians(label_matrix, r, predicted_scores, gradients[r, :],
                                                            hessians[r, :])
 
@@ -391,7 +398,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         self.label_matrix = label_matrix
         self.current_scores = current_scores
 
-        return prediction
+        return new DefaultPrediction(num_labels, predicted_scores)
 
     cdef void reset_examples(self):
         # Class members
@@ -454,7 +461,8 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
             current_scores[example_index, l] += predicted_scores[c]
 
         # Update the gradients and hessians for the example at the given index...
-        loss_function.calculate_gradients_and_hessians(label_matrix, example_index, current_scores[example_index, :],
+        loss_function.calculate_gradients_and_hessians(label_matrix, example_index,
+                                                       &current_scores[example_index, :][0],
                                                        gradients[example_index, :], hessians[example_index, :])
 
 
@@ -468,60 +476,59 @@ cdef inline intp __triangular_number(intp n):
     return (n * (n + 1)) // 2
 
 
-cdef inline float64 __ddot_float64(float64[::1] x, float64[::1] y):
+cdef inline float64 __ddot_float64(float64* x, float64* y, int n):
     """
     Computes and returns the dot product x * y of two vectors using BLAS' DDOT routine (see
     http://www.netlib.org/lapack/explore-html/de/da4/group__double__blas__level1_ga75066c4825cb6ff1c8ec4403ef8c843a.html).
 
-    :param x:   An array of dtype `float64`, shape (n), representing the first vector x
-    :param y:   An array of dtype `float64`, shape (n), representing the second vector y
+    :param x:   A pointer to an array of type `float64`, shape (n), representing the first vector x
+    :param y:   A pointer to an array of type `float64`, shape (n), representing the second vector y
+    :param n:   The number of elements in the arrays `x` and `y`
     :return:    A scalar of dtype `float64`, representing the result of the dot product x * y
     """
-    # The number of elements in the arrays x and y
-    cdef int n = x.shape[0]
     # Storage spacing between the elements of the arrays x and y
     cdef int inc = 1
     # Invoke the DDOT routine...
-    cdef float64 result = ddot(&n, &x[0], &inc, &y[0], &inc)
+    cdef float64 result = ddot(&n, x, &inc, y, &inc)
     return result
 
 
-cdef inline float64[::1] __dspmv_float64(float64[::1] a, float64[::1] x):
+cdef inline float64* __dspmv_float64(float64* a, float64* x, int n):
     """
     Computes and returns the solution to the matrix-vector operation A * x using BLAS' DSPMV routine (see
     http://www.netlib.org/lapack/explore-html/d7/d15/group__double__blas__level2_gab746575c4f7dd4eec72e8110d42cefe9.html).
-    This function expects A to be a double-precision symmetric matrix with shape `(n, n)` and x a double-precision array
-    with shape `(n)`.
+    This function expects A to be a double-precision symmetric matrix with shape `(n, n)` and x to be a double-precision
+    array with shape `(n)`.
 
     DSPMV expects the matrix A to be supplied in packed form, i.e., as an array with shape `(n * (n + 1) // 2 )` that
     consists of the columns of A appended to each other and omitting all unspecified elements.
 
-    :param a:   An array of dtype `float64`, shape `(n * (n + 1) // 2)`, representing the elements in the upper-right
-                triangle of the matrix A in a packed form
-    :param x:   An array of dtype `float64`, shape `(n)`, representing the elements in the array x
-    :return:    An array of dtype `float64`, shape `(n)`, representing the result of the matrix-vector operation A * x
+    :param a:   A pointer to an array of type `float64`, shape `(n * (n + 1) // 2)`, representing the elements in the
+                upper-right triangle of the matrix A in a packed form
+    :param x:   A pointer to an array of type `float64`, shape `(n)`, representing the elements in the array x
+    :param n:   The number of elements in the arrays `a` and `x`
+    :return:    A pointer to an array of type `float64`, shape `(n)`, representing the result of the matrix-vector
+                operation A * x
     """
     # 'U' if the upper-right triangle of A should be used, 'L' if the lower-left triangle should be used
     cdef char* uplo = 'U'
-    # The number of rows and columns of the matrix A
-    cdef int n = x.shape[0]
     # A scalar to be multiplied with the matrix A
     cdef float64 alpha = 1
     # The increment for the elements of x
     cdef int incx = 1
     # A scalar to be multiplied with vector y
     cdef float64 beta = 0
-    # An array of dtype `float64`, shape `(n)`. Will contain the result of A * x
-    cdef float64[::1] y = array_float64(n)
+    # An array of type `float64`, shape `(n)`. Will contain the result of A * x
+    cdef float64* y = <float64*>malloc(n * sizeof(float64))
     # The increment for the elements of y
     cdef int incy = 1
     # Invoke the DSPMV routine...
-    dspmv(uplo, &n, &alpha, &a[0], &x[0], &incx, &beta, &y[0], &incy)
+    dspmv(uplo, &n, &alpha, a, x, &incx, &beta, y, &incy)
     return y
 
 
-cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1] inverted_ordinates,
-                                         float64 l2_regularization_weight):
+cdef inline float64* __dsysv_float64(float64[::1] coefficients, float64[::1] inverted_ordinates,
+                                     float64 l2_regularization_weight):
     """
     Computes and returns the solution to a system of linear equations A * X = B using LAPACK's DSYSV solver (see
     http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve_ga9995c47692c9885ed5d6a6b431686f41.html).
@@ -547,8 +554,8 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
                                         ordinates, i.e., ordinates * -1. The sign of the elements in this array will be
                                         inverted to when creating the matrix B
     :param l2_regularization_weight:    A scalar of dtype `float64`, representing the weight of the L2 regularization
-    :return:                            An array of dtype `float64`, shape `(num_equations)`, representing the solution
-                                        to the system of linear equations
+    :return:                            A pointer to an array of type `float64`, shape `(num_equations)`, representing
+                                        the solution to the system of linear equations
     """
     cdef float64[::1] result
     cdef float64 tmp
@@ -571,21 +578,21 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
 
     # Create the array B by copying the array `inverted_ordinates` and inverting its elements. It will be overwritten
     # with the solution to the system of linear equations. DSYSV requires the array B to be Fortran-contiguous...
-    cdef float64[::1, :] b = fortran_matrix_float64(n, 1)
+    cdef float64* b = <float64*>malloc(n * sizeof(float64))
 
     for r in range(n):
-        b[r, 0] = -inverted_ordinates[r]
+        b[r] = -inverted_ordinates[r]
 
     # 'U' if the upper-right triangle of A should be used, 'L' if the lower-left triangle should be used
     cdef char* uplo = 'U'
     # The number of right-hand sides, i.e, the number of columns of the matrix B
-    cdef int nrhs = b.shape[1]
+    cdef int nrhs = 1
     # Variable to hold the result of the solver. Will be 0 when terminated successfully, unlike 0 otherwise
     cdef int info
     # We must query optimal value for the argument `lwork` (the length of the working array `work`)...
     cdef double worksize
     cdef int lwork = -1  # -1 means that the optimal value should be queried
-    dsysv(uplo, &n, &nrhs, &a[0, 0], &n, <int*>0, &b[0, 0], &n, &worksize, &lwork, &info)  # Queries the optimal value
+    dsysv(uplo, &n, &nrhs, &a[0, 0], &n, <int*>0, &b[0], &n, &worksize, &lwork, &info)  # Queries the optimal value
     lwork = <int>worksize
     # Allocate the working array...
     cdef double* work = <double*>malloc(lwork * sizeof(double))
@@ -594,12 +601,11 @@ cdef inline float64[::1] __dsysv_float64(float64[::1] coefficients, float64[::1]
 
     try:
         # Run the DSYSV solver...
-        dsysv(uplo, &n, &nrhs, &a[0, 0], &n, ipiv, &b[0, 0], &n, work, &lwork, &info)
+        dsysv(uplo, &n, &nrhs, &a[0, 0], &n, ipiv, &b[0], &n, work, &lwork, &info)
 
         if info == 0:
             # The solution has been computed successfully...
-            result = b[:, 0]
-            return result
+            return b
         else:
             # An error occurred...
             raise ArithmeticError('DSYSV terminated with non-zero info code: ' + str(info))

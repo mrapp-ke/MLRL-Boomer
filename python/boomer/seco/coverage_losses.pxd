@@ -12,7 +12,7 @@ cdef class CoverageLoss(Loss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void reset_examples(self)
 

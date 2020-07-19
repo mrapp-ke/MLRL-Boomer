@@ -28,7 +28,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef intp[::1] label_indices
 
-    cdef LabelWisePrediction prediction
+    cdef LabelWisePrediction* prediction
 
     # Functions:
 
@@ -36,9 +36,9 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef void reset_search(self)
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
 cdef class LabelWiseAveraging(CoverageLoss):
@@ -59,7 +59,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void reset_examples(self)
 
