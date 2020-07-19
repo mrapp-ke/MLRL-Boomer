@@ -17,6 +17,29 @@ cdef extern from "cpp/losses.h" namespace "losses":
         float64* predictedScores_
 
 
+    cdef cppclass Prediction(DefaultPrediction):
+
+        # Constructors:
+
+        Prediction(intp numPredictions, float64* predictedScores, float64 overallQualityScore) except +
+
+        # Attributes:
+
+        float64 overallQualityScore_
+
+
+    cdef cppclass LabelWisePrediction(Prediction):
+
+        # Constructors:
+
+        LabelWisePrediction(intp numPredictions, float64* predictedScores, float64* qualityScores,
+                            float64 overallQualityScore) except +
+
+        # Attributes:
+
+        float64* qualityScores_
+
+
 cdef class LabelMatrix:
 
     # Attributes:
@@ -52,36 +75,15 @@ cdef class SparseLabelMatrix(LabelMatrix):
     cdef uint8 get_label(self, intp example_index, intp label_index)
 
 
-cdef class DefaultPredictionOld:
-
-    # Attributes:
-
-    cdef float64[::1] predicted_scores
-
-
-cdef class Prediction(DefaultPredictionOld):
-
-    # Attributes:
-
-    cdef float64 overall_quality_score
-
-
-cdef class LabelWisePrediction(Prediction):
-
-    # Attributes:
-
-    cdef float64[::1] quality_scores
-
-
 cdef class RefinementSearch:
 
     cdef void update_search(self, intp example_index, uint32 weight)
 
     cdef void reset_search(self)
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
 cdef class DecomposableRefinementSearch(RefinementSearch):
@@ -90,9 +92,9 @@ cdef class DecomposableRefinementSearch(RefinementSearch):
 
     cdef void reset_search(self)
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
 cdef class NonDecomposableRefinementSearch(RefinementSearch):
@@ -101,9 +103,9 @@ cdef class NonDecomposableRefinementSearch(RefinementSearch):
 
     cdef void reset_search(self)
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
 cdef class Loss:

@@ -280,7 +280,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Temporary variables
         cdef RefinementSearch refinement_search
         cdef HeadCandidate* current_head = NULL
-        cdef Prediction prediction
+        cdef Prediction* prediction
         cdef float64[::1] predicted_scores
         cdef float32 previous_threshold, current_threshold, previous_threshold_negative
         cdef uint32 weight
@@ -875,7 +875,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             refinement_search.update_search(r, 1)
 
                     prediction = head_refinement.calculate_prediction(refinement_search, False, False)
-                    predicted_scores[:] = prediction.predicted_scores
+
+                    for c in range(num_predictions):
+                        predicted_scores[c] = prediction.predictedScores_[c]
 
                 # Apply shrinkage, if necessary...
                 if shrinkage is not None:

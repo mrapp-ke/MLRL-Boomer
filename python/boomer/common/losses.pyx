@@ -80,33 +80,6 @@ cdef class SparseLabelMatrix(LabelMatrix):
         return dok_matrix.getValue(<uint32>example_index, <uint32>label_index)
 
 
-cdef class DefaultPredictionOld:
-    """
-    Stores the default rule's predictions for each label.
-    """
-
-    def __cinit__(self):
-        self.predicted_scores = None
-
-
-cdef class Prediction(DefaultPredictionOld):
-    """
-    Assesses the overall quality of a rule's predictions for one or several labels.
-    """
-
-    def __cinit__(self):
-        self.overall_quality_score = 0
-
-
-cdef class LabelWisePrediction(Prediction):
-    """
-    Assesses the quality of a rule's predictions for one or several labels independently from each other.
-    """
-
-    def __cinit__(self):
-        self.quality_scores = None
-
-
 cdef class RefinementSearch:
     """
     A base class for all classes that allow to search for the best refinement of a rule according to a certain loss.
@@ -146,7 +119,7 @@ cdef class RefinementSearch:
         """
         pass
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided to the search so far via the function `update_search`.
@@ -173,12 +146,12 @@ cdef class RefinementSearch:
                             since the function `reset_search` has been called for the last time, 1, if the rule covers
                             all examples that have been provided since the search has been started via the the function
                             `Loss#begin_search`
-        :return:            A `LabelWisePrediction` that stores the scores to be predicted by the rule for each
-                            considered label, as well as the corresponding quality scores
+        :return:            A pointer to an object of type `LabelWisePrediction` that stores the scores to be predicted
+                            by the rule for each considered label, as well as the corresponding quality scores
         """
         pass
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         """
         Calculates and returns the loss-minimizing scores to be predicted by a rule that covers all examples that have
         been provided to the search so far via the function `update_search`.
@@ -206,8 +179,8 @@ cdef class RefinementSearch:
                             since the function `reset_search` has been called for the last time, 1, if the rule covers
                             all examples that have been provided since the search has been started via the function
                             `Loss#begin_search`
-        :return:            A `Prediction` that stores the scores to be predicted by the rule for each considered label,
-                            as well as an overall quality score
+        :return:            A pointer to an object of type `Prediction` that stores the scores to be predicted by the
+                            rule for each considered label, as well as an overall quality score
         """
         pass
 
@@ -224,12 +197,12 @@ cdef class DecomposableRefinementSearch(RefinementSearch):
     cdef void reset_search(self):
         pass
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         pass
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         # In case of a decomposable loss, the example-wise predictions are the same as the label-wise predictions...
-        return self.calculate_label_wise_prediction(uncovered, accumulated)
+        return <Prediction*>self.calculate_label_wise_prediction(uncovered, accumulated)
 
 
 cdef class NonDecomposableRefinementSearch(RefinementSearch):
@@ -244,10 +217,10 @@ cdef class NonDecomposableRefinementSearch(RefinementSearch):
     cdef void reset_search(self):
         pass
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         pass
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         pass
 
 
