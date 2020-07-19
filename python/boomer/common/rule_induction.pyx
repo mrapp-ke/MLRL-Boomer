@@ -215,14 +215,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder):
         cdef DefaultPrediction* default_prediction
-        cdef float64[::1] predicted_scores
-        cdef intp num_predictions
 
         try:
             default_prediction = loss.calculate_default_prediction(label_matrix)
-            num_predictions = default_prediction.numPredictions_
-            predicted_scores = <float64[:num_predictions]>default_prediction.predictedScores_
-            model_builder.set_default_rule(predicted_scores)
+            model_builder.set_default_rule(default_prediction)
         finally:
             del default_prediction
 
@@ -855,7 +851,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             else:
                 num_predictions = head.numPredictions_
                 label_indices = <intp[:num_predictions]>head.labelIndices_ if head.labelIndices_ != NULL else None
-                predicted_scores = <float64[:num_predictions]>head.predictedScores_
 
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
@@ -877,19 +872,19 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     prediction = head_refinement.calculate_prediction(refinement_search, False, False)
 
                     for c in range(num_predictions):
-                        predicted_scores[c] = prediction.predictedScores_[c]
+                        head.predictedScores_[c] = prediction.predictedScores_[c]
 
                 # Apply shrinkage, if necessary...
                 if shrinkage is not None:
-                    shrinkage.apply_shrinkage(predicted_scores)
+                    shrinkage.apply_shrinkage(head)
 
                 # Tell the loss function that a new rule has been induced...
                 for r in range(num_examples):
                     if covered_examples_mask[r] == covered_examples_target:
-                        loss.apply_prediction(r, label_indices, predicted_scores)
+                        loss.apply_prediction(r, label_indices, head)
 
                 # Add the induced rule to the model...
-                model_builder.add_rule(label_indices, predicted_scores, conditions, num_conditions_per_comparator)
+                model_builder.add_rule(label_indices, head, conditions, num_conditions_per_comparator)
                 return True
         finally:
             del head

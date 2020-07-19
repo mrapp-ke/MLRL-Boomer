@@ -1,5 +1,6 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float64
 from boomer.common._sparse cimport BinaryDokMatrix
+from boomer.common.head_refinement cimport HeadCandidate
 
 
 cdef extern from "cpp/losses.h" namespace "losses":
@@ -122,4 +123,4 @@ cdef class Loss:
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices)
 
-    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, HeadCandidate* head)

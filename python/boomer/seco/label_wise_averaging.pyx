@@ -285,16 +285,16 @@ cdef class LabelWiseAveraging(CoverageLoss):
                                                  uncovered_labels, minority_labels, confusion_matrices_default,
                                                  confusion_matrices_subsample_default)
 
-    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, HeadCandidate* head):
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef LabelMatrix label_matrix = self.label_matrix
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
-        cdef intp num_labels = predicted_scores.shape[0]
+        cdef intp num_predictions = head.numPredictions_
         cdef intp c, l
 
         # Only the labels that are predicted by the new rule must be considered
-        for c in range(num_labels):
+        for c in range(num_predictions):
             l = get_index(c, label_indices)
 
             if uncovered_labels[example_index, l] == 1:
