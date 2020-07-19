@@ -66,7 +66,7 @@ cdef class IREP(Pruning):
         # The number of conditions of the existing rule
         cdef intp num_conditions = conditions.size()
         # Temporary variables
-        cdef Prediction prediction
+        cdef Prediction* prediction
         cdef Condition condition
         cdef Comparator comparator
         cdef float32 threshold
@@ -93,7 +93,7 @@ cdef class IREP(Pruning):
         prediction = head_refinement.calculate_prediction(refinement_search, False, False)
 
         # Initialize variables that are used to keep track of the best rule...
-        cdef float64 best_quality_score = prediction.overall_quality_score
+        cdef float64 best_quality_score = prediction.overallQualityScore_
         cdef uint32[::1] best_covered_examples_mask = covered_examples_mask
         cdef uint32 best_covered_examples_target = covered_examples_target
         cdef intp num_pruned_conditions = 0
@@ -156,7 +156,7 @@ cdef class IREP(Pruning):
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
             prediction = head_refinement.calculate_prediction(refinement_search, uncovered, False)
-            current_quality_score = prediction.overall_quality_score
+            current_quality_score = prediction.overallQualityScore_
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
                 best_quality_score = current_quality_score

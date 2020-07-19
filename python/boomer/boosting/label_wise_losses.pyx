@@ -6,6 +6,7 @@ Provides classes that implement loss functions that are applied label-wise.
 from boomer.common._arrays cimport uint8, array_float64, c_matrix_float64, get_index
 from boomer.boosting.differentiable_losses cimport _l2_norm_pow
 
+from libc.stdlib cimport malloc
 from libc.math cimport pow, exp
 
 
@@ -107,12 +108,13 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
-        cdef LabelWisePrediction prediction = LabelWisePrediction.__new__(LabelWisePrediction)
-        cdef float64[::1] predicted_scores = array_float64(num_labels)
-        prediction.predicted_scores = predicted_scores
-        cdef float64[::1] quality_scores = array_float64(num_labels)
-        prediction.quality_scores = quality_scores
+        cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef float64* quality_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_labels, predicted_scores, quality_scores, 0)
         self.prediction = prediction
+
+    def __dealloc__(self):
+        del self.prediction
 
     cdef void update_search(self, intp example_index, uint32 weight):
         # Class members
@@ -166,12 +168,12 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                 accumulated_sums_of_hessians[c] += sums_of_hessians[c]
                 sums_of_hessians[c] = 0
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        cdef LabelWisePrediction prediction = self.prediction
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        cdef float64[::1] quality_scores = prediction.quality_scores
+        cdef LabelWisePrediction* prediction = self.prediction
+        cdef float64* predicted_scores = prediction.predictedScores_
+        cdef float64* quality_scores = prediction.qualityScores_
         cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
         # The number of labels considered by the current search
@@ -211,8 +213,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores)
-        prediction.overall_quality_score = overall_quality_score
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_labels)
+        prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
 
@@ -234,7 +236,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         self.loss_function = loss_function
         self.l2_regularization_weight = l2_regularization_weight
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix):
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         # A label-wise loss function to be minimized
         cdef LabelWiseLossFunction loss_function = self.loss_function
         # The weight to be used for L2 regularization
@@ -254,9 +256,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = array_float64(num_labels)
         # An array that stores the scores that are predicted by the default rule
-        cdef float64[::1] predicted_scores = array_float64(num_labels)
-        cdef DefaultPrediction prediction = DefaultPrediction.__new__(DefaultPrediction)
-        prediction.predicted_scores = predicted_scores
+        cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
         # Temporary variables
         cdef pair[float64, float64] gradient_and_hessian
         cdef float64 gradient, sum_of_gradients, hessian, sum_of_hessians, predicted_score
@@ -303,7 +303,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
         self.label_matrix = label_matrix
         self.current_scores = current_scores
 
-        return prediction
+        return new DefaultPrediction(num_labels, predicted_scores)
 
     cdef void reset_examples(self):
         # Class members

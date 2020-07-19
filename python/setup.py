@@ -10,7 +10,9 @@ DEBUG = False
 
 sources = [
     '**/*.pyx',
-    'boomer/common/cpp/sparse.cpp'
+    'boomer/common/cpp/sparse.cpp',
+    'boomer/common/cpp/head_refinement.cpp',
+    'boomer/common/cpp/losses.cpp'
 ]
 
 extensions = [
