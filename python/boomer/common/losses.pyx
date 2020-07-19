@@ -332,7 +332,7 @@ cdef class Loss:
         """
         pass
 
-    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, HeadCandidate* head):
         """
         Notifies the loss function about the predictions of a new rule that has been induced.
 
@@ -346,7 +346,7 @@ cdef class Loss:
         :param label_indices:       An array of dtype int, shape `(num_predicted_labels)`, representing the indices of
                                     the labels for which the newly induced rule predicts or None, if the rule predicts
                                     for all labels
-        :param predicted_scores:    An array of dtype float, shape `(num_predicted_labels)`, representing the scores
-                                    that are predicted by the newly induced rule
+        :param head:                A pointer to an object of type `HeadCandidate`, representing the head of the newly
+                                    induced rule
         """
         pass

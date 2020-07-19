@@ -569,16 +569,16 @@ cdef class ModelBuilder:
     A base class for all builders that allow to incrementally build a `RuleModel`.
     """
 
-    cdef void set_default_rule(self, float64[::1] scores):
+    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
         """
         Initializes the model and sets its default rule.
 
-        :param scores: An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
-                       default rule for each label
+        :param scores: A pointer to an object of type `DefaultPrediction` that represents the prediction of the default
+                       rule
         """
         pass
 
-    cdef void add_rule(self, intp[::1] label_indices, float64[::1] scores, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, intp[::1] label_indices, HeadCandidate* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         """
         Adds a new rule to the model.
@@ -586,8 +586,8 @@ cdef class ModelBuilder:
         :param label_indices:                   An array of dtype int, shape `(num_predicted_labels)`, representing the
                                                 indices of the labels for which the rule predicts or None, if the rule
                                                 predicts for all labels
-        :param scores:                          An array of dtype float, shape `(num_predicted_labels)`, representing
-                                                the scores that are predicted by the rule
+        :param head:                            A pointer to an object of type `HeadCandidate`, representing the head of
+                                                the rule
         :param conditions:                      A list that contains the rule's conditions
         :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of
                                                 conditions that use a specific operator
@@ -614,13 +614,18 @@ cdef class RuleListBuilder(ModelBuilder):
         self.rule_list = None
         self.default_rule = None
 
-    cdef void set_default_rule(self, float64[::1] scores):
+    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
         cdef bint use_mask = self.use_mask
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
-        cdef intp num_predictions = scores.shape[0]
+        cdef intp num_predictions = default_prediction.numPredictions_
+        cdef float64* predicted_scores = default_prediction.predictedScores_
         cdef float64[::1] head_scores = array_float64(num_predictions)
-        head_scores[:] = scores
+        cdef intp c
+
+        for c in range(num_predictions):
+            head_scores[c] = predicted_scores[c]
+
         cdef FullHead head = FullHead.__new__(FullHead, head_scores)
         cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
         cdef Rule default_rule = Rule.__new__(Rule, body, head)
@@ -632,7 +637,7 @@ cdef class RuleListBuilder(ModelBuilder):
 
         self.rule_list = rule_list
 
-    cdef void add_rule(self, intp[::1] label_indices, float64[::1] scores, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, intp[::1] label_indices, HeadCandidate* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
         cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
@@ -677,24 +682,28 @@ cdef class RuleListBuilder(ModelBuilder):
 
             postincrement(iterator)
 
-        cdef ConjunctiveBody body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
-                                                            gr_feature_indices, gr_thresholds, eq_feature_indices,
-                                                            eq_thresholds, neq_feature_indices, neq_thresholds)
+        cdef ConjunctiveBody rule_body = ConjunctiveBody.__new__(ConjunctiveBody, leq_feature_indices, leq_thresholds,
+                                                                 gr_feature_indices, gr_thresholds, eq_feature_indices,
+                                                                 eq_thresholds, neq_feature_indices, neq_thresholds)
 
-        cdef intp num_predictions = scores.shape[0]
+        cdef intp num_predictions = head.numPredictions_
+        cdef float64* predicted_scores = head.predictedScores_
         cdef float64[::1] head_scores = array_float64(num_predictions)
-        head_scores[:] = scores
         cdef intp[::1] head_label_indices
-        cdef Head head
+        cdef Head rule_head
+        cdef intp c
+
+        for c in range(num_predictions):
+            head_scores[c] = predicted_scores[c]
 
         if label_indices is None:
-            head = FullHead.__new__(FullHead, head_scores)
+            rule_head = FullHead.__new__(FullHead, head_scores)
         else:
             head_label_indices = array_intp(num_predictions)
             head_label_indices[:] = label_indices
-            head = PartialHead.__new__(PartialHead, head_label_indices, head_scores)
+            rule_head = PartialHead.__new__(PartialHead, head_label_indices, head_scores)
 
-        cdef rule = Rule.__new__(Rule, body, head)
+        cdef rule = Rule.__new__(Rule, rule_body, rule_head)
         cdef RuleList rule_list = self.rule_list
         rule_list.add_rule(rule)
 

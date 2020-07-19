@@ -442,7 +442,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         return ExampleWiseRefinementSearch.__new__(ExampleWiseRefinementSearch, l2_regularization_weight, label_indices,
                                                    gradients, total_sums_of_gradients, hessians, total_sums_of_hessians)
 
-    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores):
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
         cdef ExampleWiseLossFunction loss_function = self.loss_function
         cdef LabelMatrix label_matrix = self.label_matrix
@@ -450,13 +450,15 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         cdef float64[:, ::1] gradients = self.gradients
         cdef float64[:, ::1] hessians = self.hessians
         # The number of predicted labels
-        cdef intp num_predicted_labels = predicted_scores.shape[0]
+        cdef intp num_predictions = head.numPredictions_
+        # The predicted scores
+        cdef float64* predicted_scores = head.predictedScores_
         # Temporary variables
         cdef intp c, l
 
         # Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
         # example at the given index...
-        for c in range(num_predicted_labels):
+        for c in range(num_predictions):
             l = get_index(c, label_indices)
             current_scores[example_index, l] += predicted_scores[c]
 
