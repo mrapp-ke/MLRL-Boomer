@@ -55,7 +55,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef float64[::1] accumulated_sums_of_hessians
 
-    cdef LabelWisePrediction prediction
+    cdef LabelWisePrediction* prediction
 
     # Functions:
 
@@ -63,9 +63,9 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef void reset_search(self)
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
 cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
@@ -90,7 +90,7 @@ cdef class LabelWiseDifferentiableLoss(DifferentiableLoss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 
