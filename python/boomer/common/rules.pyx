@@ -569,12 +569,12 @@ cdef class ModelBuilder:
     A base class for all builders that allow to incrementally build a `RuleModel`.
     """
 
-    cdef void set_default_rule(self, float64[::1] scores):
+    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
         """
         Initializes the model and sets its default rule.
 
-        :param scores: An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
-                       default rule for each label
+        :param scores: A pointer to an object of type `DefaultPrediction` that represents the prediction of the default
+                       rule
         """
         pass
 
@@ -614,13 +614,18 @@ cdef class RuleListBuilder(ModelBuilder):
         self.rule_list = None
         self.default_rule = None
 
-    cdef void set_default_rule(self, float64[::1] scores):
+    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
         cdef bint use_mask = self.use_mask
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
-        cdef intp num_predictions = scores.shape[0]
+        cdef intp num_predictions = default_prediction.numPredictions_
+        cdef float64* predicted_scores = default_prediction.predictedScores_
         cdef float64[::1] head_scores = array_float64(num_predictions)
-        head_scores[:] = scores
+        cdef intp c
+
+        for c in range(num_predictions):
+            head_scores[c] = predicted_scores[c]
+
         cdef FullHead head = FullHead.__new__(FullHead, head_scores)
         cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
         cdef Rule default_rule = Rule.__new__(Rule, body, head)
