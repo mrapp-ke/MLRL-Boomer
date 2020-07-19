@@ -10,8 +10,7 @@ cdef class ExampleWiseLossFunction:
     # Functions:
 
     cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64[::1] predicted_scores, float64[::1] gradients,
-                                               float64[::1] hessians)
+                                               float64* predicted_scores, float64[::1] gradients, float64[::1] hessians)
 
 
 cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
@@ -19,8 +18,7 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
     # Functions:
 
     cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64[::1] predicted_scores, float64[::1] gradients,
-                                               float64[::1] hessians)
+                                               float64* predicted_scores, float64[::1] gradients, float64[::1] hessians)
 
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
@@ -47,7 +45,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
     cdef float64[::1] accumulated_sums_of_hessians
 
-    cdef LabelWisePrediction prediction
+    cdef LabelWisePrediction* prediction
 
     # Functions:
 
@@ -55,9 +53,9 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
     cdef void reset_search(self)
 
-    cdef LabelWisePrediction calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
 
-    cdef Prediction calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
 cdef class ExampleWiseLoss(DifferentiableLoss):
@@ -82,7 +80,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
     # Functions:
 
-    cdef DefaultPrediction calculate_default_prediction(self, LabelMatrix label_matrix)
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
 
     cdef void begin_instance_sub_sampling(self)
 

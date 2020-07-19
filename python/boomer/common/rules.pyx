@@ -618,7 +618,10 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef bint use_mask = self.use_mask
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
-        cdef FullHead head = FullHead.__new__(FullHead, scores)
+        cdef intp num_predictions = scores.shape[0]
+        cdef float64[::1] head_scores = array_float64(num_predictions)
+        head_scores[:] = scores
+        cdef FullHead head = FullHead.__new__(FullHead, head_scores)
         cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
         cdef Rule default_rule = Rule.__new__(Rule, body, head)
 

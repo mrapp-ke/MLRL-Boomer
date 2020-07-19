@@ -214,9 +214,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         del self.cache_global
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder):
-        cdef DefaultPrediction prediction = loss.calculate_default_prediction(label_matrix)
-        cdef float64[::1] predicted_scores = prediction.predicted_scores
-        model_builder.set_default_rule(predicted_scores)
+        cdef DefaultPrediction* default_prediction
+        cdef float64[::1] predicted_scores
+        cdef intp num_predictions
+
+        try:
+            default_prediction = loss.calculate_default_prediction(label_matrix)
+            num_predictions = default_prediction.numPredictions_
+            predicted_scores = <float64[:num_predictions]>default_prediction.predictedScores_
+            model_builder.set_default_rule(predicted_scores)
+        finally:
+            del default_prediction
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
@@ -272,7 +280,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Temporary variables
         cdef RefinementSearch refinement_search
         cdef HeadCandidate* current_head = NULL
-        cdef Prediction prediction
+        cdef Prediction* prediction
         cdef float64[::1] predicted_scores
         cdef float32 previous_threshold, current_threshold, previous_threshold_negative
         cdef uint32 weight
@@ -867,7 +875,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             refinement_search.update_search(r, 1)
 
                     prediction = head_refinement.calculate_prediction(refinement_search, False, False)
-                    predicted_scores[:] = prediction.predicted_scores
+
+                    for c in range(num_predictions):
+                        predicted_scores[c] = prediction.predictedScores_[c]
 
                 # Apply shrinkage, if necessary...
                 if shrinkage is not None:
