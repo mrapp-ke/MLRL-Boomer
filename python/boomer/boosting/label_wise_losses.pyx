@@ -213,7 +213,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(<float64[:num_labels]>predicted_scores)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_labels)
         prediction.overallQualityScore_ = overall_quality_score
 
         return prediction

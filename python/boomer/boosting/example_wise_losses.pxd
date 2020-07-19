@@ -10,8 +10,7 @@ cdef class ExampleWiseLossFunction:
     # Functions:
 
     cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64[::1] predicted_scores, float64[::1] gradients,
-                                               float64[::1] hessians)
+                                               float64* predicted_scores, float64[::1] gradients, float64[::1] hessians)
 
 
 cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
@@ -19,8 +18,7 @@ cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
     # Functions:
 
     cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64[::1] predicted_scores, float64[::1] gradients,
-                                               float64[::1] hessians)
+                                               float64* predicted_scores, float64[::1] gradients, float64[::1] hessians)
 
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
