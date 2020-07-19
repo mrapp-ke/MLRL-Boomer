@@ -215,14 +215,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder):
         cdef DefaultPrediction* default_prediction
-        cdef float64[::1] predicted_scores
-        cdef intp num_predictions
 
         try:
             default_prediction = loss.calculate_default_prediction(label_matrix)
-            num_predictions = default_prediction.numPredictions_
-            predicted_scores = <float64[:num_predictions]>default_prediction.predictedScores_
-            model_builder.set_default_rule(predicted_scores)
+            model_builder.set_default_rule(default_prediction)
         finally:
             del default_prediction
 
