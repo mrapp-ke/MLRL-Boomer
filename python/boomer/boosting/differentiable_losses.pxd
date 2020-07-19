@@ -2,6 +2,7 @@ from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common.losses cimport LabelMatrix
 from boomer.common.losses cimport Loss, RefinementSearch
 from boomer.common.losses cimport DefaultPrediction, Prediction, LabelWisePrediction
+from boomer.common.head_refinement cimport HeadCandidate
 
 from libc.math cimport pow
 
@@ -20,7 +21,7 @@ cdef class DifferentiableLoss(Loss):
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices)
 
-    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, float64[::1] predicted_scores)
+    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, HeadCandidate* head)
 
 
 cdef inline float64 _l2_norm_pow(float64* a, intp n):
