@@ -28,6 +28,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef float64[::1] accumulated_sums_of_hessians
 
+    cdef LabelWisePrediction* prediction
+
     # Functions:
 
     cdef void update_search(self, intp statistic_index, uint32 weight)
