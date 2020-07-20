@@ -113,8 +113,19 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                 sums_of_hessians[c] = 0
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        # TODO
-        pass
+        # Class members
+        cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef LabelWisePrediction* prediction = self.prediction
+        cdef const intp[::1] label_indices = self.label_indices
+        cdef const float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef const float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
+
+        # Compute and return the predictions, as well as corresponding quality scores...
+        rule_evaluation.calculate_label_wise_prediction(label_indices, total_sums_of_gradients, sums_of_gradients,
+                                                        total_sums_of_hessians, sums_of_hessians, uncovered, prediction)
+        return prediction
 
 
 cdef class LabelWiseStatistics(GradientStatistics):
