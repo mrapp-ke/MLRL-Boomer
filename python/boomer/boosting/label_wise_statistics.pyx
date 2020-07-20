@@ -113,10 +113,6 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         # TODO
         pass
 
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
-        # TODO
-        pass
-
 
 cdef class LabelWiseStatistics(GradientStatistics):
     """
