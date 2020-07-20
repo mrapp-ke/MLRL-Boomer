@@ -1,5 +1,6 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.losses cimport RefinementSearch, Prediction
+from boomer.common.losses cimport RefinementSearch
+from boomer.common.rule_evaluation cimport Prediction
 
 
 cdef extern from "cpp/head_refinement.h" namespace "head_refinement":
