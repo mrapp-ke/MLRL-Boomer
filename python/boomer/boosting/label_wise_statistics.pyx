@@ -18,6 +18,21 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     def __cinit__(self, const intp[::1] label_indices, const float64[:, ::1] gradients,
                   const float64[::1] total_sums_of_gradients, const float64[:, ::1] hessians,
                   const float64[::1] total_sums_of_hessians):
+        """
+        :param label_indices:           An array of dtype int, shape `(num_considered_labels)`, representing the indices
+                                        of the labels that should be considered by the search or None, if all labels
+                                        should be considered
+        :param gradients:               An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                        gradient for each example and label
+        :param total_sums_of_gradients: An array of dtype float, shape `(num_labels)`, representing the sum of the
+                                        gradients of all examples, which should be considered by the search, for each
+                                        label
+        :param hessians:                An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                        Hessian for each example and label
+        :param total_sums_of_hessians:  An array of dtype float, shape `(num_labels)`, representing the sum of the
+                                        Hessians of all examples, which should be considered by the search, for each
+                                        label
+        """
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
