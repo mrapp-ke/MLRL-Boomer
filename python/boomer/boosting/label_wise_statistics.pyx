@@ -53,8 +53,37 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
             sums_of_hessians[c] += (weight * hessians[statistic_index, l])
 
     cdef void reset_search(self):
-        # TODO
-        pass
+        # Class members
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        # The number of labels
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        # Temporary variables
+        cdef intp c
+
+        # Update the arrays that store the accumulated sums of gradients and hessians...
+        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
+        cdef float64[::1] accumulated_sums_of_hessians
+
+        if accumulated_sums_of_gradients is None:
+            accumulated_sums_of_gradients = array_float64(num_labels)
+            self.accumulated_sums_of_gradients = accumulated_sums_of_gradients
+            accumulated_sums_of_hessians = array_float64(num_labels)
+            self.accumulated_sums_of_hessians = accumulated_sums_of_hessians
+
+            for c in range(num_labels):
+                accumulated_sums_of_gradients[c] = sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+                accumulated_sums_of_hessians[c] = sums_of_hessians[c]
+                sums_of_hessians[c] = 0
+        else:
+            accumulated_sums_of_hessians = self.accumulated_sums_of_hessians
+
+            for c in range(num_labels):
+                accumulated_sums_of_gradients[c] += sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+                accumulated_sums_of_hessians[c] += sums_of_hessians[c]
+                sums_of_hessians[c] = 0
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # TODO
