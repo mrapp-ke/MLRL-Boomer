@@ -25,11 +25,13 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef float64[::1] sums_of_gradients = array_float64(num_labels)
         sums_of_gradients[:] = 0
         self.sums_of_gradients = sums_of_gradients
+        self.accumulated_sums_of_gradients = None
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
         cdef float64[::1] sums_of_hessians = array_float64(num_labels)
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
+        self.accumulated_sums_of_hessians = None
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
         # Class members
