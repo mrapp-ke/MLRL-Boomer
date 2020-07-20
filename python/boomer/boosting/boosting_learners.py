@@ -10,13 +10,13 @@ from boomer.boosting.example_wise_losses import ExampleWiseLoss, ExampleWiseLogi
 from boomer.boosting.head_refinement import FullHeadRefinement
 from boomer.boosting.label_wise_losses import LabelWiseDifferentiableLoss, LabelWiseSquaredErrorLossFunction, \
     LabelWiseLogisticLossFunction
+from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.common.shrinkage import ConstantShrinkage, Shrinkage
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
