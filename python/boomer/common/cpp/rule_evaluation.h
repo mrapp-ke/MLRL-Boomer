@@ -1,5 +1,5 @@
 /**
- * Provides classes that represent the predictions of rules, as well as corresponding quality scores.
+ * Provides classes that store the predictions of rules, as well as corresponding quality scores.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
