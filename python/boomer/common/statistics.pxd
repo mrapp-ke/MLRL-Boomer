@@ -84,7 +84,7 @@ cdef class Statistics:
 
     cdef void add_sampled_example(self, intp statistic_index, uint32 weight)
 
-    cdef void update_covered_example(self, intp statistic_index, uint32 weight, bint remove)
+    cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove)
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices)
 
