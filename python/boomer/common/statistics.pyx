@@ -166,7 +166,7 @@ cdef class Statistics:
     A base class for all classes that store statistics about the labels of the training examples.
     """
 
-    cdef void reset_examples(self):
+    cdef void reset_statistics(self):
         """
         TODO
         """

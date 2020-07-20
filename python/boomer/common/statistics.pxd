@@ -80,7 +80,7 @@ cdef class Statistics:
 
     # Functions:
 
-    cdef void reset_examples(self)
+    cdef void reset_statistics(self)
 
     cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight)
 
