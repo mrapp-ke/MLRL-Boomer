@@ -150,7 +150,7 @@ cdef class RuleInduction:
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
+                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder):
         """
         Induces a single- or multi-label classification rule that minimizes a certain loss function for the training
@@ -172,8 +172,8 @@ cdef class RuleInduction:
                                             None, if no feature sub-sampling should be used
         :param pruning:                     The strategy that should be used to prune rules or None, if no pruning
                                             should be used
-        :param shrinkage:                   The strategy that should be used to shrink the weights of rules or None, if
-                                            no shrinkage should be used
+        :param post_processor:              The post-processor that should be used to post-process the rule once it has
+                                            been learned or None, if no post-processing should be used
         :param min_coverage:                The minimum number of training examples that must be covered by the rule.
                                             Must be at least 1
         :param max_conditions:              The maximum number of conditions to be included in the rule's body. Must be
@@ -225,7 +225,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
+                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder):
         # The total number of training examples
         cdef intp num_examples = feature_matrix.num_examples
@@ -874,9 +874,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     for c in range(num_predictions):
                         head.predictedScores_[c] = prediction.predictedScores_[c]
 
-                # Apply shrinkage, if necessary...
-                if shrinkage is not None:
-                    shrinkage.apply_shrinkage(head)
+                # Apply post-processor, if necessary...
+                if post_processor is not None:
+                    post_processor.post_process(head)
 
                 # Tell the loss function that a new rule has been induced...
                 for r in range(num_examples):
