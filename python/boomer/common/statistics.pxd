@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint8, uint32, intp
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.losses cimport Prediction, LabelWisePrediction
+from boomer.common.rule_evaluation cimport Prediction, LabelWisePrediction
 
 
 cdef class RefinementSearch:

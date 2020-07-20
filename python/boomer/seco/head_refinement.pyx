@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
-from boomer.common.losses cimport LabelWisePrediction
+from boomer.common.rule_evaluation cimport LabelWisePrediction
 
 from libc.stdlib cimport qsort, malloc, free
 

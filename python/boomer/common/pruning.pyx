@@ -6,7 +6,8 @@ Provides classes that implement strategies for pruning classification rules.
 from boomer.common._arrays cimport float32, float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
-from boomer.common.losses cimport RefinementSearch, Prediction
+from boomer.common.losses cimport RefinementSearch
+from boomer.common.rule_evaluation cimport Prediction
 
 from cython.operator cimport dereference, postincrement
 
