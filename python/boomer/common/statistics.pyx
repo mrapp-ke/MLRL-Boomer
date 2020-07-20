@@ -163,7 +163,8 @@ cdef class NonDecomposableRefinementSearch(RefinementSearch):
 
 cdef class Statistics:
     """
-    A base class for all classes that store statistics about the labels of the training examples.
+    A base class for all classes that store statistics about the labels of the training examples, which serve as the
+    basis for learning a new rule or refining an existing one.
     """
 
     cdef void reset_statistics(self):
