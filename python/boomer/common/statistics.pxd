@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint8, uint32, intp
 from boomer.common._sparse cimport BinaryDokMatrix
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.rule_evaluation cimport Prediction, LabelWisePrediction
+from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 
 
 cdef class LabelMatrix:
@@ -79,6 +79,8 @@ cdef class NonDecomposableRefinementSearch(RefinementSearch):
 cdef class Statistics:
 
     # Functions:
+
+    cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction)
 
     cdef void reset_statistics(self)
 

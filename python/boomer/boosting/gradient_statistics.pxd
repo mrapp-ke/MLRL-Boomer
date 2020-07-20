@@ -1,11 +1,14 @@
 from boomer.common._arrays cimport uint32, intp
-from boomer.common.statistics cimport Statistics, RefinementSearch
+from boomer.common.statistics cimport LabelMatrix, Statistics, RefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
+from boomer.common.rule_evaluation cimport DefaultPrediction
 
 
 cdef class GradientStatistics(Statistics):
 
     # Functions:
+
+    cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction)
 
     cdef void reset_statistics(self)
 

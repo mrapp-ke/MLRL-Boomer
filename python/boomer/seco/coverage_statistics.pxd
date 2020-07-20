@@ -1,6 +1,7 @@
 from boomer.common._arrays cimport uint32, intp, float64
-from boomer.common.statistics cimport Statistics, RefinementSearch
+from boomer.common.statistics cimport LabelMatrix, Statistics, RefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
+from boomer.common.rule_evaluation cimport DefaultPrediction
 
 
 cdef class CoverageStatistics(Statistics):
@@ -10,6 +11,8 @@ cdef class CoverageStatistics(Statistics):
     cdef readonly float64 sum_uncovered_labels
 
     # Functions:
+
+    cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction)
 
     cdef void reset_statistics(self)
 
