@@ -2,7 +2,8 @@ from boomer.common._arrays cimport intp, float32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
-from boomer.common.losses cimport LabelMatrix, Loss
+from boomer.common.statistics cimport LabelMatrix
+from boomer.common.losses cimport Loss
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor

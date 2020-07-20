@@ -1,6 +1,42 @@
 from boomer.common._arrays cimport uint8, uint32, intp
+from boomer.common._sparse cimport BinaryDokMatrix
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport Prediction, LabelWisePrediction
+
+
+cdef class LabelMatrix:
+
+    # Attributes:
+
+    cdef readonly intp num_examples
+
+    cdef readonly intp num_labels
+
+    # Functions:
+
+    cdef uint8 get_label(self, intp example_index, intp label_index)
+
+
+cdef class DenseLabelMatrix(LabelMatrix):
+
+    # Attributes:
+
+    cdef const uint8[:, ::1] y
+
+    # Functions:
+
+    cdef uint8 get_label(self, intp example_index, intp label_index)
+
+
+cdef class SparseLabelMatrix(LabelMatrix):
+
+    # Attributes:
+
+    cdef BinaryDokMatrix* dok_matrix
+
+    # Functions:
+
+    cdef uint8 get_label(self, intp example_index, intp label_index)
 
 
 cdef class RefinementSearch:
