@@ -1,3 +1,8 @@
+"""
+@author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides classes that store the predictions of rules, as well as corresponding quality scores.
+"""
 from boomer.common._arrays cimport intp, float64
 
 
