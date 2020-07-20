@@ -14,8 +14,9 @@ cdef class HeadRefinement:
     A base class for all classes that allow to find the best single- or multi-label head for a rule.
     """
 
-    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, intp[::1] label_indices,
-                                  RefinementSearch refinement_search, bint uncovered, bint accumulated):
+    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
+                                  intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
+                                  bint accumulated):
         """
         Finds and returns the best head for a rule given the predictions that are provided by a `RefinementSearch`.
 
@@ -25,9 +26,10 @@ cdef class HeadRefinement:
         :param best_head:           A pointer to an instance of the C++ class `HeadCandidate` that corresponds to the
                                     best rule known so far (as found in the previous or current refinement iteration) or
                                     NULL, if no such rule is available yet. The new head must be better than this one,
-                                    otherwise it is discarded. If the new head is better, this `HeadCandidate` will be
-                                    modified accordingly instead of creating a new instance to avoid unnecessary memory
-                                    allocations
+                                    otherwise it is discarded
+        :param recyclable_head:     A pointer to an instance of the C++ class `HeadCandidate` that may be modified
+                                    instead of creating a new instance to avoid unnecessary memory allocations or NULL,
+                                    if no such instance is available
         :param label_indices:       An array of dtype int, shape `(num_labels)`, representing the indices of the labels
                                     for which the head may predict or None, if the head may predict for all labels
         :param refinement_search:   The `RefinementSearch` that should be used
@@ -69,15 +71,15 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     Allows to find the best single-label head that predicts for a single label.
     """
 
-    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, intp[::1] label_indices,
-                                  RefinementSearch refinement_search, bint uncovered, bint accumulated):
+    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
+                                  intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
+                                  bint accumulated):
         cdef LabelWisePrediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         cdef intp num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
         cdef intp best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
-        cdef HeadCandidate* candidate
         cdef intp* candidate_label_indices
         cdef float64* candidate_predicted_scores
         cdef float64 quality_score
@@ -91,21 +93,21 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
                 best_quality_score = quality_score
                 best_c = c
 
-        if best_head == NULL:
-            # Create a new `HeadCandidate` and return it...
-            candidate_label_indices = <intp*>malloc(sizeof(intp))
-            candidate_label_indices[0] = get_index(best_c, label_indices)
-            candidate_predicted_scores = <float64*>malloc(sizeof(float64))
-            candidate_predicted_scores[0] = predicted_scores[best_c]
-            candidate = new HeadCandidate(1, candidate_label_indices, candidate_predicted_scores, best_quality_score)
-            return candidate
-        else:
-            # The quality score must be better than that of `best_head`...
-            if best_quality_score < best_head.qualityScore_:
-                best_head.labelIndices_[0] = get_index(best_c, label_indices)
-                best_head.predictedScores_[0] = predicted_scores[best_c]
-                best_head.qualityScore_ = best_quality_score
-                return best_head
+        # The quality score must be better than that of `best_head`...
+        if best_head == NULL or best_quality_score < best_head.qualityScore_:
+            if recyclable_head == NULL:
+                # Create a new `HeadCandidate` and return it...
+                candidate_label_indices = <intp*>malloc(sizeof(intp))
+                candidate_label_indices[0] = get_index(best_c, label_indices)
+                candidate_predicted_scores = <float64*>malloc(sizeof(float64))
+                candidate_predicted_scores[0] = predicted_scores[best_c]
+                return new HeadCandidate(1, candidate_label_indices, candidate_predicted_scores, best_quality_score)
+            else:
+                # Modify the `recyclable_head` and return it...
+                recyclable_head.labelIndices_[0] = get_index(best_c, label_indices)
+                recyclable_head.predictedScores_[0] = predicted_scores[best_c]
+                recyclable_head.qualityScore_ = best_quality_score
+                return recyclable_head
 
         # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
         return NULL

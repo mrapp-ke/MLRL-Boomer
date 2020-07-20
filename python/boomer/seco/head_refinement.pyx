@@ -10,13 +10,13 @@ cdef class PartialHeadRefinement(HeadRefinement):
     def __cinit__(self, LiftFunction lift):
         self.lift = lift
 
-    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, intp[::1] label_indices,
-                                  RefinementSearch refinement_search, bint uncovered, bint accumulated):
+    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
+                                  intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
+                                  bint accumulated):
         cdef LabelWisePrediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
         cdef intp num_predictions
-        cdef HeadCandidate* candidate
         cdef float64* candidate_predicted_scores
         cdef intp* candidate_label_indices
         cdef intp[::1] sorted_indices
@@ -60,44 +60,44 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
             best_head_candidate_length = label_indices.shape[0]
 
-        if best_head == NULL:
-            # Create a new `HeadCandidate` and return it...
-            candidate_label_indices = <intp*>malloc(best_head_candidate_length * sizeof(intp))
-            candidate_predicted_scores = <float64*>malloc(best_head_candidate_length * sizeof(float64))
+        if best_head == NULL or best_quality_score < best_head.qualityScore_:
+            if recyclable_head == NULL:
+                # Create a new `HeadCandidate` and return it...
+                candidate_label_indices = <intp*>malloc(best_head_candidate_length * sizeof(intp))
+                candidate_predicted_scores = <float64*>malloc(best_head_candidate_length * sizeof(float64))
 
-            if label_indices is None:
-                for c in range(0, best_head_candidate_length):
-                    candidate_label_indices[c] = get_index(sorted_indices[c], label_indices)
-                    candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
+                if label_indices is None:
+                    for c in range(0, best_head_candidate_length):
+                        candidate_label_indices[c] = get_index(sorted_indices[c], label_indices)
+                        candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
+                else:
+                    for c in range(0, best_head_candidate_length):
+                        candidate_label_indices[c] = label_indices[c]
+                        candidate_predicted_scores[c] = predicted_scores[c]
+
+                return new HeadCandidate(best_head_candidate_length, candidate_label_indices,
+                                         candidate_predicted_scores, best_quality_score)
             else:
-                for c in range(0, best_head_candidate_length):
-                    candidate_label_indices[c] = label_indices[c]
-                    candidate_predicted_scores[c] = predicted_scores[c]
+                if recyclable_head.numPredictions_ != best_head_candidate_length:
+                    recyclable_head.numPredictions_ = best_head_candidate_length
+                    recyclable_head.labelIndices_ = <intp*>malloc(best_head_candidate_length * sizeof(intp))
+                    recyclable_head.predictedScores_ = <float64*>malloc(best_head_candidate_length * sizeof(float64))
 
-            candidate = new HeadCandidate(best_head_candidate_length, candidate_label_indices,
-                                          candidate_predicted_scores, best_quality_score)
-            return candidate
-        elif best_quality_score < best_head.qualityScore_:
-            if best_head.numPredictions_ != best_head_candidate_length:
-                best_head.numPredictions_ = best_head_candidate_length
-                best_head.labelIndices_ = <intp*>malloc(best_head_candidate_length * sizeof(intp))
-                best_head.predictedScores_ = <float64*>malloc(best_head_candidate_length * sizeof(float64))
+                # Modify the `recyclable_head` and return it...
+                if label_indices is None:
+                    for c in range(best_head_candidate_length):
+                        recyclable_head.labelIndices_[c] = get_index(sorted_indices[c], label_indices)
+                        recyclable_head.predictedScores_[c] = predicted_scores[sorted_indices[c]]
+                else:
+                    for c in range(best_head_candidate_length):
+                        recyclable_head.labelIndices_[c] = label_indices[c]
+                        recyclable_head.predictedScores_[c] = predicted_scores[c]
 
-            # Modify the `best_head` and return it...
-            if label_indices is None:
-                for c in range(best_head_candidate_length):
-                    best_head.labelIndices_[c] = get_index(sorted_indices[c], label_indices)
-                    best_head.predictedScores_[c] = predicted_scores[sorted_indices[c]]
-            else:
-                for c in range(best_head_candidate_length):
-                    best_head.labelIndices_[c] = label_indices[c]
-                    best_head.predictedScores_[c] = predicted_scores[c]
+                recyclable_head.qualityScore_ = best_quality_score
+                return recyclable_head
 
-            best_head.qualityScore_ = best_quality_score
-            return best_head
-        else:
-            # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
-            return NULL
+        # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
+        return NULL
 
     cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
         cdef Prediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
