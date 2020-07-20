@@ -17,10 +17,12 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     `LabelWiseStatistics`.
     """
 
-    def __cinit__(self, const intp[::1] label_indices, const float64[:, ::1] gradients,
-                  const float64[::1] total_sums_of_gradients, const float64[:, ::1] hessians,
-                  const float64[::1] total_sums_of_hessians):
+    def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation, const intp[::1] label_indices,
+                  const float64[:, ::1] gradients, const float64[::1] total_sums_of_gradients,
+                  const float64[:, ::1] hessians, const float64[::1] total_sums_of_hessians):
         """
+        :param rule_evaluation:         The `RuleEvaluation` to be used for calculating the predictions, as well as
+                                        corresponding quality scores, of rules
         :param label_indices:           An array of dtype int, shape `(num_considered_labels)`, representing the indices
                                         of the labels that should be considered by the search or None, if all labels
                                         should be considered
@@ -35,6 +37,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                         Hessians of all examples, which should be considered by the search, for each
                                         label
         """
+        self.rule_evaluation = rule_evaluation
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
@@ -119,11 +122,14 @@ cdef class LabelWiseStatistics(GradientStatistics):
     Allows to store gradients and hessians that are computed according to a loss function that is applied label-wise.
     """
 
-    def __cinit__(self, LabelWiseLossFunction loss_function):
+    def __cinit__(self, LabelWiseLossFunction loss_function, LabelWiseRuleEvaluation rule_evaluation):
         """
-        :param loss_function: The loss function to be minimized
+        :param loss_function:   The loss function to be minimized
+        :param rule_evaluation: The `RuleEvaluation` to be used for calculating the predictions, as well as
+                                corresponding quality scores, of rules
         """
         self.loss_function = loss_function
+        self.rule_evaluation = rule_evaluation
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
         # Class members
@@ -210,13 +216,14 @@ cdef class LabelWiseStatistics(GradientStatistics):
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         # Class members
+        cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef float64[:, ::1] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[:, ::1] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
 
         # Instantiate and return a new object of the class `LabelWiseRefinementSearch`...
-        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, label_indices, gradients,
+        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, rule_evaluation, label_indices, gradients,
                                                  total_sums_of_gradients, hessians, total_sums_of_hessians)
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
