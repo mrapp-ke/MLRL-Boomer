@@ -6,10 +6,11 @@
 Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.differentiable_losses import DifferentiableLoss
-from boomer.boosting.example_wise_losses import ExampleWiseLoss, ExampleWiseLogisticLossFunction
+from boomer.boosting.example_wise_losses import ExampleWiseLoss
 from boomer.boosting.head_refinement import FullHeadRefinement
-from boomer.boosting.label_wise_losses import LabelWiseDifferentiableLoss, LabelWiseSquaredErrorLossFunction, \
-    LabelWiseLogisticLossFunction
+from boomer.boosting.label_wise_losses import LabelWiseDifferentiableLoss
+from boomer.boosting.losses import LabelWiseLogisticLossFunction, LabelWiseSquaredErrorLossFunction, \
+    ExampleWiseLogisticLossFunction
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.losses import Loss

@@ -4,22 +4,7 @@ from boomer.common.losses cimport RefinementSearch, NonDecomposableRefinementSea
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
-
-
-cdef class ExampleWiseLossFunction:
-
-    # Functions:
-
-    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64* predicted_scores, float64[::1] gradients, float64[::1] hessians)
-
-
-cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
-
-    # Functions:
-
-    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64* predicted_scores, float64[::1] gradients, float64[::1] hessians)
+from boomer.boosting.losses cimport ExampleWiseLossFunction
 
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):

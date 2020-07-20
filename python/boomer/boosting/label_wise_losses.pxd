@@ -4,32 +4,9 @@ from boomer.common.losses cimport RefinementSearch, DecomposableRefinementSearch
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.boosting.differentiable_losses cimport DifferentiableLoss
+from boomer.boosting.losses cimport LabelWiseLossFunction
 
 from libcpp.pair cimport pair
-
-
-cdef class LabelWiseLossFunction:
-
-    # Functions:
-
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score)
-
-
-cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
-
-    # Functions:
-
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score)
-
-
-cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
-
-    # Functions:
-
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score)
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
