@@ -181,7 +181,7 @@ cdef class Statistics:
         """
         pass
 
-    cdef void update_covered_example(self, intp statistic_index, uint32 weight, bint remove):
+    cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         """
         TODO
 
