@@ -32,8 +32,23 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         self.sums_of_hessians = sums_of_hessians
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
-        # TODO
-        pass
+        # Class members
+        cdef const float64[:, ::1] gradients = self.gradients
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef const float64[:, ::1] hessians = self.hessians
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef const intp[::1] label_indices = self.label_indices
+        # The number of labels considered by the current search
+        cdef intp num_labels = sums_of_gradients.shape[0]
+        # Temporary variables
+        cdef intp c, l
+
+        # For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight)
+        # to the current sum of gradients and Hessians...
+        for c in range(num_labels):
+            l = get_index(c, label_indices)
+            sums_of_gradients[c] += (weight * gradients[statistic_index, l])
+            sums_of_hessians[c] += (weight * hessians[statistic_index, l])
 
     cdef void reset_search(self):
         # TODO
