@@ -41,6 +41,8 @@ cdef class SparseLabelMatrix(LabelMatrix):
 
 cdef class RefinementSearch:
 
+    # Functions:
+
     cdef void update_search(self, intp example_index, uint32 weight)
 
     cdef void reset_search(self)
@@ -51,6 +53,8 @@ cdef class RefinementSearch:
 
 
 cdef class DecomposableRefinementSearch(RefinementSearch):
+
+    # Functions:
 
     cdef void update_search(self, intp example_index, uint32 weight)
 
@@ -73,6 +77,8 @@ cdef class NonDecomposableRefinementSearch(RefinementSearch):
 
 
 cdef class Statistics:
+
+    # Functions:
 
     cdef void reset_examples(self)
 
