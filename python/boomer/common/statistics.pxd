@@ -82,7 +82,7 @@ cdef class Statistics:
 
     cdef void reset_examples(self)
 
-    cdef void add_sampled_example(self, intp statistic_index, uint32 weight)
+    cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight)
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove)
 
