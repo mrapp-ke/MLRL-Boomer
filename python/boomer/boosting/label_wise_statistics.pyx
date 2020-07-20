@@ -9,6 +9,38 @@ from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from libcpp.pair cimport pair
 
 
+cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
+    """
+    Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by
+    `LabelWiseStatistics`.
+    """
+
+    def __cinit__(self, const intp[::1] label_indices, const float64[:, ::1] gradients,
+                  const float64[::1] total_sums_of_gradients, const float64[:, ::1] hessians,
+                  const float64[::1] total_sums_of_hessians):
+        self.label_indices = label_indices
+        self.gradients = gradients
+        self.total_sums_of_gradients = total_sums_of_gradients
+        self.hessians = hessians
+        self.total_sums_of_hessians = total_sums_of_hessians
+
+    cdef void update_search(self, intp statistic_index, uint32 weight):
+        # TODO
+        pass
+
+    cdef void reset_search(self):
+        # TODO
+        pass
+
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        # TODO
+        pass
+
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+        # TODO
+        pass
+
+
 cdef class LabelWiseStatistics(GradientStatistics):
     """
     Allows to store gradients and hessians that are computed according to a loss function that is applied label-wise.
