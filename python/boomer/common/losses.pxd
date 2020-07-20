@@ -3,7 +3,7 @@ from boomer.common._sparse cimport BinaryDokMatrix
 from boomer.common.head_refinement cimport HeadCandidate
 
 
-cdef extern from "cpp/losses.h" namespace "losses":
+cdef extern from "cpp/rule_evaluation.h" namespace "rule_evaluation":
 
     cdef cppclass DefaultPrediction:
 
