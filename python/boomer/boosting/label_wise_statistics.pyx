@@ -6,6 +6,8 @@ applied label-wise.
 """
 from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 
+from libc.stdlib cimport malloc
+
 from libcpp.pair cimport pair
 
 
@@ -47,6 +49,13 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
+        cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef float64* quality_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_labels, predicted_scores, quality_scores, 0)
+        self.prediction = prediction
+
+    def __dealloc__(self):
+        del self.prediction
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
         # Class members
