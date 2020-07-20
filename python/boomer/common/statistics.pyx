@@ -234,6 +234,21 @@ cdef class Statistics:
     basis for learning a new rule or refining an existing one.
     """
 
+    cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
+        """
+        Computes the initial statistics with respect to the predictions of the default rule and the ground truth labels.
+
+        This function must be called exactly once prior to the invocation of any other function provided by this class.
+
+        As this function is guaranteed to be invoked at first, it may be used to initialize any internal state, i.e., to
+        compute and store global information that is required by the other function that will be called later.
+
+        :param label_matrix:        A `LabelMatrix` that provides random access to the labels of the training examples
+        :param default_prediction:  A pointer to an object of type `DefaultPrediction`, representing the predictions of
+                                    the default rule
+        """
+        pass
+
     cdef void reset_statistics(self):
         """
         Resets the statistics which should be considered in the following for learning a new rule or refining an

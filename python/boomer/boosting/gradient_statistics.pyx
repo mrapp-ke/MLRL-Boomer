@@ -11,6 +11,9 @@ cdef class GradientStatistics(Statistics):
     A base class for all classes that store gradients and Hessians.
     """
 
+    cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
+        pass
+
     cdef void reset_statistics(self):
         pass
 

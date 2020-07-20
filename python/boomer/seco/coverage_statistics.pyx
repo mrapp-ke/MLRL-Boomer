@@ -11,6 +11,9 @@ cdef class CoverageStatistics(Statistics):
     A base class for all classes that store the elements of confusion matrices.
     """
 
+    cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
+        pass
+
     cdef void reset_statistics(self):
         pass
 
