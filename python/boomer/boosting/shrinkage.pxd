@@ -1,12 +1,13 @@
 from boomer.common._arrays cimport float64
 from boomer.common.head_refinement cimport HeadCandidate
+from boomer.common.post_processing cimport PostProcessor
 
 
-cdef class Shrinkage:
+cdef class Shrinkage(PostProcessor):
 
     # Functions:
 
-    cdef void apply_shrinkage(self, HeadCandidate* head)
+    cdef void post_process(self, HeadCandidate* head)
 
 
 cdef class ConstantShrinkage(Shrinkage):
@@ -17,4 +18,4 @@ cdef class ConstantShrinkage(Shrinkage):
 
     # Functions:
 
-    cdef void apply_shrinkage(self, HeadCandidate* head)
+    cdef void post_process(self, HeadCandidate* head)

@@ -5,7 +5,7 @@ from boomer.common.rules cimport ModelBuilder
 from boomer.common.losses cimport LabelMatrix, Loss
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
-from boomer.common.shrinkage cimport Shrinkage
+from boomer.common.post_processing cimport PostProcessor
 from boomer.common.head_refinement cimport HeadRefinement
 
 from libcpp.unordered_map cimport unordered_map
@@ -79,7 +79,7 @@ cdef class RuleInduction:
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
+                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder)
 
 
@@ -96,5 +96,5 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, Shrinkage shrinkage, intp min_coverage, intp max_conditions,
+                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder)

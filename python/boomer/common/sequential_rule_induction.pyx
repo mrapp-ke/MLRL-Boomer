@@ -16,8 +16,8 @@ cdef class SequentialRuleInduction:
 
     def __cinit__(self, RuleInduction rule_induction, HeadRefinement head_refinement, Loss loss, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                  FeatureSubSampling feature_sub_sampling, Pruning pruning, Shrinkage shrinkage, intp min_coverage,
-                  intp max_conditions, intp max_head_refinements):
+                  FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                  intp min_coverage, intp max_conditions, intp max_head_refinements):
         """
         :param rule_induction:          The algorithm that should be used to induce rules
         :param head_refinement:         The strategy that should be used to find the heads of rules
@@ -33,8 +33,8 @@ cdef class SequentialRuleInduction:
                                         classification rule is refined or None, if no sub-sampling should be used
         :param pruning:                 The strategy that should be used for pruning rules or None, if no pruning should
                                         be used
-        :param shrinkage:               The strategy that should be used for shrinking the weights of rule, or None if
-                                        no shrinkage should be used
+        :param post_processor:          The post-processor that should be used to post-process the rule once it has been
+                                        learned or None, if no post-processing should be used
         :param min_coverage:            The minimum number of training examples that must be covered by a rule. Must be
                                         at least 1
         :param max_conditions:          The maximum number of conditions to be included in a rule's body. Must be at
@@ -51,7 +51,7 @@ cdef class SequentialRuleInduction:
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
         self.pruning = pruning
-        self.shrinkage = shrinkage
+        self.post_processor = post_processor
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
@@ -79,7 +79,7 @@ cdef class SequentialRuleInduction:
         cdef InstanceSubSampling instance_sub_sampling = self.instance_sub_sampling
         cdef FeatureSubSampling feature_sub_sampling = self.feature_sub_sampling
         cdef Pruning pruning = self.pruning
-        cdef Shrinkage shrinkage = self.shrinkage
+        cdef PostProcessor post_processor = self.post_processor
         cdef intp min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
         cdef intp max_head_refinements = self.max_head_refinements
@@ -98,8 +98,8 @@ cdef class SequentialRuleInduction:
             # Induce a new rule...
             success = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
                                                  loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                                 pruning, shrinkage, min_coverage, max_conditions, max_head_refinements,
-                                                 rng, model_builder)
+                                                 pruning, post_processor, min_coverage, max_conditions,
+                                                 max_head_refinements, rng, model_builder)
 
             if not success:
                 break
