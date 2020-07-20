@@ -172,7 +172,7 @@ cdef class Statistics:
         """
         pass
 
-    cdef void add_sampled_example(self, intp statistic_index, uint32 weight):
+    cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
         """
         TODO
 
