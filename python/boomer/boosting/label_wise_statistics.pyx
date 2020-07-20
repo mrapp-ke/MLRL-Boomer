@@ -136,8 +136,15 @@ cdef class LabelWiseStatistics(GradientStatistics):
             total_sums_of_hessians[c] += (signed_weight * hessians[statistic_index, c])
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
-        # TODO
-        pass
+        # Class members
+        cdef float64[:, ::1] gradients = self.gradients
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[:, ::1] hessians = self.hessians
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+
+        # Instantiate and return a new object of the class `LabelWiseRefinementSearch`...
+        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, label_indices, gradients,
+                                                 total_sums_of_gradients, hessians, total_sums_of_hessians)
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
