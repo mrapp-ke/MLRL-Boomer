@@ -86,11 +86,11 @@ cdef class RefinementSearch:
     statistics.
     """
 
-    cdef void update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp statistic_index, uint32 weight):
         """
         TODO
 
-        :param example_index:
+        :param statistic_index:
         :param weight:
         """
         pass
@@ -127,7 +127,7 @@ cdef class DecomposableRefinementSearch(RefinementSearch):
     predictions.
     """
 
-    cdef void update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp statistic_index, uint32 weight):
         pass
 
     cdef void reset_search(self):
@@ -148,7 +148,7 @@ cdef class NonDecomposableRefinementSearch(RefinementSearch):
     predictions.
     """
 
-    cdef void update_search(self, intp example_index, uint32 weight):
+    cdef void update_search(self, intp statistic_index, uint32 weight):
         pass
 
     cdef void reset_search(self):
@@ -172,20 +172,20 @@ cdef class Statistics:
         """
         pass
 
-    cdef void add_sampled_example(self, intp example_index, uint32 weight):
+    cdef void add_sampled_example(self, intp statistic_index, uint32 weight):
         """
         TODO
 
-        :param example_index:
+        :param statistic_index:
         :param weight:
         """
         pass
 
-    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
+    cdef void update_covered_example(self, intp statistic_index, uint32 weight, bint remove):
         """
         TODO
 
-        :param example_index:
+        :param statistic_index:
         :param weight:
         :param remove:
         """
@@ -200,11 +200,11 @@ cdef class Statistics:
         """
         pass
 
-    cdef void apply_prediction(self, intp example_index, intp[::1] label_indices, HeadCandidate* head):
+    cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         """
         TODO
 
-        :param example_index:
+        :param statistic_index:
         :param label_indices:
         :param head:
         """
