@@ -12,8 +12,8 @@ from libc.math cimport pow
 
 cdef class LabelWiseRuleEvaluation:
     """
-    Allows to calculate predictions, as well as corresponding quality scores, that minimize a loss function that is
-    applied label-wise.
+    Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a
+    loss function that is applied label-wise.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):
