@@ -36,12 +36,14 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         cdef float64[::1] sums_of_gradients = array_float64(num_gradients)
         sums_of_gradients[:] = 0
         self.sums_of_gradients = sums_of_gradients
+        self.accumulated_sums_of_gradients = None
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
         cdef intp num_hessians = __triangular_number(num_gradients)
         cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
+        self.accumulated_sums_of_hessians = None
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
         # Class members
@@ -70,8 +72,43 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
                 i += 1
 
     cdef void reset_search(self):
-        # TODO
-        pass
+        # Class members
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        # The number of gradients
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        # The number of hessians
+        cdef intp num_hessians = sums_of_hessians.shape[0]
+        # Temporary variables
+        cdef intp c
+
+        # Update the arrays that store the accumulated sums of gradients and hessians...
+        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
+        cdef float64[::1] accumulated_sums_of_hessians
+
+        if accumulated_sums_of_gradients is None:
+            accumulated_sums_of_gradients = array_float64(num_gradients)
+            self.accumulated_sums_of_gradients = accumulated_sums_of_gradients
+            accumulated_sums_of_hessians = array_float64(num_hessians)
+            self.accumulated_sums_of_hessians = accumulated_sums_of_hessians
+
+            for c in range(num_gradients):
+                accumulated_sums_of_gradients[c] = sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+
+            for c in range(num_hessians):
+                accumulated_sums_of_hessians[c] = sums_of_hessians[c]
+                sums_of_hessians[c] = 0
+        else:
+            accumulated_sums_of_hessians = self.accumulated_sums_of_hessians
+
+            for c in range(num_gradients):
+                accumulated_sums_of_gradients[c] += sums_of_gradients[c]
+                sums_of_gradients[c] = 0
+
+            for c in range(num_hessians):
+                accumulated_sums_of_hessians[c] += sums_of_hessians[c]
+                sums_of_hessians[c] = 0
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # TODO
