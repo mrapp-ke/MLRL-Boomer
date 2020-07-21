@@ -104,8 +104,29 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         pass
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
-        # TODO
-        pass
+        # Class members
+        cdef ExampleWiseLossFunction loss_function = self.loss_function
+        cdef LabelMatrix label_matrix = self.label_matrix
+        cdef float64[:, ::1] current_scores = self.current_scores
+        cdef float64[:, ::1] gradients = self.gradients
+        cdef float64[:, ::1] hessians = self.hessians
+        # The number of predicted labels
+        cdef intp num_predictions = head.numPredictions_
+        # The predicted scores
+        cdef float64* predicted_scores = head.predictedScores_
+        # Temporary variables
+        cdef intp c, l
+
+        # Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
+        # example at the given index...
+        for c in range(num_predictions):
+            l = get_index(c, label_indices)
+            current_scores[statistic_index, l] += predicted_scores[c]
+
+        # Update the gradients and Hessians for the example at the given index...
+        loss_function.calculate_gradients_and_hessians(label_matrix, statistic_index,
+                                                       &current_scores[statistic_index, :][0],
+                                                       gradients[statistic_index, :], hessians[statistic_index, :])
 
 
 cdef inline intp __triangular_number(intp n):
