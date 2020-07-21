@@ -112,7 +112,7 @@ cdef class LabelWiseRuleEvaluation:
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of labels to predict for
-        cdef intp num_labels = sums_of_gradients.shape[0]
+        cdef intp num_labels = prediction.numPredictions_
         # The array that should be used to store the predicted scores
         cdef float64* predicted_scores = prediction.predictedScores_
         # The array that should be used to store the quality scores
