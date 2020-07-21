@@ -5,6 +5,8 @@ Provides commonly used functions that implement mathematical operations.
 """
 from boomer.common._arrays cimport intp, float64
 
+from libc.math cimport pow
+
 
 cdef inline float64 l2_norm_pow(float64* a, intp n):
     """
