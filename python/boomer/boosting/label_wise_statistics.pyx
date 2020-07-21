@@ -130,12 +130,12 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
 cdef class LabelWiseStatistics(GradientStatistics):
     """
-    Allows to store gradients and hessians that are calculated according to a loss function that is applied label-wise.
+    Allows to store gradients and Hessians that are calculated according to a loss function that is applied label-wise.
     """
 
     def __cinit__(self, LabelWiseLossFunction loss_function, LabelWiseRuleEvaluation rule_evaluation):
         """
-        :param loss_function:   The loss function to be minimized
+        :param loss_function:   The loss function to be used for calculating gradients and Hessians
         :param rule_evaluation: The `RuleEvaluation` to be used for calculating the predictions, as well as
                                 corresponding quality scores, of rules
         """
