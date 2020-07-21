@@ -4,11 +4,14 @@ from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.gradient_statistics cimport GradientStatistics
 from boomer.boosting.losses cimport ExampleWiseLossFunction
+from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation
 
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
     # Attributes:
+
+    cdef ExampleWiseRuleEvaluation rule_evaluation
 
     cdef const intp[::1] label_indices
 
@@ -28,6 +31,8 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
     cdef float64[::1] accumulated_sums_of_hessians
 
+    cdef LabelWisePrediction* prediction
+
     # Functions:
 
     cdef void update_search(self, intp statistic_index, uint32 weight)
@@ -44,6 +49,8 @@ cdef class ExampleWiseStatistics(GradientStatistics):
     # Attributes:
 
     cdef ExampleWiseLossFunction loss_function
+
+    cdef ExampleWiseRuleEvaluation rule_evaluation
 
     cdef LabelMatrix label_matrix
 

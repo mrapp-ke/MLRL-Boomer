@@ -4,8 +4,9 @@
 Provides classes that allow to calculate the predictions of rules, as well as corresponding quality scores, such that
 they minimize a loss function that is applied example-wise.
 """
-from boomer.common._arrays cimport intp, array_float64, fortran_matrix_float64
+from boomer.common._arrays cimport array_float64, fortran_matrix_float64, get_index
 from boomer.boosting._math cimport triangular_number
+from boomer.boosting.differentiable_losses cimport _l2_norm_pow
 
 from libc.stdlib cimport malloc, free
 
@@ -67,6 +68,107 @@ cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
         # Calculate the scores to be predicted by the default rule by solving the system of linear equations...
         cdef float64* predicted_scores = __dsysv_float64(sums_of_hessians, sums_of_gradients, l2_regularization_weight)
         return new DefaultPrediction(num_gradients, predicted_scores)
+
+
+cdef class ExampleWiseRuleEvaluation:
+    """
+    Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a
+    loss function that is applied example-wise.
+    """
+
+    def __cinit__(self, float64 l2_regularization_weight):
+        """
+        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
+                                         to be predicted by rules
+        """
+        self.l2_regularization_weight = l2_regularization_weight
+
+    cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
+                                              const float64[::1] total_sums_of_gradients,
+                                              const float64[::1] sums_of_gradients,
+                                              const float64[::1] total_sums_of_hessians,
+                                              const float64[::1] sums_of_hessians, bint uncovered,
+                                              LabelWisePrediction* prediction):
+        """
+        Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
+        label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality scores
+        are stored in a given object of type `LabelWisePrediction`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover the difference between the sums of gradients
+        and Hessians that are stored in the arrays `total_sums_of_gradients` and `sums_of_gradients` and
+        `total_sums_of_hessians` and `sums_of_hessians`, respectively.
+
+        :param label_indices:           An array of dtype `intp`, shape `(num_gradients)`, representing the indices of
+                                        the labels for which the rule should predict or None, if the rule should predict
+                                        for all labels
+        :param total_sums_of_gradients: An array of dtype `float64`, shape `(num_gradients), representing the total sums
+                                        of gradients for individual labels
+        :param sums_of_gradients:       An array of dtype `float64`, shape `(num_gradients)`, representing the sums of
+                                        gradients for individual labels
+        :param total_sums_of_hessians:  An array of dtype `float64`, shape
+                                        `((num_gradients + (num_gradients + 1)) // 2)`, representing the total sums of
+                                        Hessians for individual labels
+        :param sums_of_hessians:        An array of dtype `float64`, shape
+                                        `((num_gradients + (num_gradients + 1)) // 2)`, representing the sums of
+                                        Hessians for individual labels
+        :param uncovered:               0, if the rule covers the sums of gradient and Hessians that are stored in the
+                                        array `sums_of_gradients` and `sums_of_hessians`, 1, if the rule covers the
+                                        difference between the sums of gradients and Hessians that are stored in the
+                                        arrays `total_sums_of_gradients` and `sums_of_gradients` and
+                                        `total_sums_of_hessians` and `sums_of_hessians`, respectively.
+        :param prediction:              A pointer to an object of type `LabelWisePrediction` that should be used to
+                                        store the predicted scores and quality scores
+        """
+        # Class members
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
+        # The number of gradients considered by the current search
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        # The number of elements in the arrays `predicted_scores` and `quality_scores`
+        cdef intp num_predictions = prediction.numPredictions_
+        # The array that should be used to store the predicted scores
+        cdef float64* predicted_scores = prediction.predictedScores_
+        # The array that should be used to store the quality scores
+        cdef float64* quality_scores = prediction.qualityScores_
+        # The overall quality score, i.e. the sum of the quality scores for each label plus the L2 regularization term
+        cdef float64 overall_quality_score = 0
+        # Temporary variables
+        cdef float64 sum_of_gradients, sum_of_hessians, score, score_pow
+        cdef intp c, c2, l, l2
+
+        # To avoid array recreation each time this function is called, the arrays for storing predictions and quality
+        # scores are only (re-)initialized if they have not been initialized yet, or if they have the wrong size.
+        if predicted_scores == NULL or num_predictions != num_gradients:
+            predicted_scores = <float64*>malloc(num_gradients * sizeof(float64))
+            prediction.predictedScores_ = predicted_scores
+            quality_scores = <float64*>malloc(num_gradients * sizeof(float64))
+            prediction.qualityScores_ = quality_scores
+
+        # For each label, calculate the score to be predicted, as well as a quality score...
+        for c in range(num_gradients):
+            sum_of_gradients = sums_of_gradients[c]
+            c2 = triangular_number(c + 1) - 1
+            sum_of_hessians = sums_of_hessians[c2]
+
+            if uncovered:
+                l = get_index(c, label_indices)
+                sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
+                l2 = triangular_number(l + 1) - 1
+                sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
+
+            # Calculate score to be predicted for the current label...
+            score = sum_of_hessians + l2_regularization_weight
+            score = -sum_of_gradients / score if score != 0 else 0
+            predicted_scores[c] = score
+
+            # Calculate the quality score for the current label...
+            score_pow = pow(score, 2)
+            score = (sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
+            quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
+            overall_quality_score += score
+
+        # Add the L2 regularization term to the overall quality score...
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_gradients)
+        prediction.overallQualityScore_ = overall_quality_score
 
 
 cdef inline float64* __dsysv_float64(float64[::1] coefficients, float64[::1] inverted_ordinates,
