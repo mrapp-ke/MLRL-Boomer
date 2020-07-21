@@ -4,7 +4,51 @@
 Provides classes that allow to store gradients and Hessians that are calculated according to a (non-decomposable) loss
 function that is applied example-wise.
 """
-from boomer.common._arrays cimport array_float64, c_matrix_float64
+from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
+
+
+cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
+    """
+    TODO
+    """
+
+    def __cinit__(self, const intp[::1] label_indices, const float64[:, ::1] gradients,
+                  const float64[::1] total_sums_of_gradients, const float64[:, ::1] hessians,
+                  const float64[::1] total_sums_of_hessians):
+        """
+        :param label_indices:           An array of dtype int, shape `(num_considered_labels)`, representing the indices
+                                        of the labels that should be considered by the search or None, if all labels
+                                        should be considered
+        :param gradients:               An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                        gradient for each example
+        :param total_sums_of_gradients: An array of dtype float, shape `(num_labels)`, representing the sum of the
+                                        gradients of all examples, which should be considered by the search
+        :param hessians:                An array of dtype float, shape `(num_examples, num_labels)`, representing the
+                                        Hessian for each example
+        :param total_sums_of_hessians:  An array of dtype float, shape `(num_labels)`, representing the sum of the
+                                        Hessians of all examples, which should be considered by the search
+        """
+        self.label_indices = label_indices
+        self.gradients = gradients
+        self.total_sums_of_gradients = total_sums_of_gradients
+        self.hessians = hessians
+        self.total_sums_of_hessians = total_sums_of_hessians
+
+    cdef void update_search(self, intp statistic_index, uint32 weight):
+        # TODO
+        pass
+
+    cdef void reset_search(self):
+        # TODO
+        pass
+
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        # TODO
+        pass
+
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+        # TODO
+        pass
 
 
 cdef class ExampleWiseStatistics(GradientStatistics):
