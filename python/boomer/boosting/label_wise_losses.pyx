@@ -4,7 +4,7 @@
 Provides classes that implement loss functions that are applied label-wise.
 """
 from boomer.common._arrays cimport uint8, array_float64, c_matrix_float64, get_index
-from boomer.boosting.differentiable_losses cimport _l2_norm_pow
+from boomer.boosting._math cimport l2_norm_pow
 
 from libc.stdlib cimport malloc
 from libc.math cimport pow, exp
@@ -156,7 +156,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_labels)
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores, num_labels)
         prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
