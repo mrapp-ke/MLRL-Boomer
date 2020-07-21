@@ -74,9 +74,6 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         total_sums_of_gradients[:] = 0
         total_sums_of_hessians[:] = 0
 
-    cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
-        pass
-
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         pass
 
