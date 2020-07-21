@@ -112,7 +112,7 @@ cdef class LabelWiseRuleEvaluation:
         # Class members
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of labels to predict for
-        cdef intp num_labels = prediction.numPredictions_
+        cdef intp num_predictions = prediction.numPredictions_
         # The array that should be used to store the predicted scores
         cdef float64* predicted_scores = prediction.predictedScores_
         # The array that should be used to store the quality scores
@@ -124,7 +124,7 @@ cdef class LabelWiseRuleEvaluation:
         cdef intp c, l
 
         # For each label, calculate a score to be predicted, as well as a corresponding quality score...
-        for c in range(num_labels):
+        for c in range(num_predictions):
             sum_of_gradients = sums_of_gradients[c]
             sum_of_hessians = sums_of_hessians[c]
 
@@ -145,5 +145,5 @@ cdef class LabelWiseRuleEvaluation:
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_labels)
+        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_predictions)
         prediction.overallQualityScore_ = overall_quality_score
