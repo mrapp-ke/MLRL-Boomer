@@ -9,7 +9,8 @@ from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
     """
-    TODO
+    Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by
+    `ExampleWiseStatistics`.
     """
 
     def __cinit__(self, const intp[::1] label_indices, const float64[:, ::1] gradients,
