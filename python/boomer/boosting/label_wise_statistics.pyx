@@ -1,7 +1,7 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that allow to store gradients and Hessians that are computed according to a loss function that is
+Provides classes that allow to store gradients and Hessians that are calculated according to a loss function that is
 applied label-wise.
 """
 from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
@@ -122,7 +122,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef const float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
 
-        # Compute and return the predictions, as well as corresponding quality scores...
+        # Calculate and return the predictions, as well as corresponding quality scores...
         rule_evaluation.calculate_label_wise_prediction(label_indices, total_sums_of_gradients, sums_of_gradients,
                                                         total_sums_of_hessians, sums_of_hessians, uncovered, prediction)
         return prediction
@@ -130,7 +130,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
 cdef class LabelWiseStatistics(GradientStatistics):
     """
-    Allows to store gradients and hessians that are computed according to a loss function that is applied label-wise.
+    Allows to store gradients and hessians that are calculated according to a loss function that is applied label-wise.
     """
 
     def __cinit__(self, LabelWiseLossFunction loss_function, LabelWiseRuleEvaluation rule_evaluation):
