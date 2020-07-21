@@ -5,7 +5,7 @@ Provides classes that allow to calculate the predictions of rules, as well as co
 they minimize a loss function that is applied label-wise.
 """
 from boomer.common._arrays cimport get_index
-from boomer.boosting.differentiable_losses cimport _l2_norm_pow
+from boomer.boosting._math cimport l2_norm_pow
 
 from libc.stdlib cimport malloc
 from libc.math cimport pow
@@ -145,5 +145,5 @@ cdef class LabelWiseRuleEvaluation:
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_predictions)
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores, num_predictions)
         prediction.overallQualityScore_ = overall_quality_score

@@ -4,8 +4,7 @@
 Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.common._arrays cimport uint8, array_float64, c_matrix_float64, fortran_matrix_float64, get_index
-from boomer.boosting._math cimport triangular_number
-from boomer.boosting.differentiable_losses cimport _l2_norm_pow
+from boomer.boosting._math cimport l2_norm_pow, triangular_number
 
 from libc.math cimport pow, fabs
 from libc.stdlib cimport malloc, free
@@ -183,7 +182,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
             overall_quality_score += score
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_gradients)
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores, num_gradients)
         prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
@@ -234,7 +233,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         overall_quality_score += 0.5 * __ddot_float64(predicted_scores, tmp, num_gradients)
 
         # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * _l2_norm_pow(predicted_scores, num_gradients)
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores, num_gradients)
         prediction.overallQualityScore_ = overall_quality_score
 
         return prediction
