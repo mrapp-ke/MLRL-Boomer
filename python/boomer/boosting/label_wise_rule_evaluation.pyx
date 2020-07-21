@@ -1,8 +1,8 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that allow to calculate predictions, as well as corresponding quality scores, that minimize loss
-functions that are applied label-wise.
+Provides classes that allow to calculate the predictions of rules, as well as corresponding quality scores, such that
+they minimize a loss function that are applied label-wise.
 """
 from boomer.common._arrays cimport get_index
 from boomer.boosting.differentiable_losses cimport _l2_norm_pow
