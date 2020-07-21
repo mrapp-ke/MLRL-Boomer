@@ -4,8 +4,6 @@ from boomer.common.losses cimport Loss, RefinementSearch
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.common.head_refinement cimport HeadCandidate
 
-from libc.math cimport pow
-
 
 cdef class DifferentiableLoss(Loss):
 
