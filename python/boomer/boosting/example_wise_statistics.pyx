@@ -5,6 +5,7 @@ Provides classes that allow to store gradients and Hessians that are calculated 
 function that is applied example-wise.
 """
 from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
+from boomer.boosting._math cimport triangular_number
 
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
@@ -39,7 +40,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         self.accumulated_sums_of_gradients = None
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
-        cdef intp num_hessians = __triangular_number(num_gradients)
+        cdef intp num_hessians = triangular_number(num_gradients)
         cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
@@ -64,7 +65,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         for c in range(num_gradients):
             l = get_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[statistic_index, l])
-            offset = __triangular_number(l)
+            offset = triangular_number(l)
 
             for c2 in range(c + 1):
                 l2 = offset + get_index(c2, label_indices)
@@ -139,7 +140,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         # The number of labels
         cdef intp num_labels = label_matrix.num_labels
         # The number of hessians
-        cdef intp num_hessians = __triangular_number(num_labels)
+        cdef intp num_hessians = triangular_number(num_labels)
         # A matrix that stores the currently predicted scores for each example and label
         cdef float64[:, ::1] current_scores = c_matrix_float64(num_examples, num_labels)
         # A matrix that stores the gradients for each example
@@ -246,13 +247,3 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         loss_function.calculate_gradients_and_hessians(label_matrix, statistic_index,
                                                        &current_scores[statistic_index, :][0],
                                                        gradients[statistic_index, :], hessians[statistic_index, :])
-
-
-cdef inline intp __triangular_number(intp n):
-    """
-    Computes and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
-
-    :param n:   A scalar of dtype `intp`, representing the order of the triangular number
-    :return:    A scalar of dtype `intp`, representing the n-th triangular number
-    """
-    return (n * (n + 1)) // 2

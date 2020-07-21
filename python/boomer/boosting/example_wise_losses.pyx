@@ -4,6 +4,7 @@
 Provides classes that implement loss functions that are applied example-wise.
 """
 from boomer.common._arrays cimport uint8, array_float64, c_matrix_float64, fortran_matrix_float64, get_index
+from boomer.boosting._math cimport triangular_number
 from boomer.boosting.differentiable_losses cimport _l2_norm_pow
 
 from libc.math cimport pow, fabs
@@ -50,7 +51,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         self.accumulated_sums_of_gradients = None
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
-        cdef intp num_hessians = __triangular_number(num_gradients)
+        cdef intp num_hessians = triangular_number(num_gradients)
         cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
@@ -80,7 +81,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         for c in range(num_gradients):
             l = get_index(c, label_indices)
             sums_of_gradients[c] += (weight * gradients[example_index, l])
-            offset = __triangular_number(l)
+            offset = triangular_number(l)
 
             for c2 in range(c + 1):
                 l2 = offset + get_index(c2, label_indices)
@@ -161,13 +162,13 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         # For each label, calculate the score to be predicted, as well as a quality score...
         for c in range(num_gradients):
             sum_of_gradients = sums_of_gradients[c]
-            c2 = __triangular_number(c + 1) - 1
+            c2 = triangular_number(c + 1) - 1
             sum_of_hessians = sums_of_hessians[c2]
 
             if uncovered:
                 l = get_index(c, label_indices)
                 sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
-                l2 = __triangular_number(l + 1) - 1
+                l2 = triangular_number(l + 1) - 1
                 sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
 
             # Calculate score to be predicted for the current label...
@@ -213,7 +214,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
             for c in range(num_gradients):
                 l = get_index(c, label_indices)
                 gradients[c] = total_sums_of_gradients[l] - sums_of_gradients[c]
-                offset = __triangular_number(l)
+                offset = triangular_number(l)
 
                 for c2 in range(c + 1):
                     l2 = offset + get_index(c2, label_indices)
@@ -266,7 +267,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         # The number of labels
         cdef intp num_labels = label_matrix.num_labels
         # The number of hessians
-        cdef intp num_hessians = __triangular_number(num_labels)
+        cdef intp num_hessians = triangular_number(num_labels)
         # A matrix that stores the gradients for each example
         cdef float64[:, ::1] gradients = c_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of gradients
@@ -389,16 +390,6 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
         loss_function.calculate_gradients_and_hessians(label_matrix, example_index,
                                                        &current_scores[example_index, :][0],
                                                        gradients[example_index, :], hessians[example_index, :])
-
-
-cdef inline intp __triangular_number(intp n):
-    """
-    Computes and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
-
-    :param n:   A scalar of dtype `intp`, representing the order of the triangular number
-    :return:    A scalar of dtype `intp`, representing the n-th triangular number
-    """
-    return (n * (n + 1)) // 2
 
 
 cdef inline float64 __ddot_float64(float64* x, float64* y, int n):
