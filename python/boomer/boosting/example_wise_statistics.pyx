@@ -75,12 +75,36 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         total_sums_of_hessians[:] = 0
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
-        pass
+        # Class members
+        cdef float64[:, ::1] gradients = self.gradients
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[:, ::1] hessians = self.hessians
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        # The given weight multiplied by 1 or -1, depending on the argument `remove`
+        cdef float64 signed_weight = -<float64>weight if remove else weight
+        # The number of gradients/Hessians...
+        cdef intp num_elements = gradients.shape[1]
+        # Temporary variables
+        cdef intp c
+
+        # Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
+        # gradients...
+        for c in range(num_elements):
+            total_sums_of_gradients[c] += (signed_weight * gradients[example_index, c])
+
+        # Add the Hessians of the example at the given index (weighted by the given weight) to the total sums of
+        # Hessians...
+        num_elements = hessians.shape[1]
+
+        for c in range(num_elements):
+            total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+        # TODO
         pass
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
+        # TODO
         pass
 
 
