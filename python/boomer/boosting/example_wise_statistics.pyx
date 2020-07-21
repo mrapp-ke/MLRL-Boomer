@@ -32,12 +32,42 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
+        cdef intp num_gradients = gradients.shape[1] if label_indices is None else label_indices.shape[0]
+        cdef float64[::1] sums_of_gradients = array_float64(num_gradients)
+        sums_of_gradients[:] = 0
+        self.sums_of_gradients = sums_of_gradients
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
+        cdef intp num_hessians = __triangular_number(num_gradients)
+        cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
+        sums_of_hessians[:] = 0
+        self.sums_of_hessians = sums_of_hessians
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
-        # TODO
-        pass
+        # Class members
+        cdef const float64[:, ::1] gradients = self.gradients
+        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
+        cdef const float64[:, ::1] hessians = self.hessians
+        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef const intp[::1] label_indices = self.label_indices
+        # The number of gradients considered by the current search
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        # Temporary variables
+        cdef intp i, c, c2, l, l2, offset
+
+        # Add the gradients and Hessians of the example at the given index (weighted by the given weight) to the current
+        # sum of gradients and Hessians...
+        i = 0
+
+        for c in range(num_gradients):
+            l = get_index(c, label_indices)
+            sums_of_gradients[c] += (weight * gradients[statistic_index, l])
+            offset = __triangular_number(l)
+
+            for c2 in range(c + 1):
+                l2 = offset + get_index(c2, label_indices)
+                sums_of_hessians[i] += (weight * hessians[statistic_index, l2])
+                i += 1
 
     cdef void reset_search(self):
         # TODO
