@@ -135,8 +135,20 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         return prediction
 
     cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
-        # TODO
-        pass
+        # Class members
+        cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef Prediction* prediction = <Prediction*>self.prediction
+        cdef const intp[::1] label_indices = self.label_indices
+        cdef const float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef const float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
+
+        # Calculate and return the predictions, as well as an overall quality score...
+        rule_evaluation.calculate_example_wise_prediction(label_indices, total_sums_of_gradients, sums_of_gradients,
+                                                          total_sums_of_hessians, sums_of_hessians, uncovered,
+                                                          prediction)
+        return prediction
 
 
 cdef class ExampleWiseStatistics(GradientStatistics):
