@@ -14,10 +14,12 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
     `ExampleWiseStatistics`.
     """
 
-    def __cinit__(self, const intp[::1] label_indices, const float64[:, ::1] gradients,
-                  const float64[::1] total_sums_of_gradients, const float64[:, ::1] hessians,
-                  const float64[::1] total_sums_of_hessians):
+    def __cinit__(self, ExampleWiseRuleEvaluation rule_evaluation, const intp[::1] label_indices,
+                  const float64[:, ::1] gradients, const float64[::1] total_sums_of_gradients,
+                  const float64[:, ::1] hessians, const float64[::1] total_sums_of_hessians):
         """
+        :param rule_evaluation:         The `RuleEvaluation` to be used for calculating the predictions, as well as
+                                        corresponding quality scores of rules
         :param label_indices:           An array of dtype int, shape `(num_considered_labels)`, representing the indices
                                         of the labels that should be considered by the search or None, if all labels
                                         should be considered
@@ -30,6 +32,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         :param total_sums_of_hessians:  An array of dtype float, shape `(num_labels)`, representing the sum of the
                                         Hessians of all examples, which should be considered by the search
         """
+        self.rule_evaluation = rule_evaluation
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
@@ -45,6 +48,11 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, NULL, NULL, 0)
+        self.prediction = prediction
+
+    def __dealloc__(self):
+        del self.prediction
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
         # Class members
@@ -112,8 +120,19 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
                 sums_of_hessians[c] = 0
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        # TODO
-        pass
+        # Class members
+        cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef LabelWisePrediction* prediction = self.prediction
+        cdef const intp[::1] label_indices = self.label_indices
+        cdef const float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
+        cdef const float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
+
+        # Calculate and return the predictions, as well as corresponding quality scores...
+        rule_evaluation.calculate_label_wise_prediction(label_indices, total_sums_of_gradients, sums_of_gradients,
+                                                        total_sums_of_hessians, sums_of_hessians, uncovered, prediction)
+        return prediction
 
     cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         # TODO
@@ -126,11 +145,14 @@ cdef class ExampleWiseStatistics(GradientStatistics):
     example-wise.
     """
 
-    def __cinit__(self, ExampleWiseLossFunction loss_function):
+    def __cinit__(self, ExampleWiseLossFunction loss_function, ExampleWiseRuleEvaluation rule_evaluation):
         """
-        :param loss_function: The loss function to be used for calculating gradients and Hessians
+        :param loss_function:   The loss function to be used for calculating gradients and Hessians
+        :param rule_evaluation: The `RuleEvaluation` to be used for calculating the predictions, as well as
+                                corresponding quality scores, of rules
         """
         self.loss_function = loss_function
+        self.rule_evaluation = rule_evaluation
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
         # Class members
@@ -214,14 +236,15 @@ cdef class ExampleWiseStatistics(GradientStatistics):
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         # Class members
+        cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef float64[:, ::1] gradients = self.gradients
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[:, ::1] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
 
         # Instantiate and return a new object of the class `ExampleWiseRefinementSearch`...
-        return ExampleWiseRefinementSearch.__new__(ExampleWiseRefinementSearch, label_indices, gradients,
-                                                   total_sums_of_gradients, hessians, total_sums_of_hessians)
+        return ExampleWiseRefinementSearch.__new__(ExampleWiseRefinementSearch, rule_evaluation, label_indices,
+                                                   gradients, total_sums_of_gradients, hessians, total_sums_of_hessians)
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
