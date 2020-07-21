@@ -67,7 +67,12 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         self.current_scores = current_scores
 
     cdef void reset_statistics(self):
-        pass
+        # Class members
+        cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
+        cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
+        # Reset total sums of gradients and Hessians to 0...
+        total_sums_of_gradients[:] = 0
+        total_sums_of_hessians[:] = 0
 
     cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
         pass
