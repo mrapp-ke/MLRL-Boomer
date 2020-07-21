@@ -149,8 +149,6 @@ cdef class LabelWiseStatistics(GradientStatistics):
         cdef intp num_examples = label_matrix.num_examples
         # The number of labels
         cdef intp num_labels = label_matrix.num_labels
-        # An array that stores the predictions of the default rule
-        cdef float64* predicted_scores = default_prediction.predictedScores_ if default_prediction != NULL else NULL
         # A matrix that stores the currently predicted scores for each example and label
         cdef float64[:, ::1] current_scores = c_matrix_float64(num_examples, num_labels)
         # A matrix that stores the gradients for each example and label
@@ -161,6 +159,8 @@ cdef class LabelWiseStatistics(GradientStatistics):
         cdef float64[:, ::1] hessians = c_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = array_float64(num_labels)
+        # An array that stores the predictions of the default rule
+        cdef float64* predicted_scores = default_prediction.predictedScores_ if default_prediction != NULL else NULL
         # Temporary variables
         cdef pair[float64, float64] gradient_and_hessian
         cdef float64 predicted_score, gradient, hessian
@@ -177,7 +177,7 @@ cdef class LabelWiseStatistics(GradientStatistics):
                 hessian = gradient_and_hessian.second
                 hessians[r, c] = hessian
 
-                # Store the score that is currently predicted for the current example and label...
+                # Store the score that is predicted by the default rule for the current example and label...
                 current_scores[r, c] = predicted_score
 
         # Store the gradients...
