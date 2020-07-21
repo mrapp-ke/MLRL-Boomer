@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport intp, float64
 from boomer.common.statistics cimport LabelMatrix
-from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
+from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction, DefaultRuleEvaluation
 from boomer.boosting.losses cimport ExampleWiseLossFunction
 
 
@@ -27,7 +27,13 @@ cdef class ExampleWiseRuleEvaluation:
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
                                               const float64[::1] total_sums_of_gradients,
-                                              const float64[::1] sums_of_gradients,
-                                              const float64[::1] total_sums_of_hessians,
-                                              const float64[::1] sums_of_hessians, bint uncovered,
+                                              float64[::1] sums_of_gradients, const float64[::1] total_sums_of_hessians,
+                                              float64[::1] sums_of_hessians, bint uncovered,
                                               LabelWisePrediction* prediction)
+
+    cdef void calculate_example_wise_prediction(self, const intp[::1] label_indices,
+                                                const float64[::1] total_sums_of_gradients,
+                                                float64[::1] sums_of_gradients,
+                                                const float64[::1] total_sums_of_hessians,
+                                                float64[::1] sums_of_hessians, bint uncovered,
+                                                Prediction* prediction)

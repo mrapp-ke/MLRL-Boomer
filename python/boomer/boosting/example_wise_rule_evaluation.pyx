@@ -9,6 +9,7 @@ from boomer.boosting._math cimport l2_norm_pow, triangular_number
 
 from libc.stdlib cimport malloc, free
 
+from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
 
@@ -84,9 +85,8 @@ cdef class ExampleWiseRuleEvaluation:
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
                                               const float64[::1] total_sums_of_gradients,
-                                              const float64[::1] sums_of_gradients,
-                                              const float64[::1] total_sums_of_hessians,
-                                              const float64[::1] sums_of_hessians, bint uncovered,
+                                              float64[::1] sums_of_gradients, const float64[::1] total_sums_of_hessians,
+                                              float64[::1] sums_of_hessians, bint uncovered,
                                               LabelWisePrediction* prediction):
         """
         Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
@@ -168,6 +168,133 @@ cdef class ExampleWiseRuleEvaluation:
         # Add the L2 regularization term to the overall quality score...
         overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores, num_gradients)
         prediction.overallQualityScore_ = overall_quality_score
+
+    cdef void calculate_example_wise_prediction(self, const intp[::1] label_indices,
+                                                const float64[::1] total_sums_of_gradients,
+                                                float64[::1] sums_of_gradients,
+                                                const float64[::1] total_sums_of_hessians,
+                                                float64[::1] sums_of_hessians, bint uncovered,
+                                                Prediction* prediction):
+        """
+        Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums of
+        gradients and Hessians that are covered by the rule. The predicted scores and quality scores are stored in a
+        given object of type `Prediction`.
+
+        If the argument `uncovered` is 1, the rule is considered to cover the difference between the sums of gradients
+        and Hessians that are stored in the arrays `total_sums_of_gradients` and `sums_of_gradients` and
+        `total_sums_of_hessians` and `sums_of_hessians`, respectively.
+
+        :param label_indices:           An array of dtype `intp`, shape `(num_gradients)`, representing the indices of
+                                        the labels for which the rule should predict or None, if the rule should predict
+                                        for all labels
+        :param total_sums_of_gradients: An array of dtype `float64`, shape `(num_gradients), representing the total sums
+                                        of gradients for individual labels
+        :param sums_of_gradients:       An array of dtype `float64`, shape `(num_gradients)`, representing the sums of
+                                        gradients for individual labels
+        :param total_sums_of_hessians:  An array of dtype `float64`, shape
+                                        `((num_gradients + (num_gradients + 1)) // 2)`, representing the total sums of
+                                        Hessians for individual labels
+        :param sums_of_hessians:        An array of dtype `float64`, shape
+                                        `((num_gradients + (num_gradients + 1)) // 2)`, representing the sums of
+                                        Hessians for individual labels
+        :param uncovered:               0, if the rule covers the sums of gradient and Hessians that are stored in the
+                                        array `sums_of_gradients` and `sums_of_hessians`, 1, if the rule covers the
+                                        difference between the sums of gradients and Hessians that are stored in the
+                                        arrays `total_sums_of_gradients` and `sums_of_gradients` and
+                                        `total_sums_of_hessians` and `sums_of_hessians`, respectively.
+        :param prediction:              A pointer to an object of type `Prediction` that should be used to store the
+                                        predicted scores and quality score
+        """
+        # Class members
+        cdef float64 l2_regularization_weight = self.l2_regularization_weight
+        # The number of gradients considered by the current search
+        cdef intp num_gradients = sums_of_gradients.shape[0]
+        # Temporary variables
+        cdef float64[::1] gradients, hessians
+        cdef intp num_hessians, c, c2, l, l2, i, offset
+
+        if uncovered:
+            num_hessians = sums_of_hessians.shape[0]
+            gradients = array_float64(num_gradients)
+            hessians = array_float64(num_hessians)
+            i = 0
+
+            for c in range(num_gradients):
+                l = get_index(c, label_indices)
+                gradients[c] = total_sums_of_gradients[l] - sums_of_gradients[c]
+                offset = triangular_number(l)
+
+                for c2 in range(c + 1):
+                    l2 = offset + get_index(c2, label_indices)
+                    hessians[i] = total_sums_of_hessians[l2] - sums_of_hessians[i]
+                    i += 1
+        else:
+            gradients = sums_of_gradients
+            hessians = sums_of_hessians
+
+        # Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+        cdef float64* predicted_scores = __dsysv_float64(hessians, gradients, l2_regularization_weight)
+        prediction.predictedScores_ = predicted_scores
+
+        # Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
+        cdef float64 overall_quality_score = __ddot_float64(predicted_scores, &gradients[0], num_gradients)
+        cdef float64* tmp = __dspmv_float64(&hessians[0], predicted_scores, num_gradients)
+        overall_quality_score += 0.5 * __ddot_float64(predicted_scores, tmp, num_gradients)
+
+        # Add the L2 regularization term to the overall quality score...
+        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores, num_gradients)
+        prediction.overallQualityScore_ = overall_quality_score
+
+
+cdef inline float64 __ddot_float64(float64* x, float64* y, int n):
+    """
+    Computes and returns the dot product x * y of two vectors using BLAS' DDOT routine (see
+    http://www.netlib.org/lapack/explore-html/de/da4/group__double__blas__level1_ga75066c4825cb6ff1c8ec4403ef8c843a.html).
+
+    :param x:   A pointer to an array of type `float64`, shape (n), representing the first vector x
+    :param y:   A pointer to an array of type `float64`, shape (n), representing the second vector y
+    :param n:   The number of elements in the arrays `x` and `y`
+    :return:    A scalar of dtype `float64`, representing the result of the dot product x * y
+    """
+    # Storage spacing between the elements of the arrays x and y
+    cdef int inc = 1
+    # Invoke the DDOT routine...
+    cdef float64 result = ddot(&n, x, &inc, y, &inc)
+    return result
+
+
+cdef inline float64* __dspmv_float64(float64* a, float64* x, int n):
+    """
+    Computes and returns the solution to the matrix-vector operation A * x using BLAS' DSPMV routine (see
+    http://www.netlib.org/lapack/explore-html/d7/d15/group__double__blas__level2_gab746575c4f7dd4eec72e8110d42cefe9.html).
+    This function expects A to be a double-precision symmetric matrix with shape `(n, n)` and x to be a double-precision
+    array with shape `(n)`.
+
+    DSPMV expects the matrix A to be supplied in packed form, i.e., as an array with shape `(n * (n + 1) // 2 )` that
+    consists of the columns of A appended to each other and omitting all unspecified elements.
+
+    :param a:   A pointer to an array of type `float64`, shape `(n * (n + 1) // 2)`, representing the elements in the
+                upper-right triangle of the matrix A in a packed form
+    :param x:   A pointer to an array of type `float64`, shape `(n)`, representing the elements in the array x
+    :param n:   The number of elements in the arrays `a` and `x`
+    :return:    A pointer to an array of type `float64`, shape `(n)`, representing the result of the matrix-vector
+                operation A * x
+    """
+    # 'U' if the upper-right triangle of A should be used, 'L' if the lower-left triangle should be used
+    cdef char* uplo = 'U'
+    # A scalar to be multiplied with the matrix A
+    cdef float64 alpha = 1
+    # The increment for the elements of x
+    cdef int incx = 1
+    # A scalar to be multiplied with vector y
+    cdef float64 beta = 0
+    # An array of type `float64`, shape `(n)`. Will contain the result of A * x
+    cdef float64* y = <float64*>malloc(n * sizeof(float64))
+    # The increment for the elements of y
+    cdef int incy = 1
+    # Invoke the DSPMV routine...
+    dspmv(uplo, &n, &alpha, a, x, &incx, &beta, y, &incy)
+    return y
 
 
 cdef inline float64* __dsysv_float64(float64[::1] coefficients, float64[::1] inverted_ordinates,
