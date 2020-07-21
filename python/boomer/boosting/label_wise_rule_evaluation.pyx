@@ -77,9 +77,8 @@ cdef class LabelWiseRuleEvaluation:
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
                                               const float64[::1] total_sums_of_gradients,
-                                              const float64[::1] sums_of_gradients,
-                                              const float64[::1] total_sums_of_hessians,
-                                              const float64[::1] sums_of_hessians, bint uncovered,
+                                              float64[::1] sums_of_gradients, const float64[::1] total_sums_of_hessians,
+                                              float64[::1] sums_of_hessians, bint uncovered,
                                               LabelWisePrediction* prediction):
         """
         Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
