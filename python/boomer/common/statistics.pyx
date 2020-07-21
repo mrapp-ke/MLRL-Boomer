@@ -245,7 +245,7 @@ cdef class Statistics:
 
         :param label_matrix:        A `LabelMatrix` that provides random access to the labels of the training examples
         :param default_prediction:  A pointer to an object of type `DefaultPrediction`, representing the predictions of
-                                    the default rule
+                                    the default rule or NULL, if no default rule is available
         """
         pass
 
