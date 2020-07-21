@@ -13,9 +13,9 @@ from libc.math cimport pow
 from libcpp.pair cimport pair
 
 
-cdef class LabelWiseDefaultRuleEvaluation:
+cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     """
-    Allows to calculate the predictions of the default rule such that they minimize a loss function that is applied
+    Allows to calculate the predictions of a default rule such that they minimize a loss function that is applied
     label-wise.
     """
 
@@ -29,13 +29,6 @@ cdef class LabelWiseDefaultRuleEvaluation:
         self.l2_regularization_weight = l2_regularization_weight
 
     cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
-        """
-        Calculates the scores to be predicted by the default rule.
-
-        :param label_matrix:    A `LabelMatrix` that provides random access to the labels of the training examples
-        :return:                A pointer to an object of type `DefaultPrediction`, representing the predictions of the
-                                default rule
-        """
         # Class members
         cdef LabelWiseLossFunction loss_function = self.loss_function
         cdef float64 l2_regularization_weight = self.l2_regularization_weight

@@ -1,9 +1,5 @@
-"""
-@author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that store the predictions of rules, as well as corresponding quality scores.
-"""
 from boomer.common._arrays cimport intp, float64
+from boomer.common.statistics cimport LabelMatrix
 
 
 cdef extern from "cpp/rule_evaluation.h" namespace "rule_evaluation":
@@ -42,3 +38,10 @@ cdef extern from "cpp/rule_evaluation.h" namespace "rule_evaluation":
         # Attributes:
 
         float64* qualityScores_
+
+
+cdef class DefaultRuleEvaluation:
+
+    # Functions:
+
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
