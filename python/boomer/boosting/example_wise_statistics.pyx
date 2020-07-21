@@ -90,14 +90,14 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         # Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
         # gradients...
         for c in range(num_elements):
-            total_sums_of_gradients[c] += (signed_weight * gradients[example_index, c])
+            total_sums_of_gradients[c] += (signed_weight * gradients[statistic_index, c])
 
         # Add the Hessians of the example at the given index (weighted by the given weight) to the total sums of
         # Hessians...
         num_elements = hessians.shape[1]
 
         for c in range(num_elements):
-            total_sums_of_hessians[c] += (signed_weight * hessians[example_index, c])
+            total_sums_of_hessians[c] += (signed_weight * hessians[statistic_index, c])
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         # TODO
