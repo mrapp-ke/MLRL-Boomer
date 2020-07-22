@@ -8,7 +8,7 @@ a weight matrix and the ground truth labels of the training examples.
 
 cdef class CoverageStatistics(Statistics):
     """
-    A base class for all classes that store the elements of confusion matrices.
+    A base class for all classes that allow to store the elements of confusion matrices.
     """
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
