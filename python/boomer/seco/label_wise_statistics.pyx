@@ -3,6 +3,7 @@
 
 Provides classes that allow to store the elements of confusion matrices that are computed independently for each label.
 """
+from boomer.common._arrays cimport array_uint8, fortran_matrix_float64
 
 
 cdef class LabelWiseStatistics(CoverageStatistics):
@@ -11,7 +12,49 @@ cdef class LabelWiseStatistics(CoverageStatistics):
     """
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
-        pass
+        # The number of examples
+        cdef intp num_examples = label_matrix.num_examples
+        # The number of labels
+        cdef intp num_labels = label_matrix.num_labels
+        # A matrix that stores whether individual examples and labels are still uncovered
+        cdef float64[::1, :] uncovered_labels = fortran_matrix_float64(num_examples, num_labels)
+        # The total number of uncovered examples and labels
+        cdef float64 sum_uncovered_labels = 0
+        # An array that stores whether rules should predict individual labels as positive (1) or negative (0)
+        cdef uint8[::1] minority_labels = array_uint8(num_labels)
+        # A matrix that stores a confusion matrix, which corresponds to all examples, for each label
+        cdef float64[::1, :] confusion_matrices_default = fortran_matrix_float64(num_labels, 4)
+        # A matrix that stores a confusion matrix, which corresponds to the examples covered by a rule, for each label
+        cdef float64[::1, :] confusion_matrices_subsample_default = fortran_matrix_float64(num_labels, 4)
+        # An array that stores the predictions of the default rule or NULL, if no default rule is used
+        cdef float64* predicted_scores = default_prediction.predictedScores_ if default_prediction != NULL else NULL
+        # Temporary variables
+        cdef uint8 predicted_label, true_label
+        cdef intp r, c
+
+        for c in range(num_labels):
+            predicted_label = <uint8>predicted_scores[c] if predicted_scores != NULL else 0
+
+            # Rules should predict the opposite of the default rule...
+            minority_labels[c] = not predicted_label
+
+            for r in range(num_examples):
+                true_label = label_matrix.get_label(r, c)
+
+                # If the default rule's prediction for the current example and label is incorrect...
+                if true_label != predicted_label:
+                    sum_uncovered_labels += 1
+
+                # Mark the current example and label as uncovered...
+                uncovered_labels[r, c] = 1
+
+        # Store class members...
+        self.label_matrix = label_matrix
+        self.uncovered_labels = uncovered_labels
+        self.sum_uncovered_labels = sum_uncovered_labels
+        self.minority_labels = minority_labels
+        self.confusion_matrices_default = confusion_matrices_default
+        self.confusion_matrices_subsample_default = confusion_matrices_subsample_default
 
     cdef void reset_statistics(self):
         pass
