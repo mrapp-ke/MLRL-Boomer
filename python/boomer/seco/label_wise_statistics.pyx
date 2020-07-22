@@ -87,7 +87,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
             for r in range(num_examples):
                 uncovered = <uint8>uncovered_labels[r, c]
 
-                # We must only consider uncovered labels...
+                # Only uncovered labels must be considered...
                 if uncovered:
                     true_label = label_matrix.get_label(r, c)
 
@@ -120,7 +120,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         for c in range(num_labels):
             uncovered = <uint8>uncovered_labels[statistic_index, c]
 
-            # We must only consider uncovered labels...
+            # Only uncovered labels must be considered...
             if uncovered:
                 true_label = label_matrix.get_label(statistic_index, c)
                 predicted_label = minority_labels[c]
