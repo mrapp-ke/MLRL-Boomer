@@ -189,14 +189,14 @@ cdef class ExampleWiseRuleEvaluation:
                                         for all labels
         :param total_sums_of_gradients: An array of dtype `float64`, shape `(num_gradients), representing the total sums
                                         of gradients for individual labels
-        :param sums_of_gradients:       An array of dtype `float64`, shape `(num_gradients)`, representing the sums of
-                                        gradients for individual labels
+        :param sums_of_gradients:       An array of dtype `float64`, shape `(prediction.numPredictions_)`, representing
+                                        the sums of gradients for individual labels
         :param total_sums_of_hessians:  An array of dtype `float64`, shape
                                         `((num_gradients + (num_gradients + 1)) // 2)`, representing the total sums of
                                         Hessians for individual labels
         :param sums_of_hessians:        An array of dtype `float64`, shape
-                                        `((num_gradients + (num_gradients + 1)) // 2)`, representing the sums of
-                                        Hessians for individual labels
+                                        `((prediction.numPredictions_ + (prediction.numPredictions_ + 1)) // 2)`,
+                                        representing the sums of Hessians for individual labels
         :param uncovered:               0, if the rule covers the sums of gradient and Hessians that are stored in the
                                         array `sums_of_gradients` and `sums_of_hessians`, 1, if the rule covers the
                                         difference between the sums of gradients and Hessians that are stored in the
