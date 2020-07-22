@@ -6,6 +6,8 @@ Provides classes that allow to store the elements of confusion matrices that are
 from boomer.common._arrays cimport array_uint8, fortran_matrix_float64, get_index
 from boomer.seco.heuristics cimport Element
 
+from libc.stdlib cimport malloc
+
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     """
@@ -13,10 +15,12 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     `LabelWiseStatistics`.
     """
 
-    def __cinit__(self, const intp[::1] label_indices, LabelMatrix label_matrix, const float64[::1, :] uncovered_labels,
-                  const uint8[::1] minority_labels, const float64[::1, :] confusion_matrices_total,
-                  const float64[::1, :] confusion_matrices_subset):
+    def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation, const intp[::1] label_indices,
+                  LabelMatrix label_matrix, const float64[::1, :] uncovered_labels, const uint8[::1] minority_labels,
+                  const float64[::1, :] confusion_matrices_total, const float64[::1, :] confusion_matrices_subset):
         """
+        :param rule_evaluation:             The `RuleEvaluation` to be used for calculating the predictions, as well as
+                                            corresponding quality scores of rules
         :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
                                             indices of the labels that should be considered by the search or None, if
                                             all labels should be considered
@@ -32,6 +36,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                             that corresponds to all examples that are covered by the previous refinement
                                             of a rule, for each label
         """
+        self.rule_evaluation = rule_evaluation
         self.label_indices = label_indices
         self.label_matrix = label_matrix
         self.uncovered_labels = uncovered_labels
@@ -42,6 +47,13 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef float64[::1, :] confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
         self.confusion_matrices_covered = confusion_matrices_covered
         self.accumulated_confusion_matrices_covered = None
+        cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef float64* quality_scores = <float64*>malloc(num_labels * sizeof(float64))
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_labels, predicted_scores, quality_scores, 0)
+        self.prediction = prediction
+
+    def __dealloc__(self):
+        del self.prediction
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
         # Class members
@@ -95,14 +107,33 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                     confusion_matrices_covered[c, i] = 0
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        # TODO
-        pass
+        # Class members
+        cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef LabelWisePrediction* prediction = self.prediction
+        cdef const intp[::1] label_indices = self.label_indices
+        cdef const uint8[::1] minority_labels = self.minority_labels
+        cdef const float64[::1, :] confusion_matrices_total = self.confusion_matrices_total
+        cdef const float64[::1, :] confusion_matrices_subset = self.confusion_matrices_subset
+        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+
+        # Calculate and returns the predictions, as well as corresponding quality scores...
+        rule_evaluation.calculate_label_wise_prediction(label_indices, minority_labels, confusion_matrices_total,
+                                                        confusion_matrices_subset, confusion_matrices_covered,
+                                                        uncovered, prediction)
+        return prediction
 
 
 cdef class LabelWiseStatistics(CoverageStatistics):
     """
     Allows to store the elements of confusion matrices that are computed independently for each label.
     """
+
+    def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation):
+        """
+        :param rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as well as
+                                corresponding quality scores, of rules
+        """
+        self.rule_evaluation = rule_evaluation
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
         # The number of examples
