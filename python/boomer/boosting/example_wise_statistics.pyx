@@ -185,7 +185,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         cdef float64[:, ::1] hessians = c_matrix_float64(num_examples, num_hessians)
         # An array that stores the column-wise sums of the matrix of Hessians
         cdef float64[::1] total_sums_of_hessians = array_float64(num_hessians)
-        # An array that stores the scores that are predicted by the default rule
+        # An array that stores the scores that are predicted by the default rule or NULL, if no default rule is used
         cdef float64* predicted_scores = default_prediction.predictedScores_ if default_prediction != NULL else NULL
         # Temporary variables
         cdef float64 predicted_score
