@@ -48,8 +48,38 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         self.confusion_matrices_covered = confusion_matrices_covered
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
-        # TODO
-        pass
+        # Class members
+        cdef const intp[::1] label_indices = self.label_indices
+        cdef LabelMatrix label_matrix = self.label_matrix
+        cdef const float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef const uint8[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        # The number of labels considered by the current search
+        cdef intp num_labels = confusion_matrices_covered.shape[0]
+        # Temporary variables
+        cdef uint8 uncovered, true_label, predicted_label
+        cdef intp c, l
+
+        for c in range(num_labels):
+            l = get_index(c, label_indices)
+            uncovered = <uint8>uncovered_labels[statistic_index, l]
+
+            # Only uncovered labels must be considered...
+            if uncovered:
+                true_label = label_matrix.get_label(statistic_index, l)
+                predicted_label = minority_labels[l]
+
+                # Add the current example and label to the confusion matrix for the current label...
+                if true_label:
+                    if predicted_label:
+                        confusion_matrices_covered[c, _RP] += weight
+                    else:
+                        confusion_matrices_covered[c, _RN] += weight
+                else:
+                    if predicted_label:
+                        confusion_matrices_covered[c, _IP] += weight
+                    else:
+                        confusion_matrices_covered[c, _IN] += weight
 
     cdef void reset_search(self):
         # TODO
