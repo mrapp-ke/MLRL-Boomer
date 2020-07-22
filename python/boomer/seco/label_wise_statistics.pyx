@@ -5,6 +5,11 @@ Provides classes that allow to store the elements of confusion matrices that are
 """
 from boomer.common._arrays cimport array_uint8, fortran_matrix_float64
 
+DEF _IN = 0
+DEF _IP = 1
+DEF _RN = 2
+DEF _RP = 3
+
 
 cdef class LabelWiseStatistics(CoverageStatistics):
     """
@@ -30,7 +35,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         cdef float64* predicted_scores = default_prediction.predictedScores_ if default_prediction != NULL else NULL
         # Temporary variables
         cdef uint8 predicted_label, true_label
-        cdef intp r, c
+        cdef intp c, r
 
         for c in range(num_labels):
             predicted_label = <uint8>predicted_scores[c] if predicted_scores != NULL else 0
@@ -57,7 +62,45 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         self.confusion_matrices_subsample_default = confusion_matrices_subsample_default
 
     cdef void reset_statistics(self):
-        pass
+        # Class members
+        cdef LabelMatrix label_matrix = self.label_matrix
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
+        # The number of examples
+        cdef intp num_examples = label_matrix.num_examples
+        # The number of labels
+        cdef intp num_labels = label_matrix.num_labels
+        # Temporary variables
+        cdef uint8 uncovered, true_label, predicted_label
+        cdef intp c, r
+
+        for c in range(num_labels):
+            predicted_label = minority_labels[c]
+
+            # Reset confusion matrices for the current label to 0...
+            for r in range(num_examples):
+                confusion_matrices_default[c, r] = 0
+                confusion_matrices_subsample_default[c, r] = 0
+
+            for r in range(num_examples):
+                uncovered = <uint8>uncovered_labels[r, c]
+
+                if uncovered:
+                    true_label = label_matrix.get_label(r, c)
+
+                    # Add the current example and label to the confusion matrix for the current label...
+                    if true_label:
+                        if predicted_label:
+                            confusion_matrices_default[c, _RP] += 1
+                        else:
+                            confusion_matrices_default[c, _RN] += 1
+                    else:
+                        if predicted_label:
+                            confusion_matrices_default[c, _IP] += 1
+                        else:
+                            confusion_matrices_default[c, _IN] += 1
 
     cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
         pass
