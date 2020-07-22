@@ -151,6 +151,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         # The number of predicted labels
         cdef intp num_predictions = head.numPredictions_
         # Temporary variables
+        cdef uint8 uncovered, true_label, predicted_label
         cdef intp c, l
 
         # Only the labels that are predicted by the new rule must be considered...
