@@ -2,7 +2,7 @@ from boomer.common._arrays cimport intp, uint8, uint32, float64
 from boomer.common.statistics cimport LabelMatrix, RefinementSearch, DecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
-from boomer.seco.coverage_statistics cimport CoverageStatistics
+from boomer.seco.statistics cimport CoverageStatistics
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
 
 
