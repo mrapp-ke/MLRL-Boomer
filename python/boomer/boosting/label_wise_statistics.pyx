@@ -21,8 +21,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                   const float64[:, ::1] gradients, const float64[::1] total_sums_of_gradients,
                   const float64[:, ::1] hessians, const float64[::1] total_sums_of_hessians):
         """
-        :param rule_evaluation:         The `RuleEvaluation` to be used for calculating the predictions, as well as
-                                        corresponding quality scores of rules
+        :param rule_evaluation:         The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
+                                        well as corresponding quality scores of rules
         :param label_indices:           An array of dtype int, shape `(num_considered_labels)`, representing the indices
                                         of the labels that should be considered by the search or None, if all labels
                                         should be considered
@@ -135,7 +135,7 @@ cdef class LabelWiseStatistics(GradientStatistics):
     def __cinit__(self, LabelWiseLossFunction loss_function, LabelWiseRuleEvaluation rule_evaluation):
         """
         :param loss_function:   The loss function to be used for calculating gradients and Hessians
-        :param rule_evaluation: The `RuleEvaluation` to be used for calculating the predictions, as well as
+        :param rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as well as
                                 corresponding quality scores, of rules
         """
         self.loss_function = loss_function
