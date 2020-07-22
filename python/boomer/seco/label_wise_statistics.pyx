@@ -102,9 +102,6 @@ cdef class LabelWiseStatistics(CoverageStatistics):
                         else:
                             confusion_matrices_default[c, _IN] += 1
 
-    cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
-        pass
-
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         pass
 
