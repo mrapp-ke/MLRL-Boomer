@@ -46,6 +46,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef intp num_labels = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
         cdef float64[::1, :] confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
         self.confusion_matrices_covered = confusion_matrices_covered
+        self.accumulated_confusion_matrices_covered = None
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
         # Class members
@@ -82,8 +83,30 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                         confusion_matrices_covered[c, _IN] += weight
 
     cdef void reset_search(self):
-        # TODO
-        pass
+        # Class members
+        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef float64[::1, :] accumulated_confusion_matrices_covered = self.accumulated_confusion_matrices_covered
+        # The number of labels considered by the current search
+        cdef intp num_labels = confusion_matrices_covered.shape[0]
+        # The number of elements in a confusion matrix
+        cdef intp num_confusion_matrix_elements = confusion_matrices_covered.shape[1]
+        # Temporary variables
+        cdef intp c
+
+        # Update the matrix that stores the accumulated confusion matrices...
+        if accumulated_confusion_matrices_covered is None:
+            accumulated_confusion_matrices_covered = fortran_matrix_float64(num_labels, num_confusion_matrix_elements)
+            self.accumulated_confusion_matrices_covered = accumulated_confusion_matrices_covered
+
+            for c in range(num_labels):
+                for i in range(num_confusion_matrix_elements):
+                    accumulated_confusion_matrices_covered[c, i] = confusion_matrices_covered[c, i]
+                    confusion_matrices_covered[c, i] = 0
+        else:
+            for c in range(num_labels):
+                for i in range(num_confusion_matrix_elements):
+                    accumulated_confusion_matrices_covered[c, i] += confusion_matrices_covered[c, i]
+                    confusion_matrices_covered[c, i] = 0
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # TODO

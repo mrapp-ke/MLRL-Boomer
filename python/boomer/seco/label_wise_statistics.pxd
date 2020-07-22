@@ -23,6 +23,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef float64[::1, :] confusion_matrices_covered
 
+    cdef float64[::1, :] accumulated_confusion_matrices_covered
+
     # Functions:
 
     cdef void update_search(self, intp statistic_index, uint32 weight)
