@@ -3,7 +3,7 @@
 
 Provides classes that allow to store the elements of confusion matrices that are computed independently for each label.
 """
-from boomer.common._arrays cimport array_uint8, fortran_matrix_float64
+from boomer.common._arrays cimport array_uint8, fortran_matrix_float64, get_index
 
 DEF _IN = 0
 DEF _IP = 1
@@ -143,5 +143,32 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         pass
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
-        # TODO
-        pass
+        # Class members
+        cdef LabelMatrix label_matrix = self.label_matrix
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
+        # The number of predicted labels
+        cdef intp num_predictions = head.numPredictions_
+        # Temporary variables
+        cdef intp c, l
+
+        # Only the labels that are predicted by the new rule must be considered...
+        for c in range(num_predictions):
+            l = get_index(c, label_indices)
+            uncovered = <uint8>uncovered_labels[statistic_index, l]
+
+            if uncovered:
+                true_label = label_matrix.get_label(statistic_index, l)
+                predicted_label = minority_labels[l]
+
+                # Decrement the total number of uncovered labels, if the default rule's prediction for the current
+                # example and label is incorrect...
+                if predicted_label == true_label:
+                    sum_uncovered_labels -= 1
+
+                # Mark the label as covered...
+                uncovered_labels[statistic_index, l] = 0
+
+        # Update the total number of uncovered labels...
+        self.sum_uncovered_labels = sum_uncovered_labels
