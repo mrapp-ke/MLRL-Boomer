@@ -92,12 +92,12 @@ cdef class LabelWiseRuleEvaluation:
         :param label_indices:           An array of dtype `intp`, shape `prediction.numPredictions_)`, representing the
                                         indices of the labels for which the rule should predict or None, if the rule
                                         should predict for all labels
-        :param total_sums_of_gradients: An array of dtype `float64`, shape `(prediction.numPredictions), representing
-                                        the total sums of gradients for individual labels
+        :param total_sums_of_gradients: An array of dtype `float64`, shape `(num_labels), representing the total sums of
+                                        gradients for individual labels
         :param sums_of_gradients:       An array of dtype `float64`, shape `(prediction.numPredictions_)`, representing
                                         the sums of gradients for individual labels
-        :param total_sums_of_hessians:  An array of dtype `float64`, shape `(prediction.numPredictions_)`, representing
-                                        the total sums of Hessians for individual labels
+        :param total_sums_of_hessians:  An array of dtype `float64`, shape `(num_labels)`, representing the total sums
+                                        of Hessians for individual labels
         :param sums_of_hessians:        An array of dtype `float64`, shape `(prediction.numPredictions_)`, representing
                                         the sums of Hessians for individual labels
         :param uncovered:               0, if the rule covers the sums of gradient and Hessians that are stored in the
