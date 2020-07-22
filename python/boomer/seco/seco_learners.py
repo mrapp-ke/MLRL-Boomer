@@ -6,13 +6,13 @@ from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.seco.coverage_statistics import CoverageStatistics
 from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, WeightedRelativeAccuracy, FMeasure, \
     MEstimate
 from boomer.seco.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
 from boomer.seco.label_wise_statistics import LabelWiseStatistics
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
+from boomer.seco.statistics import CoverageStatistics
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
