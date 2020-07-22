@@ -4,11 +4,7 @@
 Provides classes that allow to store the elements of confusion matrices that are computed independently for each label.
 """
 from boomer.common._arrays cimport array_uint8, fortran_matrix_float64, get_index
-
-DEF _IN = 0
-DEF _IP = 1
-DEF _RN = 2
-DEF _RP = 3
+from boomer.seco.heuristics cimport Element
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
@@ -73,14 +69,14 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                 # Add the current example and label to the confusion matrix for the current label...
                 if true_label:
                     if predicted_label:
-                        confusion_matrices_covered[c, _RP] += weight
+                        confusion_matrices_covered[c, <intp>Element.RP] += weight
                     else:
-                        confusion_matrices_covered[c, _RN] += weight
+                        confusion_matrices_covered[c, <intp>Element.RN] += weight
                 else:
                     if predicted_label:
-                        confusion_matrices_covered[c, _IP] += weight
+                        confusion_matrices_covered[c, <intp>Element.IP] += weight
                     else:
-                        confusion_matrices_covered[c, _IN] += weight
+                        confusion_matrices_covered[c, <intp>Element.IN] += weight
 
     cdef void reset_search(self):
         # Class members
@@ -197,14 +193,14 @@ cdef class LabelWiseStatistics(CoverageStatistics):
                     # Add the current example and label to the confusion matrix for the current label...
                     if true_label:
                         if predicted_label:
-                            confusion_matrices_default[c, _RP] += 1
+                            confusion_matrices_default[c, <intp>Element.RP] += 1
                         else:
-                            confusion_matrices_default[c, _RN] += 1
+                            confusion_matrices_default[c, <intp>Element.RN] += 1
                     else:
                         if predicted_label:
-                            confusion_matrices_default[c, _IP] += 1
+                            confusion_matrices_default[c, <intp>Element.IP] += 1
                         else:
-                            confusion_matrices_default[c, _IN] += 1
+                            confusion_matrices_default[c, <intp>Element.IN] += 1
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         # Class members
@@ -231,14 +227,14 @@ cdef class LabelWiseStatistics(CoverageStatistics):
                 # Add the current example and label to the confusion matrix for the current label...
                 if true_label:
                     if predicted_label:
-                        confusion_matrices_subsample_default[c, _RP] += signed_weight
+                        confusion_matrices_subsample_default[c, <intp>Element.RP] += signed_weight
                     else:
-                        confusion_matrices_subsample_default[c, _RN] += signed_weight
+                        confusion_matrices_subsample_default[c, <intp>Element.RN] += signed_weight
                 else:
                     if predicted_label:
-                        confusion_matrices_subsample_default[c, _IP] += signed_weight
+                        confusion_matrices_subsample_default[c, <intp>Element.IP] += signed_weight
                     else:
-                        confusion_matrices_subsample_default[c, _IN] += signed_weight
+                        confusion_matrices_subsample_default[c, <intp>Element.IN] += signed_weight
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         # Class members
