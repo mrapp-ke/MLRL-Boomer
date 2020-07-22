@@ -11,6 +11,8 @@ from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, We
     MEstimate
 from boomer.seco.label_wise_averaging import LabelWiseAveraging
 from boomer.seco.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation
+from boomer.seco.label_wise_rule_evaluation import LabelWiseRuleEvaluation
+from boomer.seco.label_wise_statistics import LabelWiseStatistics
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 
@@ -147,8 +149,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         default_rule_evaluation = LabelWiseDefaultRuleEvaluation()
-        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
         heuristic = self.__create_heuristic()
+        rule_evaluation = LabelWiseRuleEvaluation(heuristic)
+        statistics = LabelWiseStatistics(rule_evaluation)
+        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
         loss = self.__create_loss(heuristic)
         lift_function = self.__create_lift_function(num_labels)
         head_refinement = self.__create_head_refinement(lift_function)

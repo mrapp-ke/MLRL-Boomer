@@ -7,10 +7,13 @@ Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.differentiable_losses import DifferentiableLoss
 from boomer.boosting.example_wise_losses import ExampleWiseLoss
-from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation
+from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
+from boomer.boosting.example_wise_statistics import ExampleWiseStatistics
+from boomer.boosting.gradient_statistics import GradientStatistics
 from boomer.boosting.head_refinement import FullHeadRefinement
 from boomer.boosting.label_wise_losses import LabelWiseDifferentiableLoss
-from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation
+from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
+from boomer.boosting.label_wise_statistics import LabelWiseStatistics
 from boomer.boosting.losses import LabelWiseLogisticLossFunction, LabelWiseSquaredErrorLossFunction, \
     ExampleWiseLogisticLossFunction
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
@@ -155,7 +158,9 @@ class Boomer(MLRuleLearner):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         loss_function = self.__create_loss_function()
         default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
-        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
+        rule_evaluation = self.__create_rule_evaluation(l2_regularization_weight)
+        statistics = self.__create_statistics(loss_function, rule_evaluation)
+        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
         return SequentialRuleInduction(rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
                                        instance_sub_sampling, feature_sub_sampling, pruning, shrinkage, min_coverage,
                                        max_conditions, max_head_refinements)
@@ -198,6 +203,22 @@ class Boomer(MLRuleLearner):
             return LabelWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
         elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
             return ExampleWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
+
+    def __create_rule_evaluation(self, l2_regularization_weight: float):
+        loss = self.loss
+
+        if loss == LOSS_LABEL_WISE_SQUARED_ERROR or loss == LOSS_LABEL_WISE_LOGISTIC:
+            return LabelWiseRuleEvaluation(l2_regularization_weight)
+        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+            return ExampleWiseRuleEvaluation(l2_regularization_weight)
+
+    def __create_statistics(self, loss_function, rule_evaluation) -> GradientStatistics:
+        loss = self.loss
+
+        if loss == LOSS_LABEL_WISE_SQUARED_ERROR or loss == LOSS_LABEL_WISE_LOGISTIC:
+            return LabelWiseStatistics(loss_function, rule_evaluation)
+        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+            return ExampleWiseStatistics(loss_function, rule_evaluation)
 
     def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
         head_refinement = self.head_refinement
