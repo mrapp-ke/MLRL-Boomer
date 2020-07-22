@@ -188,8 +188,17 @@ cdef class LabelWiseStatistics(CoverageStatistics):
                         confusion_matrices_subsample_default[c, _IN] += signed_weight
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
-        # TODO
-        pass
+        # Class members
+        cdef LabelMatrix label_matrix = self.label_matrix
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
+
+        # Instantiate and return a new object of the class `LabelWiseRefinementSearch`...
+        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, label_indices, label_matrix,
+                                                 uncovered_labels, minority_labels, confusion_matrices_default,
+                                                 confusion_matrices_subsample_default)
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
