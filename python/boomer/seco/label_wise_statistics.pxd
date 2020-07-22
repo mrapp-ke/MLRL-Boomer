@@ -1,8 +1,21 @@
 from boomer.common._arrays cimport intp, uint8, uint32, float64
-from boomer.common.statistics cimport LabelMatrix, RefinementSearch
+from boomer.common.statistics cimport LabelMatrix, RefinementSearch, DecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.rule_evaluation cimport DefaultPrediction
+from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.coverage_statistics cimport CoverageStatistics
+
+
+cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
+
+    # Functions:
+
+    cdef void update_search(self, intp statistic_index, uint32 weight)
+
+    cdef void reset_search(self)
+
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
 cdef class LabelWiseStatistics(CoverageStatistics):
