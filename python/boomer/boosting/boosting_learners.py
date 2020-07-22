@@ -7,14 +7,17 @@ Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.differentiable_losses import DifferentiableLoss
 from boomer.boosting.example_wise_losses import ExampleWiseLoss
+from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation
 from boomer.boosting.head_refinement import FullHeadRefinement
 from boomer.boosting.label_wise_losses import LabelWiseDifferentiableLoss
+from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation
 from boomer.boosting.losses import LabelWiseLogisticLossFunction, LabelWiseSquaredErrorLossFunction, \
     ExampleWiseLogisticLossFunction
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.losses import Loss
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
+from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
@@ -138,7 +141,6 @@ class Boomer(MLRuleLearner):
         return RuleListBuilder()
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
-        rule_induction = ExactGreedyRuleInduction()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         loss = self.__create_loss(l2_regularization_weight)
         head_refinement = self.__create_head_refinement(loss)
@@ -151,6 +153,9 @@ class Boomer(MLRuleLearner):
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
+        loss_function = self.__create_loss_function()
+        default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
+        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
         return SequentialRuleInduction(rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
                                        instance_sub_sampling, feature_sub_sampling, pruning, shrinkage, min_coverage,
                                        max_conditions, max_head_refinements)
@@ -174,6 +179,25 @@ class Boomer(MLRuleLearner):
         elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
             return ExampleWiseLoss(ExampleWiseLogisticLossFunction(), l2_regularization_weight)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
+
+    def __create_loss_function(self):
+        loss = self.loss
+
+        if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
+            return LabelWiseSquaredErrorLossFunction()
+        elif loss == LOSS_LABEL_WISE_LOGISTIC:
+            return LabelWiseLogisticLossFunction()
+        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+            return ExampleWiseLogisticLossFunction()
+        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
+
+    def __create_default_rule_evaluation(self, loss_function, l2_regularization_weight: float) -> DefaultRuleEvaluation:
+        loss = self.loss
+
+        if loss == LOSS_LABEL_WISE_SQUARED_ERROR or loss == LOSS_LABEL_WISE_LOGISTIC:
+            return LabelWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
+        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+            return ExampleWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
 
     def __create_head_refinement(self, loss: Loss) -> HeadRefinement:
         head_refinement = self.head_refinement
