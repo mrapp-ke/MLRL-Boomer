@@ -15,9 +15,6 @@ cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     label-wise averaging.
     """
 
-    def __cinit__(self, Heuristic heuristic):
-        self.heuristic = heuristic
-
     cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         # The number of examples
         cdef intp num_examples = label_matrix.num_examples
