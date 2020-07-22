@@ -55,7 +55,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef intp num_labels = confusion_matrices_covered.shape[0]
         # Temporary variables
         cdef uint8 uncovered, true_label, predicted_label
-        cdef intp c, l
+        cdef intp c, l, element
 
         for c in range(num_labels):
             l = get_index(c, label_indices)
@@ -63,20 +63,11 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
             # Only uncovered labels must be considered...
             if uncovered:
+                # Add the current example and label to the confusion matrix for the current label...
                 true_label = label_matrix.get_label(statistic_index, l)
                 predicted_label = minority_labels[l]
-
-                # Add the current example and label to the confusion matrix for the current label...
-                if true_label:
-                    if predicted_label:
-                        confusion_matrices_covered[c, <intp>Element.RP] += weight
-                    else:
-                        confusion_matrices_covered[c, <intp>Element.RN] += weight
-                else:
-                    if predicted_label:
-                        confusion_matrices_covered[c, <intp>Element.IP] += weight
-                    else:
-                        confusion_matrices_covered[c, <intp>Element.IN] += weight
+                element = __get_confusion_matrix_element(true_label, predicted_label)
+                confusion_matrices_covered[c, element] += weight
 
     cdef void reset_search(self):
         # Class members
@@ -173,7 +164,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         cdef intp num_labels = label_matrix.num_labels
         # Temporary variables
         cdef uint8 uncovered, true_label, predicted_label
-        cdef intp c, r
+        cdef intp c, r, element
 
         for c in range(num_labels):
             predicted_label = minority_labels[c]
@@ -188,19 +179,10 @@ cdef class LabelWiseStatistics(CoverageStatistics):
 
                 # Only uncovered labels must be considered...
                 if uncovered:
-                    true_label = label_matrix.get_label(r, c)
-
                     # Add the current example and label to the confusion matrix for the current label...
-                    if true_label:
-                        if predicted_label:
-                            confusion_matrices_default[c, <intp>Element.RP] += 1
-                        else:
-                            confusion_matrices_default[c, <intp>Element.RN] += 1
-                    else:
-                        if predicted_label:
-                            confusion_matrices_default[c, <intp>Element.IP] += 1
-                        else:
-                            confusion_matrices_default[c, <intp>Element.IN] += 1
+                    true_label = label_matrix.get_label(r, c)
+                    element = __get_confusion_matrix_element(true_label, predicted_label)
+                    confusion_matrices_default[c, element] += 1
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         # Class members
@@ -214,27 +196,18 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         cdef float64 signed_weight = -<float64>weight if remove else weight
         # Temporary variables
         cdef uint8 uncovered, true_label, predicted_label
-        cdef intp c
+        cdef intp c, element
 
         for c in range(num_labels):
             uncovered = <uint8>uncovered_labels[statistic_index, c]
 
             # Only uncovered labels must be considered...
             if uncovered:
+                # Add the current example and label to the confusion matrix for the current label...
                 true_label = label_matrix.get_label(statistic_index, c)
                 predicted_label = minority_labels[c]
-
-                # Add the current example and label to the confusion matrix for the current label...
-                if true_label:
-                    if predicted_label:
-                        confusion_matrices_subsample_default[c, <intp>Element.RP] += signed_weight
-                    else:
-                        confusion_matrices_subsample_default[c, <intp>Element.RN] += signed_weight
-                else:
-                    if predicted_label:
-                        confusion_matrices_subsample_default[c, <intp>Element.IP] += signed_weight
-                    else:
-                        confusion_matrices_subsample_default[c, <intp>Element.IN] += signed_weight
+                element = __get_confusion_matrix_element(true_label, predicted_label)
+                confusion_matrices_subsample_default[c, element] += signed_weight
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
         # Class members
@@ -280,3 +253,17 @@ cdef class LabelWiseStatistics(CoverageStatistics):
 
         # Update the total number of uncovered labels...
         self.sum_uncovered_labels = sum_uncovered_labels
+
+
+cdef inline intp __get_confusion_matrix_element(uint8 true_label, uint8 predicted_label):
+    """
+    Returns the element of a confusion matrix, a label corresponds to depending on the ground truth and a prediction.
+
+    :param true_label:      The true label
+    :param predicted_label: The predicted label
+    :return:                The confusion matrix element
+    """
+    if true_label:
+        return <intp>Element.RP if predicted_label else <intp>Element.RN
+    else:
+        return <intp>Element.IP if predicted_label else <intp>Element.IN
