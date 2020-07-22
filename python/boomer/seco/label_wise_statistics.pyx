@@ -118,7 +118,8 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         cdef uint8[::1] minority_labels = array_uint8(num_labels)
         # A matrix that stores a confusion matrix, which corresponds to all examples, for each label
         cdef float64[::1, :] confusion_matrices_default = fortran_matrix_float64(num_labels, 4)
-        # A matrix that stores a confusion matrix, which corresponds to the examples covered by a rule, for each label
+        # A matrix that stores a confusion matrix, which corresponds to the examples covered by the previous refinement
+        # of a rule, for each label
         cdef float64[::1, :] confusion_matrices_subsample_default = fortran_matrix_float64(num_labels, 4)
         # An array that stores the predictions of the default rule or NULL, if no default rule is used
         cdef float64* predicted_scores = default_prediction.predictedScores_ if default_prediction != NULL else NULL
