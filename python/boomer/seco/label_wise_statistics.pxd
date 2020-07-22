@@ -7,6 +7,22 @@ from boomer.seco.coverage_statistics cimport CoverageStatistics
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
+    # Attributes:
+
+    cdef const intp[::1] label_indices
+
+    cdef LabelMatrix label_matrix
+
+    cdef const float64[::1, :] uncovered_labels
+
+    cdef const uint8[::1] minority_labels
+
+    cdef const float64[::1, :] confusion_matrices_default
+
+    cdef const float64[::1, :] confusion_matrices_subsample_default
+
+    cdef float64[::1, :] confusion_matrices_covered
+
     # Functions:
 
     cdef void update_search(self, intp statistic_index, uint32 weight)

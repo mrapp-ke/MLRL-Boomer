@@ -17,6 +17,36 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     `LabelWiseStatistics`.
     """
 
+    def __cinit__(self, const intp[::1] label_indices, LabelMatrix label_matrix, const float64[::1, :] uncovered_labels,
+                  const uint8[::1] minority_labels, const float64[::1, :] confusion_matrices_default,
+                  const float64[::1, :] confusion_matrices_subsample_default):
+        """
+        :param label_indices:                           An array of dtype int, shape `(num_considered_labels)`,
+                                                        representing the indices of the labels that should be considered
+                                                        by the search or None, if all labels should be considered
+        :param label_matrix:                            A `LabelMatrix` that provides random access to the labels of the
+                                                        training examples
+        :param uncovered_labels:                        An array of dtype float, shape `(num_examples, num_labels)`,
+                                                        indicating which each examples and labels remain to be covered
+        :param minority_labels:                         An array of dtype uint, shape `(num_labels)`, representing the
+                                                        minority class for each label
+        :param confusion_matrices_default:              An array of dtype float, shape `(4, num_labels)`, representing a
+                                                        confusion matrix that stores the elements of all examples per
+                                                        label
+        :param confusion_matrices_subsample_default:    An array of dtype float, shape `(4, num_labels)`, representing a
+                                                        confusion matrix that stores the elements of the examples that
+                                                        are covered by the current rule per label
+        """
+        self.label_indices = label_indices
+        self.label_matrix = label_matrix
+        self.uncovered_labels = uncovered_labels
+        self.minority_labels = minority_labels
+        self.confusion_matrices_default = confusion_matrices_default
+        self.confusion_matrices_subsample_default = confusion_matrices_subsample_default
+        cdef intp num_labels = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
+        cdef float64[::1, :] confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
+        self.confusion_matrices_covered = confusion_matrices_covered
+
     cdef void update_search(self, intp statistic_index, uint32 weight):
         # TODO
         pass
