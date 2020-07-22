@@ -15,7 +15,7 @@ from libcpp.pair cimport pair
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     """
-    Allows to calculate the predictions of a default rule such that they minimize a loss function that is applied
+    Allows to calculate the predictions of a default rule such that it minimizes a loss function that is applied
     label-wise.
     """
 
