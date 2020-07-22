@@ -87,6 +87,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
             for r in range(num_examples):
                 uncovered = <uint8>uncovered_labels[r, c]
 
+                # We must only consider uncovered labels...
                 if uncovered:
                     true_label = label_matrix.get_label(r, c)
 
@@ -103,10 +104,43 @@ cdef class LabelWiseStatistics(CoverageStatistics):
                             confusion_matrices_default[c, _IN] += 1
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
-        pass
+        # Class members
+        cdef LabelMatrix label_matrix = self.label_matrix
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
+        # The number of labels
+        cdef intp num_labels = minority_labels.shape[0]
+        # The given weight multiplied by 1 or -1, depending on the argument `remove`
+        cdef float64 signed_weight = -<float64>weight if remove else weight
+        # Temporary variables
+        cdef uint8 uncovered, true_label, predicted_label
+        cdef intp c
+
+        for c in range(num_labels):
+            uncovered = <uint8>uncovered_labels[statistic_index, c]
+
+            # We must only consider uncovered labels...
+            if uncovered:
+                true_label = label_matrix.get_label(statistic_index, c)
+                predicted_label = minority_labels[c]
+
+                # Add the current example and label to the confusion matrix for the current label...
+                if true_label:
+                    if predicted_label:
+                        confusion_matrices_subsample_default[c, _RP] += signed_weight
+                    else:
+                        confusion_matrices_subsample_default[c, _RN] += signed_weight
+                else:
+                    if predicted_label:
+                        confusion_matrices_subsample_default[c, _IP] += signed_weight
+                    else:
+                        confusion_matrices_subsample_default[c, _IN] += signed_weight
 
     cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+        # TODO
         pass
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
+        # TODO
         pass
