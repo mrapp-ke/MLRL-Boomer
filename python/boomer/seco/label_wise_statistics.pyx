@@ -11,6 +11,25 @@ DEF _RN = 2
 DEF _RP = 3
 
 
+cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
+    """
+    Allows to search for the best refinement of a rule based on the confusion matrices previously stored by
+    `LabelWiseStatistics`.
+    """
+
+    cdef void update_search(self, intp statistic_index, uint32 weight):
+        # TODO
+        pass
+
+    cdef void reset_search(self):
+        # TODO
+        pass
+
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+        # TODO
+        pass
+
+
 cdef class LabelWiseStatistics(CoverageStatistics):
     """
     Allows to store the elements of confusion matrices that are computed independently for each label.
