@@ -83,15 +83,14 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         # Class members
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
+        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
         # The number of labels considered by the current search
         cdef intp num_labels = sums_of_gradients.shape[0]
         # Temporary variables
+        cdef float64[::1] accumulated_sums_of_hessians
         cdef intp c
 
         # Update the arrays that store the accumulated sums of gradients and hessians...
-        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
-        cdef float64[::1] accumulated_sums_of_hessians
-
         if accumulated_sums_of_gradients is None:
             accumulated_sums_of_gradients = array_float64(num_labels)
             self.accumulated_sums_of_gradients = accumulated_sums_of_gradients
