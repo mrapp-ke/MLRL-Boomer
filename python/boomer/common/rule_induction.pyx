@@ -138,18 +138,17 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
         """
         Induces the default rule.
 
         :param label_matrix:    A `LabelMatrix` that provides random access to the labels of the training examples
-        :param loss:            The loss function to be minimized
         :param model_builder:   The builder, the default rule should be added to
         """
         pass
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder):
@@ -163,7 +162,6 @@ cdef class RuleInduction:
                                             the training examples
         :param num_labels:                  The total number of labels
         :param head_refinement:             The strategy that is used to find the heads of rules
-        :param loss:                        The loss function to be minimized
         :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no
                                             label sub-sampling should be used
         :param instance_sub_sampling:       The strategy that should be used to sub-sample the training examples or
@@ -221,7 +219,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
         cdef DefaultRuleEvaluation default_rule_evaluation = self.default_rule_evaluation
         cdef Statistics statistics = self.statistics
         cdef DefaultPrediction* default_prediction
@@ -234,7 +232,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             del default_prediction
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder):

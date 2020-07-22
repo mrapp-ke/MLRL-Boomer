@@ -14,14 +14,13 @@ cdef class SequentialRuleInduction:
     `ModelBuilder`.
     """
 
-    def __cinit__(self, RuleInduction rule_induction, HeadRefinement head_refinement, Loss loss, list stopping_criteria,
+    def __cinit__(self, RuleInduction rule_induction, HeadRefinement head_refinement, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                   intp min_coverage, intp max_conditions, intp max_head_refinements):
         """
         :param rule_induction:          The algorithm that should be used to induce rules
         :param head_refinement:         The strategy that should be used to find the heads of rules
-        :param loss:                    The loss function to be minimized
         :param stopping_criteria        A list that contains the stopping criteria that should be used to decide whether
                                         additional rules should be induced or not
         :param label_sub_sampling:      The strategy that should be used for sub-sampling the labels each time a new
@@ -45,7 +44,6 @@ cdef class SequentialRuleInduction:
         """
         self.rule_induction = rule_induction
         self.head_refinement = head_refinement
-        self.loss = loss
         self.stopping_criteria = stopping_criteria
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
@@ -73,7 +71,6 @@ cdef class SequentialRuleInduction:
         """
         cdef RuleInduction rule_induction = self.rule_induction
         cdef HeadRefinement head_refinement = self.head_refinement
-        cdef Loss loss = self.loss
         cdef list stopping_criteria = self.stopping_criteria
         cdef LabelSubSampling label_sub_sampling = self.label_sub_sampling
         cdef InstanceSubSampling instance_sub_sampling = self.instance_sub_sampling
@@ -92,12 +89,12 @@ cdef class SequentialRuleInduction:
         cdef bint success
 
         # Induce default rule...
-        rule_induction.induce_default_rule(label_matrix, loss, model_builder)
+        rule_induction.induce_default_rule(label_matrix, model_builder)
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule...
             success = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
-                                                 loss, label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                                  pruning, post_processor, min_coverage, max_conditions,
                                                  max_head_refinements, rng, model_builder)
 

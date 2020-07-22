@@ -3,7 +3,6 @@ from boomer.common.rules cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport FeatureMatrix, RuleInduction
 from boomer.common.head_refinement cimport HeadRefinement
 from boomer.common.statistics cimport LabelMatrix
-from boomer.common.losses cimport Loss
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
@@ -16,8 +15,6 @@ cdef class SequentialRuleInduction:
     cdef RuleInduction rule_induction
 
     cdef HeadRefinement head_refinement
-
-    cdef Loss loss
 
     cdef list stopping_criteria
 

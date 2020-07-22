@@ -3,7 +3,6 @@ from boomer.common._tuples cimport IndexedFloat32
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.statistics cimport LabelMatrix, Statistics
-from boomer.common.losses cimport Loss
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
@@ -76,10 +75,10 @@ cdef class RuleInduction:
 
     # Functions:
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder)
+    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder)
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder)
@@ -97,10 +96,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Functions:
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder)
+    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder)
 
     cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, Loss loss, LabelSubSampling label_sub_sampling,
+                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder)
