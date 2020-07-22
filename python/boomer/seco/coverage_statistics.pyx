@@ -18,7 +18,8 @@ cdef class CoverageStatistics(Statistics):
         pass
 
     cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
-        pass
+        # This function is equivalent to the function `update_covered_statistic`...
+        self.update_covered_statistic(statistic_index, weight, False)
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         pass
