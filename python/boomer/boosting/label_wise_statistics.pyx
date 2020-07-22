@@ -83,7 +83,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         # Class members
         cdef float64[::1] sums_of_gradients = self.sums_of_gradients
         cdef float64[::1] sums_of_hessians = self.sums_of_hessians
-        # The number of labels
+        # The number of labels considered by the current search
         cdef intp num_labels = sums_of_gradients.shape[0]
         # Temporary variables
         cdef intp c
