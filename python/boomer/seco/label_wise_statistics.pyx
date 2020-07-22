@@ -46,7 +46,8 @@ cdef class LabelWiseStatistics(CoverageStatistics):
             for r in range(num_examples):
                 true_label = label_matrix.get_label(r, c)
 
-                # If the default rule's prediction for the current example and label is incorrect...
+                # Increment the total number of uncovered labels, if the default rule's prediction for the current
+                # example and label is incorrect...
                 if true_label != predicted_label:
                     sum_uncovered_labels += 1
 
