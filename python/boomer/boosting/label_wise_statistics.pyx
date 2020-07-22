@@ -159,7 +159,7 @@ cdef class LabelWiseStatistics(GradientStatistics):
         cdef float64[:, ::1] hessians = c_matrix_float64(num_examples, num_labels)
         # An array that stores the column-wise sums of the matrix of hessians
         cdef float64[::1] total_sums_of_hessians = array_float64(num_labels)
-        # An array that stores the predictions of the default rule
+        # An array that stores the predictions of the default rule or NULL, if no default rule is used
         cdef float64* predicted_scores = default_prediction.predictedScores_ if default_prediction != NULL else NULL
         # Temporary variables
         cdef pair[float64, float64] gradient_and_hessian
