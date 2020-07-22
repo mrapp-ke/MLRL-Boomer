@@ -17,9 +17,9 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef const uint8[::1] minority_labels
 
-    cdef const float64[::1, :] confusion_matrices_default
+    cdef const float64[::1, :] confusion_matrices_total
 
-    cdef const float64[::1, :] confusion_matrices_subsample_default
+    cdef const float64[::1, :] confusion_matrices_subset
 
     cdef float64[::1, :] confusion_matrices_covered
 
@@ -46,9 +46,9 @@ cdef class LabelWiseStatistics(CoverageStatistics):
 
     cdef uint8[::1] minority_labels
 
-    cdef float64[::1, :] confusion_matrices_default
+    cdef float64[::1, :] confusion_matrices_total
 
-    cdef float64[::1, :] confusion_matrices_subsample_default
+    cdef float64[::1, :] confusion_matrices_subset
 
     # Functions:
 
