@@ -201,15 +201,11 @@ cdef class ExampleWiseStatistics(GradientStatistics):
             loss_function.calculate_gradients_and_hessians(label_matrix, r, &current_scores[r, :][0], gradients[r, :],
                                                            hessians[r, :])
 
-        # Store the gradients...
+        # Store class members...
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
-
-        # Store the Hessians...
         self.hessians = hessians
         self.total_sums_of_hessians = total_sums_of_hessians
-
-        # Store the label matrix and the currently predicted scores...
         self.label_matrix = label_matrix
         self.current_scores = current_scores
 
