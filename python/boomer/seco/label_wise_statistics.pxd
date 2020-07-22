@@ -3,11 +3,14 @@ from boomer.common.statistics cimport LabelMatrix, RefinementSearch, Decomposabl
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.coverage_statistics cimport CoverageStatistics
+from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     # Attributes:
+
+    cdef LabelWiseRuleEvaluation rule_evaluation
 
     cdef const intp[::1] label_indices
 
@@ -25,6 +28,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef float64[::1, :] accumulated_confusion_matrices_covered
 
+    cdef LabelWisePrediction* prediction
+
     # Functions:
 
     cdef void update_search(self, intp statistic_index, uint32 weight)
@@ -39,6 +44,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 cdef class LabelWiseStatistics(CoverageStatistics):
 
     # Attributes:
+
+    cdef LabelWiseRuleEvaluation rule_evaluation
 
     cdef LabelMatrix label_matrix
 
