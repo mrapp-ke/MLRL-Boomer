@@ -164,7 +164,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
-        stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
+        stopping_criteria.append(UncoveredLabelsCriterion(statistics, 0))
         return SequentialRuleInduction(rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
                                        instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
                                        max_conditions, max_head_refinements)
