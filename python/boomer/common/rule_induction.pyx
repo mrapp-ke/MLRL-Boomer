@@ -220,10 +220,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         del self.cache_global
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, Loss loss, ModelBuilder model_builder):
+        cdef DefaultRuleEvaluation default_rule_evaluation = self.default_rule_evaluation
         cdef DefaultPrediction* default_prediction
 
         try:
-            default_prediction = loss.calculate_default_prediction(label_matrix)
+            default_prediction = loss.calculate_default_prediction(label_matrix) # TODO Remove
+            default_prediction = default_rule_evaluation.calculate_default_prediction(label_matrix):
             model_builder.set_default_rule(default_prediction)
         finally:
             del default_prediction
