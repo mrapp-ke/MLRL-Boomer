@@ -198,8 +198,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     the conditions are considered.
     """
 
-    def __cinit__(self):
+    def __cinit__(self, DefaultRuleEvaluation default_rule_evaluation):
+        """
+        :param default_rule_evaluation: The `DefaultRuleEvaluation` to be used for calculating the scores that are
+                                        predicted by the default rule
+        """
         self.cache_global = new unordered_map[intp, IndexedArray*]()
+        self.default_rule_evaluation = default_rule_evaluation
 
     def __dealloc__(self):
         cdef unordered_map[intp, IndexedArray*]* cache_global = self.cache_global

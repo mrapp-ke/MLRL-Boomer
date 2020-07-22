@@ -8,6 +8,7 @@ from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling,
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.head_refinement cimport HeadRefinement
+from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
 
 from libcpp.unordered_map cimport unordered_map
 
@@ -87,6 +88,8 @@ cdef class RuleInduction:
 cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
+
+    cdef DefaultRuleEvaluation default_rule_evaluation
 
     cdef unordered_map[intp, IndexedArray*]* cache_global
 
