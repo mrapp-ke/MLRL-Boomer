@@ -6,7 +6,7 @@ Provides classes that implement strategies for pruning classification rules.
 from boomer.common._arrays cimport float32, float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
-from boomer.common.losses cimport RefinementSearch
+from boomer.common.statistics cimport RefinementSearch
 from boomer.common.rule_evaluation cimport Prediction
 
 from cython.operator cimport dereference, postincrement
@@ -22,7 +22,7 @@ cdef class Pruning:
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
-                                         Loss loss, HeadRefinement head_refinement):
+                                         Statistics statistics, HeadRefinement head_refinement):
         """
         Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is pruned
         by removing individual conditions in a way that improves over its original quality score as measured on the
@@ -43,7 +43,7 @@ cdef class Pruning:
         :param label_indices:               An array of dtype int, shape `(num_predicted_labels)`, representing the
                                             indices of the labels for which the existing rule predicts or None, if the
                                             rule predicts for all labels
-        :param loss:                        The loss function to be minimized
+        :param statistics:                  The statistics, which served as the bases for learning the existing rule
         :param head_refinement:             The strategy that is used to find the heads of rules
         """
         pass
@@ -61,7 +61,7 @@ cdef class IREP(Pruning):
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
-                                         Loss loss, HeadRefinement head_refinement):
+                                         Statistics statistics, HeadRefinement head_refinement):
         # The total number of training examples
         cdef intp num_examples = covered_examples_mask.shape[0]
         # The number of conditions of the existing rule
@@ -77,14 +77,14 @@ cdef class IREP(Pruning):
         cdef intp feature_index, num_indexed_values, i, n, r, start, end
         cdef bint uncovered
 
-        # Tell the loss function to start a new search...
-        loss.reset_examples()
-        cdef RefinementSearch refinement_search = loss.begin_search(label_indices)
+        # Reset the statistics and start a new search...
+        statistics.reset_statistics()
+        cdef RefinementSearch refinement_search = statistics.begin_search(label_indices)
 
-        # Tell the loss function about all examples in the prune set that are covered by the existing rule...
+        # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
             if weights[i] == 0:
-                loss.add_sampled_example(i, 1)
+                statistics.add_sampled_statistic(i, 1)
 
                 if covered_examples_mask[i] == covered_examples_target:
                     refinement_search.update_search(i, 1)
@@ -122,8 +122,8 @@ cdef class IREP(Pruning):
             indexed_values = dereference(indexed_array).data
             num_indexed_values = dereference(indexed_array).num_elements
 
-            # Tell the loss function to start a new search when processing a new condition...
-            refinement_search = loss.begin_search(label_indices)
+            # Start a new search when processing a new condition...
+            refinement_search = statistics.begin_search(label_indices)
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)
@@ -146,7 +146,7 @@ cdef class IREP(Pruning):
                     start = 0
                     uncovered = (comparator == Comparator.GR)
 
-            # Tell the loss function about the examples in range [start, end)...
+            # Tell the statistics about the examples in range [start, end)...
             for r in range(start, end):
                 i = indexed_values[r].index
 
@@ -166,17 +166,17 @@ cdef class IREP(Pruning):
                 num_pruned_conditions = (num_conditions - n)
 
             # If at least one condition remains to be processed, we must update the array that is used to keep track of
-            # the covered examples and notify the loss function about the updated sub-sample...
+            # the covered examples and notify the statistics about the updated sub-sample...
             if (n + 1) < num_conditions:
                 if not uncovered:
-                    loss.reset_examples()
+                    statistics.reset_statistics()
                     current_covered_examples_target = n
 
                 for r in range(start, end):
                     i = indexed_values[r].index
 
                     if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
-                        loss.update_covered_example(i, 1, uncovered)
+                        statistics.update_covered_statistic(i, 1, uncovered)
                         current_covered_examples_mask[i] = n
 
             postincrement(iterator)

@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.losses cimport RefinementSearch
+from boomer.common.statistics cimport RefinementSearch
 from boomer.common.rule_evaluation cimport Prediction
 
 
