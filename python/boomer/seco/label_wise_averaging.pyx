@@ -218,49 +218,59 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
         return new DefaultPrediction(num_labels, default_rule)
 
-    cdef void reset_covered_examples(self):
+    cdef void reset_sampled_examples(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
-        cdef LabelMatrix label_matrix = self.label_matrix
-        cdef intp num_examples = label_matrix.num_examples
-        cdef intp num_labels = label_matrix.num_labels
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef uint8[::1] minority_labels = self.minority_labels
-        cdef intp label_index, example_index
-        cdef uint8 true_label, predicted_label
-
-        self.confusion_matrices_subsample_default[:] = 0
-        confusion_matrices_default[:] = 0
-
-        for label_index in range(num_labels):
-            for example_index in range(num_examples):
-                if uncovered_labels[example_index, label_index] > 0:
-                    true_label = label_matrix.get_label(example_index, label_index)
-                    predicted_label = minority_labels[label_index]
-
-                    if true_label == 0:
-                        if predicted_label == 0:
-                            confusion_matrices_default[label_index, _IN] += 1
-                        elif predicted_label == 1:
-                            confusion_matrices_default[label_index, _IP] += 1
-                    elif true_label == 1:
-                        if predicted_label == 0:
-                            confusion_matrices_default[label_index, _RN] += 1
-                        elif predicted_label == 1:
-                            confusion_matrices_default[label_index, _RP] += 1
-
-    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
-        cdef LabelMatrix label_matrix = self.label_matrix
-        cdef uint8[::1] minority_labels = self.minority_labels
-        cdef intp num_labels = minority_labels.shape[0]
+        confusion_matrices_default[:, :] = 0
         cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
-        cdef float64 signed_weight = -<float64>weight if remove else weight
-        cdef intp c
+        confusion_matrices_subsample_default[:, :] = 0
+
+    cdef void add_sampled_example(self, intp example_index, uint32 weight):
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
+        cdef intp num_labels = true_labels.shape[1]
         cdef uint8 true_label, predicted_label
+        cdef intp c
 
         for c in range(num_labels):
             if uncovered_labels[example_index, c] > 0:
-                true_label = label_matrix.get_label(example_index, c)
+                true_label = true_labels[example_index, c]
+                predicted_label = minority_labels[c]
+
+                if true_label == 0:
+                    if predicted_label == 0:
+                        confusion_matrices_default[c, _IN] += weight
+                        confusion_matrices_subsample_default[c, _IN] += weight
+                    elif predicted_label == 1:
+                        confusion_matrices_default[c, _IP] += weight
+                        confusion_matrices_subsample_default[c, _IP] += weight
+                elif true_label == 1:
+                    if predicted_label == 0:
+                        confusion_matrices_default[c, _RN] += weight
+                        confusion_matrices_subsample_default[c, _RN] += weight
+                    elif predicted_label == 1:
+                        confusion_matrices_default[c, _RP] += weight
+                        confusion_matrices_subsample_default[c, _RP] += weight
+
+    cdef void reset_covered_examples(self):
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
+        confusion_matrices_subsample_default[:, :] = 0
+
+    cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
+        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef uint8[::1] minority_labels = self.minority_labels
+        cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
+        cdef intp num_labels = true_labels.shape[1]
+        cdef float64 signed_weight = -<float64>weight if remove else weight
+        cdef uint8 true_label, predicted_label
+        cdef intp c
+
+        for c in range(num_labels):
+            if uncovered_labels[example_index, c] > 0:
+                true_label = true_labels[example_index, c]
                 predicted_label = minority_labels[c]
 
                 if true_label == 0:
