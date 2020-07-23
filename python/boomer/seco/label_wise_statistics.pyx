@@ -114,7 +114,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef const uint8[::1] minority_labels = self.minority_labels
         cdef const float64[::1, :] confusion_matrices_total = self.confusion_matrices_total
         cdef const float64[::1, :] confusion_matrices_subset = self.confusion_matrices_subset
-        cdef float64[::1, :] confusion_matrices_covered = self.confusion_matrices_covered
+        cdef float64[::1, :] confusion_matrices_covered = self.accumulated_confusion_matrices_covered if accumulated else self.confusion_matrices_covered
 
         # Calculate and returns the predictions, as well as corresponding quality scores...
         rule_evaluation.calculate_label_wise_prediction(label_indices, minority_labels, confusion_matrices_total,
