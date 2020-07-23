@@ -19,7 +19,7 @@ cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     example-wise.
     """
 
-    def __cinit__(self, ExampleWiseLossFunction loss_function, float64, l2_regularization_weight):
+    def __cinit__(self, ExampleWiseLossFunction loss_function, float64 l2_regularization_weight):
         """
         :param loss_function:               The loss function to be minimized
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
