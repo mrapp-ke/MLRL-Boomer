@@ -198,7 +198,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     def __cinit__(self, DefaultRuleEvaluation default_rule_evaluation, Statistics statistics):
         """
         :param default_rule_evaluation: The `DefaultRuleEvaluation` to be used for calculating the scores that are
-                                        predicted by the default rule
+                                        predicted by the default rule or None, if no default rule should be induced
         :param statistics:              The `Statistics` to be used for storing the statistics, which serve as the basis
                                         for learning new rules or refining existing ones
         """
@@ -222,10 +222,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
         cdef DefaultRuleEvaluation default_rule_evaluation = self.default_rule_evaluation
         cdef Statistics statistics = self.statistics
-        cdef DefaultPrediction* default_prediction
+        cdef DefaultPrediction* default_prediction = NULL
 
         try:
-            default_prediction = default_rule_evaluation.calculate_default_prediction(label_matrix)
+            if default_rule_evaluation is not None:
+                statistics = self.statistics
+                default_prediction = default_rule_evaluation.calculate_default_prediction(label_matrix)
+
             statistics.apply_default_prediction(label_matrix, default_prediction)
             model_builder.set_default_rule(default_prediction)
         finally:
