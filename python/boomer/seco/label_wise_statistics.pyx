@@ -89,7 +89,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         # The number of elements in a confusion matrix
         cdef intp num_confusion_matrix_elements = confusion_matrices_covered.shape[1]
         # Temporary variables
-        cdef intp c
+        cdef intp c, i
 
         # Update the matrix that stores the accumulated confusion matrices...
         if accumulated_confusion_matrices_covered is None:
