@@ -112,14 +112,14 @@ cdef class LabelWiseRuleEvaluation:
             crp = confusion_matrices_covered[c, <intp>Element.RP]
 
             if uncovered:
-                cin = confusion_matrices_subset[c, <intp>Element.IN] - cin
-                cip = confusion_matrices_subset[c, <intp>Element.IP] - cip
-                crn = confusion_matrices_subset[c, <intp>Element.RN] - crn
-                crp = confusion_matrices_subset[c, <intp>Element.RP] - crp
                 uin = cin + confusion_matrices_total[l, <intp>Element.IN] - confusion_matrices_subset[l, <intp>Element.IN]
                 uip = cip + confusion_matrices_total[l, <intp>Element.IP] - confusion_matrices_subset[l, <intp>Element.IP]
                 urn = crn + confusion_matrices_total[l, <intp>Element.RN] - confusion_matrices_subset[l, <intp>Element.RN]
                 urp = crp + confusion_matrices_total[l, <intp>Element.RP] - confusion_matrices_subset[l, <intp>Element.RP]
+                cin = confusion_matrices_subset[c, <intp>Element.IN] - cin
+                cip = confusion_matrices_subset[c, <intp>Element.IP] - cip
+                crn = confusion_matrices_subset[c, <intp>Element.RN] - crn
+                crp = confusion_matrices_subset[c, <intp>Element.RP] - crp
             else:
                 uin = confusion_matrices_total[l, <intp>Element.IN] - cin
                 uip = confusion_matrices_total[l, <intp>Element.IP] - cip
