@@ -147,10 +147,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return RuleListBuilder(use_mask=True, default_rule_at_end=True)
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
-        default_rule_evaluation = LabelWiseDefaultRuleEvaluation()
+        default_rule_evaluation = self.__create_default_rule_evaluation()
         heuristic = self.__create_heuristic()
-        rule_evaluation = LabelWiseRuleEvaluation(heuristic)
-        statistics = LabelWiseStatistics(rule_evaluation)
+        statistics = self.__create_statistics(heuristic)
         rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
         lift_function = self.__create_lift_function(num_labels)
         head_refinement = self.__create_head_refinement(lift_function)
@@ -195,18 +194,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return LabelWiseDefaultRuleEvaluation()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_rule_evaluation(self, heuristic: Heuristic):
+    def __create_statistics(self, heuristic: Heuristic) -> CoverageStatistics:
         loss = self.loss
 
         if loss == AVERAGING_LABEL_WISE:
-            return LabelWiseRuleEvaluation(heuristic)
-        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
-
-    def __create_statistics(self, rule_evaluation) -> CoverageStatistics:
-        loss = self.loss
-
-        if loss == AVERAGING_LABEL_WISE:
-            return LabelWiseStatistics(rule_evaluation)
+            return LabelWiseStatistics(LabelWiseRuleEvaluation(heuristic))
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:
