@@ -3,7 +3,7 @@ from boomer.common.statistics cimport LabelMatrix, RefinementSearch, Decomposabl
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics
-from boomer.boosting.losses cimport LabelWiseLossFunction
+from boomer.boosting.label_wise_losses cimport LabelWiseLossFunction
 from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
 
 

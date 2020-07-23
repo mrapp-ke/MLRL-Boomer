@@ -3,7 +3,7 @@ from boomer.common.statistics cimport LabelMatrix, RefinementSearch, NonDecompos
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics
-from boomer.boosting.losses cimport ExampleWiseLossFunction
+from boomer.boosting.example_wise_losses cimport ExampleWiseLossFunction
 from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation
 
 

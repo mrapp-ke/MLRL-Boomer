@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport intp, float64
 from boomer.common.statistics cimport LabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
-from boomer.boosting.losses cimport LabelWiseLossFunction
+from boomer.boosting.label_wise_losses cimport LabelWiseLossFunction
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):

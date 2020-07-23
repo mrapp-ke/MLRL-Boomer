@@ -5,14 +5,14 @@
 
 Provides a scikit-learn implementations of boosting algorithms
 """
+from boomer.boosting.example_wise_losses import ExampleWiseLogisticLossFunction
 from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
 from boomer.boosting.example_wise_statistics import ExampleWiseStatistics
 from boomer.boosting.head_refinement import FullHeadRefinement
+from boomer.boosting.label_wise_losses import LabelWiseLossFunction, LabelWiseLogisticLossFunction, \
+    LabelWiseSquaredErrorLossFunction
 from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
 from boomer.boosting.label_wise_statistics import LabelWiseStatistics
-from boomer.boosting.losses import LabelWiseLogisticLossFunction, LabelWiseSquaredErrorLossFunction, \
-    ExampleWiseLogisticLossFunction
-from boomer.boosting.losses import LabelWiseLossFunction
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.boosting.statistics import GradientStatistics
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
