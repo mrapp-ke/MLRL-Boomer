@@ -218,7 +218,7 @@ cdef class LabelWiseAveraging(CoverageLoss):
 
         return new DefaultPrediction(num_labels, default_rule)
 
-    cdef void reset_examples(self):
+    cdef void reset_covered_examples(self):
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef LabelMatrix label_matrix = self.label_matrix
         cdef intp num_examples = label_matrix.num_examples
