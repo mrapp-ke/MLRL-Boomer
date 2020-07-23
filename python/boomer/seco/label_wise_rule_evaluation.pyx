@@ -127,6 +127,7 @@ cdef class LabelWiseRuleEvaluation:
                 urp = confusion_matrices_total[l, <intp>Element.RP] - crp
 
             score = heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            quality_scores[c] = score
             overall_quality_score += score
 
         overall_quality_score /= num_predictions
