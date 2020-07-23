@@ -16,12 +16,10 @@ cdef class CoverageLoss(Loss):
         pass
 
     cdef void reset_sampled_examples(self):
-        # This function is equivalent to the function `reset_covered_examples`...
-        self.reset_covered_examples()
+        pass
 
     cdef void add_sampled_example(self, intp example_index, uint32 weight):
-        # This function is equivalent to the function `update_covered_example`...
-        self.update_covered_example(example_index, weight, False)
+        pass
 
     cdef void reset_covered_examples(self):
         pass
