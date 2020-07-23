@@ -45,6 +45,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         self.confusion_matrices_subset = confusion_matrices_subset
         cdef intp num_labels = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
         cdef float64[::1, :] confusion_matrices_covered = fortran_matrix_float64(num_labels, 4)
+        confusion_matrices_covered[:, :] = 0
         self.confusion_matrices_covered = confusion_matrices_covered
         self.accumulated_confusion_matrices_covered = None
         cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
