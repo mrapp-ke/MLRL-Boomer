@@ -154,7 +154,7 @@ class Boomer(MLRuleLearner):
         head_refinement = self.__create_head_refinement(loss_function)
         l2_regularization_weight = self.__create_l2_regularization_weight()
         default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
-        rule_evaluation = self.__create_rule_evaluation(l2_regularization_weight)
+        rule_evaluation = self.__create_rule_evaluation(loss_function, l2_regularization_weight)
         statistics = self.__create_statistics(loss_function, rule_evaluation)
         rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
         return SequentialRuleInduction(rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
@@ -182,31 +182,22 @@ class Boomer(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_default_rule_evaluation(self, loss_function, l2_regularization_weight: float) -> DefaultRuleEvaluation:
-        loss = self.loss
-
-        if loss == LOSS_LABEL_WISE_SQUARED_ERROR or loss == LOSS_LABEL_WISE_LOGISTIC:
+        if isinstance(loss_function, LabelWiseLossFunction):
             return LabelWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
-        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+        else:
             return ExampleWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
-        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_rule_evaluation(self, l2_regularization_weight: float):
-        loss = self.loss
-
-        if loss == LOSS_LABEL_WISE_SQUARED_ERROR or loss == LOSS_LABEL_WISE_LOGISTIC:
+    def __create_rule_evaluation(self, loss_function, l2_regularization_weight: float):
+        if isinstance(loss_function, LabelWiseLossFunction):
             return LabelWiseRuleEvaluation(l2_regularization_weight)
-        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+        else:
             return ExampleWiseRuleEvaluation(l2_regularization_weight)
-        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_statistics(self, loss_function, rule_evaluation) -> GradientStatistics:
-        loss = self.loss
-
-        if loss == LOSS_LABEL_WISE_SQUARED_ERROR or loss == LOSS_LABEL_WISE_LOGISTIC:
+        if isinstance(loss_function, LabelWiseLossFunction):
             return LabelWiseStatistics(loss_function, rule_evaluation)
-        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+        else:
             return ExampleWiseStatistics(loss_function, rule_evaluation)
-        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_head_refinement(self, loss_function) -> HeadRefinement:
         head_refinement = self.head_refinement
