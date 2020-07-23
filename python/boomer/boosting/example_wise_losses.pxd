@@ -83,9 +83,11 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
     cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
 
-    cdef void reset_examples(self)
+    cdef void reset_sampled_examples(self)
 
     cdef void add_sampled_example(self, intp example_index, uint32 weight)
+
+    cdef void reset_covered_examples(self)
 
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 

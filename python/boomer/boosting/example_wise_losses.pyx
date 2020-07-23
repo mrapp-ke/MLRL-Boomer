@@ -400,7 +400,7 @@ cdef class ExampleWiseLoss(DifferentiableLoss):
 
         return new DefaultPrediction(num_labels, predicted_scores)
 
-    cdef void reset_examples(self):
+    cdef void reset_covered_examples(self):
         # Class members
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians

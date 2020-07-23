@@ -255,16 +255,13 @@ cdef class Loss:
         """
         pass
 
-    cdef void reset_examples(self):
+    cdef void reset_sampled_examples(self):
         """
         Notifies the loss function that the examples, which should be considered in the following for learning a new
-        rule or refining an existing one, have changed. The indices of the respective examples must be provided via
-        subsequent calls to the function `add_sampled_example` or `update_covered_example`.
+        rule have changed. The indices of the respective examples must be provided via subsequent calls to the function
+        `add_sampled_example`.
 
-        This function must be invoked before a new rule is learned from scratch (as each rule may be learned on a
-        different sub-sample of the training data), as well as each time an existing rule has been refined, i.e.
-        when a new condition has been added to its body (because this results in fewer examples being covered by the
-        refined rule).
+        This function must be invoked before a new rule is learned from scratch.
 
         This function is supposed to reset any non-global internal state that only holds for a certain set of examples
         and therefore becomes invalid when different examples are used, e.g. statistics about the ground truth labels of
@@ -287,6 +284,21 @@ cdef class Loss:
 
         :param example_index:   The index of an example that should be considered
         :param weight:          The weight of the example that should be considered
+        """
+        pass
+
+    cdef void reset_covered_examples(self):
+        """
+        Notifies the loss function that the examples, which should be considered in the following for refining an
+        existing rule, have changed. The indices of the respective examples must be provided via subsequent calls to the
+        function `update_covered_example`.
+
+        This function must be invoked each time an existing rule has been refined, i.e. when a new condition has been
+        added to its body, because this results in fewer examples being covered by the refined rule.
+
+        This function is supposed to reset any non-global internal state that only holds for a certain set of examples
+        and therefore becomes invalid when different examples are used, e.g. statistics about the ground truth labels of
+        particular examples.
         """
         pass
 
