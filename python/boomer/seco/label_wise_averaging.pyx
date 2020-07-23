@@ -225,18 +225,18 @@ cdef class LabelWiseAveraging(CoverageLoss):
         confusion_matrices_subsample_default[:, :] = 0
 
     cdef void add_sampled_example(self, intp example_index, uint32 weight):
-        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef LabelMatrix label_matrix = self.label_matrix
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[::1, :] confusion_matrices_default = self.confusion_matrices_default
         cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
-        cdef intp num_labels = true_labels.shape[1]
+        cdef intp num_labels = minority_labels.shape[0]
         cdef uint8 true_label, predicted_label
         cdef intp c
 
         for c in range(num_labels):
             if uncovered_labels[example_index, c] > 0:
-                true_label = true_labels[example_index, c]
+                true_label = label_matrix.get_label(example_index, c)
                 predicted_label = minority_labels[c]
 
                 if true_label == 0:
@@ -259,18 +259,18 @@ cdef class LabelWiseAveraging(CoverageLoss):
         confusion_matrices_subsample_default[:, :] = 0
 
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove):
-        cdef uint8[::1, :] true_labels = self.true_labels
+        cdef LabelMatrix label_matrix = self.label_matrix
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[::1, :] confusion_matrices_subsample_default = self.confusion_matrices_subsample_default
-        cdef intp num_labels = true_labels.shape[1]
+        cdef intp num_labels = minority_labels.shape[0]
         cdef float64 signed_weight = -<float64>weight if remove else weight
         cdef uint8 true_label, predicted_label
         cdef intp c
 
         for c in range(num_labels):
             if uncovered_labels[example_index, c] > 0:
-                true_label = true_labels[example_index, c]
+                true_label = label_matrix.get_label(example_index, c)
                 predicted_label = minority_labels[c]
 
                 if true_label == 0:
