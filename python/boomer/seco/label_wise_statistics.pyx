@@ -201,9 +201,8 @@ cdef class LabelWiseStatistics(CoverageStatistics):
             predicted_label = minority_labels[c]
 
             # Reset confusion matrices for the current label to 0...
-            for r in range(num_examples):
-                confusion_matrices_total[c, r] = 0
-                confusion_matrices_subset[c, r] = 0
+            confusion_matrices_total[c, :] = 0
+            confusion_matrices_subset[c, :] = 0
 
             for r in range(num_examples):
                 uncovered = <uint8>uncovered_labels[r, c]
