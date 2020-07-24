@@ -82,9 +82,11 @@ cdef class Statistics:
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction)
 
-    cdef void reset_statistics(self)
+    cdef void reset_sampled_statistics(self)
 
     cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight)
+
+    cdef void reset_covered_statistics(self)
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove)
 

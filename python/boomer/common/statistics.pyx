@@ -249,16 +249,13 @@ cdef class Statistics:
         """
         pass
 
-    cdef void reset_statistics(self):
+    cdef void reset_sampled_statistics(self):
         """
-        Resets the statistics which should be considered in the following for learning a new rule or refining an
-        existing one. The indices of the respective statistics must be provided via subsequent calls to the function
-        `add_sampled_statistic` or `update_covered_statistic`.
+        Resets the statistics which should be considered in the following for learning a new rule. The indices of the
+        respective statistics must be provided via subsequent calls to the function `add_sampled_statistic`.
 
-        This function must be invoked before a new rule is learned from scratch (as each rule may be learned on a
-        different sub-sample of the statistics), as well as each time an existing rule has been refined, i.e., when a
-        new condition has been added to its body (because this results in a subset of the statistics being covered by
-        the refined rule).
+        This function must be invoked before a new rule is learned from scratch, as each rule may be learned on a
+        different sub-sample of the statistics.
 
         This function is supposed to reset any non-global internal state that only holds for a certain subset of the
         available statistics and therefore becomes invalid when a different subset of the statistics should be used.
@@ -271,15 +268,28 @@ cdef class Statistics:
         from scratch.
 
         This function must be called repeatedly for each statistic that should be considered, immediately after the
-        invocation of the function `reset_statistics`.
+        invocation of the function `reset_sampled_statistics`.
 
         This function is supposed to update any internal state that relates to the considered statistics, i.e., to
         compute and store local information that is required by the other function that will be called later. Any
-        information computed by this function is expected to be reset when invoking the function `reset_statistics` for
-        the next time.
+        information computed by this function is expected to be reset when invoking the function
+        `reset_sampled_statistics` for the next time.
 
         :param statistic_index: The index of the statistic that should be considered
         :param weight:          The weight of the statistic that should be considered
+        """
+        pass
+
+    cdef void reset_covered_statistics(self):
+        """
+        Resets the statistics which should be considered in the following for refining an existing rule. The indices of
+        the respective statistics must be provided via subsequent calls to the function `update_covered_statistic`.
+
+        This function must be invoked each time an existing rule has been refined, i.e., when a new condition has been
+        added to its body, because this results in a subset of the statistics being covered by the refined rule.
+
+        This function is supposed to reset any non-global internal state that only holds for a certain subset of the
+        available statistics and therefore becomes invalid when a different subset of the statistics should be used.
         """
         pass
 
@@ -289,15 +299,15 @@ cdef class Statistics:
         in the following for refining an existing rule.
 
         This function must be called repeatedly for each statistic that is covered by the existing rule, immediately
-        after the invocation of the function `reset_statistics`.
+        after the invocation of the function `reset_covered_statistics`.
 
         Alternatively, this function may be used to indicate that a statistic, which has previously been passed to this
         function, should not be considered anymore by setting the argument `remove` accordingly.
 
         This function is supposed to update any internal state that relates to the considered statistics, i.e., to
         compute and store local information that is required by the other function that will be called later. Any
-        information computed by this function is expected to be reset when invoking the function `reset_statistics` for
-        the next time.
+        information computed by this function is expected to be reset when invoking the function
+        `reset_covered_statistics` for the next time.
 
         :param statistic_index: The index of the statistic that should be updated
         :param weight:          The weight of the statistic that should be updated
@@ -329,8 +339,7 @@ cdef class Statistics:
         """
         Updates a specific statistic based on the predictions of a newly induced rule.
 
-        This function must be called for each statistic that is covered by the new rule before learning the next rule,
-        i.e., prior to the next invocation of the function `reset_statistics`.
+        This function must be called for each statistic that is covered by the new rule before learning the next rule.
 
         :param statistic_index: The index of the statistic to be updated
         :param label_indices:   An array of dtype `intp`, shape `(head.numPredictions_)`, representing the indices of

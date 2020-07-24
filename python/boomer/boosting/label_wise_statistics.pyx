@@ -187,7 +187,7 @@ cdef class LabelWiseStatistics(GradientStatistics):
         self.label_matrix = label_matrix
         self.current_scores = current_scores
 
-    cdef void reset_statistics(self):
+    cdef void reset_covered_statistics(self):
         # Class members
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians

@@ -183,37 +183,54 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         self.confusion_matrices_total = confusion_matrices_total
         self.confusion_matrices_subset = confusion_matrices_subset
 
-    cdef void reset_statistics(self):
+    cdef void reset_sampled_statistics(self):
+        # Class members
+        cdef float64[::1, :] confusion_matrices_total = self.confusion_matrices_total
+        cdef float64[::1, :] confusion_matrices_subset = self.confusion_matrices_subset
+        # The number of examples
+        cdef intp num_examples = confusion_matrices_total.shape[0]
+        # The number of labels
+        cdef intp num_labels = confusion_matrices_total.shape[1]
+        # Temporary variables
+        cdef intp r, c
+
+        # Reset confusion matrices to 0...
+        for r in range(num_examples):
+            for c in range(num_labels):
+                confusion_matrices_total[r, c] = 0
+                confusion_matrices_subset[r,c] = 0
+
+    cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
         # Class members
         cdef LabelMatrix label_matrix = self.label_matrix
         cdef float64[::1, :] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[::1, :] confusion_matrices_total = self.confusion_matrices_total
         cdef float64[::1, :] confusion_matrices_subset = self.confusion_matrices_subset
-        # The number of examples
-        cdef intp num_examples = label_matrix.num_examples
         # The number of labels
-        cdef intp num_labels = label_matrix.num_labels
+        cdef intp num_labels = minority_labels.shape[0]
         # Temporary variables
         cdef uint8 uncovered, true_label, predicted_label
-        cdef intp c, r, element
+        cdef intp c, element
 
         for c in range(num_labels):
-            predicted_label = minority_labels[c]
+            uncovered = <uint8>uncovered_labels[statistic_index, c]
 
-            # Reset confusion matrices for the current label to 0...
-            confusion_matrices_total[c, :] = 0
-            confusion_matrices_subset[c, :] = 0
+            # Only uncovered labels must be considered...
+            if uncovered:
+                # Add the current example and label to the confusion matrix for the current label...
+                true_label = label_matrix.get_label(statistic_index, c)
+                predicted_label = minority_labels[c]
+                element = __get_confusion_matrix_element(true_label, predicted_label)
+                confusion_matrices_total[c, element] += weight
+                confusion_matrices_subset[c, element] += weight
 
-            for r in range(num_examples):
-                uncovered = <uint8>uncovered_labels[r, c]
+    cdef void reset_covered_statistics(self):
+        # Class members
+        cdef float64[::1, :] confusion_matrices_subset = self.confusion_matrices_subset
 
-                # Only uncovered labels must be considered...
-                if uncovered:
-                    # Add the current example and label to the confusion matrix for the current label...
-                    true_label = label_matrix.get_label(r, c)
-                    element = __get_confusion_matrix_element(true_label, predicted_label)
-                    confusion_matrices_total[c, element] += 1
+        # Reset confusion matrices to 0...
+        confusion_matrices_subset[:, :] = 0
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         # Class members

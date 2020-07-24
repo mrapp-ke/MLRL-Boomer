@@ -78,7 +78,7 @@ cdef class IREP(Pruning):
         cdef bint uncovered
 
         # Reset the statistics and start a new search...
-        statistics.reset_statistics()
+        statistics.reset_sampled_statistics()
         cdef RefinementSearch refinement_search = statistics.begin_search(label_indices)
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
@@ -169,7 +169,7 @@ cdef class IREP(Pruning):
             # the covered examples and notify the statistics about the updated sub-sample...
             if (n + 1) < num_conditions:
                 if not uncovered:
-                    statistics.reset_statistics()
+                    statistics.reset_covered_statistics()
                     current_covered_examples_target = n
 
                 for r in range(start, end):
