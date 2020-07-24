@@ -14,12 +14,16 @@ cdef class GradientStatistics(Statistics):
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
         pass
 
-    cdef void reset_statistics(self):
-        pass
+    cdef void reset_sampled_statistics(self):
+        # This function is equivalent to the function `reset_covered_statistics`...
+        self.reset_covered_statistics()
 
     cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
         # This function is equivalent to the function `update_covered_statistic`...
         self.update_covered_statistic(statistic_index, weight, False)
+
+    cdef void reset_covered_statistics(self):
+        pass
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         pass
