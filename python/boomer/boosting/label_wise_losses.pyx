@@ -127,7 +127,7 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
         return scores
 
-    cdef void reset_examples(self):
+    cdef void reset_covered_examples(self):
         # Class members
         cdef float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians

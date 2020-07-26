@@ -296,7 +296,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             total_sum_of_weights = uint32_array_scalar_pair.second
 
         # Notify the loss function about the examples that are included in the sub-sample...
-        loss.reset_examples()
+        loss.reset_sampled_examples()
 
         for i in range(num_examples):
             weight = 1 if weights is None else weights[i]
@@ -1023,7 +1023,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
 
     if covered:
         updated_target = num_conditions
-        loss.reset_examples()
+        loss.reset_covered_examples()
 
         # Retain the indices at positions [condition_start, condition_end) and set the corresponding values in
         # `covered_examples_mask` to `num_conditions`, which marks them as covered (because
