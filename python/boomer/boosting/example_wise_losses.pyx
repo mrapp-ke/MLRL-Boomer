@@ -8,7 +8,7 @@ from boomer.common._arrays cimport uint8
 from libc.math cimport exp, pow
 
 
-cdef class ExampleWiseLossFunction:
+cdef class ExampleWiseLoss:
     """
     A base class for all (non-decomposable) loss functions that are applied example-wise.
     """
@@ -32,7 +32,7 @@ cdef class ExampleWiseLossFunction:
         pass
 
 
-cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
+cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):
     """
     A multi-label variant of the logistic loss that is applied example-wise.
     """

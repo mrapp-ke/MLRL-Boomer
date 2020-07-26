@@ -5,12 +5,11 @@
 
 Provides a scikit-learn implementations of boosting algorithms
 """
-from boomer.boosting.example_wise_losses import ExampleWiseLogisticLossFunction
+from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
 from boomer.boosting.example_wise_statistics import ExampleWiseStatistics
 from boomer.boosting.head_refinement import FullHeadRefinement
-from boomer.boosting.label_wise_losses import LabelWiseLossFunction, LabelWiseLogisticLossFunction, \
-    LabelWiseSquaredErrorLossFunction
+from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
 from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
 from boomer.boosting.label_wise_statistics import LabelWiseStatistics
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
@@ -174,27 +173,27 @@ class Boomer(MLRuleLearner):
         loss = self.loss
 
         if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
-            return LabelWiseSquaredErrorLossFunction()
+            return LabelWiseSquaredErrorLoss()
         elif loss == LOSS_LABEL_WISE_LOGISTIC:
-            return LabelWiseLogisticLossFunction()
+            return LabelWiseLogisticLoss()
         elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
-            return ExampleWiseLogisticLossFunction()
+            return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_default_rule_evaluation(self, loss_function, l2_regularization_weight: float) -> DefaultRuleEvaluation:
-        if isinstance(loss_function, LabelWiseLossFunction):
+        if isinstance(loss_function, LabelWiseLoss):
             return LabelWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
         else:
             return ExampleWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
 
     def __create_rule_evaluation(self, loss_function, l2_regularization_weight: float):
-        if isinstance(loss_function, LabelWiseLossFunction):
+        if isinstance(loss_function, LabelWiseLoss):
             return LabelWiseRuleEvaluation(l2_regularization_weight)
         else:
             return ExampleWiseRuleEvaluation(l2_regularization_weight)
 
     def __create_statistics(self, loss_function, rule_evaluation) -> GradientStatistics:
-        if isinstance(loss_function, LabelWiseLossFunction):
+        if isinstance(loss_function, LabelWiseLoss):
             return LabelWiseStatistics(loss_function, rule_evaluation)
         else:
             return ExampleWiseStatistics(loss_function, rule_evaluation)
@@ -203,7 +202,7 @@ class Boomer(MLRuleLearner):
         head_refinement = self.head_refinement
 
         if head_refinement is None:
-            if isinstance(loss_function, LabelWiseLossFunction):
+            if isinstance(loss_function, LabelWiseLoss):
                 return SingleLabelHeadRefinement()
             else:
                 return FullHeadRefinement()
