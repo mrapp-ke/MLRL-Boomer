@@ -4,7 +4,7 @@ from boomer.common.statistics cimport LabelMatrix
 from libcpp.pair cimport pair
 
 
-cdef class LabelWiseLossFunction:
+cdef class LabelWiseLoss:
 
     # Functions:
 
@@ -12,7 +12,7 @@ cdef class LabelWiseLossFunction:
                                                                intp label_index, float64 predicted_score)
 
 
-cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
+cdef class LabelWiseLogisticLoss(LabelWiseLoss):
 
     # Functions:
 
@@ -20,7 +20,7 @@ cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
                                                                intp label_index, float64 predicted_score)
 
 
-cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
+cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
 
     # Functions:
 

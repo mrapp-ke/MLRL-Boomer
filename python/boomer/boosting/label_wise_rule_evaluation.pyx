@@ -19,7 +19,7 @@ cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     label-wise.
     """
 
-    def __cinit__(self, LabelWiseLossFunction loss_function, float64 l2_regularization_weight):
+    def __cinit__(self, LabelWiseLoss loss_function, float64 l2_regularization_weight):
         """
         :param loss_function:               The loss function to be minimized
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
@@ -30,7 +30,7 @@ cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
     cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         # Class members
-        cdef LabelWiseLossFunction loss_function = self.loss_function
+        cdef LabelWiseLoss loss_function = self.loss_function
         cdef float64 l2_regularization_weight = self.l2_regularization_weight
         # The number of examples
         cdef intp num_examples = label_matrix.num_examples

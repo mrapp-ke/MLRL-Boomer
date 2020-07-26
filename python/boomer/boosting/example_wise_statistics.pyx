@@ -156,7 +156,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
     example-wise.
     """
 
-    def __cinit__(self, ExampleWiseLossFunction loss_function, ExampleWiseRuleEvaluation rule_evaluation):
+    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluation rule_evaluation):
         """
         :param loss_function:   The loss function to be used for calculating gradients and Hessians
         :param rule_evaluation: The `ExampleWiseRuleEvaluation` to be used for calculating the predictions, as well as
@@ -167,7 +167,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
         # Class members
-        cdef ExampleWiseLossFunction loss_function = self.loss_function
+        cdef ExampleWiseLoss loss_function = self.loss_function
         # The number of examples
         cdef intp num_examples = label_matrix.num_examples
         # The number of labels
@@ -255,7 +255,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
-        cdef ExampleWiseLossFunction loss_function = self.loss_function
+        cdef ExampleWiseLoss loss_function = self.loss_function
         cdef LabelMatrix label_matrix = self.label_matrix
         cdef float64[:, ::1] current_scores = self.current_scores
         cdef float64[:, ::1] gradients = self.gradients

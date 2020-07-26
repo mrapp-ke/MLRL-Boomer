@@ -2,7 +2,7 @@ from boomer.common._arrays cimport intp, float64
 from boomer.common.statistics cimport LabelMatrix
 
 
-cdef class ExampleWiseLossFunction:
+cdef class ExampleWiseLoss:
 
     # Functions:
 
@@ -10,7 +10,7 @@ cdef class ExampleWiseLossFunction:
                                                float64* predicted_scores, float64[::1] gradients, float64[::1] hessians)
 
 
-cdef class ExampleWiseLogisticLossFunction(ExampleWiseLossFunction):
+cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):
 
     # Functions:
 

@@ -8,7 +8,7 @@ from boomer.common._arrays cimport uint8
 from libc.math cimport exp, pow
 
 
-cdef class LabelWiseLossFunction:
+cdef class LabelWiseLoss:
     """
     A base class for all (decomposable) loss functions that are applied label-wise.
     """
@@ -30,7 +30,7 @@ cdef class LabelWiseLossFunction:
         pass
 
 
-cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
+cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     """
     A multi-label variant of the logistic loss that is applied label-wise.
     """
@@ -48,7 +48,7 @@ cdef class LabelWiseLogisticLossFunction(LabelWiseLossFunction):
         return result
 
 
-cdef class LabelWiseSquaredErrorLossFunction(LabelWiseLossFunction):
+cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     """
     A multi-label variant of the squared error loss that is applied label-wise.
     """
