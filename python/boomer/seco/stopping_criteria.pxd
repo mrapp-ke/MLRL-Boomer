@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport intp, float64
 from boomer.common.stopping_criteria cimport StoppingCriterion
-from boomer.seco.coverage_losses cimport CoverageLoss
+from boomer.seco.statistics cimport CoverageStatistics
 
 
 cdef class UncoveredLabelsCriterion(StoppingCriterion):
@@ -9,7 +9,7 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
 
     cdef readonly float64 threshold
 
-    cdef CoverageLoss loss
+    cdef CoverageStatistics statistics
 
     # Functions:
 

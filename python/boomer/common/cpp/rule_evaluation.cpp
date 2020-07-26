@@ -1,7 +1,7 @@
-#include "losses.h"
+#include "rule_evaluation.h"
 #include <stdlib.h>
 
-using namespace losses;
+using namespace rule_evaluation;
 
 
 DefaultPrediction::DefaultPrediction(intp numPredictions, float64* predictedScores) {

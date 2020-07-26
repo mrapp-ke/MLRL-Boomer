@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float32, float64
-from boomer.common.losses cimport DefaultPrediction
+from boomer.common.rule_evaluation cimport DefaultPrediction
 from boomer.common.head_refinement cimport HeadCandidate
 
 from libcpp.list cimport list as double_linked_list

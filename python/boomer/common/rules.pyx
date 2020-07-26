@@ -574,7 +574,7 @@ cdef class ModelBuilder:
         Initializes the model and sets its default rule.
 
         :param scores: A pointer to an object of type `DefaultPrediction` that represents the prediction of the default
-                       rule
+                       rule or NULL, if no default rule should be used
         """
         pass
 
@@ -618,24 +618,31 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef bint use_mask = self.use_mask
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
-        cdef intp num_predictions = default_prediction.numPredictions_
-        cdef float64* predicted_scores = default_prediction.predictedScores_
-        cdef float64[::1] head_scores = array_float64(num_predictions)
+        self.rule_list = rule_list
+        cdef intp num_predictions
+        cdef float64* predicted_scores
+        cdef float64[::1] head_scores
+        cdef FullHead head
+        cdef EmptyBody body
+        cdef Rule default_rule
         cdef intp c
 
-        for c in range(num_predictions):
-            head_scores[c] = predicted_scores[c]
+        if default_prediction != NULL:
+            num_predictions = default_prediction.numPredictions_
+            predicted_scores = default_prediction.predictedScores_
+            head_scores = array_float64(num_predictions)
 
-        cdef FullHead head = FullHead.__new__(FullHead, head_scores)
-        cdef EmptyBody body = EmptyBody.__new__(EmptyBody)
-        cdef Rule default_rule = Rule.__new__(Rule, body, head)
+            for c in range(num_predictions):
+                head_scores[c] = predicted_scores[c]
 
-        if default_rule_at_end:
-            self.default_rule = default_rule
-        else:
-            rule_list.add_rule(default_rule)
+            head = FullHead.__new__(FullHead, head_scores)
+            body = EmptyBody.__new__(EmptyBody)
+            default_rule = Rule.__new__(Rule, body, head)
 
-        self.rule_list = rule_list
+            if default_rule_at_end:
+                self.default_rule = default_rule
+            else:
+                rule_list.add_rule(default_rule)
 
     cdef void add_rule(self, intp[::1] label_indices, HeadCandidate* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
