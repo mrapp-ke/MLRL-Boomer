@@ -1,12 +1,12 @@
 /**
- * Provides classes representing loss-minimizing predictions.
+ * Provides classes that store the predictions of rules, as well as corresponding quality scores.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #include "arrays.h"
 
 
-namespace losses {
+namespace rule_evaluation {
 
     /**
      * Stores the default rule's predictions for each label.

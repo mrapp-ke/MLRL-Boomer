@@ -1,5 +1,14 @@
 from boomer.common._arrays cimport float64
 
+"""
+An enum that specified all positive elements of a confusion matrix.
+"""
+cdef enum Element:
+    IN = 0
+    IP = 1
+    RN = 2
+    RP = 3
+
 
 cdef class Heuristic:
 

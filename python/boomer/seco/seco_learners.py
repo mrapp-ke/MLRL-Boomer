@@ -2,15 +2,17 @@
 
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
+from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.seco.coverage_losses import CoverageLoss
 from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, WeightedRelativeAccuracy, FMeasure, \
     MEstimate
-from boomer.seco.label_wise_averaging import LabelWiseAveraging
+from boomer.seco.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
+from boomer.seco.label_wise_statistics import LabelWiseStatistics
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
+from boomer.seco.statistics import CoverageStatistics
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
@@ -145,9 +147,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         return RuleListBuilder(use_mask=True, default_rule_at_end=True)
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
-        rule_induction = ExactGreedyRuleInduction()
+        default_rule_evaluation = self.__create_default_rule_evaluation()
         heuristic = self.__create_heuristic()
-        loss = self.__create_loss(heuristic)
+        statistics = self.__create_statistics(heuristic)
+        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
         lift_function = self.__create_lift_function(num_labels)
         head_refinement = self.__create_head_refinement(lift_function)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
@@ -158,8 +161,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
-        stopping_criteria.append(UncoveredLabelsCriterion(loss, 0))
-        return SequentialRuleInduction(rule_induction, head_refinement, loss, stopping_criteria, label_sub_sampling,
+        stopping_criteria.append(UncoveredLabelsCriterion(statistics, 0))
+        return SequentialRuleInduction(rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
                                        instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
                                        max_conditions, max_head_refinements)
 
@@ -184,11 +187,18 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             return MEstimate(m)
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
-    def __create_loss(self, heuristic: Heuristic) -> CoverageLoss:
+    def __create_default_rule_evaluation(self) -> DefaultRuleEvaluation:
         loss = self.loss
 
         if loss == AVERAGING_LABEL_WISE:
-            return LabelWiseAveraging(heuristic)
+            return LabelWiseDefaultRuleEvaluation()
+        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
+
+    def __create_statistics(self, heuristic: Heuristic) -> CoverageStatistics:
+        loss = self.loss
+
+        if loss == AVERAGING_LABEL_WISE:
+            return LabelWiseStatistics(LabelWiseRuleEvaluation(heuristic))
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:

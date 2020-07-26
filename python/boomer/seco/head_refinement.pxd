@@ -1,5 +1,6 @@
 from boomer.common._arrays cimport intp
-from boomer.common.losses cimport RefinementSearch, Prediction
+from boomer.common.head_refinement cimport RefinementSearch
+from boomer.common.rule_evaluation cimport Prediction
 from boomer.common.head_refinement cimport HeadRefinement, HeadCandidate
 from boomer.seco.lift_functions cimport LiftFunction
 

@@ -4,7 +4,7 @@
 Provides classes that implement strategies for finding the heads of rules.
 """
 from boomer.common._arrays cimport array_intp, array_float64, get_index
-from boomer.common.losses cimport LabelWisePrediction
+from boomer.common.rule_evaluation cimport LabelWisePrediction
 
 from libc.stdlib cimport malloc
 
