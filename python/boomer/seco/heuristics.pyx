@@ -65,7 +65,7 @@ cdef class Heuristic:
                     the prediction in the rule's head is negative (N)
         :param urp: The number of uncovered (U) labels that are relevant (R) according to the ground truth and for which
                     the prediction in the rule's head is positive (P)
-        :return:    The quality score in that has been calculated
+        :return:    The quality score that has been calculated
         """
         pass
 
