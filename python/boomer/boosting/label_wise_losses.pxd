@@ -41,9 +41,11 @@ cdef class LabelWiseDifferentiableLoss(DecomposableDifferentiableLoss):
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef void reset_examples(self)
+    cdef void reset_sampled_examples(self)
 
     cdef void add_sampled_example(self, intp example_index, uint32 weight)
+
+    cdef void reset_covered_examples(self)
 
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
@@ -68,9 +70,11 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseDifferentiableLoss):
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef void reset_examples(self)
+    cdef void reset_sampled_examples(self)
 
     cdef void add_sampled_example(self, intp example_index, uint32 weight)
+
+    cdef void reset_covered_examples(self)
 
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
@@ -95,9 +99,11 @@ cdef class LabelWiseLogisticLoss(LabelWiseDifferentiableLoss):
 
     cdef float64[::1] calculate_default_scores(self, uint8[::1, :] y)
 
-    cdef void reset_examples(self)
+    cdef void reset_sampled_examples(self)
 
     cdef void add_sampled_example(self, intp example_index, uint32 weight)
+
+    cdef void reset_covered_examples(self)
 
     cdef void update_covered_example(self, intp example_index, uint32 weight, bint remove)
 
