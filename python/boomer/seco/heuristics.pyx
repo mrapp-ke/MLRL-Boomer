@@ -70,25 +70,6 @@ cdef class Heuristic:
         pass
 
 
-cdef class HammingLoss(Heuristic):
-    """
-    A heuristic that measures the fraction of incorrectly predicted labels among all labels.
-    """
-
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        cdef float64 num_covered_incorrect = cip + crn
-        cdef float64 num_covered_correct = cin + crp
-        cdef float64 num_covered = num_covered_incorrect + num_covered_correct
-
-        if num_covered == 0:
-            return 1
-
-        cdef float64 num_incorrect = num_covered_incorrect + urn + urp
-        cdef float64 num_total = num_incorrect + num_covered_correct + uin + uip
-        return num_incorrect / num_total
-
-
 cdef class Precision(Heuristic):
     """
     A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
@@ -118,6 +99,25 @@ cdef class WeightedRelativeAccuracy(Heuristic):
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp) nogil:
         return __wra(cin, cip, crn, crp, uin, uip, urn, urp)
+
+
+cdef class HammingLoss(Heuristic):
+    """
+    A heuristic that measures the fraction of incorrectly predicted labels among all labels.
+    """
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp) nogil:
+        cdef float64 num_covered_incorrect = cip + crn
+        cdef float64 num_covered_correct = cin + crp
+        cdef float64 num_covered = num_covered_incorrect + num_covered_correct
+
+        if num_covered == 0:
+            return 1
+
+        cdef float64 num_incorrect = num_covered_incorrect + urn + urp
+        cdef float64 num_total = num_incorrect + num_covered_correct + uin + uip
+        return num_incorrect / num_total
 
 
 cdef class FMeasure(Heuristic):
