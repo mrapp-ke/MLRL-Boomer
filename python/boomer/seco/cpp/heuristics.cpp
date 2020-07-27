@@ -27,7 +27,16 @@ RecallFunction::~RecallFunction() {
 
 float64 RecallFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                 float64 uip, float64 urn, float64 urp) {
-    return recall(cin, crp, uin, urp)
+    return recall(cin, crp, uin, urp);
+}
+
+WRAFunction::~WRAFunction() {
+
+}
+
+float64 WRAFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                             float64 uip, float64 urn, float64 urp) {
+    return wra(cin, cip, crn, crp, uin, uip, urn, urp);
 }
 
 static float64 precision(float64 cin, float64 cip, float64 crn float64 crp) {
