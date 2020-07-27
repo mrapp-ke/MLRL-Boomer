@@ -4,6 +4,44 @@
 using namespace heuristics;
 
 
+static float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
+    float64 numCoveredIncorrect = cip + crn;
+    float64 numCovered = numCoveredIncorrect + cin + crp;
+
+    if (numCovered == 0) {
+        return 1;
+    }
+
+    return numCoveredIncorrect / numCovered;
+}
+
+static float64 recall(float64 cin, float64 crp, float64 uin, float64 urp) {
+    float64 numUncoveredEqual = uin + urp;
+    float64 numEqual = numUncoveredEqual + cin + crp;
+
+    if (numEqual == 0) {
+        return 1;
+    }
+
+    return numUncoveredEqual / numEqual;
+}
+
+static float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip, float64 urn,
+                   float64 urp) {
+    float64 numCoveredEqual = cin + crp;
+    float64 numUncoveredEqual = uin + urp;
+    float64 numEqual = numUncoveredEqual + numCoveredEqual;
+    float64 numCovered = numCoveredEqual + cip + crn;
+    float64 numUncovered = numUncoveredEqual + uip + urn;
+    float64 numTotal = numCovered + numUncovered;
+
+    if (numCovered == 0 || numTotal == 0) {
+        return 1;
+    }
+
+    return 1 - ((numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal)));
+}
+
 HeuristicFunction::~HeuristicFunction() {
 
 }
@@ -60,7 +98,7 @@ float64 HammingLossFunction::evaluateConfusionMatrix(float64 cin, float64 cip, f
 }
 
 FMeasureFunction::FMeasureFunction(float64 beta) {
-    beta_ = beta
+    beta_ = beta;
 }
 
 FMeasureFunction::~FMeasureFunction() {
@@ -69,7 +107,7 @@ FMeasureFunction::~FMeasureFunction() {
 
 float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                   float64 uip, float64 urn, float64 urp) {
-    if isinf(beta_) {
+    if (isinf(beta_)) {
         // Equivalent to recall
         return recall(cin, crp, uin, urp);
     } else if (beta_ > 0) {
@@ -91,7 +129,7 @@ float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, floa
 }
 
 MEstimateFunction::MEstimateFunction(float64 m) {
-    m_ = m
+    m_ = m;
 }
 
 MEstimateFunction::~MEstimateFunction() {
@@ -100,7 +138,7 @@ MEstimateFunction::~MEstimateFunction() {
 
 float64 MEstimateFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                    float64 uip, float64 urn, float64 urp) {
-    if isinf(m_) {
+    if (isinf(m_)) {
         // Equivalent to weighted relative accuracy
         return wra(cin, cip, crn, crp, uin, uip, urn, urp);
     } else if (m_ > 0) {
@@ -120,42 +158,4 @@ float64 MEstimateFunction::evaluateConfusionMatrix(float64 cin, float64 cip, flo
         // Equivalent to precision
         return precision(cin, cip, crn, crp);
     }
-}
-
-static float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
-    float64 numCoveredIncorrect = cip + crn;
-    float64 numCovered = numCoveredIncorrect + cin + crp;
-
-    if (numCovered == 0) {
-        return 1;
-    }
-
-    return numCoveredIncorrect / numCovered;
-}
-
-static float64 recall(float64 cin, float64 crp, float64 uin, float64 urp) {
-    float64 numUncoveredEqual = uin + urp;
-    float64 numEqual = numUncoveredEqual + cin + crp;
-
-    if (numEqual == 0) {
-        return 1;
-    }
-
-    return numUncoveredEqual / numEqual;
-}
-
-static float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip, float64 urn,
-                   float64 urp) {
-    float64 numCoveredEqual = cin + crp;
-    float64 numUncoveredEqual = uin + urp;
-    float64 numEqual = numUncoveredEqual + numCoveredEqual;
-    float64 numCovered = numCoveredEqual + cip + crn;
-    float64 numUncovered = numUncoveredEqual + uip + urn;
-    float64 numTotal = numCovered + numUncovered;
-
-    if (numCovered == 0 || numTotal == 0) {
-        return 1;
-    }
-
-    return 1 - ((numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal)));
 }
