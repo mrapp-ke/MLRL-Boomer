@@ -54,13 +54,13 @@ cdef class LabelWiseRuleEvaluation:
         """
         :param heuristic: The heuristic that should be used
         """
-        self.heuristic = heuristic
+        self.heuristic_function = heuristic.heuristic_function
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices, const uint8[::1] minority_labels,
                                               const float64[::1, :] confusion_matrices_total,
                                               const float64[::1, :] confusion_matrices_subset,
                                               float64[::1, :] confusion_matrices_covered, bint uncovered,
-                                              LabelWisePrediction* prediction):
+                                              LabelWisePrediction* prediction) nogil:
         """
         Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on confusion
         matrices. The predicted scores and quality scores are stored in a given object of type `LabelWisePrediction`.
@@ -85,7 +85,7 @@ cdef class LabelWiseRuleEvaluation:
                                             store the predicted scores and quality scores
         """
         # Class members
-        cdef Heuristic heuristic = self.heuristic
+        cdef HeuristicFunction* heuristic_function = self.heuristic_function
         # The number of labels to predict for
         cdef intp num_predictions = prediction.numPredictions_
         # The array that should be used to store the predicted scores
@@ -126,7 +126,7 @@ cdef class LabelWiseRuleEvaluation:
                 urn = confusion_matrices_total[l, <intp>Element.RN] - crn
                 urp = confusion_matrices_total[l, <intp>Element.RP] - crp
 
-            score = heuristic.evaluate_confusion_matrix(cin, cip, crn, crp, uin, uip, urn, urp)
+            score = heuristic_function.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp)
             quality_scores[c] = score
             overall_quality_score += score
 

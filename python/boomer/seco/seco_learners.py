@@ -7,8 +7,7 @@ from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.seco.head_refinement import PartialHeadRefinement
-from boomer.seco.heuristics import Heuristic, HammingLoss, Precision, Recall, WeightedRelativeAccuracy, FMeasure, \
-    MEstimate
+from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
 from boomer.seco.label_wise_statistics import LabelWiseStatistics
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
@@ -178,7 +177,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         elif prefix == HEURISTIC_RECALL:
             return Recall()
         elif prefix == HEURISTIC_WRA:
-            return WeightedRelativeAccuracy()
+            return WRA()
         elif prefix == HEURISTIC_F_MEASURE:
             beta = get_float_argument(args, ARGUMENT_BETA, 0.5, lambda x: x >= 0)
             return FMeasure(beta)

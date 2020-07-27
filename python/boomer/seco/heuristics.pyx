@@ -13,266 +13,89 @@ from libc.math cimport isinf, pow
 
 cdef class Heuristic:
     """
-    A base class for all heuristics.
+    A wrapper for the abstract C++ class `HeuristicFunction`.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp) nogil:
-        """
-        Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix. All elements must be
-        equal to or greater than 0. If a rule does not cover any elements, i.e., if CIN + CIP + CRN + CRP == 0, the
-        worst possible quality score 1 must be returned.
-
-        According to the notation in http://www.ke.tu-darmstadt.de/bibtex/publications/show/3201, a confusion matrix
-        consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols used in this
-        notation have the following meaning:
-
-        - The first symbol denotes whether the corresponding labels are covered (C) or uncovered (U) by the rule.
-        - The second symbol denotes relevant (R) or irrelevant (I) labels according to the ground truth.
-        - The third symbol denotes labels for which the prediction in the rule's head is positive (P) or negative (N).
-
-        This results in the terminology given in the following table:
-
-                   | ground-   |           |
-                   | truth     | predicted |
-        -----------|-----------|-----------|-----
-         covered   |         0 |         0 | CIN
-                   |         0 |         1 | CIP
-                   |         1 |         0 | CRN
-                   |         1 |         1 | CRP
-        -----------|-----------|-----------|-----
-         uncovered |         0 |         0 | UIN
-                   |         0 |         1 | UIP
-                   |         1 |         0 | URN
-                   |         1 |         1 | URP
-
-        Real numbers may be used for the individual elements, if different weights are assigned to the corresponding
-        labels.
-
-        :param cin: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which
-                    the prediction in the rule's head is negative (N)
-        :param cip: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which
-                    the prediction in the rule's head is positive (P)
-        :param crn: The number of covered (C) labels that are relevant (R) according to the ground truth and for which
-                    the prediction in the rule's head is negative (N)
-        :param crp: The number of covered (C) labels that are relevant (R) according to the ground truth and for which
-                    the prediction in the rule's head is positive (P)
-        :param uin: The number of uncovered (U) labels that are irrelevant (I) according to the ground truth and for
-                    which the prediction in the rule's head is negative (N)
-        :param uip: The number of uncovered (U) labels that are irrelevant (I) according to the ground truth and for
-                    which the prediction in the rule's head is positive (P)
-        :param urn: The number of uncovered (U) labels that are relevant (R) according to the ground truth and for which
-                    the prediction in the rule's head is negative (N)
-        :param urp: The number of uncovered (U) labels that are relevant (R) according to the ground truth and for which
-                    the prediction in the rule's head is positive (P)
-        :return:    The quality score that has been calculated
-        """
-        pass
-
-
-cdef class HammingLoss(Heuristic):
-    """
-    A heuristic that measures the fraction of incorrectly predicted labels among all labels.
-    """
-
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        cdef float64 num_covered_incorrect = cip + crn
-        cdef float64 num_covered_correct = cin + crp
-        cdef float64 num_covered = num_covered_incorrect + num_covered_correct
-
-        if num_covered == 0:
-            return 1
-
-        cdef float64 num_incorrect = num_covered_incorrect + urn + urp
-        cdef float64 num_total = num_incorrect + num_covered_correct + uin + uip
-        return num_incorrect / num_total
+        cdef HeuristicFunction* heuristic_function = self.heuristic_function
+        cdef float64 quality_score = heuristic_function.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp)
+        return quality_score
 
 
 cdef class Precision(Heuristic):
     """
-    A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
+    A wrapper for the C++ class `PrecisionFunction`.
     """
 
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        return __precision(cin, cip, crn, crp)
+    def __cinit__(self):
+        self.heuristic_function = new PrecisionFunction()
+
+    def __dealloc(self):
+        del self.heuristic_function
 
 
 cdef class Recall(Heuristic):
     """
-    A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is (or
-    would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
+    A wrapper for the C++ class `RecallFunction`.
     """
 
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        return __recall(cin, crp, uin, urp)
+    def __cinit__(self):
+        self.heuristic_function = new RecallFunction()
+
+    def __dealloc(self):
+        del self.heuristic_function
 
 
-cdef class WeightedRelativeAccuracy(Heuristic):
+cdef class WRA(Heuristic):
     """
-    A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
+    A wrapper for the C++ class `WRAFunction`.
     """
 
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        return __wra(cin, cip, crn, crp, uin, uip, urn, urp)
+    def __cinit__(self):
+        self.heuristic_function = new WRAFunction()
+
+    def __dealloc(self):
+        del self.heuristic_function
+
+
+cdef class HammingLoss(Heuristic):
+    """
+    A wrapper for the C++ class `HammingLossFunction`.
+    """
+
+    def __cinit__(self):
+        self.heuristic_function = new HammingLossFunction()
+
+    def __dealloc(self):
+        del self.heuristic_function
 
 
 cdef class FMeasure(Heuristic):
     """
-    A heuristic that calculates as the (weighted) harmonic mean between the heuristics `Precision` and `Recall`, where
-    the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both heuristics are weighed
-    equally. If `beta = 0`, the heuristics is equivalent to `Precision`. As `beta` approaches infinity, the heuristic
-    becomes equivalent to `Recall`.
+    A wrapper for the C++ class `FMeasureFunction`.
     """
 
     def __cinit__(self, float64 beta = 0.5):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
-        self.beta = beta
+        self.heuristic_function = new FMeasureFunction(beta)
 
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        cdef float64 beta = self.beta
-        cdef float64 num_covered_equal, beta_pow, denominator
-
-        if isinf(beta):
-            # Equivalent to recall
-            return __recall(cin, crp, uin, urp)
-        elif beta > 0:
-            # Weighted harmonic mean between recall and precision
-            num_covered_equal = cin + crp
-            beta_pow = pow(beta, 2)
-            denominator = ((1 + beta_pow) * num_covered_equal) + (beta_pow * (uin + urp)) + (cip + crn)
-
-            if denominator == 0:
-                return 1
-
-            return 1 - (((1 + beta_pow) * num_covered_equal) / denominator)
-        else:
-            # Equivalent to precision
-            return __precision(cin, cip, crn, crp)
+    def __dealloc(self):
+        del self.heuristic_function
 
 
 cdef class MEstimate(Heuristic):
     """
-    A heuristic that allows to trade off between the heuristics `Precision` and `WeightedRelativeAccuracy`. The
-    `m`-parameter allows to control the trade-off between both heuristics. If `m = 0`, the heuristic is equivalent to
-    `Precision`. As `m` approaches infinity, the isometrics of the heuristic become equivalent to those of
-    `WeightedRelativeAccuracy`.
+    A wrapper for the C++ class `MEstimateFunction`.
     """
 
     def __cinit__(self, float64 m = 22.466):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
-        self.m = m
+        self.heuristic_function = new MEstimateFunction(m)
 
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        cdef float64 m = self.m
-        cdef float64 num_covered_equal, num_uncovered_equal, num_covered, num_equal, num_total
-
-        if isinf(m):
-            # Equivalent to weighted relative accuracy
-            return __wra(cin, cip, crn, crp, uin, uip, urn, urp)
-        elif m > 0:
-            # Trade-off between weighted relative accuracy and precision
-            num_covered_equal = cin + crp
-            num_covered = num_covered_equal + cip + crn
-
-            if num_covered == 0:
-                return 1
-
-            num_uncovered_equal = uin + urp
-            num_total = num_covered + num_uncovered_equal + uip + urn
-            num_equal = num_covered_equal + num_uncovered_equal
-            return 1 - ((num_covered_equal + (m * (num_equal / num_total))) / (num_covered + m))
-        else:
-            # Equivalent to precision
-            return __precision(cin, cip, crn, crp)
-
-
-cdef float64 __precision(float64 cin, float64 cip, float64 crn, float64 crp) nogil:
-    """
-    Calculates the precision given the elements of a confusion matrix.
-
-    :param cin: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param cip: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param crn: The number of covered (C) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param crp: The number of covered (C) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is positive (P)
-    :return:    The precision that has been calculated
-    """
-    cdef float64 num_covered_incorrect = cip + crn
-    cdef float64 num_covered = num_covered_incorrect + cin + crp
-
-    if num_covered == 0:
-        return 1
-
-    return num_covered_incorrect / num_covered
-
-
-cdef float64 __recall(float64 cin, float64 crp, float64 uin, float64 urp) nogil:
-    """
-    Calculates the recall given the elements of a confusion matrix.
-
-    :param cin: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param crp: The number of covered (C) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is positive (P)
-    :param uin: The number of uncovered (U) labels that are irrelevant (I) according to the ground truth and for which
-                the prediction in the rule's head is negative (N)
-    :param urp: The number of uncovered (U) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is positive (P)
-    :return:    The recall that has been calculated
-    """
-    cdef float64 num_uncovered_equal = uin + urp
-    cdef float64 num_equal = num_uncovered_equal + cin + crp
-
-    if num_equal == 0:
-        return 1
-
-    return num_uncovered_equal / num_equal
-
-
-cdef float64 __wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip, float64 urn,
-                   float64 urp) nogil:
-    """
-    Calculates the weighted relative accuracy given the elements of a confusion matrix.
-
-    :param cin: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param cip: The number of covered (C) labels that are irrelevant (I) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param crn: The number of covered (C) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param crp: The number of covered (C) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is positive (P)
-    :param uin: The number of uncovered (U) labels that are irrelevant (I) according to the ground truth and for which
-                the prediction in the rule's head is negative (N)
-    :param uip: The number of uncovered (U) labels that are irrelevant (I) according to the ground truth and for which
-                the prediction in the rule's head is positive (P)
-    :param urn: The number of uncovered (U) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is negative (N)
-    :param urp: The number of uncovered (U) labels that are relevant (R) according to the ground truth and for which the
-                prediction in the rule's head is positive (P)
-    :return:    The weighted relative accuracy that has been calculated
-    """
-    cdef float64 num_covered_equal = cin + crp
-    cdef float64 num_uncovered_equal = uin + urp
-    cdef float64 num_equal = num_uncovered_equal + num_covered_equal
-    cdef float64 num_covered = num_covered_equal + cip + crn
-    cdef float64 num_uncovered = num_uncovered_equal + uip + urn
-    cdef float64 num_total = num_covered + num_uncovered
-
-    if num_covered == 0 or num_total == 0:
-        return 1
-
-    return 1 - ((num_covered / num_total) * ((num_covered_equal / num_covered) - (num_equal / num_total)))
+    def __dealloc__(self):
+        del self.heuristic_function
