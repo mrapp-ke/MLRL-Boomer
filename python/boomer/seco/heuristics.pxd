@@ -55,6 +55,18 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
+    cdef cppclass MEstimateFunction(HeuristicFunction):
+
+        # Constructors:
+
+        MEstimateFunction(float64 m)
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
 """
 An enum that specified all positive elements of a confusion matrix.
 """
