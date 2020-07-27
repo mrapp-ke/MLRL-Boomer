@@ -31,3 +31,14 @@ static float64 precision(float64 cin, float64 cip, float64 crn float64 crp) {
 
     return numCoveredIncorrect / numCovered;
 }
+
+static float64 recall(float64 cin, float64 crp, float64 uin, float64 urp) {
+    float64 numUncoveredEqual = uin + urp;
+    float64 numEqual = numUncoveredEqual + cin + crp;
+
+    if (numEqual == 0) {
+        return 1;
+    }
+
+    return numUncoveredEqual / numEqual;
+}
