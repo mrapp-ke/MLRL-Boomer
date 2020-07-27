@@ -79,6 +79,10 @@ cdef enum Element:
 
 cdef class Heuristic:
 
+    # Attributes:
+
+    cdef HeuristicFunction* heuristic_function
+
     # Functions:
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -119,10 +123,6 @@ cdef class HammingLoss(Heuristic):
 
 cdef class FMeasure(Heuristic):
 
-    # Attributes:
-
-    cdef readonly float64 beta
-
     # Functions:
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -130,10 +130,6 @@ cdef class FMeasure(Heuristic):
 
 
 cdef class MEstimate(Heuristic):
-
-    # Attributes:
-
-    cdef readonly float64 m
 
     # Functions:
 
