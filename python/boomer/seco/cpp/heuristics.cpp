@@ -39,6 +39,25 @@ float64 WRAFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 c
     return wra(cin, cip, crn, crp, uin, uip, urn, urp);
 }
 
+HammingLossFunction::~HammingLossFunction() {
+
+}
+
+float64 HammingLossFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                                     float64 uip, float64 urn, float64 urp) {
+    float64 numCoveredIncorrect = cip + crn;
+    float64 numCoveredCorrect = cin + crp;
+    float64 numCovered = numCoveredIncorrect + numCoveredCorrect;
+
+    if (numCovered == 0) {
+        return 1;
+    }
+
+    float64 numIncorrect = numCoveredIncorrect + urn + urp;
+    float64 numTotal = numIncorrect + numCoveredCorrect + uin + uip;
+    return numIncorrect / numTotal;
+}
+
 static float64 precision(float64 cin, float64 cip, float64 crn float64 crp) {
     float64 numCoveredIncorrect = cip + crn;
     float64 numCovered = numCoveredIncorrect + cin + crp;
