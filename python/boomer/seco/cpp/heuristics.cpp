@@ -21,6 +21,15 @@ float64 PrecisionFunction::evaluateConfusionMatrix(float64 cin, float64 cip, flo
     return precision(cin, cip, crn, crp);
 }
 
+RecallFunction::~RecallFunction() {
+
+}
+
+float64 RecallFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                                float64 uip, float64 urn, float64 urp) {
+    return recall(cin, crp, uin, urp)
+}
+
 static float64 precision(float64 cin, float64 cip, float64 crn float64 crp) {
     float64 numCoveredIncorrect = cip + crn;
     float64 numCovered = numCoveredIncorrect + cin + crp;
