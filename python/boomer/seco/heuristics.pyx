@@ -47,7 +47,7 @@ cdef class Recall(Heuristic):
         del self.heuristic_function
 
 
-cdef class WeightedRelativeAccuracy(Heuristic):
+cdef class WRA(Heuristic):
     """
     A wrapper for the C++ class `WRAFunction`.
     """

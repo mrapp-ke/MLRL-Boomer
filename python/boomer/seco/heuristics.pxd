@@ -105,7 +105,7 @@ cdef class Recall(Heuristic):
                                            float64 uip, float64 urn, float64 urp) nogil
 
 
-cdef class WeightedRelativeAccuracy(Heuristic):
+cdef class WRA(Heuristic):
 
     # Functions:
 
