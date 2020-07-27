@@ -112,4 +112,19 @@ namespace heuristics {
 
     };
 
+    /**
+     * A heuristic function that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy
+     * metric.
+     */
+    class WRAFunction : public HeuristicFunction {
+
+        public:
+
+            ~WRAFunction();
+
+            float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                            float64 uip, float64 urn, float64 urp) override;
+
+    };
+
 }
