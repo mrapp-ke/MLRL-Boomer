@@ -83,4 +83,18 @@ namespace heuristics {
 
     };
 
+    /**
+     * A heuristic function that measures the fraction of incorrectly predicted labels among all covered labels.
+     */
+    class PrecisionFunction : public HeuristicFunction {
+
+        public:
+
+            ~PrecisionFunction();
+
+            float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                            float64 uip, float64 urn, float64 urp) override;
+
+    };
+
 }

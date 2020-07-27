@@ -11,3 +11,19 @@ float64 HeuristicFunction::evaluateConfusionMatrix(float64 cin, float64 cip, flo
                                                    float64 uip, float64 urn, float64 urp) {
     return 0;
 }
+
+PrecisionFunction::~PrecisionFunction() {
+
+}
+
+float64 PrecisionFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                                   float64 uip, float64 urn, float64 urp) {
+    float64 numCoveredIncorrect = cip + crn;
+    float64 numCovered = numCoveredIncorrect + cin + crp;
+
+    if (numCovered == 0) {
+        return 1;
+    }
+
+    return numCoveredIncorrect / numCovered;
+}
