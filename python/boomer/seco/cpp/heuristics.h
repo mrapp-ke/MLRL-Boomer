@@ -141,4 +141,37 @@ namespace heuristics {
 
     };
 
+    /**
+     * A heuristic function that calculates as the (weighted) harmonic mean between the heuristic functions
+     * `PrecisionFunction` and `RecallFunction`, where the parameter `beta` allows to trade-off between both heuristics.
+     * If `beta = 1`, both heuristic functions are weighed equally. If `beta = 0`, the heuristic function is equivalent
+     * to the `PrecisionFunction`. As `beta` approaches infinity, the heuristic function becomes equivalent to the
+     * `RecallFunction`.
+     */
+    class FMeasureFunction : public HeuristicFunction {
+
+        private:
+
+            /**
+             * The value of the beta-parameter.
+             */
+            float64 beta_;
+
+        public:
+
+            /**
+             * Creates a new heuristic function that calculates as the (weighted) harmonic mean between the heuristic
+             * functions `PrecisionFunction` and `RecallFunction`.
+             *
+             * @param beta The value of the beta-parameter. Must be at least 0
+             */
+            FMeasureFunction(float64 beta);
+
+            ~FMeasureFunction();
+
+            float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                            float64 uip, float64 urn, float64 urp) override;
+
+    };
+
 }

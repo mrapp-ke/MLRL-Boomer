@@ -1,4 +1,5 @@
 #include "heuristics.h"
+#include <math.h>
 
 using namespace heuristics;
 
@@ -58,7 +59,38 @@ float64 HammingLossFunction::evaluateConfusionMatrix(float64 cin, float64 cip, f
     return numIncorrect / numTotal;
 }
 
-static float64 precision(float64 cin, float64 cip, float64 crn float64 crp) {
+FMeasureFunction::FMeasureFunction(float64 beta) {
+    beta_ = beta
+}
+
+FMeasureFunction::~FMeasureFunction() {
+
+}
+
+float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                                  float64 uip, float64 urn, float64 urp) {
+    if isinf(beta_) {
+        // Equivalent to recall
+        return recall(cin, crp, uin, urp);
+    } else if (beta_ > 0) {
+        // Weighted harmonic mean between recall and precision
+        float64 numCoveredEqual = cin + crp;
+        float64 betaPow = pow(beta_, 2);
+        float64 numerator = (1 + betaPow) * numCoveredEqual;
+        float64 denominator = numerator + (betaPow * (uin + urp)) + (cip + crn);
+
+        if (denominator == 0) {
+            return 1;
+        }
+
+        return 1 - (numerator / denominator);
+    } else {
+        // Equivalent to precision
+        return precision(cin, cip, crn, crp);
+    }
+}
+
+static float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
     float64 numCoveredIncorrect = cip + crn;
     float64 numCovered = numCoveredIncorrect + cin + crp;
 
