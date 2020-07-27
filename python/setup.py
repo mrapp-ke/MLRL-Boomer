@@ -12,7 +12,8 @@ sources = [
     '**/*.pyx',
     'boomer/common/cpp/sparse.cpp',
     'boomer/common/cpp/head_refinement.cpp',
-    'boomer/common/cpp/rule_evaluation.cpp'
+    'boomer/common/cpp/rule_evaluation.cpp',
+    'boomer/seco/cpp/heuristics.cpp'
 ]
 
 extensions = [

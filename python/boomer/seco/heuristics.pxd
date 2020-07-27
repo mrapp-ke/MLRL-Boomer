@@ -1,5 +1,72 @@
 from boomer.common._arrays cimport float64
 
+
+cdef extern from "cpp/heuristics.h" namespace "heuristics":
+
+    cdef cppclass HeuristicFunction:
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
+    cdef cppclass PrecisionFunction(HeuristicFunction):
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
+    cdef cppclass RecallFunction(HeuristicFunction):
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
+    cdef cppclass WRAFunction(HeuristicFunction):
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
+    cdef cppclass HammingLossFunction(HeuristicFunction):
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
+    cdef cppclass FMeasureFunction(HeuristicFunction):
+
+        # Constructors:
+
+        FMeasureFunction(float64 beta)
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
+    cdef cppclass MEstimateFunction(HeuristicFunction):
+
+        # Constructors:
+
+        MEstimateFunction(float64 m)
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
 """
 An enum that specified all positive elements of a confusion matrix.
 """
@@ -12,13 +79,9 @@ cdef enum Element:
 
 cdef class Heuristic:
 
-    # Functions:
+    # Attributes:
 
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil
-
-
-cdef class HammingLoss(Heuristic):
+    cdef HeuristicFunction* heuristic_function
 
     # Functions:
 
@@ -42,7 +105,15 @@ cdef class Recall(Heuristic):
                                            float64 uip, float64 urn, float64 urp) nogil
 
 
-cdef class WeightedRelativeAccuracy(Heuristic):
+cdef class WRA(Heuristic):
+
+    # Functions:
+
+    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                           float64 uip, float64 urn, float64 urp) nogil
+
+
+cdef class HammingLoss(Heuristic):
 
     # Functions:
 
@@ -52,10 +123,6 @@ cdef class WeightedRelativeAccuracy(Heuristic):
 
 cdef class FMeasure(Heuristic):
 
-    # Attributes:
-
-    cdef readonly float64 beta
-
     # Functions:
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -63,10 +130,6 @@ cdef class FMeasure(Heuristic):
 
 
 cdef class MEstimate(Heuristic):
-
-    # Attributes:
-
-    cdef readonly float64 m
 
     # Functions:
 
