@@ -73,7 +73,7 @@ float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, floa
         // Equivalent to recall
         return recall(cin, crp, uin, urp);
     } else if (beta_ > 0) {
-        // Weighted harmonic mean between recall and precision
+        // Weighted harmonic mean between precision and recall
         float64 numCoveredEqual = cin + crp;
         float64 betaPow = pow(beta_, 2);
         float64 numerator = (1 + betaPow) * numCoveredEqual;
@@ -84,6 +84,38 @@ float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, floa
         }
 
         return 1 - (numerator / denominator);
+    } else {
+        // Equivalent to precision
+        return precision(cin, cip, crn, crp);
+    }
+}
+
+MEstimateFunction::MEstimateFunction(float64 m) {
+    m_ = m
+}
+
+MEstimateFunction::~MEstimateFunction() {
+
+}
+
+float64 MEstimateFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                                   float64 uip, float64 urn, float64 urp) {
+    if isinf(m_) {
+        // Equivalent to weighted relative accuracy
+        return wra(cin, cip, crn, crp, uin, uip, urn, urp);
+    } else if (m_ > 0) {
+        // Trade-off between precision and weighted relative accuracy
+        float64 numCoveredEqual = cin + crp;
+        float64 numCovered = numCoveredEqual + cip + crn;
+
+        if (numCovered == 0) {
+            return 1;
+        }
+
+        float64 numUncoveredEqual = uin + urp;
+        float64 numTotal = numCovered + numUncoveredEqual + uip + urn;
+        float64 numEqual = numCoveredEqual + numUncoveredEqual;
+        return 1 - ((numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_));
     } else {
         // Equivalent to precision
         return precision(cin, cip, crn, crp);

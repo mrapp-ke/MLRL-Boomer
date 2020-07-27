@@ -174,4 +174,36 @@ namespace heuristics {
 
     };
 
+    /**
+     * A heuristic function that allows to trade off between the heuristic functions `PrecisionFunction` and
+     * `WRAFunction`. The `m`-parameter allows to control the trade-off between both heuristic functions. If `m = 0`,
+     * the heuristic function is equivalent to the `PrecisionFunction`. As `m` approaches infinity, the isometrics of
+     * the heuristic function become equivalent to those of the `WRAFunction`.
+     */
+    class MEstimateFunction : public HeuristicFunction {
+
+        private:
+
+            /**
+             * The value of the m-parameter.
+             */
+            float64 m_;
+
+        public:
+
+            /**
+             * Creates a new heuristic function that allows to trade off between the heuristic function
+             * `PrecisionFunction` and `WRAFunction`.
+             *
+             * @param m The value of the m-parameter. Must be at least 0
+             */
+            MEstimateFunction(float64 beta);
+
+            ~MEstimateFunction();
+
+            float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                            float64 uip, float64 urn, float64 urp) override;
+
+    };
+
 }
