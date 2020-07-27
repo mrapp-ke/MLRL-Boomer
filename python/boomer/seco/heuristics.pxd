@@ -1,5 +1,16 @@
 from boomer.common._arrays cimport float64
 
+
+cdef extern from "cpp/heuristics.h" namespace "heuristics":
+
+    cdef cppclass HeuristicFunction:
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
 """
 An enum that specified all positive elements of a confusion matrix.
 """
