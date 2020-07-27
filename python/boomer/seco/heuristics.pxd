@@ -19,7 +19,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass PrecisionFunction(HeuristicFunction):
+    cdef cppclass RecallFunction(HeuristicFunction):
 
         # Functions:
 
@@ -28,6 +28,14 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
 
 
     cdef cppclass WRAFunction(HeuristicFunction):
+
+        # Functions:
+
+        float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) nogil
+
+
+    cdef cppclass HammingLossFunction(HeuristicFunction):
 
         # Functions:
 
