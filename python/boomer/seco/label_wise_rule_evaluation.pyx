@@ -60,7 +60,7 @@ cdef class LabelWiseRuleEvaluation:
                                               const float64[::1, :] confusion_matrices_total,
                                               const float64[::1, :] confusion_matrices_subset,
                                               float64[::1, :] confusion_matrices_covered, bint uncovered,
-                                              LabelWisePrediction* prediction):
+                                              LabelWisePrediction* prediction) nogil:
         """
         Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on confusion
         matrices. The predicted scores and quality scores are stored in a given object of type `LabelWisePrediction`.

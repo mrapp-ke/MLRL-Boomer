@@ -23,4 +23,4 @@ cdef class LabelWiseRuleEvaluation:
                                               const float64[::1, :] confusion_matrices_total,
                                               const float64[::1, :] confusion_matrices_subset,
                                               float64[::1, :] confusion_matrices_covered, bint uncovered,
-                                              LabelWisePrediction* prediction)
+                                              LabelWisePrediction* prediction) nogil
