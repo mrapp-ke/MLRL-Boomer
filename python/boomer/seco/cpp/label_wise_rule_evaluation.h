@@ -22,16 +22,16 @@ namespace rule_evaluation {
             /**
              * TODO
              */
-            heuristics::HeuristicFunction* heuristicFunction_;
+            heuristics::AbstractHeuristic* heuristic_;
 
         public:
 
             /**
              * TODO
              *
-             * @param heuristicFunction
+             * @param heuristic
              */
-            CppLabelWiseRuleEvaluation(heuristics::HeuristicFunction* heuristicFunction);
+            CppLabelWiseRuleEvaluation(heuristics::AbstractHeuristic* heuristic);
 
             /**
              * TODO
