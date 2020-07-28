@@ -18,8 +18,8 @@ cdef class Heuristic:
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp) nogil:
-        cdef AbstractHeuristic* heuristic_function = self.heuristic_function
-        cdef float64 quality_score = heuristic_function.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp)
+        cdef AbstractHeuristic* heuristic = self.heuristic
+        cdef float64 quality_score = heuristic.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp)
         return quality_score
 
 
@@ -29,10 +29,10 @@ cdef class Precision(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_function = new PrecisionFunction()
+        self.heuristic = new PrecisionFunction()
 
     def __dealloc(self):
-        del self.heuristic_function
+        del self.heuristic
 
 
 cdef class Recall(Heuristic):
@@ -41,10 +41,10 @@ cdef class Recall(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_function = new RecallFunction()
+        self.heuristic = new RecallFunction()
 
     def __dealloc(self):
-        del self.heuristic_function
+        del self.heuristic
 
 
 cdef class WRA(Heuristic):
@@ -53,10 +53,10 @@ cdef class WRA(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_function = new WRAFunction()
+        self.heuristic = new WRAFunction()
 
     def __dealloc(self):
-        del self.heuristic_function
+        del self.heuristic
 
 
 cdef class HammingLoss(Heuristic):
@@ -65,10 +65,10 @@ cdef class HammingLoss(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_function = new HammingLossFunction()
+        self.heuristic = new HammingLossFunction()
 
     def __dealloc(self):
-        del self.heuristic_function
+        del self.heuristic
 
 
 cdef class FMeasure(Heuristic):
@@ -80,10 +80,10 @@ cdef class FMeasure(Heuristic):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
-        self.heuristic_function = new FMeasureFunction(beta)
+        self.heuristic = new FMeasureFunction(beta)
 
     def __dealloc(self):
-        del self.heuristic_function
+        del self.heuristic
 
 
 cdef class MEstimate(Heuristic):
@@ -95,7 +95,7 @@ cdef class MEstimate(Heuristic):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
-        self.heuristic_function = new MEstimateFunction(m)
+        self.heuristic = new MEstimateFunction(m)
 
     def __dealloc__(self):
-        del self.heuristic_function
+        del self.heuristic
