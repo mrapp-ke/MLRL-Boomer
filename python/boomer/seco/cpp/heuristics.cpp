@@ -128,16 +128,16 @@ float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 
     }
 }
 
-MEstimateFunction::MEstimateFunction(float64 m) {
+MEstimateImpl::MEstimateImpl(float64 m) {
     m_ = m;
 }
 
-MEstimateFunction::~MEstimateFunction() {
+MEstimateImpl::~MEstimateImpl() {
 
 }
 
-float64 MEstimateFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                   float64 uip, float64 urn, float64 urp) {
+float64 MEstimateImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                               float64 uip, float64 urn, float64 urp) {
     if (isinf(m_)) {
         // Equivalent to weighted relative accuracy
         return wra(cin, cip, crn, crp, uin, uip, urn, urp);

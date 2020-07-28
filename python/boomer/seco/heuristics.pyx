@@ -88,14 +88,14 @@ cdef class FMeasure(Heuristic):
 
 cdef class MEstimate(Heuristic):
     """
-    A wrapper for the C++ class `MEstimateFunction`.
+    A wrapper for the C++ class `MEstimateImpl`.
     """
 
     def __cinit__(self, float64 m = 22.466):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
-        self.heuristic = new MEstimateFunction(m)
+        self.heuristic = new MEstimateImpl(m)
 
     def __dealloc__(self):
         del self.heuristic
