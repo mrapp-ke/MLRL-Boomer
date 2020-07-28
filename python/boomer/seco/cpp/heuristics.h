@@ -18,8 +18,8 @@
 namespace heuristics {
 
     /**
-     * A base class for all heuristic functions that allows to calculate quality scores based on the elements of
-     * confusion matrices.
+     * An abstract base class for all heuristic functions that allows to calculate quality scores based on the elements
+     * of confusion matrices.
      */
     class HeuristicFunction {
 
