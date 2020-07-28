@@ -109,7 +109,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
-        cdef CppLabelWiseRuleEvaluation* rule_evaluation = self.rule_evaluation
+        cdef LabelWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
         cdef LabelWisePrediction* prediction = self.prediction
         cdef const intp[::1] label_indices = self.label_indices
         cdef const uint8[::1] minority_labels = self.minority_labels

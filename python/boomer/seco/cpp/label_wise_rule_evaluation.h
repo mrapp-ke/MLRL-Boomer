@@ -15,7 +15,7 @@ namespace rule_evaluation {
     /**
      * TODO
      */
-    class CppLabelWiseRuleEvaluation {
+    class LabelWiseRuleEvaluationImpl {
 
         private:
 
@@ -31,7 +31,7 @@ namespace rule_evaluation {
              *
              * @param heuristic
              */
-            CppLabelWiseRuleEvaluation(heuristics::AbstractHeuristic* heuristic);
+            LabelWiseRuleEvaluationImpl(heuristics::AbstractHeuristic* heuristic);
 
             /**
              * TODO
