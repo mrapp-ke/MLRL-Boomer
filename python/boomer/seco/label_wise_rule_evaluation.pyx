@@ -46,8 +46,7 @@ cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
 cdef class LabelWiseRuleEvaluation:
     """
-    Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
-    heuristic that is applied using label-wise averaging.
+    A wrapper for the C++ class `LabelWiseRuleEvaluationImpl`.
     """
 
     def __cinit__(self, Heuristic heuristic):
@@ -58,37 +57,3 @@ cdef class LabelWiseRuleEvaluation:
 
     def __dealloc__(self):
         del self.rule_evaluation
-
-    cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices, const uint8[::1] minority_labels,
-                                              const float64[:, ::1] confusion_matrices_total,
-                                              const float64[:, ::1] confusion_matrices_subset,
-                                              float64[:, ::1] confusion_matrices_covered, bint uncovered,
-                                              LabelWisePrediction* prediction):
-        """
-        Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on confusion
-        matrices. The predicted scores and quality scores are stored in a given object of type `LabelWisePrediction`.
-
-        :param label_indices:               An array of dtype `intp`, shape `prediction.numPredictions_)`, representing
-                                            the indices of the labels for which the rule should predict or None, if the
-                                            rule should predict for all labels
-        :param minority_labels:             An array of dtype `uint8`, shape `(num_labels)`, indicating whether the rule
-                                            should predict individual labels as positive (1) or negative (0)
-        :param confusion_matrices_total:    A matrix of dtype `float64`, shape `(num_labels, 4)`, storing a confusion
-                                            matrix, which corresponds to all examples, for each label
-        :param confusion_matrices_subset:   A matrix of dtype `float64`, shape `(num_labels, 4)`, storing a confusion
-                                            matrix, which corresponds to all examples covered by the previous refinement
-                                            of the rule, for each label
-        :param confusion_matrices_covered:  A matrix of dtype `float64`, shape `(prediction.numPredictions_)`, storing a
-                                            confusion matrix, which corresponds to all examples covered by the rule, for
-                                            each label
-        :param uncovered:                   0, if the confusion matrices in `confusion_matrices_covered` correspond to
-                                            the examples that are covered by rule, 1, if they correspond to the examples
-                                            that are not covered by the rule
-        :param prediction:                  A pointer to an object of type `LabelWisePrediction` that should be used to
-                                            store the predicted scores and quality scores
-        """
-        cdef LabelWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
-        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
-        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &minority_labels[0],
-                                                     &confusion_matrices_total[0][0], &confusion_matrices_subset[0][0],
-                                                     &confusion_matrices_covered[0][0], uncovered, prediction)
