@@ -4,8 +4,8 @@
 using namespace rule_evaluation;
 
 
-CppLabelWiseRuleEvaluation::CppLabelWiseRuleEvaluation(heuristics::HeuristicFunction* heuristicFunction) {
-    heuristicFunction_ = heuristicFunction;
+CppLabelWiseRuleEvaluation::CppLabelWiseRuleEvaluation(heuristics::AbstractHeuristic* heuristic) {
+    heuristic_ = heuristic;
 }
 
 void CppLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
@@ -14,7 +14,7 @@ void CppLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelI
                                                               const float64* confusionMatricesCovered, bool uncovered,
                                                               LabelWisePrediction* prediction) {
     // Class members
-    heuristics::HeuristicFunction* heuristicFunction = heuristicFunction_;
+    heuristics::AbstractHeuristic* heuristic = heuristic_;
     // The number of labels to predict for
     intp numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
@@ -57,7 +57,7 @@ void CppLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelI
             urp = confusionMatricesTotal[offsetL + 3] - crp;
         }
 
-        score = heuristicFunction->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+        score = heuristic->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
         qualityScores[c] = score;
         overallQualityScore += score;
     }
