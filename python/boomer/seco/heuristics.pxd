@@ -3,7 +3,7 @@ from boomer.common._arrays cimport float64
 
 cdef extern from "cpp/heuristics.h" namespace "heuristics":
 
-    cdef cppclass HeuristicFunction:
+    cdef cppclass AbstractHeuristic:
 
         # Functions:
 
@@ -11,7 +11,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass PrecisionFunction(HeuristicFunction):
+    cdef cppclass PrecisionImpl(AbstractHeuristic):
 
         # Functions:
 
@@ -19,7 +19,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass RecallFunction(HeuristicFunction):
+    cdef cppclass RecallImpl(AbstractHeuristic):
 
         # Functions:
 
@@ -27,7 +27,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass WRAFunction(HeuristicFunction):
+    cdef cppclass WRAImpl(AbstractHeuristic):
 
         # Functions:
 
@@ -35,7 +35,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass HammingLossFunction(HeuristicFunction):
+    cdef cppclass HammingLossImpl(AbstractHeuristic):
 
         # Functions:
 
@@ -43,11 +43,11 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass FMeasureFunction(HeuristicFunction):
+    cdef cppclass FMeasureImpl(AbstractHeuristic):
 
         # Constructors:
 
-        FMeasureFunction(float64 beta)
+        FMeasureImpl(float64 beta)
 
         # Functions:
 
@@ -55,11 +55,11 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass MEstimateFunction(HeuristicFunction):
+    cdef cppclass MEstimateImpl(AbstractHeuristic):
 
         # Constructors:
 
-        MEstimateFunction(float64 m)
+        MEstimateImpl(float64 m)
 
         # Functions:
 
@@ -81,7 +81,7 @@ cdef class Heuristic:
 
     # Attributes:
 
-    cdef HeuristicFunction* heuristic_function
+    cdef AbstractHeuristic* heuristic
 
     # Functions:
 

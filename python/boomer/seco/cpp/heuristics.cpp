@@ -42,48 +42,48 @@ static float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 u
     return 1 - ((numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal)));
 }
 
-HeuristicFunction::~HeuristicFunction() {
+AbstractHeuristic::~AbstractHeuristic() {
 
 }
 
-float64 HeuristicFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+float64 AbstractHeuristic::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                    float64 uip, float64 urn, float64 urp) {
     return 0;
 }
 
-PrecisionFunction::~PrecisionFunction() {
+PrecisionImpl::~PrecisionImpl() {
 
 }
 
-float64 PrecisionFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                   float64 uip, float64 urn, float64 urp) {
+float64 PrecisionImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                               float64 uip, float64 urn, float64 urp) {
     return precision(cin, cip, crn, crp);
 }
 
-RecallFunction::~RecallFunction() {
+RecallImpl::~RecallImpl() {
 
 }
 
-float64 RecallFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                float64 uip, float64 urn, float64 urp) {
+float64 RecallImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                            float64 uip, float64 urn, float64 urp) {
     return recall(cin, crp, uin, urp);
 }
 
-WRAFunction::~WRAFunction() {
+WRAImpl::~WRAImpl() {
 
 }
 
-float64 WRAFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                             float64 uip, float64 urn, float64 urp) {
+float64 WRAImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                         float64 urn, float64 urp) {
     return wra(cin, cip, crn, crp, uin, uip, urn, urp);
 }
 
-HammingLossFunction::~HammingLossFunction() {
+HammingLossImpl::~HammingLossImpl() {
 
 }
 
-float64 HammingLossFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                     float64 uip, float64 urn, float64 urp) {
+float64 HammingLossImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                                 float64 uip, float64 urn, float64 urp) {
     float64 numCoveredIncorrect = cip + crn;
     float64 numCoveredCorrect = cin + crp;
     float64 numCovered = numCoveredIncorrect + numCoveredCorrect;
@@ -97,16 +97,16 @@ float64 HammingLossFunction::evaluateConfusionMatrix(float64 cin, float64 cip, f
     return numIncorrect / numTotal;
 }
 
-FMeasureFunction::FMeasureFunction(float64 beta) {
+FMeasureImpl::FMeasureImpl(float64 beta) {
     beta_ = beta;
 }
 
-FMeasureFunction::~FMeasureFunction() {
+FMeasureImpl::~FMeasureImpl() {
 
 }
 
-float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                  float64 uip, float64 urn, float64 urp) {
+float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                              float64 uip, float64 urn, float64 urp) {
     if (isinf(beta_)) {
         // Equivalent to recall
         return recall(cin, crp, uin, urp);
@@ -128,16 +128,16 @@ float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, floa
     }
 }
 
-MEstimateFunction::MEstimateFunction(float64 m) {
+MEstimateImpl::MEstimateImpl(float64 m) {
     m_ = m;
 }
 
-MEstimateFunction::~MEstimateFunction() {
+MEstimateImpl::~MEstimateImpl() {
 
 }
 
-float64 MEstimateFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                   float64 uip, float64 urn, float64 urp) {
+float64 MEstimateImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                               float64 uip, float64 urn, float64 urp) {
     if (isinf(m_)) {
         // Equivalent to weighted relative accuracy
         return wra(cin, cip, crn, crp, uin, uip, urn, urp);

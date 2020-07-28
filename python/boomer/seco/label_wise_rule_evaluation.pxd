@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint8, intp, float64
 from boomer.common.statistics cimport LabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
-from boomer.seco.heuristics cimport Heuristic, HeuristicFunction
+from boomer.seco.heuristics cimport Heuristic, AbstractHeuristic
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
@@ -15,7 +15,7 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef HeuristicFunction* heuristic_function
+    cdef AbstractHeuristic* heuristic
 
     # Functions:
 
