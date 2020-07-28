@@ -1,12 +1,7 @@
 """
-Implements different heuristics for assessing the quality of single- or multi-label rules based on confusion matrices.
-Given the elements of a confusion matrix, a heuristic calculates a quality score in [0, 1].
+@author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-All heuristics must be implemented as loss functions, i.e., rules with a smaller quality score are better than those
-with a large quality score.
-
-All heuristics must treat positive and negative labels equally, i.e., if the ground truth and a rule's predictions would
-be inverted, the resulting quality scores must be the same as before.
+Provides Cython wrappers for C++ classes that implement different heuristics for assessing the quality of rules.
 """
 from libc.math cimport isinf, pow
 
