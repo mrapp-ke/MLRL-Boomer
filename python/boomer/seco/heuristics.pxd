@@ -81,7 +81,7 @@ cdef class Heuristic:
 
     # Attributes:
 
-    cdef AbstractHeuristic* heuristic_function
+    cdef AbstractHeuristic* heuristic
 
     # Functions:
 

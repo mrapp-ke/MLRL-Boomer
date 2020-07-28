@@ -15,7 +15,7 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef AbstractHeuristic* heuristic_function
+    cdef AbstractHeuristic* heuristic
 
     # Functions:
 
