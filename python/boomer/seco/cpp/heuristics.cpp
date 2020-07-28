@@ -51,12 +51,12 @@ float64 AbstractHeuristic::evaluateConfusionMatrix(float64 cin, float64 cip, flo
     return 0;
 }
 
-PrecisionFunction::~PrecisionFunction() {
+PrecisionImpl::~PrecisionImpl() {
 
 }
 
-float64 PrecisionFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                   float64 uip, float64 urn, float64 urp) {
+float64 PrecisionImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                               float64 uip, float64 urn, float64 urp) {
     return precision(cin, cip, crn, crp);
 }
 
