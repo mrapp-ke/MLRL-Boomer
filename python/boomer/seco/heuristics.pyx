@@ -13,12 +13,12 @@ from libc.math cimport isinf, pow
 
 cdef class Heuristic:
     """
-    A wrapper for the abstract C++ class `HeuristicFunction`.
+    A wrapper for the abstract C++ class `AbstractHeuristic`.
     """
 
     cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                            float64 uip, float64 urn, float64 urp) nogil:
-        cdef HeuristicFunction* heuristic_function = self.heuristic_function
+        cdef AbstractHeuristic* heuristic_function = self.heuristic_function
         cdef float64 quality_score = heuristic_function.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp)
         return quality_score
 

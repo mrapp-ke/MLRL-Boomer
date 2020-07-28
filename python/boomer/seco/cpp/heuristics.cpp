@@ -42,11 +42,11 @@ static float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 u
     return 1 - ((numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal)));
 }
 
-HeuristicFunction::~HeuristicFunction() {
+AbstractHeuristic::~AbstractHeuristic() {
 
 }
 
-float64 HeuristicFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+float64 AbstractHeuristic::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                    float64 uip, float64 urn, float64 urp) {
     return 0;
 }

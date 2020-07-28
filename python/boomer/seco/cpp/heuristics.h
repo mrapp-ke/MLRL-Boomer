@@ -21,14 +21,14 @@ namespace heuristics {
      * An abstract base class for all heuristic functions that allows to calculate quality scores based on the elements
      * of confusion matrices.
      */
-    class HeuristicFunction {
+    class AbstractHeuristic {
 
         public:
 
             /**
              * Frees the memory occupied by the heuristic function.
              */
-            virtual ~HeuristicFunction();
+            virtual ~AbstractHeuristic();
 
             /**
              * Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix. All elements
@@ -88,7 +88,7 @@ namespace heuristics {
     /**
      * A heuristic function that measures the fraction of incorrectly predicted labels among all covered labels.
      */
-    class PrecisionFunction : public HeuristicFunction {
+    class PrecisionFunction : public AbstractHeuristic {
 
         public:
 
@@ -103,7 +103,7 @@ namespace heuristics {
      * A heuristic function that measures the fraction of uncovered labels among all labels for which the rule's
      * prediction is (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
-    class RecallFunction : public HeuristicFunction {
+    class RecallFunction : public AbstractHeuristic {
 
         public:
 
@@ -118,7 +118,7 @@ namespace heuristics {
      * A heuristic function that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy
      * metric.
      */
-    class WRAFunction : public HeuristicFunction {
+    class WRAFunction : public AbstractHeuristic {
 
         public:
 
@@ -132,7 +132,7 @@ namespace heuristics {
     /**
      * A heuristic function that measures the fraction of incorrectly predicted labels among all labels.
      */
-    class HammingLossFunction : public HeuristicFunction {
+    class HammingLossFunction : public AbstractHeuristic {
 
         public:
 
@@ -150,7 +150,7 @@ namespace heuristics {
      * to the `PrecisionFunction`. As `beta` approaches infinity, the heuristic function becomes equivalent to the
      * `RecallFunction`.
      */
-    class FMeasureFunction : public HeuristicFunction {
+    class FMeasureFunction : public AbstractHeuristic {
 
         private:
 
@@ -182,7 +182,7 @@ namespace heuristics {
      * the heuristic function is equivalent to the `PrecisionFunction`. As `m` approaches infinity, the isometrics of
      * the heuristic function become equivalent to those of the `WRAFunction`.
      */
-    class MEstimateFunction : public HeuristicFunction {
+    class MEstimateFunction : public AbstractHeuristic {
 
         private:
 
