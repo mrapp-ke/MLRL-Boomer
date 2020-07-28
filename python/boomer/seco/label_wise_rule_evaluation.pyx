@@ -1,8 +1,8 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that allow to calculate the predictions of rules, as well as corresponding quality scores, such that
-the optimize a heuristic that is applied using label-wise averaging.
+Provides classes for calculating the predictions of default rules, as well as Cython wrappers for C++ classes that allow
+to calculate the predictions of rules.
 """
 from boomer.common._arrays cimport get_index
 from boomer.seco.heuristics cimport Element
