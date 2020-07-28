@@ -13,6 +13,7 @@ void CppLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelI
                                                               const float64* confusionMatricesSubset,
                                                               const float64* confusionMatricesCovered, bool uncovered,
                                                               LabelWisePrediction* prediction) {
+    // Class members
     heuristics::HeuristicFunction* heuristicFunction = heuristicFunction_;
     // The number of labels to predict for
     intp numPredictions = prediction->numPredictions_;
