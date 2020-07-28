@@ -3,7 +3,7 @@ from boomer.common._arrays cimport float64
 
 cdef extern from "cpp/heuristics.h" namespace "heuristics":
 
-    cdef cppclass HeuristicFunction:
+    cdef cppclass AbstractHeuristic:
 
         # Functions:
 
@@ -11,7 +11,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass PrecisionFunction(HeuristicFunction):
+    cdef cppclass PrecisionFunction(AbstractHeuristic):
 
         # Functions:
 
@@ -19,7 +19,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass RecallFunction(HeuristicFunction):
+    cdef cppclass RecallFunction(AbstractHeuristic):
 
         # Functions:
 
@@ -27,7 +27,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass WRAFunction(HeuristicFunction):
+    cdef cppclass WRAFunction(AbstractHeuristic):
 
         # Functions:
 
@@ -35,7 +35,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass HammingLossFunction(HeuristicFunction):
+    cdef cppclass HammingLossFunction(AbstractHeuristic):
 
         # Functions:
 
@@ -43,7 +43,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass FMeasureFunction(HeuristicFunction):
+    cdef cppclass FMeasureFunction(AbstractHeuristic):
 
         # Constructors:
 
@@ -55,7 +55,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass MEstimateFunction(HeuristicFunction):
+    cdef cppclass MEstimateFunction(AbstractHeuristic):
 
         # Constructors:
 
@@ -81,7 +81,7 @@ cdef class Heuristic:
 
     # Attributes:
 
-    cdef HeuristicFunction* heuristic_function
+    cdef AbstractHeuristic* heuristic_function
 
     # Functions:
 

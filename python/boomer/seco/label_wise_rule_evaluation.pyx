@@ -85,7 +85,7 @@ cdef class LabelWiseRuleEvaluation:
                                             store the predicted scores and quality scores
         """
         # Class members
-        cdef HeuristicFunction* heuristic_function = self.heuristic_function
+        cdef AbstractHeuristic* heuristic_function = self.heuristic_function
         # The number of labels to predict for
         cdef intp num_predictions = prediction.numPredictions_
         # The array that should be used to store the predicted scores
