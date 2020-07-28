@@ -1,12 +1,12 @@
 /**
- * Implements different heuristic functions for assessing the quality of single- or multi-label rules based on confusion
- * matrices. Given the elements of a confusion matrix, such a heuristic function calculates a quality score in [0, 1].
+ * Implements different heuristics for assessing the quality of single- or multi-label rules based on confusion
+ * matrices. Given the elements of a confusion matrix, such a heuristic calculates a quality score in [0, 1].
  *
- * All heuristic functions must be implemented as loss functions, i.e., rules with a smaller quality score are
- * considered better than those with a large quality score.
+ * All heuristics must be implemented as loss functions, i.e., rules with a smaller quality score are considered better
+ * than those with a large quality score.
  *
- * All heuristic functions must treat positive and negative labels equally, i.e., if the ground truth and a rule's
- * predictions would be inverted, the resulting quality scores must be the same as before.
+ * All heuristics must treat positive and negative labels equally, i.e., if the ground truth and a rule's predictions
+ * would be inverted, the resulting quality scores must be the same as before.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -18,15 +18,15 @@
 namespace heuristics {
 
     /**
-     * An abstract base class for all heuristic functions that allows to calculate quality scores based on the elements
-     * of confusion matrices.
+     * An abstract base class for all heuristics that allows to calculate quality scores based on the elements of
+     * confusion matrices.
      */
     class AbstractHeuristic {
 
         public:
 
             /**
-             * Frees the memory occupied by the heuristic function.
+             * Frees the memory occupied by the heuristic.
              */
             virtual ~AbstractHeuristic();
 
@@ -86,7 +86,7 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic function that measures the fraction of incorrectly predicted labels among all covered labels.
+     * A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
      */
     class PrecisionFunction : public AbstractHeuristic {
 
@@ -100,8 +100,8 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic function that measures the fraction of uncovered labels among all labels for which the rule's
-     * prediction is (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
+     * A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is
+     * (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
     class RecallFunction : public AbstractHeuristic {
 
@@ -115,8 +115,7 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic function that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy
-     * metric.
+     * A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
      */
     class WRAFunction : public AbstractHeuristic {
 
@@ -130,7 +129,7 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic function that measures the fraction of incorrectly predicted labels among all labels.
+     * A heuristic that measures the fraction of incorrectly predicted labels among all labels.
      */
     class HammingLossFunction : public AbstractHeuristic {
 
@@ -144,11 +143,10 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic function that calculates as the (weighted) harmonic mean between the heuristic functions
-     * `PrecisionFunction` and `RecallFunction`, where the parameter `beta` allows to trade-off between both heuristics.
-     * If `beta = 1`, both heuristic functions are weighed equally. If `beta = 0`, the heuristic function is equivalent
-     * to the `PrecisionFunction`. As `beta` approaches infinity, the heuristic function becomes equivalent to the
-     * `RecallFunction`.
+     * A heuristic that calculates as the (weighted) harmonic mean between the heuristics `PrecisionFunction` and
+     * `RecallFunction`, where the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both
+     * heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `PrecisionFunction`.
+     * As `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallFunction`.
      */
     class FMeasureFunction : public AbstractHeuristic {
 
@@ -162,8 +160,8 @@ namespace heuristics {
         public:
 
             /**
-             * Creates a new heuristic function that calculates as the (weighted) harmonic mean between the heuristic
-             * functions `PrecisionFunction` and `RecallFunction`.
+             * Creates a new heuristic that calculates as the (weighted) harmonic mean between the heuristics
+             * `PrecisionFunction` and `RecallFunction`.
              *
              * @param beta The value of the beta-parameter. Must be at least 0
              */
@@ -177,10 +175,10 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic function that allows to trade off between the heuristic functions `PrecisionFunction` and
-     * `WRAFunction`. The `m`-parameter allows to control the trade-off between both heuristic functions. If `m = 0`,
-     * the heuristic function is equivalent to the `PrecisionFunction`. As `m` approaches infinity, the isometrics of
-     * the heuristic function become equivalent to those of the `WRAFunction`.
+     * A heuristic that allows to trade off between the heuristics `PrecisionFunction` and `WRAFunction`. The
+     * `m`-parameter allows to control the trade-off between both heuristics. If `m = 0`, this heuristic is equivalent
+     * to the heuristic `PrecisionFunction`. As `m` approaches infinity, the isometrics of this heuristic become
+     * equivalent to those of the heuristic `WRAFunction`.
      */
     class MEstimateFunction : public AbstractHeuristic {
 
@@ -194,8 +192,8 @@ namespace heuristics {
         public:
 
             /**
-             * Creates a new heuristic function that allows to trade off between the heuristic function
-             * `PrecisionFunction` and `WRAFunction`.
+             * Creates a new heuristic that allows to trade off between the heuristics `PrecisionFunction` and
+             * `WRAFunction`.
              *
              * @param m The value of the m-parameter. Must be at least 0
              */
