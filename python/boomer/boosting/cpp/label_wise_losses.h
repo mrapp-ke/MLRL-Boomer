@@ -1,5 +1,5 @@
 /**
- * Implements different differentiable loss functions.
+ * Implements different differentiable loss functions that are applied label-wise.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
