@@ -4,7 +4,7 @@
 Provides classes that allow to store the elements of confusion matrices that are computed independently for each label.
 """
 from boomer.common._arrays cimport array_uint8, c_matrix_float64, fortran_matrix_float64, get_index
-from boomer.seco.heuristics cimport Element
+from boomer.seco.heuristics cimport ConfusionMatrixElement
 
 from libc.stdlib cimport malloc
 
@@ -314,6 +314,6 @@ cdef inline intp __get_confusion_matrix_element(uint8 true_label, uint8 predicte
     :return:                The confusion matrix element
     """
     if true_label:
-        return <intp>Element.RP if predicted_label else <intp>Element.RN
+        return <intp>ConfusionMatrixElement.RP if predicted_label else <intp>ConfusionMatrixElement.RN
     else:
-        return <intp>Element.IP if predicted_label else <intp>Element.IN
+        return <intp>ConfusionMatrixElement.IP if predicted_label else <intp>ConfusionMatrixElement.IN
