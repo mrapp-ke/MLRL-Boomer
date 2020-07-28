@@ -8,11 +8,11 @@ from libcpp cimport bool
 
 cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "rule_evaluation":
 
-    cdef cppclass CppLabelWiseRuleEvaluation:
+    cdef cppclass LabelWiseRuleEvaluationImpl:
 
         # Constructors:
 
-        CppLabelWiseRuleEvaluation(AbstractHeuristic* heuristic);
+        LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic);
 
         # Functions:
 
@@ -33,7 +33,7 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef CppLabelWiseRuleEvaluation* rule_evaluation
+    cdef LabelWiseRuleEvaluationImpl* rule_evaluation
 
     # Functions:
 

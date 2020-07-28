@@ -54,7 +54,7 @@ cdef class LabelWiseRuleEvaluation:
         """
         :param heuristic: The heuristic that should be used
         """
-        self.rule_evaluation = new CppLabelWiseRuleEvaluation(heuristic.heuristic)
+        self.rule_evaluation = new LabelWiseRuleEvaluationImpl(heuristic.heuristic)
 
     def __dealloc__(self):
         del self.rule_evaluation
@@ -87,7 +87,7 @@ cdef class LabelWiseRuleEvaluation:
         :param prediction:                  A pointer to an object of type `LabelWisePrediction` that should be used to
                                             store the predicted scores and quality scores
         """
-        cdef CppLabelWiseRuleEvaluation* rule_evaluation = self.rule_evaluation
+        cdef LabelWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
         cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
         rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &minority_labels[0],
                                                      &confusion_matrices_total[0][0], &confusion_matrices_subset[0][0],

@@ -4,15 +4,15 @@
 using namespace rule_evaluation;
 
 
-CppLabelWiseRuleEvaluation::CppLabelWiseRuleEvaluation(heuristics::AbstractHeuristic* heuristic) {
+LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(heuristics::AbstractHeuristic* heuristic) {
     heuristic_ = heuristic;
 }
 
-void CppLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
-                                                              const float64* confusionMatricesTotal,
-                                                              const float64* confusionMatricesSubset,
-                                                              const float64* confusionMatricesCovered, bool uncovered,
-                                                              LabelWisePrediction* prediction) {
+void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+                                                               const float64* confusionMatricesTotal,
+                                                               const float64* confusionMatricesSubset,
+                                                               const float64* confusionMatricesCovered, bool uncovered,
+                                                               LabelWisePrediction* prediction) {
     // Class members
     heuristics::AbstractHeuristic* heuristic = heuristic_;
     // The number of labels to predict for
