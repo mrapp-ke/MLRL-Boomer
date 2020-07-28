@@ -61,9 +61,9 @@ cdef class LabelWiseRuleEvaluation:
         del self.rule_evaluation
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices, const uint8[::1] minority_labels,
-                                              const float64[::1, :] confusion_matrices_total,
-                                              const float64[::1, :] confusion_matrices_subset,
-                                              float64[::1, :] confusion_matrices_covered, bint uncovered,
+                                              const float64[:, ::1] confusion_matrices_total,
+                                              const float64[:, ::1] confusion_matrices_subset,
+                                              float64[:, ::1] confusion_matrices_covered, bint uncovered,
                                               LabelWisePrediction* prediction):
         """
         Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on confusion
