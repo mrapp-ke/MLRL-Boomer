@@ -4,9 +4,6 @@
 Provides classes for calculating the predictions of default rules, as well as Cython wrappers for C++ classes that allow
 to calculate the predictions of rules.
 """
-from boomer.common._arrays cimport get_index
-from boomer.seco.heuristics cimport Element
-
 from libc.stdlib cimport malloc
 
 
