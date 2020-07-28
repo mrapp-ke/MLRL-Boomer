@@ -19,7 +19,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass RecallFunction(AbstractHeuristic):
+    cdef cppclass RecallImpl(AbstractHeuristic):
 
         # Functions:
 

@@ -60,12 +60,12 @@ float64 PrecisionImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64
     return precision(cin, cip, crn, crp);
 }
 
-RecallFunction::~RecallFunction() {
+RecallImpl::~RecallImpl() {
 
 }
 
-float64 RecallFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                float64 uip, float64 urn, float64 urp) {
+float64 RecallImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                            float64 uip, float64 urn, float64 urp) {
     return recall(cin, crp, uin, urp);
 }
 

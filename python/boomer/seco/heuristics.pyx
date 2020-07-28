@@ -37,11 +37,11 @@ cdef class Precision(Heuristic):
 
 cdef class Recall(Heuristic):
     """
-    A wrapper for the C++ class `RecallFunction`.
+    A wrapper for the C++ class `RecallImpl`.
     """
 
     def __cinit__(self):
-        self.heuristic = new RecallFunction()
+        self.heuristic = new RecallImpl()
 
     def __dealloc(self):
         del self.heuristic
