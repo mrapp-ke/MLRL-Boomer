@@ -5,8 +5,10 @@
  */
 #pragma once
 
-typedef unsigned long int uint64;
-typedef unsigned int uint32;
-typedef bool uint8;
-typedef long int intp;
+#include <cstdint>
+
+typedef uint8_t uint8;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
+typedef intptr_t intp;
 typedef double float64;
