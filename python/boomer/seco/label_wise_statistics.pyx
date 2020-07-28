@@ -4,7 +4,7 @@
 Provides classes that allow to store the elements of confusion matrices that are computed independently for each label.
 """
 from boomer.common._arrays cimport array_uint8, c_matrix_float64, fortran_matrix_float64, get_index
-from boomer.seco.heuristics cimport Element
+from boomer.seco.heuristics cimport ConfusionMatrixElement
 
 from libc.stdlib cimport malloc
 
@@ -19,8 +19,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                   LabelMatrix label_matrix, const float64[::1, :] uncovered_labels, const uint8[::1] minority_labels,
                   const float64[:, ::1] confusion_matrices_total, const float64[:, ::1] confusion_matrices_subset):
         """
-        :param rule_evaluation:             The `RuleEvaluation` to be used for calculating the predictions, as well as
-                                            corresponding quality scores of rules
+        :param rule_evaluation:             The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
+                                            well as corresponding quality scores, of rules
         :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
                                             indices of the labels that should be considered by the search or None, if
                                             all labels should be considered
@@ -36,7 +36,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                             that corresponds to all examples that are covered by the previous refinement
                                             of a rule, for each label
         """
-        self.rule_evaluation = rule_evaluation
+        self.rule_evaluation = rule_evaluation.rule_evaluation
         self.label_indices = label_indices
         self.label_matrix = label_matrix
         self.uncovered_labels = uncovered_labels
@@ -109,7 +109,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
-        cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef LabelWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
         cdef LabelWisePrediction* prediction = self.prediction
         cdef const intp[::1] label_indices = self.label_indices
         cdef const uint8[::1] minority_labels = self.minority_labels
@@ -118,9 +118,10 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef float64[:, ::1] confusion_matrices_covered = self.accumulated_confusion_matrices_covered if accumulated else self.confusion_matrices_covered
 
         # Calculate and returns the predictions, as well as corresponding quality scores...
-        rule_evaluation.calculate_label_wise_prediction(label_indices, minority_labels, confusion_matrices_total,
-                                                        confusion_matrices_subset, confusion_matrices_covered,
-                                                        uncovered, prediction)
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &minority_labels[0],
+                                                     &confusion_matrices_total[0][0], &confusion_matrices_subset[0][0],
+                                                     &confusion_matrices_covered[0][0], uncovered, prediction)
         return prediction
 
 
@@ -313,6 +314,6 @@ cdef inline intp __get_confusion_matrix_element(uint8 true_label, uint8 predicte
     :return:                The confusion matrix element
     """
     if true_label:
-        return <intp>Element.RP if predicted_label else <intp>Element.RN
+        return <intp>ConfusionMatrixElement.RP if predicted_label else <intp>ConfusionMatrixElement.RN
     else:
-        return <intp>Element.IP if predicted_label else <intp>Element.IN
+        return <intp>ConfusionMatrixElement.IP if predicted_label else <intp>ConfusionMatrixElement.IN
