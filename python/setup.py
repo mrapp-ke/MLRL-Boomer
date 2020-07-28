@@ -14,6 +14,7 @@ sources = [
     'boomer/common/cpp/head_refinement.cpp',
     'boomer/common/cpp/rule_evaluation.cpp',
     'boomer/boosting/cpp/label_wise_losses.cpp',
+    'boomer/boosting/cpp/example_wise_losses.cpp',
     'boomer/seco/cpp/heuristics.cpp',
     'boomer/seco/cpp/label_wise_rule_evaluation.cpp'
 ]
