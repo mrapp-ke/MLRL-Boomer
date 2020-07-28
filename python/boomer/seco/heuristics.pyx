@@ -73,14 +73,14 @@ cdef class HammingLoss(Heuristic):
 
 cdef class FMeasure(Heuristic):
     """
-    A wrapper for the C++ class `FMeasureFunction`.
+    A wrapper for the C++ class `FMeasureImpl`.
     """
 
     def __cinit__(self, float64 beta = 0.5):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
-        self.heuristic = new FMeasureFunction(beta)
+        self.heuristic = new FMeasureImpl(beta)
 
     def __dealloc(self):
         del self.heuristic

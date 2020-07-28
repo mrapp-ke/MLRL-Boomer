@@ -97,16 +97,16 @@ float64 HammingLossImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float
     return numIncorrect / numTotal;
 }
 
-FMeasureFunction::FMeasureFunction(float64 beta) {
+FMeasureImpl::FMeasureImpl(float64 beta) {
     beta_ = beta;
 }
 
-FMeasureFunction::~FMeasureFunction() {
+FMeasureImpl::~FMeasureImpl() {
 
 }
 
-float64 FMeasureFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                  float64 uip, float64 urn, float64 urp) {
+float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                              float64 uip, float64 urn, float64 urp) {
     if (isinf(beta_)) {
         // Equivalent to recall
         return recall(cin, crp, uin, urp);
