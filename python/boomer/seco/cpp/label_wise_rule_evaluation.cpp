@@ -36,25 +36,25 @@ void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* label
         intp offsetL = l * 4;
         intp uin, uip, urn, urp;
 
-        intp cin = confusionMatricesCovered[offsetC + 0];  // <intp>Element.IN
-        intp cip = confusionMatricesCovered[offsetC + 1];  // <intp>Element.IP
-        intp crn = confusionMatricesCovered[offsetC + 2];  // <intp>Element.RN
-        intp crp = confusionMatricesCovered[offsetC + 3];  // <intp>Element.RP
+        intp cin = confusionMatricesCovered[offsetC + heuristics::IN];
+        intp cip = confusionMatricesCovered[offsetC + heuristics::IP];
+        intp crn = confusionMatricesCovered[offsetC + heuristics::RN];
+        intp crp = confusionMatricesCovered[offsetC + heuristics::RP];
 
         if (uncovered) {
-            uin = cin + confusionMatricesTotal[offsetL + 0] - confusionMatricesSubset[offsetL + 0];
-            uip = cip + confusionMatricesTotal[offsetL + 1] - confusionMatricesSubset[offsetL + 1];
-            urn = crn + confusionMatricesTotal[offsetL + 2] - confusionMatricesSubset[offsetL + 2];
-            urp = crp + confusionMatricesTotal[offsetL + 3] - confusionMatricesSubset[offsetL + 3];
-            cin = confusionMatricesSubset[offsetC + 0] - cin;
-            cip = confusionMatricesSubset[offsetC + 1] - cip;
-            crn = confusionMatricesSubset[offsetC + 2] - crn;
-            crp = confusionMatricesSubset[offsetC + 3] - crp;
+            uin = cin + confusionMatricesTotal[offsetL + heuristics::IN] - confusionMatricesSubset[offsetL + heuristics::IN];
+            uip = cip + confusionMatricesTotal[offsetL + heuristics::IP] - confusionMatricesSubset[offsetL + heuristics::IP];
+            urn = crn + confusionMatricesTotal[offsetL + heuristics::RN] - confusionMatricesSubset[offsetL + heuristics::RN];
+            urp = crp + confusionMatricesTotal[offsetL + heuristics::RP] - confusionMatricesSubset[offsetL + heuristics::RP];
+            cin = confusionMatricesSubset[offsetC + heuristics::IN] - cin;
+            cip = confusionMatricesSubset[offsetC + heuristics::IP] - cip;
+            crn = confusionMatricesSubset[offsetC + heuristics::RN] - crn;
+            crp = confusionMatricesSubset[offsetC + heuristics::RP] - crp;
         } else {
-            uin = confusionMatricesTotal[offsetL + 0] - cin;
-            uip = confusionMatricesTotal[offsetL + 1] - cip;
-            urn = confusionMatricesTotal[offsetL + 2] - crn;
-            urp = confusionMatricesTotal[offsetL + 3] - crp;
+            uin = confusionMatricesTotal[offsetL + heuristics::IN] - cin;
+            uip = confusionMatricesTotal[offsetL + heuristics::IP] - cip;
+            urn = confusionMatricesTotal[offsetL + heuristics::RN] - crn;
+            urp = confusionMatricesTotal[offsetL + heuristics::RP] - crp;
         }
 
         score = heuristic->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
