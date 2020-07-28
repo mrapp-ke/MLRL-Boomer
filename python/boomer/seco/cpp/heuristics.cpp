@@ -69,12 +69,12 @@ float64 RecallImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 cr
     return recall(cin, crp, uin, urp);
 }
 
-WRAFunction::~WRAFunction() {
+WRAImpl::~WRAImpl() {
 
 }
 
-float64 WRAFunction::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                             float64 uip, float64 urn, float64 urp) {
+float64 WRAImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                         float64 urn, float64 urp) {
     return wra(cin, cip, crn, crp, uin, uip, urn, urp);
 }
 

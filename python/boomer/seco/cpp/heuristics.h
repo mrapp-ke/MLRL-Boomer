@@ -117,11 +117,11 @@ namespace heuristics {
     /**
      * A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
      */
-    class WRAFunction : public AbstractHeuristic {
+    class WRAImpl : public AbstractHeuristic {
 
         public:
 
-            ~WRAFunction();
+            ~WRAImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;

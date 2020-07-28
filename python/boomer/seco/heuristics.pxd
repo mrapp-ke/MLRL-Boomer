@@ -27,7 +27,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass WRAFunction(AbstractHeuristic):
+    cdef cppclass WRAImpl(AbstractHeuristic):
 
         # Functions:
 

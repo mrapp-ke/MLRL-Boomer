@@ -49,11 +49,11 @@ cdef class Recall(Heuristic):
 
 cdef class WRA(Heuristic):
     """
-    A wrapper for the C++ class `WRAFunction`.
+    A wrapper for the C++ class `WRAImpl`.
     """
 
     def __cinit__(self):
-        self.heuristic = new WRAFunction()
+        self.heuristic = new WRAImpl()
 
     def __dealloc(self):
         del self.heuristic
