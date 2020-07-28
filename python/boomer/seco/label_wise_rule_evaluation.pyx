@@ -89,6 +89,7 @@ cdef class LabelWiseRuleEvaluation:
                                             store the predicted scores and quality scores
         """
         cdef CppLabelWiseRuleEvaluation* rule_evaluation = self.rule_evaluation
-        rule_evaluation.calculateLabelWisePrediction(&label_indices[0], &minority_labels[0],
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &minority_labels[0],
                                                      &confusion_matrices_total[0][0], &confusion_matrices_subset[0][0],
                                                      &confusion_matrices_covered[0][0], uncovered, prediction)
