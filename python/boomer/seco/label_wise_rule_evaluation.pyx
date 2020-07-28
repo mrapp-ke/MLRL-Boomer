@@ -54,8 +54,7 @@ cdef class LabelWiseRuleEvaluation:
         """
         :param heuristic: The heuristic that should be used
         """
-        cdef HeuristicFunction* heuristic_function = heuristic.heuristic_function
-        self.rule_evaluation = new CppLabelWiseRuleEvaluation(heuristic_function)
+        self.rule_evaluation = new CppLabelWiseRuleEvaluation(heuristic.heuristic)
 
     def __dealloc__(self):
         del self.rule_evaluation

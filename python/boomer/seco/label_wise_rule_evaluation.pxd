@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint8, intp, float64
 from boomer.common.statistics cimport LabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
-from boomer.seco.heuristics cimport Heuristic, HeuristicFunction
+from boomer.seco.heuristics cimport Heuristic, AbstractHeuristic
 
 from libcpp cimport bool
 
@@ -12,7 +12,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "rule_evaluation":
 
         # Constructors:
 
-        CppLabelWiseRuleEvaluation(HeuristicFunction* heuristicFunction);
+        CppLabelWiseRuleEvaluation(AbstractHeuristic* heuristic);
 
         # Functions:
 
