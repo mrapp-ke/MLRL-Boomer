@@ -3,6 +3,24 @@ from boomer.common.statistics cimport LabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
 from boomer.seco.heuristics cimport Heuristic, HeuristicFunction
 
+from libcpp cimport bool
+
+
+cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "rule_evaluation":
+
+    cdef cppclass CppLabelWiseRuleEvaluation:
+
+        # Constructors:
+
+        CppLabelWiseRuleEvaluation(HeuristicFunction* heuristicFunction);
+
+        # Functions:
+
+        void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal, const float64* confusionMatricesSubset,
+                                          const float64* confusionMatricesCovered, bool uncovered,
+                                          LabelWisePrediction* prediction) nogil
+
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
