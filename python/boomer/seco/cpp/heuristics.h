@@ -148,7 +148,7 @@ namespace heuristics {
      * heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `PrecisionImpl`. As
      * `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallImpl`.
      */
-    class FMeasureFunction : public AbstractHeuristic {
+    class FMeasureImpl : public AbstractHeuristic {
 
         private:
 
@@ -165,9 +165,9 @@ namespace heuristics {
              *
              * @param beta The value of the beta-parameter. Must be at least 0
              */
-            FMeasureFunction(float64 beta);
+            FMeasureImpl(float64 beta);
 
-            ~FMeasureFunction();
+            ~FMeasureImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
