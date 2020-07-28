@@ -33,7 +33,7 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef HeuristicFunction* heuristic_function
+    cdef CppLabelWiseRuleEvaluation* rule_evaluation
 
     # Functions:
 
@@ -41,4 +41,4 @@ cdef class LabelWiseRuleEvaluation:
                                               const float64[::1, :] confusion_matrices_total,
                                               const float64[::1, :] confusion_matrices_subset,
                                               float64[::1, :] confusion_matrices_covered, bint uncovered,
-                                              LabelWisePrediction* prediction) nogil
+                                              LabelWisePrediction* prediction)
