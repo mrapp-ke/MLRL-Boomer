@@ -103,11 +103,11 @@ namespace heuristics {
      * A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is
      * (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
-    class RecallFunction : public AbstractHeuristic {
+    class RecallImpl : public AbstractHeuristic {
 
         public:
 
-            ~RecallFunction();
+            ~RecallImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
@@ -144,9 +144,9 @@ namespace heuristics {
 
     /**
      * A heuristic that calculates as the (weighted) harmonic mean between the heuristics `PrecisionImpl` and
-     * `RecallFunction`, where the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both
+     * `RecallImpl`, where the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both
      * heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `PrecisionImpl`. As
-     * `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallFunction`.
+     * `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallImpl`.
      */
     class FMeasureFunction : public AbstractHeuristic {
 
@@ -161,7 +161,7 @@ namespace heuristics {
 
             /**
              * Creates a new heuristic that calculates as the (weighted) harmonic mean between the heuristics
-             * `PrecisionImpl` and `RecallFunction`.
+             * `PrecisionImpl` and `RecallImpl`.
              *
              * @param beta The value of the beta-parameter. Must be at least 0
              */
