@@ -180,7 +180,7 @@ namespace heuristics {
      * heuristic `PrecisionImpl`. As `m` approaches infinity, the isometrics of this heuristic become equivalent to
      * those of the heuristic `WRAFunction`.
      */
-    class MEstimateFunction : public AbstractHeuristic {
+    class MEstimateImpl : public AbstractHeuristic {
 
         private:
 
@@ -197,9 +197,9 @@ namespace heuristics {
              *
              * @param m The value of the m-parameter. Must be at least 0
              */
-            MEstimateFunction(float64 beta);
+            MEstimateImpl(float64 beta);
 
-            ~MEstimateFunction();
+            ~MEstimateImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;

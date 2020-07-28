@@ -55,11 +55,11 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass MEstimateFunction(AbstractHeuristic):
+    cdef cppclass MEstimateImpl(AbstractHeuristic):
 
         # Constructors:
 
-        MEstimateFunction(float64 m)
+        MEstimateImpl(float64 m)
 
         # Functions:
 
