@@ -19,8 +19,8 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                   LabelMatrix label_matrix, const float64[::1, :] uncovered_labels, const uint8[::1] minority_labels,
                   const float64[:, ::1] confusion_matrices_total, const float64[:, ::1] confusion_matrices_subset):
         """
-        :param rule_evaluation:             The `RuleEvaluation` to be used for calculating the predictions, as well as
-                                            corresponding quality scores of rules
+        :param rule_evaluation:             The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
+                                            well as corresponding quality scores, of rules
         :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
                                             indices of the labels that should be considered by the search or None, if
                                             all labels should be considered
