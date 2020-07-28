@@ -88,11 +88,11 @@ namespace heuristics {
     /**
      * A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
      */
-    class PrecisionFunction : public AbstractHeuristic {
+    class PrecisionImpl : public AbstractHeuristic {
 
         public:
 
-            ~PrecisionFunction();
+            ~PrecisionImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
@@ -143,10 +143,10 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic that calculates as the (weighted) harmonic mean between the heuristics `PrecisionFunction` and
+     * A heuristic that calculates as the (weighted) harmonic mean between the heuristics `PrecisionImpl` and
      * `RecallFunction`, where the parameter `beta` allows to trade-off between both heuristics. If `beta = 1`, both
-     * heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `PrecisionFunction`.
-     * As `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallFunction`.
+     * heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `PrecisionImpl`. As
+     * `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallFunction`.
      */
     class FMeasureFunction : public AbstractHeuristic {
 
@@ -161,7 +161,7 @@ namespace heuristics {
 
             /**
              * Creates a new heuristic that calculates as the (weighted) harmonic mean between the heuristics
-             * `PrecisionFunction` and `RecallFunction`.
+             * `PrecisionImpl` and `RecallFunction`.
              *
              * @param beta The value of the beta-parameter. Must be at least 0
              */
@@ -175,10 +175,10 @@ namespace heuristics {
     };
 
     /**
-     * A heuristic that allows to trade off between the heuristics `PrecisionFunction` and `WRAFunction`. The
-     * `m`-parameter allows to control the trade-off between both heuristics. If `m = 0`, this heuristic is equivalent
-     * to the heuristic `PrecisionFunction`. As `m` approaches infinity, the isometrics of this heuristic become
-     * equivalent to those of the heuristic `WRAFunction`.
+     * A heuristic that allows to trade off between the heuristics `PrecisionImpl` and `WRAFunction`. The `m`-parameter
+     * allows to control the trade-off between both heuristics. If `m = 0`, this heuristic is equivalent to the
+     * heuristic `PrecisionImpl`. As `m` approaches infinity, the isometrics of this heuristic become equivalent to
+     * those of the heuristic `WRAFunction`.
      */
     class MEstimateFunction : public AbstractHeuristic {
 
@@ -192,7 +192,7 @@ namespace heuristics {
         public:
 
             /**
-             * Creates a new heuristic that allows to trade off between the heuristics `PrecisionFunction` and
+             * Creates a new heuristic that allows to trade off between the heuristics `PrecisionImpl` and
              * `WRAFunction`.
              *
              * @param m The value of the m-parameter. Must be at least 0

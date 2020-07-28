@@ -25,11 +25,11 @@ cdef class Heuristic:
 
 cdef class Precision(Heuristic):
     """
-    A wrapper for the C++ class `PrecisionFunction`.
+    A wrapper for the C++ class `PrecisionImpl`.
     """
 
     def __cinit__(self):
-        self.heuristic = new PrecisionFunction()
+        self.heuristic = new PrecisionImpl()
 
     def __dealloc(self):
         del self.heuristic
