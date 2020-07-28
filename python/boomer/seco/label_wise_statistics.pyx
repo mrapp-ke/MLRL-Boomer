@@ -36,7 +36,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                             that corresponds to all examples that are covered by the previous refinement
                                             of a rule, for each label
         """
-        self.rule_evaluation = rule_evaluation
+        self.rule_evaluation = rule_evaluation.rule_evaluation
         self.label_indices = label_indices
         self.label_matrix = label_matrix
         self.uncovered_labels = uncovered_labels
@@ -109,7 +109,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
-        cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef CppLabelWiseRuleEvaluation* rule_evaluation = self.rule_evaluation
         cdef LabelWisePrediction* prediction = self.prediction
         cdef const intp[::1] label_indices = self.label_indices
         cdef const uint8[::1] minority_labels = self.minority_labels
@@ -118,9 +118,10 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef float64[:, ::1] confusion_matrices_covered = self.accumulated_confusion_matrices_covered if accumulated else self.confusion_matrices_covered
 
         # Calculate and returns the predictions, as well as corresponding quality scores...
-        rule_evaluation.calculate_label_wise_prediction(label_indices, minority_labels, confusion_matrices_total,
-                                                        confusion_matrices_subset, confusion_matrices_covered,
-                                                        uncovered, prediction)
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &minority_labels[0],
+                                                     &confusion_matrices_total[0][0], &confusion_matrices_subset[0][0],
+                                                     &confusion_matrices_covered[0][0], uncovered, prediction)
         return prediction
 
 
