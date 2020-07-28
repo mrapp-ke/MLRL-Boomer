@@ -35,7 +35,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
                                         float64 urn, float64 urp) nogil
 
 
-    cdef cppclass HammingLossFunction(AbstractHeuristic):
+    cdef cppclass HammingLossImpl(AbstractHeuristic):
 
         # Functions:
 
