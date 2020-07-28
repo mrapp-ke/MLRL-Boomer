@@ -15,12 +15,7 @@ cdef class Heuristic:
     """
     A wrapper for the abstract C++ class `AbstractHeuristic`.
     """
-
-    cdef float64 evaluate_confusion_matrix(self, float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                           float64 uip, float64 urn, float64 urp) nogil:
-        cdef AbstractHeuristic* heuristic = self.heuristic
-        cdef float64 quality_score = heuristic.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp)
-        return quality_score
+    pass
 
 
 cdef class Precision(Heuristic):
