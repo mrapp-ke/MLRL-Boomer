@@ -3,6 +3,8 @@
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
+#pragma once
+
 #include "arrays.h"
 #include <unordered_set>
 #include <utility>
