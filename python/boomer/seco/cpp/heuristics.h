@@ -18,6 +18,16 @@
 namespace heuristics {
 
     /**
+     * An enum that specified all positive elements of a confusion matrix.
+     */
+    enum ConfusionMatrixElement : intp {
+        IN = 0,
+        IP = 1,
+        RN = 2,
+        RP = 3
+    };
+
+    /**
      * An abstract base class for all heuristics that allows to calculate quality scores based on the elements of
      * confusion matrices.
      */
