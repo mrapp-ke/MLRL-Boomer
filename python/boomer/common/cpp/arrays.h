@@ -3,6 +3,8 @@
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
+#pragma once
+
 typedef unsigned long int uint64;
 typedef unsigned int uint32;
 typedef bool uint8;
