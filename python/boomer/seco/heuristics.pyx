@@ -61,11 +61,11 @@ cdef class WRA(Heuristic):
 
 cdef class HammingLoss(Heuristic):
     """
-    A wrapper for the C++ class `HammingLossFunction`.
+    A wrapper for the C++ class `HammingLossImpl`.
     """
 
     def __cinit__(self):
-        self.heuristic = new HammingLossFunction()
+        self.heuristic = new HammingLossImpl()
 
     def __dealloc(self):
         del self.heuristic
