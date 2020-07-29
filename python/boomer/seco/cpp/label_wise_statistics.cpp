@@ -25,12 +25,15 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
 
     confusionMatricesCovered_ = confusionMatricesCovered;
     accumulatedConfusionMatricesCovered_ = NULL;
+    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
+    float64* qualityScores = (float64*) malloc(numLabels * sizeof(float64));
+    prediction_ = new rule_evaluation::LabelWisePrediction(numLabels, predictedScores, qualityScores, 0);
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
     free(confusionMatricesCovered_);
     free(accumulatedConfusionMatricesCovered_);
-    // TODO
+    delete prediction_;
 }
 
 void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
