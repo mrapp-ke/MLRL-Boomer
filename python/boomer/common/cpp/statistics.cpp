@@ -16,7 +16,7 @@ uint8 AbstractLabelMatrix::getLabel(intp exampleIndex, intp labelIndex) {
     return 0;
 }
 
-DenseLabelMatrixImpl::DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y)
+DenseLabelMatrixImpl::DenseLabelMatrixImpl(intp numExamples, intp numLabels, const uint8* y)
     : AbstractLabelMatrix(numExamples, numLabels) {
     y_ = y;
 }

@@ -63,7 +63,7 @@ namespace statistics {
              * A pointer to a C-contiguous array of type `uint8`, shape `(numExamples_, numLabels_), representing the
              * labels of the training examples.
              */
-            uint8* y_;
+            const uint8* y_;
 
         public:
 
@@ -76,7 +76,7 @@ namespace statistics {
              * @param y             A pointer to a C-contiguous array of type `uint8`, shape `(numExamples, numLabels)`,
              *                      representing the labels of the training examples
              */
-            DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y);
+            DenseLabelMatrixImpl(intp numExamples, intp numLabels, const uint8* y);
 
             ~DenseLabelMatrixImpl();
 
