@@ -13,6 +13,7 @@ sources = [
     'boomer/common/cpp/sparse.cpp',
     'boomer/common/cpp/head_refinement.cpp',
     'boomer/common/cpp/rule_evaluation.cpp',
+    'boomer/common/cpp/statistics.cpp',
     'boomer/boosting/cpp/label_wise_losses.cpp',
     'boomer/boosting/cpp/example_wise_losses.cpp',
     'boomer/seco/cpp/heuristics.cpp',
