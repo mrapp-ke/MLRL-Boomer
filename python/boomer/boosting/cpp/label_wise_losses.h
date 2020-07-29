@@ -43,4 +43,34 @@ namespace losses {
 
     };
 
+    /**
+     * A multi-label variant of the logistic loss that is applied label-wise.
+     */
+    class LabelWiseLogisticLossImpl : public AbstractLabelWiseLoss {
+
+        public:
+
+            ~LabelWiseLogisticLossImpl();
+
+            std::pair<float64, float64> calculateGradientAndHessian(statistics::AbstractLabelMatrix* labelMatrix,
+                                                                    intp exampleIndex, intp labelIndex,
+                                                                    float64 predictedScore) override;
+
+    };
+
+    /**
+     * A multi-label variant of the squared error loss that is applied label-wise.
+     */
+    class LabelWiseSquaredErrorLossImpl : public AbstractLabelWiseLoss {
+
+        public:
+
+            ~LabelWiseSquaredErrorLossImpl();
+
+            std::pair<float64, float64> calculateGradientAndHessian(statistics::AbstractLabelMatrix* labelMatrix,
+                                                                    intp exampleIndex, intp labelIndex,
+                                                                    float64 predictedScore) override;
+
+    };
+
 }
