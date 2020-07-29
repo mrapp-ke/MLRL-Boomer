@@ -6,10 +6,11 @@ using namespace statistics;
 
 LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
         rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation, const intp* labelIndices,
-        const float64* uncoveredLabels, const uint8* minorityLabels, const float64* confusionMatricesTotal,
-        const float64* confusionMatricesSubset) {
+        statistics::AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels, const uint8* minorityLabels,
+        const float64* confusionMatricesTotal, const float64* confusionMatricesSubset) {
     ruleEvaluation_ = ruleEvaluation;
     labelIndices_ = labelIndices;
+    labelMatrix_ = labelMatrix;
     uncoveredLabels_ = uncoveredLabels;
     minorityLabels_ = minorityLabels;
     confusionMatricesTotal_ = confusionMatricesTotal;

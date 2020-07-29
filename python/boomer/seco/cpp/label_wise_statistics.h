@@ -6,6 +6,7 @@
 #pragma once
 
 #include "../../common/cpp/arrays.h"
+#include "../../common/cpp/statistics.h"
 #include "label_wise_rule_evaluation.h"
 
 
@@ -31,7 +32,7 @@ namespace statistics {
             /**
              * TODO
              */
-            // TODO LabelMatrix* labelMatrix_;
+            statistics::AbstractLabelMatrix* labelMatrix_;
 
             /**
              * TODO
@@ -65,14 +66,16 @@ namespace statistics {
              *
              * @param ruleEvaluation
              * @param labelIndices
+             * @param labelMatrix
              * @param uncoveredLabels
              * @param minorityLabels
              * @param confusionMatricesTotal
              * @param confusionMatricesSubset
              */
             LabelWiseRefinementSearchImpl(rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation,
-                                          const intp* labelIndices, const float64* uncoveredLabels,
-                                          const uint8* minorityLabels, const float64* confusionMatricesTotal,
+                                          const intp* labelIndices, statistics::AbstractLabelMatrix* labelMatrix,
+                                          const float64* uncoveredLabels, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 
             /**
