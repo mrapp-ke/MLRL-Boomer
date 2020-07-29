@@ -37,7 +37,7 @@ namespace statistics {
             /**
              * TODO
              */
-            statistics::AbstractLabelMatrix* labelMatrix_;
+            AbstractLabelMatrix* labelMatrix_;
 
             /**
              * TODO
@@ -79,9 +79,9 @@ namespace statistics {
              * @param confusionMatricesSubset
              */
             LabelWiseRefinementSearchImpl(rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation,
-                                          intp numLabels, const intp* labelIndices,
-                                          statistics::AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
-                                          const uint8* minorityLabels, const float64* confusionMatricesTotal,
+                                          intp numLabels, const intp* labelIndices, AbstractLabelMatrix* labelMatrix,
+                                          const float64* uncoveredLabels, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 
             /**
