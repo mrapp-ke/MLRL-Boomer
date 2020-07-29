@@ -42,7 +42,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
         return y[example_index, label_index]
 
 
-cdef class SparseLabelMatrix(LabelMatrix):
+cdef class DokLabelMatrix(LabelMatrix):
     """
     Implements random access to the labels of the training examples based on a sparse label matrix.
 

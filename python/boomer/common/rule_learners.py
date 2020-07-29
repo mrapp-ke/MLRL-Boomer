@@ -15,7 +15,7 @@ from boomer.common.pruning import Pruning, IREP
 from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix
 from boomer.common.rules import ModelBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.common.statistics import DenseLabelMatrix, SparseLabelMatrix
+from boomer.common.statistics import DenseLabelMatrix, DokLabelMatrix
 from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
     RandomInstanceSubsetSelection, LabelSubSampling, RandomLabelSubsetSelection
@@ -247,7 +247,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         if issparse(y):
             rows = np.ascontiguousarray(y.rows)
-            label_matrix = SparseLabelMatrix(y.shape[0], y.shape[1], rows)
+            label_matrix = DokLabelMatrix(y.shape[0], y.shape[1], rows)
         else:
             label_matrix = DenseLabelMatrix(y)
 

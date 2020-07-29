@@ -28,7 +28,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
     cdef uint8 get_label(self, intp example_index, intp label_index)
 
 
-cdef class SparseLabelMatrix(LabelMatrix):
+cdef class DokLabelMatrix(LabelMatrix):
 
     # Attributes:
 
