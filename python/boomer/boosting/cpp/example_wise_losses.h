@@ -23,23 +23,24 @@ namespace losses {
              */
             ~AbstractExampleWiseLoss();
 
-        /**
-         * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
-         * derivatives) of the loss function for each label of a certain example.
-         *
-         * @param labelMatrix       A pointer to an object of type `AbstractLabelMatrix` that provides random access to
-                                    the labels of the training examples
-         * @param exampleIndex      The index of the example for which the gradients and Hessians should be calculated
-         * @param predictedScore    A pointer to an array of type `float64`, shape `(num_labels)`, representing the
-         *                          scores that are predicted for each label of the respective example
-         * @param gradients         A pointer to an array of type `float64`, shape `(num_labels)`, the gradients that
-         *                          have been calculated should be written to
-         * @param hessians          A pointer to an array of type `float64`, shape
-         *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated should
-         *                          be written to
-         */
-        virtual void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
-                                                   float64* predictedScores, float64* gradients, float64* hessians);
+            /**
+             * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
+             * derivatives) of the loss function for each label of a certain example.
+             *
+             * @param labelMatrix       A pointer to an object of type `AbstractLabelMatrix` that provides random access
+             *                          to the labels of the training examples
+             * @param exampleIndex      The index of the example for which the gradients and Hessians should be
+             *                          calculated
+             * @param predictedScore    A pointer to an array of type `float64`, shape `(num_labels)`, representing the
+             *                          scores that are predicted for each label of the respective example
+             * @param gradients         A pointer to an array of type `float64`, shape `(num_labels)`, the gradients
+             *                          that have been calculated should be written to
+             * @param hessians          A pointer to an array of type `float64`, shape
+             *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
+             *                          should be written to
+             */
+            virtual void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                                       float64* predictedScores, float64* gradients, float64* hessians);
 
     };
 
