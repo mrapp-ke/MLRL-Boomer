@@ -20,7 +20,7 @@ namespace statistics {
             /**
              * Frees the memory occupied by the label matrix.
              */
-            ~AbstractLabelMatrix();
+            virtual ~AbstractLabelMatrix();
 
             /**
              * Returns whether a specific label of the example at a given index is relevant or irrelevant.
@@ -29,7 +29,7 @@ namespace statistics {
              * @param labelIndex    The index of the label
              * @return              1, if the label is relevant, 0 otherwise
              */
-            uint8 getLabel(intp exampleIndex, intp labelIndex);
+            virtual uint8 getLabel(intp exampleIndex, intp labelIndex);
 
     };
 
