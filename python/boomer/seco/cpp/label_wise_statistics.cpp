@@ -1,4 +1,5 @@
 #include "label_wise_statistics.h"
+#include "heuristics.h"
 #include <stdlib.h>
 #include <cstddef>
 
@@ -37,7 +38,21 @@ LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
 }
 
 void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
-    // TODO
+    intp numTotalLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numTotalLabels;
+
+    for (intp c = 0; c < numLabels_; c++) {
+        intp l = labelIndices_ != NULL ? labelIndices_[c] : c;
+
+        // Only uncovered labels must be considered...
+        if (uncoveredLabels_[offset + l] > 0) {
+            // Add the current example and label to the confusion matrix for the current label...
+            uint8 trueLabel = labelMatrix_->getLabel(statisticIndex, l);
+            uint8 predictedLabel = minorityLabels_[l];
+            intp element = heuristics::getConfusionMatrixElement(trueLabel, predictedLabel);
+            confusionMatricesCovered_[c * 4 + element] += weight;
+        }
+    }
 }
 
 void LabelWiseRefinementSearchImpl::resetSearch() {
