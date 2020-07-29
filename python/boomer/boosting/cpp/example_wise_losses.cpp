@@ -7,7 +7,8 @@ AbstractExampleWiseLoss::~AbstractExampleWiseLoss() {
 
 }
 
-void AbstractExampleWiseLoss::calculateGradientsAndHessians(intp exampleIndex, float64* predictedScores,
+void AbstractExampleWiseLoss::calculateGradientsAndHessians(statistics::AbstractLabelMatrix labelMatrix,
+                                                            intp exampleIndex, float64* predictedScores,
                                                             float64* gradients, float64* hessians) {
 
 }
