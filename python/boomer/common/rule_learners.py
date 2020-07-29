@@ -12,7 +12,7 @@ from typing import List
 import numpy as np
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
-from boomer.common.rule_induction import DenseFeatureMatrix, SparseFeatureMatrix
+from boomer.common.rule_induction import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.rules import ModelBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import DenseLabelMatrix, DokLabelMatrix
@@ -236,8 +236,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
             x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
-            feature_matrix = SparseFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
-        else:
+            feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
+        else:ak u
             feature_matrix = DenseFeatureMatrix(x)
 
         # Validate label matrix and convert it to the preferred format...
