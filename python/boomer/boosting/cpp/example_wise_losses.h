@@ -21,7 +21,7 @@ namespace losses {
             /**
              * Frees the memory occupied by the loss function.
              */
-            ~AbstractExampleWiseLoss();
+            virtual ~AbstractExampleWiseLoss();
 
             /**
              * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second

@@ -22,7 +22,7 @@ namespace losses {
             /**
              * Frees the memory occupied by the loss function.
              */
-            ~AbstractLabelWiseLoss();
+            virtual ~AbstractLabelWiseLoss();
 
             /**
              * Must be implemented by subclasses to calculate the gradient (first derivative) and Hessian (second
