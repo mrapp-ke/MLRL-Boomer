@@ -1,4 +1,5 @@
 #include "label_wise_statistics.h"
+#include <stdlib.h>
 #include <cstddef>
 
 using namespace statistics;
@@ -16,9 +17,19 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     minorityLabels_ = minorityLabels;
     confusionMatricesTotal_ = confusionMatricesTotal;
     confusionMatricesSubset_ = confusionMatricesSubset;
+    float64* confusionMatricesCovered = (float64*) malloc(numLabels * 4 * sizeof(float64));
+
+    for (intp i = 0; i < numLabels * 4; i++) {
+        confusionMatricesCovered_[i] = 0;
+    }
+
+    confusionMatricesCovered_ = confusionMatricesCovered;
+    accumulatedConfusionMatricesCovered_ = NULL;
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
+    free(confusionMatricesCovered_);
+    free(accumulatedConfusionMatricesCovered_);
     // TODO
 }
 

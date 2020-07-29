@@ -62,6 +62,16 @@ namespace statistics {
             /**
              * TODO
              */
+            float64* confusionMatricesCovered_;
+
+            /**
+             * TODO
+             */
+            float64* accumulatedConfusionMatricesCovered_;
+
+            /**
+             * TODO
+             */
             rule_evaluation::LabelWisePrediction* prediction_;
 
         public:
