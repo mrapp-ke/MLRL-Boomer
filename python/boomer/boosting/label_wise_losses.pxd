@@ -1,7 +1,33 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.statistics cimport LabelMatrix
+from boomer.common.statistics cimport LabelMatrix, AbstractLabelMatrix
 
 from libcpp.pair cimport pair
+
+
+cdef extern from "cpp/label_wise_losses.h" namespace "losses":
+
+    cdef cppclass AbstractLabelWiseLoss:
+
+        # Functions:
+
+        pair[float64, float64] calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                                           intp labelIndex, float64 predictedScore) nogil
+
+
+    cdef cppclass LabelWiseLogisticLossImpl(AbstractLabelWiseLoss):
+
+        # Functions:
+
+        pair[float64, float64] calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                                           intp labelIndex, float64 predictedScore) nogil
+
+
+    cdef cppclass LabelWiseSquaredErrorLossImpl(AbstractLabelWiseLoss):
+
+        # Functions:
+
+        pair[float64, float64] calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                                           intp labelIndex, float64 predictedScore) nogil
 
 
 cdef class LabelWiseLoss:
