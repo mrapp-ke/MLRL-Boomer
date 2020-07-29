@@ -18,9 +18,27 @@ namespace statistics {
         public:
 
             /**
+             * Creates a new label matrix.
+             *
+             * @param numExamples   The number of examples
+             * @param numLabels     The number of labels
+             */
+            AbstractLabelMatrix(intp numExamples, intp numLabels);
+
+            /**
              * Frees the memory occupied by the label matrix.
              */
             virtual ~AbstractLabelMatrix();
+
+            /**
+             * The number of examples.
+             */
+            intp numExamples_;
+
+            /**
+             * The number of labels.
+             */
+            intp numLabels_;
 
             /**
              * Returns whether a specific label of the example at a given index is relevant or irrelevant.
@@ -40,6 +58,15 @@ namespace statistics {
 
         public:
 
+            /**
+             * Creates a new label matrix that provides random access to the labels of the training examples based on a
+             * C-contiguous array.
+             *
+             * @param numExamples   The number of examples
+             * @param numLabels     The number of labels
+             */
+            DenseLabelMatrixImpl(intp numExamples, intp numLabels);
+
             ~DenseLabelMatrixImpl();
 
             uint8 getLabel(intp exampleIndex, intp labelIndex) override;
@@ -53,6 +80,15 @@ namespace statistics {
     class DokLabelMatrixImpl : public AbstractLabelMatrix {
 
         public:
+
+            /**
+             * Creates a new label matrix that provides random access to the labels of the training examples based on a
+             * sparse matrix in the DOK format.
+             *
+             * @param numExamples   The number of examples
+             * @param numLabels     The number of labels
+             */
+            DokLabelMatrixImpl(intp numExamples, intp numLabels);
 
             ~DokLabelMatrixImpl();
 
