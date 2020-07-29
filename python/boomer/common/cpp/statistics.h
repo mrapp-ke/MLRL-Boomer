@@ -56,6 +56,14 @@ namespace statistics {
      */
     class DenseLabelMatrixImpl : public AbstractLabelMatrix {
 
+        private:
+
+            /**
+             * A pointer to a C-contiguous array of type `uint8`, shape `(numExamples_, numLabels_), representing the
+             * labels of the training examples.
+             */
+            uint8* y_;
+
         public:
 
             /**
@@ -64,8 +72,10 @@ namespace statistics {
              *
              * @param numExamples   The number of examples
              * @param numLabels     The number of labels
+             * @param y             A pointer to a C-contiguous array of type `uint8`, shape `(numExamples, numLabels)`,
+             *                      representing the labels of the training examples
              */
-            DenseLabelMatrixImpl(intp numExamples, intp numLabels);
+            DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y);
 
             ~DenseLabelMatrixImpl();
 

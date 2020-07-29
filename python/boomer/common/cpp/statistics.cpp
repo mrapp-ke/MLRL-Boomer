@@ -16,9 +16,9 @@ uint8 AbstractLabelMatrix::getLabel(intp exampleIndex, intp labelIndex) {
     return 0;
 }
 
-DenseLabelMatrixImpl::DenseLabelMatrixImpl(intp numExamples, intp numLabels)
+DenseLabelMatrixImpl::DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y)
     : AbstractLabelMatrix(numExamples, numLabels) {
-
+    y_ = y;
 }
 
 DenseLabelMatrixImpl::~DenseLabelMatrixImpl() {
@@ -26,7 +26,8 @@ DenseLabelMatrixImpl::~DenseLabelMatrixImpl() {
 }
 
 uint8 DenseLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
-    return 0;
+    intp i = (exampleIndex * numExamples_) + labelIndex;
+    return y_[i];
 }
 
 DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels)
