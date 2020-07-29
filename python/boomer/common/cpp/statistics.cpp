@@ -26,7 +26,7 @@ DenseLabelMatrixImpl::~DenseLabelMatrixImpl() {
 }
 
 uint8 DenseLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
-    intp i = (exampleIndex * numExamples_) + labelIndex;
+    intp i = (exampleIndex * numLabels_) + labelIndex;
     return y_[i];
 }
 
