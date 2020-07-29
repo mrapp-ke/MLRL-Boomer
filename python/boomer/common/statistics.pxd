@@ -4,9 +4,48 @@ from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 
 
+cdef extern from "cpp/statistics.h" namespace "statistics":
+
+    cdef cppclass AbstractLabelMatrix:
+
+        # Attributes:
+
+        intp numExamples_
+
+        intp numLabels_
+
+        # Functions:
+
+        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+
+
+    cdef cppclass DenseLabelMatrixImpl(AbstractLabelMatrix):
+
+        # Constructors:
+
+        DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y) except +
+
+        # Functions:
+
+        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+
+
+    cdef cppclass DokLabelMatrixImpl(AbstractLabelMatrix):
+
+        # Constructors:
+
+        DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix) except +
+
+        # Functions:
+
+        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+
+
 cdef class LabelMatrix:
 
     # Attributes:
+
+    cdef AbstractLabelMatrix* label_matrix
 
     cdef readonly intp num_examples
 
@@ -14,29 +53,21 @@ cdef class LabelMatrix:
 
     # Functions:
 
-    cdef uint8 get_label(self, intp example_index, intp label_index)
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
 
 
 cdef class DenseLabelMatrix(LabelMatrix):
 
-    # Attributes:
+    # Functions:
 
-    cdef const uint8[:, ::1] y
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
+
+
+cdef class DokLabelMatrix(LabelMatrix):
 
     # Functions:
 
-    cdef uint8 get_label(self, intp example_index, intp label_index)
-
-
-cdef class SparseLabelMatrix(LabelMatrix):
-
-    # Attributes:
-
-    cdef BinaryDokMatrix* dok_matrix
-
-    # Functions:
-
-    cdef uint8 get_label(self, intp example_index, intp label_index)
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
 
 
 cdef class RefinementSearch:
