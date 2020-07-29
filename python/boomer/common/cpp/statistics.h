@@ -34,15 +34,27 @@ namespace statistics {
     };
 
     /**
-     * Implements random access to the labels of the training examples based on a dense label matrix.
-     *
-     * The label matrix must be given as a dense C-contiguous array.
+     * Implements random access to the labels of the training examples based on a C-contiguous array.
      */
     class DenseLabelMatrixImpl : public AbstractLabelMatrix {
 
         public:
 
             ~DenseLabelMatrixImpl();
+
+            uint8 getLabel(intp exampleIndex, intp labelIndex) override;
+
+    };
+
+    /**
+     * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of
+     * keys (DOK) format.
+     */
+    class DokLabelMatrixImpl : public AbstractLabelMatrix {
+
+        public:
+
+            ~DokLabelMatrixImpl();
 
             uint8 getLabel(intp exampleIndex, intp labelIndex) override;
 
