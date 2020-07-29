@@ -16,6 +16,6 @@ cdef extern from "cpp/sparse.h" namespace "sparse":
 
         # Functions:
 
-        void addValue(uint32 row, uint32 column)
+        void addValue(uint32 row, uint32 column) nogil
 
-        uint8 getValue(uint32 row, uint32 column)
+        uint8 getValue(uint32 row, uint32 column) nogil
