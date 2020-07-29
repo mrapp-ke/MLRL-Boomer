@@ -6,6 +6,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "sparse.h"
 
 
 namespace statistics {
@@ -89,6 +90,13 @@ namespace statistics {
      */
     class DokLabelMatrixImpl : public AbstractLabelMatrix {
 
+        private:
+
+            /**
+             * A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the training examples.
+             */
+            sparse::BinaryDokMatrix* dokMatrix_;
+
         public:
 
             /**
@@ -97,8 +105,10 @@ namespace statistics {
              *
              * @param numExamples   The number of examples
              * @param numLabels     The number of labels
+             * @param dokMatrix     A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
+                                    training examples
              */
-            DokLabelMatrixImpl(intp numExamples, intp numLabels);
+            DokLabelMatrixImpl(intp numExamples, intp numLabels, sparse::BinaryDokMatrix* dokMatrix);
 
             ~DokLabelMatrixImpl();
 
