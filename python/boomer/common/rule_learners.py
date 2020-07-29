@@ -237,7 +237,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
             x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
             feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
-        else:ak u
+        else:
             feature_matrix = DenseFeatureMatrix(x)
 
         # Validate label matrix and convert it to the preferred format...
