@@ -32,10 +32,14 @@ cdef extern from "cpp/label_wise_losses.h" namespace "losses":
 
 cdef class LabelWiseLoss:
 
+    # Attributes:
+
+    cdef AbstractLabelWiseLoss* loss_function
+
     # Functions:
 
     cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score)
+                                                               intp label_index, float64 predicted_score) nogil
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
@@ -43,7 +47,7 @@ cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     # Functions:
 
     cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score)
+                                                               intp label_index, float64 predicted_score) nogil
 
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
@@ -51,4 +55,4 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     # Functions:
 
     cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score)
+                                                               intp label_index, float64 predicted_score) nogil
