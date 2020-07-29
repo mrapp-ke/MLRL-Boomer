@@ -45,6 +45,8 @@ cdef class LabelMatrix:
 
     # Attributes:
 
+    cdef AbstractLabelMatrix* label_matrix
+
     cdef readonly intp num_examples
 
     cdef readonly intp num_labels
@@ -56,20 +58,12 @@ cdef class LabelMatrix:
 
 cdef class DenseLabelMatrix(LabelMatrix):
 
-    # Attributes:
-
-    cdef const uint8[:, ::1] y
-
     # Functions:
 
     cdef uint8 get_label(self, intp example_index, intp label_index) nogil
 
 
 cdef class DokLabelMatrix(LabelMatrix):
-
-    # Attributes:
-
-    cdef BinaryDokMatrix* dok_matrix
 
     # Functions:
 

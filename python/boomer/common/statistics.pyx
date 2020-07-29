@@ -7,7 +7,7 @@ Provides base classes for all classes that allow to store statistics about the l
 
 cdef class LabelMatrix:
     """
-    A base class for all classes that provide random access to the labels of the training examples.
+    A wrapper for the abstract C++ class `AbstractLabelMatrix`.
     """
 
     cdef uint8 get_label(self, intp example_index, intp label_index) nogil:
@@ -18,14 +18,13 @@ cdef class LabelMatrix:
         :param label_index:     The index of the label
         :return:                1, if the label is relevant, 0 otherwise
         """
-        pass
+        cdef AbstractLabelMatrix* label_matrix = self.label_matrix
+        return label_matrix.getLabel(example_index, label_index)
 
 
 cdef class DenseLabelMatrix(LabelMatrix):
     """
-    Implements random access to the labels of the training examples based on a dense label matrix.
-
-    The label matrix must be given as a dense C-contiguous array.
+    A wrapper for the C++ class `DenseLabelMatrix`.
     """
 
     def __cinit__(self, const uint8[:, ::1] y):
@@ -33,21 +32,19 @@ cdef class DenseLabelMatrix(LabelMatrix):
         :param y: An array of dtype uint8, shape `(num_examples, num_labels)`, representing the labels of the training
                   examples
         """
-        self.y = y
-        self.num_examples = y.shape[0]
-        self.num_labels = y.shape[1]
+        cdef intp num_examples = y.shape[0]
+        cdef intp num_labels = y.shape[1]
+        self.label_matrix = new DenseLabelMatrixImpl(num_examples, num_labels, &y[0][0])
+        self.num_examples = num_examples
+        self.num_labels = num_labels
 
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil:
-        cdef const uint8[:, ::1] y = self.y
-        return y[example_index, label_index]
+    def __dealloc__(self):
+        del self.label_matrix
 
 
 cdef class DokLabelMatrix(LabelMatrix):
     """
-    Implements random access to the labels of the training examples based on a sparse label matrix.
-
-    The label matrix must be given as a `scipy.sparse.lil_matrix` and will internally be converted to the dictionary of
-    keys (DOK) format.
+    A wrapper for the C++ class `DokLabelMatrix`.
     """
 
     def __cinit__(self, intp num_examples, intp num_labels, list[::1] rows):
@@ -57,8 +54,6 @@ cdef class DokLabelMatrix(LabelMatrix):
         :param rows:            An array of dtype `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
-        self.num_examples = num_examples
-        self.num_labels = num_labels
         cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
         cdef intp num_rows = rows.shape[0]
         cdef list col_indices
@@ -70,14 +65,12 @@ cdef class DokLabelMatrix(LabelMatrix):
             for c in col_indices:
                 dok_matrix.addValue(r, c)
 
-        self.dok_matrix = dok_matrix
+        self.label_matrix = new DokLabelMatrixImpl(num_examples, num_labels, dok_matrix)
+        self.num_examples = num_examples
+        self.num_labels = num_labels
 
     def __dealloc__(self):
-        del self.dok_matrix
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil:
-        cdef BinaryDokMatrix* dok_matrix = self.dok_matrix
-        return dok_matrix.getValue(<uint32>example_index, <uint32>label_index)
+        del self.label_matrix
 
 
 cdef class RefinementSearch:
