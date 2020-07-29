@@ -40,7 +40,8 @@ namespace losses {
              *                          should be written to
              */
             virtual void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
-                                                       float64* predictedScores, float64* gradients, float64* hessians);
+                                                       const float64* predictedScores, float64* gradients,
+                                                       float64* hessians);
 
     };
 
@@ -54,7 +55,7 @@ namespace losses {
             ~ExampleWiseLogisticLossImpl();
 
             void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
-                                               float64* predictedScores, float64* gradients,
+                                               const float64* predictedScores, float64* gradients,
                                                float64* hessians) override;
 
     };
