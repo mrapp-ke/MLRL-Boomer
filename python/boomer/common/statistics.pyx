@@ -10,7 +10,7 @@ cdef class LabelMatrix:
     A base class for all classes that provide random access to the labels of the training examples.
     """
 
-    cdef uint8 get_label(self, intp example_index, intp label_index):
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil:
         """
         Returns whether a specific label of the example at a given index is relevant or irrelevant.
 
@@ -37,7 +37,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
         self.num_examples = y.shape[0]
         self.num_labels = y.shape[1]
 
-    cdef uint8 get_label(self, intp example_index, intp label_index):
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil:
         cdef const uint8[:, ::1] y = self.y
         return y[example_index, label_index]
 
@@ -75,7 +75,7 @@ cdef class DokLabelMatrix(LabelMatrix):
     def __dealloc__(self):
         del self.dok_matrix
 
-    cdef uint8 get_label(self, intp example_index, intp label_index):
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil:
         cdef BinaryDokMatrix* dok_matrix = self.dok_matrix
         return dok_matrix.getValue(<uint32>example_index, <uint32>label_index)
 

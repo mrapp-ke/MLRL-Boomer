@@ -51,7 +51,7 @@ cdef class LabelMatrix:
 
     # Functions:
 
-    cdef uint8 get_label(self, intp example_index, intp label_index)
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
 
 
 cdef class DenseLabelMatrix(LabelMatrix):
@@ -62,7 +62,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
 
     # Functions:
 
-    cdef uint8 get_label(self, intp example_index, intp label_index)
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
 
 
 cdef class DokLabelMatrix(LabelMatrix):
@@ -73,7 +73,7 @@ cdef class DokLabelMatrix(LabelMatrix):
 
     # Functions:
 
-    cdef uint8 get_label(self, intp example_index, intp label_index)
+    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
 
 
 cdef class RefinementSearch:
