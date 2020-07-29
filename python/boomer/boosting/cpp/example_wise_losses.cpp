@@ -34,7 +34,7 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(statistics::Abst
     }
 
     float64 sumOfExponentialsPow = pow(sumOfExponentials, 2);
-    intp j = 0;
+    intp i = 0;
 
     for (intp c = 0; c < numLabels; c++) {
         uint8 trueLabel = labelMatrix->getLabel(exampleIndex, c);
@@ -51,13 +51,13 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(statistics::Abst
             tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
             tmp *= -expectedScore2 * expectedScore;
             tmp /= sumOfExponentialsPow;
-            hessians[j] = tmp;
-            j++;
+            hessians[i] = tmp;
+            i++;
         }
 
         tmp = pow(expectedScore, 2) * exponential * (sumOfExponentials - exponential);
         tmp /= sumOfExponentialsPow;
-        hessians[j] = tmp;
-        j++;
+        hessians[i] = tmp;
+        i++;
     }
 }
