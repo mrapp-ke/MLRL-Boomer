@@ -46,6 +46,9 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
 
 rule_evaluation::LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
                                                                                                   bool accumulated) {
-    // TODO
-    return NULL;
+    float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
+    ruleEvaluation_->calculateLabelWisePrediction(labelIndices_, minorityLabels_, confusionMatricesTotal_,
+                                                  confusionMatricesSubset_, confusionMatricesCovered, uncovered,
+                                                  prediction_);
+    return prediction_;
 }
