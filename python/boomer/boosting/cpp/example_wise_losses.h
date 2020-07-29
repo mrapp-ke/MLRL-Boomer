@@ -38,8 +38,23 @@ namespace losses {
          *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated should
          *                          be written to
          */
-        virtual void calculateGradientsAndHessians(statistics::AbstractLabelMatrix labelMatrix, intp exampleIndex,
+        virtual void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
                                                    float64* predictedScores, float64* gradients, float64* hessians);
+
+    };
+
+    /**
+     * A multi-label variant of the logistic loss that is applied example-wise.
+     */
+    class ExampleWiseLogisticLossImpl : public AbstractExampleWiseLoss {
+
+        public:
+
+            ~ExampleWiseLogisticLossImpl();
+
+            void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                               float64* predictedScores, float64* gradients,
+                                               float64* hessians) override;
 
     };
 

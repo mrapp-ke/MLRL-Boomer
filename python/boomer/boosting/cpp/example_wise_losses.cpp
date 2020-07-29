@@ -1,4 +1,5 @@
 #include "example_wise_losses.h"
+#include <math.h>
 
 using namespace losses;
 
@@ -7,8 +8,56 @@ AbstractExampleWiseLoss::~AbstractExampleWiseLoss() {
 
 }
 
-void AbstractExampleWiseLoss::calculateGradientsAndHessians(statistics::AbstractLabelMatrix labelMatrix,
+void AbstractExampleWiseLoss::calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix,
                                                             intp exampleIndex, float64* predictedScores,
                                                             float64* gradients, float64* hessians) {
 
+}
+
+ExampleWiseLogisticLossImpl::~ExampleWiseLogisticLossImpl() {
+
+}
+
+void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix,
+                                                                intp exampleIndex, float64* predictedScores,
+                                                                float64* gradients, float64* hessians) {
+    intp numLabels = labelMatrix->numLabels_;
+    float64 sumOfExponentials = 1;
+
+    for (intp c = 0; c < numLabels; c++) {
+        uint8 trueLabel = labelMatrix->getLabel(exampleIndex, c);
+        float64 expectedScore = trueLabel ? 1 : -1;
+        float64 predictedScore = predictedScores[c];
+        float64 exponential = exp(-expectedScore * predictedScore);
+        gradients[c] = exponential;  // Temporarily store the exponential in the existing output array
+        sumOfExponentials += exponential;
+    }
+
+    float64 sumOfExponentialsPow = pow(sumOfExponentials, 2);
+    intp j = 0;
+
+    for (intp c = 0; c < numLabels; c++) {
+        uint8 trueLabel = labelMatrix->getLabel(exampleIndex, c);
+        float64 expectedScore = trueLabel ? 1 : -1;
+        float64 predictedScore = predictedScores[c];
+        float64 exponential = gradients[c];
+        float64 tmp = (-expectedScore * exponential) / sumOfExponentials;
+        gradients[c] = tmp;
+
+        for (intp c2 = 0; c2 < c; c++) {
+            trueLabel = labelMatrix->getLabel(exampleIndex, c2);
+            float64 expectedScore2 = trueLabel ? 1 : -1;
+            float64 predictedScore2 = predictedScores[c2];
+            tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
+            tmp *= -expectedScore2 * expectedScore;
+            tmp /= sumOfExponentialsPow;
+            hessians[j] = tmp;
+            j++;
+        }
+
+        tmp = pow(expectedScore, 2) * exponential * (sumOfExponentials - exponential);
+        tmp /= sumOfExponentialsPow;
+        hessians[j] = tmp;
+        j++;
+    }
 }
