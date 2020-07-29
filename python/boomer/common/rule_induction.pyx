@@ -73,7 +73,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         return indexed_array
 
 
-cdef class SparseFeatureMatrix(FeatureMatrix):
+cdef class CscFeatureMatrix(FeatureMatrix):
     """
     Implements column-wise access to the feature values of the training examples based on a sparse feature matrix.
 
