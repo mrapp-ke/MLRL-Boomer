@@ -4,6 +4,43 @@ from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 
 
+cdef extern from "cpp/statistics.h" namespace "statistics":
+
+    cdef cppclass AbstractLabelMatrix:
+
+        # Attributes:
+
+        intp numExamples_
+
+        intp numLabels_
+
+        # Functions:
+
+        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+
+
+    cdef cppclass DenseLabelMatrixImpl(AbstractLabelMatrix):
+
+        # Constructors:
+
+        DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y) except +
+
+        # Functions:
+
+        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+
+
+    cdef cppclass DokLabelMatrixImpl(AbstractLabelMatrix):
+
+        # Constructors:
+
+        DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix) except +
+
+        # Functions:
+
+        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+
+
 cdef class LabelMatrix:
 
     # Attributes:
