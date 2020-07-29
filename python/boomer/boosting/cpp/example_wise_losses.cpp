@@ -44,7 +44,7 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(statistics::Abst
         float64 tmp = (-expectedScore * exponential) / sumOfExponentials;
         gradients[c] = tmp;
 
-        for (intp c2 = 0; c2 < c; c++) {
+        for (intp c2 = 0; c2 < c; c2++) {
             trueLabel = labelMatrix->getLabel(exampleIndex, c2);
             float64 expectedScore2 = trueLabel ? 1 : -1;
             float64 predictedScore2 = predictedScores[c2];
