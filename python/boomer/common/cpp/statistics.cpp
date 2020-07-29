@@ -30,15 +30,15 @@ uint8 DenseLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels)
+DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels, sparse::BinaryDokMatrix* dokMatrix)
     : AbstractLabelMatrix(numExamples, numLabels) {
-
+    dokMatrix_ = dokMatrix;
 }
 
 DokLabelMatrixImpl::~DokLabelMatrixImpl() {
-
+    delete dokMatrix_;
 }
 
 uint8 DokLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
-    return 0;
+    return dokMatrix_->getValue((uint32) exampleIndex, (uint32) labelIndex);
 }
