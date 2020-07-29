@@ -56,7 +56,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
     cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
 
 
-cdef class SparseFeatureMatrix(FeatureMatrix):
+cdef class CscFeatureMatrix(FeatureMatrix):
 
     # Attributes:
 
