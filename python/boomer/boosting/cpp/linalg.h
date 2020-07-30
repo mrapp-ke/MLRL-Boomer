@@ -29,4 +29,14 @@ namespace linalg {
         return result;
     }
 
+    /**
+     * Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
+     *
+     * @param n A scalar of type `intp`, representing the order of the triangular number
+     * @return  A scalar of type `intp`, representing the n-th triangular number
+     */
+    static inline intp triangularNumber(intp n) {
+        return (n * (n + 1)) / 2;
+    }
+
 }
