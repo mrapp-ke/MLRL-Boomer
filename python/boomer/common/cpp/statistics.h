@@ -146,8 +146,9 @@ namespace statistics {
              * provided to the search so far via the function `updateSearch`.
              *
              * If the argument `uncovered` is 1, the rule is considered to cover all statistics that belong to the
-             * difference between the statistics that have been provided via the function `addSampledStatistic` or
-             * `updateCoveredStatistic` and the statistics that have been provided via the function `updateSearch`.
+             * difference between the statistics that have been provided via the function
+             * `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the statistics that have been
+             * provided via the function `updateSearch`.
              *
              * If the argument `accumulated` is 1, all statistics that have been provided since the search has been
              * started via the function `Statistics#beginSearch` are taken into account even if the function
@@ -175,6 +176,54 @@ namespace statistics {
              */
             virtual rule_evaluation::LabelWisePrediction* calculateLabelWisePrediction(bool uncovered,
                                                                                        bool accumulated);
+
+            /**
+             * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been
+             * provided to the search so far via the function `updateSearch`.
+             *
+             * If the argument `uncovered` is 1, the rule is considered to cover all statistics that belong to the
+             * difference between the statistics that have been provided via the function
+             * `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the statistics that have been
+             * provided via the function `updateSearch`.
+             *
+             * If the argument `accumulated` is 1, all statistics that have been provided since the search has been
+             * started via the function `Statistics#beginSearch` are taken into account even if the function
+             * `resetSearch` has been called since then. If said function has not been invoked, this argument does not
+             * have any effect.
+             *
+             * The calculated scores correspond to the subset of labels that have been provided when starting the search
+             * via the function `Statistics#beginSearch`. The score to be predicted for an individual label is
+             * calculated with respect to the predictions for the other labels. In the decomposable case, i.e., if the
+             * labels are considered independently of each other, this function is equivalent to the function
+             * `calculateLabelWisePrediction`. In addition to the scores, an overall quality score, which assesses the
+             * quality of the predictions for all labels in terms of a single score, is returned.
+             *
+             * @param uncovered:    0, if the rule covers all statistics that have been provided via the function
+             *                      `updateSearch`, 1, if the rule covers all examples that belong to the difference
+             *                      between the statistics that have been provided via the function
+             *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
+             *                      statistics that have been provided via the function `updateSearch`
+             * @param accumulated:  0, if the rule covers all statistics that have been provided via the function
+             *                      `updateSearch` since the function `resetSearch` has been called for the last time,
+             *                      1, if the rule covers all examples that have been provided since the search has been
+             *                      started via the function `Statistics#beginSearch`
+             * @return              A pointer to an object of type `Prediction` that stores the scores to be predicted
+             *                      by the rule for each considered label, as well as an overall quality score
+             */
+            virtual rule_evaluation::Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated);
+
+    };
+
+    /**
+     * An abstract base class for all classes that allow to search for the best refinement of a rule based on previously
+     * stored statistics in the decomposable case, i.e., when the label-wise predictions are the same as the
+     * example-wise predictions.
+     */
+    class AbstractDecomposableRefinementSearch : public AbstractRefinementSearch {
+
+        public:
+
+            rule_evaluation::Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
     };
 

@@ -17,7 +17,7 @@ namespace statistics {
      * Allows to search for the best refinement of a rule based on the confusion matrices previously stored by an object
      * of type `LabelWiseStatisticsImpl`.
      */
-    class LabelWiseRefinementSearchImpl : public AbstractRefinementSearch {
+    class LabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
 
         private:
 
