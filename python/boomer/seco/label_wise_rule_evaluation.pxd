@@ -12,7 +12,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "rule_evaluation":
 
         # Constructors:
 
-        LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic);
+        LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic)
 
         # Functions:
 
