@@ -56,7 +56,23 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
 }
 
 void LabelWiseRefinementSearchImpl::resetSearch() {
-    // TODO
+    if (accumulatedConfusionMatricesCovered_ == NULL) {
+        accumulatedConfusionMatricesCovered_ = (float64*) malloc(numLabels_ * 4 * sizeof(float64));
+
+        for (intp c = 0; c < numLabels_ * 4; c++) {
+            accumulatedConfusionMatricesCovered_[c] = 0;
+        }
+    }
+
+    for (intp c = 0; c < numLabels_; c++) {
+        intp offset = c * 4;
+
+        for (intp i = 0; i < 4; i++) {
+            intp j = offset + i;
+            accumulatedConfusionMatricesCovered_[j] += confusionMatricesCovered_[j];
+            confusionMatricesCovered_[j] = 0;
+        }
+    }
 }
 
 rule_evaluation::LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
