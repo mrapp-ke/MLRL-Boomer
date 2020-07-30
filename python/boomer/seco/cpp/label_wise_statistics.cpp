@@ -7,23 +7,23 @@ using namespace statistics;
 
 
 LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
-        rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numLabels, const intp* labelIndices,
+        rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions, const intp* labelIndices,
         AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels, const uint8* minorityLabels,
         const float64* confusionMatricesTotal, const float64* confusionMatricesSubset) {
     ruleEvaluation_ = ruleEvaluation;
-    numLabels_ = numLabels;
+    numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
     labelMatrix_ = labelMatrix;
     uncoveredLabels_ = uncoveredLabels;
     minorityLabels_ = minorityLabels;
     confusionMatricesTotal_ = confusionMatricesTotal;
     confusionMatricesSubset_ = confusionMatricesSubset;
-    confusionMatricesCovered_ = arrays::mallocFloat64(numLabels, 4);
-    arrays::setToZeros(confusionMatricesCovered_, numLabels, 4);
+    confusionMatricesCovered_ = arrays::mallocFloat64(numPredictions, 4);
+    arrays::setToZeros(confusionMatricesCovered_, numPredictions, 4);
     accumulatedConfusionMatricesCovered_ = NULL;
-    float64* predictedScores = arrays::mallocFloat64(numLabels);
-    float64* qualityScores = arrays::mallocFloat64(numLabels);
-    prediction_ = new rule_evaluation::LabelWisePrediction(numLabels, predictedScores, qualityScores, 0);
+    float64* predictedScores = arrays::mallocFloat64(numPredictions);
+    float64* qualityScores = arrays::mallocFloat64(numPredictions);
+    prediction_ = new rule_evaluation::LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0);
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
@@ -36,7 +36,7 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
     intp numTotalLabels = labelMatrix_->numLabels_;
     intp offset = statisticIndex * numTotalLabels;
 
-    for (intp c = 0; c < numLabels_; c++) {
+    for (intp c = 0; c < numPredictions_; c++) {
         intp l = labelIndices_ != NULL ? labelIndices_[c] : c;
 
         // Only uncovered labels must be considered...
@@ -53,12 +53,12 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
 void LabelWiseRefinementSearchImpl::resetSearch() {
     // Allocate an array for storing the accumulated confusion matrices, if necessary...
     if (accumulatedConfusionMatricesCovered_ == NULL) {
-        accumulatedConfusionMatricesCovered_ = arrays::mallocFloat64(numLabels_, 4);
-        arrays::setToZeros(accumulatedConfusionMatricesCovered_, numLabels_, 4);
+        accumulatedConfusionMatricesCovered_ = arrays::mallocFloat64(numPredictions_, 4);
+        arrays::setToZeros(accumulatedConfusionMatricesCovered_, numPredictions_, 4);
     }
 
     // Reset the confusion matrix for each label to zero and add its elements to the accumulated confusion matrix...
-    for (intp c = 0; c < numLabels_; c++) {
+    for (intp c = 0; c < numPredictions_; c++) {
         intp offset = c * 4;
 
         for (intp i = 0; i < 4; i++) {

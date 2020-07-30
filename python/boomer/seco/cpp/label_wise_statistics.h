@@ -23,7 +23,7 @@ namespace statistics {
 
             rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation_;
 
-            intp numLabels_;
+            intp numPredictions_;
 
             const intp* labelIndices_;
 
@@ -49,10 +49,10 @@ namespace statistics {
              * @param ruleEvaluation            A pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used
              *                                  for calculating the predictions, as well as corresponding quality
              *                                  scores, of rules
-             * @param numLabels                 The number of labels to be considered by the search
-             * @param labelIndices              An array of type `intp`, shape `(numLabels)`, representing the indices
-             *                                  of the labels that should be considered by the search or NULL, if all
-             *                                  labels should be considered
+             * @param numPredictions            The number of labels to be considered by the search
+             * @param labelIndices              An array of type `intp`, shape `(numPredictions)`, representing the
+             *                                  indices of the labels that should be considered by the search or NULL,
+             *                                  if all labels should be considered
              * @param labelMatrix               A pointer to an object of type `AbstractLabelMatrix` that provides
              *                                  random access to the labels of the training examples
              * @param uncoveredLabels           A pointer to an array of type `float64`, shape
@@ -70,9 +70,9 @@ namespace statistics {
              *                                  rule, for each label
              */
             LabelWiseRefinementSearchImpl(rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation,
-                                          intp numLabels, const intp* labelIndices, AbstractLabelMatrix* labelMatrix,
-                                          const float64* uncoveredLabels, const uint8* minorityLabels,
-                                          const float64* confusionMatricesTotal,
+                                          intp numPredictions, const intp* labelIndices,
+                                          AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
+                                          const uint8* minorityLabels, const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 
             ~LabelWiseRefinementSearchImpl();
