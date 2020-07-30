@@ -34,7 +34,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
         """
         cdef intp num_examples = y.shape[0]
         cdef intp num_labels = y.shape[1]
-        self.label_matrix = new DenseLabelMatrixImpl(num_examples, num_labels, &y[0][0])
+        self.label_matrix = new DenseLabelMatrixImpl(num_examples, num_labels, &y[0, 0])
         self.num_examples = num_examples
         self.num_labels = num_labels
 
