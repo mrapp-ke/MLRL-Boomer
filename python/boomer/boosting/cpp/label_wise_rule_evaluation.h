@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../../common/cpp/arrays.h"
+#include "../../common/cpp/rule_evaluation.h"
 
 
 namespace rule_evaluation {
