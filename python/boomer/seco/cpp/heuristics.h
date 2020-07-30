@@ -50,9 +50,6 @@ namespace heuristics {
 
         public:
 
-            /**
-             * Frees the memory occupied by the heuristic.
-             */
             virtual ~AbstractHeuristic();
 
             /**

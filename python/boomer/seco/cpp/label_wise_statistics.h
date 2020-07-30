@@ -19,67 +19,32 @@ namespace statistics {
 
         private:
 
-            /**
-             * TODO
-             */
             rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation_;
 
-            /**
-             * TODO
-             */
             intp numLabels_;
 
-            /**
-             * TODO
-             */
             const intp* labelIndices_;
 
-            /**
-             * TODO
-             */
             AbstractLabelMatrix* labelMatrix_;
 
-            /**
-             * TODO
-             */
             const float64* uncoveredLabels_;
 
-            /**
-             * TODO
-             */
             const uint8* minorityLabels_;
 
-            /**
-             * TODO
-             */
             const float64* confusionMatricesTotal_;
 
-            /**
-             * TODO
-             */
             const float64* confusionMatricesSubset_;
 
-            /**
-             * TODO
-             */
             float64* confusionMatricesCovered_;
 
-            /**
-             * TODO
-             */
             float64* accumulatedConfusionMatricesCovered_;
 
-            /**
-             * TODO
-             */
             rule_evaluation::LabelWisePrediction* prediction_;
 
         public:
 
             /**
-             * TODO
-             *
-             * @param ruleEvaluation
+             * @param ruleEvaluation TODO
              * @param numLabels
              * @param labelIndices
              * @param labelMatrix
@@ -94,9 +59,6 @@ namespace statistics {
                                           const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 
-            /**
-             * TODO
-             */
             ~LabelWiseRefinementSearchImpl();
 
             /**

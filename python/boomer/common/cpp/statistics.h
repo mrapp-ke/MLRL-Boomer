@@ -19,16 +19,11 @@ namespace statistics {
         public:
 
             /**
-             * Creates a new label matrix.
-             *
              * @param numExamples   The number of examples
              * @param numLabels     The number of labels
              */
             AbstractLabelMatrix(intp numExamples, intp numLabels);
 
-            /**
-             * Frees the memory occupied by the label matrix.
-             */
             virtual ~AbstractLabelMatrix();
 
             /**
@@ -59,18 +54,11 @@ namespace statistics {
 
         private:
 
-            /**
-             * A pointer to a C-contiguous array of type `uint8`, shape `(numExamples_, numLabels_), representing the
-             * labels of the training examples.
-             */
             const uint8* y_;
 
         public:
 
             /**
-             * Creates a new label matrix that provides random access to the labels of the training examples based on a
-             * C-contiguous array.
-             *
              * @param numExamples   The number of examples
              * @param numLabels     The number of labels
              * @param y             A pointer to a C-contiguous array of type `uint8`, shape `(numExamples, numLabels)`,
@@ -92,21 +80,15 @@ namespace statistics {
 
         private:
 
-            /**
-             * A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the training examples.
-             */
             sparse::BinaryDokMatrix* dokMatrix_;
 
         public:
 
             /**
-             * Creates a new label matrix that provides random access to the labels of the training examples based on a
-             * sparse matrix in the DOK format.
-             *
              * @param numExamples   The number of examples
              * @param numLabels     The number of labels
              * @param dokMatrix     A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
-                                    training examples
+             *                      training examples
              */
             DokLabelMatrixImpl(intp numExamples, intp numLabels, sparse::BinaryDokMatrix* dokMatrix);
 

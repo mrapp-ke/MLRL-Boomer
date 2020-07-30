@@ -21,17 +21,11 @@ namespace rule_evaluation {
 
         private:
 
-            /**
-             * The heuristic to be optimized.
-             */
             heuristics::AbstractHeuristic* heuristic_;
 
         public:
 
             /**
-             * Creates a new object that allows to calculate the predictions of rules, as well as corresponding quality
-             * scores, such that they optimize a heuristic that is applied using label-wise averaging.
-             *
              * @param heuristic The heuristic to be optimized
              */
             LabelWiseRuleEvaluationImpl(heuristics::AbstractHeuristic* heuristic);

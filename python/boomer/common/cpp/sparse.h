@@ -30,9 +30,6 @@ namespace sparse {
 
         private:
 
-            /**
-             * An unordered set that stores pairs of rows and columns, indicating the positions of non-zero elements.
-             */
             std::unordered_set<std::pair<uint32, uint32>, PairHash> data_;
 
         public:
