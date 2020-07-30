@@ -45,15 +45,15 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         del self.refinement_search
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
-        cdef LabelWiseRefinementSearchImpl* refinement_search = self.refinement_search
+        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
         refinement_search.updateSearch(statistic_index, weight)
 
     cdef void reset_search(self):
-        cdef LabelWiseRefinementSearchImpl* refinement_search = self.refinement_search
+        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
         refinement_search.resetSearch()
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        cdef LabelWiseRefinementSearchImpl* refinement_search = self.refinement_search
+        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
         return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
 
 
