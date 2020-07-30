@@ -51,11 +51,13 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
 }
 
 void LabelWiseRefinementSearchImpl::resetSearch() {
+    // Allocate an array for storing the accumulated confusion matrices, if necessary...
     if (accumulatedConfusionMatricesCovered_ == NULL) {
         accumulatedConfusionMatricesCovered_ = mallocFloat64(numLabels_, 4);
         setToZeros(accumulatedConfusionMatricesCovered_, numLabels_, 4);
     }
 
+    // Reset the confusion matrix for each label to zero and add its elements to the accumulated confusion matrix...
     for (intp c = 0; c < numLabels_; c++) {
         intp offset = c * 4;
 
