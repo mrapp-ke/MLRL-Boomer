@@ -1,5 +1,6 @@
 #include "label_wise_rule_evaluation.h"
 #include "linalg.h"
+#include <cstddef>
 
 using namespace rule_evaluation;
 
@@ -31,7 +32,7 @@ void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* label
         float64 sumOfHessians =  sumsOfHessians[c];
 
         if (uncovered) {
-            intp l = labelIndices != null ? labelIndices[c] : c;
+            intp l = labelIndices != NULL ? labelIndices[c] : c;
             sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
             sumOfHessians = totalSumsOfHessians[l] - sumOfHessians;
         }
