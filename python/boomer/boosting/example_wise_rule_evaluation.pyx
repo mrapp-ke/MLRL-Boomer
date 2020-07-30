@@ -82,6 +82,7 @@ cdef class ExampleWiseRuleEvaluation:
                                          to be predicted by rules
         """
         self.l2_regularization_weight = l2_regularization_weight
+        self.rule_evaluation = new ExampleWiseRuleEvaluationImpl(l2_regularization_weight)
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
                                               const float64[::1] total_sums_of_gradients,
@@ -118,56 +119,11 @@ cdef class ExampleWiseRuleEvaluation:
         :param prediction:              A pointer to an object of type `LabelWisePrediction` that should be used to
                                         store the predicted scores and quality scores
         """
-        # Class members
-        cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        # The number of gradients considered by the current search
-        cdef intp num_gradients = sums_of_gradients.shape[0]
-        # The number of elements in the arrays `predicted_scores` and `quality_scores`
-        cdef intp num_predictions = prediction.numPredictions_
-        # The array that should be used to store the predicted scores
-        cdef float64* predicted_scores = prediction.predictedScores_
-        # The array that should be used to store the quality scores
-        cdef float64* quality_scores = prediction.qualityScores_
-        # The overall quality score, i.e. the sum of the quality scores for each label plus the L2 regularization term
-        cdef float64 overall_quality_score = 0
-        # Temporary variables
-        cdef float64 sum_of_gradients, sum_of_hessians, score, score_pow
-        cdef intp c, c2, l, l2
-
-        # To avoid array recreation each time this function is called, the arrays for storing predictions and quality
-        # scores are only (re-)initialized if they have not been initialized yet, or if they have the wrong size.
-        if predicted_scores == NULL or num_predictions != num_gradients:
-            predicted_scores = <float64*>malloc(num_gradients * sizeof(float64))
-            prediction.predictedScores_ = predicted_scores
-            quality_scores = <float64*>malloc(num_gradients * sizeof(float64))
-            prediction.qualityScores_ = quality_scores
-
-        # For each label, calculate the score to be predicted, as well as a quality score...
-        for c in range(num_gradients):
-            sum_of_gradients = sums_of_gradients[c]
-            c2 = triangular_number(c + 1) - 1
-            sum_of_hessians = sums_of_hessians[c2]
-
-            if uncovered:
-                l = get_index(c, label_indices)
-                sum_of_gradients = total_sums_of_gradients[l] - sum_of_gradients
-                l2 = triangular_number(l + 1) - 1
-                sum_of_hessians = total_sums_of_hessians[l2] - sum_of_hessians
-
-            # Calculate score to be predicted for the current label...
-            score = sum_of_hessians + l2_regularization_weight
-            score = -sum_of_gradients / score if score != 0 else 0
-            predicted_scores[c] = score
-
-            # Calculate the quality score for the current label...
-            score_pow = pow(score, 2)
-            score = (sum_of_gradients * score) + (0.5 * score_pow * sum_of_hessians)
-            quality_scores[c] = score + (0.5 * l2_regularization_weight * score_pow)
-            overall_quality_score += score
-
-        # Add the L2 regularization term to the overall quality score...
-        overall_quality_score += 0.5 * l2_regularization_weight * l2_norm_pow(predicted_scores, num_gradients)
-        prediction.overallQualityScore_ = overall_quality_score
+        cdef ExampleWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &total_sums_of_gradients[0],
+                                                     &sums_of_gradients[0], &total_sums_of_hessians[0],
+                                                     &sums_of_hessians[0], uncovered, prediction)
 
     cdef void calculate_example_wise_prediction(self, const intp[::1] label_indices,
                                                 const float64[::1] total_sums_of_gradients,
