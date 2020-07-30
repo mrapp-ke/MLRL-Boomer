@@ -3,6 +3,8 @@ from boomer.common._sparse cimport BinaryDokMatrix
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 
+from libcpp cimport bool
+
 
 cdef extern from "cpp/statistics.h" namespace "statistics":
 
@@ -39,6 +41,32 @@ cdef extern from "cpp/statistics.h" namespace "statistics":
         # Functions:
 
         uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+
+
+    cdef cppclass AbstractRefinementSearch:
+
+        # Functions:
+
+        void updateSearch(intp statisticIndex, uint32 weight) nogil
+
+        void resetSearch() nogil
+
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
+
+
+    cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
+
+        # Functions:
+
+        void updateSearch(intp statisticIndex, uint32 weight) nogil
+
+        void resetSearch() nogil
+
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
 
 
 cdef class LabelMatrix:
