@@ -19,9 +19,6 @@ namespace losses {
 
         public:
 
-            /**
-             * Frees the memory occupied by the loss function.
-             */
             virtual ~AbstractLabelWiseLoss();
 
             /**
