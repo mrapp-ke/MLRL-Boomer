@@ -43,6 +43,8 @@ cdef class ExampleWiseRuleEvaluation:
 
     # Attributes:
 
+    cdef ExampleWiseRuleEvaluationImpl* rule_evaluation
+
     cdef float64 l2_regularization_weight
 
     # Functions:
