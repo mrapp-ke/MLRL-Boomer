@@ -3,6 +3,24 @@ from boomer.common.statistics cimport LabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
 from boomer.boosting.label_wise_losses cimport LabelWiseLoss
 
+from libcpp cimport bool
+
+
+cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "rule_evaluation":
+
+    cdef cppclass LabelWiseRuleEvaluationImpl:
+
+        # Constructors:
+
+        LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight)
+
+        # Functions:
+
+        void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                          const float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                          const float64* sumsOfHessians, bool uncovered,
+                                          LabelWisePrediction* prediction) nogil
+
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
@@ -21,7 +39,7 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef float64 l2_regularization_weight
+    cdef LabelWiseRuleEvaluationImpl* rule_evaluation
 
     # Functions:
 
