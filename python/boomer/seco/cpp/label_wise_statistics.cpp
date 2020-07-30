@@ -21,7 +21,7 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     float64* confusionMatricesCovered = (float64*) malloc(numLabels * 4 * sizeof(float64));
 
     for (intp i = 0; i < numLabels * 4; i++) {
-        confusionMatricesCovered_[i] = 0;
+        confusionMatricesCovered[i] = 0;
     }
 
     confusionMatricesCovered_ = confusionMatricesCovered;
