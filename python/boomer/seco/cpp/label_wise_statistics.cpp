@@ -18,13 +18,8 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     minorityLabels_ = minorityLabels;
     confusionMatricesTotal_ = confusionMatricesTotal;
     confusionMatricesSubset_ = confusionMatricesSubset;
-    float64* confusionMatricesCovered = mallocFloat64(numLabels, 4);
-
-    for (intp i = 0; i < numLabels * 4; i++) {
-        confusionMatricesCovered[i] = 0;
-    }
-
-    confusionMatricesCovered_ = confusionMatricesCovered;
+    confusionMatricesCovered_ = mallocFloat64(numLabels, 4);
+    setToZeros(confusionMatricesCovered_, numLabels, 4);
     accumulatedConfusionMatricesCovered_ = NULL;
     float64* predictedScores = mallocFloat64(numLabels);
     float64* qualityScores = mallocFloat64(numLabels);
@@ -58,10 +53,7 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
 void LabelWiseRefinementSearchImpl::resetSearch() {
     if (accumulatedConfusionMatricesCovered_ == NULL) {
         accumulatedConfusionMatricesCovered_ = mallocFloat64(numLabels_, 4);
-
-        for (intp c = 0; c < numLabels_ * 4; c++) {
-            accumulatedConfusionMatricesCovered_[c] = 0;
-        }
+        setToZeros(accumulatedConfusionMatricesCovered_, numLabels_, 4);
     }
 
     for (intp c = 0; c < numLabels_; c++) {

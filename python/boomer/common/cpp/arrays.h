@@ -34,3 +34,16 @@ static inline float64* mallocFloat64(intp numElements) {
 static inline float64* mallocFloat64(intp numRows, intp numCols) {
     return (float64*) malloc(numRows * numCols * sizeof(float64));
 }
+
+/**
+ * Sets all elements in an array to zero.
+ *
+ * @param a             A pointer to an array of template type `T`, shape `(numRows, numCols)`
+ * @param numElements   The number of elements in the array
+ */
+template<typename T>
+static inline void setToZeros(T* a, intp numRows, intp numCols) {
+    for (intp i = 0; i < numRows * numCols; i++) {
+        a[i] = 0;
+    }
+}
