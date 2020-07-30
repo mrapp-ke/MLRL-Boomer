@@ -1,0 +1,74 @@
+#include "example_wise_rule_evaluation.h"
+#include "linalg.h"
+#include <cstddef>
+#include <math.h>
+
+using namespace rule_evaluation;
+
+
+ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
+    l2RegularizationWeight_ = l2RegularizationWeight;
+}
+
+void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                 const float64* totalSumsOfGradients,
+                                                                 const float64* sumsOfGradients,
+                                                                 const float64* totalSumsOfHessians,
+                                                                 const float64* sumsOfHessians, bool uncovered,
+                                                                 LabelWisePrediction* prediction) {
+    // Class members
+    float64 l2RegularizationWeight = l2RegularizationWeight_;
+    // The number of elements in the arrays `predicted_scores` and `quality_scores`
+    intp numPredictions = prediction->numPredictions_;
+    // The array that should be used to store the predicted scores
+    float64* predictedScores = prediction->predictedScores_;
+    // The array that should be used to store the quality scores
+    float64* qualityScores = prediction->qualityScores_;
+    // The overall quality score, i.e. the sum of the quality scores for each label plus the L2 regularization term
+    float64 overallQualityScore = 0;
+
+    // To avoid array recreation each time this function is called, the array for storing the quality scores is only
+    // initialized if it has not been initialized yet
+    if (qualityScores == NULL) {
+        qualityScores = arrays::mallocFloat64(numPredictions);
+        prediction->qualityScores_ = qualityScores;
+    }
+
+    // For each label, calculate the score to be predicted, as well as a quality score...
+    for (intp c = 0; c < numPredictions; c++) {
+        float64 sumOfGradients = sumsOfGradients[c];
+        intp c2 = linalg::triangularNumber(c + 1) - 1;
+        float64 sumOfHessians = sumsOfHessians[c2];
+
+        if (uncovered) {
+            intp l = labelIndices != NULL ? labelIndices[c] : c;
+            sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
+            intp l2 = linalg::triangularNumber(l + 1) - 1;
+            sumOfHessians = totalSumsOfHessians[l2] - sumOfHessians;
+        }
+
+        // Calculate the score to be predicted for the current label...
+        float64 score = sumOfHessians + l2RegularizationWeight;
+        score = score != 0 ? -sumOfGradients / score : 0;
+        predictedScores[c] = score;
+
+        // Calculate the quality score for the current label...
+        float64 scorePow = pow(score, 2);
+        score = (sumOfGradients * score) + (0.5 * scorePow * sumOfHessians);
+        qualityScores[c] = score + (0.5 * l2RegularizationWeight * scorePow);
+        overallQualityScore += score;
+    }
+
+    // Add the L2 regularization term to the overall quality score...
+    overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);
+    prediction->overallQualityScore_ = overallQualityScore;
+}
+
+void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* labelIndices,
+                                                                   const float64* totalSumsOfGradients,
+                                                                   const float64* sumsOfGradients,
+                                                                   const float64* totalSumsOfHessians,
+                                                                   const float64* sumsOfHessians, bool uncovered,
+                                                                   Prediction* prediction) {
+    // TODO
+}
