@@ -39,7 +39,7 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef float64 l2_regularization_weight
+    cdef LabelWiseRuleEvaluationImpl* rule_evaluation
 
     # Functions:
 
