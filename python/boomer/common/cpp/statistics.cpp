@@ -42,3 +42,20 @@ DokLabelMatrixImpl::~DokLabelMatrixImpl() {
 uint8 DokLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
     return dokMatrix_->getValue((uint32) exampleIndex, (uint32) labelIndex);
 }
+
+AbstractRefinementSearch::~AbstractRefinementSearch() {
+
+}
+
+void AbstractRefinementSearch::updateSearch(intp statisticIndex, uint32 weight) {
+
+}
+
+void AbstractRefinementSearch::resetSearch() {
+
+}
+
+rule_evaluation::LabelWisePrediction* AbstractRefinementSearch::calculateLabelWisePrediction(bool uncovered,
+                                                                                             bool accumulated) {
+    return NULL;
+}
