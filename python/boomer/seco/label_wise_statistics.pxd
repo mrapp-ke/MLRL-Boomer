@@ -16,7 +16,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef LabelMatrix label_matrix
 
-    cdef const float64[::1, :] uncovered_labels
+    cdef const float64[:, ::1] uncovered_labels
 
     cdef const uint8[::1] minority_labels
 
@@ -49,7 +49,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
 
     cdef LabelMatrix label_matrix
 
-    cdef float64[::1, :] uncovered_labels
+    cdef float64[:, ::1] uncovered_labels
 
     cdef uint8[::1] minority_labels
 

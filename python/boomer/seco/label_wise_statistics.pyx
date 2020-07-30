@@ -3,7 +3,7 @@
 
 Provides classes that allow to store the elements of confusion matrices that are computed independently for each label.
 """
-from boomer.common._arrays cimport array_uint8, c_matrix_float64, fortran_matrix_float64, get_index
+from boomer.common._arrays cimport array_uint8, c_matrix_float64, get_index
 from boomer.seco.heuristics cimport ConfusionMatrixElement
 
 from libc.stdlib cimport malloc
@@ -16,7 +16,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     """
 
     def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation, const intp[::1] label_indices,
-                  LabelMatrix label_matrix, const float64[::1, :] uncovered_labels, const uint8[::1] minority_labels,
+                  LabelMatrix label_matrix, const float64[:, ::1] uncovered_labels, const uint8[::1] minority_labels,
                   const float64[:, ::1] confusion_matrices_total, const float64[:, ::1] confusion_matrices_subset):
         """
         :param rule_evaluation:             The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
@@ -60,7 +60,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         # Class members
         cdef const intp[::1] label_indices = self.label_indices
         cdef LabelMatrix label_matrix = self.label_matrix
-        cdef const float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef const float64[:, ::1] uncovered_labels = self.uncovered_labels
         cdef const uint8[::1] minority_labels = self.minority_labels
         cdef float64[:, ::1] confusion_matrices_covered = self.confusion_matrices_covered
         # The number of labels considered by the current search
@@ -143,7 +143,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         # The number of labels
         cdef intp num_labels = label_matrix.num_labels
         # A matrix that stores whether individual examples and labels are still uncovered
-        cdef float64[::1, :] uncovered_labels = fortran_matrix_float64(num_examples, num_labels)
+        cdef float64[:, ::1] uncovered_labels = c_matrix_float64(num_examples, num_labels)
         # The total number of uncovered examples and labels
         cdef float64 sum_uncovered_labels = 0
         # An array that stores whether rules should predict individual labels as positive (1) or negative (0)
@@ -204,7 +204,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
     cdef void add_sampled_statistic(self, intp statistic_index, uint32 weight):
         # Class members
         cdef LabelMatrix label_matrix = self.label_matrix
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef float64[:, ::1] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[:, ::1] confusion_matrices_total = self.confusion_matrices_total
         cdef float64[:, ::1] confusion_matrices_subset = self.confusion_matrices_subset
@@ -236,7 +236,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove):
         # Class members
         cdef LabelMatrix label_matrix = self.label_matrix
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef float64[:, ::1] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[:, ::1] confusion_matrices_subset = self.confusion_matrices_subset
         # The number of labels
@@ -262,7 +262,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         # Class members
         cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef LabelMatrix label_matrix = self.label_matrix
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef float64[:, ::1] uncovered_labels = self.uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         cdef float64[:, ::1] confusion_matrices_total = self.confusion_matrices_total
         cdef float64[:, ::1] confusion_matrices_subset = self.confusion_matrices_subset
@@ -275,7 +275,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
         cdef LabelMatrix label_matrix = self.label_matrix
-        cdef float64[::1, :] uncovered_labels = self.uncovered_labels
+        cdef float64[:, ::1] uncovered_labels = self.uncovered_labels
         cdef float64 sum_uncovered_labels = self.sum_uncovered_labels
         cdef uint8[::1] minority_labels = self.minority_labels
         # The number of predicted labels
