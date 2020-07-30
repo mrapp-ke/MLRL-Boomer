@@ -7,6 +7,8 @@ function that is applied example-wise.
 from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from boomer.boosting._math cimport triangular_number
 
+from libc.stdlib cimport malloc
+
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
     """
@@ -49,6 +51,8 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
         cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, NULL, NULL, 0)
+        cdef float64* predicted_scores = <float64*>malloc(num_gradients * sizeof(float64))
+        prediction.predictedScores_ = predicted_scores
         self.prediction = prediction
 
     def __dealloc__(self):
