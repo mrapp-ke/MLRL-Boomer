@@ -28,6 +28,21 @@ namespace heuristics {
     };
 
     /**
+     * Returns the confusion matrix element, a label corresponds to, depending on the ground truth an a prediction.
+     *
+     * @param trueLabel         The true label according to the ground truth
+     * @param predictedLabel    The predicted label
+     * @return                  The confusion matrix element
+     */
+    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 predictedLabel) {
+        if (trueLabel) {
+            return predictedLabel ? IN : RN;
+        } else {
+            return predictedLabel ? IP : IN;
+        }
+    }
+
+    /**
      * An abstract base class for all heuristics that allows to calculate quality scores based on the elements of
      * confusion matrices.
      */
@@ -35,9 +50,6 @@ namespace heuristics {
 
         public:
 
-            /**
-             * Frees the memory occupied by the heuristic.
-             */
             virtual ~AbstractHeuristic();
 
             /**

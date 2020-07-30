@@ -18,17 +18,12 @@ namespace rule_evaluation {
         public:
 
             /**
-             * Creates a new prediction of the default rule.
-             *
              * @param numPredictions    The number of labels for which the rule predicts
              * @param predictedScores   A pointer to an array of type float64, shape `(numPredictions)`, representing
              *                          the predicted scores
              */
             DefaultPrediction(intp numPredictions, float64* predictedScores);
 
-            /**
-             * Frees the memory occupied by the array `predictedScores_`.
-             */
             ~DefaultPrediction();
 
             /**
@@ -51,11 +46,9 @@ namespace rule_evaluation {
         public:
 
             /**
-             * Creates a new prediction of a rule that predicts for one or several labels.
-             *
              * @param numPredictions        The number of labels for which the rule predicts
              * @param predictedScores       A pointer to an array of type float64, shape `(numPredictions)`,
-                                            representing the predicted scores
+             *                              representing the predicted scores
              * @param overallQualityScore   A score that assesses the overall quality of the predictions
              */
             Prediction(intp numPredictions, float64* predictedScores, float64 overallQualityScore);
@@ -75,8 +68,6 @@ namespace rule_evaluation {
         public:
 
             /**
-             * Creates a new label-wise prediction of a rule that predicts for one or several labels.
-             *
              * @param numPredictions        The number of labels for which the rule predicts
              * @param predictedScores       A pointer to an array of type float64, shape `(numPredictions)`,
              *                              representing the predicted scores
@@ -87,9 +78,6 @@ namespace rule_evaluation {
             LabelWisePrediction(intp numPredictions, float64* predictedScores, float64* qualityScores,
                                 float64 overallQualityScore);
 
-            /**
-             * Frees the memory occupied by the array `qualityScores_`.
-             */
             ~LabelWisePrediction();
 
             /**
