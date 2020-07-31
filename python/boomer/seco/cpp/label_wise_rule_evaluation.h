@@ -14,6 +14,20 @@
 namespace rule_evaluation {
 
     /**
+     * Allows to calculate the predictions of a default rule such that it optimizes a heuristic that is applied using
+     * label-wise averaging.
+     */
+    class LabelWiseDefaultRuleEvaluationImpl : public AbstractDefaultRuleEvaluation {
+
+        public:
+
+            ~LabelWiseDefaultRuleEvaluationImpl();
+
+            DefaultPrediction* calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix) override;
+
+    };
+
+    /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
      * heuristic that is applied using label-wise averaging.
      */

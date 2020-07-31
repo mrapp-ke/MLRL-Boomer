@@ -6,6 +6,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "input_data.h"
 
 
 namespace rule_evaluation {
@@ -85,6 +86,26 @@ namespace rule_evaluation {
              * individual labels.
              */
             float64* qualityScores_;
+
+    };
+
+    /**
+     * An abstract base class for all classes that allow to calculate the predictions of a default rule.
+     */
+    class AbstractDefaultRuleEvaluation {
+
+        public:
+
+            virtual ~AbstractDefaultRuleEvaluation();
+
+            /**
+             * Calculates the scores to be predicted by a default rule based on the ground truth label matrix.
+             *
+             * @param labelMatrix   A `LabelMatrix` that provides random access to the labels of the training examples
+             * @return              A pointer to an object of type `DefaultPrediction`, representing the predictions of the
+                                    default rule
+             */
+            virtual DefaultPrediction* calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix);
 
     };
 
