@@ -9,8 +9,8 @@
 
 #include "../../common/cpp/arrays.h"
 
-// Function pointer to the DDOT routine
-typedef double (*ddot_t)(int *N, double *DX, int *INCX, double *DY, int *INCY);
+// Defines a function pointer to the DDOT routine
+typedef double (*ddot_t)(int* n, double* dx, int* incx, double* dy, int* incy);
 extern ddot_t ddotFunction;
 
 /**
