@@ -50,9 +50,8 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
-        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, NULL, NULL, 0)
         cdef float64* predicted_scores = <float64*>malloc(num_gradients * sizeof(float64))
-        prediction.predictedScores_ = predicted_scores
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, predicted_scores, NULL, 0)
         self.prediction = prediction
 
     def __dealloc__(self):
