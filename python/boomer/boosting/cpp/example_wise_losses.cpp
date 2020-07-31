@@ -1,7 +1,7 @@
 #include "example_wise_losses.h"
 #include <math.h>
 
-using namespace losses;
+using namespace boosting;
 
 
 AbstractExampleWiseLoss::~AbstractExampleWiseLoss() {

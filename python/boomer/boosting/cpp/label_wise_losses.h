@@ -10,7 +10,7 @@
 #include <utility>
 
 
-namespace losses {
+namespace boosting {
 
     /**
      * An abstract base class for all (decomposable) loss functions that are applied label-wise.

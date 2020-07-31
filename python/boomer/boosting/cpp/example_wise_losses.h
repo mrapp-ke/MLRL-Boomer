@@ -9,7 +9,7 @@
 #include "../../common/cpp/input_data.h"
 
 
-namespace losses {
+namespace boosting {
 
     /**
      * A base class for all (non-decomposable) loss functions that are applied example-wise.
