@@ -10,7 +10,7 @@ from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, Lab
 from libcpp cimport bool
 
 
-cdef extern from "cpp/label_wise_statistics.h" namespace "statistics":
+cdef extern from "cpp/label_wise_statistics.h" namespace "seco":
 
     cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
 

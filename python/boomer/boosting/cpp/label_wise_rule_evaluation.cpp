@@ -2,7 +2,7 @@
 #include "linalg.h"
 #include <cstddef>
 
-using namespace rule_evaluation;
+using namespace boosting;
 
 
 LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {

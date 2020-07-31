@@ -9,7 +9,7 @@
 #include "../../common/cpp/input_data.h"
 
 
-namespace losses {
+namespace boosting {
 
     /**
      * A base class for all (non-decomposable) loss functions that are applied example-wise.
@@ -36,7 +36,7 @@ namespace losses {
              *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
              *                          should be written to
              */
-            virtual void calculateGradientsAndHessians(input::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+            virtual void calculateGradientsAndHessians(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
                                                        const float64* predictedScores, float64* gradients,
                                                        float64* hessians);
 
@@ -51,7 +51,7 @@ namespace losses {
 
             ~ExampleWiseLogisticLossImpl();
 
-            void calculateGradientsAndHessians(input::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+            void calculateGradientsAndHessians(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
                                                const float64* predictedScores, float64* gradients,
                                                float64* hessians) override;
 

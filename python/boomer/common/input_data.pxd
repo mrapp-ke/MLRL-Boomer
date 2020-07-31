@@ -2,7 +2,7 @@ from boomer.common._arrays cimport uint8, intp
 from boomer.common._sparse cimport BinaryDokMatrix
 
 
-cdef extern from "cpp/input_data.h" namespace "input":
+cdef extern from "cpp/input_data.h":
 
     cdef cppclass AbstractLabelMatrix:
 

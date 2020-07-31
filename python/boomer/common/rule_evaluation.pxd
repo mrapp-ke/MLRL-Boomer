@@ -2,7 +2,7 @@ from boomer.common._arrays cimport intp, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 
 
-cdef extern from "cpp/rule_evaluation.h" namespace "rule_evaluation":
+cdef extern from "cpp/rule_evaluation.h":
 
     cdef cppclass DefaultPrediction:
 
