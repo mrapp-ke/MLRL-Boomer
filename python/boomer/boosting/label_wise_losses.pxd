@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.statistics cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 
 from libcpp.pair cimport pair
 

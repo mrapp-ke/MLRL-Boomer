@@ -6,7 +6,7 @@
 #pragma once
 
 #include "../../common/cpp/arrays.h"
-#include "../../common/cpp/statistics.h"
+#include "../../common/cpp/input_data.h"
 
 
 namespace losses {
@@ -36,7 +36,7 @@ namespace losses {
              *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
              *                          should be written to
              */
-            virtual void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+            virtual void calculateGradientsAndHessians(input::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
                                                        const float64* predictedScores, float64* gradients,
                                                        float64* hessians);
 
@@ -51,7 +51,7 @@ namespace losses {
 
             ~ExampleWiseLogisticLossImpl();
 
-            void calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+            void calculateGradientsAndHessians(input::AbstractLabelMatrix* labelMatrix, intp exampleIndex,
                                                const float64* predictedScores, float64* gradients,
                                                float64* hessians) override;
 
