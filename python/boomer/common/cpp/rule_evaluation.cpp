@@ -27,3 +27,11 @@ LabelWisePrediction::LabelWisePrediction(intp numPredictions, float64* predicted
 LabelWisePrediction::~LabelWisePrediction() {
     free(qualityScores_);
 }
+
+AbstractDefaultRuleEvaluation::~AbstractDefaultRuleEvaluation() {
+
+}
+
+DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix) {
+    return NULL;
+}
