@@ -28,7 +28,7 @@ namespace statistics {
 
             const intp* labelIndices_;
 
-            input::AbstractLabelMatrix* labelMatrix_;
+            AbstractLabelMatrix* labelMatrix_;
 
             const float64* uncoveredLabels_;
 
@@ -72,7 +72,7 @@ namespace statistics {
              */
             LabelWiseRefinementSearchImpl(rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation,
                                           intp numPredictions, const intp* labelIndices,
-                                          input::AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
+                                          AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
                                           const uint8* minorityLabels, const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 

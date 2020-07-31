@@ -23,7 +23,7 @@ namespace rule_evaluation {
 
             ~LabelWiseDefaultRuleEvaluationImpl();
 
-            DefaultPrediction* calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix) override;
+            DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
 
     };
 

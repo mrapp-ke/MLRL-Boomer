@@ -102,10 +102,10 @@ namespace rule_evaluation {
              * Calculates the scores to be predicted by a default rule based on the ground truth label matrix.
              *
              * @param labelMatrix   A `LabelMatrix` that provides random access to the labels of the training examples
-             * @return              A pointer to an object of type `DefaultPrediction`, representing the predictions of the
-                                    default rule
+             * @return              A pointer to an object of type `DefaultPrediction`, representing the predictions of
+             *                      the default rule
              */
-            virtual DefaultPrediction* calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix);
+            virtual DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix);
 
     };
 

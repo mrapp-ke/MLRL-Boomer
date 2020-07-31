@@ -1,7 +1,5 @@
 #include "input_data.h"
 
-using namespace input;
-
 
 AbstractLabelMatrix::AbstractLabelMatrix(intp numExamples, intp numLabels) {
     numExamples_ = numExamples;

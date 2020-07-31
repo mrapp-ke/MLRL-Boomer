@@ -8,8 +8,7 @@ LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
 
 }
 
-DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
-        input::AbstractLabelMatrix* labelMatrix) {
+DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
     // The number of examples
     intp numExamples = labelMatrix->numExamples_;
     // The number of labels
