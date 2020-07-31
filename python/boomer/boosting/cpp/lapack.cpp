@@ -49,6 +49,7 @@ float64* dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64
     // Run the DSYSV solver...
     dsysvFunction(uplo, &n, &nrhs, a, &n, ipiv, b, &n, work, &lwork, &info);
     // Free the allocated memory...
+    free(a);
     free(ipiv);
     free(work);
 
