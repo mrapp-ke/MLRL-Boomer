@@ -71,8 +71,8 @@ class DenseLabelMatrixImpl : public AbstractLabelMatrix {
 };
 
 /**
- * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of
- * keys (DOK) format.
+ * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of keys
+ * (DOK) format.
  */
 class DokLabelMatrixImpl : public AbstractLabelMatrix {
 

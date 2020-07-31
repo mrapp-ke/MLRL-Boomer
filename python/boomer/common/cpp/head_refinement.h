@@ -39,8 +39,8 @@ class HeadCandidate {
         intp* labelIndices_;
 
         /**
-         * A pointer to an array of type float64, shape `(numPredictions_)`, representing the scores that are
-         * predicted by the head.
+         * A pointer to an array of type float64, shape `(numPredictions_)`, representing the scores that are predicted
+         * by the head.
          */
         float64* predictedScores_;
 
