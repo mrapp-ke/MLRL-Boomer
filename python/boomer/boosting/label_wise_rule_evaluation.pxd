@@ -6,7 +6,7 @@ from boomer.boosting.label_wise_losses cimport LabelWiseLoss
 from libcpp cimport bool
 
 
-cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "rule_evaluation":
+cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
 
     cdef cppclass LabelWiseRuleEvaluationImpl:
 
