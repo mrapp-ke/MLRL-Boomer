@@ -34,7 +34,7 @@ namespace losses {
              * @return                  A pair that contains two scalars of type `float64`, representing the gradient
              *                          and the Hessian that have been calculated
              */
-            virtual std::pair<float64, float64> calculateGradientAndHessian(input::AbstractLabelMatrix* labelMatrix,
+            virtual std::pair<float64, float64> calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix,
                                                                             intp exampleIndex, intp labelIndex,
                                                                             float64 predictedScore);
 
@@ -49,9 +49,8 @@ namespace losses {
 
             ~LabelWiseLogisticLossImpl();
 
-            std::pair<float64, float64> calculateGradientAndHessian(input::AbstractLabelMatrix* labelMatrix,
-                                                                    intp exampleIndex, intp labelIndex,
-                                                                    float64 predictedScore) override;
+            std::pair<float64, float64> calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                                                    intp labelIndex, float64 predictedScore) override;
 
     };
 
@@ -64,9 +63,8 @@ namespace losses {
 
             ~LabelWiseSquaredErrorLossImpl();
 
-            std::pair<float64, float64> calculateGradientAndHessian(input::AbstractLabelMatrix* labelMatrix,
-                                                                    intp exampleIndex, intp labelIndex,
-                                                                    float64 predictedScore) override;
+            std::pair<float64, float64> calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                                                    intp labelIndex, float64 predictedScore) override;
 
     };
 

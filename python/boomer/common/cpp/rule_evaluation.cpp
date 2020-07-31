@@ -32,6 +32,6 @@ AbstractDefaultRuleEvaluation::~AbstractDefaultRuleEvaluation() {
 
 }
 
-DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix) {
+DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
     return NULL;
 }
