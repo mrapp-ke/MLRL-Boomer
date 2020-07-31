@@ -45,8 +45,6 @@ cdef class ExampleWiseRuleEvaluation:
 
     cdef ExampleWiseRuleEvaluationImpl* rule_evaluation
 
-    cdef float64 l2_regularization_weight
-
     # Functions:
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
