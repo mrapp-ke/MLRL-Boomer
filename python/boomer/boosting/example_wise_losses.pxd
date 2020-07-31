@@ -1,8 +1,8 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.statistics cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 
 
-cdef extern from "cpp/example_wise_losses.h" namespace "losses":
+cdef extern from "cpp/example_wise_losses.h" namespace "boosting":
 
     cdef cppclass AbstractExampleWiseLoss:
 

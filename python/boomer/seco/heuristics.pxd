@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport float64
 
 
-cdef extern from "cpp/heuristics.h" namespace "heuristics":
+cdef extern from "cpp/heuristics.h" namespace "seco":
 
     cdef enum ConfusionMatrixElement:
         IN
@@ -54,7 +54,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
 
         # Constructors:
 
-        FMeasureImpl(float64 beta)
+        FMeasureImpl(float64 beta) except +
 
         # Functions:
 
@@ -66,7 +66,7 @@ cdef extern from "cpp/heuristics.h" namespace "heuristics":
 
         # Constructors:
 
-        MEstimateImpl(float64 m)
+        MEstimateImpl(float64 m) except +
 
         # Functions:
 

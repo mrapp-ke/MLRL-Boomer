@@ -1,8 +1,6 @@
 #include "rule_evaluation.h"
 #include <stdlib.h>
 
-using namespace rule_evaluation;
-
 
 DefaultPrediction::DefaultPrediction(intp numPredictions, float64* predictedScores) {
     numPredictions_ = numPredictions;
@@ -26,4 +24,12 @@ LabelWisePrediction::LabelWisePrediction(intp numPredictions, float64* predicted
 
 LabelWisePrediction::~LabelWisePrediction() {
     free(qualityScores_);
+}
+
+AbstractDefaultRuleEvaluation::~AbstractDefaultRuleEvaluation() {
+
+}
+
+DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
+    return NULL;
 }

@@ -11,6 +11,7 @@ DEBUG = False
 sources = [
     '**/*.pyx',
     'boomer/common/cpp/sparse.cpp',
+    'boomer/common/cpp/input_data.cpp',
     'boomer/common/cpp/head_refinement.cpp',
     'boomer/common/cpp/rule_evaluation.cpp',
     'boomer/common/cpp/statistics.cpp',
