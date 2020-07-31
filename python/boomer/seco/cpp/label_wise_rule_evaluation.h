@@ -11,7 +11,7 @@
 #include "heuristics.h"
 
 
-namespace rule_evaluation {
+namespace seco {
 
     /**
      * Allows to calculate the predictions of a default rule such that it optimizes a heuristic that is applied using
@@ -35,14 +35,14 @@ namespace rule_evaluation {
 
         private:
 
-            heuristics::AbstractHeuristic* heuristic_;
+            AbstractHeuristic* heuristic_;
 
         public:
 
             /**
              * @param heuristic The heuristic to be optimized
              */
-            LabelWiseRuleEvaluationImpl(heuristics::AbstractHeuristic* heuristic);
+            LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic);
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on

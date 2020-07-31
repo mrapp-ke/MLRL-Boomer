@@ -3,13 +3,16 @@
 #include <stdlib.h>
 #include <cstddef>
 
-using namespace statistics;
+using namespace seco;
 
 
-LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
-        rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions, const intp* labelIndices,
-        AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels, const uint8* minorityLabels,
-        const float64* confusionMatricesTotal, const float64* confusionMatricesSubset) {
+LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation,
+                                                             intp numPredictions, const intp* labelIndices,
+                                                             AbstractLabelMatrix* labelMatrix,
+                                                             const float64* uncoveredLabels,
+                                                             const uint8* minorityLabels,
+                                                             const float64* confusionMatricesTotal,
+                                                             const float64* confusionMatricesSubset) {
     ruleEvaluation_ = ruleEvaluation;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
@@ -44,7 +47,7 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
             // Add the current example and label to the confusion matrix for the current label...
             uint8 trueLabel = labelMatrix_->getLabel(statisticIndex, l);
             uint8 predictedLabel = minorityLabels_[l];
-            intp element = heuristics::getConfusionMatrixElement(trueLabel, predictedLabel);
+            intp element = getConfusionMatrixElement(trueLabel, predictedLabel);
             confusionMatricesCovered_[c * 4 + element] += weight;
         }
     }
