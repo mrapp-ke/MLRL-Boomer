@@ -17,8 +17,8 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "rule_evaluation":
         # Functions:
 
         void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
-                                          const float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                          const float64* sumsOfHessians, bool uncovered,
+                                          float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                          float64* sumsOfHessians, bool uncovered,
                                           LabelWisePrediction* prediction) nogil
 
 
