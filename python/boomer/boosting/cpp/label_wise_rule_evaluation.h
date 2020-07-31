@@ -11,7 +11,7 @@
 #include "label_wise_losses.h"
 
 
-namespace rule_evaluation {
+namespace boosting {
 
     /**
      * Allows to calculate the predictions of a default rule such that it minimizes a loss function that is applied

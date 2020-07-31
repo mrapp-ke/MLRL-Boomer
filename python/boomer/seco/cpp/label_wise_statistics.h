@@ -12,7 +12,7 @@
 #include "label_wise_rule_evaluation.h"
 
 
-namespace statistics {
+namespace seco {
 
     /**
      * Allows to search for the best refinement of a rule based on the confusion matrices previously stored by an object
@@ -22,13 +22,13 @@ namespace statistics {
 
         private:
 
-            rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation_;
+            LabelWiseRuleEvaluationImpl* ruleEvaluation_;
 
             intp numPredictions_;
 
             const intp* labelIndices_;
 
-            input::AbstractLabelMatrix* labelMatrix_;
+            AbstractLabelMatrix* labelMatrix_;
 
             const float64* uncoveredLabels_;
 
@@ -42,7 +42,7 @@ namespace statistics {
 
             float64* accumulatedConfusionMatricesCovered_;
 
-            rule_evaluation::LabelWisePrediction* prediction_;
+            LabelWisePrediction* prediction_;
 
         public:
 
@@ -70,10 +70,10 @@ namespace statistics {
              *                                  all all examples, which are covered by the previous refinement of the
              *                                  rule, for each label
              */
-            LabelWiseRefinementSearchImpl(rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation,
-                                          intp numPredictions, const intp* labelIndices,
-                                          input::AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
-                                          const uint8* minorityLabels, const float64* confusionMatricesTotal,
+            LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
+                                          const intp* labelIndices, AbstractLabelMatrix* labelMatrix,
+                                          const float64* uncoveredLabels, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 
             ~LabelWiseRefinementSearchImpl();
@@ -82,8 +82,7 @@ namespace statistics {
 
             void resetSearch() override;
 
-            rule_evaluation::LabelWisePrediction* calculateLabelWisePrediction(bool uncovered,
-                                                                               bool accumulated) override;
+            LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
 
     };
 
