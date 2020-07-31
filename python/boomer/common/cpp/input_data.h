@@ -78,7 +78,7 @@ class DokLabelMatrixImpl : public AbstractLabelMatrix {
 
     private:
 
-        sparse::BinaryDokMatrix* dokMatrix_;
+        BinaryDokMatrix* dokMatrix_;
 
     public:
 
@@ -88,7 +88,7 @@ class DokLabelMatrixImpl : public AbstractLabelMatrix {
          * @param dokMatrix     A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
          *                      training examples
          */
-        DokLabelMatrixImpl(intp numExamples, intp numLabels, sparse::BinaryDokMatrix* dokMatrix);
+        DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix);
 
         ~DokLabelMatrixImpl();
 
