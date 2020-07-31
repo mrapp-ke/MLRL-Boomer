@@ -17,13 +17,13 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "rule_evaluation
         # Functions:
 
         void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
-                                          const float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                          const float64* sumsOfHessians, bool uncovered,
+                                          float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                          float64* sumsOfHessians, bool uncovered,
                                           LabelWisePrediction* prediction) nogil
 
         void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
-                                            const float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                            const float64* sumsOfHessians, bool uncovered, Prediction* prediction) nogil
+                                            float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                            float64* sumsOfHessians, bool uncovered, Prediction* prediction) nogil
 
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):

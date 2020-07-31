@@ -62,9 +62,8 @@ namespace rule_evaluation {
              *                              store the predicted scores and quality scores
              */
             void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
-                                              const float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                              const float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePrediction* prediction);
+                                              float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                              float64* sumsOfHessians, bool uncovered, LabelWisePrediction* prediction);
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
@@ -98,8 +97,8 @@ namespace rule_evaluation {
              *                              predicted scores and quality score
              */
             void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
-                                                const float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                                const float64* sumsOfHessians, bool uncovered, Prediction* prediction);
+                                                float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                                float64* sumsOfHessians, bool uncovered, Prediction* prediction);
 
     };
 
