@@ -1,8 +1,6 @@
 #include "rule_evaluation.h"
 #include <stdlib.h>
 
-using namespace rule_evaluation;
-
 
 DefaultPrediction::DefaultPrediction(intp numPredictions, float64* predictedScores) {
     numPredictions_ = numPredictions;
@@ -32,6 +30,6 @@ AbstractDefaultRuleEvaluation::~AbstractDefaultRuleEvaluation() {
 
 }
 
-DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix) {
+DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
     return NULL;
 }

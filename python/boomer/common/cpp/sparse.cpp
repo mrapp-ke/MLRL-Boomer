@@ -1,7 +1,5 @@
 #include "sparse.h"
 
-using namespace sparse;
-
 
 void BinaryDokMatrix::addValue(uint32 row, uint32 column) {
     data_.insert(std::make_pair(row, column));

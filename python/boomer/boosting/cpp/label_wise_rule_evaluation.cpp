@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <utility>
 
-using namespace rule_evaluation;
+using namespace boosting;
 
 
 LabelWiseDefaultRuleEvaluationImpl::LabelWiseDefaultRuleEvaluationImpl(losses::AbstractLabelWiseLoss* lossFunction,

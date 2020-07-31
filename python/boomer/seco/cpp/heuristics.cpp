@@ -1,7 +1,7 @@
 #include "heuristics.h"
 #include <math.h>
 
-using namespace heuristics;
+using namespace seco;
 
 
 static inline float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
