@@ -8,7 +8,7 @@ AbstractExampleWiseLoss::~AbstractExampleWiseLoss() {
 
 }
 
-void AbstractExampleWiseLoss::calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix,
+void AbstractExampleWiseLoss::calculateGradientsAndHessians(input::AbstractLabelMatrix* labelMatrix,
                                                             intp exampleIndex, const float64* predictedScores,
                                                             float64* gradients, float64* hessians) {
 
@@ -18,7 +18,7 @@ ExampleWiseLogisticLossImpl::~ExampleWiseLogisticLossImpl() {
 
 }
 
-void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(statistics::AbstractLabelMatrix* labelMatrix,
+void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(input::AbstractLabelMatrix* labelMatrix,
                                                                 intp exampleIndex, const float64* predictedScores,
                                                                 float64* gradients, float64* hessians) {
     intp numLabels = labelMatrix->numLabels_;

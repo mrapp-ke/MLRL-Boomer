@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.statistics cimport LabelMatrix
+from boomer.common.input_data cimport LabelMatrix
 
 
 cdef extern from "cpp/rule_evaluation.h" namespace "rule_evaluation":
