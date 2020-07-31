@@ -21,7 +21,7 @@ namespace boosting {
 
         private:
 
-            losses::AbstractLabelWiseLoss* lossFunction_;
+            AbstractLabelWiseLoss* lossFunction_;
 
             float64 l2RegularizationWeight_;
 
@@ -33,12 +33,11 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by the default rule
              */
-            LabelWiseDefaultRuleEvaluationImpl(losses::AbstractLabelWiseLoss* lossFunction,
-                                               float64 l2RegularizationWeight);
+            LabelWiseDefaultRuleEvaluationImpl(AbstractLabelWiseLoss* lossFunction, float64 l2RegularizationWeight);
 
             ~LabelWiseDefaultRuleEvaluationImpl();
 
-            DefaultPrediction* calculateDefaultPrediction(input::AbstractLabelMatrix* labelMatrix) override;
+            DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
 
     };
 
