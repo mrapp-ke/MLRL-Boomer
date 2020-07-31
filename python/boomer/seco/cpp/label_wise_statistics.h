@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../../common/cpp/arrays.h"
+#include "../../common/cpp/input_data.h"
 #include "../../common/cpp/statistics.h"
 #include "label_wise_rule_evaluation.h"
 
@@ -27,7 +28,7 @@ namespace statistics {
 
             const intp* labelIndices_;
 
-            AbstractLabelMatrix* labelMatrix_;
+            input::AbstractLabelMatrix* labelMatrix_;
 
             const float64* uncoveredLabels_;
 
@@ -71,7 +72,7 @@ namespace statistics {
              */
             LabelWiseRefinementSearchImpl(rule_evaluation::LabelWiseRuleEvaluationImpl* ruleEvaluation,
                                           intp numPredictions, const intp* labelIndices,
-                                          AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
+                                          input::AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
                                           const uint8* minorityLabels, const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 

@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, intp, float64
-from boomer.common.statistics cimport LabelMatrix
+from boomer.common.input_data cimport LabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
 from boomer.seco.heuristics cimport Heuristic, AbstractHeuristic
 
