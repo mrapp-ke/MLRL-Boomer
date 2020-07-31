@@ -1,7 +1,5 @@
 #include "statistics.h"
 
-using namespace statistics;
-
 
 AbstractRefinementSearch::~AbstractRefinementSearch() {
 
