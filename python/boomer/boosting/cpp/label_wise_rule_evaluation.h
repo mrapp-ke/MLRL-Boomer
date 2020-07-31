@@ -8,6 +8,7 @@
 
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/rule_evaluation.h"
+#include "label_wise_losses.h"
 
 
 namespace boosting {
