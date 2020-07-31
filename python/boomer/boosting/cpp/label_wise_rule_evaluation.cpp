@@ -1,9 +1,50 @@
 #include "label_wise_rule_evaluation.h"
 #include "linalg.h"
 #include <cstddef>
+#include <utility>
 
 using namespace rule_evaluation;
 
+
+LabelWiseDefaultRuleEvaluationImpl::LabelWiseDefaultRuleEvaluationImpl(losses::AbstractLabelWiseLoss* lossFunction,
+                                                                       float64 l2RegularizationWeight) {
+    lossFunction_ = lossFunction;
+    l2RegularizationWeight_ = l2RegularizationWeight;
+}
+
+LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
+
+}
+
+DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
+        input::AbstractLabelMatrix* labelMatrix) {
+    // Class members
+    losses::AbstractLabelWiseLoss* lossFunction = lossFunction_;
+    float64 l2RegularizationWeight = l2RegularizationWeight_;
+    // The number of examples
+    intp numExamples = labelMatrix->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix->numLabels_;
+    // An array that stores the scores that are predicted by the default rule
+    float64* predictedScores = arrays::mallocFloat64(numLabels);
+
+    for (intp c = 0; c < numLabels; c++) {
+        float64 sumOfGradients = 0;
+        float64 sumOfHessians = 0;
+
+        for (intp r = 0; r < numExamples; r++) {
+            // Calculate the gradient and Hessian for the current example and label...
+            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrix, r, c, 0);
+            sumOfGradients += pair.first;
+            sumOfHessians += pair.second;
+        }
+
+        // Calculate the score to be predicted by the default rule for the current label...
+        predictedScores[c] = -sumOfGradients / (sumOfHessians + l2RegularizationWeight);
+    }
+
+    return new DefaultPrediction(numLabels, predictedScores);
+}
 
 LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
     l2RegularizationWeight_ = l2RegularizationWeight;
