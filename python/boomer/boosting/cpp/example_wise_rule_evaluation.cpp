@@ -14,9 +14,9 @@ ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2Regulariz
 
 void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
                                                                  const float64* totalSumsOfGradients,
-                                                                 const float64* sumsOfGradients,
+                                                                 float64* sumsOfGradients,
                                                                  const float64* totalSumsOfHessians,
-                                                                 const float64* sumsOfHessians, bool uncovered,
+                                                                 float64* sumsOfHessians, bool uncovered,
                                                                  LabelWisePrediction* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
@@ -68,9 +68,49 @@ void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* lab
 
 void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* labelIndices,
                                                                    const float64* totalSumsOfGradients,
-                                                                   const float64* sumsOfGradients,
+                                                                   float64* sumsOfGradients,
                                                                    const float64* totalSumsOfHessians,
-                                                                   const float64* sumsOfHessians, bool uncovered,
+                                                                   float64* sumsOfHessians, bool uncovered,
                                                                    Prediction* prediction) {
-    // TODO
+    // Class members
+    float64 l2RegularizationWeight = l2RegularizationWeight_;
+    // The number of elements in the arrays `predicted_scores` and `quality_scores`
+    intp numPredictions = prediction->numPredictions_;
+    float64* gradients;
+    float64* hessians;
+
+    if (uncovered) {
+        intp numHessians = linalg::triangularNumber(numPredictions);
+        gradients = arrays::mallocFloat64(numPredictions);
+        hessians = arrays::mallocFloat64(numHessians);
+        intp i = 0;
+
+        for (intp c = 0; c < numPredictions; c++) {
+            intp l = labelIndices != NULL ? labelIndices[c] : c;
+            gradients[c] = totalSumsOfGradients[l] - sumsOfGradients[c];
+            intp offset = linalg::triangularNumber(l);
+
+            for (intp c2 = 0; c2 < c + 1; c2++) {
+                intp l2 = offset + (labelIndices != NULL ? labelIndices[c2] : c2);
+                hessians[i] = totalSumsOfHessians[l2] - sumsOfHessians[i];
+                i++;
+            }
+        }
+    } else {
+        gradients = sumsOfGradients;
+        hessians = sumsOfHessians;
+    }
+
+    // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+    float64* predictedScores = dsysv(hessians, gradients, numPredictions, l2RegularizationWeight);
+    prediction->predictedScores_ = predictedScores;
+
+    // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
+    float64 overallQualityScore = ddot(predictedScores, gradients, numPredictions);
+    float64* tmp = dspmv(hessians, predictedScores, numPredictions);
+    overallQualityScore += 0.5 * ddot(predictedScores, tmp, numPredictions);
+
+    // Add the L2 regularization term to the overall quality score...
+    overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);
+    prediction->overallQualityScore_ = overallQualityScore;
 }
