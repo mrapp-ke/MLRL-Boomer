@@ -19,7 +19,7 @@ namespace linalg {
      * @param n The number of elements in the array `a`
      * @return  A scalar of type `float64`, representing the square of the L2 norm of the given array
      */
-    static inline float64 l2NormPow(float64* a, intp n) {
+    static inline float64 l2NormPow(const float64* a, intp n) {
         float64 result = 0;
 
         for (intp i = 0; i < n; i++) {
