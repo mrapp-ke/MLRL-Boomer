@@ -15,7 +15,7 @@
 #include "../../common/cpp/arrays.h"
 
 
-namespace heuristics {
+namespace seco {
 
     /**
      * An enum that specified all positive elements of a confusion matrix.
