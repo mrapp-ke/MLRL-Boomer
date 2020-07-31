@@ -86,7 +86,7 @@ namespace statistics {
              *                      predicted by the rule for each considered label, as well as the corresponding
              *                      quality scores
              */
-            virtual rule_evaluation::LabelWisePrediction* calculateLabelWisePrediction(bool uncovered,
+            virtual LabelWisePrediction* calculateLabelWisePrediction(bool uncovered,
                                                                                        bool accumulated);
 
             /**
@@ -122,7 +122,7 @@ namespace statistics {
              * @return              A pointer to an object of type `Prediction` that stores the scores to be predicted
              *                      by the rule for each considered label, as well as an overall quality score
              */
-            virtual rule_evaluation::Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated);
+            virtual Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated);
 
     };
 
@@ -135,7 +135,7 @@ namespace statistics {
 
         public:
 
-            rule_evaluation::Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+            Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
     };
 
