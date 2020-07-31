@@ -1,5 +1,7 @@
 #include "example_wise_rule_evaluation.h"
 #include "linalg.h"
+#include "blas.h"
+#include "lapack.h"
 #include <cstddef>
 #include <math.h>
 
