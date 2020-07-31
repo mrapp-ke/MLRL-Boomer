@@ -19,8 +19,45 @@ ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
 }
 
 DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
-    // TODO
-    return NULL;
+    // Class members
+    AbstractExampleWiseLoss* lossFunction = lossFunction_;
+    float64 l2RegularizationWeight = l2RegularizationWeight_;
+    // The number of examples
+    intp numExamples = labelMatrix->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix->numLabels_;
+    // The number of hessians
+    intp numHessians = linalg::triangularNumber(numLabels);
+    // An array that stores the gradients for an example
+    float64* gradients = arrays::mallocFloat64(numLabels);
+    // An array that stores the sums of gradients
+    float64* sumsOfGradients = arrays::mallocFloat64(numLabels);
+    arrays::setToZeros(sumsOfGradients, numLabels);
+    // An array that stores the Hessians for an example
+    float64* hessians = arrays::mallocFloat64(numHessians);
+    // An array that stores the sums of Hessians
+    float64* sumsOfHessians = arrays::mallocFloat64(numHessians);
+    arrays::setToZeros(sumsOfHessians, numHessians);
+    // An array of zeros that represents the initially predicted scores
+    float64* defaultPredictions = arrays::mallocFloat64(numLabels);
+    arrays::setToZeros(defaultPredictions, numLabels);
+
+    for (intp r = 0; r < numExamples; r++) {
+        // Calculate the gradients and Hessians for the current example...
+        lossFunction->calculateGradientsAndHessians(labelMatrix, r, defaultPredictions, gradients, hessians);
+
+        for (intp c = 0; c < numLabels; c++) {
+            sumsOfGradients[c] += gradients[c];
+        }
+
+        for (intp c = 0; c < numHessians; c++) {
+            sumsOfHessians[c] += hessians[c];
+        }
+    }
+
+    // Calculate the scores to be predicted by the default rule by solving the system of linear equations...
+    float64* predictedScores = dsysv(sumsOfHessians, sumsOfGradients, numLabels, l2RegularizationWeight);
+    return new DefaultPrediction(numLabels, predictedScores);
 }
 
 ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
