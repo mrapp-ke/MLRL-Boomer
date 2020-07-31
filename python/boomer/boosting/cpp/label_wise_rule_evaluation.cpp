@@ -11,9 +11,9 @@ LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(float64 l2Regularizatio
 
 void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
                                                                const float64* totalSumsOfGradients,
-                                                               const float64* sumsOfGradients,
+                                                               float64* sumsOfGradients,
                                                                const float64* totalSumsOfHessians,
-                                                               const float64* sumsOfHessians, bool uncovered,
+                                                               float64* sumsOfHessians, bool uncovered,
                                                                LabelWisePrediction* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
