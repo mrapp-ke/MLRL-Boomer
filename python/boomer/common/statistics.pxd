@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp
-from boomer.common._sparse cimport BinaryDokMatrix
+from boomer.common.input_data cimport LabelMatrix
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 
@@ -7,41 +7,6 @@ from libcpp cimport bool
 
 
 cdef extern from "cpp/statistics.h" namespace "statistics":
-
-    cdef cppclass AbstractLabelMatrix:
-
-        # Attributes:
-
-        intp numExamples_
-
-        intp numLabels_
-
-        # Functions:
-
-        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
-
-
-    cdef cppclass DenseLabelMatrixImpl(AbstractLabelMatrix):
-
-        # Constructors:
-
-        DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y) except +
-
-        # Functions:
-
-        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
-
-
-    cdef cppclass DokLabelMatrixImpl(AbstractLabelMatrix):
-
-        # Constructors:
-
-        DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix) except +
-
-        # Functions:
-
-        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
-
 
     cdef cppclass AbstractRefinementSearch:
 
@@ -67,35 +32,6 @@ cdef extern from "cpp/statistics.h" namespace "statistics":
         LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
 
         Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
-
-
-cdef class LabelMatrix:
-
-    # Attributes:
-
-    cdef AbstractLabelMatrix* label_matrix
-
-    cdef readonly intp num_examples
-
-    cdef readonly intp num_labels
-
-    # Functions:
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
-
-
-cdef class DenseLabelMatrix(LabelMatrix):
-
-    # Functions:
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
-
-
-cdef class DokLabelMatrix(LabelMatrix):
-
-    # Functions:
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
 
 
 cdef class RefinementSearch:

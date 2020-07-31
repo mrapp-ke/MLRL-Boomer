@@ -6,7 +6,7 @@
 #pragma once
 
 #include "../../common/cpp/arrays.h"
-#include "../../common/cpp/statistics.h"
+#include "../../common/cpp/input_data.h"
 #include <utility>
 
 
@@ -34,9 +34,9 @@ namespace losses {
              * @return                  A pair that contains two scalars of type `float64`, representing the gradient
              *                          and the Hessian that have been calculated
              */
-            virtual std::pair<float64, float64> calculateGradientAndHessian(
-                    statistics::AbstractLabelMatrix* labelMatrix, intp exampleIndex, intp labelIndex,
-                    float64 predictedScore);
+            virtual std::pair<float64, float64> calculateGradientAndHessian(input::AbstractLabelMatrix* labelMatrix,
+                                                                            intp exampleIndex, intp labelIndex,
+                                                                            float64 predictedScore);
 
     };
 
@@ -49,7 +49,7 @@ namespace losses {
 
             ~LabelWiseLogisticLossImpl();
 
-            std::pair<float64, float64> calculateGradientAndHessian(statistics::AbstractLabelMatrix* labelMatrix,
+            std::pair<float64, float64> calculateGradientAndHessian(input::AbstractLabelMatrix* labelMatrix,
                                                                     intp exampleIndex, intp labelIndex,
                                                                     float64 predictedScore) override;
 
@@ -64,7 +64,7 @@ namespace losses {
 
             ~LabelWiseSquaredErrorLossImpl();
 
-            std::pair<float64, float64> calculateGradientAndHessian(statistics::AbstractLabelMatrix* labelMatrix,
+            std::pair<float64, float64> calculateGradientAndHessian(input::AbstractLabelMatrix* labelMatrix,
                                                                     intp exampleIndex, intp labelIndex,
                                                                     float64 predictedScore) override;
 

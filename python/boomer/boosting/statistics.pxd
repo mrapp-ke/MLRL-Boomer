@@ -1,5 +1,6 @@
 from boomer.common._arrays cimport uint32, intp
-from boomer.common.statistics cimport LabelMatrix, Statistics, RefinementSearch
+from boomer.common.input_data cimport LabelMatrix
+from boomer.common.statistics cimport Statistics, RefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction
 
