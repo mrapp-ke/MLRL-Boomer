@@ -54,7 +54,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
 
         # Constructors:
 
-        FMeasureImpl(float64 beta)
+        FMeasureImpl(float64 beta) except +
 
         # Functions:
 
@@ -66,7 +66,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
 
         # Constructors:
 
-        MEstimateImpl(float64 m)
+        MEstimateImpl(float64 m) except +
 
         # Functions:
 

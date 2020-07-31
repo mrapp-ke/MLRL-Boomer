@@ -1,18 +1,30 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport LabelMatrix
-from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation
-from boomer.boosting.label_wise_losses cimport LabelWiseLoss
+from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation, \
+    AbstractDefaultRuleEvaluation
+from boomer.boosting.label_wise_losses cimport LabelWiseLoss, AbstractLabelWiseLoss
 
 from libcpp cimport bool
 
 
 cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
 
+    cdef cppclass LabelWiseDefaultRuleEvaluationImpl(AbstractDefaultRuleEvaluation):
+
+        # Constructors:
+
+        LabelWiseDefaultRuleEvaluationImpl(AbstractLabelWiseLoss* lossFunction, float64 l2RegularizationWeight) except +
+
+        # Functions:
+
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil
+
+
     cdef cppclass LabelWiseRuleEvaluationImpl:
 
         # Constructors:
 
-        LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight)
+        LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) except +
 
         # Functions:
 
@@ -26,9 +38,7 @@ cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
     # Attributes:
 
-    cdef LabelWiseLoss loss_function
-
-    cdef float64 l2_regularization_weight
+    cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
 
     # Functions:
 
