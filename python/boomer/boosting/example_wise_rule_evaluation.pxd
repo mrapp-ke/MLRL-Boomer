@@ -6,7 +6,7 @@ from boomer.boosting.example_wise_losses cimport ExampleWiseLoss
 from libcpp cimport bool
 
 
-cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "rule_evaluation":
+cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
 
     cdef cppclass ExampleWiseRuleEvaluationImpl:
 
