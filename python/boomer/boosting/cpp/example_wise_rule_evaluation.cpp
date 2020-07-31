@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <math.h>
 
-using namespace rule_evaluation;
+using namespace boosting;
 
 
 ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
