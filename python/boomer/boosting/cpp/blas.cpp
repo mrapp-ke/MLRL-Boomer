@@ -1,6 +1,7 @@
 #include "blas.h"
 
 ddot_t ddotFunction;
+dspmv_t dspmvFunction;
 
 
 float64 ddot(float64* x, float64* y, int n) {
