@@ -42,7 +42,7 @@ namespace statistics {
 
             float64* accumulatedConfusionMatricesCovered_;
 
-            rule_evaluation::LabelWisePrediction* prediction_;
+            LabelWisePrediction* prediction_;
 
         public:
 
@@ -82,8 +82,7 @@ namespace statistics {
 
             void resetSearch() override;
 
-            rule_evaluation::LabelWisePrediction* calculateLabelWisePrediction(bool uncovered,
-                                                                               bool accumulated) override;
+            LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
 
     };
 

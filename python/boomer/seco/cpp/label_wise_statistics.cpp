@@ -23,7 +23,7 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     accumulatedConfusionMatricesCovered_ = NULL;
     float64* predictedScores = arrays::mallocFloat64(numPredictions);
     float64* qualityScores = arrays::mallocFloat64(numPredictions);
-    prediction_ = new rule_evaluation::LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0);
+    prediction_ = new LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0);
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
@@ -69,7 +69,7 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
     }
 }
 
-rule_evaluation::LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
+LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
                                                                                                   bool accumulated) {
     float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
     ruleEvaluation_->calculateLabelWisePrediction(labelIndices_, minorityLabels_, confusionMatricesTotal_,
