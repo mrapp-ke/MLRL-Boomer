@@ -1,5 +1,6 @@
 from boomer.common._arrays cimport uint32, intp, float64
-from boomer.common.statistics cimport LabelMatrix, RefinementSearch, DecomposableRefinementSearch
+from boomer.common.input_data cimport LabelMatrix
+from boomer.common.statistics cimport RefinementSearch, DecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics

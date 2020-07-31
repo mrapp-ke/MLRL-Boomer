@@ -1,6 +1,7 @@
 from boomer.common._arrays cimport intp, uint8, uint32, float64
-from boomer.common.statistics cimport LabelMatrix, AbstractLabelMatrix, RefinementSearch, \
-    DecomposableRefinementSearch, AbstractRefinementSearch, AbstractDecomposableRefinementSearch
+from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.statistics cimport RefinementSearch, DecomposableRefinementSearch, AbstractRefinementSearch, \
+    AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.statistics cimport CoverageStatistics
@@ -9,7 +10,7 @@ from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, Lab
 from libcpp cimport bool
 
 
-cdef extern from "cpp/label_wise_statistics.h" namespace "statistics":
+cdef extern from "cpp/label_wise_statistics.h" namespace "seco":
 
     cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
 
@@ -18,7 +19,8 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "statistics":
         LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numLabels,
                                       const intp* labelIndices, AbstractLabelMatrix* labelMatrix,
                                       const float64* uncoveredLabels, const uint8* minorityLabels,
-                                      const float64* confusionMatricesTotal, const float64* confusionMatricesSubset)
+                                      const float64* confusionMatricesTotal,
+                                      const float64* confusionMatricesSubset) except +
 
         # Functions:
 

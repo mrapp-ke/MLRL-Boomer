@@ -10,7 +10,35 @@
 #include "../../common/cpp/rule_evaluation.h"
 
 
-namespace rule_evaluation {
+namespace boosting {
+
+    /**
+     * Allows to calculate the predictions of a default rule such that it minimizes a loss function that is applied
+     * label-wise.
+     */
+    class LabelWiseDefaultRuleEvaluationImpl : public AbstractDefaultRuleEvaluation {
+
+        private:
+
+            AbstractLabelWiseLoss* lossFunction_;
+
+            float64 l2RegularizationWeight_;
+
+        public:
+
+            /**
+             * @param lossFunction              A pointer to an object of type `AbstractLabelWiseLoss`, representing the
+                                                loss function to be minimized by the default rule
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by the default rule
+             */
+            LabelWiseDefaultRuleEvaluationImpl(AbstractLabelWiseLoss* lossFunction, float64 l2RegularizationWeight);
+
+            ~LabelWiseDefaultRuleEvaluationImpl();
+
+            DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
+
+    };
 
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a
