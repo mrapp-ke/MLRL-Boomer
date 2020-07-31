@@ -1,7 +1,5 @@
 #include "input_data.h"
 
-using namespace input;
-
 
 AbstractLabelMatrix::AbstractLabelMatrix(intp numExamples, intp numLabels) {
     numExamples_ = numExamples;
@@ -30,7 +28,7 @@ uint8 DenseLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels, sparse::BinaryDokMatrix* dokMatrix)
+DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix)
     : AbstractLabelMatrix(numExamples, numLabels) {
     dokMatrix_ = dokMatrix;
 }

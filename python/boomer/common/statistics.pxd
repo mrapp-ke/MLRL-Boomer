@@ -6,7 +6,7 @@ from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelW
 from libcpp cimport bool
 
 
-cdef extern from "cpp/statistics.h" namespace "statistics":
+cdef extern from "cpp/statistics.h":
 
     cdef cppclass AbstractRefinementSearch:
 

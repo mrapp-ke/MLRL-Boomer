@@ -4,7 +4,7 @@ from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 from libcpp.pair cimport pair
 
 
-cdef extern from "cpp/label_wise_losses.h" namespace "losses":
+cdef extern from "cpp/label_wise_losses.h" namespace "boosting":
 
     cdef cppclass AbstractLabelWiseLoss:
 

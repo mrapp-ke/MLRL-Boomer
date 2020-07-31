@@ -10,7 +10,7 @@
 #include "../../common/cpp/rule_evaluation.h"
 
 
-namespace rule_evaluation {
+namespace boosting {
 
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a
