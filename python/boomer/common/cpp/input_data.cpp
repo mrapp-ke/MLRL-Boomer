@@ -28,7 +28,7 @@ uint8 DenseLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels, sparse::BinaryDokMatrix* dokMatrix)
+DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix)
     : AbstractLabelMatrix(numExamples, numLabels) {
     dokMatrix_ = dokMatrix;
 }
