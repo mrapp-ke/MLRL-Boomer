@@ -8,9 +8,37 @@
 
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/rule_evaluation.h"
+#include "example_wise_losses.h"
 
 
 namespace boosting {
+
+    /**
+     * Allows to calculate the predictions of a default rule such that they minimize a loss function that is applied
+     * example-wise.
+     */
+    class ExampleWiseDefaultRuleEvaluationImpl : public AbstractDefaultRuleEvaluation {
+
+        private:
+
+            AbstractExampleWiseLoss* lossFunction_;
+
+            float64 l2RegularizationWeight_;
+
+        public:
+
+            /**
+             * @param lossFunction              The loss function to be minimized
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by the default rule
+             */
+            ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction, float64 l2RegularizationWeight);
+
+            ~ExampleWiseDefaultRuleEvaluationImpl();
+
+            DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
+
+    };
 
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a

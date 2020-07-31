@@ -8,6 +8,21 @@
 using namespace boosting;
 
 
+ExampleWiseDefaultRuleEvaluationImpl::ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
+                                                                           float64 l2RegularizationWeight) {
+    lossFunction_ = lossFunction;
+    l2RegularizationWeight_ = l2RegularizationWeight;
+}
+
+ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
+
+}
+
+DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
+    // TODO
+    return NULL;
+}
+
 ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
     l2RegularizationWeight_ = l2RegularizationWeight;
 }
