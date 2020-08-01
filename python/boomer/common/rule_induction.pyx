@@ -4,134 +4,18 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, get_index
-from boomer.common._tuples cimport compare_indexed_float32
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.statistics cimport RefinementSearch
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction
 
 from libc.math cimport fabs
-from libc.stdlib cimport abs, qsort, malloc, realloc, free
+from libc.stdlib cimport abs, malloc, realloc, free
 
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
 
 from cython.operator cimport dereference, postincrement
-
-
-cdef class FeatureMatrix:
-    """
-    A base class for all classes that provide column-wise access to the feature values of the training examples.
-    """
-
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
-        """
-        Creates and returns a pointer to a struct of type `IndexedFloat32Array` that stores the indices of training
-        examples, as well as their feature values, for a specific feature, sorted in ascending order by the feature
-        values.
-
-        :param feature_index:   The index of the feature
-        :return:                A pointer to a struct of type `IndexedFloat32Array`
-        """
-        pass
-
-
-cdef class DenseFeatureMatrix(FeatureMatrix):
-    """
-    Implements column-wise access to the feature values of the training examples based on a dense feature matrix.
-
-    The feature matrix must be given as a dense Fortran-contiguous array.
-    """
-
-    def __cinit__(self, const float32[::1, :] x):
-        """
-        :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
-                  training examples
-        """
-        self.num_examples = x.shape[0]
-        self.num_features = x.shape[1]
-        self.x = x
-
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
-        # Class members
-        cdef const float32[::1, :] x = self.x
-        # The number of elements to be returned
-        cdef intp num_elements = x.shape[0]
-        # The array to be returned
-        cdef IndexedFloat32* sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
-        # The struct to be returned
-        cdef IndexedFloat32Array* indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
-        dereference(indexed_array).num_elements = num_elements
-        dereference(indexed_array).data = sorted_array
-        # Temporary variables
-        cdef intp i
-
-        for i in range(num_elements):
-            sorted_array[i].index = i
-            sorted_array[i].value = x[i, feature_index]
-
-        qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
-        return indexed_array
-
-
-cdef class CscFeatureMatrix(FeatureMatrix):
-    """
-    Implements column-wise access to the feature values of the training examples based on a sparse feature matrix.
-
-    The feature matrix must be given in compressed sparse column (CSC) format.
-    """
-
-    def __cinit__(self, intp num_examples, intp num_features, const float32[::1] x_data, const intp[::1] x_row_indices,
-                  const intp[::1] x_col_indices):
-        """
-        :param num_examples:    The total number of examples
-        :param num_features:    The total number of features
-        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
-                                non-zero feature values of the training examples
-        :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
-                                row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:   An array of dtype int, shape `(num_features + 1)`, representing the indices of the first
-                                element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
-                                at the last position is equal to `num_non_zero_feature_values`
-        """
-        self.num_examples = num_examples
-        self.num_features = num_features
-        self.x_data = x_data
-        self.x_row_indices = x_row_indices
-        self.x_col_indices = x_col_indices
-
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
-        # Class members
-        cdef const float32[::1] x_data = self.x_data
-        cdef const intp[::1] x_row_indices = self.x_row_indices
-        cdef const intp[::1] x_col_indices = self.x_col_indices
-        # The index of the first element in `x_data` and `x_row_indices` that corresponds to the given feature index
-        cdef intp start = x_col_indices[feature_index]
-        # The index of the last element in `x_data` and `x_row_indices` that corresponds to the given feature index
-        cdef intp end = x_col_indices[feature_index + 1]
-        # The number of elements to be returned
-        cdef intp num_elements = end - start
-        # The struct to be returned
-        cdef IndexedFloat32Array* indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
-        dereference(indexed_array).num_elements = num_elements
-        # The array to be returned
-        cdef IndexedFloat32* sorted_array = NULL
-        # Temporary variables
-        cdef intp i, j
-
-        if num_elements > 0:
-            sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
-            i = 0
-
-            for j in range(start, end):
-                sorted_array[i].index = x_row_indices[j]
-                sorted_array[i].value = x_data[j]
-                i += 1
-
-            qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
-
-        dereference(indexed_array).data = sorted_array
-        return indexed_array
 
 
 cdef class RuleInduction:
