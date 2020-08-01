@@ -270,14 +270,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef float32 best_condition_threshold
         cdef uint32 best_condition_covered_weights
         cdef IndexedFloat32Array* best_condition_indexed_array
-        cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
+        cdef IndexedFloat32ArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the statistics that should be used for finding the best refinement
         cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
         cdef IndexedFloat32Array* indexed_array
-        cdef unordered_map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
-        cdef unordered_map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
-        cdef IndexedArrayWrapper* indexed_array_wrapper
+        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
+        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
+        cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper
         cdef IndexedFloat32* indexed_values
         cdef intp num_indexed_values
 
@@ -356,7 +356,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     indexed_array_wrapper = cache_local[f]
 
                     if indexed_array_wrapper == NULL:
-                        indexed_array_wrapper = <IndexedArrayWrapper*>malloc(sizeof(IndexedArrayWrapper))
+                        indexed_array_wrapper = <IndexedFloat32ArrayWrapper*>malloc(sizeof(IndexedFloat32ArrayWrapper))
                         dereference(indexed_array_wrapper).array = NULL
                         dereference(indexed_array_wrapper).num_conditions = 0
                         cache_local[f] = indexed_array_wrapper
@@ -992,7 +992,7 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
 
 
 cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
-                                            IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
+                                            IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp condition_start,
                                             intp condition_end, Comparator condition_comparator, bint covered,
                                             intp num_conditions, uint32[::1] covered_statistics_mask,
                                             uint32 covered_statistics_target, Statistics statistics,
@@ -1001,13 +1001,13 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
     values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the new rule.
-    The filtered array is stored in a given struct of type `IndexedArrayWrapper` and the given statistics are updated
-    accordingly.
+    The filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper` and the given statistics are
+    updated accordingly.
 
     :param indexed_array:               A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the
                                         C-array to be filtered, as well as the number of elements in said array
-    :param indexed_array_wrapper:       A pointer to a struct of type `IndexedArrayWrapper` that should be used to store
-                                        the filtered array
+    :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
+                                        to store the filtered array
     :param condition_start:             The element in `indexed_values` that corresponds to the first example
                                         (inclusive) that has been passed to the `RefinementSearch` when searching for
                                         the new condition
@@ -1129,18 +1129,18 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     return updated_target
 
 
-cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
-                                      intp num_conditions, uint32[::1] covered_statistics_mask,
-                                      uint32 covered_statistics_target) nogil:
+cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
+                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp num_conditions,
+                                      uint32[::1] covered_statistics_mask, uint32 covered_statistics_target) nogil:
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the current
-    rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
+    rule. The filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper`.
 
     :param indexed_array:               A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the
                                         C-array to be filtered, as well as the number of elements in said array
-    :param indexed_array_wrapper:       A pointer to a struct of type `IndexedArrayWrapper` that should be used to store
-                                        the filtered array
+    :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
+                                        to store the filtered array
     :param num_conditions:              The total number of conditions in the current rule's body
     :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
                                         the indices of the statistics that are covered by the previous rule. It will be
