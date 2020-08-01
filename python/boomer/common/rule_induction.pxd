@@ -17,19 +17,19 @@ from libcpp.unordered_map cimport unordered_map
 A struct that contains a pointer to a C-array of type `IndexedFloat32`. The attribute `num_elements` specifies how many
 elements the array contains.
 """
-cdef struct IndexedArray:
+cdef struct IndexedFloat32Array:
     IndexedFloat32* data
     intp num_elements
 
 
 """
-A struct that contains a pointer to a struct of type `IndexedArray`, representing the indices and feature values of the
-training examples that are covered by a rule. The attribute `num_conditions` specifies how many conditions the rule
-contained when the array was updated for the last time. It may be used to check if the array is still valid or must be
-updated.
+A struct that contains a pointer to a struct of type `IndexedFloat32Array`, representing the indices and feature values
+of the training examples that are covered by a rule. The attribute `num_conditions` specifies how many conditions the
+rule contained when the array was updated for the last time. It may be used to check if the array is still valid or must
+be updated.
 """
 cdef struct IndexedArrayWrapper:
-    IndexedArray* array
+    IndexedFloat32Array* array
     intp num_conditions
 
 
@@ -43,7 +43,7 @@ cdef class FeatureMatrix:
 
     # Functions:
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
+    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil
 
 
 cdef class DenseFeatureMatrix(FeatureMatrix):
@@ -54,7 +54,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
+    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -69,7 +69,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
+    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil
 
 
 cdef class RuleInduction:
@@ -93,7 +93,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef Statistics statistics
 
-    cdef unordered_map[intp, IndexedArray*]* cache_global
+    cdef unordered_map[intp, IndexedFloat32Array*]* cache_global
 
     # Functions:
 

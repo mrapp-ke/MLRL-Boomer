@@ -24,13 +24,14 @@ cdef class FeatureMatrix:
     A base class for all classes that provide column-wise access to the feature values of the training examples.
     """
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
+    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
         """
-        Creates and returns a pointer to a struct of type `IndexedArray` that stores the indices of training examples,
-        as well as their feature values, for a specific feature, sorted in ascending order by the feature values.
+        Creates and returns a pointer to a struct of type `IndexedFloat32Array` that stores the indices of training
+        examples, as well as their feature values, for a specific feature, sorted in ascending order by the feature
+        values.
 
         :param feature_index:   The index of the feature
-        :return:                A pointer to a struct of type `IndexedArray`
+        :return:                A pointer to a struct of type `IndexedFloat32Array`
         """
         pass
 
@@ -51,7 +52,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         self.num_features = x.shape[1]
         self.x = x
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
+    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
         # Class members
         cdef const float32[::1, :] x = self.x
         # The number of elements to be returned
@@ -59,7 +60,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         # The array to be returned
         cdef IndexedFloat32* sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
         # The struct to be returned
-        cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        cdef IndexedFloat32Array* indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
         dereference(indexed_array).num_elements = num_elements
         dereference(indexed_array).data = sorted_array
         # Temporary variables
@@ -99,7 +100,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         self.x_row_indices = x_row_indices
         self.x_col_indices = x_col_indices
 
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil:
+    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
         # Class members
         cdef const float32[::1] x_data = self.x_data
         cdef const intp[::1] x_row_indices = self.x_row_indices
@@ -111,7 +112,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         # The number of elements to be returned
         cdef intp num_elements = end - start
         # The struct to be returned
-        cdef IndexedArray* indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        cdef IndexedFloat32Array* indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
         dereference(indexed_array).num_elements = num_elements
         # The array to be returned
         cdef IndexedFloat32* sorted_array = NULL
@@ -204,12 +205,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         """
         self.default_rule_evaluation = default_rule_evaluation
         self.statistics = statistics
-        self.cache_global = new unordered_map[intp, IndexedArray*]()
+        self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
 
     def __dealloc__(self):
-        cdef unordered_map[intp, IndexedArray*]* cache_global = self.cache_global
-        cdef unordered_map[intp, IndexedArray*].iterator cache_global_iterator = dereference(cache_global).begin()
-        cdef IndexedArray* indexed_array
+        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef unordered_map[intp, IndexedFloat32Array*].iterator cache_global_iterator = dereference(cache_global).begin()
+        cdef IndexedFloat32Array* indexed_array
 
         while cache_global_iterator != dereference(cache_global).end():
             indexed_array = dereference(cache_global_iterator).second
@@ -268,12 +269,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef bint best_condition_covered
         cdef float32 best_condition_threshold
         cdef uint32 best_condition_covered_weights
-        cdef IndexedArray* best_condition_indexed_array
+        cdef IndexedFloat32Array* best_condition_indexed_array
         cdef IndexedArrayWrapper* best_condition_indexed_array_wrapper
 
         # Variables for specifying the statistics that should be used for finding the best refinement
-        cdef unordered_map[intp, IndexedArray*]* cache_global = self.cache_global
-        cdef IndexedArray* indexed_array
+        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef IndexedFloat32Array* indexed_array
         cdef unordered_map[intp, IndexedArrayWrapper*] cache_local  # Stack-allocated map
         cdef unordered_map[intp, IndexedArrayWrapper*].iterator cache_local_iterator
         cdef IndexedArrayWrapper* indexed_array_wrapper
@@ -939,7 +940,7 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline intp __adjust_split(IndexedArray* indexed_array, intp condition_end, intp condition_previous,
+cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp condition_end, intp condition_previous,
                                 float32 threshold):
     """
     Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
@@ -990,9 +991,10 @@ cdef inline intp __adjust_split(IndexedArray* indexed_array, intp condition_end,
     return adjusted_position
 
 
-cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
-                                            intp condition_start, intp condition_end, Comparator condition_comparator,
-                                            bint covered, intp num_conditions, uint32[::1] covered_statistics_mask,
+cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
+                                            IndexedArrayWrapper* indexed_array_wrapper, intp condition_start,
+                                            intp condition_end, Comparator condition_comparator, bint covered,
+                                            intp num_conditions, uint32[::1] covered_statistics_mask,
                                             uint32 covered_statistics_target, Statistics statistics,
                                             uint32[::1] weights):
     """
@@ -1002,7 +1004,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     The filtered array is stored in a given struct of type `IndexedArrayWrapper` and the given statistics are updated
     accordingly.
 
-    :param indexed_array:               A pointer to a struct of type `IndexedArray` that stores a pointer to the
+    :param indexed_array:               A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the
                                         C-array to be filtered, as well as the number of elements in said array
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedArrayWrapper` that should be used to store
                                         the filtered array
@@ -1113,10 +1115,10 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
             filtered_array[i].value = indexed_values[r].value
             i += direction
 
-    cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
+    cdef IndexedFloat32Array* filtered_indexed_array = dereference(indexed_array_wrapper).array
 
     if filtered_indexed_array == NULL:
-        filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        filtered_indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
         dereference(indexed_array_wrapper).array = filtered_indexed_array
     else:
         free(dereference(filtered_indexed_array).data)
@@ -1127,7 +1129,7 @@ cdef inline uint32 __filter_current_indices(IndexedArray* indexed_array, Indexed
     return updated_target
 
 
-cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
+cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array, IndexedArrayWrapper* indexed_array_wrapper,
                                       intp num_conditions, uint32[::1] covered_statistics_mask,
                                       uint32 covered_statistics_target) nogil:
     """
@@ -1135,7 +1137,7 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
     filtered array does only contain the indices and feature values of the examples that are covered by the current
     rule. The filtered array is stored in a given struct of type `IndexedArrayWrapper`.
 
-    :param indexed_array:               A pointer to a struct of type `IndexedArray` that stores a pointer to the
+    :param indexed_array:               A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the
                                         C-array to be filtered, as well as the number of elements in said array
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedArrayWrapper` that should be used to store
                                         the filtered array
@@ -1146,7 +1148,7 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     """
-    cdef IndexedArray* filtered_indexed_array = dereference(indexed_array_wrapper).array
+    cdef IndexedFloat32Array* filtered_indexed_array = dereference(indexed_array_wrapper).array
     cdef IndexedFloat32* filtered_array = NULL
 
     if filtered_indexed_array != NULL:
@@ -1178,7 +1180,7 @@ cdef inline void __filter_any_indices(IndexedArray* indexed_array, IndexedArrayW
         filtered_array = <IndexedFloat32*>realloc(filtered_array, i * sizeof(IndexedFloat32))
 
     if filtered_indexed_array == NULL:
-        filtered_indexed_array = <IndexedArray*>malloc(sizeof(IndexedArray))
+        filtered_indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
 
     dereference(filtered_indexed_array).data = filtered_array
     dereference(filtered_indexed_array).num_elements = i
