@@ -41,9 +41,7 @@ cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
     # Attributes:
 
-    cdef ExampleWiseLoss loss_function
-
-    cdef float64 l2_regularization_weight
+    cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
 
     # Functions:
 
