@@ -2,7 +2,7 @@ from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
 from boomer.common.rule_evaluation cimport LabelWisePrediction
 
-from libc.stdlib cimport qsort, malloc, free
+from libc.stdlib cimport qsort, malloc, realloc, free
 
 
 cdef class PartialHeadRefinement(HeadRefinement):
@@ -78,20 +78,25 @@ cdef class PartialHeadRefinement(HeadRefinement):
                 return new HeadCandidate(best_head_candidate_length, candidate_label_indices,
                                          candidate_predicted_scores, best_quality_score)
             else:
+                candidate_label_indices = recyclable_head.labelIndices_
+                candidate_predicted_scores = recyclable_head.predictedScores_
+
                 if recyclable_head.numPredictions_ != best_head_candidate_length:
                     recyclable_head.numPredictions_ = best_head_candidate_length
-                    recyclable_head.labelIndices_ = <intp*>malloc(best_head_candidate_length * sizeof(intp))
-                    recyclable_head.predictedScores_ = <float64*>malloc(best_head_candidate_length * sizeof(float64))
+                    candidate_label_indices = <intp*>realloc(candidate_label_indices, best_head_candidate_length * sizeof(intp))
+                    recyclable_head.labelIndices_ = candidate_label_indices
+                    candidate_predicted_scores = <float64*>realloc(candidate_predicted_scores, best_head_candidate_length * sizeof(float64))
+                    recyclable_head.predictedScores_ = candidate_predicted_scores
 
                 # Modify the `recyclable_head` and return it...
                 if label_indices is None:
                     for c in range(best_head_candidate_length):
-                        recyclable_head.labelIndices_[c] = get_index(sorted_indices[c], label_indices)
-                        recyclable_head.predictedScores_[c] = predicted_scores[sorted_indices[c]]
+                        candidate_label_indices[c] = get_index(sorted_indices[c], label_indices)
+                        candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
                 else:
                     for c in range(best_head_candidate_length):
-                        recyclable_head.labelIndices_[c] = label_indices[c]
-                        recyclable_head.predictedScores_[c] = predicted_scores[c]
+                        candidate_label_indices[c] = label_indices[c]
+                        candidate_predicted_scores[c] = predicted_scores[c]
 
                 recyclable_head.qualityScore_ = best_quality_score
                 return recyclable_head
