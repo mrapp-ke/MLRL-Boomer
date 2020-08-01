@@ -1,8 +1,8 @@
 from boomer.common._arrays cimport intp, float32
-from boomer.common._tuples cimport IndexedFloat32
+from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32Array
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
-from boomer.common.input_data cimport LabelMatrix
+from boomer.common.input_data cimport LabelMatrix, FeatureMatrix
 from boomer.common.statistics cimport Statistics
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
@@ -14,62 +14,14 @@ from libcpp.unordered_map cimport unordered_map
 
 
 """
-A struct that contains a pointer to a C-array of type `IndexedFloat32`. The attribute `num_elements` specifies how many
-elements the array contains.
+A struct that contains a pointer to a struct of type `IndexedFloat32Array`, representing the indices and feature values
+of the training examples that are covered by a rule. The attribute `num_conditions` specifies how many conditions the
+rule contained when the array was updated for the last time. It may be used to check if the array is still valid or must
+be updated.
 """
-cdef struct IndexedArray:
-    IndexedFloat32* data
-    intp num_elements
-
-
-"""
-A struct that contains a pointer to a struct of type `IndexedArray`, representing the indices and feature values of the
-training examples that are covered by a rule. The attribute `num_conditions` specifies how many conditions the rule
-contained when the array was updated for the last time. It may be used to check if the array is still valid or must be
-updated.
-"""
-cdef struct IndexedArrayWrapper:
-    IndexedArray* array
+cdef struct IndexedFloat32ArrayWrapper:
+    IndexedFloat32Array* array
     intp num_conditions
-
-
-cdef class FeatureMatrix:
-
-    # Attributes:
-
-    cdef readonly intp num_examples
-
-    cdef readonly intp num_features
-
-    # Functions:
-
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
-
-
-cdef class DenseFeatureMatrix(FeatureMatrix):
-
-    # Attributes:
-
-    cdef const float32[::1, :] x
-
-    # Functions:
-
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
-
-
-cdef class CscFeatureMatrix(FeatureMatrix):
-
-    # Attributes:
-
-    cdef const float32[::1] x_data
-
-    cdef const intp[::1] x_row_indices
-
-    cdef const intp[::1] x_col_indices
-
-    # Functions:
-
-    cdef IndexedArray* get_sorted_feature_values(self, intp feature_index) nogil
 
 
 cdef class RuleInduction:
@@ -93,7 +45,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef Statistics statistics
 
-    cdef unordered_map[intp, IndexedArray*]* cache_global
+    cdef unordered_map[intp, IndexedFloat32Array*]* cache_global
 
     # Functions:
 
