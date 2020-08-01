@@ -21,11 +21,11 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvalua
     minorityLabels_ = minorityLabels;
     confusionMatricesTotal_ = confusionMatricesTotal;
     confusionMatricesSubset_ = confusionMatricesSubset;
-    confusionMatricesCovered_ = arrays::mallocFloat64(numPredictions, 4);
+    confusionMatricesCovered_ = (float64*) malloc(numPredictions * 4 * sizeof(float64));
     arrays::setToZeros(confusionMatricesCovered_, numPredictions, 4);
     accumulatedConfusionMatricesCovered_ = NULL;
-    float64* predictedScores = arrays::mallocFloat64(numPredictions);
-    float64* qualityScores = arrays::mallocFloat64(numPredictions);
+    float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
+    float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
     prediction_ = new LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0);
 }
 
@@ -56,7 +56,7 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
 void LabelWiseRefinementSearchImpl::resetSearch() {
     // Allocate an array for storing the accumulated confusion matrices, if necessary...
     if (accumulatedConfusionMatricesCovered_ == NULL) {
-        accumulatedConfusionMatricesCovered_ = arrays::mallocFloat64(numPredictions_, 4);
+        accumulatedConfusionMatricesCovered_ = (float64*) malloc(numPredictions_ * 4 * sizeof(float64));
         arrays::setToZeros(accumulatedConfusionMatricesCovered_, numPredictions_, 4);
     }
 

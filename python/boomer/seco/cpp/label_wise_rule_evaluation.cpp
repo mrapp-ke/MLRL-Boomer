@@ -1,5 +1,6 @@
 #include "label_wise_rule_evaluation.h"
 #include <cstddef>
+#include <stdlib.h>
 
 using namespace seco;
 
@@ -16,7 +17,7 @@ DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPredictio
     // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
     float64 threshold = numExamples / 2.0;
     // An array that stores the scores that are predicted by the default rule
-    float64* predictedScores = arrays::mallocFloat64(numLabels);
+    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
 
     for (intp c = 0; c < numLabels; c++) {
         intp numPositiveLabels = 0;
