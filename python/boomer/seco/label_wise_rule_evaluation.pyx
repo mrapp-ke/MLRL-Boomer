@@ -4,7 +4,6 @@
 Provides Cython wrappers for C++ classes that allow to calculate the predictions of rules, as well as corresponding
 quality scores.
 """
-from libc.stdlib cimport malloc
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
