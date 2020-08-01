@@ -28,7 +28,7 @@ of the training examples that are covered by a rule. The attribute `num_conditio
 rule contained when the array was updated for the last time. It may be used to check if the array is still valid or must
 be updated.
 """
-cdef struct IndexedArrayWrapper:
+cdef struct IndexedFloat32ArrayWrapper:
     IndexedFloat32Array* array
     intp num_conditions
 
