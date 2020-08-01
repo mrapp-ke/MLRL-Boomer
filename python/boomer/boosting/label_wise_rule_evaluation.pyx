@@ -20,6 +20,9 @@ cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
         self.default_rule_evaluation = new LabelWiseDefaultRuleEvaluationImpl(loss_function.loss_function,
                                                                               l2_regularization_weight)
 
+    def __dealloc__(self):
+        del self.default_rule_evaluation
+
     cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
         cdef AbstractDefaultRuleEvaluation* default_rule_evaluation = self.default_rule_evaluation
         return default_rule_evaluation.calculateDefaultPrediction(label_matrix.label_matrix)
