@@ -10,10 +10,9 @@ from ast import literal_eval
 from typing import List
 
 import numpy as np
-from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
+from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix, DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
-from boomer.common.rule_induction import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.rules import ModelBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion

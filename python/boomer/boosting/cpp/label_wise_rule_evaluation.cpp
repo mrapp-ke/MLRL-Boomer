@@ -25,7 +25,7 @@ DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPredictio
     // The number of labels
     intp numLabels = labelMatrix->numLabels_;
     // An array that stores the scores that are predicted by the default rule
-    float64* predictedScores = arrays::mallocFloat64(numLabels);
+    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
 
     for (intp c = 0; c < numLabels; c++) {
         float64 sumOfGradients = 0;

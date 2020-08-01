@@ -7,7 +7,6 @@
 #pragma once
 
 #include <cstdint>
-#include <stdlib.h>
 
 typedef uint8_t uint8;
 typedef uint32_t uint32;
@@ -17,27 +16,6 @@ typedef double float64;
 
 
 namespace arrays {
-
-    /**
-     * Allocates and returns a new C-contiguous array of type `float64`, shape `(numElements)`.
-     *
-     * @param numElements   The number of elements in the array
-     * @return              A pointer to the array that has been allocated
-     */
-    static inline float64* mallocFloat64(intp numElements) {
-        return (float64*) malloc(numElements * sizeof(float64));
-    }
-
-    /**
-     * Allocates and returns a new C-contiguous array of type `float64`, shape `(numRows, numCols)`.
-     *
-     * @param numRows   The number of rows in the array
-     * @param numCols   The number of columns in the array
-     * @return          A pointer to the array that has been allocated
-     */
-    static inline float64* mallocFloat64(intp numRows, intp numCols) {
-        return (float64*) malloc(numRows * numCols * sizeof(float64));
-    }
 
     /**
      * Sets all elements in an one-dimensional array to zero.
