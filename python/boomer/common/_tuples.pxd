@@ -16,6 +16,15 @@ cdef struct IndexedFloat32:
 
 
 """
+A struct that contains a pointer to a C-array of type `IndexedFloat32`. The attribute `num_elements` specifies how many
+elements the array contains.
+"""
+cdef struct IndexedFloat32Array:
+    IndexedFloat32* data
+    intp num_elements
+
+
+"""
 A struct that stores a value of type float64 and a corresponding index that refers to the (original) position of the
 value in an array.
 """

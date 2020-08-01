@@ -4,13 +4,6 @@
 Provides classes that allow to calculate the predictions of default rules, as well as Cython wrappers for C++ classes
 that allow to calculate the predictions of rules.
 """
-from boomer.common._arrays cimport get_index
-from boomer.boosting._math cimport l2_norm_pow
-
-from libc.stdlib cimport malloc
-from libc.math cimport pow
-
-from libcpp.pair cimport pair
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):

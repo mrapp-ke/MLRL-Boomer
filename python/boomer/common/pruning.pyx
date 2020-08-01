@@ -19,7 +19,7 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Statistics statistics, HeadRefinement head_refinement):
@@ -29,8 +29,8 @@ cdef class Pruning:
         "prune set".
 
         :param sorted_feature_values_map:   A pointer to a map that maps feature indices to structs of type
-                                            `IndexedArray`, storing the indices of all training examples, as well as
-                                            their values for the respective feature, sorted in ascending order by the
+                                            `IndexedFloat32Array`, storing the indices of all training examples, as well
+                                            as their values for the respective feature, sorted in ascending order by the
                                             feature values
         :param conditions:                  A list that contains the conditions of the existing rule
         :param covered_examples_mask:       An array of dtype uint, shape `(num_examples)` that is used to keep track of
@@ -58,7 +58,7 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedArray*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
                                          uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
                                          Statistics statistics, HeadRefinement head_refinement):
@@ -72,7 +72,7 @@ cdef class IREP(Pruning):
         cdef Comparator comparator
         cdef float32 threshold
         cdef float64 current_quality_score
-        cdef IndexedArray* indexed_array
+        cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
         cdef intp feature_index, num_indexed_values, i, n, r, start, end
         cdef bint uncovered
