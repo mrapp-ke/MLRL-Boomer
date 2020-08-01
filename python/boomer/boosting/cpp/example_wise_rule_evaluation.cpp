@@ -3,6 +3,7 @@
 #include "blas.h"
 #include "lapack.h"
 #include <cstddef>
+#include <stdlib.h>
 #include <math.h>
 
 using namespace boosting;
@@ -29,17 +30,17 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     // The number of hessians
     intp numHessians = linalg::triangularNumber(numLabels);
     // An array that stores the gradients for an example
-    float64* gradients = arrays::mallocFloat64(numLabels);
+    float64* gradients = (float64*) malloc(numLabels * sizeof(float64));
     // An array that stores the sums of gradients
-    float64* sumsOfGradients = arrays::mallocFloat64(numLabels);
+    float64* sumsOfGradients = (float64*) malloc(numLabels * sizeof(float64));
     arrays::setToZeros(sumsOfGradients, numLabels);
     // An array that stores the Hessians for an example
-    float64* hessians = arrays::mallocFloat64(numHessians);
+    float64* hessians = (float64*) malloc(numHessians * sizeof(float64));
     // An array that stores the sums of Hessians
-    float64* sumsOfHessians = arrays::mallocFloat64(numHessians);
+    float64* sumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
     arrays::setToZeros(sumsOfHessians, numHessians);
     // An array of zeros that represents the initially predicted scores
-    float64* defaultPredictions = arrays::mallocFloat64(numLabels);
+    float64* defaultPredictions = (float64*) malloc(numLabels * sizeof(float64));
     arrays::setToZeros(defaultPredictions, numLabels);
 
     for (intp r = 0; r < numExamples; r++) {
@@ -84,7 +85,7 @@ void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* lab
     // To avoid array recreation each time this function is called, the array for storing the quality scores is only
     // initialized if it has not been initialized yet
     if (qualityScores == NULL) {
-        qualityScores = arrays::mallocFloat64(numPredictions);
+        qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
         prediction->qualityScores_ = qualityScores;
     }
 
@@ -133,8 +134,8 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
 
     if (uncovered) {
         intp numHessians = linalg::triangularNumber(numPredictions);
-        gradients = arrays::mallocFloat64(numPredictions);
-        hessians = arrays::mallocFloat64(numHessians);
+        gradients = (float64*) malloc(numPredictions * sizeof(float64));
+        hessians = (float64*) malloc(numPredictions * sizeof(float64));
         intp i = 0;
 
         for (intp c = 0; c < numPredictions; c++) {

@@ -6,7 +6,7 @@ dsysv_t dsysvFunction;
 
 float64* dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64 l2RegularizationWeight) {
     // Create the array A by copying the array `coefficients`. DSYSV requires the array A to be Fortran-contiguous...
-    float64* a = arrays::mallocFloat64(n, n);
+    float64* a = (float64*) malloc(n * n * sizeof(float64));
     int i = 0;
 
     for (int c = 0; c < n; c++) {
@@ -26,7 +26,7 @@ float64* dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64
 
     // Create the array B by copying the array `invertedOrdinates` and inverting its elements. It will be overwritten
     // with the solution to the system of linear equations. DSYSV requires the array B to be Fortran-contiguous...
-    float64* b = arrays::mallocFloat64(n);
+    float64* b = (float64*) malloc(n * sizeof(float64));
 
     for (int i = 0; i < n; i++) {
         b[i] = -invertedOrdinates[i];

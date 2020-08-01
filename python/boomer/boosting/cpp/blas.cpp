@@ -1,5 +1,7 @@
 #include "blas.h"
 
+#include <stdlib.h>
+
 ddot_t ddotFunction;
 dspmv_t dspmvFunction;
 
@@ -21,7 +23,7 @@ float64* dspmv(float64* a, float64* x, int n) {
     // A scalar to be multiplied with vector y
     double beta = 0;
     // An array of type `float64`, shape `(n)`. Will contain the result of A * x
-    float64* y = arrays::mallocFloat64(n);
+    float64* y = (float64*) malloc(n * sizeof(float64));
     // The increment for the elements of y
     int incy = 1;
     // Invoke the DSPMV routine...
