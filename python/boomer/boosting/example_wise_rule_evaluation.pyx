@@ -14,8 +14,7 @@ from scipy.linalg.cython_lapack cimport dsysv
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     """
-    Allows to calculate the predictions of a default rule such that they minimize a loss function that is applied
-    example-wise.
+    A wrapper for the C++ class `ExampleWiseDefaultRuleEvaluationImpl`.
     """
 
     def __cinit__(self, ExampleWiseLoss loss_function, float64 l2_regularization_weight):
@@ -24,55 +23,20 @@ cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by the default rule
         """
-        self.loss_function = loss_function
-        self.l2_regularization_weight = l2_regularization_weight
+        self.default_rule_evaluation = new ExampleWiseDefaultRuleEvaluationImpl(loss_function.loss_function,
+                                                                                l2_regularization_weight)
+
+    def __dealloc__(self):
+        del self.default_rule_evaluation
 
     cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
-        # Class members
-        cdef ExampleWiseLoss loss_function = self.loss_function
-        cdef float64 l2_regularization_weight = self.l2_regularization_weight
-        # The number of examples
-        cdef intp num_examples = label_matrix.num_examples
-        # The number of gradients
-        cdef intp num_gradients = label_matrix.num_labels
-        # The number of Hessians
-        cdef intp num_hessians = triangular_number(num_gradients)
-        # An array that stores the gradients for an example
-        cdef float64[::1] gradients = array_float64(num_gradients)
-        # An array that stores the sum of gradients
-        cdef float64[::1] sums_of_gradients = array_float64(num_gradients)
-        sums_of_gradients[:] = 0
-        # An array that stores the Hessians for an example
-        cdef float64[::1] hessians = array_float64(num_hessians)
-        # An array that stores the sum of Hessians
-        cdef float64[::1] sums_of_hessians = array_float64(num_hessians)
-        sums_of_hessians[:] = 0
-        # An array of zeros that represents the initially predicted scores
-        cdef float64[::1] default_predictions = array_float64(num_gradients)
-        default_predictions[:] = 0
-        # Temporary variables
-        cdef intp r, c
-
-        for r in range(num_examples):
-            # Calculate the gradients and Hessians for the current example...
-            loss_function.calculate_gradients_and_hessians(label_matrix, r, &default_predictions[0], gradients,
-                                                           hessians)
-
-            for c in range(num_gradients):
-                sums_of_gradients[c] += gradients[c]
-
-            for c in range(num_hessians):
-                sums_of_hessians[c] += hessians[c]
-
-        # Calculate the scores to be predicted by the default rule by solving the system of linear equations...
-        cdef float64* predicted_scores = __dsysv_float64(sums_of_hessians, sums_of_gradients, l2_regularization_weight)
-        return new DefaultPrediction(num_gradients, predicted_scores)
+        cdef AbstractDefaultRuleEvaluation* default_rule_evaluation = self.default_rule_evaluation
+        return default_rule_evaluation.calculateDefaultPrediction(label_matrix.label_matrix)
 
 
 cdef class ExampleWiseRuleEvaluation:
     """
-    Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a
-    loss function that is applied example-wise.
+    A wrapper for the C++ class `ExampleWiseRuleEvaluationImpl`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):
