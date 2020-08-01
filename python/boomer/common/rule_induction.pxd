@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float32
-from boomer.common._tuples cimport IndexedFloat32
+from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32Array
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.input_data cimport LabelMatrix
@@ -11,15 +11,6 @@ from boomer.common.head_refinement cimport HeadRefinement
 from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
 
 from libcpp.unordered_map cimport unordered_map
-
-
-"""
-A struct that contains a pointer to a C-array of type `IndexedFloat32`. The attribute `num_elements` specifies how many
-elements the array contains.
-"""
-cdef struct IndexedFloat32Array:
-    IndexedFloat32* data
-    intp num_elements
 
 
 """

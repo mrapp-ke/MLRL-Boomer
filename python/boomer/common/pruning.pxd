@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport intp, uint32
+from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common.rules cimport Condition
-from boomer.common.rule_induction cimport IndexedFloat32Array
 from boomer.common.statistics cimport Statistics
 from boomer.common.head_refinement cimport HeadRefinement
 
