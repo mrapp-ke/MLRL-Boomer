@@ -19,15 +19,13 @@ float64* Blas::dspmv(float64* a, float64* x, int n) {
     char* uplo = "U";
     // A scalar to be multiplied with the matrix A
     double alpha = 1;
-    // The increment for the elements of x
-    int incx = 1;
+    // The increment for the elements of x and y
+    int inc = 1;
     // A scalar to be multiplied with vector y
     double beta = 0;
     // An array of type `float64`, shape `(n)`. Will contain the result of A * x
     float64* y = (float64*) malloc(n * sizeof(float64));
-    // The increment for the elements of y
-    int incy = 1;
     // Invoke the DSPMV routine...
-    dspmvFunction_(uplo, &n, &alpha, a, x, &incx, &beta, y, &incy);
+    dspmvFunction_(uplo, &n, &alpha, a, x, &inc, &beta, y, &inc);
     return y;
 }
