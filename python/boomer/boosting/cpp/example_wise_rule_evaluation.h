@@ -8,6 +8,7 @@
 
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/rule_evaluation.h"
+#include "blas.h"
 #include "lapack.h"
 #include "example_wise_losses.h"
 
@@ -58,15 +59,19 @@ namespace boosting {
 
             Lapack* lapack_;
 
+            Blas* blas_;
+
         public:
 
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param lapack:                   A pointer to an object of type `Lapack` that allows to execute different
+             * @param blas                      A pointer to an object of type `Blas` that allows to execute different
+             *                                  BLAS routines
+             * @param lapack                    A pointer to an object of type `Lapack` that allows to execute different
              *                                  LAPACK routines
              */
-            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Lapack* lapack);
+            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Blas* blas, Lapack* lapack);
 
             ~ExampleWiseRuleEvaluationImpl();
 

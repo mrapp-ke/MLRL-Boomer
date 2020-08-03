@@ -63,12 +63,15 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     return new DefaultPrediction(numLabels, predictedScores);
 }
 
-ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Lapack* lapack) {
+ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Blas* blas,
+                                                             Lapack* lapack) {
     l2RegularizationWeight_ = l2RegularizationWeight;
+    blas_ = blas;
     lapack_ = lapack;
 }
 
 ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
+    delete blas_;
     delete lapack_;
 }
 
@@ -165,9 +168,9 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
     prediction->predictedScores_ = predictedScores;
 
     // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-    float64 overallQualityScore = ddot(predictedScores, gradients, numPredictions);
-    float64* tmp = dspmv(hessians, predictedScores, numPredictions);
-    overallQualityScore += 0.5 * ddot(predictedScores, tmp, numPredictions);
+    float64 overallQualityScore = blas_->ddot(predictedScores, gradients, numPredictions);
+    float64* tmp = blas_->dspmv(hessians, predictedScores, numPredictions);
+    overallQualityScore += 0.5 * blas_->ddot(predictedScores, tmp, numPredictions);
 
     // Add the L2 regularization term to the overall quality score...
     overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);
