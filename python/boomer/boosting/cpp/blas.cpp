@@ -14,7 +14,7 @@ float64 Blas::ddot(float64* x, float64* y, int n) {
     return ddotFunction_(&n, x, &inc, y, &inc);
 }
 
-float64* Blas::dspmv(float64* a, float64* x, int n) {
+void Blas::dspmv(float64* a, float64* x, float64* output, int n) {
     // "U" if the upper-right triangle of A should be used, "L" if the lower-left triangle should be used
     char* uplo = "U";
     // A scalar to be multiplied with the matrix A
@@ -23,9 +23,6 @@ float64* Blas::dspmv(float64* a, float64* x, int n) {
     int inc = 1;
     // A scalar to be multiplied with vector y
     double beta = 0;
-    // An array of type `float64`, shape `(n)`. Will contain the result of A * x
-    float64* y = (float64*) malloc(n * sizeof(float64));
     // Invoke the DSPMV routine...
-    dspmvFunction_(uplo, &n, &alpha, a, x, &inc, &beta, y, &inc);
-    return y;
+    dspmvFunction_(uplo, &n, &alpha, a, x, &inc, &beta, output, &inc);
 }

@@ -53,12 +53,20 @@ class Lapack {
          * @param invertedOrdinates         An array of dtype `float64`, shape `(n)`, representing the inverted
          *                                  ordinates, i.e., the ordinates multiplied by -1. The sign of the elements in
          *                                  this array will be inverted to when creating the matrix B
+         * @param tmpArray1                 A pointer to an array of type `float64`, shape `(n, n)` that will be used to
+         *                                  temporarily store values computed by the DSYSV routine. May contain
+         *                                  arbitrary values
+         * @param tmpArray2                 A pointer to an array of type `int`, shape `(n)` that will be used to
+         *                                  temporarily store values computed by the DSYSV routine. May contain
+         *                                  arbitrary values
+         * @param output                    A pointer to an array of type `float64`, shape `(n)`, the solution of the
+         *                                  system of linear equations should be written to. May contain arbitrary
+         *                                  values
          * @param n                         The number of equations
          * @param l2RegularizationWeight    A scalar of dtype `float64`, representing the weight of the L2
          *                                  regularization
-         * @return                          A pointer to an array of type `float64`, shape `(n)`, representing the
-         *                                  solution to the system of linear equations
          */
-        float64* dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64 l2RegularizationWeight);
+        void dsysv(float64* coefficients, float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
+                   float64* output, int n, float64 l2RegularizationWeight);
 
 };

@@ -61,6 +61,16 @@ namespace boosting {
 
             Blas* blas_;
 
+            float64* dsysvTmpArray1_;
+
+            int* dsysvTmpArray2_;
+
+            float64* dspmvTmpArray_;
+
+            float64* tmpGradients_;
+
+            float64* tmpHessians_;
+
         public:
 
             /**
