@@ -6,12 +6,14 @@ Lapack::Lapack(dsysv_t dsysvFunction) {
     dsysvFunction_ = dsysvFunction;
 }
 
-float64* Lapack::dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64 l2RegularizationWeight) {
-    // Create the array A by copying the array `coefficients`. DSYSV requires the array A to be Fortran-contiguous...
-    float64* a = (float64*) malloc(n * n * sizeof(float64));
+void Lapack::dsysv(float64* coefficients, float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
+                   float64* output, int n, float64 l2RegularizationWeight) {
+    // Copy the values in the arrays `invertedOrdinates` and `coefficients` to the arrays `output` and `tmpArray1`,
+    // respectively...
     int i = 0;
 
     for (int c = 0; c < n; c++) {
+        output[c] = -invertedOrdinates[c];
         int offset = c * n;
 
         for (int r = 0; r < c + 1; r++) {
@@ -21,17 +23,9 @@ float64* Lapack::dsysv(float64* coefficients, float64* invertedOrdinates, int n,
                 tmp += l2RegularizationWeight;
             }
 
-            a[offset + r] = tmp;
+            tmpArray1[offset + r] = tmp;
             i++;
         }
-    }
-
-    // Create the array B by copying the array `invertedOrdinates` and inverting its elements. It will be overwritten
-    // with the solution to the system of linear equations. DSYSV requires the array B to be Fortran-contiguous...
-    float64* b = (float64*) malloc(n * sizeof(float64));
-
-    for (int i = 0; i < n; i++) {
-        b[i] = -invertedOrdinates[i];
     }
 
     // "U" if the upper-right triangle of A should be used, "L" if the lower-left triangle should be used
@@ -43,23 +37,16 @@ float64* Lapack::dsysv(float64* coefficients, float64* invertedOrdinates, int n,
     // We must query the optimal value for the argument `lwork` (the length of the working array `work`)...
     double worksize;
     int lwork = -1;  // -1 means that the optimal value should be queried
-    dsysvFunction_(uplo, &n, &nrhs, a, &n, (int*) 0, b, &n, &worksize, &lwork, &info);
+    dsysvFunction_(uplo, &n, &nrhs, tmpArray1, &n, (int*) 0, output, &n, &worksize, &lwork, &info);
     lwork = (int) worksize;
     // Allocate working arrays...
     double* work = (double*) malloc(lwork * sizeof(double));
-    int* ipiv = (int*) malloc(n * sizeof(int));
     // Run the DSYSV solver...
-    dsysvFunction_(uplo, &n, &nrhs, a, &n, ipiv, b, &n, work, &lwork, &info);
+    dsysvFunction_(uplo, &n, &nrhs, tmpArray1, &n, tmpArray2, output, &n, work, &lwork, &info);
     // Free the allocated memory...
-    free(a);
-    free(ipiv);
     free(work);
 
-    if (info == 0) {
-        // The solution has been computed successfully...
-        return b;
-    } else {
+    if (info != 0) {
         // TODO An error occurred...
-        return b;
     }
 }

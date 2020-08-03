@@ -41,13 +41,17 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     // An array that stores the sums of Hessians
     float64* sumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
     arrays::setToZeros(sumsOfHessians, numHessians);
-    // An array of zeros that represents the initially predicted scores
-    float64* defaultPredictions = (float64*) malloc(numLabels * sizeof(float64));
-    arrays::setToZeros(defaultPredictions, numLabels);
+    // An array of zeros that stores the scores to be predicted by the default rule
+    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
+    arrays::setToZeros(predictedScores, numLabels);
+    // Arrays that are used to temporarily store values that are computed by LAPACK's DSYSV routine
+    float64* dsysvTmpArray1 = (float64*) malloc(numLabels * numLabels * sizeof(float64));
+    int* dsysvTmpArray2 = (int*) malloc(numLabels * sizeof(int));
+
 
     for (intp r = 0; r < numExamples; r++) {
         // Calculate the gradients and Hessians for the current example...
-        lossFunction->calculateGradientsAndHessians(labelMatrix, r, defaultPredictions, gradients, hessians);
+        lossFunction->calculateGradientsAndHessians(labelMatrix, r, predictedScores, gradients, hessians);
 
         for (intp c = 0; c < numLabels; c++) {
             sumsOfGradients[c] += gradients[c];
@@ -59,7 +63,17 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     }
 
     // Calculate the scores to be predicted by the default rule by solving the system of linear equations...
-    float64* predictedScores = lapack_->dsysv(sumsOfHessians, sumsOfGradients, numLabels, l2RegularizationWeight);
+    lapack_->dsysv(sumsOfHessians, sumsOfGradients, dsysvTmpArray1, dsysvTmpArray2, predictedScores, numLabels,
+                   l2RegularizationWeight);
+
+    // Free allocated memory...
+    free(gradients);
+    free(sumsOfGradients);
+    free(hessians);
+    free(sumsOfHessians);
+    free(dsysvTmpArray1);
+    free(dsysvTmpArray2);
+
     return new DefaultPrediction(numLabels, predictedScores);
 }
 
@@ -68,11 +82,21 @@ ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2Regulariz
     l2RegularizationWeight_ = l2RegularizationWeight;
     blas_ = blas;
     lapack_ = lapack;
+    dsysvTmpArray1_ = NULL;
+    dsysvTmpArray2_ = NULL;
+    dspmvTmpArray_ = NULL;
+    tmpGradients_ = NULL;
+    tmpHessians_ = NULL;
 }
 
 ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
     delete blas_;
     delete lapack_;
+    free(dsysvTmpArray1_);
+    free(dsysvTmpArray2_);
+    free(dspmvTmpArray_);
+    free(tmpGradients_);
+    free(tmpHessians_);
 }
 
 void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
@@ -139,13 +163,39 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predicted_scores` and `quality_scores`
     intp numPredictions = prediction->numPredictions_;
+    // Arrays that are used to temporarily store values that are computed by the DSYSV or DSPMV routine
+    float64* dsysvTmpArray1 = dsysvTmpArray1_;
+    int* dsysvTmpArray2 = dsysvTmpArray2_;
+    float64* dspmvTmpArray = dspmvTmpArray_;
+
+    // To avoid array recreation each time this function is called, the arrays for temporarily storing values that are
+    // computed by the DSYSV or DSPMV routine are only initialized if they have not been initialized yet
+    if (dsysvTmpArray1 == NULL) {
+        dsysvTmpArray1 = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
+        dsysvTmpArray1_ = dsysvTmpArray1;
+        dsysvTmpArray2 = (int*) malloc(numPredictions * sizeof(int));
+        dsysvTmpArray2_ = dsysvTmpArray2;
+        dspmvTmpArray = (float64*) malloc(numPredictions * sizeof(float64));
+        dspmvTmpArray_ = dspmvTmpArray;
+    }
+
     float64* gradients;
     float64* hessians;
 
     if (uncovered) {
-        gradients = (float64*) malloc(numPredictions * sizeof(float64));
-        hessians = (float64*) malloc(numPredictions * sizeof(float64));
+        gradients = tmpGradients_;
+        hessians = tmpHessians_;
         intp i = 0;
+
+        // To avoid array recreation each time this function is called, the arrays for storing the gradients and
+        // hessians are only initialized if they have not been initialized yet
+        if (gradients == NULL) {
+            gradients = (float64*) malloc(numPredictions * sizeof(float64));
+            tmpGradients_ = gradients;
+            intp numHessians = linalg::triangularNumber(numPredictions);
+            hessians = (float64*) malloc(numHessians * sizeof(float64));
+            tmpHessians_ = hessians;
+        }
 
         for (intp c = 0; c < numPredictions; c++) {
             intp l = labelIndices != NULL ? labelIndices[c] : c;
@@ -164,13 +214,14 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
     }
 
     // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-    float64* predictedScores = lapack_->dsysv(hessians, gradients, numPredictions, l2RegularizationWeight);
-    prediction->predictedScores_ = predictedScores;
+    float64* predictedScores = prediction->predictedScores_;
+    lapack_->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, predictedScores, numPredictions,
+                   l2RegularizationWeight);
 
     // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
     float64 overallQualityScore = blas_->ddot(predictedScores, gradients, numPredictions);
-    float64* tmp = blas_->dspmv(hessians, predictedScores, numPredictions);
-    overallQualityScore += 0.5 * blas_->ddot(predictedScores, tmp, numPredictions);
+    blas_->dspmv(hessians, predictedScores, dspmvTmpArray, numPredictions);
+    overallQualityScore += 0.5 * blas_->ddot(predictedScores, dspmvTmpArray, numPredictions);
 
     // Add the L2 regularization term to the overall quality score...
     overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);

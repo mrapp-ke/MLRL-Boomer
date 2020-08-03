@@ -52,13 +52,13 @@ class Blas {
          * `(n)`. The matrix A must be supplied in packed form, i.e., as an array with shape `(n * (n + 1) / 2 )` that
          * consists of the columns of A appended to each other and omitting all unspecified elements.
          *
-         * @param a A pointer to an array of type `float64`, shape `(n * (n + 1) / 2)`, representing the elements in the
-         *          upper-right triangle of the matrix A in a packed form
-         * @param x A pointer to an array of type `float64`, shape `(n)`, representing the elements in the array x
-         * @param n The number of elements in the arrays `a` and `x`
-         * @return  A pointer to an array of type `float64`, shape `(n)`, representing the result of the matrix-vector
-         *          operation A * x
+         * @param a         A pointer to an array of type `float64`, shape `(n * (n + 1) / 2)`, representing the
+         *                  elements in the upper-right triangle of the matrix A in a packed form
+         * @param x         A pointer to an array of type `float64`, shape `(n)`, representing the elements in the array x
+         * @param output    A pointer to an array of type `float64`, shape `(n)`, the result of the matrix-vector
+         *                  operation A * x should be written to. May contain arbitrary values
+         * @param n         The number of elements in the arrays `a` and `x`
          */
-        float64* dspmv(float64* a, float64* x, int n);
+        void dspmv(float64* a, float64* x, float64* output, int n);
 
 };

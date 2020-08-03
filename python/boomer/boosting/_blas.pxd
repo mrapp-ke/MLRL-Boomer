@@ -27,7 +27,7 @@ cdef extern from "cpp/blas.h":
 
         float64 ddot(float64* x, float64* y, int n) nogil
 
-        float64* dspmv(float64* a, float64* x, int n) nogil
+        void dspmv(float64* a, float64* x, float64* output, int n) nogil
 
 
 cdef inline Blas* init_blas():
