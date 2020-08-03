@@ -5,7 +5,6 @@ Provides classes that allow to calculate the predictions of rules, as well as co
 they minimize a loss function that is applied example-wise.
 """
 from boomer.common._arrays cimport array_float64, fortran_matrix_float64
-from boomer.boosting._math cimport triangular_number
 
 from libc.stdlib cimport malloc, free
 
