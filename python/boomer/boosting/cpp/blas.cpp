@@ -1,5 +1,4 @@
 #include "blas.h"
-#include <stdlib.h>
 
 
 Blas::Blas(ddot_t ddotFunction, dspmv_t dspmvFunction) {
