@@ -30,6 +30,6 @@ cdef inline Lapack* init_lapack():
     """
     Creates a new wrapper for executing different LAPACK routines.
 
-    :return: A pointer an object of type `Lapack` that allow to execute different LAPACK routines
+    :return: A pointer an object of type `Lapack` that allows to execute different LAPACK routines
     """
     return new Lapack(dsysv)
