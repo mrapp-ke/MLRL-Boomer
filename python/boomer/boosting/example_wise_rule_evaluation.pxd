@@ -18,7 +18,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
         ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
                                              float64 l2RegularizationWeight, Lapack* lapack) except +
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
 
 
     cdef cppclass ExampleWiseRuleEvaluationImpl:
@@ -32,11 +32,12 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
         void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                           float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                           float64* sumsOfHessians, bool uncovered,
-                                          LabelWisePrediction* prediction) nogil
+                                          LabelWisePrediction* prediction) nogil except +
 
         void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                             float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                            float64* sumsOfHessians, bool uncovered, Prediction* prediction) nogil
+                                            float64* sumsOfHessians, bool uncovered,
+                                            Prediction* prediction) nogil except +
 
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
