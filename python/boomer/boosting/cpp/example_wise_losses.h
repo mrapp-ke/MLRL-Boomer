@@ -31,10 +31,10 @@ namespace boosting {
              * @param predictedScore    A pointer to an array of type `float64`, shape `(num_labels)`, representing the
              *                          scores that are predicted for each label of the respective example
              * @param gradients         A pointer to an array of type `float64`, shape `(num_labels)`, the gradients
-             *                          that have been calculated should be written to
+             *                          that have been calculated should be written to. May contain arbitrary values
              * @param hessians          A pointer to an array of type `float64`, shape
              *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
-             *                          should be written to
+             *                          should be written to. May contain arbitrary values
              */
             virtual void calculateGradientsAndHessians(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
                                                        const float64* predictedScores, float64* gradients,
