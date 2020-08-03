@@ -1,10 +1,12 @@
 #include "lapack.h"
 #include <stdlib.h>
 
-dsysv_t dsysvFunction;
 
+Lapack::Lapack(dsysv_t dsysvFunction) {
+    dsysvFunction_ = dsysvFunction;
+}
 
-float64* dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64 l2RegularizationWeight) {
+float64* Lapack::dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64 l2RegularizationWeight) {
     // Create the array A by copying the array `coefficients`. DSYSV requires the array A to be Fortran-contiguous...
     float64* a = (float64*) malloc(n * n * sizeof(float64));
     int i = 0;
@@ -41,13 +43,13 @@ float64* dsysv(float64* coefficients, float64* invertedOrdinates, int n, float64
     // We must query the optimal value for the argument `lwork` (the length of the working array `work`)...
     double worksize;
     int lwork = -1;  // -1 means that the optimal value should be queried
-    dsysvFunction(uplo, &n, &nrhs, a, &n, (int*) 0, b, &n, &worksize, &lwork, &info);
+    dsysvFunction_(uplo, &n, &nrhs, a, &n, (int*) 0, b, &n, &worksize, &lwork, &info);
     lwork = (int) worksize;
     // Allocate working arrays...
     double* work = (double*) malloc(lwork * sizeof(double));
     int* ipiv = (int*) malloc(n * sizeof(int));
     // Run the DSYSV solver...
-    dsysvFunction(uplo, &n, &nrhs, a, &n, ipiv, b, &n, work, &lwork, &info);
+    dsysvFunction_(uplo, &n, &nrhs, a, &n, ipiv, b, &n, work, &lwork, &info);
     // Free the allocated memory...
     free(a);
     free(ipiv);
