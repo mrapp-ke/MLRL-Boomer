@@ -4,6 +4,7 @@
 Provides classes that allow to calculate the predictions of rules, as well as corresponding quality scores, such that
 they minimize a loss function that is applied example-wise.
 """
+from boomer.boosting._blas cimport init_blas
 from boomer.boosting._lapack cimport init_lapack
 
 
@@ -40,8 +41,9 @@ cdef class ExampleWiseRuleEvaluation:
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
                                          to be predicted by rules
         """
+        cdef Blas* blas = init_blas()
         cdef Lapack* lapack = init_lapack()
-        self.rule_evaluation = new ExampleWiseRuleEvaluationImpl(l2_regularization_weight, lapack)
+        self.rule_evaluation = new ExampleWiseRuleEvaluationImpl(l2_regularization_weight, blas, lapack)
 
     cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
                                               const float64[::1] total_sums_of_gradients,
