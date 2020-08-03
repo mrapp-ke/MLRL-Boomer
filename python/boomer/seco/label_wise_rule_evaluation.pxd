@@ -13,7 +13,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco":
 
         # Functions:
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
 
 
     cdef cppclass LabelWiseRuleEvaluationImpl:
@@ -27,7 +27,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco":
         void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
                                           const float64* confusionMatricesTotal, const float64* confusionMatricesSubset,
                                           const float64* confusionMatricesCovered, bool uncovered,
-                                          LabelWisePrediction* prediction) nogil
+                                          LabelWisePrediction* prediction) nogil except +
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):

@@ -1,5 +1,7 @@
 #include "lapack.h"
 #include <stdlib.h>
+#include <string>
+#include <stdexcept>
 
 
 Lapack::Lapack(dsysv_t dsysvFunction) {
@@ -47,6 +49,6 @@ void Lapack::dsysv(float64* coefficients, float64* invertedOrdinates, float64* t
     free(work);
 
     if (info != 0) {
-        // TODO An error occurred...
+        throw std::runtime_error(std::string("DSYSV terminated with non-zero info code: " + std::to_string(info)));
     }
 }

@@ -17,7 +17,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
 
         # Functions:
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
 
 
     cdef cppclass LabelWiseRuleEvaluationImpl:
@@ -31,7 +31,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
         void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                           float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                           float64* sumsOfHessians, bool uncovered,
-                                          LabelWisePrediction* prediction) nogil
+                                          LabelWisePrediction* prediction) nogil except +
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
