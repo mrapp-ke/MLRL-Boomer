@@ -2,7 +2,7 @@ from boomer.common._arrays cimport intp, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation, \
     AbstractDefaultRuleEvaluation
-from boomer.boosting.label_wise_losses cimport LabelWiseLoss, AbstractLabelWiseLoss
+from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
 
 from libcpp cimport bool
 
@@ -50,11 +50,3 @@ cdef class LabelWiseRuleEvaluation:
     # Attributes:
 
     cdef LabelWiseRuleEvaluationImpl* rule_evaluation
-
-    # Functions:
-
-    cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
-                                              const float64[::1] total_sums_of_gradients,
-                                              float64[::1] sums_of_gradients, const float64[::1] total_sums_of_hessians,
-                                              float64[::1] sums_of_hessians, bint uncovered,
-                                              LabelWisePrediction* prediction)
