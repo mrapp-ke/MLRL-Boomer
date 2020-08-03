@@ -10,7 +10,7 @@
 #include "../../common/cpp/arrays.h"
 
 // Defines a function pointer to the DSYSV routine
-typedef double (*dsysv_t)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info);
+typedef void (*dsysv_t)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info);
 extern dsysv_t dsysvFunction;
 
 

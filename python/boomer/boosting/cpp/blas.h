@@ -14,7 +14,7 @@ typedef double (*ddot_t)(int* n, double* dx, int* incx, double* dy, int* incy);
 extern ddot_t ddotFunction;
 
 // Defines a function pointer to the DSPMV routine
-typedef double* (*dspmv_t)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx, double* beta, double* y, int* incy);
+typedef void (*dspmv_t)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx, double* beta, double* y, int* incy);
 extern dspmv_t dspmvFunction;
 
 
