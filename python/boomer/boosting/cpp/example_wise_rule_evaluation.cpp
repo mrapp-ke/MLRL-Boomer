@@ -133,7 +133,6 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
     float64* hessians;
 
     if (uncovered) {
-        intp numHessians = linalg::triangularNumber(numPredictions);
         gradients = (float64*) malloc(numPredictions * sizeof(float64));
         hessians = (float64*) malloc(numPredictions * sizeof(float64));
         intp i = 0;
