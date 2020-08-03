@@ -3,6 +3,7 @@ from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction, DefaultRuleEvaluation, \
     AbstractDefaultRuleEvaluation
 from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, AbstractExampleWiseLoss
+from boomer.boosting._lapack cimport Lapack
 
 from libcpp cimport bool
 
@@ -14,7 +15,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
         # Constructors:
 
         ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
-                                             float64 l2RegularizationWeight) except +
+                                             float64 l2RegularizationWeight, Lapack* lapack) except +
 
         DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil
 
@@ -23,7 +24,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
 
         # Constructors:
 
-        ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight) except +
+        ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Lapack* lapack) except +
 
         # Functions:
 

@@ -8,6 +8,7 @@
 
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/rule_evaluation.h"
+#include "lapack.h"
 #include "example_wise_losses.h"
 
 
@@ -25,14 +26,19 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
+            Lapack* lapack_;
+
         public:
 
             /**
              * @param lossFunction              The loss function to be minimized
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by the default rule
+             * @param lapack                    A pointer to an object of type `Lapack` that allows to execute different
+             *                                  LAPACK routines
              */
-            ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction, float64 l2RegularizationWeight);
+            ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction, float64 l2RegularizationWeight,
+                                                 Lapack* lapack);
 
             ~ExampleWiseDefaultRuleEvaluationImpl();
 
@@ -50,13 +56,19 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
+            Lapack* lapack_;
+
         public:
 
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
+             * @param lapack:                   A pointer to an object of type `Lapack` that allows to execute different
+             *                                  LAPACK routines
              */
-            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight);
+            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Lapack* lapack);
+
+            ~ExampleWiseRuleEvaluationImpl();
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the

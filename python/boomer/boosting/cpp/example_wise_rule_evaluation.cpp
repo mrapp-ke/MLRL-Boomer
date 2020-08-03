@@ -10,13 +10,15 @@ using namespace boosting;
 
 
 ExampleWiseDefaultRuleEvaluationImpl::ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
-                                                                           float64 l2RegularizationWeight) {
+                                                                           float64 l2RegularizationWeight,
+                                                                           Lapack* lapack) {
     lossFunction_ = lossFunction;
     l2RegularizationWeight_ = l2RegularizationWeight;
+    lapack_ = lapack;
 }
 
 ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
-
+    delete lapack_;
 }
 
 DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
@@ -57,12 +59,17 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     }
 
     // Calculate the scores to be predicted by the default rule by solving the system of linear equations...
-    float64* predictedScores = dsysv(sumsOfHessians, sumsOfGradients, numLabels, l2RegularizationWeight);
+    float64* predictedScores = lapack_->dsysv(sumsOfHessians, sumsOfGradients, numLabels, l2RegularizationWeight);
     return new DefaultPrediction(numLabels, predictedScores);
 }
 
-ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
+ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Lapack* lapack) {
     l2RegularizationWeight_ = l2RegularizationWeight;
+    lapack_ = lapack;
+}
+
+ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
+    delete lapack_;
 }
 
 void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
@@ -154,7 +161,7 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
     }
 
     // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-    float64* predictedScores = dsysv(hessians, gradients, numPredictions, l2RegularizationWeight);
+    float64* predictedScores = lapack_->dsysv(hessians, gradients, numPredictions, l2RegularizationWeight);
     prediction->predictedScores_ = predictedScores;
 
     // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
