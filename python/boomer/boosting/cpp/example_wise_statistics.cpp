@@ -50,8 +50,8 @@ void ExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 w
 
     for (intp c = 0; c < numGradients_; c++) {
         intp l = labelIndices_ != NULL ? labelIndices_[c] : c;
-        intp triangularNumber = linalg::triangularNumber(l);
         sumsOfGradients_[c] += (weight * gradients_[offset + l]);
+        intp triangularNumber = linalg::triangularNumber(l);
 
         for (intp c2 = 0; c2 < c + 1; c2++) {
             intp l2 = triangularNumber + (labelIndices_ != NULL ? labelIndices_[c2] : c2);
