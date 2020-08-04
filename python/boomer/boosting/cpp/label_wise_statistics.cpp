@@ -5,13 +5,14 @@ using namespace boosting;
 
 LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation,
                                                              intp numPredictions, const intp* labelIndices,
-                                                             const float64* gradients,
+                                                             intp numLabels, const float64* gradients,
                                                              const float64* totalSumsOfGradients,
                                                              const float64* hessians,
                                                              const float64* totalSumsOfHessians) {
     ruleEvaluation_ = ruleEvaluation;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
+    numLabels_ = numLabels;
     gradients_ = gradients;
     totalSumsOfGradients_ = totalSumsOfGradients;
     float64* sumsOfGradients = (float64*) malloc(numPredictions * sizeof(float64));
