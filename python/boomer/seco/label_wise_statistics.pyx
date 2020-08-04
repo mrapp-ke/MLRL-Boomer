@@ -33,9 +33,9 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                             that corresponds to all examples that are covered by the previous refinement
                                             of a rule, for each label
         """
-        cdef intp num_labels = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
+        cdef intp num_predictions = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
         cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
-        self.refinement_search = new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_labels,
+        self.refinement_search = new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions,
                                                                    &label_indices[0], label_matrix.label_matrix,
                                                                    &uncovered_labels[0, 0], &minority_labels[0],
                                                                    &confusion_matrices_total[0, 0],

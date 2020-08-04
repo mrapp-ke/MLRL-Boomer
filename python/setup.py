@@ -19,6 +19,7 @@ sources = [
     'boomer/boosting/cpp/lapack.cpp',
     'boomer/boosting/cpp/label_wise_losses.cpp',
     'boomer/boosting/cpp/example_wise_losses.cpp',
+    'boomer/boosting/cpp/label_wise_statistics.cpp',
     'boomer/boosting/cpp/label_wise_rule_evaluation.cpp',
     'boomer/boosting/cpp/example_wise_rule_evaluation.cpp',
     'boomer/seco/cpp/heuristics.cpp',

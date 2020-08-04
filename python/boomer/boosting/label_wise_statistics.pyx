@@ -6,15 +6,12 @@ function that is applied label-wise.
 """
 from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 
-from libc.stdlib cimport malloc
-
 from libcpp.pair cimport pair
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     """
-    Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by
-    `LabelWiseStatistics`.
+    A wrapper for the C++ class `LabelWiseRefinementSearchImpl`.
     """
 
     def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation, const intp[::1] label_indices,
@@ -37,96 +34,28 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                         Hessians of all examples, which should be considered by the search, for each
                                         label
         """
-        self.rule_evaluation = rule_evaluation.rule_evaluation
-        self.label_indices = label_indices
-        self.gradients = gradients
-        self.total_sums_of_gradients = total_sums_of_gradients
-        cdef intp num_labels = total_sums_of_gradients.shape[0] if label_indices is None else label_indices.shape[0]
-        cdef float64[::1] sums_of_gradients = array_float64(num_labels)
-        sums_of_gradients[:] = 0
-        self.sums_of_gradients = sums_of_gradients
-        self.accumulated_sums_of_gradients = None
-        self.hessians = hessians
-        self.total_sums_of_hessians = total_sums_of_hessians
-        cdef float64[::1] sums_of_hessians = array_float64(num_labels)
-        sums_of_hessians[:] = 0
-        self.sums_of_hessians = sums_of_hessians
-        self.accumulated_sums_of_hessians = None
-        cdef float64* predicted_scores = <float64*>malloc(num_labels * sizeof(float64))
-        cdef float64* quality_scores = <float64*>malloc(num_labels * sizeof(float64))
-        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_labels, predicted_scores, quality_scores, 0)
-        self.prediction = prediction
+        cdef intp num_labels = total_sums_of_gradients.shape[0]
+        cdef intp num_predictions = total_sums_of_gradients.shape[0] if label_indices is None else label_indices.shape[0]
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        self.refinement_search = new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions,
+                                                                   label_indices_ptr, num_labels, &gradients[0, 0],
+                                                                   &total_sums_of_gradients[0], &hessians[0, 0],
+                                                                   &total_sums_of_hessians[0])
 
     def __dealloc__(self):
-        del self.prediction
+        del self.refinement_search
 
     cdef void update_search(self, intp statistic_index, uint32 weight):
-        # Class members
-        cdef const float64[:, ::1] gradients = self.gradients
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef const float64[:, ::1] hessians = self.hessians
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
-        cdef const intp[::1] label_indices = self.label_indices
-        # The number of labels considered by the current search
-        cdef intp num_labels = sums_of_gradients.shape[0]
-        # Temporary variables
-        cdef intp c, l
-
-        # For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight)
-        # to the current sum of gradients and Hessians...
-        for c in range(num_labels):
-            l = get_index(c, label_indices)
-            sums_of_gradients[c] += (weight * gradients[statistic_index, l])
-            sums_of_hessians[c] += (weight * hessians[statistic_index, l])
+        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
+        refinement_search.updateSearch(statistic_index, weight)
 
     cdef void reset_search(self):
-        # Class members
-        cdef float64[::1] sums_of_gradients = self.sums_of_gradients
-        cdef float64[::1] sums_of_hessians = self.sums_of_hessians
-        cdef float64[::1] accumulated_sums_of_gradients = self.accumulated_sums_of_gradients
-        # The number of labels considered by the current search
-        cdef intp num_labels = sums_of_gradients.shape[0]
-        # Temporary variables
-        cdef float64[::1] accumulated_sums_of_hessians
-        cdef intp c
-
-        # Update the arrays that store the accumulated sums of gradients and hessians...
-        if accumulated_sums_of_gradients is None:
-            accumulated_sums_of_gradients = array_float64(num_labels)
-            self.accumulated_sums_of_gradients = accumulated_sums_of_gradients
-            accumulated_sums_of_hessians = array_float64(num_labels)
-            self.accumulated_sums_of_hessians = accumulated_sums_of_hessians
-
-            for c in range(num_labels):
-                accumulated_sums_of_gradients[c] = sums_of_gradients[c]
-                sums_of_gradients[c] = 0
-                accumulated_sums_of_hessians[c] = sums_of_hessians[c]
-                sums_of_hessians[c] = 0
-        else:
-            accumulated_sums_of_hessians = self.accumulated_sums_of_hessians
-
-            for c in range(num_labels):
-                accumulated_sums_of_gradients[c] += sums_of_gradients[c]
-                sums_of_gradients[c] = 0
-                accumulated_sums_of_hessians[c] += sums_of_hessians[c]
-                sums_of_hessians[c] = 0
+        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
+        refinement_search.resetSearch()
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        # Class members
-        cdef LabelWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
-        cdef LabelWisePrediction* prediction = self.prediction
-        cdef const intp[::1] label_indices = self.label_indices
-        cdef const float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
-        cdef float64[::1] sums_of_gradients = self.accumulated_sums_of_gradients if accumulated else self.sums_of_gradients
-        cdef const float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
-        cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
-
-        # Calculate and return the predictions, as well as corresponding quality scores...
-        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
-        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &total_sums_of_gradients[0],
-                                                     &sums_of_gradients[0], &total_sums_of_hessians[0],
-                                                     &sums_of_hessians[0], uncovered, prediction)
-        return prediction
+        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
+        return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
 
 
 cdef class LabelWiseStatistics(GradientStatistics):
