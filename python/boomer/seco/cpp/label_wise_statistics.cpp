@@ -36,8 +36,8 @@ LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
 }
 
 void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
-    intp numTotalLabels = labelMatrix_->numLabels_;
-    intp offset = statisticIndex * numTotalLabels;
+    intp numLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numLabels;
 
     for (intp c = 0; c < numPredictions_; c++) {
         intp l = labelIndices_ != NULL ? labelIndices_[c] : c;

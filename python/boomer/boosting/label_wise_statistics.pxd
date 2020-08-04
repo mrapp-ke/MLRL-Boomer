@@ -1,38 +1,43 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common.input_data cimport LabelMatrix
-from boomer.common.statistics cimport RefinementSearch, DecomposableRefinementSearch
+from boomer.common.statistics cimport RefinementSearch, DecomposableRefinementSearch, AbstractRefinementSearch, \
+    AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics
 from boomer.boosting.label_wise_losses cimport LabelWiseLoss
 from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, LabelWiseRuleEvaluationImpl
 
+from libcpp cimport bool
+
+
+cdef extern from "cpp/label_wise_statistics.h" namespace "boosting":
+
+    cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
+
+        # Constructors:
+
+        LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
+                                      const intp* labelIndices, intp numLabels, const float64* gradients,
+                                      const float64* totalSumsOfGradients, const float64* hessians,
+                                      const float64* totalSumsOfHessians) except +
+
+        # Functions:
+
+        void updateSearch(intp statisticIndex, uint32 weight) nogil
+
+        void resetSearch() nogil
+
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
+
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluationImpl* rule_evaluation
-
-    cdef const intp[::1] label_indices
-
-    cdef const float64[:, ::1] gradients
-
-    cdef const float64[::1] total_sums_of_gradients
-
-    cdef float64[::1] sums_of_gradients
-
-    cdef float64[::1] accumulated_sums_of_gradients
-
-    cdef const float64[:, ::1] hessians
-
-    cdef const float64[::1] total_sums_of_hessians
-
-    cdef float64[::1] sums_of_hessians
-
-    cdef float64[::1] accumulated_sums_of_hessians
-
-    cdef LabelWisePrediction* prediction
+    cdef AbstractRefinementSearch* refinement_search
 
     # Functions:
 
