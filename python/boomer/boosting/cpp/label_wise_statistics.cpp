@@ -52,7 +52,22 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
 }
 
 void LabelWiseRefinementSearchImpl::resetSearch() {
-    // TODO
+    // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
+    if (accumulatedSumsOfGradients_ == NULL) {
+        accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions_);
+        accumulatedSumsOfHessians_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfHessians_, numPredictions_);
+    }
+
+    // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums of gradients
+    // and hessians...
+    for (intp c = 0; c < numPredictions_; c++) {
+        accumulatedSumsOfGradients_[c] += sumsOfGradients_[c];
+        sumsOfGradients_[c] = 0;
+        accumulatedSumsOfHessians_[c] += sumsOfHessians_[c];
+        sumsOfHessians_[c] = 0;
+    }
 }
 
 LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
