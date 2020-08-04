@@ -66,7 +66,7 @@ class Lapack {
          * @param l2RegularizationWeight    A scalar of dtype `float64`, representing the weight of the L2
          *                                  regularization
          */
-        void dsysv(float64* coefficients, float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
+        void dsysv(const float64* coefficients, const float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
                    float64* output, int n, float64 l2RegularizationWeight);
 
 };
