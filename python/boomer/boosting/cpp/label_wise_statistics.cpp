@@ -43,7 +43,7 @@ LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
 void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the current sum of gradients and Hessians...
-    intp offset = statistic_index * numLabels_;
+    intp offset = statisticIndex * numLabels_;
 
     for (intp c = 0; c < numPredictions_; c++) {
         intp l = labelIndices_ != NULL ? labelIndices_[c] : c;
