@@ -17,13 +17,26 @@ ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(ExampleWiseRule
     numLabels_ = numLabels;
     gradients_ = gradients;
     totalSumsOfGradients_ = totalSumsOfGradients;
+    float64* sumsOfGradients = (float64*) malloc(numPredictions * sizeof(float64));
+    arrays::setToZeros(sumsOfGradients, numPredictions);
+    sumsOfGradients_ = sumsOfGradients;
+    accumulatedSumsOfGradients_ = NULL;
     hessians_ = hessians;
     totalSumsOfHessians_ = totalSumsOfHessians;
+    intp numHessians = linalg::triangularNumber(numPredictions);
+    float64* sumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
+    arrays::setToZeros(sumsOfHessians, numHessians);
+    sumsOfHessians_ = sumsOfHessians;
+    accumulatedSumsOfHessians_ = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     prediction_ = new LabelWisePrediction(numPredictions, predictedScores, NULL, 0);
 }
 
 ExampleWiseRefinementSearchImpl::~ExampleWiseRefinementSearchImpl() {
+    free(sumsOfGradients_);
+    free(accumulatedSumsOfGradients_);
+    free(sumsOfHessians_);
+    free(accumulatedSumsOfHessians_);
     delete prediction_;
 }
 
