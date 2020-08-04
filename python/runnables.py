@@ -6,6 +6,7 @@
 Provides base classes for programs that can be configured via command line arguments.
 """
 import logging as log
+import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
@@ -16,6 +17,9 @@ from boomer.persistence import ModelPersistence
 from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from boomer.training import DataSet
 
+LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
+DATE_FORMAT = '%d.%m.%y %H:%M:%S'
+
 
 class Runnable(ABC):
     """
@@ -24,7 +28,17 @@ class Runnable(ABC):
 
     def run(self, parser: ArgumentParser):
         args = parser.parse_args()
-        log.basicConfig(level=args.log_level)
+
+        root = log.getLogger()
+        root.setLevel(args.log_level)
+
+        formatter = log.Formatter(LOG_FORMAT, DATE_FORMAT)
+
+        out_handler = log.StreamHandler(sys.stdout)
+        out_handler.setLevel(log.DEBUG)
+        out_handler.setFormatter(formatter)
+        root.addHandler(out_handler)
+
         log.info('Configuration: %s', args)
         self._run(args)
 
