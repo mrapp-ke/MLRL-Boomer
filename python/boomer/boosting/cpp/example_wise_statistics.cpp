@@ -1,4 +1,5 @@
 #include "example_wise_statistics.h"
+#include "linalg.h"
 #include <stdlib.h>
 #include <cstddef>
 
@@ -41,7 +42,22 @@ ExampleWiseRefinementSearchImpl::~ExampleWiseRefinementSearchImpl() {
 }
 
 void ExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
-    // TODO
+    // Add the gradients and Hessians of the example at the given index (weighted by the given weight) to the current
+    // sum of gradients and Hessians...
+    intp offset = statisticIndex * numLabels_;
+    intp i = 0;
+
+    for (intp c = 0; c < numPredictions_; c++) {
+        intp l = labelIndices_ != NULL ? labelIndices_[c] : c;
+        intp triangularNumber = linalg::triangularNumber(l)
+        sumsOfGradients_[c] += (weight * gradients_[offset + l]);
+
+        for (intp c2 = 0; c < c + 1; c++) {
+            intp l2 = triangularNumber + (labelIndices_ != NULL ? labelIndices_[c2] : c2);
+            sumsOfHessians_[i] += (weight * hessians_[offset + l2]);
+            i++;
+        }
+    }
 }
 
 void ExampleWiseRefinementSearchImpl::resetSearch() {
