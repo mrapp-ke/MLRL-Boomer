@@ -90,9 +90,8 @@ namespace boosting {
              *                              store the predicted scores and quality scores
              */
             void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
-                                              const float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                              const float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePrediction* prediction);
+                                              float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                              float64* sumsOfHessians, bool uncovered, LabelWisePrediction* prediction);
 
     };
 

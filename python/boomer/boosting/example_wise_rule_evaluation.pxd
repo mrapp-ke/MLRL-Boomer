@@ -1,16 +1,50 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport LabelMatrix
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction, DefaultRuleEvaluation
-from boomer.boosting.example_wise_losses cimport ExampleWiseLoss
+from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction, DefaultRuleEvaluation, \
+    AbstractDefaultRuleEvaluation
+from boomer.boosting._blas cimport Blas
+from boomer.boosting._lapack cimport Lapack
+from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
+
+from libcpp cimport bool
+
+
+cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
+
+    cdef cppclass ExampleWiseDefaultRuleEvaluationImpl(AbstractDefaultRuleEvaluation):
+
+        # Constructors:
+
+        ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
+                                             float64 l2RegularizationWeight, Lapack* lapack) except +
+
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
+
+
+    cdef cppclass ExampleWiseRuleEvaluationImpl:
+
+        # Constructors:
+
+        ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Blas* blas, Lapack* lapack) except +
+
+        # Functions:
+
+        void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                          float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                          float64* sumsOfHessians, bool uncovered,
+                                          LabelWisePrediction* prediction) nogil except +
+
+        void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                            float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                            float64* sumsOfHessians, bool uncovered,
+                                            Prediction* prediction) nogil except +
 
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
     # Attributes:
 
-    cdef ExampleWiseLoss loss_function
-
-    cdef float64 l2_regularization_weight
+    cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
 
     # Functions:
 
@@ -21,19 +55,4 @@ cdef class ExampleWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef float64 l2_regularization_weight
-
-    # Functions:
-
-    cdef void calculate_label_wise_prediction(self, const intp[::1] label_indices,
-                                              const float64[::1] total_sums_of_gradients,
-                                              float64[::1] sums_of_gradients, const float64[::1] total_sums_of_hessians,
-                                              float64[::1] sums_of_hessians, bint uncovered,
-                                              LabelWisePrediction* prediction)
-
-    cdef void calculate_example_wise_prediction(self, const intp[::1] label_indices,
-                                                const float64[::1] total_sums_of_gradients,
-                                                float64[::1] sums_of_gradients,
-                                                const float64[::1] total_sums_of_hessians,
-                                                float64[::1] sums_of_hessians, bint uncovered,
-                                                Prediction* prediction)
+    cdef ExampleWiseRuleEvaluationImpl* rule_evaluation
