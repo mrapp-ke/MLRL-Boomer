@@ -8,7 +8,7 @@ Lapack::Lapack(dsysv_t dsysvFunction) {
     dsysvFunction_ = dsysvFunction;
 }
 
-void Lapack::dsysv(float64* coefficients, float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
+void Lapack::dsysv(const float64* coefficients, const float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
                    float64* output, int n, float64 l2RegularizationWeight) {
     // Copy the values in the arrays `invertedOrdinates` and `coefficients` to the arrays `output` and `tmpArray1`,
     // respectively...
