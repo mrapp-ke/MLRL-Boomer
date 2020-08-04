@@ -35,7 +35,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                         label
         """
         cdef intp num_labels = total_sums_of_gradients.shape[0]
-        cdef intp num_predictions = total_sums_of_gradients.shape[0] if label_indices is None else label_indices.shape[0]
+        cdef intp num_predictions = num_labels if label_indices is None else label_indices.shape[0]
         cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
         self.refinement_search = new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions,
                                                                    label_indices_ptr, num_labels, &gradients[0, 0],
