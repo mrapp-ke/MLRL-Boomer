@@ -37,7 +37,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
                                         Hessians of all examples, which should be considered by the search, for each
                                         label
         """
-        self.rule_evaluation = rule_evaluation
+        self.rule_evaluation = rule_evaluation.rule_evaluation
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
@@ -113,7 +113,7 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
-        cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef LabelWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
         cdef LabelWisePrediction* prediction = self.prediction
         cdef const intp[::1] label_indices = self.label_indices
         cdef const float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -122,8 +122,10 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
 
         # Calculate and return the predictions, as well as corresponding quality scores...
-        rule_evaluation.calculate_label_wise_prediction(label_indices, total_sums_of_gradients, sums_of_gradients,
-                                                        total_sums_of_hessians, sums_of_hessians, uncovered, prediction)
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &total_sums_of_gradients[0],
+                                                     &sums_of_gradients[0], &total_sums_of_hessians[0],
+                                                     &sums_of_hessians[0], uncovered, prediction)
         return prediction
 
 

@@ -7,6 +7,8 @@ function that is applied example-wise.
 from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from boomer.boosting._math cimport triangular_number
 
+from libc.stdlib cimport malloc
+
 
 cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
     """
@@ -32,7 +34,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         :param total_sums_of_hessians:  An array of dtype float, shape `(num_labels)`, representing the sum of the
                                         Hessians of all examples, which should be considered by the search
         """
-        self.rule_evaluation = rule_evaluation
+        self.rule_evaluation = rule_evaluation.rule_evaluation
         self.label_indices = label_indices
         self.gradients = gradients
         self.total_sums_of_gradients = total_sums_of_gradients
@@ -48,7 +50,8 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         sums_of_hessians[:] = 0
         self.sums_of_hessians = sums_of_hessians
         self.accumulated_sums_of_hessians = None
-        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, NULL, NULL, 0)
+        cdef float64* predicted_scores = <float64*>malloc(num_gradients * sizeof(float64))
+        cdef LabelWisePrediction* prediction = new LabelWisePrediction(num_gradients, predicted_scores, NULL, 0)
         self.prediction = prediction
 
     def __dealloc__(self):
@@ -120,7 +123,7 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
 
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
-        cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef ExampleWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
         cdef LabelWisePrediction* prediction = self.prediction
         cdef const intp[::1] label_indices = self.label_indices
         cdef const float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -129,13 +132,15 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
 
         # Calculate and return the predictions, as well as corresponding quality scores...
-        rule_evaluation.calculate_label_wise_prediction(label_indices, total_sums_of_gradients, sums_of_gradients,
-                                                        total_sums_of_hessians, sums_of_hessians, uncovered, prediction)
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        rule_evaluation.calculateLabelWisePrediction(label_indices_ptr, &total_sums_of_gradients[0],
+                                                     &sums_of_gradients[0], &total_sums_of_hessians[0],
+                                                     &sums_of_hessians[0], uncovered, prediction)
         return prediction
 
     cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
         # Class members
-        cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
+        cdef ExampleWiseRuleEvaluationImpl* rule_evaluation = self.rule_evaluation
         cdef Prediction* prediction = <Prediction*>self.prediction
         cdef const intp[::1] label_indices = self.label_indices
         cdef const float64[::1] total_sums_of_gradients = self.total_sums_of_gradients
@@ -144,9 +149,10 @@ cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
         cdef float64[::1] sums_of_hessians = self.accumulated_sums_of_hessians if accumulated else self.sums_of_hessians
 
         # Calculate and return the predictions, as well as an overall quality score...
-        rule_evaluation.calculate_example_wise_prediction(label_indices, total_sums_of_gradients, sums_of_gradients,
-                                                          total_sums_of_hessians, sums_of_hessians, uncovered,
-                                                          prediction)
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        rule_evaluation.calculateExampleWisePrediction(label_indices_ptr, &total_sums_of_gradients[0],
+                                                       &sums_of_gradients[0], &total_sums_of_hessians[0],
+                                                       &sums_of_hessians[0], uncovered, prediction)
         return prediction
 
 

@@ -5,14 +5,14 @@ from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics
 from boomer.boosting.label_wise_losses cimport LabelWiseLoss
-from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
+from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, LabelWiseRuleEvaluationImpl
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluation rule_evaluation
+    cdef LabelWiseRuleEvaluationImpl* rule_evaluation
 
     cdef const intp[::1] label_indices
 
