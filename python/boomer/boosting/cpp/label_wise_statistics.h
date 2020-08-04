@@ -58,7 +58,7 @@ namespace boosting {
              *                              the indices of the labels that should be considered by the search or NULL,
              *                              if all labels should be considered
              * @param numLabels             The total number of labels
-             * @param gradients             a pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             * @param gradients             A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
              *                              representing the gradient for each example and label
              * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels)`, representing
              *                              the sum of the gradients of all examples, which should be considered by the
