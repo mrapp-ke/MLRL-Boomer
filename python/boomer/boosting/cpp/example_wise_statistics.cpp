@@ -19,10 +19,12 @@ ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(ExampleWiseRule
     totalSumsOfGradients_ = totalSumsOfGradients;
     hessians_ = hessians;
     totalSumsOfHessians_ = totalSumsOfHessians;
+    float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
+    prediction_ = new LabelWisePrediction(numPredictions, predictedScores, NULL, 0);
 }
 
 ExampleWiseRefinementSearchImpl::~ExampleWiseRefinementSearchImpl() {
-    // TODO
+    delete prediction_;
 }
 
 void ExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
