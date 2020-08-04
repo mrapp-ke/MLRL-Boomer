@@ -1,4 +1,6 @@
 #include "label_wise_statistics.h"
+#include <stdlib.h>
+#include <cstddef>
 
 using namespace boosting;
 
