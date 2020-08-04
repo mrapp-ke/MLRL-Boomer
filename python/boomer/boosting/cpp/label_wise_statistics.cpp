@@ -14,15 +14,26 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvalua
     labelIndices_ = labelIndices;
     gradients_ = gradients;
     totalSumsOfGradients_ = totalSumsOfGradients;
+    float64* sumsOfGradients = (float64*) malloc(numPredictions * sizeof(float64));
+    arrays::setToZeros(sumsOfGradients, numPredictions);
+    sumsOfGradients_ = sumsOfGradients;
+    accumulatedSumsOfGradients_ = NULL;
     hessians_ = hessians;
     totalSumsOfHessians_ = totalSumsOfHessians;
+    float64* sumsOfHessians = (float64*) malloc(numPredictions * sizeof(float64));
+    arrays::setToZeros(sumsOfHessians, numPredictions);
+    sumsOfHessians_ = sumsOfHessians;
+    accumulatedSumsOfHessians_ = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
     prediction_ = new LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0)
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
-    // TODO
+    free(sumsOfGradients_);
+    free(accumulatedSumsOfGradients_);
+    free(sumsOfHessians_);
+    free(accumulatedSumsOfHessians_);
     delete prediction_;
 }
 

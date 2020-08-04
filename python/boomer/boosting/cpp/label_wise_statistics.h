@@ -31,9 +31,17 @@ namespace boosting {
 
             const float64* totalSumsOfGradients_;
 
+            float64* sumsOfGradients_;
+
+            float64* accumulatedSumsOfGradients_;
+
             const float64* hessians_;
 
             const float64* totalSumsOfHessians_;
+
+            float64* sumsOfHessians_;
+
+            float64* accumulatedSumsOfHessians_;
 
             LabelWisePrediction* prediction_;
 
