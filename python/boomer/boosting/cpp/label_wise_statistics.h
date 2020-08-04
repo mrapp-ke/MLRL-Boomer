@@ -27,6 +27,8 @@ namespace boosting {
 
             const intp* labelIndices_;
 
+            intp numLabels_;
+
             const float64* gradients_;
 
             const float64* totalSumsOfGradients_;
@@ -55,6 +57,7 @@ namespace boosting {
              * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
              *                              the indices of the labels that should be considered by the search or NULL,
              *                              if all labels should be considered
+             * @param numLabels             The total number of labels
              * @param gradients             a pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
              *                              representing the gradient for each example and label
              * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels)`, representing
@@ -67,7 +70,7 @@ namespace boosting {
              *                              search, for each label
              */
             LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
-                                          const intp* labelIndices, const float64* gradients,
+                                          const intp* labelIndices, intp numLabels, const float64* gradients,
                                           const float64* totalSumsOfGradients, const float64* hessians,
                                           const float64* totalSumsOfHessians);
 
