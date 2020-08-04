@@ -84,11 +84,17 @@ void ExampleWiseRefinementSearchImpl::resetSearch() {
 }
 
 LabelWisePrediction* ExampleWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
-    // TODO
-    return NULL;
+    float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
+    float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
+    ruleEvaluation_->calculateLabelWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
+                                                  totalSumsOfHessians_, sumsOfHessians, uncovered, prediction_);
+    return prediction_;
 }
 
 Prediction* ExampleWiseRefinementSearchImpl::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
-    // TODO
-    return NULL;
+    float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
+    float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
+    ruleEvaluation_->calculateExampleWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
+                                                    totalSumsOfHessians_, sumsOfHessians, uncovered, prediction_);
+    return prediction_;
 }
