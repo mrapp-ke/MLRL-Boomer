@@ -13,7 +13,7 @@ ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(ExampleWiseRule
                                                                  const float64* hessians,
                                                                  const float64* totalSumsOfHessians) {
     ruleEvaluation_ = ruleEvaluation;
-    numPredictions_ = numPredictions;
+    numGradients_ = numPredictions;
     labelIndices_ = labelIndices;
     numLabels_ = numLabels;
     gradients_ = gradients;
@@ -25,6 +25,7 @@ ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(ExampleWiseRule
     hessians_ = hessians;
     totalSumsOfHessians_ = totalSumsOfHessians;
     intp numHessians = linalg::triangularNumber(numPredictions);
+    numHessians_ = numHessians;
     float64* sumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
     arrays::setToZeros(sumsOfHessians, numHessians);
     sumsOfHessians_ = sumsOfHessians;
@@ -47,7 +48,7 @@ void ExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 w
     intp offset = statisticIndex * numLabels_;
     intp i = 0;
 
-    for (intp c = 0; c < numPredictions_; c++) {
+    for (intp c = 0; c < numGradients_; c++) {
         intp l = labelIndices_ != NULL ? labelIndices_[c] : c;
         intp triangularNumber = linalg::triangularNumber(l);
         sumsOfGradients_[c] += (weight * gradients_[offset + l]);
@@ -61,7 +62,25 @@ void ExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 w
 }
 
 void ExampleWiseRefinementSearchImpl::resetSearch() {
-    // TODO
+    // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
+    if (accumulatedSumsOfGradients_ == NULL) {
+        accumulatedSumsOfGradients_ = (float64*) malloc(numGradients_ * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfGradients_, numGradients_);
+        accumulatedSumsOfHessians_ = (float64*) malloc(numHessians_ * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfHessians_, numHessians_);
+    }
+
+    // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums of gradients
+    // and Hessians...
+    for (intp c = 0; c < numGradients_; c++) {
+        accumulatedSumsOfGradients_[c] += sumsOfGradients_[c];
+        sumsOfGradients_[c] = 0;
+    }
+
+    for (intp c = 0; c < numHessians_; c++) {
+        accumulatedSumsOfHessians_[c] += sumsOfHessians_[c];
+        sumsOfHessians_[c] = 0;
+    }
 }
 
 LabelWisePrediction* ExampleWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
