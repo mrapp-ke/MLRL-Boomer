@@ -18,7 +18,7 @@ from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtO
 from boomer.training import DataSet
 
 LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
-DATE_FORMAT = '%d.%m.%Y %H:%M:%S'
+DATE_FORMAT = '%d.%m.%y %H:%M:%S'
 
 
 class Runnable(ABC):
