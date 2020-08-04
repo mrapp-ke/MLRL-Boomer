@@ -17,9 +17,7 @@ from boomer.persistence import ModelPersistence
 from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from boomer.training import DataSet
 
-LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
-
-DATE_FORMAT = '%d.%m.%y %H:%M:%S'
+LOG_FORMAT = '%(levelname)s %(message)s'
 
 
 class Runnable(ABC):
@@ -36,7 +34,7 @@ class Runnable(ABC):
         root.setLevel(log_level)
         out_handler = log.StreamHandler(sys.stdout)
         out_handler.setLevel(log_level)
-        out_handler.setFormatter(log.Formatter(LOG_FORMAT, DATE_FORMAT))
+        out_handler.setFormatter(log.Formatter(LOG_FORMAT))
         root.addHandler(out_handler)
 
         log.info('Configuration: %s', args)
