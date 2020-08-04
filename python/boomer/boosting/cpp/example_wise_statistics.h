@@ -40,14 +40,26 @@ namespace boosting {
         public:
 
             /**
-             * @param ruleEvaluation        TODO
-             * @param numPredictions        TODO
-             * @param labelIndices          TODO
-             * @param numLabels             TODO
-             * @param gradients             TODO
-             * @param totalSumsOfGradients  TODO
-             * @param hessians              TODO
-             * @param totalSumsOfHessians   TODO
+             * @param ruleEvaluation        A pointer to an object of type `ExampleWiseRuleEvaluationImpl` to be used
+             *                              for calculating the predictions, as well as corresponding quality scores of
+             *                              rules
+             * @param numPredictions        The number of labels to be considered by the search
+             * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
+             *                              the indices of the labels that should be considered by the search or NULL,
+             *                              if all labels should be considered
+             * @param numLabels             The total number of labels
+             * @param gradients             A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                              representing the gradients for each example
+             * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels)`, representing
+             *                              the sum of the gradients of all examples, which should be considered by the
+             *                              search
+             * @param hessians              A pointer to an array of type `float64`, shape
+             *                              `(num_examples, (num_labels * (num_labels + 1)) / 2)`, representing the
+             *                              Hessians for each example
+             * @param totalSumsOfHessians   A pointer to an array of type `float64`, shape
+             *                              `((num_labels * (num_labels + 1)) / 2)`, representing the sum of the
+             *                              Hessians of all examples, which should be considered by the
+             *                              search
              */
             ExampleWiseRefinementSearchImpl(ExampleWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
                                             const intp* labelIndices, intp numLabels, const float64* gradients,
