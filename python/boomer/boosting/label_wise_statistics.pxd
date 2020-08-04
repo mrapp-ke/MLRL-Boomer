@@ -1,11 +1,36 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common.input_data cimport LabelMatrix
-from boomer.common.statistics cimport RefinementSearch, DecomposableRefinementSearch
+from boomer.common.statistics cimport RefinementSearch, DecomposableRefinementSearch, \
+    AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics
 from boomer.boosting.label_wise_losses cimport LabelWiseLoss
 from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, LabelWiseRuleEvaluationImpl
+
+from libcpp cimport bool
+
+
+cdef extern from "cpp/label_wise_statistics.h" namespace "boosting":
+
+    cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
+
+        # Constructors:
+
+        LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
+                                      const intp* labelIndices, intp numLabels, const float64* gradients,
+                                      const float64* totalSumsOfGradients, const float64* hessians,
+                                      const float64* totalSumsOfHessians) except +
+
+        # Functions:
+
+        void updateSearch(intp statisticIndex, uint32 weight) nogil
+
+        void resetSearch() nogil
+
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
