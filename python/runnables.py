@@ -18,6 +18,7 @@ from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtO
 from boomer.training import DataSet
 
 LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
+
 DATE_FORMAT = '%d.%m.%y %H:%M:%S'
 
 
@@ -29,14 +30,13 @@ class Runnable(ABC):
     def run(self, parser: ArgumentParser):
         args = parser.parse_args()
 
+        # Configure the logger...
+        log_level = args.log_level
         root = log.getLogger()
-        root.setLevel(args.log_level)
-
-        formatter = log.Formatter(LOG_FORMAT, DATE_FORMAT)
-
+        root.setLevel(log_level)
         out_handler = log.StreamHandler(sys.stdout)
-        out_handler.setLevel(log.DEBUG)
-        out_handler.setFormatter(formatter)
+        out_handler.setLevel(log_level)
+        out_handler.setFormatter(log.Formatter(LOG_FORMAT, DATE_FORMAT))
         root.addHandler(out_handler)
 
         log.info('Configuration: %s', args)
