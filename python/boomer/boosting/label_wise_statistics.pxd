@@ -28,7 +28,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting":
 
         void resetSearch() nogil
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil except +
 
         Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
 
