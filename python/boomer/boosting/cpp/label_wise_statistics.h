@@ -35,6 +35,8 @@ namespace boosting {
 
             const float64* totalSumsOfHessians_;
 
+            LabelWisePrediction* prediction_;
+
         public:
 
             /**

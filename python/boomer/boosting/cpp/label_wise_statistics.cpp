@@ -16,10 +16,14 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvalua
     totalSumsOfGradients_ = totalSumsOfGradients;
     hessians_ = hessians;
     totalSumsOfHessians_ = totalSumsOfHessians;
+    float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
+    float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
+    prediction_ = new LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0)
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
     // TODO
+    delete prediction_;
 }
 
 void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
