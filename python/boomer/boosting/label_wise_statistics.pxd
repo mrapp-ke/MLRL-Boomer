@@ -30,7 +30,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting":
 
         LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
