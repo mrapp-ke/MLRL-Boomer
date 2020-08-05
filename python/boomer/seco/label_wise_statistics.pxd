@@ -28,9 +28,9 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco":
 
         void resetSearch() nogil
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
 
 
 cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):

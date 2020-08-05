@@ -16,9 +16,9 @@ cdef extern from "cpp/statistics.h":
 
         void resetSearch() nogil
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
 
 
     cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
@@ -29,9 +29,9 @@ cdef extern from "cpp/statistics.h":
 
         void resetSearch() nogil
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
 
 
 cdef class RefinementSearch:
