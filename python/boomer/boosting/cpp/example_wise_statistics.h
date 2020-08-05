@@ -23,9 +23,7 @@ namespace boosting {
 
             ExampleWiseRuleEvaluationImpl* ruleEvaluation_;
 
-            intp numGradients_;
-
-            intp numHessians_;
+            intp numPredictions_;
 
             const intp* labelIndices_;
 
