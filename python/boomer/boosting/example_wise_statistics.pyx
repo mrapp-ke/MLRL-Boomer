@@ -8,7 +8,7 @@ from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from boomer.boosting._math cimport triangular_number
 
 
-cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
+cdef class ExampleWiseRefinementSearch(RefinementSearch):
     """
     A wrapper for the C++ class `ExampleWiseRefinementSearchImpl`.
     """
