@@ -10,7 +10,7 @@ cdef class DefaultRuleEvaluation:
     A base class for all classes that allow to calculate the predictions of a default rule.
     """
 
-    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix):
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix) nogil:
         """
         Calculates the scores to be predicted by a default rule based on the ground truth label matrix.
 
@@ -18,4 +18,5 @@ cdef class DefaultRuleEvaluation:
         :return:                A pointer to an object of type `DefaultPrediction`, representing the predictions of the
                                 default rule
         """
-        pass
+        cdef AbstractDefaultRuleEvaluation* default_rule_evaluation = self.default_rule_evaluation
+        return default_rule_evaluation.calculateDefaultPrediction(label_matrix.label_matrix)

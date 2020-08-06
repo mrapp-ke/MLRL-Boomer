@@ -49,6 +49,10 @@ cdef extern from "cpp/rule_evaluation.h":
 
 cdef class DefaultRuleEvaluation:
 
+    # Attributes:
+
+    cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
+
     # Functions:
 
-    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix) nogil
