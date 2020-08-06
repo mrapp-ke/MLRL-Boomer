@@ -44,7 +44,7 @@ cdef class RefinementSearch:
         """
         pass
 
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated) nogil:
         """
         Calculates and returns the scores to be predicted by a rule that covers all statistics that have been provided
         to the search so far via the function `update_search`.
@@ -77,7 +77,7 @@ cdef class RefinementSearch:
         """
         pass
 
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated) nogil:
         """
         Calculates and returns the scores to be predicted by a rule that covers all statistics that have been provided
         to the search so far via the function `update_search`.
