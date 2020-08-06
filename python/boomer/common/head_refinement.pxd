@@ -3,7 +3,7 @@ from boomer.common.statistics cimport RefinementSearch
 from boomer.common.rule_evaluation cimport Prediction
 
 
-cdef extern from "cpp/head_refinement.h":
+cdef extern from "cpp/head_refinement.h" nogil:
 
     cdef cppclass HeadCandidate:
 

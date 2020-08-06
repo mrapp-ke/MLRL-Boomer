@@ -2,7 +2,7 @@ from boomer.common._arrays cimport intp, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 
 
-cdef extern from "cpp/rule_evaluation.h":
+cdef extern from "cpp/rule_evaluation.h" nogil:
 
     cdef cppclass DefaultPrediction:
 
@@ -44,7 +44,7 @@ cdef extern from "cpp/rule_evaluation.h":
 
         # Functions:
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +
 
 
 cdef class DefaultRuleEvaluation:

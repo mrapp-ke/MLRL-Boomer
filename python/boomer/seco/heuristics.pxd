@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport float64
 
 
-cdef extern from "cpp/heuristics.h" namespace "seco":
+cdef extern from "cpp/heuristics.h" namespace "seco" nogil:
 
     cdef enum ConfusionMatrixElement:
         IN
@@ -15,7 +15,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
         # Functions:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                        float64 urn, float64 urp) nogil
+                                        float64 urn, float64 urp)
 
 
     cdef cppclass PrecisionImpl(AbstractHeuristic):
@@ -23,7 +23,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
         # Functions:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                        float64 urn, float64 urp) nogil
+                                        float64 urn, float64 urp)
 
 
     cdef cppclass RecallImpl(AbstractHeuristic):
@@ -31,7 +31,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
         # Functions:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                        float64 urn, float64 urp) nogil
+                                        float64 urn, float64 urp)
 
 
     cdef cppclass WRAImpl(AbstractHeuristic):
@@ -39,7 +39,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
         # Functions:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                        float64 urn, float64 urp) nogil
+                                        float64 urn, float64 urp)
 
 
     cdef cppclass HammingLossImpl(AbstractHeuristic):
@@ -47,7 +47,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
         # Functions:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                        float64 urn, float64 urp) nogil
+                                        float64 urn, float64 urp)
 
 
     cdef cppclass FMeasureImpl(AbstractHeuristic):
@@ -59,7 +59,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
         # Functions:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                        float64 urn, float64 urp) nogil
+                                        float64 urn, float64 urp)
 
 
     cdef cppclass MEstimateImpl(AbstractHeuristic):
@@ -71,7 +71,7 @@ cdef extern from "cpp/heuristics.h" namespace "seco":
         # Functions:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                        float64 urn, float64 urp) nogil
+                                        float64 urn, float64 urp)
 
 
 cdef class Heuristic:

@@ -7,13 +7,13 @@ from boomer.seco.heuristics cimport Heuristic, AbstractHeuristic
 from libcpp cimport bool
 
 
-cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco":
+cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
 
     cdef cppclass LabelWiseDefaultRuleEvaluationImpl(AbstractDefaultRuleEvaluation):
 
         # Functions:
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +
 
 
     cdef cppclass LabelWiseRuleEvaluationImpl:
@@ -27,7 +27,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco":
         void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
                                           const float64* confusionMatricesTotal, const float64* confusionMatricesSubset,
                                           const float64* confusionMatricesCovered, bool uncovered,
-                                          LabelWisePrediction* prediction) nogil except +
+                                          LabelWisePrediction* prediction) except +
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):

@@ -6,32 +6,32 @@ from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelW
 from libcpp cimport bool
 
 
-cdef extern from "cpp/statistics.h":
+cdef extern from "cpp/statistics.h" nogil:
 
     cdef cppclass AbstractRefinementSearch:
 
         # Functions:
 
-        void updateSearch(intp statisticIndex, uint32 weight) nogil
+        void updateSearch(intp statisticIndex, uint32 weight)
 
         void resetSearch() nogil
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil except +
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
     cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
 
         # Functions:
 
-        void updateSearch(intp statisticIndex, uint32 weight) nogil
+        void updateSearch(intp statisticIndex, uint32 weight)
 
-        void resetSearch() nogil
+        void resetSearch()
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil except +
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
 cdef class RefinementSearch:
