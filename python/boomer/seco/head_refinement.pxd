@@ -4,12 +4,14 @@ from boomer.common.rule_evaluation cimport Prediction
 from boomer.common.head_refinement cimport HeadRefinement, HeadCandidate
 from boomer.seco.lift_functions cimport AbstractLiftFunction
 
+from libcpp.memory cimport shared_ptr
+
 
 cdef class PartialHeadRefinement(HeadRefinement):
 
     # Attributes:
 
-    cdef AbstractLiftFunction* lift_function
+    cdef shared_ptr[AbstractLiftFunction] lift_function_ptr
 
     # Functions:
 

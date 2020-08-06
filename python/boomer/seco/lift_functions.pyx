@@ -3,6 +3,7 @@ Provides Cython wrappers for C++ classes that implement different lift functions
 
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
+from libcpp.memory cimport make_shared
 
 
 cdef class LiftFunction:
@@ -25,7 +26,7 @@ cdef class PeakLiftFunction(LiftFunction):
         :param curvature:   The curvature of the lift function. A greater value results in a steeper curvature, a
                             smaller value results in a flatter curvature. Must be greater than 0
         """
-        self.lift_function = new PeakLiftFunctionImpl(num_labels, peak_label, max_lift, curvature)
-
-    def __dealloc__(self):
-        del self.lift_function
+        self.lift_function_ptr = <shared_ptr[AbstractLiftFunction]>make_shared[PeakLiftFunctionImpl](num_labels,
+                                                                                                     peak_label,
+                                                                                                     max_lift,
+                                                                                                     curvature)

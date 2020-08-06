@@ -9,7 +9,7 @@ from libc.stdlib cimport qsort, malloc, realloc, free
 cdef class PartialHeadRefinement(HeadRefinement):
 
     def __cinit__(self, LiftFunction lift_function):
-        self.lift_function = lift_function.lift_function
+        self.lift_function_ptr = lift_function.lift_function_ptr
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
@@ -25,7 +25,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift
         cdef intp c
 
-        cdef AbstractLiftFunction* lift_function = self.lift_function
+        cdef AbstractLiftFunction* lift_function = self.lift_function_ptr.get()
 
         if label_indices is None:
             num_predictions = prediction.numPredictions_
