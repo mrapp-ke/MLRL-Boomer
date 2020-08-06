@@ -112,47 +112,6 @@ cdef class RefinementSearch:
         pass
 
 
-cdef class DecomposableRefinementSearch(RefinementSearch):
-    """
-    A base class for all classes that allow to search for the best refinement of a rule based on previously stored
-    statistics in the decomposable case, i.e., when the label-wise predictions are the same as the example-wise
-    predictions.
-    """
-
-    cdef void update_search(self, intp statistic_index, uint32 weight):
-        pass
-
-    cdef void reset_search(self):
-        pass
-
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        pass
-
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
-        # In the decomposable case, the example-wise predictions are the same as the label-wise predictions...
-        return <Prediction*>self.calculate_label_wise_prediction(uncovered, accumulated)
-
-
-cdef class NonDecomposableRefinementSearch(RefinementSearch):
-    """
-    A base class for all classes that allow to search for the best refinement of a rule based on previously stored
-    statistics in the non-decomposable case, i.e., when the label-wise predictions are not the same as the example-wise
-    predictions.
-    """
-
-    cdef void update_search(self, intp statistic_index, uint32 weight):
-        pass
-
-    cdef void reset_search(self):
-        pass
-
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
-        pass
-
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
-        pass
-
-
 cdef class Statistics:
     """
     A base class for all classes that store statistics about the labels of the training examples, which serve as the
