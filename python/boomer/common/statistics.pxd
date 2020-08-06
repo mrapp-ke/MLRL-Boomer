@@ -47,30 +47,6 @@ cdef class RefinementSearch:
     cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
 
 
-cdef class DecomposableRefinementSearch(RefinementSearch):
-
-    # Functions:
-
-    cdef void update_search(self, intp statistic_index, uint32 weight)
-
-    cdef void reset_search(self)
-
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
-
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
-
-
-cdef class NonDecomposableRefinementSearch(RefinementSearch):
-
-    cdef void update_search(self, intp statistic_index, uint32 weight)
-
-    cdef void reset_search(self)
-
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
-
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
-
-
 cdef class Statistics:
 
     # Functions:

@@ -9,7 +9,7 @@ from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from libcpp.pair cimport pair
 
 
-cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
+cdef class LabelWiseRefinementSearch(RefinementSearch):
     """
     A wrapper for the C++ class `LabelWiseRefinementSearchImpl`.
     """
@@ -56,6 +56,10 @@ cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
     cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
         cdef AbstractRefinementSearch* refinement_search = self.refinement_search
         return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
+
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
+        return refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
 
 
 cdef class LabelWiseStatistics(GradientStatistics):
