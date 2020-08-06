@@ -33,7 +33,7 @@ float64 PeakLiftFunctionImpl::calculateLift(intp numLabels) {
     if (numLabels < peakLabel_) {
         normalization = (numLabels - 1) / ((float64) (peakLabel_ - 1));
     } else if (numLabels > peakLabel_) {
-        normalization = (numLabels - numLabels_) / ((float64) numLabels_ - peakLabel_);
+        normalization = (numLabels - numLabels_) / ((float64) (numLabels - peakLabel_));
     } else {
         return maxLift_;
     }
