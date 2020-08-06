@@ -1,14 +1,15 @@
 from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
 from boomer.common.rule_evaluation cimport LabelWisePrediction
+from boomer.seco.lift_functions cimport LiftFunction
 
 from libc.stdlib cimport qsort, malloc, realloc, free
 
 
 cdef class PartialHeadRefinement(HeadRefinement):
 
-    def __cinit__(self, LiftFunction lift):
-        self.lift = lift
+    def __cinit__(self, LiftFunction lift_function):
+        self.lift_function_ptr = lift_function.lift_function_ptr
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
@@ -24,19 +25,19 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift, max_score
         cdef intp c
 
-        cdef LiftFunction lift = self.lift
+        cdef AbstractLiftFunction* lift_function = self.lift_function_ptr.get()
 
         if label_indices is None:
             num_predictions = prediction.numPredictions_
 
             sorted_indices = __argsort(quality_scores, num_predictions)
 
-            maximum_lift = lift.get_max_lift()
+            maximum_lift = lift_function.getMaxLift()
             for c in range(0, num_predictions):
                 # select the top element of sorted_label_indices excluding labels already contained
                 total_quality_score += 1 - quality_scores[sorted_indices[c]]
 
-                quality_score = 1 - (total_quality_score / (c + 1)) * lift.eval(c + 1)
+                quality_score = 1 - (total_quality_score / (c + 1)) * lift_function.calculateLift(c + 1)
 
 
                 if best_head_candidate_length == 0 or quality_score < best_quality_score:
@@ -58,7 +59,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
                 # select the top element of sorted_label_indices excluding labels already contained
                 total_quality_score += 1 - quality_scores[c]
 
-            best_quality_score = 1 - (total_quality_score / num_predictions) * lift.eval(num_predictions)
+            best_quality_score = 1 - (total_quality_score / num_predictions) * lift_function.calculateLift(num_predictions)
 
             best_head_candidate_length = label_indices.shape[0]
 
