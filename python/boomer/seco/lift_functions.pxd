@@ -1,5 +1,7 @@
 from boomer.common._arrays cimport intp, float64
 
+from libcpp.memory cimport shared_ptr
+
 
 cdef extern from "cpp/lift_functions.h" namespace "seco" nogil:
 
@@ -29,7 +31,7 @@ cdef class LiftFunction:
 
     # Attributes:
 
-    cdef AbstractLiftFunction* lift_function
+    cdef shared_ptr[AbstractLiftFunction] lift_function_ptr
 
 
 cdef class PeakLiftFunction(LiftFunction):
