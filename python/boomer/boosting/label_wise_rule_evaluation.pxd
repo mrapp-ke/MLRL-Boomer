@@ -7,7 +7,7 @@ from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
 from libcpp cimport bool
 
 
-cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
+cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseDefaultRuleEvaluationImpl(AbstractDefaultRuleEvaluation):
 
@@ -17,7 +17,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
 
         # Functions:
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +
 
 
     cdef cppclass LabelWiseRuleEvaluationImpl:
@@ -31,7 +31,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
         void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                           float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                           float64* sumsOfHessians, bool uncovered,
-                                          LabelWisePrediction* prediction) nogil except +
+                                          LabelWisePrediction* prediction) except +
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):

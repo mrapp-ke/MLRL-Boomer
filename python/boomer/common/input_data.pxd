@@ -3,7 +3,7 @@ from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._sparse cimport BinaryDokMatrix
 
 
-cdef extern from "cpp/input_data.h":
+cdef extern from "cpp/input_data.h" nogil:
 
     cdef cppclass AbstractLabelMatrix:
 
@@ -15,7 +15,7 @@ cdef extern from "cpp/input_data.h":
 
         # Functions:
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+        uint8 getLabel(intp exampleIndex, intp labelIndex)
 
 
     cdef cppclass DenseLabelMatrixImpl(AbstractLabelMatrix):
@@ -26,7 +26,7 @@ cdef extern from "cpp/input_data.h":
 
         # Functions:
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+        uint8 getLabel(intp exampleIndex, intp labelIndex)
 
 
     cdef cppclass DokLabelMatrixImpl(AbstractLabelMatrix):
@@ -37,7 +37,7 @@ cdef extern from "cpp/input_data.h":
 
         # Functions:
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex) nogil
+        uint8 getLabel(intp exampleIndex, intp labelIndex)
 
 
 cdef class LabelMatrix:
