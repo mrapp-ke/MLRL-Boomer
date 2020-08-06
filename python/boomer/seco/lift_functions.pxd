@@ -31,17 +31,6 @@ cdef class LiftFunction:
 
     cdef AbstractLiftFunction* lift_function
 
-    # Functions:
-
-    cdef float64 calculate_lift(self, intp num_labels) nogil
-
-    cdef float64 get_max_lift(self) nogil
-
 
 cdef class PeakLiftFunction(LiftFunction):
-
-    # Functions:
-
-    cdef float64 calculate_lift(self, intp num_labels) nogil
-
-    cdef float64 get_max_lift(self) nogil
+    pass

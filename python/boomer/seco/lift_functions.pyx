@@ -9,25 +9,7 @@ cdef class LiftFunction:
     """
     A wrapper for the C++ class `AbstractLiftFunction`.
     """
-
-    cdef float64 calculate_lift(self, intp num_labels) nogil:
-        """
-        Calculates and returns the lift for a specific number of labels.
-
-        :param num_labels:  The number of labels for which the lift should be calculated
-        :return:            The lift that has been calculated
-        """
-        cdef AbstractLiftFunction* lift_function = self.lift_function
-        return lift_function.calculateLift(num_labels)
-
-    cdef float64 get_max_lift(self) nogil:
-        """
-        Returns the maximum lift possible.
-
-        :return:    The maximum lift possible
-        """
-        cdef AbstractLiftFunction* lift_function = self.lift_function
-        return lift_function.getMaxLift()
+    pass
 
 
 cdef class PeakLiftFunction(LiftFunction):
