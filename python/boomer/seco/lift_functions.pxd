@@ -27,25 +27,21 @@ cdef extern from "cpp/lift_functions.h" namespace "seco" nogil:
 
 cdef class LiftFunction:
 
-    cdef float64 eval(self, intp label_count);
+    # Attributes:
 
-    cdef float64 get_max_lift(self);
+    cdef AbstractLiftFunction* lift_function
+
+    # Functions:
+
+    cdef float64 calculate_lift(self, intp num_labels) nogil
+
+    cdef float64 get_max_lift(self) nogil
 
 
 cdef class PeakLiftFunction(LiftFunction):
 
-    # Attributes:
-
-    cdef intp num_labels
-
-    cdef intp peak_label
-
-    cdef float64 max_lift
-
-    cdef float64 exponent
-
     # Functions:
 
-    cdef float64 eval(self, intp label_count);
+    cdef float64 calculate_lift(self, intp num_labels) nogil
 
-    cdef float64 get_max_lift(self);
+    cdef float64 get_max_lift(self) nogil
