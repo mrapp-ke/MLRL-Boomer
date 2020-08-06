@@ -13,16 +13,16 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
-                                  bint accumulated):
+                                  bint accumulated) nogil:
         cdef LabelWisePrediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
         cdef intp num_predictions
         cdef float64* candidate_predicted_scores
         cdef intp* candidate_label_indices
-        cdef intp[::1] sorted_indices
+        cdef intp* sorted_indices
         cdef intp best_head_candidate_length = 0
-        cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift
+        cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift, max_score
         cdef intp c
 
         cdef AbstractLiftFunction* lift_function = self.lift_function_ptr.get()
@@ -50,6 +50,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
                 if max_score < best_quality_score:
                     # prunable by decomposition
                     break
+
+            free(sorted_indices)
         else:
             num_predictions = label_indices.shape[0]
 
@@ -105,12 +107,13 @@ cdef class PartialHeadRefinement(HeadRefinement):
         # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
         return NULL
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+                                          bint accumulated) nogil:
         cdef Prediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction
 
 
-cdef inline intp[::1] __argsort(float64* a, intp num_elements):
+cdef inline intp* __argsort(float64* a, intp num_elements) nogil:
     """
     Creates and returns an array that stores the indices of the elements in a given array when sorted in ascending 
     order.
@@ -118,11 +121,11 @@ cdef inline intp[::1] __argsort(float64* a, intp num_elements):
     :param a:               A pointer to an array of type float64, shape `(num_elements)`, representing the values of
                             the array to be sorted
     :param num_elements:    The number of elements in the array `a`
-    :return:                An array of dtype intp, shape `(num_elements)`, representing the indices of the values in
-                            the given array when sorted in ascending order
+    :return:                A pointer to an array of type `intp`, shape `(num_elements)`, representing the indices of
+                            the values in the given array when sorted in ascending order
     """
     cdef IndexedFloat64* tmp_array = <IndexedFloat64*>malloc(num_elements * sizeof(IndexedFloat64))
-    cdef intp[::1] sorted_array = array_intp(num_elements)
+    cdef intp* sorted_array = <intp*>malloc(num_elements * sizeof(intp))
     cdef intp i
 
     try:
