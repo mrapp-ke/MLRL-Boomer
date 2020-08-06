@@ -20,7 +20,7 @@ PeakLiftFunctionImpl::PeakLiftFunctionImpl(intp numLabels, intp peakLabel, float
     numLabels_ = numLabels;
     peakLabel_ = peakLabel;
     maxLift_ = maxLift;
-    curvature_ = curvature;
+    exponent_ = 1.0 / curvature;
 }
 
 PeakLiftFunctionImpl::~PeakLiftFunctionImpl() {
@@ -38,7 +38,7 @@ float64 PeakLiftFunctionImpl::calculateLift(intp numLabels) {
         return maxLift_;
     }
 
-    return 1 + pow(normalization, curvature_) * (maxLift_ - 1);
+    return 1 + pow(normalization, exponent_) * (maxLift_ - 1);
 }
 
 float64 PeakLiftFunctionImpl::getMaxLift() {
