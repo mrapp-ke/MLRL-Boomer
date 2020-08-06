@@ -65,6 +65,10 @@ namespace boosting {
 
             int* dsysvTmpArray2_;
 
+            double* dsysvTmpArray3_;
+
+            int dsysvLwork_;
+
             float64* dspmvTmpArray_;
 
             float64* tmpGradients_;

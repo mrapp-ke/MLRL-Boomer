@@ -62,9 +62,13 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
         }
     }
 
+    // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
+    int lwork = lapack_->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numLabels);
+    double* dsysvTmpArray3 = (double*) malloc(lwork * sizeof(double));
+
     // Calculate the scores to be predicted by the default rule by solving the system of linear equations...
-    lapack_->dsysv(sumsOfHessians, sumsOfGradients, dsysvTmpArray1, dsysvTmpArray2, predictedScores, numLabels,
-                   l2RegularizationWeight);
+    lapack_->dsysv(sumsOfHessians, sumsOfGradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, predictedScores,
+                   numLabels, lwork, l2RegularizationWeight);
 
     // Free allocated memory...
     free(gradients);
@@ -73,6 +77,7 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     free(sumsOfHessians);
     free(dsysvTmpArray1);
     free(dsysvTmpArray2);
+    free(dsysvTmpArray3);
 
     return new DefaultPrediction(numLabels, predictedScores);
 }
@@ -84,6 +89,7 @@ ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2Regulariz
     lapack_ = lapack;
     dsysvTmpArray1_ = NULL;
     dsysvTmpArray2_ = NULL;
+    dsysvTmpArray3_ = NULL;
     dspmvTmpArray_ = NULL;
     tmpGradients_ = NULL;
     tmpHessians_ = NULL;
@@ -94,6 +100,7 @@ ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
     delete lapack_;
     free(dsysvTmpArray1_);
     free(dsysvTmpArray2_);
+    free(dsysvTmpArray3_);
     free(dspmvTmpArray_);
     free(tmpGradients_);
     free(tmpHessians_);
@@ -107,7 +114,7 @@ void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* lab
                                                                  LabelWisePrediction* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
-    // The number of elements in the arrays `predicted_scores` and `quality_scores`
+    // The number of elements in the arrays `predictedScores` and `qualityScores`
     intp numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
     float64* predictedScores = prediction->predictedScores_;
@@ -161,11 +168,15 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
                                                                    Prediction* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
-    // The number of elements in the arrays `predicted_scores` and `quality_scores`
+    // The number of elements in the arrays `predictedScores`
     intp numPredictions = prediction->numPredictions_;
+    // The array that should be used to store the predicted scores
+    float64* predictedScores = prediction->predictedScores_;
     // Arrays that are used to temporarily store values that are computed by the DSYSV or DSPMV routine
     float64* dsysvTmpArray1 = dsysvTmpArray1_;
     int* dsysvTmpArray2 = dsysvTmpArray2_;
+    double* dsysvTmpArray3 = dsysvTmpArray3_;
+    int dsysvLwork = dsysvLwork_;
     float64* dspmvTmpArray = dspmvTmpArray_;
 
     // To avoid array recreation each time this function is called, the arrays for temporarily storing values that are
@@ -177,6 +188,12 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
         dsysvTmpArray2_ = dsysvTmpArray2;
         dspmvTmpArray = (float64*) malloc(numPredictions * sizeof(float64));
         dspmvTmpArray_ = dspmvTmpArray;
+
+        // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
+        dsysvLwork = lapack_->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numPredictions);
+        dsysvLwork_ = dsysvLwork;
+        dsysvTmpArray3 = (double*) malloc(dsysvLwork * sizeof(double));
+        dsysvTmpArray3_ = dsysvTmpArray3;
     }
 
     float64* gradients;
@@ -214,9 +231,8 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
     }
 
     // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-    float64* predictedScores = prediction->predictedScores_;
-    lapack_->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, predictedScores, numPredictions,
-                   l2RegularizationWeight);
+    lapack_->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, predictedScores, numPredictions,
+                   dsysvLwork, l2RegularizationWeight);
 
     // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
     float64 overallQualityScore = blas_->ddot(predictedScores, gradients, numPredictions);
