@@ -28,8 +28,27 @@ class Lapack {
         Lapack(dsysv_t dsysvFunction);
 
         /**
+         * Determines and returns the optimal value for the parameter "lwork" as used by LAPACK'S DSYSV routine.
+         *
+         * This function must be run before attempting to solve a linear system using the function `dsysv` to determine
+         * the optimal value for the parameter "lwork".
+         *
+         * @param tmpArray1 A pointer to an array of type `float64`, shape `(n, n)` that will be used by the function
+         *                  `dsysv` to temporarily store values computed by the DSYSV routine. May contain arbitrary
+         *                  values
+         * @param output    A pointer to an array of type `float64`, shape `(n)`, the solution of the system of linear
+         *                  equations should be written to by the function `dsysv`. May contain arbitrary values
+         * @param n         The number of equations in the linear system to be solved by the function `dsysv`
+         * @return          The optimal value for the parameter "lwork"
+         */
+        int queryDsysvLworkParameter(float64* tmpArray1, float64* output, int n);
+
+        /**
          * Computes and returns the solution to a system of linear equations A * X = B using LAPACK's DSYSV solver (see
          * http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve_ga9995c47692c9885ed5d6a6b431686f41.html).
+         *
+         * The function `queryDsysvLworkParameter` must be run beforehand to determine the optimal value for the
+         * parameter "lwork" and to allocate a temporary array depending on this value.
          *
          * DSYSV requires A to be a matrix with shape `(n, n)`, representing the coefficients, and B to be a matrix with
          * shape `(n, nrhs)`, representing the ordinates. X is a matrix of unknowns with shape `(n, nrhs)`.
@@ -59,14 +78,19 @@ class Lapack {
          * @param tmpArray2                 A pointer to an array of type `int`, shape `(n)` that will be used to
          *                                  temporarily store values computed by the DSYSV routine. May contain
          *                                  arbitrary values
+         * @param tmpArray3                 A pointer to an array of type `double`, shape `(lwork)` that will be used to
+         *                                  temporarily store values computed by the DSYSV routine. May contain
+         *                                  arbitrary values
          * @param output                    A pointer to an array of type `float64`, shape `(n)`, the solution of the
          *                                  system of linear equations should be written to. May contain arbitrary
          *                                  values
          * @param n                         The number of equations
+         * @param lwork                     The value for the parameter "lwork" to be used by the DSYSV routine. Must
+         *                                  have been determined using the function `queryDsysvLworkParameter`
          * @param l2RegularizationWeight    A scalar of dtype `float64`, representing the weight of the L2
          *                                  regularization
          */
         void dsysv(const float64* coefficients, const float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
-                   float64* output, int n, float64 l2RegularizationWeight);
+                   double* tmpArray3, float64* output, int n, int lwork, float64 l2RegularizationWeight);
 
 };

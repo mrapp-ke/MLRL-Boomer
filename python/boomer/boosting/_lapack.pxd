@@ -23,8 +23,10 @@ cdef extern from "cpp/lapack.h":
 
         # Functions:
 
-        float64* dsysv(float64* coefficients, float64* invertedOrdinates, float64* tmpArray, float64* output, int n,
-                       float64 l2RegularizationWeight) nogil except +
+        int queryDsysvLworkParameter(float64* tmpArray1, float64* output, int n) nogil except +
+
+        void dsysv(const float64* coefficients, const float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
+                   double* tmpArray3, float64* output, int n, int lwork, float64 l2RegularizationWeight) nogil except +
 
 
 cdef inline Lapack* init_lapack():
