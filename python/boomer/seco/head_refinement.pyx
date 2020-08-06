@@ -13,7 +13,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
-                                  bint accumulated):
+                                  bint accumulated) nogil:
         cdef LabelWisePrediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
@@ -107,7 +107,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
         # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
         return NULL
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+                                          bint accumulated) nogil:
         cdef Prediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
         return prediction
 

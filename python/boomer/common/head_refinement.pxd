@@ -28,9 +28,10 @@ cdef class HeadRefinement:
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
-                                  bint accumulated)
+                                  bint accumulated) nogil
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+                                          bint accumulated) nogil
 
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
@@ -39,6 +40,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
-                                  bint accumulated)
+                                  bint accumulated) nogil
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+                                          bint accumulated) nogil
