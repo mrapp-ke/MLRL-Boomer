@@ -51,7 +51,7 @@ namespace seco {
 
             float64 maxLift_;
 
-            float64 curvature_;
+            float64 exponent_;
 
         public:
 
