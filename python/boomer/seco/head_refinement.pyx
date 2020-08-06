@@ -21,7 +21,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef intp* candidate_label_indices
         cdef intp[::1] sorted_indices
         cdef intp best_head_candidate_length = 0
-        cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift
+        cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift, max_score
         cdef intp c
 
         cdef LiftFunction lift = self.lift
