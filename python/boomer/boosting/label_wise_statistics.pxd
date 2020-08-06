@@ -10,7 +10,7 @@ from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation,
 from libcpp cimport bool
 
 
-cdef extern from "cpp/label_wise_statistics.h" namespace "boosting":
+cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
 
@@ -23,13 +23,13 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting":
 
         # Functions:
 
-        void updateSearch(intp statisticIndex, uint32 weight) nogil
+        void updateSearch(intp statisticIndex, uint32 weight)
 
-        void resetSearch() nogil
+        void resetSearch()
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) nogil except +
+        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
+        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
 cdef class LabelWiseRefinementSearch(RefinementSearch):
@@ -44,9 +44,9 @@ cdef class LabelWiseRefinementSearch(RefinementSearch):
 
     cdef void reset_search(self)
 
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated) nogil
 
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated)
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated) nogil
 
 
 cdef class LabelWiseStatistics(GradientStatistics):

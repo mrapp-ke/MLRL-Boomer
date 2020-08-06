@@ -52,11 +52,11 @@ cdef class LabelWiseRefinementSearch(RefinementSearch):
         cdef AbstractRefinementSearch* refinement_search = self.refinement_search
         refinement_search.resetSearch()
 
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated) nogil:
         cdef AbstractRefinementSearch* refinement_search = self.refinement_search
         return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
 
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated):
+    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated) nogil:
         cdef AbstractRefinementSearch* refinement_search = self.refinement_search
         return refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
 

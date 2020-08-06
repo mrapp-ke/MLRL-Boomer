@@ -11,7 +11,7 @@ from boomer.common._arrays cimport float64
 from scipy.linalg.cython_blas cimport ddot, dspmv
 
 
-cdef extern from "cpp/blas.h":
+cdef extern from "cpp/blas.h" nogil:
 
     ctypedef double (*ddot_t)(int* n, double* dx, int* incx, double* dy, int* incy)
 
@@ -25,9 +25,9 @@ cdef extern from "cpp/blas.h":
 
         # Functions:
 
-        float64 ddot(float64* x, float64* y, int n) nogil
+        float64 ddot(float64* x, float64* y, int n)
 
-        void dspmv(float64* a, float64* x, float64* output, int n) nogil
+        void dspmv(float64* a, float64* x, float64* output, int n)
 
 
 cdef inline Blas* init_blas():

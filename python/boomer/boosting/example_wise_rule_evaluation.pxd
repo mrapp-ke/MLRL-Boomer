@@ -9,7 +9,7 @@ from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
 from libcpp cimport bool
 
 
-cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
+cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil:
 
     cdef cppclass ExampleWiseDefaultRuleEvaluationImpl(AbstractDefaultRuleEvaluation):
 
@@ -18,7 +18,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
         ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
                                              float64 l2RegularizationWeight, Lapack* lapack) except +
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) nogil except +
+        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +
 
 
     cdef cppclass ExampleWiseRuleEvaluationImpl:
@@ -32,12 +32,12 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting":
         void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                           float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                           float64* sumsOfHessians, bool uncovered,
-                                          LabelWisePrediction* prediction) nogil except +
+                                          LabelWisePrediction* prediction) except +
 
         void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                             float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                             float64* sumsOfHessians, bool uncovered,
-                                            Prediction* prediction) nogil except +
+                                            Prediction* prediction) except +
 
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
