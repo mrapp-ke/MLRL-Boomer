@@ -36,13 +36,9 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting":
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
 
-    # Attributes:
-
-    cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
-
     # Functions:
 
-    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix)
+    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix) nogil
 
 
 cdef class LabelWiseRuleEvaluation:
