@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common.input_data cimport LabelMatrix
-from boomer.common.statistics cimport RefinementSearch, NonDecomposableRefinementSearch, AbstractRefinementSearch
+from boomer.common.statistics cimport RefinementSearch, AbstractRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics
@@ -32,7 +32,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting":
         Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
 
 
-cdef class ExampleWiseRefinementSearch(NonDecomposableRefinementSearch):
+cdef class ExampleWiseRefinementSearch(RefinementSearch):
 
     # Attributes:
 

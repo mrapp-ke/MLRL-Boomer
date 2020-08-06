@@ -1,7 +1,6 @@
 from boomer.common._arrays cimport intp, uint8, uint32, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
-from boomer.common.statistics cimport RefinementSearch, DecomposableRefinementSearch, AbstractRefinementSearch, \
-    AbstractDecomposableRefinementSearch
+from boomer.common.statistics cimport RefinementSearch, AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.statistics cimport CoverageStatistics
@@ -33,7 +32,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco":
         Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) nogil except +
 
 
-cdef class LabelWiseRefinementSearch(DecomposableRefinementSearch):
+cdef class LabelWiseRefinementSearch(RefinementSearch):
 
     # Attributes:
 
