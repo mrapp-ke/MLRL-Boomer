@@ -128,7 +128,7 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
             }
 
             // Mark the current example and label as uncovered...
-            uncoveredLabels[numExamples * r + c] = 1;
+            uncoveredLabels[numLabels * r + c] = 1;
         }
     }
 
@@ -142,13 +142,11 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
 }
 
 void LabelWiseStatisticsImpl::resetSampledStatistics() {
-    // The number of examples
     intp numExamples = labelMatrix_->numExamples_;
-    // The number of labels
     intp numLabels = labelMatrix_->numLabels_;
 
     for (intp r = 0; r < numExamples; r++) {
-        intp offset = r * numExamples;
+        intp offset = r * numLabels;
 
         for (intp c = 0; c < numLabels; c++) {
             intp i = offset + c;
