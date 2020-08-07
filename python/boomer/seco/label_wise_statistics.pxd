@@ -3,7 +3,7 @@ from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 from boomer.common.statistics cimport AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
-from boomer.seco.statistics cimport CoverageStatistics
+from boomer.seco.statistics cimport CoverageStatistics, AbstractCoverageStatistics
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, LabelWiseRuleEvaluationImpl
 
 from libcpp cimport bool
@@ -30,6 +30,33 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
         Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+
+
+    cdef cppclass LabelWiseStatisticsImpl(AbstractCoverageStatistics):
+
+        # Constructors:
+
+        LabelWiseStatisticsImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation) except +
+
+        # Attributes:
+
+        float64 sumUncoveredLabels_;
+
+        # Functions:
+
+        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
+
+        void resetSampledStatistics()
+
+        void addSampledStatistic(intp statisticIndex, uint32 weight)
+
+        void resetCoveredStatistics()
+
+        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
+
+        AbstractRefinementSearch* beginSearch(const intp* labelIndices)
+
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
 
 
 cdef class LabelWiseStatistics(CoverageStatistics):
