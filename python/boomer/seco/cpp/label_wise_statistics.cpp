@@ -182,7 +182,22 @@ void LabelWiseStatisticsImpl::resetCoveredStatistics() {
 }
 
 void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
-    // TODO
+    intp numLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numLabels;
+    float64 signedWeight = remove ? -((float64) weight) : weight;
+
+    for (intp c = 0; c < numLabels; c++) {
+        float64 labelWeight = uncoveredLabels_[offset + c];
+
+        // Only uncovered labels must be considered...
+        if (labelWeight > 0) {
+            // Add the current example and label to the confusion matrix that corresponds to the current label...
+            uint8 trueLabel = labelMatrix_->getLabel(statisticIndex, c);
+            uint8 predictedLabel = minorityLabels_[c];
+            intp element = getConfusionMatrixElement(trueLabel, predictedLabel);
+            confusionMatricesSubset_[c * 4 + element] += signedWeight;
+        }
+    }
 }
 
 AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(const intp* labelIndices) {
