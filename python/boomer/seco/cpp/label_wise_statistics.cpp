@@ -22,7 +22,7 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvalua
     confusionMatricesTotal_ = confusionMatricesTotal;
     confusionMatricesSubset_ = confusionMatricesSubset;
     confusionMatricesCovered_ = (float64*) malloc(numPredictions * 4 * sizeof(float64));
-    arrays::setToZeros(confusionMatricesCovered_, numPredictions, 4);
+    arrays::setToZeros(confusionMatricesCovered_, numPredictions * 4);
     accumulatedConfusionMatricesCovered_ = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
@@ -57,7 +57,7 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
     // Allocate an array for storing the accumulated confusion matrices, if necessary...
     if (accumulatedConfusionMatricesCovered_ == NULL) {
         accumulatedConfusionMatricesCovered_ = (float64*) malloc(numPredictions_ * 4 * sizeof(float64));
-        arrays::setToZeros(accumulatedConfusionMatricesCovered_, numPredictions_, 4);
+        arrays::setToZeros(accumulatedConfusionMatricesCovered_, numPredictions_ * 4);
     }
 
     // Reset the confusion matrix for each label to zero and add its elements to the accumulated confusion matrix...
@@ -178,7 +178,7 @@ void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 we
 void LabelWiseStatisticsImpl::resetCoveredStatistics() {
     // Reset confusion matrices to 0...
     intp numLabels = labelMatrix_->numLabels_;
-    arrays::setToZeros(confusionMatricesSubset_, numLabels, 4);
+    arrays::setToZeros(confusionMatricesSubset_, numLabels * 4);
 }
 
 void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
