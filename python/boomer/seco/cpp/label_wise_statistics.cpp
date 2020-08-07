@@ -191,5 +191,28 @@ AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(const intp* label
 }
 
 void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
-    // TODO
+    intp numPredictions = head->numPredictions_;
+    intp numLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numLabels;
+
+    // Only the labels that are predicted by the new rule must be considered...
+    for (intp c = 0; c < numPredictions; c++) {
+        intp l = labelIndices != NULL ? labelIndices[c] : c;
+        intp i = offset + l;
+        float64 labelWeight = uncoveredLabels_[i];
+
+        if (labelWeight > 0) {
+            uint8 trueLabel = labelMatrix_->getLabel(statisticIndex, l);
+            uint8 predictedLabel = minorityLabels_[l];
+
+            // Decrement the total sum of uncovered labels, if the default rule's prediction for the current example and
+            // label is incorrect...
+            if (predictedLabel != trueLabel) {
+                sumUncoveredLabels_ -= labelWeight;
+            }
+
+            // Mark the current example and label as covered...
+            uncoveredLabels_[i] = 0;
+        }
+    }
 }
