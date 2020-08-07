@@ -14,9 +14,9 @@ cdef class FullHeadRefinement(HeadRefinement):
     """
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
+                                  intp[::1] label_indices, AbstractRefinementSearch* refinement_search, bint uncovered,
                                   bint accumulated) nogil:
-        cdef Prediction* prediction = refinement_search.calculate_example_wise_prediction(uncovered, accumulated)
+        cdef Prediction* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
         cdef intp num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64 overall_quality_score = prediction.overallQualityScore_
@@ -52,7 +52,7 @@ cdef class FullHeadRefinement(HeadRefinement):
         # Return NULL, as the quality score of the found head is worse than that of `best_head`...
         return NULL
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
                                           bint accumulated) nogil:
-        cdef Prediction* prediction = refinement_search.calculate_example_wise_prediction(uncovered, accumulated)
+        cdef Prediction* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
         return prediction

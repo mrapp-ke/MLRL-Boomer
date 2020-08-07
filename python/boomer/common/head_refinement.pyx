@@ -15,13 +15,14 @@ cdef class HeadRefinement:
     """
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
+                                  intp[::1] label_indices, AbstractRefinementSearch* refinement_search, bint uncovered,
                                   bint accumulated) nogil:
         """
-        Finds and returns the best head for a rule given the predictions that are provided by a `RefinementSearch`.
+        Finds and returns the best head for a rule given the predictions that are provided by a
+        `AbstractRefinementSearch`.
 
-        The `RefinementSearch` must have been prepared properly via calls to the function
-        `RefinementSearch#update_search`.
+        The `AbstractRefinementSearch` must have been prepared properly via calls to the function
+        `AbstractRefinementSearch#updateSearch`.
 
         :param best_head:           A pointer to an instance of the C++ class `HeadCandidate` that corresponds to the
                                     best rule known so far (as found in the previous or current refinement iteration) or
@@ -32,29 +33,30 @@ cdef class HeadRefinement:
                                     if no such instance is available
         :param label_indices:       An array of dtype int, shape `(num_labels)`, representing the indices of the labels
                                     for which the head may predict or None, if the head may predict for all labels
-        :param refinement_search:   The `RefinementSearch` that should be used
+        :param refinement_search:   A pointer to an object of type `AbstractRefinementSearch` to be used for calculating
+                                    predictions and corresponding quality scores
         :param uncovered:           0, if the rule for which the head should be found covers all examples that have been
-                                    provided to the `RefinementSearch` so far, 1, if the rule covers all examples that
-                                    have not been provided yet
+                                    provided to the `AbstractRefinementSearch` so far, 1, if the rule covers all
+                                    examples that have not been provided yet
         :param accumulated:         0, if the rule covers all examples that have been provided since the
-                                    `RefinementSearch` has been reset for the last time, 1, if the rule covers all
-                                    examples that have been provided so far
+                                    `AbstractRefinementSearch` has been reset for the last time, 1, if the rule covers
+                                    all examples that have been provided so far
         :return:                    A pointer to an instance of the C++ class 'HeadCandidate' that stores information
                                     about the head that has been found, if the head is better than `best_head`, NULL
                                     otherwise
         """
         pass
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
                                           bint accumulated) nogil:
         """
         Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, using a
-        `RefinementSearch`.
+        `AbstractRefinementSearch`.
 
-        The `RefinementSearch` must have been prepared properly via calls to the function
-        `RefinementSearch#update_search`.
+        The `AbstractRefinementSearch` must have been prepared properly via calls to the function
+        `AbstractRefinementSearch#updateSearch`.
 
-        :param refinement_search:   The `RefinementSearch` that should be used
+        :param refinement_search:   A pointer to an object of type `AbstractRefinementSearch` to be used
         :param uncovered:           0, if the rule for which the optimal scores should be calculated covers all examples
                                     that have been provided to the `RefinementSearch` so far, 1, if the rule covers all
                                     examples that have not been provided yet
@@ -73,9 +75,9 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
+                                  intp[::1] label_indices, AbstractRefinementSearch* refinement_search, bint uncovered,
                                   bint accumulated) nogil:
-        cdef LabelWisePrediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
+        cdef LabelWisePrediction* prediction = refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
         cdef intp num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
@@ -113,7 +115,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
         return NULL
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
                                           bint accumulated) nogil:
-        cdef Prediction* prediction = refinement_search.calculate_label_wise_prediction(uncovered, accumulated)
+        cdef Prediction* prediction = refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
         return prediction

@@ -200,7 +200,7 @@ cdef class Statistics:
         """
         pass
 
-    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+    cdef AbstractRefinementSearch* begin_search(self, intp[::1] label_indices):
         """
         Starts a new search for the best refinement of a rule. The statistics that are covered by such a refinement must
         be provided via subsequent calls to the function `RefinementSearch#update_search`.
@@ -215,7 +215,8 @@ cdef class Statistics:
         :param label_indices:   An array of dtype `intp`, shape `(num_considered_labels)`, representing the indices of
                                 the labels that should be considered by the search or None, if all labels should be
                                 considered
-        :return:                A new object of type `RefinementSearch` to be used to conduct the search
+        :return:                A pointer to an object of type `AbstractRefinementSearch` to be used to conduct the
+                                search
         """
         pass
 

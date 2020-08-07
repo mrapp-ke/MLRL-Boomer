@@ -6,7 +6,7 @@ Provides classes that implement strategies for pruning classification rules.
 from boomer.common._arrays cimport float32, float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
-from boomer.common.statistics cimport RefinementSearch
+from boomer.common.statistics cimport AbstractRefinementSearch
 from boomer.common.rule_evaluation cimport Prediction
 
 from cython.operator cimport dereference, postincrement
@@ -79,7 +79,7 @@ cdef class IREP(Pruning):
 
         # Reset the statistics and start a new search...
         statistics.reset_sampled_statistics()
-        cdef RefinementSearch refinement_search = statistics.begin_search(label_indices)
+        cdef AbstractRefinementSearch* refinement_search = statistics.begin_search(label_indices)
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -87,7 +87,7 @@ cdef class IREP(Pruning):
                 statistics.add_sampled_statistic(i, 1)
 
                 if covered_examples_mask[i] == covered_examples_target:
-                    refinement_search.update_search(i, 1)
+                    refinement_search.updateSearch(i, 1)
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
@@ -152,7 +152,7 @@ cdef class IREP(Pruning):
 
                 # We must only consider examples that are currently covered and contained in the prune set...
                 if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
-                    refinement_search.update_search(i, 1)
+                    refinement_search.updateSearch(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
