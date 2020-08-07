@@ -80,3 +80,42 @@ LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction
                                                   prediction_);
     return prediction_;
 }
+
+LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation) {
+    ruleEvaluation_ = ruleEvaluation;
+    // TODO
+}
+
+LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+                                                     DefaultPrediction* defaultPrediction) {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::resetSampledStatistics() {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::resetCoveredStatistics() {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+    // TODO
+}
+
+AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(const intp* labelIndices) {
+    // TODO
+    return NULL;
+}
+
+void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
+    // TODO
+}

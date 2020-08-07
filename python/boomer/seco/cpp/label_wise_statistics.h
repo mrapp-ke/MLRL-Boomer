@@ -10,6 +10,7 @@
 #include "../../common/cpp/input_data.h"
 #include "../../common/cpp/statistics.h"
 #include "label_wise_rule_evaluation.h"
+#include "statistics.h"
 
 
 namespace seco {
@@ -83,6 +84,52 @@ namespace seco {
             void resetSearch() override;
 
             LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
+
+    };
+
+    /**
+     * Allows to store the elements of confusion matrices that are computed independently for each label.
+     */
+    class LabelWiseStatisticsImpl : public AbstractCoverageStatistics {
+
+        private:
+
+            LabelWiseRuleEvaluationImpl* ruleEvaluation_;
+
+            AbstractLabelMatrix* labelMatrix_;
+
+            float64* uncoveredLabels_;
+
+            uint8* minorityLabels_;
+
+            float64* confusionMatricesTotal_;
+
+            float64 confusionMatricesSubset_;
+
+        public:
+
+            /**
+             * @param ruleEvaluation A pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used for
+             *                       calculating the predictions, as well as corresponding quality scores, of rules
+             */
+            LabelWiseStatisticsImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation);
+
+            ~LabelWiseStatisticsImpl();
+
+            void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+                                        DefaultPrediction* defaultPrediction) override;
+
+            void resetSampledStatistics() override;
+
+            void addSampledStatistic(intp statisticIndex, uint32 weight) override;
+
+            void resetCoveredStatistics() override;
+
+            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+
+            AbstractRefinementSearch* beginSearch(const intp* labelIndices) override;
+
+            void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) override;
 
     };
 
