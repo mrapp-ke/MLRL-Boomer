@@ -142,7 +142,20 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
 }
 
 void LabelWiseStatisticsImpl::resetSampledStatistics() {
-    // TODO
+    // The number of examples
+    intp numExamples = labelMatrix_->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix_->numLabels_;
+
+    for (intp r = 0; r < numExamples; r++) {
+        intp offset = r * numExamples;
+
+        for (intp c = 0; c < numLabels; c++) {
+            intp i = offset + c;
+            confusionMatricesTotal_[i] = 0;
+            confusionMatricesSubset_[i] = 0;
+        }
+    }
 }
 
 void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
