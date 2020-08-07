@@ -155,7 +155,7 @@ cdef class LabelWiseStatistics(GradientStatistics):
             total_sums_of_gradients[c] += (signed_weight * gradients[statistic_index, c])
             total_sums_of_hessians[c] += (signed_weight * hessians[statistic_index, c])
 
-    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+    cdef AbstractRefinementSearch* begin_search(self, intp[::1] label_indices):
         # Class members
         cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef float64[:, ::1] gradients = self.gradients
@@ -163,9 +163,13 @@ cdef class LabelWiseStatistics(GradientStatistics):
         cdef float64[:, ::1] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
 
-        # Instantiate and return a new object of the class `LabelWiseRefinementSearch`...
-        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, rule_evaluation, label_indices, gradients,
-                                                 total_sums_of_gradients, hessians, total_sums_of_hessians)
+        # Instantiate and return a new object of the class `LabelWiseRefinementSearchImpl`...
+        cdef intp num_labels = total_sums_of_gradients.shape[0]
+        cdef intp num_predictions = num_labels if label_indices is None else label_indices.shape[0]
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        return new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions, label_indices_ptr,
+                                                 num_labels, &gradients[0, 0], &total_sums_of_gradients[0],
+                                                 &hessians[0, 0], &total_sums_of_hessians[0])
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members

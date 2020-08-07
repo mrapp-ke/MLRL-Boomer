@@ -6,7 +6,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, get_index
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.statistics cimport RefinementSearch
+from boomer.common.statistics cimport AbstractRefinementSearch
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction
 
 from libc.math cimport fabs
@@ -173,7 +173,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef bint nominal
 
         # Temporary variables
-        cdef RefinementSearch refinement_search
+        cdef AbstractRefinementSearch* refinement_search
         cdef HeadCandidate* current_head = NULL
         cdef Prediction* prediction
         cdef float64[::1] predicted_scores
@@ -297,7 +297,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         if weight > 0:
                             # Tell the search that the example will be covered by upcoming refinements...
-                            refinement_search.update_search(i, weight)
+                            refinement_search.updateSearch(i, weight)
                             sum_of_weights += weight
                             previous_threshold = current_threshold
                             previous_r = r
@@ -374,7 +374,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     # Reset the search in case of a nominal feature, as the previous examples will not
                                     # be covered by the next condition...
                                     if nominal:
-                                        refinement_search.reset_search()
+                                        refinement_search.resetSearch()
                                         sum_of_weights = 0
                                         first_r = r
 
@@ -382,7 +382,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 previous_r = r
 
                                 # Tell the search that the example will be covered by upcoming refinements...
-                                refinement_search.update_search(i, weight)
+                                refinement_search.updateSearch(i, weight)
                                 sum_of_weights += weight
                                 accumulated_sum_of_weights += weight
 
@@ -432,7 +432,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 best_condition_threshold = previous_threshold
 
                         # Reset the search, if any examples with feature value < 0 have been processed...
-                        refinement_search.reset_search()
+                        refinement_search.resetSearch()
 
                     previous_threshold_negative = previous_threshold
                     previous_r_negative = previous_r
@@ -450,7 +450,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         if weight > 0:
                             # Tell the search that the example will be covered by upcoming refinements...
-                            refinement_search.update_search(i, weight)
+                            refinement_search.updateSearch(i, weight)
                             sum_of_weights += weight
                             previous_threshold = indexed_values[r].value
                             previous_r = r
@@ -523,7 +523,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     # Reset the search in case of a nominal feature, as the previous examples will not
                                     # be covered by the next condition...
                                     if nominal:
-                                        refinement_search.reset_search()
+                                        refinement_search.resetSearch()
                                         sum_of_weights = 0
                                         first_r = r
 
@@ -531,7 +531,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 previous_r = r
 
                                 # Tell the search that the example will be covered by upcoming refinements...
-                                refinement_search.update_search(i, weight)
+                                refinement_search.updateSearch(i, weight)
                                 sum_of_weights += weight
                                 accumulated_sum_of_weights += weight
 
@@ -590,7 +590,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         # If the feature is nominal, we must reset the search once again to ensure that the accumulated
                         # state includes all examples that have been processed so far...
                         if nominal:
-                            refinement_search.reset_search()
+                            refinement_search.resetSearch()
                             first_r = num_indexed_values - 1
 
                         # Find and evaluate the best head for the current refinement, if the condition
@@ -771,7 +771,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     for r in range(num_statistics):
                         if covered_statistics_mask[r] == covered_statistics_target:
-                            refinement_search.update_search(r, 1)
+                            refinement_search.updateSearch(r, 1)
 
                     prediction = head_refinement.calculate_prediction(refinement_search, False, False)
 

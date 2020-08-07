@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common.input_data cimport LabelMatrix
-from boomer.common.statistics cimport Statistics, RefinementSearch
+from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction
 
@@ -23,6 +23,6 @@ cdef class CoverageStatistics(Statistics):
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove)
 
-    cdef RefinementSearch begin_search(self, intp[::1] label_indices)
+    cdef AbstractRefinementSearch* begin_search(self, intp[::1] label_indices)
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head)

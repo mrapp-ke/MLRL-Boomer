@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp
-from boomer.common.head_refinement cimport RefinementSearch
+from boomer.common.head_refinement cimport AbstractRefinementSearch
 from boomer.common.rule_evaluation cimport Prediction
 from boomer.common.head_refinement cimport HeadRefinement, HeadCandidate
 from boomer.seco.lift_functions cimport AbstractLiftFunction
@@ -16,8 +16,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
     # Functions:
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  intp[::1] label_indices, RefinementSearch refinement_search, bint uncovered,
+                                  intp[::1] label_indices, AbstractRefinementSearch* refinement_search, bint uncovered,
                                   bint accumulated) nogil
 
-    cdef Prediction* calculate_prediction(self, RefinementSearch refinement_search, bint uncovered,
+    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
                                           bint accumulated) nogil

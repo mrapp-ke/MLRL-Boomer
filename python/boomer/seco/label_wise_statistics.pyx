@@ -194,7 +194,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
                 element = __get_confusion_matrix_element(true_label, predicted_label)
                 confusion_matrices_subset[c, element] += signed_weight
 
-    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+    cdef AbstractRefinementSearch* begin_search(self, intp[::1] label_indices):
         # Class members
         cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef LabelMatrix label_matrix = self.label_matrix
@@ -203,10 +203,13 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         cdef float64[:, ::1] confusion_matrices_total = self.confusion_matrices_total
         cdef float64[:, ::1] confusion_matrices_subset = self.confusion_matrices_subset
 
-        # Instantiate and return a new object of the class `LabelWiseRefinementSearch`...
-        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, rule_evaluation, label_indices,
-                                                 label_matrix, uncovered_labels, minority_labels,
-                                                 confusion_matrices_total, confusion_matrices_subset)
+        # Instantiate and return a new object of the class `LabelWiseRefinementSearchImpl`...
+        cdef intp num_predictions = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        return new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions, &label_indices[0],
+                                                 label_matrix.label_matrix, &uncovered_labels[0, 0],
+                                                 &minority_labels[0], &confusion_matrices_total[0, 0],
+                                                 &confusion_matrices_subset[0, 0])
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
