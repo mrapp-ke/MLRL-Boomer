@@ -83,16 +83,62 @@ LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction
 
 LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation) {
     ruleEvaluation_ = ruleEvaluation;
-    // TODO
 }
 
 LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
-    // TODO
+    free(uncoveredLabels_);
+    free(minorityLabels_);
+    free(confusionMatricesTotal_);
+    free(confusionMatricesSubset_);
 }
 
 void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
                                                      DefaultPrediction* defaultPrediction) {
-    // TODO
+    // The number of examples
+    intp numExamples = labelMatrix->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix->numLabels_;
+    // A matrix that stores the weights of individual examples and labels that are still uncovered
+    float64* uncoveredLabels = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // The sum of weights of all examples and labels that remain to be covered
+    float64 sumUncoveredLabels = 0;
+    // An array that stores whether rules should predict individual labels as relevant (1) or irrelevant (0)
+    uint8* minorityLabels = (uint8*) malloc(numLabels * sizeof(uint8));
+    // A matrix that stores a confusion matrix, which takes into account all examples, for each label
+    float64* confusionMatricesTotal = (float64*) malloc(numLabels * 4 * sizeof(float64));
+    // A matrix that stores a confusion matrix, which takes into account the examples covered by the previous refinement
+    // of a rule, for each label
+    float64* confusionMatricesSubset = (float64*) malloc(numLabels * 4 * sizeof(float64));
+    // An array that stores the predictions of the default rule of NULL, if no default rule is used
+    float64* predictedScores = defaultPrediction == NULL ? NULL : defaultPrediction->predictedScores_;
+
+    for (intp c = 0; c < numLabels; c++) {
+        uint8 predictedLabel = predictedScores != NULL ? (uint8) predictedScores[c] : 0;
+
+        // Rules should predict the opposite of the default rule...
+        minorityLabels[c] = predictedLabel > 0 ? 0 : 1;
+
+        for (intp r = 0; r < numExamples; r++) {
+            uint8 trueLabel = labelMatrix->getLabel(r, c);
+
+            // Increment the total number of uncovered labels, if the default rule's prediction for the current example
+            // and label is incorrect...
+            if (trueLabel != predictedLabel) {
+                sumUncoveredLabels++;
+            }
+
+            // Mark the current example and label as uncovered...
+            uncoveredLabels[numExamples * r + c] = 1;
+        }
+    }
+
+    // Store class members...
+    labelMatrix_ = labelMatrix;
+    uncoveredLabels_ = uncoveredLabels;
+    sumUncoveredLabels_ = sumUncoveredLabels;
+    minorityLabels_ = minorityLabels;
+    confusionMatricesTotal_ = confusionMatricesTotal;
+    confusionMatricesSubset_ = confusionMatricesSubset;
 }
 
 void LabelWiseStatisticsImpl::resetSampledStatistics() {

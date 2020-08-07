@@ -104,7 +104,7 @@ namespace seco {
 
             float64* confusionMatricesTotal_;
 
-            float64 confusionMatricesSubset_;
+            float64* confusionMatricesSubset_;
 
         public:
 
