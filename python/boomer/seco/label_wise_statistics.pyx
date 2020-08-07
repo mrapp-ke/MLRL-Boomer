@@ -7,60 +7,6 @@ from boomer.common._arrays cimport array_uint8, c_matrix_float64, get_index
 from boomer.seco.heuristics cimport ConfusionMatrixElement
 
 
-cdef class LabelWiseRefinementSearch(RefinementSearch):
-    """
-    A wrapper for the C++ class `LabelWiseRefinementSearchImpl`.
-    """
-
-    def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation, const intp[::1] label_indices,
-                  LabelMatrix label_matrix, const float64[:, ::1] uncovered_labels, const uint8[::1] minority_labels,
-                  const float64[:, ::1] confusion_matrices_total, const float64[:, ::1] confusion_matrices_subset):
-        """
-        :param rule_evaluation:             The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
-                                            well as corresponding quality scores, of rules
-        :param label_indices:               An array of dtype int, shape `(num_considered_labels)`, representing the
-                                            indices of the labels that should be considered by the search or None, if
-                                            all labels should be considered
-        :param label_matrix:                A `LabelMatrix` that provides random access to the labels of the training
-                                            examples
-        :param uncovered_labels:            An array of dtype float, shape `(num_examples, num_labels)`, indicating
-                                            which each examples and labels remain to be covered
-        :param minority_labels:             An array of dtype `uint8`, shape `(num_labels)`, indicating whether rules
-                                            should predict individual labels as positive (1) or negative (0)
-        :param confusion_matrices_total:    A matrix of dtype float, shape `(num_labels, 4)`, storing a confusion matrix
-                                            that corresponds to all examples, for each label
-        :param confusion_matrices_subset:   A matrix of dtype float, shape `(num_labels, 4)`, storing a confusion matrix
-                                            that corresponds to all examples that are covered by the previous refinement
-                                            of a rule, for each label
-        """
-        cdef intp num_predictions = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
-        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
-        self.refinement_search = new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions,
-                                                                   &label_indices[0], label_matrix.label_matrix,
-                                                                   &uncovered_labels[0, 0], &minority_labels[0],
-                                                                   &confusion_matrices_total[0, 0],
-                                                                   &confusion_matrices_subset[0, 0])
-
-    def __dealloc__(self):
-        del self.refinement_search
-
-    cdef void update_search(self, intp statistic_index, uint32 weight):
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        refinement_search.updateSearch(statistic_index, weight)
-
-    cdef void reset_search(self):
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        refinement_search.resetSearch()
-
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated) nogil:
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
-
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated) nogil:
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        return refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
-
-
 cdef class LabelWiseStatistics(CoverageStatistics):
     """
     Allows to store the elements of confusion matrices that are computed independently for each label.
@@ -194,7 +140,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
                 element = __get_confusion_matrix_element(true_label, predicted_label)
                 confusion_matrices_subset[c, element] += signed_weight
 
-    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+    cdef AbstractRefinementSearch* begin_search(self, intp[::1] label_indices):
         # Class members
         cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef LabelMatrix label_matrix = self.label_matrix
@@ -203,10 +149,13 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         cdef float64[:, ::1] confusion_matrices_total = self.confusion_matrices_total
         cdef float64[:, ::1] confusion_matrices_subset = self.confusion_matrices_subset
 
-        # Instantiate and return a new object of the class `LabelWiseRefinementSearch`...
-        return LabelWiseRefinementSearch.__new__(LabelWiseRefinementSearch, rule_evaluation, label_indices,
-                                                 label_matrix, uncovered_labels, minority_labels,
-                                                 confusion_matrices_total, confusion_matrices_subset)
+        # Instantiate and return a new object of the class `LabelWiseRefinementSearchImpl`...
+        cdef intp num_predictions = minority_labels.shape[0] if label_indices is None else label_indices.shape[0]
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        return new LabelWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions, &label_indices[0],
+                                                 label_matrix.label_matrix, &uncovered_labels[0, 0],
+                                                 &minority_labels[0], &confusion_matrices_total[0, 0],
+                                                 &confusion_matrices_subset[0, 0])
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members

@@ -8,57 +8,6 @@ from boomer.common._arrays cimport array_float64, c_matrix_float64, get_index
 from boomer.boosting._math cimport triangular_number
 
 
-cdef class ExampleWiseRefinementSearch(RefinementSearch):
-    """
-    A wrapper for the C++ class `ExampleWiseRefinementSearchImpl`.
-    """
-
-    def __cinit__(self, ExampleWiseRuleEvaluation rule_evaluation, const intp[::1] label_indices,
-                  const float64[:, ::1] gradients, const float64[::1] total_sums_of_gradients,
-                  const float64[:, ::1] hessians, const float64[::1] total_sums_of_hessians):
-        """
-        :param rule_evaluation:         The `ExampleWiseRuleEvaluation` to be used for calculating the predictions, as
-                                        well as corresponding quality scores of rules
-        :param label_indices:           An array of dtype int, shape `(num_considered_labels)`, representing the indices
-                                        of the labels that should be considered by the search or None, if all labels
-                                        should be considered
-        :param gradients:               An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                        gradient for each example
-        :param total_sums_of_gradients: An array of dtype float, shape `(num_labels)`, representing the sum of the
-                                        gradients of all examples, which should be considered by the search
-        :param hessians:                An array of dtype float, shape `(num_examples, num_labels)`, representing the
-                                        Hessian for each example
-        :param total_sums_of_hessians:  An array of dtype float, shape `(num_labels)`, representing the sum of the
-                                        Hessians of all examples, which should be considered by the search
-        """
-        cdef intp num_labels = total_sums_of_gradients.shape[0]
-        cdef intp num_predictions = num_labels if label_indices is None else label_indices.shape[0]
-        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
-        self.refinement_search = new ExampleWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions,
-                                                                     label_indices_ptr, num_labels, &gradients[0, 0],
-                                                                     &total_sums_of_gradients[0], &hessians[0, 0],
-                                                                     &total_sums_of_hessians[0])
-
-    def __dealloc__(self):
-        del self.refinement_search
-
-    cdef void update_search(self, intp statistic_index, uint32 weight):
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        refinement_search.updateSearch(statistic_index, weight)
-
-    cdef void reset_search(self):
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        refinement_search.resetSearch()
-
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated) nogil:
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
-
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated) nogil:
-        cdef AbstractRefinementSearch* refinement_search = self.refinement_search
-        return refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
-
-
 cdef class ExampleWiseStatistics(GradientStatistics):
     """
     Allows to store gradients and Hessians that are calculated according to a loss function that is applied
@@ -150,7 +99,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         for c in range(num_elements):
             total_sums_of_hessians[c] += (signed_weight * hessians[statistic_index, c])
 
-    cdef RefinementSearch begin_search(self, intp[::1] label_indices):
+    cdef AbstractRefinementSearch* begin_search(self, intp[::1] label_indices):
         # Class members
         cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef float64[:, ::1] gradients = self.gradients
@@ -158,9 +107,13 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         cdef float64[:, ::1] hessians = self.hessians
         cdef float64[::1] total_sums_of_hessians = self.total_sums_of_hessians
 
-        # Instantiate and return a new object of the class `ExampleWiseRefinementSearch`...
-        return ExampleWiseRefinementSearch.__new__(ExampleWiseRefinementSearch, rule_evaluation, label_indices,
-                                                   gradients, total_sums_of_gradients, hessians, total_sums_of_hessians)
+        # Instantiate and return a new object of the class `ExampleWiseRefinementSearchImpl`...
+        cdef intp num_labels = total_sums_of_gradients.shape[0]
+        cdef intp num_predictions = num_labels if label_indices is None else label_indices.shape[0]
+        cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
+        return new ExampleWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions, label_indices_ptr,
+                                                   num_labels, &gradients[0, 0], &total_sums_of_gradients[0],
+                                                   &hessians[0, 0], &total_sums_of_hessians[0])
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members
