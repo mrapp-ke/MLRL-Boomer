@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common.input_data cimport LabelMatrix
-from boomer.common.statistics cimport RefinementSearch, AbstractRefinementSearch, AbstractDecomposableRefinementSearch
+from boomer.common.statistics cimport AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics
@@ -30,23 +30,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
         Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
-
-
-cdef class LabelWiseRefinementSearch(RefinementSearch):
-
-    # Attributes:
-
-    cdef AbstractRefinementSearch* refinement_search
-
-    # Functions:
-
-    cdef void update_search(self, intp statistic_index, uint32 weight)
-
-    cdef void reset_search(self)
-
-    cdef LabelWisePrediction* calculate_label_wise_prediction(self, bint uncovered, bint accumulated) nogil
-
-    cdef Prediction* calculate_example_wise_prediction(self, bint uncovered, bint accumulated) nogil
 
 
 cdef class LabelWiseStatistics(GradientStatistics):
@@ -81,6 +64,6 @@ cdef class LabelWiseStatistics(GradientStatistics):
 
     cdef void update_covered_statistic(self, intp statistic_index, uint32 weight, bint remove)
 
-    cdef RefinementSearch begin_search(self, intp[::1] label_indices)
+    cdef AbstractRefinementSearch* begin_search(self, intp[::1] label_indices)
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head)
