@@ -157,11 +157,28 @@ void LabelWiseStatisticsImpl::resetSampledStatistics() {
 }
 
 void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
-    // TODO
+    intp numLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numLabels;
+
+    for (intp c = 0; c < numLabels; c++) {
+        float64 labelWeight = uncoveredLabels_[offset + c];
+
+        // Only uncovered labels must be considered...
+        if (labelWeight > 0) {
+            // Add the current example and label to the confusion matrix that corresponds to the current label...
+            uint8 trueLabel = labelMatrix_->getLabel(statisticIndex, c);
+            uint8 predictedLabel = minorityLabels_[c];
+            intp element = getConfusionMatrixElement(trueLabel, predictedLabel);
+            confusionMatricesTotal_[c * 4 + element] += weight;
+            confusionMatricesSubset_[c * 4 + element] += weight;
+        }
+    }
 }
 
 void LabelWiseStatisticsImpl::resetCoveredStatistics() {
-    // TODO
+    // Reset confusion matrices to 0...
+    intp numLabels = labelMatrix_->numLabels_;
+    arrays::setToZeros(confusionMatricesSubset_, numLabels, 4);
 }
 
 void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
