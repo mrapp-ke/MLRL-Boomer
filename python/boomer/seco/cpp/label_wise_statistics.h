@@ -127,7 +127,7 @@ namespace seco {
 
             void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(const intp* labelIndices) override;
+            AbstractRefinementSearch* beginSearch(intp numPredictions, const intp* labelIndices) override;
 
             void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) override;
 

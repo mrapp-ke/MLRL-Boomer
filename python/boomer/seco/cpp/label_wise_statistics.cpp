@@ -200,9 +200,10 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
     }
 }
 
-AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(const intp* labelIndices) {
-    // TODO
-    return NULL;
+AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numPredictions, const intp* labelIndices) {
+    return new LabelWiseRefinementSearchImpl(ruleEvaluation_, numPredictions, labelIndices, labelMatrix_,
+                                             uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
+                                             confusionMatricesSubset_);
 }
 
 void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {

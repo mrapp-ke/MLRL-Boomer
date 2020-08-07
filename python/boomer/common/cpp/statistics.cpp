@@ -51,7 +51,7 @@ void AbstractStatistics::updateCoveredStatistic(intp statisticIndex, uint32 weig
 
 }
 
-AbstractRefinementSearch* AbstractStatistics::beginSearch(const intp* labelIndices) {
+AbstractRefinementSearch* AbstractStatistics::beginSearch(intp numPredictions, const intp* labelIndices) {
     return NULL;
 }
 
