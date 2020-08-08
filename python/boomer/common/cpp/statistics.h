@@ -236,7 +236,8 @@ class AbstractStatistics {
          * only the specified labels will be considered by the search. When calling this function again to start another
          * search from scratch, a different set of labels may be specified.
          *
-         * @param numPredictions    The number of labels that should be considered by the search
+         * @param numPredictions    The number of labels that should be considered by the search or 0, if all labels
+         *                          should be considered
          * @param labelIndices      A pointer to an array of type `intp`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be considered by the search or None, if all labels
          *                          should be considered
