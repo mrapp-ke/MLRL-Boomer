@@ -34,11 +34,9 @@ cdef extern from "cpp/statistics.h" namespace "seco" nogil:
 
 cdef class CoverageStatistics(Statistics):
 
-    # Attributes:
-
-    cdef readonly float64 sum_uncovered_labels
-
     # Functions:
+
+    cdef float64 get_sum_uncovered_labels(self)
 
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction)
 
