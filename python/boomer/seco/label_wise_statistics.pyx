@@ -20,6 +20,10 @@ cdef class LabelWiseStatistics(CoverageStatistics):
     def __dealloc__(self):
         del self.statistics
 
+    cdef float64 get_sum_uncovered_labels(self):
+        cdef AbstractCoverageStatistics* statistics = <AbstractCoverageStatistics*>self.statistics
+        return statistics.sumUncoveredLabels_
+
     cdef void apply_default_prediction(self, LabelMatrix label_matrix, DefaultPrediction* default_prediction):
         cdef AbstractStatistics* statistics = self.statistics
         statistics.applyDefaultPrediction(label_matrix.label_matrix, default_prediction)
