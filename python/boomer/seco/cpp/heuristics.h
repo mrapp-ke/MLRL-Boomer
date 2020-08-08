@@ -36,7 +36,7 @@ namespace seco {
      */
     static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 predictedLabel) {
         if (trueLabel) {
-            return predictedLabel ? IN : RN;
+            return predictedLabel ? RP : RN;
         } else {
             return predictedLabel ? IP : IN;
         }
