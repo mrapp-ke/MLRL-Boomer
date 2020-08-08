@@ -48,7 +48,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
 
-        AbstractRefinementSearch* beginSearch(intp numPredictions, const intp* labelIndices)
+        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
         void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
 
