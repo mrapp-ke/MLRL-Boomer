@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport intp, uint8, uint32, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
-from boomer.common.statistics cimport AbstractRefinementSearch, AbstractDecomposableRefinementSearch
+from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.statistics cimport CoverageStatistics, AbstractCoverageStatistics
@@ -63,17 +63,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluation rule_evaluation
-
-    cdef LabelMatrix label_matrix
-
-    cdef float64[:, ::1] uncovered_labels
-
-    cdef uint8[::1] minority_labels
-
-    cdef float64[:, ::1] confusion_matrices_total
-
-    cdef float64[:, ::1] confusion_matrices_subset
+    cdef AbstractStatistics* statistics
 
     # Functions:
 
