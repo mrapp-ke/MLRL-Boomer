@@ -7,6 +7,7 @@ from boomer.seco.statistics cimport CoverageStatistics, AbstractCoverageStatisti
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, LabelWiseRuleEvaluationImpl
 
 from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
@@ -15,7 +16,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Constructors:
 
-        LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numLabels,
+        LabelWiseRefinementSearchImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr, intp numLabels,
                                       const intp* labelIndices, AbstractLabelMatrix* labelMatrix,
                                       const float64* uncoveredLabels, const uint8* minorityLabels,
                                       const float64* confusionMatricesTotal,
@@ -36,7 +37,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Constructors:
 
-        LabelWiseStatisticsImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation) except +
+        LabelWiseStatisticsImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr) except +
 
         # Attributes:
 
