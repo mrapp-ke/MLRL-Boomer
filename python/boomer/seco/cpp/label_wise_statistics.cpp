@@ -164,8 +164,9 @@ void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 we
             uint8 trueLabel = labelMatrix_->getLabel(statisticIndex, c);
             uint8 predictedLabel = minorityLabels_[c];
             intp element = getConfusionMatrixElement(trueLabel, predictedLabel);
-            confusionMatricesTotal_[c * 4 + element] += weight;
-            confusionMatricesSubset_[c * 4 + element] += weight;
+            intp i = c * 4 + element;
+            confusionMatricesTotal_[i] += weight;
+            confusionMatricesSubset_[i] += weight;
         }
     }
 }
