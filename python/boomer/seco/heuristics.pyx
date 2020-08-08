@@ -3,7 +3,6 @@
 
 Provides Cython wrappers for C++ classes that implement different heuristics for assessing the quality of rules.
 """
-from libc.math cimport isinf, pow
 
 
 cdef class Heuristic:
