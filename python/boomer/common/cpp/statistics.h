@@ -236,15 +236,14 @@ class AbstractStatistics {
          * only the specified labels will be considered by the search. When calling this function again to start another
          * search from scratch, a different set of labels may be specified.
          *
-         * @param numPredictions    The number of labels that should be considered by the search or 0, if all labels
-         *                          should be considered
+         * @param numLabelIndices   The number of elements in the array `labelIndices`
          * @param labelIndices      A pointer to an array of type `intp`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be considered by the search or None, if all labels
          *                          should be considered
          * @return                  A pointer to an object of type `AbstractRefinementSearch` to be used to conduct the
          *                          search
          */
-        virtual AbstractRefinementSearch* beginSearch(intp numPredictions, const intp* labelIndices);
+        virtual AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices);
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.

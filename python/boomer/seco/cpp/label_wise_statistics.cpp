@@ -200,7 +200,8 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
     }
 }
 
-AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numPredictions, const intp* labelIndices) {
+AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+    intp numPredictions = labelIndices == NULL ? labelMatrix_->numLabels_ : numLabelIndices;
     return new LabelWiseRefinementSearchImpl(ruleEvaluation_, numPredictions, labelIndices, labelMatrix_,
                                              uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
                                              confusionMatricesSubset_);
