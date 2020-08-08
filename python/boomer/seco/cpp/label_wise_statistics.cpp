@@ -6,14 +6,11 @@
 using namespace seco;
 
 
-LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation,
-                                                             intp numPredictions, const intp* labelIndices,
-                                                             AbstractLabelMatrix* labelMatrix,
-                                                             const float64* uncoveredLabels,
-                                                             const uint8* minorityLabels,
-                                                             const float64* confusionMatricesTotal,
-                                                             const float64* confusionMatricesSubset) {
-    ruleEvaluation_ = ruleEvaluation;
+LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
+        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr, intp numPredictions, const intp* labelIndices,
+        AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels, const uint8* minorityLabels,
+        const float64* confusionMatricesTotal, const float64* confusionMatricesSubset) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
     labelMatrix_ = labelMatrix;
@@ -74,14 +71,14 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
 
 LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
     float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
-    ruleEvaluation_->calculateLabelWisePrediction(labelIndices_, minorityLabels_, confusionMatricesTotal_,
-                                                  confusionMatricesSubset_, confusionMatricesCovered, uncovered,
-                                                  prediction_);
+    ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, minorityLabels_, confusionMatricesTotal_,
+                                                           confusionMatricesSubset_, confusionMatricesCovered,
+                                                           uncovered, prediction_);
     return prediction_;
 }
 
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation) {
-    ruleEvaluation_ = ruleEvaluation;
+LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
     uncoveredLabels_ = NULL;
     minorityLabels_ = NULL;
     confusionMatricesTotal_ = NULL;
@@ -199,7 +196,7 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
 
 AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numPredictions = labelIndices == NULL ? labelMatrix_->numLabels_ : numLabelIndices;
-    return new LabelWiseRefinementSearchImpl(ruleEvaluation_, numPredictions, labelIndices, labelMatrix_,
+    return new LabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, labelMatrix_,
                                              uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
                                              confusionMatricesSubset_);
 }

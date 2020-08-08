@@ -15,7 +15,7 @@ cdef class LabelWiseStatistics(CoverageStatistics):
         :param rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as well as
                                 corresponding quality scores, of rules
         """
-        self.statistics = new LabelWiseStatisticsImpl(rule_evaluation.rule_evaluation)
+        self.statistics = new LabelWiseStatisticsImpl(rule_evaluation.rule_evaluation_ptr)
 
     def __dealloc__(self):
         del self.statistics
