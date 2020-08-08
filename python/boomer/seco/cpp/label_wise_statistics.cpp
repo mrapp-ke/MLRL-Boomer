@@ -83,6 +83,10 @@ LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction
 
 LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation) {
     ruleEvaluation_ = ruleEvaluation;
+    uncoveredLabels_ = NULL;
+    minorityLabels_ = NULL;
+    confusionMatricesTotal_ = NULL;
+    confusionMatricesSubset_ = NULL;
 }
 
 LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
@@ -123,12 +127,12 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
 
             // Increment the total number of uncovered labels, if the default rule's prediction for the current example
             // and label is incorrect...
-            if (trueLabel != predictedLabel) {
+            if (predictedLabel != trueLabel) {
                 sumUncoveredLabels++;
             }
 
             // Mark the current example and label as uncovered...
-            uncoveredLabels[numLabels * r + c] = 1;
+            uncoveredLabels[r * numLabels + c] = 1;
         }
     }
 
@@ -142,18 +146,10 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
 }
 
 void LabelWiseStatisticsImpl::resetSampledStatistics() {
-    intp numExamples = labelMatrix_->numExamples_;
     intp numLabels = labelMatrix_->numLabels_;
-
-    for (intp r = 0; r < numExamples; r++) {
-        intp offset = r * numLabels;
-
-        for (intp c = 0; c < numLabels; c++) {
-            intp i = offset + c;
-            confusionMatricesTotal_[i] = 0;
-            confusionMatricesSubset_[i] = 0;
-        }
-    }
+    intp numElements = numLabels * 4;
+    arrays::setToZeros(confusionMatricesTotal_, numElements);
+    arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
 void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
@@ -178,7 +174,8 @@ void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 we
 void LabelWiseStatisticsImpl::resetCoveredStatistics() {
     // Reset confusion matrices to 0...
     intp numLabels = labelMatrix_->numLabels_;
-    arrays::setToZeros(confusionMatricesSubset_, numLabels * 4);
+    int numElements = numLabels * 4;
+    arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
 void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
