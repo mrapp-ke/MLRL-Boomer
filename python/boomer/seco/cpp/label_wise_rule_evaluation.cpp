@@ -64,8 +64,8 @@ void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* label
         predictedScores[c] = score;
 
         // Calculate the quality score for the current label...
-        intp offsetC = c * 4;
-        intp offsetL = l * 4;
+        intp offsetC = c * NUM_CONFUSION_MATRIX_ELEMENTS;
+        intp offsetL = l * NUM_CONFUSION_MATRIX_ELEMENTS;
         intp uin, uip, urn, urp;
 
         intp cin = confusionMatricesCovered[offsetC + IN];
