@@ -111,9 +111,10 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         cdef intp num_labels = total_sums_of_gradients.shape[0]
         cdef intp num_predictions = num_labels if label_indices is None else label_indices.shape[0]
         cdef const intp* label_indices_ptr = <const intp*>NULL if label_indices is None else &label_indices[0]
-        return new ExampleWiseRefinementSearchImpl(rule_evaluation.rule_evaluation, num_predictions, label_indices_ptr,
-                                                   num_labels, &gradients[0, 0], &total_sums_of_gradients[0],
-                                                   &hessians[0, 0], &total_sums_of_hessians[0])
+        return new ExampleWiseRefinementSearchImpl(rule_evaluation.rule_evaluation_ptr, num_predictions,
+                                                   label_indices_ptr, num_labels, &gradients[0, 0],
+                                                   &total_sums_of_gradients[0], &hessians[0, 0],
+                                                   &total_sums_of_hessians[0])
 
     cdef void apply_prediction(self, intp statistic_index, intp[::1] label_indices, HeadCandidate* head):
         # Class members

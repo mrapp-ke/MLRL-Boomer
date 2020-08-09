@@ -17,10 +17,10 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        ExampleWiseRefinementSearchImpl(ExampleWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
-                                        const intp* labelIndices, intp numLabels, const float64* gradients,
-                                        const float64* totalSumsOfGradients, const float64* hessians,
-                                        const float64* totalSumsOfHessians) except +
+        ExampleWiseRefinementSearchImpl(shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
+                                        intp numPredictions, const intp* labelIndices, intp numLabels,
+                                        const float64* gradients, const float64* totalSumsOfGradients,
+                                        const float64* hessians, const float64* totalSumsOfHessians) except +
 
         # Functions:
 
