@@ -24,7 +24,7 @@ namespace boosting {
 
         private:
 
-            LabelWiseRuleEvaluationImpl* ruleEvaluation_;
+            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
 
             intp numPredictions_;
 
@@ -53,9 +53,9 @@ namespace boosting {
         public:
 
             /**
-             * @param ruleEvaluation        A pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used for
-             *                              calculating the predictions, as well as corresponding quality scores of
-             *                              rules
+             * @param ruleEvaluationPtr     A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores of rules
              * @param numPredictions        The number of labels to be considered by the search
              * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
              *                              the indices of the labels that should be considered by the search or NULL,
@@ -72,10 +72,10 @@ namespace boosting {
              *                              the sum of the Hessians of all examples, which should be considered by the
              *                              search, for each label
              */
-            LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
-                                          const intp* labelIndices, intp numLabels, const float64* gradients,
-                                          const float64* totalSumsOfGradients, const float64* hessians,
-                                          const float64* totalSumsOfHessians);
+            LabelWiseRefinementSearchImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                          intp numPredictions, const intp* labelIndices, intp numLabels,
+                                          const float64* gradients, const float64* totalSumsOfGradients,
+                                          const float64* hessians, const float64* totalSumsOfHessians);
 
             ~LabelWiseRefinementSearchImpl();
 

@@ -6,6 +6,8 @@ quality scores.
 """
 from boomer.boosting.label_wise_losses cimport LabelWiseLoss
 
+from libcpp.memory cimport make_shared
+
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     """
@@ -35,7 +37,4 @@ cdef class LabelWiseRuleEvaluation:
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
                                          to be predicted by rules
         """
-        self.rule_evaluation = new LabelWiseRuleEvaluationImpl(l2_regularization_weight)
-
-    def __dealloc__(self):
-        del self.rule_evaluation
+        self.rule_evaluation_ptr = make_shared[LabelWiseRuleEvaluationImpl](l2_regularization_weight)

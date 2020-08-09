@@ -5,13 +5,11 @@
 using namespace boosting;
 
 
-LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation,
-                                                             intp numPredictions, const intp* labelIndices,
-                                                             intp numLabels, const float64* gradients,
-                                                             const float64* totalSumsOfGradients,
-                                                             const float64* hessians,
-                                                             const float64* totalSumsOfHessians) {
-    ruleEvaluation_ = ruleEvaluation;
+LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
+        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr, intp numPredictions, const intp* labelIndices,
+        intp numLabels, const float64* gradients, const float64* totalSumsOfGradients, const float64* hessians,
+        const float64* totalSumsOfHessians) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
     numLabels_ = numLabels;
@@ -75,8 +73,9 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
 LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
-    ruleEvaluation_->calculateLabelWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
-                                                  totalSumsOfHessians_, sumsOfHessians, uncovered, prediction_);
+    ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
+                                                           totalSumsOfHessians_, sumsOfHessians, uncovered,
+                                                           prediction_);
     return prediction_;
 }
 
