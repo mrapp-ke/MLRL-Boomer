@@ -18,6 +18,11 @@
 namespace seco {
 
     /**
+     * The number of elements in a confusion matrix.
+     */
+    const intp NUM_CONFUSION_MATRIX_ELEMENTS = 4;
+
+    /**
      * An enum that specified all positive elements of a confusion matrix.
      */
     enum ConfusionMatrixElement : intp {
@@ -36,7 +41,7 @@ namespace seco {
      */
     static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 predictedLabel) {
         if (trueLabel) {
-            return predictedLabel ? IN : RN;
+            return predictedLabel ? RP : RN;
         } else {
             return predictedLabel ? IP : IN;
         }

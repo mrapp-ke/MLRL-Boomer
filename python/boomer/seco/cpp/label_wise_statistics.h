@@ -10,6 +10,8 @@
 #include "../../common/cpp/input_data.h"
 #include "../../common/cpp/statistics.h"
 #include "label_wise_rule_evaluation.h"
+#include "statistics.h"
+#include <memory>
 
 
 namespace seco {
@@ -22,7 +24,7 @@ namespace seco {
 
         private:
 
-            LabelWiseRuleEvaluationImpl* ruleEvaluation_;
+            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
 
             intp numPredictions_;
 
@@ -47,9 +49,9 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluation            A pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used
-             *                                  for calculating the predictions, as well as corresponding quality
-             *                                  scores, of rules
+             * @param ruleEvaluationPtr         A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to
+             *                                  be used for calculating the predictions, as well as corresponding
+             *                                  quality scores, of rules
              * @param numPredictions            The number of labels to be considered by the search
              * @param labelIndices              An array of type `intp`, shape `(numPredictions)`, representing the
              *                                  indices of the labels that should be considered by the search or NULL,
@@ -63,17 +65,17 @@ namespace seco {
              *                                  whether rules should predict individual labels as relevant (1) or
              *                                  irrelevant (0)
              * @param confusionMatricesTotal    A pointer to a C-contiguous array of type `float64`, shape
-             *                                  `(num_labels, 4)`, storing a confusion matrix that takes into account
-             *                                  all examples for each label
+             *                                  `(num_labels, NUM_CONFUSION_MATRIX_ELEMENTS)`, storing a confusion
+             *                                  matrix that takes into account all examples for each label
              * @param confusionMatricesSubset   A pointer to a C-contiguous array of type `float64`, shape
-             *                                  `(num_labels, 4)`, storing a confusion matrix that takes into account
-             *                                  all all examples, which are covered by the previous refinement of the
-             *                                  rule, for each label
+             *                                  `(num_labels, NUM_CONFUSION_MATRIX_ELEMENTS)`, storing a confusion
+             *                                  matrix that takes into account all all examples, which are covered by
+             *                                  the previous refinement of the rule, for each label
              */
-            LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
-                                          const intp* labelIndices, AbstractLabelMatrix* labelMatrix,
-                                          const float64* uncoveredLabels, const uint8* minorityLabels,
-                                          const float64* confusionMatricesTotal,
+            LabelWiseRefinementSearchImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                          intp numPredictions, const intp* labelIndices,
+                                          AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
+                                          const uint8* minorityLabels, const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 
             ~LabelWiseRefinementSearchImpl();
@@ -83,6 +85,53 @@ namespace seco {
             void resetSearch() override;
 
             LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
+
+    };
+
+    /**
+     * Allows to store the elements of confusion matrices that are computed independently for each label.
+     */
+    class LabelWiseStatisticsImpl : public AbstractCoverageStatistics {
+
+        private:
+
+            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+
+            AbstractLabelMatrix* labelMatrix_;
+
+            float64* uncoveredLabels_;
+
+            uint8* minorityLabels_;
+
+            float64* confusionMatricesTotal_;
+
+            float64* confusionMatricesSubset_;
+
+        public:
+
+            /**
+             * @param ruleEvaluationPtr A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used
+             *                          for calculating the predictions, as well as corresponding quality scores, of
+             *                          rules
+             */
+            LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr);
+
+            ~LabelWiseStatisticsImpl();
+
+            void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+                                        DefaultPrediction* defaultPrediction) override;
+
+            void resetSampledStatistics() override;
+
+            void addSampledStatistic(intp statisticIndex, uint32 weight) override;
+
+            void resetCoveredStatistics() override;
+
+            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+
+            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
+
+            void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) override;
 
     };
 
