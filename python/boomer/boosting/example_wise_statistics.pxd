@@ -1,13 +1,14 @@
 from boomer.common._arrays cimport uint32, intp, float64
-from boomer.common.input_data cimport LabelMatrix
+from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 from boomer.common.statistics cimport AbstractRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
-from boomer.boosting.statistics cimport GradientStatistics
-from boomer.boosting.example_wise_losses cimport ExampleWiseLoss
+from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
+from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, AbstractExampleWiseLoss
 from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, ExampleWiseRuleEvaluationImpl
 
 from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
@@ -30,6 +31,26 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
         Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+
+
+    cdef cppclass ExampleWiseStatisticsImpl(AbstractGradientStatistics):
+
+        # Constructors:
+
+        ExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+                                  shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr) except +
+
+        # Functions:
+
+        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
+
+        void resetCoveredStatistics()
+
+        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
+
+        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
+
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
 
 
 cdef class ExampleWiseStatistics(GradientStatistics):
