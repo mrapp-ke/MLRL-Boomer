@@ -3,6 +3,7 @@
 
 Provides Cython wrappers for C++ classes that implement different heuristics for assessing the quality of rules.
 """
+from libcpp.memory cimport make_shared
 
 
 cdef class Heuristic:
@@ -18,10 +19,7 @@ cdef class Precision(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic = new PrecisionImpl()
-
-    def __dealloc(self):
-        del self.heuristic
+        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[PrecisionImpl]()
 
 
 cdef class Recall(Heuristic):
@@ -30,10 +28,7 @@ cdef class Recall(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic = new RecallImpl()
-
-    def __dealloc(self):
-        del self.heuristic
+        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[RecallImpl]()
 
 
 cdef class WRA(Heuristic):
@@ -42,10 +37,7 @@ cdef class WRA(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic = new WRAImpl()
-
-    def __dealloc(self):
-        del self.heuristic
+        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[WRAImpl]()
 
 
 cdef class HammingLoss(Heuristic):
@@ -54,10 +46,7 @@ cdef class HammingLoss(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic = new HammingLossImpl()
-
-    def __dealloc(self):
-        del self.heuristic
+        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[HammingLossImpl]()
 
 
 cdef class FMeasure(Heuristic):
@@ -69,10 +58,7 @@ cdef class FMeasure(Heuristic):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
-        self.heuristic = new FMeasureImpl(beta)
-
-    def __dealloc(self):
-        del self.heuristic
+        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[FMeasureImpl](beta)
 
 
 cdef class MEstimate(Heuristic):
@@ -84,7 +70,4 @@ cdef class MEstimate(Heuristic):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
-        self.heuristic = new MEstimateImpl(m)
-
-    def __dealloc__(self):
-        del self.heuristic
+        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[MEstimateImpl](m)
