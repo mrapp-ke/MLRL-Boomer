@@ -167,7 +167,10 @@ void ExampleWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labe
 }
 
 void ExampleWiseStatisticsImpl::resetCoveredStatistics() {
-    // TODO
+    intp numLabels = labelMatrix_->numLabels_;
+    arrays::setToZeros(totalSumsOfGradients_, numLabels);
+    intp numHessians = linalg::triangularNumber(numLabels);
+    arrays::setToZeros(totalSumsOfHessians_, numHessians);
 }
 
 void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
