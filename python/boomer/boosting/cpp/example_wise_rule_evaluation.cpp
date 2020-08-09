@@ -9,10 +9,9 @@
 using namespace boosting;
 
 
-ExampleWiseDefaultRuleEvaluationImpl::ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
-                                                                           float64 l2RegularizationWeight,
-                                                                           Lapack* lapack) {
-    lossFunction_ = lossFunction;
+ExampleWiseDefaultRuleEvaluationImpl::ExampleWiseDefaultRuleEvaluationImpl(
+        std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr, float64 l2RegularizationWeight, Lapack* lapack) {
+    lossFunctionPtr_ = lossFunctionPtr;
     l2RegularizationWeight_ = l2RegularizationWeight;
     lapack_ = lapack;
 }
@@ -23,7 +22,7 @@ ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
 
 DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
     // Class members
-    AbstractExampleWiseLoss* lossFunction = lossFunction_;
+    AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of examples
     intp numExamples = labelMatrix->numExamples_;

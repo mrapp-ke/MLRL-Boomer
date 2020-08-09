@@ -9,6 +9,9 @@
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/statistics.h"
 #include "label_wise_rule_evaluation.h"
+#include "label_wise_losses.h"
+#include "statistics.h"
+#include <memory>
 
 
 namespace boosting {
@@ -21,7 +24,7 @@ namespace boosting {
 
         private:
 
-            LabelWiseRuleEvaluationImpl* ruleEvaluation_;
+            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
 
             intp numPredictions_;
 
@@ -50,9 +53,9 @@ namespace boosting {
         public:
 
             /**
-             * @param ruleEvaluation        A pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used for
-             *                              calculating the predictions, as well as corresponding quality scores of
-             *                              rules
+             * @param ruleEvaluationPtr     A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores of rules
              * @param numPredictions        The number of labels to be considered by the search
              * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
              *                              the indices of the labels that should be considered by the search or NULL,
@@ -69,10 +72,10 @@ namespace boosting {
              *                              the sum of the Hessians of all examples, which should be considered by the
              *                              search, for each label
              */
-            LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
-                                          const intp* labelIndices, intp numLabels, const float64* gradients,
-                                          const float64* totalSumsOfGradients, const float64* hessians,
-                                          const float64* totalSumsOfHessians);
+            LabelWiseRefinementSearchImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                          intp numPredictions, const intp* labelIndices, intp numLabels,
+                                          const float64* gradients, const float64* totalSumsOfGradients,
+                                          const float64* hessians, const float64* totalSumsOfHessians);
 
             ~LabelWiseRefinementSearchImpl();
 
@@ -81,6 +84,57 @@ namespace boosting {
             void resetSearch() override;
 
             LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
+
+    };
+
+    /**
+     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
+     * applied label-wise.
+     */
+    class LabelWiseStatisticsImpl : public AbstractGradientStatistics {
+
+        private:
+
+            std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
+
+            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+
+            AbstractLabelMatrix* labelMatrix_;
+
+            float64* currentScores_;
+
+            float64* gradients_;
+
+            float64* totalSumsOfGradients_;
+
+            float64* hessians_;
+
+            float64* totalSumsOfHessians_;
+
+        public:
+
+            /**
+             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractLabelWiseLoss`, representing the
+             *                          loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationPtr A shared pointer to an object of type `LabelWiseRuleEvaluationImpl`, to be used
+             *                          for calculating the predictions, as well as corresponding quality scores, of
+             *                          rules
+             */
+            LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                    std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr);
+
+            ~LabelWiseStatisticsImpl();
+
+            void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+                                        DefaultPrediction* defaultPrediction) override;
+
+            void resetCoveredStatistics() override;
+
+            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+
+            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
+
+            void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) override;
 
     };
 

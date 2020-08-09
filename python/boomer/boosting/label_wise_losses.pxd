@@ -2,6 +2,7 @@ from boomer.common._arrays cimport intp, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 
 from libcpp.pair cimport pair
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/label_wise_losses.h" namespace "boosting" nogil:
@@ -34,7 +35,7 @@ cdef class LabelWiseLoss:
 
     # Attributes:
 
-    cdef AbstractLabelWiseLoss* loss_function
+    cdef shared_ptr[AbstractLabelWiseLoss] loss_function_ptr
 
     # Functions:
 
