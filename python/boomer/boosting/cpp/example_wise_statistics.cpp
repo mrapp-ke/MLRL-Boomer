@@ -122,7 +122,48 @@ ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
 
 void ExampleWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
                                                        DefaultPrediction* defaultPrediction) {
-    // TODO
+    // Class members
+    AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
+    // The number of examples
+    intp numExamples = labelMatrix->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix->numLabels_;
+    // The number of hessians
+    intp numHessians = linalg::triangularNumber(numLabels);
+    // A matrix that stores the currently predicted scores for each example and label
+    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // A matrix that stores the gradients for each example
+    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // An array that stores the column-wise sums of the matrix of gradients
+    float64* totalSumsOfGradients = (float64*) malloc(numLabels * sizeof(float64));
+    // A matrix that stores the Hessians for each example
+    float64* hessians = (float64*) malloc(numExamples * numHessians * sizeof(float64));
+    // An array that stores the column-wise sums of the matrix of Hessians
+    float64* totalSumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
+    // An array that stores the scores that are predicted by the default rule or NULL, if no default rule is used
+    float64* predictedScores = defaultPrediction != NULL ? defaultPrediction->predictedScores_ : NULL;
+
+    for (intp r = 0; r < numExamples; r++) {
+        intp offset = r * numLabels;
+
+        for (intp c = 0; c < numLabels; c++) {
+            // Store the score that is predicted by the default rule for the current example and label...
+            float64 predictedScore = predictedScores != NULL ? predictedScores[c] : 0;
+            currentScores[offset + c] = predictedScore;
+        }
+
+        // Calculate the gradients and Hessians for the current example...
+        lossFunction->calculateGradientsAndHessians(labelMatrix, r, &currentScores[offset], &gradients[offset],
+                                                    &hessians[offset]);
+    }
+
+    // Store class members...
+    labelMatrix_ = labelMatrix;
+    currentScores_ = currentScores;
+    gradients_ = gradients;
+    totalSumsOfGradients_ = totalSumsOfGradients;
+    hessians_ = hessians;
+    totalSumsOfHessians_ = totalSumsOfHessians;
 }
 
 void ExampleWiseStatisticsImpl::resetCoveredStatistics() {
