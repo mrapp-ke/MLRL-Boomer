@@ -5,6 +5,7 @@ from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePredictio
 from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
 
 from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting" nogil:
@@ -13,7 +14,8 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        LabelWiseDefaultRuleEvaluationImpl(AbstractLabelWiseLoss* lossFunction, float64 l2RegularizationWeight) except +
+        LabelWiseDefaultRuleEvaluationImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
+                                           float64 l2RegularizationWeight) except +
 
         # Functions:
 

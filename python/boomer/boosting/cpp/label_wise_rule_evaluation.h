@@ -9,6 +9,7 @@
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/rule_evaluation.h"
 #include "label_wise_losses.h"
+#include <memory>
 
 
 namespace boosting {
@@ -21,19 +22,20 @@ namespace boosting {
 
         private:
 
-            AbstractLabelWiseLoss* lossFunction_;
+            std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
 
             float64 l2RegularizationWeight_;
 
         public:
 
             /**
-             * @param lossFunction              A pointer to an object of type `AbstractLabelWiseLoss`, representing the
-                                                loss function to be minimized by the default rule
+             * @param lossFunctionPtr           A shared pointer to an object of type `AbstractLabelWiseLoss`,
+             *                                  representing the loss function to be minimized by the default rule
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by the default rule
              */
-            LabelWiseDefaultRuleEvaluationImpl(AbstractLabelWiseLoss* lossFunction, float64 l2RegularizationWeight);
+            LabelWiseDefaultRuleEvaluationImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                               float64 l2RegularizationWeight);
 
             ~LabelWiseDefaultRuleEvaluationImpl();
 
