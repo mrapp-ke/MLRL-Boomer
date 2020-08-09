@@ -7,6 +7,8 @@ from boomer.common._arrays cimport uint8
 
 from libc.math cimport exp, pow
 
+from libcpp.memory cimport make_shared
+
 
 cdef class LabelWiseLoss:
     """
@@ -27,7 +29,7 @@ cdef class LabelWiseLoss:
         :return:                A pair that contains two scalars of dtype float64, representing the gradient and the
                                 Hessian that have been calculated
         """
-        cdef AbstractLabelWiseLoss* loss_function = self.loss_function
+        cdef AbstractLabelWiseLoss* loss_function = self.loss_function_ptr.get()
         cdef AbstractLabelMatrix* label_matrix_ptr = label_matrix.label_matrix
         return loss_function.calculateGradientAndHessian(label_matrix_ptr, example_index, label_index, predicted_score)
 
@@ -38,10 +40,7 @@ cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function = new LabelWiseLogisticLossImpl()
-
-    def __dealloc__(self):
-        del self.loss_function
+        self.loss_function_ptr = <shared_ptr[AbstractLabelWiseLoss]>make_shared[LabelWiseLogisticLossImpl]()
 
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
@@ -50,7 +49,4 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function = new LabelWiseSquaredErrorLossImpl()
-
-    def __dealloc__(self):
-        del self.loss_function
+        self.loss_function_ptr = <shared_ptr[AbstractLabelWiseLoss]>make_shared[LabelWiseSquaredErrorLossImpl]()

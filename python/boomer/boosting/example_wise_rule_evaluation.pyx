@@ -21,7 +21,7 @@ cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
                                             scores to be predicted by the default rule
         """
         cdef Lapack* lapack = init_lapack()
-        self.default_rule_evaluation = new ExampleWiseDefaultRuleEvaluationImpl(loss_function.loss_function,
+        self.default_rule_evaluation = new ExampleWiseDefaultRuleEvaluationImpl(loss_function.loss_function_ptr,
                                                                                 l2_regularization_weight, lapack)
 
     def __dealloc__(self):

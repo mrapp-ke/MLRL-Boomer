@@ -7,6 +7,8 @@ from boomer.common._arrays cimport uint8
 
 from libc.math cimport exp, pow
 
+from libcpp.memory cimport make_shared
+
 
 cdef class ExampleWiseLoss:
     """
@@ -29,7 +31,7 @@ cdef class ExampleWiseLoss:
         :param hessians:            An array of dtype `float64`, shape `(num_labels * (num_labels + 1) / 2)`, the
                                     Hessians that have been calculated should be written to
         """
-        cdef AbstractExampleWiseLoss* loss_function = self.loss_function
+        cdef AbstractExampleWiseLoss* loss_function = self.loss_function_ptr.get()
         cdef AbstractLabelMatrix* label_matrix_ptr = label_matrix.label_matrix
         loss_function.calculateGradientsAndHessians(label_matrix_ptr, example_index, predicted_scores, &gradients[0],
                                                     &hessians[0])
@@ -41,7 +43,4 @@ cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function = new ExampleWiseLogisticLossImpl()
-
-    def __dealloc__(self):
-        del self.loss_function
+        self.loss_function_ptr = <shared_ptr[AbstractExampleWiseLoss]>make_shared[ExampleWiseLogisticLossImpl]()

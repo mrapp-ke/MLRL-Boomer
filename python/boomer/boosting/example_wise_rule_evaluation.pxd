@@ -7,6 +7,7 @@ from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
 
 from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil:
@@ -15,7 +16,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil
 
         # Constructors:
 
-        ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction,
+        ExampleWiseDefaultRuleEvaluationImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
                                              float64 l2RegularizationWeight, Lapack* lapack) except +
 
         DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +

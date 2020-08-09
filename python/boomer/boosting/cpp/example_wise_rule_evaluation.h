@@ -11,6 +11,7 @@
 #include "blas.h"
 #include "lapack.h"
 #include "example_wise_losses.h"
+#include <memory>
 
 
 namespace boosting {
@@ -23,7 +24,7 @@ namespace boosting {
 
         private:
 
-            AbstractExampleWiseLoss* lossFunction_;
+            std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr_;
 
             float64 l2RegularizationWeight_;
 
@@ -32,14 +33,15 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunction              The loss function to be minimized
+             * @param lossFunctionPtr           A shared pointer to an object of type `AbstractExampleWiseLoss`,
+             *                                  representing the loss function to be minimized
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by the default rule
              * @param lapack                    A pointer to an object of type `Lapack` that allows to execute different
              *                                  LAPACK routines
              */
-            ExampleWiseDefaultRuleEvaluationImpl(AbstractExampleWiseLoss* lossFunction, float64 l2RegularizationWeight,
-                                                 Lapack* lapack);
+            ExampleWiseDefaultRuleEvaluationImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                                 float64 l2RegularizationWeight, Lapack* lapack);
 
             ~ExampleWiseDefaultRuleEvaluationImpl();
 
