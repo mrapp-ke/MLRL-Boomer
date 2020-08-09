@@ -47,4 +47,4 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluationImpl* rule_evaluation
+    cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr

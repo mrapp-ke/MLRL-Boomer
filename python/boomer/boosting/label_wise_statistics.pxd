@@ -3,7 +3,7 @@ from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 from boomer.common.statistics cimport AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
-from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
+from boomer.boosting.statistics cimport AbstractStatistics, GradientStatistics, AbstractGradientStatistics
 from boomer.boosting.label_wise_losses cimport LabelWiseLoss, AbstractLabelWiseLoss
 from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, LabelWiseRuleEvaluationImpl
 
@@ -17,7 +17,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        LabelWiseRefinementSearchImpl(LabelWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
+        LabelWiseRefinementSearchImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr, intp numPredictions,
                                       const intp* labelIndices, intp numLabels, const float64* gradients,
                                       const float64* totalSumsOfGradients, const float64* hessians,
                                       const float64* totalSumsOfHessians) except +
@@ -61,21 +61,7 @@ cdef class LabelWiseStatistics(GradientStatistics):
 
     # Attributes:
 
-    cdef LabelWiseLoss loss_function
-
-    cdef LabelWiseRuleEvaluation rule_evaluation
-
-    cdef LabelMatrix label_matrix
-
-    cdef float64[:, ::1] current_scores
-
-    cdef float64[:, ::1] gradients
-
-    cdef float64[::1] total_sums_of_gradients
-
-    cdef float64[:, ::1] hessians
-
-    cdef float64[::1] total_sums_of_hessians
+    cdef AbstractStatistics* statistics
 
     # Functions:
 
