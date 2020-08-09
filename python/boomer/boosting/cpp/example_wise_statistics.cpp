@@ -100,3 +100,44 @@ Prediction* ExampleWiseRefinementSearchImpl::calculateExampleWisePrediction(bool
                                                     totalSumsOfHessians_, sumsOfHessians, uncovered, prediction_);
     return prediction_;
 }
+
+ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                                     std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr) {
+    lossFunctionPtr_ = lossFunctionPtr;
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+    currentScores_ = NULL;
+    gradients_ = NULL;
+    totalSumsOfGradients_ = NULL;
+    hessians_ = NULL;
+    totalSumsOfHessians_ = NULL;
+}
+
+ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
+    free(currentScores_);
+    free(gradients_);
+    free(totalSumsOfGradients_);
+    free(hessians_);
+    free(totalSumsOfHessians_);
+}
+
+void ExampleWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+                                                       DefaultPrediction* defaultPrediction) {
+    // TODO
+}
+
+void ExampleWiseStatisticsImpl::resetCoveredStatistics() {
+    // TODO
+}
+
+void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+    // TODO
+}
+
+AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+    // TODO
+    return NULL;
+}
+
+void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
+    // TODO
+}
