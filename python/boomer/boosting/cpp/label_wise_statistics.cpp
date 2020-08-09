@@ -167,8 +167,10 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
 }
 
 AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
-    // TODO
-    return NULL;
+    intp numLabels = labelMatrix_->numLabels_;
+    intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+    return new LabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels, gradients_,
+                                             totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
 void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
