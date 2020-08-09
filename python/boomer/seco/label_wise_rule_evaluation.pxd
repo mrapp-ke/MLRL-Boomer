@@ -5,6 +5,7 @@ from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePredictio
 from boomer.seco.heuristics cimport Heuristic, AbstractHeuristic
 
 from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
@@ -41,4 +42,4 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluationImpl* rule_evaluation
+    cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr

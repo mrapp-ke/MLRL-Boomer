@@ -4,6 +4,7 @@
 Provides Cython wrappers for C++ classes that allow to calculate the predictions of rules, as well as corresponding
 quality scores.
 """
+from libcpp.memory cimport make_shared
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
@@ -27,7 +28,4 @@ cdef class LabelWiseRuleEvaluation:
         """
         :param heuristic: The heuristic that should be used
         """
-        self.rule_evaluation = new LabelWiseRuleEvaluationImpl(heuristic.heuristic)
-
-    def __dealloc__(self):
-        del self.rule_evaluation
+        self.rule_evaluation_ptr = make_shared[LabelWiseRuleEvaluationImpl](heuristic.heuristic)

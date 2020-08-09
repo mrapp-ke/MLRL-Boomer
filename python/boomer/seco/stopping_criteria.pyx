@@ -14,6 +14,6 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
 
     cdef bint should_continue(self, intp num_rules):
         cdef CoverageStatistics statistics = self.statistics
-        cdef float64 sum_uncovered_labels = statistics.sum_uncovered_labels
+        cdef float64 sum_uncovered_labels = statistics.get_sum_uncovered_labels()
         cdef float64 threshold = self.threshold
         return sum_uncovered_labels > threshold

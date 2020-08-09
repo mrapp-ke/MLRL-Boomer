@@ -3,13 +3,6 @@ from boomer.common._arrays cimport float64
 
 cdef extern from "cpp/heuristics.h" namespace "seco" nogil:
 
-    cdef enum ConfusionMatrixElement:
-        IN
-        IP
-        RN
-        RP
-
-
     cdef cppclass AbstractHeuristic:
 
         # Functions:
