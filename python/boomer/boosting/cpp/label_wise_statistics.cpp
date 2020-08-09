@@ -147,7 +147,9 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
 }
 
 void LabelWiseStatisticsImpl::resetCoveredStatistics() {
-    // TODO
+    intp numLabels = labelMatrix_->numLabels_;
+    arrays::setToZeros(totalSumsOfGradients_, numLabels);
+    arrays::setToZeros(totalSumsOfHessians_, numLabels);
 }
 
 void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
