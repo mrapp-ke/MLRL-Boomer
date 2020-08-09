@@ -172,5 +172,26 @@ AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndi
 }
 
 void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
-    // TODO
+    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
+    intp numPredictions = head->numPredictions_;
+    float64* predictedScores = head->predictedScores_;
+    intp numLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numLabels;
+
+    // Only the labels that are predicted by the new rule must be considered...
+    for (intp c = 0; c < numPredictions; c++) {
+        intp l = labelIndices != NULL ? labelIndices[c] : c;
+        float64 predictedScore = predictedScores[c];
+        intp i = offset + l;
+
+        // Update the score that is currently predicted for the current example and label...
+        float64 updatedScore = currentScores_[i] + predictedScore;
+        currentScores_[i] = updatedScore;
+
+        // Update the gradient and Hessian for the current example and label...
+        std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrix_, statisticIndex, l,
+                                                                                     updatedScore);
+        gradients_[i] = pair.first;
+        hessians_[i] = pair.second;
+    }
 }
