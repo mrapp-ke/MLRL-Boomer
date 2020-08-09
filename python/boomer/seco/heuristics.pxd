@@ -1,5 +1,7 @@
 from boomer.common._arrays cimport float64
 
+from libcpp.memory cimport shared_ptr
+
 
 cdef extern from "cpp/heuristics.h" namespace "seco" nogil:
 
@@ -71,7 +73,7 @@ cdef class Heuristic:
 
     # Attributes:
 
-    cdef AbstractHeuristic* heuristic
+    cdef shared_ptr[AbstractHeuristic] heuristic_ptr
 
 
 cdef class Precision(Heuristic):

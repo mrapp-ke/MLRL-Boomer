@@ -28,4 +28,4 @@ cdef class LabelWiseRuleEvaluation:
         """
         :param heuristic: The heuristic that should be used
         """
-        self.rule_evaluation_ptr = make_shared[LabelWiseRuleEvaluationImpl](heuristic.heuristic)
+        self.rule_evaluation_ptr = make_shared[LabelWiseRuleEvaluationImpl](heuristic.heuristic_ptr)
