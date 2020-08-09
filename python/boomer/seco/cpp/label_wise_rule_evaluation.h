@@ -9,6 +9,7 @@
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/rule_evaluation.h"
 #include "heuristics.h"
+#include <memory>
 
 
 namespace seco {
@@ -35,14 +36,15 @@ namespace seco {
 
         private:
 
-            AbstractHeuristic* heuristic_;
+            std::shared_ptr<AbstractHeuristic> heuristicPtr_;
 
         public:
 
             /**
-             * @param heuristic The heuristic to be optimized
+             * @param heuristicPtr  A shared pointer to an object of type `AbstractHeuristic`, representing the
+             *                      heuristic to be optimized
              */
-            LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic);
+            LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr);
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on

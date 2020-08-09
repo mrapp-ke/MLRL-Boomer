@@ -36,8 +36,8 @@ DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPredictio
     return new DefaultPrediction(numLabels, predictedScores);
 }
 
-LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic) {
-    heuristic_ = heuristic;
+LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr) {
+    heuristicPtr_ = heuristicPtr;
 }
 
 void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
@@ -46,7 +46,7 @@ void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* label
                                                                const float64* confusionMatricesCovered, bool uncovered,
                                                                LabelWisePrediction* prediction) {
     // Class members
-    AbstractHeuristic* heuristic = heuristic_;
+    AbstractHeuristic* heuristic = heuristicPtr_.get();
     // The number of labels to predict for
     intp numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
