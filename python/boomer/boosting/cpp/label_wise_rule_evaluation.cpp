@@ -6,9 +6,9 @@
 using namespace boosting;
 
 
-LabelWiseDefaultRuleEvaluationImpl::LabelWiseDefaultRuleEvaluationImpl(AbstractLabelWiseLoss* lossFunction,
-                                                                       float64 l2RegularizationWeight) {
-    lossFunction_ = lossFunction;
+LabelWiseDefaultRuleEvaluationImpl::LabelWiseDefaultRuleEvaluationImpl(
+        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr, float64 l2RegularizationWeight) {
+    lossFunctionPtr_ = lossFunctionPtr;
     l2RegularizationWeight_ = l2RegularizationWeight;
 }
 
@@ -18,7 +18,7 @@ LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
 
 DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
     // Class members
-    AbstractLabelWiseLoss* lossFunction = lossFunction_;
+    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of examples
     intp numExamples = labelMatrix->numExamples_;
