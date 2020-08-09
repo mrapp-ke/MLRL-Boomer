@@ -8,6 +8,8 @@ from boomer.boosting._blas cimport init_blas
 from boomer.boosting._lapack cimport init_lapack
 from boomer.boosting.example_wise_losses cimport ExampleWiseLoss
 
+from libcpp.memory cimport make_shared
+
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
     """
@@ -40,4 +42,4 @@ cdef class ExampleWiseRuleEvaluation:
         """
         cdef Blas* blas = init_blas()
         cdef Lapack* lapack = init_lapack()
-        self.rule_evaluation = new ExampleWiseRuleEvaluationImpl(l2_regularization_weight, blas, lapack)
+        self.rule_evaluation_ptr = make_shared[ExampleWiseRuleEvaluationImpl](l2_regularization_weight, blas, lapack)
