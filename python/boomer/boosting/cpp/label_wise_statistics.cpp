@@ -79,3 +79,35 @@ LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction
                                                   totalSumsOfHessians_, sumsOfHessians, uncovered, prediction_);
     return prediction_;
 }
+
+LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                                 std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr) {
+    lossFunctionPtr_ = lossFunctionPtr;
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+}
+
+LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+                                                     DefaultPrediction* defaultPrediction) {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::resetCoveredStatistics() {
+    // TODO
+}
+
+void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+    // TODO
+}
+
+AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+    // TODO
+    return NULL;
+}
+
+void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
+    // TODO
+}
