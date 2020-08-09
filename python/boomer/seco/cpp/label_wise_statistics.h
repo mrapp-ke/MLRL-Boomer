@@ -65,12 +65,12 @@ namespace seco {
              *                                  whether rules should predict individual labels as relevant (1) or
              *                                  irrelevant (0)
              * @param confusionMatricesTotal    A pointer to a C-contiguous array of type `float64`, shape
-             *                                  `(num_labels, 4)`, storing a confusion matrix that takes into account
-             *                                  all examples for each label
+             *                                  `(num_labels, NUM_CONFUSION_MATRIX_ELEMENTS)`, storing a confusion
+             *                                  matrix that takes into account all examples for each label
              * @param confusionMatricesSubset   A pointer to a C-contiguous array of type `float64`, shape
-             *                                  `(num_labels, 4)`, storing a confusion matrix that takes into account
-             *                                  all all examples, which are covered by the previous refinement of the
-             *                                  rule, for each label
+             *                                  `(num_labels, NUM_CONFUSION_MATRIX_ELEMENTS)`, storing a confusion
+             *                                  matrix that takes into account all all examples, which are covered by
+             *                                  the previous refinement of the rule, for each label
              */
             LabelWiseRefinementSearchImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                           intp numPredictions, const intp* labelIndices,
