@@ -153,7 +153,17 @@ void LabelWiseStatisticsImpl::resetCoveredStatistics() {
 }
 
 void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
-    // TODO
+    intp numLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numLabels;
+    float64 signedWeight = remove ? -((float64) weight) : weight;
+
+    // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
+    // the total sums of gradients and Hessians...
+    for (intp c = 0; c < numLabels; c++) {
+        intp i = offset + c;
+        totalSumsOfGradients_[c] += (signedWeight * gradients_[i]);
+        totalSumsOfHessians_[c] += (signedWeight * hessians_[i]);
+    }
 }
 
 AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
