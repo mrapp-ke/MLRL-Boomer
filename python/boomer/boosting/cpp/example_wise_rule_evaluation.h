@@ -28,7 +28,7 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            Lapack* lapack_;
+            std::shared_ptr<Lapack> lapackPtr_;
 
         public:
 
@@ -37,11 +37,11 @@ namespace boosting {
              *                                  representing the loss function to be minimized
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by the default rule
-             * @param lapack                    A pointer to an object of type `Lapack` that allows to execute different
-             *                                  LAPACK routines
+             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             *                                  different LAPACK routines
              */
             ExampleWiseDefaultRuleEvaluationImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                                 float64 l2RegularizationWeight, Lapack* lapack);
+                                                 float64 l2RegularizationWeight, std::shared_ptr<Lapack> lapackPtr);
 
             ~ExampleWiseDefaultRuleEvaluationImpl();
 
@@ -59,9 +59,9 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            Lapack* lapack_;
+            std::shared_ptr<Lapack> lapackPtr_;
 
-            Blas* blas_;
+            std::shared_ptr<Blas> blasPtr_;
 
             float64* dsysvTmpArray1_;
 
@@ -82,12 +82,13 @@ namespace boosting {
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param blas                      A pointer to an object of type `Blas` that allows to execute different
-             *                                  BLAS routines
-             * @param lapack                    A pointer to an object of type `Lapack` that allows to execute different
-             *                                  LAPACK routines
+             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
+             *                                  different BLAS routines
+             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             *                                  different LAPACK routines
              */
-            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Blas* blas, Lapack* lapack);
+            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
+                                          std::shared_ptr<Lapack> lapackPtr);
 
             ~ExampleWiseRuleEvaluationImpl();
 
