@@ -1,6 +1,8 @@
 from boomer.common._arrays cimport intp, float64
+from boomer.common.statistics cimport AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
-from boomer.seco.statistics cimport CoverageStatistics
+
+from libcpp.memory cimport shared_ptr
 
 
 cdef class UncoveredLabelsCriterion(StoppingCriterion):
@@ -9,7 +11,7 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
 
     cdef readonly float64 threshold
 
-    cdef CoverageStatistics statistics
+    cdef shared_ptr[AbstractStatistics] statistics_ptr
 
     # Functions:
 

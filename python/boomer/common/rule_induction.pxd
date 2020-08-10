@@ -3,13 +3,14 @@ from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32Array
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.input_data cimport LabelMatrix, FeatureMatrix
-from boomer.common.statistics cimport Statistics
+from boomer.common.statistics cimport AbstractStatistics
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.head_refinement cimport HeadRefinement
 from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
 
+from libcpp.memory cimport shared_ptr
 from libcpp.unordered_map cimport unordered_map
 
 
@@ -43,7 +44,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef DefaultRuleEvaluation default_rule_evaluation
 
-    cdef Statistics statistics
+    cdef shared_ptr[AbstractStatistics] statistics_ptr
 
     cdef unordered_map[intp, IndexedFloat32Array*]* cache_global
 

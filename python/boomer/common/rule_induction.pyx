@@ -6,7 +6,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.statistics cimport AbstractRefinementSearch
+from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction
 
 from libc.math cimport fabs
@@ -88,7 +88,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                         for learning new rules or refining existing ones
         """
         self.default_rule_evaluation = default_rule_evaluation
-        self.statistics = statistics
+        self.statistics_ptr = statistics.statistics_ptr
         self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
 
     def __dealloc__(self):
@@ -106,15 +106,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
         cdef DefaultRuleEvaluation default_rule_evaluation = self.default_rule_evaluation
-        cdef Statistics statistics = self.statistics
+        cdef AbstractStatistics* statistics = self.statistics_ptr.get()
         cdef DefaultPrediction* default_prediction = NULL
 
         try:
             if default_rule_evaluation is not None:
-                statistics = self.statistics
                 default_prediction = default_rule_evaluation.calculate_default_prediction(label_matrix)
 
-            statistics.apply_default_prediction(label_matrix, default_prediction)
+            statistics.applyDefaultPrediction(label_matrix.label_matrix, default_prediction)
             model_builder.set_default_rule(default_prediction)
         finally:
             del default_prediction
@@ -125,7 +124,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
                           intp max_head_refinements, RNG rng, ModelBuilder model_builder):
         # The statistics, which serve as the basis for learning the new rule
-        cdef Statistics statistics = self.statistics
+        cdef AbstractStatistics* statistics = self.statistics_ptr.get()
         # The total number of statistics
         cdef intp num_statistics = feature_matrix.num_examples
         # The total number of features
@@ -179,7 +178,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef float64[::1] predicted_scores
         cdef float32 previous_threshold, current_threshold, previous_threshold_negative
         cdef uint32 weight
-        cdef intp c, f, r, i, first_r, previous_r, last_negative_r, previous_r_negative, num_predictions
+        cdef intp c, f, r, i, first_r, previous_r, last_negative_r, previous_r_negative
 
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
@@ -196,19 +195,25 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             total_sum_of_weights = uint32_array_scalar_pair.second
 
         # Notify the statistics about the examples that are included in the sub-sample...
-        statistics.reset_sampled_statistics()
+        statistics.resetSampledStatistics()
 
         for i in range(num_statistics):
             weight = 1 if weights is None else weights[i]
-            statistics.add_sampled_statistic(i, weight)
+            statistics.addSampledStatistic(i, weight)
 
         # Sub-sample labels, if necessary...
         cdef intp[::1] label_indices
+        cdef intp num_predictions
+        cdef const intp* label_indices_ptr
 
         if label_sub_sampling is None:
             label_indices = None
+            num_predictions = 0
+            label_indices_ptr = <const intp*>NULL
         else:
             label_indices = label_sub_sampling.sub_sample(num_labels, rng)
+            num_predictions = label_indices.shape[0]
+            label_indices_ptr = &label_indices[0]
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
@@ -276,7 +281,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         nominal = False
 
                     # Start a new search based on the current statistics when processing a new feature...
-                    refinement_search = statistics.begin_search(label_indices)
+                    refinement_search = statistics.beginSearch(num_predictions, label_indices_ptr)
 
                     # In the following, we start by processing all examples with feature values < 0...
                     sum_of_weights = 0
@@ -754,7 +759,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 return False
             else:
                 num_predictions = head.numPredictions_
-                label_indices = <intp[:num_predictions]>head.labelIndices_ if head.labelIndices_ != NULL else None
+                label_indices_ptr = head.labelIndices_
+                label_indices = <intp[:num_predictions]>label_indices_ptr if label_indices_ptr != NULL else None
 
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
@@ -767,7 +773,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
-                    refinement_search = statistics.begin_search(label_indices)
+                    refinement_search = statistics.beginSearch(num_predictions, label_indices_ptr)
 
                     for r in range(num_statistics):
                         if covered_statistics_mask[r] == covered_statistics_target:
@@ -785,7 +791,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # Update the statistics based on the predictions of the new rule...
                 for r in range(num_statistics):
                     if covered_statistics_mask[r] == covered_statistics_target:
-                        statistics.apply_prediction(r, label_indices, head)
+                        statistics.applyPrediction(r, label_indices_ptr, head)
 
                 # Add the induced rule to the model...
                 model_builder.add_rule(label_indices, head, conditions, num_conditions_per_comparator)
@@ -879,7 +885,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                             IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp condition_start,
                                             intp condition_end, Comparator condition_comparator, bint covered,
                                             intp num_conditions, uint32[::1] covered_statistics_mask,
-                                            uint32 covered_statistics_target, Statistics statistics,
+                                            uint32 covered_statistics_target, AbstractStatistics* statistics,
                                             uint32[::1] weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
@@ -906,9 +912,9 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                         updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
-    :param statistics:                  The `Statistics` to be notified about the examples that must be considered when
-                                        searching for the next refinement, i.e., the examples that are covered by the
-                                        new rule
+    :param statistics:                  A pointer to an object of type `AbstractStatistics` to be notified about the
+                                        examples that must be considered when searching for the next refinement, i.e.,
+                                        the examples that are covered by the new rule
     :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
                                         the training examples
     :return:                            The value that is used to mark those elements in the updated
@@ -942,7 +948,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
 
     if covered:
         updated_target = num_conditions
-        statistics.reset_covered_statistics()
+        statistics.resetCoveredStatistics()
 
         # Retain the indices at positions [condition_start, condition_end) and set the corresponding values in
         # `covered_statistics_mask` to `num_conditions`, which marks them as covered (because
@@ -954,7 +960,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
             weight = 1 if weights is None else weights[index]
-            statistics.update_covered_statistic(index, weight, False)
+            statistics.updateCoveredStatistic(index, weight, False)
             i += direction
     else:
         updated_target = covered_statistics_target
@@ -986,7 +992,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
             index = indexed_values[r].index
             covered_statistics_mask[index] = num_conditions
             weight = 1 if weights is None else weights[index]
-            statistics.update_covered_statistic(index, weight, True)
+            statistics.updateCoveredStatistic(index, weight, True)
 
         # Retain the indices at positions [condition_end, end), while leaving the corresponding values in
         # `covered_statistics_mask` untouched, such that all previously covered examples in said range are still marked
