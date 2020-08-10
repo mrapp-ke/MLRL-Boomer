@@ -20,11 +20,9 @@ cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by the default rule
         """
-        self.default_rule_evaluation = new LabelWiseDefaultRuleEvaluationImpl(loss_function.loss_function_ptr,
-                                                                              l2_regularization_weight)
-
-    def __dealloc__(self):
-        del self.default_rule_evaluation
+        cdef shared_ptr[AbstractLabelWiseLoss] loss_function_ptr = loss_function.loss_function_ptr
+        self.default_rule_evaluation_ptr = <shared_ptr[AbstractDefaultRuleEvaluation]>make_shared[LabelWiseDefaultRuleEvaluationImpl](
+            loss_function_ptr, l2_regularization_weight)
 
 
 cdef class LabelWiseRuleEvaluation:
