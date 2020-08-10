@@ -8,6 +8,8 @@ scipy.
 """
 from boomer.common._arrays cimport float64
 
+from libcpp.memory cimport shared_ptr, make_shared
+
 from scipy.linalg.cython_blas cimport ddot, dspmv
 
 
@@ -30,10 +32,10 @@ cdef extern from "cpp/blas.h" nogil:
         void dspmv(float64* a, float64* x, float64* output, int n)
 
 
-cdef inline Blas* init_blas():
+cdef inline shared_ptr[Blas] init_blas():
     """
     Creates a new wrapper for executing different BLAS routines.
 
-    :return: A pointer to an object of type `Blas` that allows to execute different BLAS routines
+    :return: A shared pointer to an object of type `Blas` that allows to execute different BLAS routines
     """
-    return new Blas(ddot, dspmv)
+    return make_shared[Blas](ddot, dspmv)

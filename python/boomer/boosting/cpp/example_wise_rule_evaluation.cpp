@@ -10,14 +10,15 @@ using namespace boosting;
 
 
 ExampleWiseDefaultRuleEvaluationImpl::ExampleWiseDefaultRuleEvaluationImpl(
-        std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr, float64 l2RegularizationWeight, Lapack* lapack) {
+        std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr, float64 l2RegularizationWeight,
+        std::shared_ptr<Lapack> lapackPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     l2RegularizationWeight_ = l2RegularizationWeight;
-    lapack_ = lapack;
+    lapackPtr_ = lapackPtr;
 }
 
 ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
-    delete lapack_;
+
 }
 
 DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
@@ -62,12 +63,12 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     }
 
     // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-    int lwork = lapack_->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numLabels);
+    int lwork = lapackPtr_.get()->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numLabels);
     double* dsysvTmpArray3 = (double*) malloc(lwork * sizeof(double));
 
     // Calculate the scores to be predicted by the default rule by solving the system of linear equations...
-    lapack_->dsysv(sumsOfHessians, sumsOfGradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, predictedScores,
-                   numLabels, lwork, l2RegularizationWeight);
+    lapackPtr_.get()->dsysv(sumsOfHessians, sumsOfGradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,
+                            predictedScores, numLabels, lwork, l2RegularizationWeight);
 
     // Free allocated memory...
     free(gradients);
@@ -81,11 +82,12 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     return new DefaultPrediction(numLabels, predictedScores);
 }
 
-ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Blas* blas,
-                                                             Lapack* lapack) {
+ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
+                                                             std::shared_ptr<Blas> blasPtr,
+                                                             std::shared_ptr<Lapack> lapackPtr) {
     l2RegularizationWeight_ = l2RegularizationWeight;
-    blas_ = blas;
-    lapack_ = lapack;
+    blasPtr_ = blasPtr;
+    lapackPtr_ = lapackPtr;
     dsysvTmpArray1_ = NULL;
     dsysvTmpArray2_ = NULL;
     dsysvTmpArray3_ = NULL;
@@ -95,8 +97,6 @@ ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2Regulariz
 }
 
 ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
-    delete blas_;
-    delete lapack_;
     free(dsysvTmpArray1_);
     free(dsysvTmpArray2_);
     free(dsysvTmpArray3_);
@@ -189,7 +189,7 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
         dspmvTmpArray_ = dspmvTmpArray;
 
         // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-        dsysvLwork = lapack_->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numPredictions);
+        dsysvLwork = lapackPtr_.get()->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numPredictions);
         dsysvLwork_ = dsysvLwork;
         dsysvTmpArray3 = (double*) malloc(dsysvLwork * sizeof(double));
         dsysvTmpArray3_ = dsysvTmpArray3;
@@ -230,13 +230,13 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
     }
 
     // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-    lapack_->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, predictedScores, numPredictions,
-                   dsysvLwork, l2RegularizationWeight);
+    lapackPtr_.get()->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, predictedScores,
+                            numPredictions, dsysvLwork, l2RegularizationWeight);
 
     // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-    float64 overallQualityScore = blas_->ddot(predictedScores, gradients, numPredictions);
-    blas_->dspmv(hessians, predictedScores, dspmvTmpArray, numPredictions);
-    overallQualityScore += 0.5 * blas_->ddot(predictedScores, dspmvTmpArray, numPredictions);
+    float64 overallQualityScore = blasPtr_.get()->ddot(predictedScores, gradients, numPredictions);
+    blasPtr_.get()->dspmv(hessians, predictedScores, dspmvTmpArray, numPredictions);
+    overallQualityScore += 0.5 * blasPtr_.get()->ddot(predictedScores, dspmvTmpArray, numPredictions);
 
     // Add the L2 regularization term to the overall quality score...
     overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);
