@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport float64, array_intp, array_float64, get_index
+from boomer.common._arrays cimport float64, array_intp, array_float64
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
 from boomer.common.rule_evaluation cimport LabelWisePrediction
 from boomer.seco.lift_functions cimport LiftFunction
@@ -70,7 +70,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
                     if label_indices is None:
                         for c in range(0, best_head_candidate_length):
-                            candidate_label_indices[c] = get_index(sorted_indices[c], label_indices)
+                            candidate_label_indices[c] = sorted_indices[c] if label_indices is None else label_indices[sorted_indices[c]]
                             candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
                     else:
                         for c in range(0, best_head_candidate_length):
@@ -93,7 +93,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
                     # Modify the `recyclable_head` and return it...
                     if label_indices is None:
                         for c in range(best_head_candidate_length):
-                            candidate_label_indices[c] = get_index(sorted_indices[c], label_indices)
+                            candidate_label_indices[c] = sorted_indices[c] if label_indices is None else label_indices[sorted_indices[c]]
                             candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
                     else:
                         for c in range(best_head_candidate_length):

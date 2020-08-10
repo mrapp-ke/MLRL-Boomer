@@ -3,7 +3,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp, get_index
+from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.statistics cimport AbstractRefinementSearch
@@ -233,7 +233,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # feature, the examples are traversed in descending order of their respective feature values. For each
                 # potential condition, a quality score is calculated to keep track of the best possible refinement.
                 for c in range(num_sampled_features):
-                    f = get_index(c, feature_indices)
+                    f = c if feature_indices is None else feature_indices[c]
 
                     # Obtain array that contains the indices of the training examples sorted according to the current
                     # feature...
