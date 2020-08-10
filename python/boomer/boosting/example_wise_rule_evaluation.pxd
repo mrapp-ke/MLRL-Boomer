@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction, DefaultRuleEvaluation, \
     AbstractDefaultRuleEvaluation
 from boomer.boosting._blas cimport Blas
@@ -42,10 +42,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil
 
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
-
-    # Functions:
-
-    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix) nogil
+    pass
 
 
 cdef class ExampleWiseRuleEvaluation:
