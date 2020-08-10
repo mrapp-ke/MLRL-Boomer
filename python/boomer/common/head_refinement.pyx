@@ -3,7 +3,7 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-from boomer.common._arrays cimport array_intp, array_float64, get_index
+from boomer.common._arrays cimport array_intp, array_float64
 from boomer.common.rule_evaluation cimport LabelWisePrediction
 
 from libc.stdlib cimport malloc
@@ -101,13 +101,13 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
             if recyclable_head == NULL:
                 # Create a new `HeadCandidate` and return it...
                 candidate_label_indices = <intp*>malloc(sizeof(intp))
-                candidate_label_indices[0] = get_index(best_c, label_indices)
+                candidate_label_indices[0] = best_c if label_indices is None else label_indices[best_c]
                 candidate_predicted_scores = <float64*>malloc(sizeof(float64))
                 candidate_predicted_scores[0] = predicted_scores[best_c]
                 return new HeadCandidate(1, candidate_label_indices, candidate_predicted_scores, best_quality_score)
             else:
                 # Modify the `recyclable_head` and return it...
-                recyclable_head.labelIndices_[0] = get_index(best_c, label_indices)
+                recyclable_head.labelIndices_[0] = best_c if label_indices is None else label_indices[best_c]
                 recyclable_head.predictedScores_[0] = predicted_scores[best_c]
                 recyclable_head.qualityScore_ = best_quality_score
                 return recyclable_head
