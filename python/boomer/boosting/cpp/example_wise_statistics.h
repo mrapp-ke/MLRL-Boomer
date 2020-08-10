@@ -9,6 +9,9 @@
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/statistics.h"
 #include "example_wise_rule_evaluation.h"
+#include "example_wise_losses.h"
+#include "statistics.h"
+#include <memory>
 
 
 namespace boosting {
@@ -21,7 +24,7 @@ namespace boosting {
 
         private:
 
-            ExampleWiseRuleEvaluationImpl* ruleEvaluation_;
+            std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr_;
 
             intp numPredictions_;
 
@@ -50,9 +53,9 @@ namespace boosting {
         public:
 
             /**
-             * @param ruleEvaluation        A pointer to an object of type `ExampleWiseRuleEvaluationImpl` to be used
-             *                              for calculating the predictions, as well as corresponding quality scores of
-             *                              rules
+             * @param ruleEvaluationPtr     A shared pointer to an object of type `ExampleWiseRuleEvaluationImpl` to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores of rules
              * @param numPredictions        The number of labels to be considered by the search
              * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
              *                              the indices of the labels that should be considered by the search or NULL,
@@ -71,10 +74,10 @@ namespace boosting {
              *                              Hessians of all examples, which should be considered by the
              *                              search
              */
-            ExampleWiseRefinementSearchImpl(ExampleWiseRuleEvaluationImpl* ruleEvaluation, intp numPredictions,
-                                            const intp* labelIndices, intp numLabels, const float64* gradients,
-                                            const float64* totalSumsOfGradients, const float64* hessians,
-                                            const float64* totalSumsOfHessians);
+            ExampleWiseRefinementSearchImpl(std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                            intp numPredictions, const intp* labelIndices, intp numLabels,
+                                            const float64* gradients, const float64* totalSumsOfGradients,
+                                            const float64* hessians, const float64* totalSumsOfHessians);
 
             ~ExampleWiseRefinementSearchImpl();
 
@@ -85,6 +88,57 @@ namespace boosting {
             LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
 
             Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+
+    };
+
+    /**
+     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
+     * applied example-wise.
+     */
+    class ExampleWiseStatisticsImpl : public AbstractGradientStatistics {
+
+        private:
+
+            std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr_;
+
+            std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+
+            AbstractLabelMatrix* labelMatrix_;
+
+            float64* currentScores_;
+
+            float64* gradients_;
+
+            float64* totalSumsOfGradients_;
+
+            float64* hessians_;
+
+            float64* totalSumsOfHessians_;
+
+        public:
+
+            /**
+             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractExampleWiseLoss`, representing
+             *                          the loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationPtr A shared pointer to an object of type `ExampleWiseRuleEvaluationImpl`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
+             */
+            ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                      std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr);
+
+            ~ExampleWiseStatisticsImpl();
+
+            void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+                                        DefaultPrediction* defaultPrediction) override;
+
+            void resetCoveredStatistics() override;
+
+            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+
+            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
+
+            void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) override;
 
     };
 
