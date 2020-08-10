@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
-from boomer.common.statistics cimport AbstractRefinementSearch
+from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
@@ -57,21 +57,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
 
     # Attributes:
 
-    cdef ExampleWiseLoss loss_function
-
-    cdef ExampleWiseRuleEvaluation rule_evaluation
-
-    cdef LabelMatrix label_matrix
-
-    cdef float64[:, ::1] current_scores
-
-    cdef float64[:, ::1] gradients
-
-    cdef float64[::1] total_sums_of_gradients
-
-    cdef float64[:, ::1] hessians
-
-    cdef float64[::1] total_sums_of_hessians
+    cdef AbstractStatistics* statistics
 
     # Functions:
 
