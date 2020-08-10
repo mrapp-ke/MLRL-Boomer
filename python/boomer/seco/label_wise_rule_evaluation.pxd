@@ -1,8 +1,8 @@
 from boomer.common._arrays cimport uint8, intp, float64
-from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.rule_evaluation cimport DefaultPrediction, LabelWisePrediction, DefaultRuleEvaluation, \
     AbstractDefaultRuleEvaluation
-from boomer.seco.heuristics cimport Heuristic, AbstractHeuristic
+from boomer.seco.heuristics cimport AbstractHeuristic
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -32,10 +32,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
 
 
 cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
-
-    # Functions:
-
-    cdef DefaultPrediction* calculate_default_prediction(self, LabelMatrix label_matrix) nogil
+    pass
 
 
 cdef class LabelWiseRuleEvaluation:
