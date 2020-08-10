@@ -52,4 +52,4 @@ cdef class ExampleWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef ExampleWiseRuleEvaluationImpl* rule_evaluation
+    cdef shared_ptr[ExampleWiseRuleEvaluationImpl] rule_evaluation_ptr
