@@ -202,5 +202,21 @@ AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIn
 }
 
 void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
-    // TODO
+    AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
+    intp numPredictions = head->numPredictions_;
+    float64* predictedScores = head->predictedScores_;
+    intp numLabels = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numLabels;
+    intp numHessians = linalg::triangularNumber(numLabels);
+
+    // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
+    // example at the given index...
+    for (intp c = 0; c < numPredictions; c++) {
+        intp l = labelIndices != NULL ? labelIndices[c] : c;
+        currentScores_[offset + l] += predictedScores[c];
+    }
+
+    // Update the gradients and Hessians for the example at the given index...
+    lossFunction->calculateGradientsAndHessians(labelMatrix_, statisticIndex, &currentScores_[offset],
+                                                &gradients_[offset], &hessians_[statisticIndex * numHessians]);
 }
