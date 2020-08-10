@@ -7,13 +7,14 @@ from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction
+from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, DefaultRuleEvaluation
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
 
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
+from libcpp.memory cimport make_shared
 
 from cython.operator cimport dereference, postincrement
 
@@ -87,7 +88,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         :param statistics:              The `Statistics` to be used for storing the statistics, which serve as the basis
                                         for learning new rules or refining existing ones
         """
-        self.default_rule_evaluation = default_rule_evaluation
+        if default_rule_evaluation is None:
+            self.default_rule_evaluation_ptr = <shared_ptr[AbstractDefaultRuleEvaluation]>NULL
+        else:
+            self.default_rule_evaluation_ptr = default_rule_evaluation.default_rule_evaluation_ptr
+
         self.statistics_ptr = statistics.statistics_ptr
         self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
 
@@ -105,13 +110,15 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         del self.cache_global
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
-        cdef DefaultRuleEvaluation default_rule_evaluation = self.default_rule_evaluation
+        cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
         cdef AbstractStatistics* statistics = self.statistics_ptr.get()
         cdef DefaultPrediction* default_prediction = NULL
+        cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
 
         try:
-            if default_rule_evaluation is not None:
-                default_prediction = default_rule_evaluation.calculate_default_prediction(label_matrix)
+            if default_rule_evaluation_ptr != NULL:
+                default_rule_evaluation = default_rule_evaluation_ptr.get()
+                default_prediction = default_rule_evaluation.calculateDefaultPrediction(label_matrix.label_matrix)
 
             statistics.applyDefaultPrediction(label_matrix.label_matrix, default_prediction)
             model_builder.set_default_rule(default_prediction)

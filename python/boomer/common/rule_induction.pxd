@@ -8,7 +8,7 @@ from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling,
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.head_refinement cimport HeadRefinement
-from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
+from boomer.common.rule_evaluation cimport AbstractDefaultRuleEvaluation
 
 from libcpp.memory cimport shared_ptr
 from libcpp.unordered_map cimport unordered_map
@@ -42,7 +42,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef DefaultRuleEvaluation default_rule_evaluation
+    cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr
 
     cdef shared_ptr[AbstractStatistics] statistics_ptr
 
