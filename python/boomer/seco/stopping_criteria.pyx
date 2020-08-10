@@ -1,3 +1,6 @@
+from boomer.seco.statistics cimport CoverageStatistics, AbstractCoverageStatistics
+
+
 cdef class UncoveredLabelsCriterion(StoppingCriterion):
     """
     A stopping criterion that stops when the sum of the weight matrix stored by `CoverageStatistics` is smaller than or
@@ -9,11 +12,11 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
         :param loss:        The `CoverageStatistics`
         :param threshold:   The threshold
         """
-        self.statistics = statistics
         self.threshold = threshold
+        self.statistics_ptr = statistics.statistics_ptr
 
     cdef bint should_continue(self, intp num_rules):
-        cdef CoverageStatistics statistics = self.statistics
-        cdef float64 sum_uncovered_labels = statistics.get_sum_uncovered_labels()
+        cdef AbstractCoverageStatistics* statistics = <AbstractCoverageStatistics*>self.statistics_ptr.get()
+        cdef float64 sum_uncovered_labels = statistics.sumUncoveredLabels_
         cdef float64 threshold = self.threshold
         return sum_uncovered_labels > threshold
