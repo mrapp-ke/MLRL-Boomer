@@ -174,7 +174,24 @@ void ExampleWiseStatisticsImpl::resetCoveredStatistics() {
 }
 
 void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
-    // TODO
+    float64 signedWeight = remove ? -((float64) weight) : weight;
+    intp numElements = labelMatrix_->numLabels_;
+    intp offset = statisticIndex * numElements;
+
+    // Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
+    // gradients...
+    for (intp c = 0; c < numElements; c++) {
+        totalSumsOfGradients_[c] += (signedWeight * gradients_[offset + c]);
+    }
+
+    numElements = linalg::triangularNumber(numElements);
+    offset = statisticIndex * numElements;
+
+    // Add the Hessians of the example at the given index (weighted by the given weight) to the total sums of
+    // Hessians...
+    for (intp c = 0; c < numElements; c++) {
+        totalSumsOfHessians_[c] += (signedWeight * hessians_[offset + c]);
+    }
 }
 
 AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
