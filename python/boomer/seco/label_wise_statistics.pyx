@@ -1,7 +1,8 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that allow to store the elements of confusion matrices that are computed independently for each label.
+Provides wrappers for classes that allow to store the elements of confusion matrices that are computed independently for
+each label.
 """
 
 
