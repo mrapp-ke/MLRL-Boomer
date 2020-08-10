@@ -107,18 +107,3 @@ cdef inline cvarray c_matrix_uint8(intp num_rows, intp num_cols):
     cdef intp itemsize = sizeof(uint8)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT8, MODE_C_CONTIGUOUS)
     return array
-
-
-cdef inline intp get_index(intp i, const intp[::1] indices) nogil:
-    """
-    Retrieves and returns the i-th index from an array of indices, if such an array is available. Otherwise i is
-    returned.
-
-    :param i:       The position of the index that should be retrieved
-    :param indices: An array of the dtype int, shape `(num_indices)`, representing the indices, or None
-    :return:        A scalar of dtype int, representing the i-th index in the given array or i, if the array is None
-    """
-    if indices is None:
-        return i
-    else:
-        return indices[i]
