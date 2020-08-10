@@ -195,8 +195,10 @@ void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint
 }
 
 AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
-    // TODO
-    return NULL;
+    intp numLabels = labelMatrix_->numLabels_;
+    intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+    return new ExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels, gradients_,
+                                               totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
 void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
