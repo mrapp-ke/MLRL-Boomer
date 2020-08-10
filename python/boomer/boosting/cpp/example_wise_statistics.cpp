@@ -154,7 +154,7 @@ void ExampleWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labe
 
         // Calculate the gradients and Hessians for the current example...
         lossFunction->calculateGradientsAndHessians(labelMatrix, r, &currentScores[offset], &gradients[offset],
-                                                    &hessians[offset]);
+                                                    &hessians[r * numHessians]);
     }
 
     // Store class members...
