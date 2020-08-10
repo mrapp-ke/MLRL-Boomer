@@ -1,8 +1,8 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that allow to store gradients and Hessians that are calculated according to a (decomposable) loss
-function that is applied label-wise.
+Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
+(decomposable) loss function that is applied label-wise.
 """
 
 
