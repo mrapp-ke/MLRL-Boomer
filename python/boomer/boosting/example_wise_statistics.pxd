@@ -42,7 +42,8 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
+        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr,
+                                    DefaultPrediction* defaultPrediction)
 
         void resetCoveredStatistics()
 

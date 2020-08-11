@@ -122,7 +122,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 default_rule_evaluation = default_rule_evaluation_ptr.get()
                 default_prediction = default_rule_evaluation.calculateDefaultPrediction(label_matrix_ptr.get())
 
-            statistics.applyDefaultPrediction(label_matrix_ptr.get(), default_prediction)
+            statistics.applyDefaultPrediction(label_matrix_ptr, default_prediction)
             model_builder.set_default_rule(default_prediction)
         finally:
             del default_prediction

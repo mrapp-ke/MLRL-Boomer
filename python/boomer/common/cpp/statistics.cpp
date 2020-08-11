@@ -30,7 +30,7 @@ AbstractStatistics::~AbstractStatistics() {
 
 }
 
-void AbstractStatistics::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+void AbstractStatistics::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
                                                 DefaultPrediction* defaultPrediction) {
 
 }
