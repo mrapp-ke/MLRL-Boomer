@@ -172,10 +172,11 @@ AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndi
                                              totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
+void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, HeadCandidate* head) {
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = head->numPredictions_;
-    float64* predictedScores = head->predictedScores_;
+    const intp* labelIndices = head->labelIndices_;
+    const float64* predictedScores = head->predictedScores_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
 
