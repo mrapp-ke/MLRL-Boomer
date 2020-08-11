@@ -98,14 +98,14 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
                                                      DefaultPrediction* defaultPrediction) {
     // Class members
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     // The number of examples
-    intp numExamples = labelMatrix->numExamples_;
+    intp numExamples = labelMatrixPtr.get()->numExamples_;
     // The number of labels
-    intp numLabels = labelMatrix->numLabels_;
+    intp numLabels = labelMatrixPtr.get()->numLabels_;
     // A matrix that stores the currently predicted scores for each example and label
     float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // A matrix that stores the gradients for each example and label
@@ -126,7 +126,7 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
             intp i = r * numLabels + c;
 
             // Calculate the gradient and Hessian for the current example and label...
-            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrix, r, c,
+            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrixPtr.get(), r, c,
                                                                                          predictedScore);
             gradients[i] = pair.first;
             hessians[i] = pair.second;
@@ -137,7 +137,7 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
     }
 
     // Store class members...
-    labelMatrix_ = labelMatrix;
+    labelMatrixPtr_ = labelMatrixPtr;
     currentScores_ = currentScores;
     gradients_ = gradients;
     totalSumsOfGradients_ = totalSumsOfGradients;
@@ -146,13 +146,13 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelM
 }
 
 void LabelWiseStatisticsImpl::resetCoveredStatistics() {
-    intp numLabels = labelMatrix_->numLabels_;
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     arrays::setToZeros(totalSumsOfGradients_, numLabels);
     arrays::setToZeros(totalSumsOfHessians_, numLabels);
 }
 
 void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
-    intp numLabels = labelMatrix_->numLabels_;
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
     float64 signedWeight = remove ? -((float64) weight) : weight;
 
@@ -166,7 +166,7 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
 }
 
 AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
-    intp numLabels = labelMatrix_->numLabels_;
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new LabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels, gradients_,
                                              totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
@@ -176,7 +176,7 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* l
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = head->numPredictions_;
     float64* predictedScores = head->predictedScores_;
-    intp numLabels = labelMatrix_->numLabels_;
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
 
     // Only the labels that are predicted by the new rule must be considered...
@@ -190,8 +190,8 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* l
         currentScores_[i] = updatedScore;
 
         // Update the gradient and Hessian for the current example and label...
-        std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrix_, statisticIndex, l,
-                                                                                     updatedScore);
+        std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrixPtr_.get(),
+                                                                                     statisticIndex, l, updatedScore);
         gradients_[i] = pair.first;
         hessians_[i] = pair.second;
     }

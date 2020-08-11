@@ -5,6 +5,7 @@ from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction
 
 from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/statistics.h" namespace "boosting" nogil:
@@ -13,7 +14,8 @@ cdef extern from "cpp/statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
+        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr,
+                                    DefaultPrediction* defaultPrediction)
 
         void resetSampledStatistics()
 

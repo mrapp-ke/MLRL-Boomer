@@ -30,7 +30,7 @@ namespace seco {
 
             const intp* labelIndices_;
 
-            AbstractLabelMatrix* labelMatrix_;
+            std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr_;
 
             const float64* uncoveredLabels_;
 
@@ -56,8 +56,8 @@ namespace seco {
              * @param labelIndices              An array of type `intp`, shape `(numPredictions)`, representing the
              *                                  indices of the labels that should be considered by the search or NULL,
              *                                  if all labels should be considered
-             * @param labelMatrix               A pointer to an object of type `AbstractLabelMatrix` that provides
-             *                                  random access to the labels of the training examples
+             * @param labelMatrix               A shared pointer to an object of type `AbstractLabelMatrix` that
+             *                                  provides random access to the labels of the training examples
              * @param uncoveredLabels           A pointer to an array of type `float64`, shape
              *                                  `(numExamples, numLabels)`, indicating which examples and labels remain
              *                                  to be covered
@@ -74,8 +74,9 @@ namespace seco {
              */
             LabelWiseRefinementSearchImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                           intp numPredictions, const intp* labelIndices,
-                                          AbstractLabelMatrix* labelMatrix, const float64* uncoveredLabels,
-                                          const uint8* minorityLabels, const float64* confusionMatricesTotal,
+                                          std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
+                                          const float64* uncoveredLabels, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal,
                                           const float64* confusionMatricesSubset);
 
             ~LabelWiseRefinementSearchImpl();
@@ -97,7 +98,7 @@ namespace seco {
 
             std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
 
-            AbstractLabelMatrix* labelMatrix_;
+            std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr_;
 
             float64* uncoveredLabels_;
 
@@ -118,7 +119,7 @@ namespace seco {
 
             ~LabelWiseStatisticsImpl();
 
-            void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+            void applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
                                         DefaultPrediction* defaultPrediction) override;
 
             void resetSampledStatistics() override;
