@@ -2,6 +2,8 @@ from boomer.common._arrays cimport uint8, intp, float32
 from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._sparse cimport BinaryDokMatrix
 
+from libcpp.memory cimport shared_ptr
+
 
 cdef extern from "cpp/input_data.h" nogil:
 
@@ -44,29 +46,19 @@ cdef class LabelMatrix:
 
     # Attributes:
 
-    cdef AbstractLabelMatrix* label_matrix
-
     cdef readonly intp num_examples
 
     cdef readonly intp num_labels
 
-    # Functions:
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
+    cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
 
 
 cdef class DenseLabelMatrix(LabelMatrix):
-
-    # Functions:
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
+    pass
 
 
 cdef class DokLabelMatrix(LabelMatrix):
-
-    # Functions:
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil
+    pass
 
 
 cdef class FeatureMatrix:
