@@ -39,7 +39,8 @@ cdef extern from "cpp/statistics.h" nogil:
 
         # Functions:
 
-        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
+        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr,
+                                    DefaultPrediction* defaultPrediction)
 
         void resetSampledStatistics()
 

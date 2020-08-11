@@ -4,6 +4,7 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
+from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
@@ -111,6 +112,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
         cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
+        cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
         cdef AbstractStatistics* statistics = self.statistics_ptr.get()
         cdef DefaultPrediction* default_prediction = NULL
         cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
@@ -118,9 +120,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         try:
             if default_rule_evaluation_ptr != NULL:
                 default_rule_evaluation = default_rule_evaluation_ptr.get()
-                default_prediction = default_rule_evaluation.calculateDefaultPrediction(label_matrix.label_matrix)
+                default_prediction = default_rule_evaluation.calculateDefaultPrediction(label_matrix_ptr.get())
 
-            statistics.applyDefaultPrediction(label_matrix.label_matrix, default_prediction)
+            statistics.applyDefaultPrediction(label_matrix_ptr, default_prediction)
             model_builder.set_default_rule(default_prediction)
         finally:
             del default_prediction
