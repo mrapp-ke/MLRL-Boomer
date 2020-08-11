@@ -8,6 +8,8 @@ from boomer.common._tuples cimport IndexedFloat32, compare_indexed_float32
 
 from libc.stdlib cimport qsort, malloc
 
+from libcpp.memory cimport make_shared
+
 from cython.operator cimport dereference
 
 
@@ -15,17 +17,7 @@ cdef class LabelMatrix:
     """
     A wrapper for the abstract C++ class `AbstractLabelMatrix`.
     """
-
-    cdef uint8 get_label(self, intp example_index, intp label_index) nogil:
-        """
-        Returns whether a specific label of the example at a given index is relevant or irrelevant.
-
-        :param example_index:   The index of the example
-        :param label_index:     The index of the label
-        :return:                1, if the label is relevant, 0 otherwise
-        """
-        cdef AbstractLabelMatrix* label_matrix = self.label_matrix
-        return label_matrix.getLabel(example_index, label_index)
+    pass
 
 
 cdef class DenseLabelMatrix(LabelMatrix):
@@ -40,12 +32,10 @@ cdef class DenseLabelMatrix(LabelMatrix):
         """
         cdef intp num_examples = y.shape[0]
         cdef intp num_labels = y.shape[1]
-        self.label_matrix = new DenseLabelMatrixImpl(num_examples, num_labels, &y[0, 0])
+        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
+                                                                                                   num_labels, &y[0, 0])
         self.num_examples = num_examples
         self.num_labels = num_labels
-
-    def __dealloc__(self):
-        del self.label_matrix
 
 
 cdef class DokLabelMatrix(LabelMatrix):
@@ -60,6 +50,7 @@ cdef class DokLabelMatrix(LabelMatrix):
         :param rows:            An array of dtype `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
+        cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr
         cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
         cdef intp num_rows = rows.shape[0]
         cdef list col_indices
@@ -71,12 +62,12 @@ cdef class DokLabelMatrix(LabelMatrix):
             for c in col_indices:
                 dok_matrix.addValue(r, c)
 
-        self.label_matrix = new DokLabelMatrixImpl(num_examples, num_labels, dok_matrix)
+        dok_matrix_ptr.reset(dok_matrix)
+        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](num_examples,
+                                                                                                 num_labels,
+                                                                                                 dok_matrix_ptr)
         self.num_examples = num_examples
         self.num_labels = num_labels
-
-    def __dealloc__(self):
-        del self.label_matrix
 
 
 cdef class FeatureMatrix:

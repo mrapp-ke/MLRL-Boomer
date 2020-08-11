@@ -120,14 +120,14 @@ ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void ExampleWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labelMatrix,
+void ExampleWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
                                                        DefaultPrediction* defaultPrediction) {
     // Class members
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     // The number of examples
-    intp numExamples = labelMatrix->numExamples_;
+    intp numExamples = labelMatrixPtr.get()->numExamples_;
     // The number of labels
-    intp numLabels = labelMatrix->numLabels_;
+    intp numLabels = labelMatrixPtr.get()->numLabels_;
     // The number of hessians
     intp numHessians = linalg::triangularNumber(numLabels);
     // A matrix that stores the currently predicted scores for each example and label
@@ -153,12 +153,12 @@ void ExampleWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labe
         }
 
         // Calculate the gradients and Hessians for the current example...
-        lossFunction->calculateGradientsAndHessians(labelMatrix, r, &currentScores[offset], &gradients[offset],
+        lossFunction->calculateGradientsAndHessians(labelMatrixPtr.get(), r, &currentScores[offset], &gradients[offset],
                                                     &hessians[r * numHessians]);
     }
 
     // Store class members...
-    labelMatrix_ = labelMatrix;
+    labelMatrixPtr_ = labelMatrixPtr;
     currentScores_ = currentScores;
     gradients_ = gradients;
     totalSumsOfGradients_ = totalSumsOfGradients;
@@ -167,7 +167,7 @@ void ExampleWiseStatisticsImpl::applyDefaultPrediction(AbstractLabelMatrix* labe
 }
 
 void ExampleWiseStatisticsImpl::resetCoveredStatistics() {
-    intp numLabels = labelMatrix_->numLabels_;
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     arrays::setToZeros(totalSumsOfGradients_, numLabels);
     intp numHessians = linalg::triangularNumber(numLabels);
     arrays::setToZeros(totalSumsOfHessians_, numHessians);
@@ -175,7 +175,7 @@ void ExampleWiseStatisticsImpl::resetCoveredStatistics() {
 
 void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
     float64 signedWeight = remove ? -((float64) weight) : weight;
-    intp numElements = labelMatrix_->numLabels_;
+    intp numElements = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numElements;
 
     // Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
@@ -195,7 +195,7 @@ void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint
 }
 
 AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
-    intp numLabels = labelMatrix_->numLabels_;
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new ExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels, gradients_,
                                                totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
@@ -205,7 +205,7 @@ void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp*
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = head->numPredictions_;
     float64* predictedScores = head->predictedScores_;
-    intp numLabels = labelMatrix_->numLabels_;
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
     intp numHessians = linalg::triangularNumber(numLabels);
 
@@ -217,6 +217,6 @@ void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp*
     }
 
     // Update the gradients and Hessians for the example at the given index...
-    lossFunction->calculateGradientsAndHessians(labelMatrix_, statisticIndex, &currentScores_[offset],
+    lossFunction->calculateGradientsAndHessians(labelMatrixPtr_.get(), statisticIndex, &currentScores_[offset],
                                                 &gradients_[offset], &hessians_[statisticIndex * numHessians]);
 }
