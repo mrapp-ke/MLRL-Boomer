@@ -811,7 +811,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # Update the statistics based on the predictions of the new rule...
                 for r in range(num_statistics):
                     if covered_statistics_mask[r] == covered_statistics_target:
-                        statistics.applyPrediction(r, label_indices_ptr, head)
+                        statistics.applyPrediction(r, head)
 
                 # Add the induced rule to the model...
                 model_builder.add_rule(head, conditions, num_conditions_per_comparator)

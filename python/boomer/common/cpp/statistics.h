@@ -254,12 +254,9 @@ class AbstractStatistics {
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param labelIndices      A pointer to an array of type `intp`, shape `(head.numPredictions_)`, representing
-         *                          the indices of the labels for which the newly induced rule predicts or NULL, if the
-         *                          rule predicts for all labels
          * @param head              A pointer to an object of type `HeadCandidate`, representing the head of the newly
          *                          induced rule
          */
-        virtual void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head);
+        virtual void applyPrediction(intp statisticIndex, HeadCandidate* head);
 
 };

@@ -202,8 +202,9 @@ AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndi
                                              confusionMatricesSubset_);
 }
 
-void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
+void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, HeadCandidate* head) {
     intp numPredictions = head->numPredictions_;
+    const intp* labelIndices = head->labelIndices_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
 
