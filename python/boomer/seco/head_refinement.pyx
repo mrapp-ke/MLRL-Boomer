@@ -12,12 +12,12 @@ cdef class PartialHeadRefinement(HeadRefinement):
         self.lift_function_ptr = lift_function.lift_function_ptr
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  intp[::1] label_indices, AbstractRefinementSearch* refinement_search, bint uncovered,
-                                  bint accumulated) nogil:
+                                  const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                  bint uncovered, bint accumulated) nogil:
         cdef LabelWisePrediction* prediction = refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
-        cdef intp num_predictions
+        cdef intp num_predictions = prediction.numPredictions_
         cdef float64* candidate_predicted_scores
         cdef intp* candidate_label_indices
         cdef intp* sorted_indices = NULL
@@ -28,9 +28,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
         cdef AbstractLiftFunction* lift_function = self.lift_function_ptr.get()
 
         try:
-            if label_indices is None:
-                num_predictions = prediction.numPredictions_
-
+            if label_indices == NULL:
                 sorted_indices = __argsort(quality_scores, num_predictions)
 
                 maximum_lift = lift_function.getMaxLift()
@@ -52,15 +50,13 @@ cdef class PartialHeadRefinement(HeadRefinement):
                         # prunable by decomposition
                         break
             else:
-                num_predictions = label_indices.shape[0]
-
                 for c in range(0, num_predictions):
                     # select the top element of sorted_label_indices excluding labels already contained
                     total_quality_score += 1 - quality_scores[c]
 
                 best_quality_score = 1 - (total_quality_score / num_predictions) * lift_function.calculateLift(num_predictions)
 
-                best_head_candidate_length = label_indices.shape[0]
+                best_head_candidate_length = num_predictions
 
             if best_head == NULL or best_quality_score < best_head.qualityScore_:
                 if recyclable_head == NULL:
@@ -68,9 +64,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
                     candidate_label_indices = <intp*>malloc(best_head_candidate_length * sizeof(intp))
                     candidate_predicted_scores = <float64*>malloc(best_head_candidate_length * sizeof(float64))
 
-                    if label_indices is None:
+                    if label_indices == NULL:
                         for c in range(0, best_head_candidate_length):
-                            candidate_label_indices[c] = sorted_indices[c] if label_indices is None else label_indices[sorted_indices[c]]
+                            candidate_label_indices[c] = sorted_indices[c] if label_indices == NULL else label_indices[sorted_indices[c]]
                             candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
                     else:
                         for c in range(0, best_head_candidate_length):
@@ -91,9 +87,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
                         recyclable_head.predictedScores_ = candidate_predicted_scores
 
                     # Modify the `recyclable_head` and return it...
-                    if label_indices is None:
+                    if label_indices == NULL:
                         for c in range(best_head_candidate_length):
-                            candidate_label_indices[c] = sorted_indices[c] if label_indices is None else label_indices[sorted_indices[c]]
+                            candidate_label_indices[c] = sorted_indices[c] if label_indices == NULL else label_indices[sorted_indices[c]]
                             candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
                     else:
                         for c in range(best_head_candidate_length):
