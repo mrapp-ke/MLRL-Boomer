@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport AbstractLabelMatrix
 
 from libcpp.memory cimport shared_ptr
 
@@ -28,17 +28,6 @@ cdef class ExampleWiseLoss:
 
     cdef shared_ptr[AbstractExampleWiseLoss] loss_function_ptr
 
-    # Functions:
-
-    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64* predicted_scores, float64[::1] gradients,
-                                               float64[::1] hessians) nogil
-
 
 cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):
-
-    # Functions:
-
-    cdef void calculate_gradients_and_hessians(self, LabelMatrix label_matrix, intp example_index,
-                                               float64* predicted_scores, float64[::1] gradients,
-                                               float64[::1] hessians) nogil
+    pass
