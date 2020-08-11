@@ -157,7 +157,7 @@ cdef class ModelBuilder:
 
     cdef void set_default_rule(self, DefaultPrediction* default_prediction)
 
-    cdef void add_rule(self, intp[::1] label_indices, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator)
 
     cdef RuleModel build_model(self)
@@ -179,7 +179,7 @@ cdef class RuleListBuilder(ModelBuilder):
 
     cdef void set_default_rule(self, DefaultPrediction* default_prediction)
 
-    cdef void add_rule(self, intp[::1] label_indices, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator)
 
     cdef RuleModel build_model(self)
