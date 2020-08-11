@@ -17,7 +17,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil
         # Constructors:
 
         ExampleWiseDefaultRuleEvaluationImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                             float64 l2RegularizationWeight, Lapack* lapack) except +
+                                             float64 l2RegularizationWeight, shared_ptr[Lapack] lapackPtr) except +
 
         DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +
 
@@ -26,7 +26,8 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil
 
         # Constructors:
 
-        ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, Blas* blas, Lapack* lapack) except +
+        ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, shared_ptr[Blas] blasPtr,
+                                      shared_ptr[Lapack] lapackPtr) except +
 
         # Functions:
 
