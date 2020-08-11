@@ -52,7 +52,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
+        void applyPrediction(intp statisticIndex, HeadCandidate* head)
 
 
 cdef class Statistics:

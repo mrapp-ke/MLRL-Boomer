@@ -578,14 +578,11 @@ cdef class ModelBuilder:
         """
         pass
 
-    cdef void add_rule(self, intp[::1] label_indices, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         """
         Adds a new rule to the model.
 
-        :param label_indices:                   An array of dtype int, shape `(num_predicted_labels)`, representing the
-                                                indices of the labels for which the rule predicts or None, if the rule
-                                                predicts for all labels
         :param head:                            A pointer to an object of type `HeadCandidate`, representing the head of
                                                 the rule
         :param conditions:                      A list that contains the rule's conditions
@@ -644,7 +641,7 @@ cdef class RuleListBuilder(ModelBuilder):
             else:
                 rule_list.add_rule(default_rule)
 
-    cdef void add_rule(self, intp[::1] label_indices, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
         cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
@@ -695,6 +692,7 @@ cdef class RuleListBuilder(ModelBuilder):
 
         cdef intp num_predictions = head.numPredictions_
         cdef float64* predicted_scores = head.predictedScores_
+        cdef intp* label_indices = head.labelIndices_
         cdef float64[::1] head_scores = array_float64(num_predictions)
         cdef intp[::1] head_label_indices
         cdef Head rule_head
@@ -703,11 +701,14 @@ cdef class RuleListBuilder(ModelBuilder):
         for c in range(num_predictions):
             head_scores[c] = predicted_scores[c]
 
-        if label_indices is None:
+        if label_indices == NULL:
             rule_head = FullHead.__new__(FullHead, head_scores)
         else:
             head_label_indices = array_intp(num_predictions)
-            head_label_indices[:] = label_indices
+
+            for c in range(num_predictions):
+                head_label_indices[c] = label_indices[c]
+
             rule_head = PartialHead.__new__(PartialHead, head_label_indices, head_scores)
 
         cdef rule = Rule.__new__(Rule, rule_body, rule_head)

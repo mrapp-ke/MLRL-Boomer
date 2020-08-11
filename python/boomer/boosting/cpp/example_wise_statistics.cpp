@@ -201,10 +201,11 @@ AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIn
                                                totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
-void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head) {
+void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, HeadCandidate* head) {
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = head->numPredictions_;
-    float64* predictedScores = head->predictedScores_;
+    const intp* labelIndices = head->labelIndices_;
+    const float64* predictedScores = head->predictedScores_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
     intp numHessians = linalg::triangularNumber(numLabels);
