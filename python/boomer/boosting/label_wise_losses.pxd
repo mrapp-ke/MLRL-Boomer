@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport AbstractLabelMatrix
 
 from libcpp.pair cimport pair
 from libcpp.memory cimport shared_ptr
@@ -37,23 +37,9 @@ cdef class LabelWiseLoss:
 
     cdef shared_ptr[AbstractLabelWiseLoss] loss_function_ptr
 
-    # Functions:
-
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score) nogil
-
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
-
-    # Functions:
-
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score) nogil
-
+    pass
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
-
-    # Functions:
-
-    cdef pair[float64, float64] calculate_gradient_and_hessian(self, LabelMatrix label_matrix, intp example_index,
-                                                               intp label_index, float64 predicted_score) nogil
+    pass
