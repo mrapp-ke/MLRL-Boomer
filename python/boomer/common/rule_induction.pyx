@@ -814,7 +814,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         statistics.applyPrediction(r, label_indices_ptr, head)
 
                 # Add the induced rule to the model...
-                model_builder.add_rule(label_indices, head, conditions, num_conditions_per_comparator)
+                model_builder.add_rule(head, conditions, num_conditions_per_comparator)
                 return True
         finally:
             del head
