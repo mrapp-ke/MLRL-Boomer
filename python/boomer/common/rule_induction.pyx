@@ -211,18 +211,18 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             statistics.addSampledStatistic(i, weight)
 
         # Sub-sample labels, if necessary...
-        cdef intp[::1] label_indices
+        cdef intp[::1] sampled_label_indices
+        cdef const intp* label_indices
         cdef intp num_predictions
-        cdef const intp* label_indices_ptr
 
         if label_sub_sampling is None:
-            label_indices = None
+            sampled_label_indices = None
+            label_indices = <const intp*>NULL
             num_predictions = 0
-            label_indices_ptr = <const intp*>NULL
         else:
-            label_indices = label_sub_sampling.sub_sample(num_labels, rng)
-            num_predictions = label_indices.shape[0]
-            label_indices_ptr = &label_indices[0]
+            sampled_label_indices = label_sub_sampling.sub_sample(num_labels, rng)
+            label_indices = &sampled_label_indices[0]
+            num_predictions = sampled_label_indices.shape[0]
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
@@ -291,7 +291,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                             nominal = False
 
                         # Start a new search based on the current statistics when processing a new feature...
-                        refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices_ptr))
+                        refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
 
                         # In the following, we start by processing all examples with feature values < 0...
                         sum_of_weights = 0
@@ -745,7 +745,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                         # Keep the labels for which the rule predicts, if the head should not be further refined...
                         num_predictions = head.numPredictions_
-                        label_indices = <intp[:num_predictions]>head.labelIndices_ if head.labelIndices_ != NULL else None
+                        label_indices = head.labelIndices_
 
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
@@ -779,21 +779,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 return False
             else:
                 num_predictions = head.numPredictions_
-                label_indices_ptr = head.labelIndices_
-                label_indices = <intp[:num_predictions]>label_indices_ptr if label_indices_ptr != NULL else None
+                label_indices = head.labelIndices_
 
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
                         uint32_array_scalar_pair = pruning.prune(cache_global, conditions, covered_statistics_mask,
-                                                                 covered_statistics_target, weights, label_indices,
-                                                                 statistics, head_refinement)
+                                                                 covered_statistics_target, weights, num_predictions,
+                                                                 label_indices, statistics, head_refinement)
                         covered_statistics_mask = uint32_array_scalar_pair.first
                         covered_statistics_target = uint32_array_scalar_pair.second
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
-                    refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices_ptr))
+                    refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
 
                     for r in range(num_statistics):
                         if covered_statistics_mask[r] == covered_statistics_target:
