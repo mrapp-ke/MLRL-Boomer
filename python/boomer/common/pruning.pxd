@@ -15,8 +15,9 @@ cdef class Pruning:
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
-                                         uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
-                                         AbstractStatistics* statistics, HeadRefinement head_refinement)
+                                         uint32 covered_examples_target, uint32[::1] weights, intp num_label_indices,
+                                         const intp* label_indices,  AbstractStatistics* statistics,
+                                         HeadRefinement head_refinement)
 
 
 cdef class IREP(Pruning):
@@ -25,5 +26,6 @@ cdef class IREP(Pruning):
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, uint32[::1] covered_examples_mask,
-                                         uint32 covered_examples_target, uint32[::1] weights, intp[::1] label_indices,
-                                         AbstractStatistics* statistics, HeadRefinement head_refinement)
+                                         uint32 covered_examples_target, uint32[::1] weights, intp num_label_indices,
+                                         const intp* label_indices, AbstractStatistics* statistics,
+                                         HeadRefinement head_refinement)
