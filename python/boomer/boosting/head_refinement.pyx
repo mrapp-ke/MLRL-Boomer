@@ -14,8 +14,8 @@ cdef class FullHeadRefinement(HeadRefinement):
     """
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  intp[::1] label_indices, AbstractRefinementSearch* refinement_search, bint uncovered,
-                                  bint accumulated) nogil:
+                                  const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                  bint uncovered, bint accumulated) nogil:
         cdef Prediction* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
         cdef intp num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
@@ -33,7 +33,7 @@ cdef class FullHeadRefinement(HeadRefinement):
                 for c in range(num_predictions):
                     candidate_predicted_scores[c] = predicted_scores[c]
 
-                if label_indices is not None:
+                if label_indices != NULL:
                     candidate_label_indices = <intp*>malloc(num_predictions * sizeof(intp))
 
                     for c in range(num_predictions):

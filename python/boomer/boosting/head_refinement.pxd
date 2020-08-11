@@ -9,8 +9,8 @@ cdef class FullHeadRefinement(HeadRefinement):
     # Functions:
 
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  intp[::1] label_indices, AbstractRefinementSearch* refinement_search, bint uncovered,
-                                  bint accumulated) nogil
+                                  const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                  bint uncovered, bint accumulated) nogil
 
     cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
                                           bint accumulated) nogil
