@@ -35,7 +35,7 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix) except +
+        DokLabelMatrixImpl(intp numExamples, intp numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
 
         # Functions:
 

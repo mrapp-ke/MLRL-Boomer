@@ -7,6 +7,7 @@
 
 #include "arrays.h"
 #include "sparse.h"
+#include <memory>
 
 
 /**
@@ -78,17 +79,17 @@ class DokLabelMatrixImpl : public AbstractLabelMatrix {
 
     private:
 
-        BinaryDokMatrix* dokMatrix_;
+        std::shared_ptr<BinaryDokMatrix> dokMatrixPtr_;
 
     public:
 
         /**
          * @param numExamples   The number of examples
          * @param numLabels     The number of labels
-         * @param dokMatrix     A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
-         *                      training examples
+         * @param dokMatrixPtr  A shared pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of
+         *                      the training examples
          */
-        DokLabelMatrixImpl(intp numExamples, intp numLabels, BinaryDokMatrix* dokMatrix);
+        DokLabelMatrixImpl(intp numExamples, intp numLabels, std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
 
         ~DokLabelMatrixImpl();
 

@@ -50,6 +50,7 @@ cdef class DokLabelMatrix(LabelMatrix):
         :param rows:            An array of dtype `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
+        cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr
         cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
         cdef intp num_rows = rows.shape[0]
         cdef list col_indices
@@ -61,8 +62,10 @@ cdef class DokLabelMatrix(LabelMatrix):
             for c in col_indices:
                 dok_matrix.addValue(r, c)
 
+        dok_matrix_ptr.reset(dok_matrix)
         self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](num_examples,
-                                                                                                 num_labels, dok_matrix)
+                                                                                                 num_labels,
+                                                                                                 dok_matrix_ptr)
         self.num_examples = num_examples
         self.num_labels = num_labels
 
