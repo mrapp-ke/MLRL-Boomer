@@ -99,10 +99,11 @@ class AbstractDefaultRuleEvaluation {
         /**
          * Calculates the scores to be predicted by a default rule based on the ground truth label matrix.
          *
-         * @param labelMatrix   A `LabelMatrix` that provides random access to the labels of the training examples
+         * @param labelMatrix   A pointer to an object of type `AbstractRandomAccessLabelMatrix` that provides random
+         *                      access to the labels of the training examples
          * @return              A pointer to an object of type `DefaultPrediction`, representing the predictions of the
          *                      default rule
          */
-        virtual DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix);
+        virtual DefaultPrediction* calculateDefaultPrediction(AbstractRandomAccessLabelMatrix* labelMatrix);
 
 };

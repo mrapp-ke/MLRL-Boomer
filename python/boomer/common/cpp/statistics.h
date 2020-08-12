@@ -156,12 +156,12 @@ class AbstractStatistics {
          * As this function is guaranteed to be invoked first, it may be used to initialize any internal state, i.e., to
          * compute and store global information that is required by the other functions that will be called later.
          *
-         * @param labelMatrixPtr    A shared pointer to an object of type `AbstractLabelMatrix` that provides random
-         *                          access to the labels of the training examples
+         * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+         *                          provides random access to the labels of the training examples
          * @param defaultPrediction A pointer to an object of type `DefaultPrediction`, representing the predictions of
          *                          the default rule or NULL, if no default rule is available
          */
-        virtual void applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
+        virtual void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                             DefaultPrediction* defaultPrediction);
 
         /**

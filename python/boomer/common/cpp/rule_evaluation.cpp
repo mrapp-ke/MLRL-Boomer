@@ -30,6 +30,7 @@ AbstractDefaultRuleEvaluation::~AbstractDefaultRuleEvaluation() {
 
 }
 
-DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
+DefaultPrediction* AbstractDefaultRuleEvaluation::calculateDefaultPrediction(
+        AbstractRandomAccessLabelMatrix* labelMatrix) {
     return NULL;
 }

@@ -8,7 +8,7 @@ using namespace seco;
 
 LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
         std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr, intp numPredictions, const intp* labelIndices,
-        std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr, const float64* uncoveredLabels,
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, const float64* uncoveredLabels,
         const uint8* minorityLabels, const float64* confusionMatricesTotal, const float64* confusionMatricesSubset) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     numPredictions_ = numPredictions;
@@ -93,7 +93,7 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
     free(confusionMatricesSubset_);
 }
 
-void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
+void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                      DefaultPrediction* defaultPrediction) {
     // The number of examples
     intp numExamples = labelMatrixPtr.get()->numExamples_;

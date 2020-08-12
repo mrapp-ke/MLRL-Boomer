@@ -13,14 +13,14 @@ from libcpp.memory cimport make_shared
 from cython.operator cimport dereference
 
 
-cdef class LabelMatrix:
+cdef class RandomAccessLabelMatrix:
     """
-    A wrapper for the abstract C++ class `AbstractLabelMatrix`.
+    A wrapper for the abstract C++ class `AbstractRandomAccessLabelMatrix`.
     """
     pass
 
 
-cdef class DenseLabelMatrix(LabelMatrix):
+cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
     """
     A wrapper for the C++ class `DenseLabelMatrix`.
     """
@@ -32,13 +32,13 @@ cdef class DenseLabelMatrix(LabelMatrix):
         """
         cdef intp num_examples = y.shape[0]
         cdef intp num_labels = y.shape[1]
-        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
-                                                                                                   num_labels, &y[0, 0])
+        self.label_matrix_ptr = <shared_ptr[AbstractRandomAccessLabelMatrix]>make_shared[DenseLabelMatrixImpl](
+                num_examples, num_labels, &y[0, 0])
         self.num_examples = num_examples
         self.num_labels = num_labels
 
 
-cdef class DokLabelMatrix(LabelMatrix):
+cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     """
     A wrapper for the C++ class `DokLabelMatrix`.
     """
@@ -63,9 +63,8 @@ cdef class DokLabelMatrix(LabelMatrix):
                 dok_matrix.addValue(r, c)
 
         dok_matrix_ptr.reset(dok_matrix)
-        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](num_examples,
-                                                                                                 num_labels,
-                                                                                                 dok_matrix_ptr)
+        self.label_matrix_ptr = <shared_ptr[AbstractRandomAccessLabelMatrix]>make_shared[DokLabelMatrixImpl](
+                num_examples, num_labels, dok_matrix_ptr)
         self.num_examples = num_examples
         self.num_labels = num_labels
 

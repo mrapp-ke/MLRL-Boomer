@@ -24,7 +24,7 @@ namespace seco {
 
             ~LabelWiseDefaultRuleEvaluationImpl();
 
-            DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
+            DefaultPrediction* calculateDefaultPrediction(AbstractRandomAccessLabelMatrix* labelMatrix) override;
 
     };
 

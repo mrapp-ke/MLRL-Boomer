@@ -4,7 +4,7 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
-from boomer.common.input_data cimport AbstractLabelMatrix
+from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
@@ -25,11 +25,12 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, RandomAccessLabelMatrix label_matrix, ModelBuilder model_builder):
         """
         Induces the default rule.
 
-        :param label_matrix:    A `LabelMatrix` that provides random access to the labels of the training examples
+        :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
+                                examples
         :param model_builder:   The builder, the default rule should be added to
         """
         pass
@@ -110,9 +111,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, RandomAccessLabelMatrix label_matrix, ModelBuilder model_builder):
         cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
-        cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
+        cdef shared_ptr[AbstractRandomAccessLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
         cdef AbstractStatistics* statistics = self.statistics_ptr.get()
         cdef DefaultPrediction* default_prediction = NULL
         cdef AbstractDefaultRuleEvaluation* default_rule_evaluation

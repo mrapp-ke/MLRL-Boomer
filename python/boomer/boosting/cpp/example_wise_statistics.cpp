@@ -120,7 +120,7 @@ ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void ExampleWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
+void ExampleWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                        DefaultPrediction* defaultPrediction) {
     // Class members
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();

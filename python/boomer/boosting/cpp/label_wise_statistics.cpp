@@ -98,7 +98,7 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
+void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                      DefaultPrediction* defaultPrediction) {
     // Class members
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();

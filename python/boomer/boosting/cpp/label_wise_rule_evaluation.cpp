@@ -16,7 +16,8 @@ LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
 
 }
 
-DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
+DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
+        AbstractRandomAccessLabelMatrix* labelMatrix) {
     // Class members
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     float64 l2RegularizationWeight = l2RegularizationWeight_;
