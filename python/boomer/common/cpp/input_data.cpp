@@ -1,12 +1,17 @@
 #include "input_data.h"
 
 
-AbstractRandomAccessLabelMatrix::AbstractRandomAccessLabelMatrix(intp numExamples, intp numLabels) {
+AbstractLabelMatrix::AbstractLabelMatrix(intp numExamples, intp numLabels) {
     numExamples_ = numExamples;
     numLabels_ = numLabels;
 }
 
-AbstractRandomAccessLabelMatrix::~AbstractRandomAccessLabelMatrix() {
+AbstractLabelMatrix::~AbstractLabelMatrix() {
+
+}
+
+AbstractRandomAccessLabelMatrix::AbstractRandomAccessLabelMatrix(intp numExamples, intp numLabels)
+    : AbstractLabelMatrix(numExamples, numLabels) {
 
 }
 

@@ -11,9 +11,9 @@
 
 
 /**
- * An abstract base class for all label matrices that provide random access to the labels of the training examples.
+ * An abstract base class for all label matrix that provide access to the labels of the training examples.
  */
-class AbstractRandomAccessLabelMatrix {
+class AbstractLabelMatrix {
 
     public:
 
@@ -21,9 +21,9 @@ class AbstractRandomAccessLabelMatrix {
          * @param numExamples   The number of examples
          * @param numLabels     The number of labels
          */
-        AbstractRandomAccessLabelMatrix(intp numExamples, intp numLabels);
+        AbstractLabelMatrix(intp numExamples, intp numLabels);
 
-        virtual ~AbstractRandomAccessLabelMatrix();
+        virtual ~AbstractLabelMatrix();
 
         /**
          * The number of examples.
@@ -34,6 +34,21 @@ class AbstractRandomAccessLabelMatrix {
          * The number of labels.
          */
         intp numLabels_;
+
+};
+
+/**
+ * An abstract base class for all label matrices that provide random access to the labels of the training examples.
+ */
+class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
+
+    public:
+
+        /**
+         * @param numExamples   The number of examples
+         * @param numLabels     The number of labels
+         */
+        AbstractRandomAccessLabelMatrix(intp numExamples, intp numLabels);
 
         /**
          * Returns whether a specific label of the example at a given index is relevant or irrelevant.
