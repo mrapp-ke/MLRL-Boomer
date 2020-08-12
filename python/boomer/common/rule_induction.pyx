@@ -99,12 +99,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     def __dealloc__(self):
         cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
-        cdef unordered_map[intp, IndexedFloat32Array*].iterator cache_global_iterator = dereference(cache_global).begin()
+        cdef unordered_map[intp, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
         cdef IndexedFloat32Array* indexed_array
 
-        while cache_global_iterator != dereference(cache_global).end():
+        while cache_global_iterator != cache_global.end():
             indexed_array = dereference(cache_global_iterator).second
-            free(dereference(indexed_array).data)
+            free(indexed_array.data)
             free(indexed_array)
             postincrement(cache_global_iterator)
 
@@ -256,11 +256,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         if indexed_array_wrapper == NULL:
                             indexed_array_wrapper = <IndexedFloat32ArrayWrapper*>malloc(sizeof(IndexedFloat32ArrayWrapper))
-                            dereference(indexed_array_wrapper).array = NULL
-                            dereference(indexed_array_wrapper).num_conditions = 0
+                            indexed_array_wrapper.array = NULL
+                            indexed_array_wrapper.num_conditions = 0
                             cache_local[f] = indexed_array_wrapper
 
-                        indexed_array = dereference(indexed_array_wrapper).array
+                        indexed_array = indexed_array_wrapper.array
 
                         if indexed_array == NULL:
                             indexed_array = dereference(cache_global)[f]
@@ -270,13 +270,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                 dereference(cache_global)[f] = indexed_array
 
                         # Filter indices, if only a subset of the contained examples is covered...
-                        if num_conditions > dereference(indexed_array_wrapper).num_conditions:
+                        if num_conditions > indexed_array_wrapper.num_conditions:
                             __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions,
                                                  covered_statistics_mask, covered_statistics_target)
-                            indexed_array = dereference(indexed_array_wrapper).array
+                            indexed_array = indexed_array_wrapper.array
 
-                        num_indexed_values = dereference(indexed_array).num_elements
-                        indexed_values = dereference(indexed_array).data
+                        num_indexed_values = indexed_array.num_elements
+                        indexed_values = indexed_array.data
 
                         # Check if feature is nominal...
                         if f == next_nominal_f:
@@ -823,10 +823,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
             while cache_local_iterator != cache_local.end():
                 indexed_array_wrapper = dereference(cache_local_iterator).second
-                indexed_array = dereference(indexed_array_wrapper).array
+                indexed_array = indexed_array_wrapper.array
 
                 if indexed_array != NULL:
-                    indexed_values = dereference(indexed_array).data
+                    indexed_values = indexed_array.data
                     free(indexed_values)
 
                 free(indexed_array)
@@ -869,7 +869,7 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
     :return:                    The adjusted position that separates the covered from the uncovered examples with
                                 respect to the examples that are not contained in the sample
     """
-    cdef IndexedFloat32* indexed_values = dereference(indexed_array).data
+    cdef IndexedFloat32* indexed_values = indexed_array.data
     cdef intp adjusted_position = condition_end
     cdef bint ascending = condition_end < condition_previous
     cdef intp direction = 1 if ascending else -1
@@ -939,8 +939,8 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     :return:                            The value that is used to mark those elements in the updated
                                         `covered_statistics_mask` that are covered by the new rule
     """
-    cdef IndexedFloat32* indexed_values = dereference(indexed_array).data
-    cdef intp num_indexed_values = dereference(indexed_array).num_elements
+    cdef IndexedFloat32* indexed_values = indexed_array.data
+    cdef intp num_indexed_values = indexed_array.num_elements
     cdef bint descending = condition_end < condition_start
     cdef uint32 updated_target, weight
     cdef intp start, end, direction, i, r, j, index, num_steps
@@ -1024,17 +1024,17 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
             filtered_array[i].value = indexed_values[r].value
             i += direction
 
-    cdef IndexedFloat32Array* filtered_indexed_array = dereference(indexed_array_wrapper).array
+    cdef IndexedFloat32Array* filtered_indexed_array = indexed_array_wrapper.array
 
     if filtered_indexed_array == NULL:
         filtered_indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
-        dereference(indexed_array_wrapper).array = filtered_indexed_array
+        indexed_array_wrapper.array = filtered_indexed_array
     else:
-        free(dereference(filtered_indexed_array).data)
+        free(filtered_indexed_array.data)
 
-    dereference(filtered_indexed_array).data = filtered_array
-    dereference(filtered_indexed_array).num_elements = num_elements
-    dereference(indexed_array_wrapper).num_conditions = num_conditions
+    filtered_indexed_array.data = filtered_array
+    filtered_indexed_array.num_elements = num_elements
+    indexed_array_wrapper.num_conditions = num_conditions
     return updated_target
 
 
@@ -1057,19 +1057,19 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     """
-    cdef IndexedFloat32Array* filtered_indexed_array = dereference(indexed_array_wrapper).array
+    cdef IndexedFloat32Array* filtered_indexed_array = indexed_array_wrapper.array
     cdef IndexedFloat32* filtered_array = NULL
 
     if filtered_indexed_array != NULL:
-        filtered_array = dereference(filtered_indexed_array).data
+        filtered_array = filtered_indexed_array.data
 
-    cdef intp max_elements = dereference(indexed_array).num_elements
+    cdef intp max_elements = indexed_array.num_elements
     cdef intp i = 0
     cdef IndexedFloat32* indexed_values
     cdef intp r, index
 
     if max_elements > 0:
-        indexed_values = dereference(indexed_array).data
+        indexed_values = indexed_array.data
 
         if filtered_array == NULL:
             filtered_array = <IndexedFloat32*>malloc(max_elements * sizeof(IndexedFloat32))
@@ -1091,7 +1091,7 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     if filtered_indexed_array == NULL:
         filtered_indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
 
-    dereference(filtered_indexed_array).data = filtered_array
-    dereference(filtered_indexed_array).num_elements = i
-    dereference(indexed_array_wrapper).array = filtered_indexed_array
-    dereference(indexed_array_wrapper).num_conditions = num_conditions
+    filtered_indexed_array.data = filtered_array
+    filtered_indexed_array.num_elements = i
+    indexed_array_wrapper.array = filtered_indexed_array
+    indexed_array_wrapper.num_conditions = num_conditions
