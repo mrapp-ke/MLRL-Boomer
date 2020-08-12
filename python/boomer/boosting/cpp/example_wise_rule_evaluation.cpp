@@ -21,7 +21,8 @@ ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
 
 }
 
-DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
+DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
+        AbstractRandomAccessLabelMatrix* labelMatrix) {
     // Class members
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     float64 l2RegularizationWeight = l2RegularizationWeight_;

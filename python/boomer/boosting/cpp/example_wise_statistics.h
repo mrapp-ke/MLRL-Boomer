@@ -103,7 +103,7 @@ namespace boosting {
 
             std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr_;
 
-            std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr_;
+            std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
             float64* currentScores_;
 
@@ -129,7 +129,7 @@ namespace boosting {
 
             ~ExampleWiseStatisticsImpl();
 
-            void applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
+            void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                         DefaultPrediction* defaultPrediction) override;
 
             void resetCoveredStatistics() override;

@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, uint8, uint32, float64
-from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractRandomAccessLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
@@ -17,7 +17,8 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         # Constructors:
 
         LabelWiseRefinementSearchImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr, intp numLabels,
-                                      const intp* labelIndices, shared_ptr[AbstractLabelMatrix] labelMatrixPtr,
+                                      const intp* labelIndices,
+                                      shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
                                       const float64* uncoveredLabels, const uint8* minorityLabels,
                                       const float64* confusionMatricesTotal,
                                       const float64* confusionMatricesSubset) except +
@@ -45,7 +46,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Functions:
 
-        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
+        void applyDefaultPrediction(AbstractRandomAccessLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
 
         void resetSampledStatistics()
 

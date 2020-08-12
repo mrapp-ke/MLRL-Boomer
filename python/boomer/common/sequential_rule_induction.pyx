@@ -55,7 +55,7 @@ cdef class SequentialRuleInduction:
         self.max_head_refinements = max_head_refinements
 
     cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
-                                 LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
+                                 RandomAccessLabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -63,8 +63,8 @@ cdef class SequentialRuleInduction:
                                             indices of all nominal attributes (in ascending order)
         :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
                                             of the training examples
-        :param label_matrix:                A `LabelMatrix` that provides random access to the labels of the training
-                                            examples
+        :param label_matrix:                A `RandomAccessLabelMatrix` that provides random access to the labels of the
+                                            training examples
         :param random_state:                The seed to be used by RNGs
         :param model_builder:               The builder that should be used to build the model
         :return:                            A model that contains the induced classification rules

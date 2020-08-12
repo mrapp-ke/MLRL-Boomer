@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport AbstractLabelMatrix
+from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
 
 from libcpp.memory cimport shared_ptr
 
@@ -46,7 +46,7 @@ cdef extern from "cpp/rule_evaluation.h" nogil:
 
         # Functions:
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +
+        DefaultPrediction* calculateDefaultPrediction(AbstractRandomAccessLabelMatrix* labelMatrix) except +
 
 
 cdef class DefaultRuleEvaluation:
