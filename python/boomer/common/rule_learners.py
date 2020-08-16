@@ -109,21 +109,21 @@ def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCr
 
 def create_min_coverage(min_coverage: int) -> int:
     if min_coverage < 1:
-        raise ValueError('Invalid value given for parameter \'min_coverage\':' + str(min_coverage))
+        raise ValueError('Invalid value given for parameter \'min_coverage\': ' + str(min_coverage))
 
     return min_coverage
 
 
 def create_max_conditions(max_conditions: int) -> int:
     if max_conditions != -1 and max_conditions < 1:
-        raise ValueError('Invalid value given for parameter \'max_conditions\'' + str(max_conditions))
+        raise ValueError('Invalid value given for parameter \'max_conditions\': ' + str(max_conditions))
 
     return max_conditions
 
 
 def create_max_head_refinements(max_head_refinements: int) -> int:
     if max_head_refinements != -1 and max_head_refinements < 1:
-        raise ValueError('Invalid value given for parameter \'max_head_refinements\'' + str(max_head_refinements))
+        raise ValueError('Invalid value given for parameter \'max_head_refinements\': ' + str(max_head_refinements))
 
     return max_head_refinements
 
