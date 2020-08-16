@@ -161,6 +161,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # An array representing the number of conditions per type of operator
         cdef intp[::1] num_conditions_per_comparator = array_intp(4)
         num_conditions_per_comparator[:] = 0
+        # A map that stores the best refinement for each feature
+        cdef unordered_map[intp, Refinement] refinements  # Stack-allocated map
         # The best refinement of the current rule
         cdef Refinement best_refinement  # Stack-allocated struct
         best_refinement.head = NULL
@@ -249,14 +251,21 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                                                cache_global, cache_local, num_conditions, statistics,
                                                                covered_statistics_mask, covered_statistics_target,
                                                                head_refinement, best_refinement.head)
+                        refinements[f] = current_refinement
 
-                        if current_refinement.head != NULL and (best_refinement.head == NULL
-                                                                or current_refinement.head.qualityScore_ < best_refinement.head.qualityScore_):
-                            del best_refinement.head
-                            best_refinement = current_refinement
-                            found_refinement = True
-                        else:
-                            del current_refinement.head
+                for c in range(num_sampled_features):
+                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    current_refinement = refinements[f]
+
+                    if current_refinement.head != NULL and (best_refinement.head == NULL
+                                                            or current_refinement.head.qualityScore_ < best_refinement.head.qualityScore_):
+                        del best_refinement.head
+                        best_refinement = current_refinement
+                        found_refinement = True
+                    else:
+                        del current_refinement.head
+
+                refinements.clear()
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
