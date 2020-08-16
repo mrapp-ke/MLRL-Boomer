@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint32, intp
+from boomer.common._arrays cimport uint8, uint32, intp
 from boomer.common.rules cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport RuleInduction
 from boomer.common.head_refinement cimport HeadRefinement
@@ -36,5 +36,5 @@ cdef class SequentialRuleInduction:
 
     # Functions:
 
-    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
+    cpdef RuleModel induce_rules(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder)

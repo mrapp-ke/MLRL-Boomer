@@ -34,7 +34,7 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
@@ -42,33 +42,32 @@ cdef class RuleInduction:
         """
         Induces a new classification rule.
 
-        :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_attributes)`, representing the
-                                            indices of all nominal features (in ascending order) or None, if no nominal
-                                            features are available
-        :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of
-                                            the training examples
-        :param num_labels:                  The total number of labels
-        :param head_refinement:             The strategy that is used to find the heads of rules
-        :param label_sub_sampling:          The strategy that should be used to sub-sample the labels or None, if no
-                                            label sub-sampling should be used
-        :param instance_sub_sampling:       The strategy that should be used to sub-sample the training examples or
-                                            None, if no instance sub-sampling should be used
-        :param feature_sub_sampling:        The strategy that should be used to sub-sample the available features or
-                                            None, if no feature sub-sampling should be used
-        :param pruning:                     The strategy that should be used to prune rules or None, if no pruning
-                                            should be used
-        :param post_processor:              The post-processor that should be used to post-process the rule once it has
-                                            been learned or None, if no post-processing should be used
-        :param min_coverage:                The minimum number of training examples that must be covered by the rule.
-                                            Must be at least 1
-        :param max_conditions:              The maximum number of conditions to be included in the rule's body. Must be
-                                            at least 1 or -1, if the number of conditions should not be restricted
-        :param max_head_refinements:        The maximum number of times the head of a rule may be refined after a new 
-                                            condition has been added to its body. Must be at least 1 or -1, if the 
-                                            number of refinements should not be restricted
-        :param rng:                         The random number generator to be used
-        :param model_builder:               The builder, the rule should be added to
-        :return:                            1, if a rule has been induced, 0 otherwise
+        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
+                                        at a certain index is nominal (1) or not (0)
+        :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
+                                        training examples
+        :param num_labels:              The total number of labels
+        :param head_refinement:         The strategy that is used to find the heads of rules
+        :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
+                                        sub-sampling should be used
+        :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if
+                                        no instance sub-sampling should be used
+        :param feature_sub_sampling:    The strategy that should be used to sub-sample the available features or None,
+                                        if no feature sub-sampling should be used
+        :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
+                                        used
+        :param post_processor:          The post-processor that should be used to post-process the rule once it has been
+                                        learned or None, if no post-processing should be used
+        :param min_coverage:            The minimum number of training examples that must be covered by the rule. Must
+                                        be at least 1
+        :param max_conditions:          The maximum number of conditions to be included in the rule's body. Must be at
+                                        least 1 or -1, if the number of conditions should not be restricted
+        :param max_head_refinements:    The maximum number of times the head of a rule may be refined after a new
+                                        condition has been added to its body. Must be at least 1 or -1, if the number of
+                                        refinements should not be restricted
+        :param rng:                     The random number generator to be used
+        :param model_builder:           The builder, the rule should be added to
+        :return:                        1, if a rule has been induced, 0 otherwise
         """
         pass
 
@@ -127,7 +126,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         finally:
             del default_prediction
 
-    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
@@ -174,10 +173,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef intp num_indexed_values
 
         # Variables for specifying the features that should be used for finding the best refinement
-        cdef intp num_nominal_features = nominal_attribute_indices.shape[0] if nominal_attribute_indices is not None else 0
-        cdef intp next_nominal_f = -1
-        cdef intp[::1] feature_indices
-        cdef intp next_nominal_c, num_sampled_features
+        cdef intp[::1] sampled_feature_indices
+        cdef intp num_sampled_features
         cdef bint nominal
 
         # Temporary variables
@@ -232,23 +229,19 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 # Sub-sample features, if necessary...
                 if feature_sub_sampling is None:
-                    feature_indices = None
+                    sampled_feature_indices = None
                     num_sampled_features = num_features
                 else:
-                    feature_indices = feature_sub_sampling.sub_sample(num_features, rng)
-                    num_sampled_features = feature_indices.shape[0]
-
-                # Obtain the index of the first nominal feature, if any...
-                if num_nominal_features > 0:
-                    next_nominal_f = nominal_attribute_indices[0]
-                    next_nominal_c = 1
+                    sampled_feature_indices = feature_sub_sampling.sub_sample(num_features, rng)
+                    num_sampled_features = sampled_feature_indices.shape[0]
 
                 # Search for the best condition among all available features to be added to the current rule. For each
                 # feature, the examples are traversed in descending order of their respective feature values. For each
                 # potential condition, a quality score is calculated to keep track of the best possible refinement.
                 with nogil:
                     for c in range(num_sampled_features):
-                        f = c if feature_indices is None else feature_indices[c]
+                        f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                        nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
 
                         # Obtain array that contains the indices of the training examples sorted according to the
                         # current feature...
@@ -277,18 +270,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                         num_indexed_values = indexed_array.num_elements
                         indexed_values = indexed_array.data
-
-                        # Check if feature is nominal...
-                        if f == next_nominal_f:
-                            nominal = True
-
-                            if next_nominal_c < num_nominal_features:
-                                next_nominal_f = nominal_attribute_indices[next_nominal_c]
-                                next_nominal_c += 1
-                            else:
-                                next_nominal_f = -1
-                        else:
-                            nominal = False
 
                         # Start a new search based on the current statistics when processing a new feature...
                         refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
@@ -681,8 +662,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                         # conditions cannot be evaluated earlier, because it remains unclear what the thresholds of the
                         # conditions should be until the examples with feature values >= 0 have been processed).
                         if not nominal and accumulated_sum_of_weights_negative > 0 and accumulated_sum_of_weights_negative < total_sum_of_weights:
-                            # Find and evaluate the best head for the current refinement, if the condition that uses the <=
-                            # operator is used...
+                            # Find and evaluate the best head for the current refinement, if the condition that uses the
+                            # <= operator is used...
                             current_head = head_refinement.find_head(head, head, label_indices,
                                                                      refinement_search_ptr.get(), False, True)
 
