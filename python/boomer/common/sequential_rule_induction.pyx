@@ -54,20 +54,20 @@ cdef class SequentialRuleInduction:
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
 
-    cpdef RuleModel induce_rules(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix,
+    cpdef RuleModel induce_rules(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
-        :param nominal_attribute_indices:   An array of dtype int, shape `(num_nominal_features)`, representing the
-                                            indices of all nominal attributes (in ascending order)
-        :param feature_matrix:              The `FeatureMatrix` that provides column-wise access to the feature values
-                                            of the training examples
-        :param label_matrix:                A `LabelMatrix` that provides random access to the labels of the training
-                                            examples
-        :param random_state:                The seed to be used by RNGs
-        :param model_builder:               The builder that should be used to build the model
-        :return:                            A model that contains the induced classification rules
+        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
+                                        at a certain index is nominal (1) or not (0)
+        :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
+                                        the training examples
+        :param label_matrix:            A `LabelMatrix` that provides random access to the labels of the training
+                                        examples
+        :param random_state:            The seed to be used by RNGs
+        :param model_builder:           The builder that should be used to build the model
+        :return:                        A model that contains the induced classification rules
         """
         cdef RuleInduction rule_induction = self.rule_induction
         cdef HeadRefinement head_refinement = self.head_refinement
@@ -93,7 +93,7 @@ cdef class SequentialRuleInduction:
 
         while __should_continue(stopping_criteria, num_rules):
             # Induce a new rule...
-            success = rule_induction.induce_rule(nominal_attribute_indices, feature_matrix, num_labels, head_refinement,
+            success = rule_induction.induce_rule(nominal_attribute_mask, feature_matrix, num_labels, head_refinement,
                                                  label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                                  pruning, post_processor, min_coverage, max_conditions,
                                                  max_head_refinements, rng, model_builder)

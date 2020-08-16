@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport intp, float32
+from boomer.common._arrays cimport uint8, intp, float32
 from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32Array
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
@@ -31,7 +31,7 @@ cdef class RuleInduction:
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
@@ -52,7 +52,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, intp[::1] nominal_attribute_indices, FeatureMatrix feature_matrix, intp num_labels,
+    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
