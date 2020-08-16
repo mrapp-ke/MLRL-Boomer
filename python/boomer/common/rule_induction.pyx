@@ -239,18 +239,23 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     sampled_feature_indices = feature_sub_sampling.sub_sample(num_features, rng)
                     num_sampled_features = sampled_feature_indices.shape[0]
 
+                # For each feature, update the caches `cache_global` and 'cache_local`, if necessary...
+                for c in range(num_sampled_features):
+                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    __update_caches(f, feature_matrix, cache_global, cache_local, num_conditions,
+                                    covered_statistics_mask, covered_statistics_target)
+
                 # Search for the best condition among all available features to be added to the current rule...
                 with nogil:
                     for c in range(num_sampled_features):
                         f = c if sampled_feature_indices is None else sampled_feature_indices[c]
                         nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
-                        current_refinement = __find_refinement(f, nominal, feature_matrix, num_predictions,
-                                                               label_indices, weights, total_sum_of_weights,
-                                                               cache_global, cache_local, num_conditions, statistics,
-                                                               covered_statistics_mask, covered_statistics_target,
-                                                               head_refinement, best_refinement.head)
+                        current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
+                                                               total_sum_of_weights, cache_global, cache_local,
+                                                               statistics, head_refinement, best_refinement.head)
                         refinements[f] = current_refinement
 
+                # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
                     f = c if sampled_feature_indices is None else sampled_feature_indices[c]
                     current_refinement = refinements[f]
@@ -353,28 +358,17 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(cache_local_iterator)
 
 
-cdef Refinement __find_refinement(intp feature_index, bint nominal, FeatureMatrix feature_matrix,
-                                  intp num_label_indices, const intp* label_indices, uint32[::1] weights,
-                                  uint32 total_sum_of_weights, unordered_map[intp, IndexedFloat32Array*]* cache_global,
-                                  unordered_map[intp, IndexedFloat32ArrayWrapper*] cache_local, intp num_conditions,
-                                  AbstractStatistics* statistics, uint32[::1] covered_statistics_mask,
-                                  uint32 covered_statistics_target, HeadRefinement head_refinement,
-                                  HeadCandidate* head) nogil:
+cdef void __update_caches(intp feature_index, FeatureMatrix feature_matrix,
+                          unordered_map[intp, IndexedFloat32Array*]* cache_global,
+                          unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local, intp num_conditions,
+                          uint32[::1] covered_statistics_mask, uint32 covered_statistics_target):
     """
-    Finds and returns the best refinement of an existing rule, which results from adding a new condition that
-    corresponds to a certain feature.
+    Updates the caches `cache_global` and `cache_local`, which store arrays that contain the indices of examples, as
+    well as their values for certain features, if necessary.
 
     :param feature_index:               The index of the feature, the new condition should correspond to
-    :param nominal                      1, if the feature, the new condition should correspond to, is nominal, 0
-                                        otherwise
     :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of the
                                         training examples
-    :param num_label_indices:           The number of elements in the array `label_indices`
-    :param label_indices:               A pointer to an array of type `intp`, shape `(num_predictions)`, representing
-                                        the indices of the labels for which the refined rule may predict
-    :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
-                                        the training examples or None, if all training examples are weighed equally
-    :param total_sum_of_weights:        The sum of the weights of all training examples
     :param cache_global:                A pointer to a map that maps feature indices to structs of type
                                         `IndexedFloat32Array`, storing the indices of all training examples, as well
                                         as their values for the respective feature, sorted in ascending order by the
@@ -384,20 +378,12 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, FeatureMatri
                                         are covered by the existing rule, as well as their values for the respective
                                         feature, sorted in ascending order by the feature values
     :param num_conditions:              The number of conditions in the body of the existing rule
-    :param statistics:                  A pointer to an object of type `AbstractStatistics` to be used for finding the
-                                        best refinement
     :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
                                         the indices of the statistics that are covered by the existing rule. It will be
                                         updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the existing rule
-    :param head_refinement:             The strategy that should be used to find the head of the refined rule
-    :param head:                        A pointer to an object of type `HeadCandidate`, representing the head of the
-                                        existing rule
-    :return:                            A struct of type `Refinement`, representing the best refinement that has been
-                                        found
     """
-    # Obtain array that contains the indices of the training examples sorted according to the current feature...
     cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
 
     if indexed_array_wrapper == NULL:
@@ -419,16 +405,62 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, FeatureMatri
     if num_conditions > indexed_array_wrapper.num_conditions:
         __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions, covered_statistics_mask,
                              covered_statistics_target)
-        indexed_array = indexed_array_wrapper.array
 
-    cdef intp num_indexed_values = indexed_array.num_elements
-    cdef IndexedFloat32* indexed_values = indexed_array.data
 
-    # Variables for representing the best refinement
-    cdef HeadCandidate* best_head = head  # To keep track of the best head
+cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_label_indices, const intp* label_indices,
+                                  uint32[::1] weights, uint32 total_sum_of_weights,
+                                  unordered_map[intp, IndexedFloat32Array*]* cache_global,
+                                  unordered_map[intp, IndexedFloat32ArrayWrapper*] cache_local,
+                                  AbstractStatistics* statistics, HeadRefinement head_refinement,
+                                  HeadCandidate* head) nogil:
+    """
+    Finds and returns the best refinement of an existing rule, which results from adding a new condition that
+    corresponds to a certain feature.
+
+    :param feature_index:           The index of the feature, the new condition should correspond to
+    :param nominal                  1, if the feature, the new condition should correspond to, is nominal, 0 otherwise
+    :param num_label_indices:       The number of elements in the array `label_indices`
+    :param label_indices:           A pointer to an array of type `intp`, shape `(num_predictions)`, representing the
+                                    indices of the labels for which the refined rule may predict
+    :param weights:                 An array of dtype uint, shape `(num_statistics)`, representing the weights of the
+                                    training examples or None, if all training examples are weighed equally
+    :param total_sum_of_weights:    The sum of the weights of all training examples
+    :param cache_global:            A pointer to a map that maps feature indices to structs of type
+                                    `IndexedFloat32Array`, storing the indices of all training examples, as well as
+                                    their values for the respective feature, sorted in ascending order by the feature
+                                    values
+    :param cache_local:             A pointer to a map that maps feature indices to structs of type
+                                    `IndexedFloat32ArrayWrapper`, storing the indices of the training examples that are
+                                    covered by the existing rule, as well as their values for the respective feature,
+                                    sorted in ascending order by the feature values
+    :param statistics:              A pointer to an object of type `AbstractStatistics` to be used for finding the best
+                                    refinement
+    :param head_refinement:         The strategy that should be used to find the head of the refined rule
+    :param head:                    A pointer to an object of type `HeadCandidate`, representing the head of the
+                                    existing rule
+    :return:                        A struct of type `Refinement`, representing the best refinement that has been found
+    """
+    # The current refinement of the existing rule
     cdef Refinement refinement  # Stack-allocated struct
     refinement.feature_index = feature_index
     refinement.head = NULL
+    # The best head seen so far
+    cdef HeadCandidate* best_head = head
+    # Temporary variables
+    cdef HeadCandidate* current_head
+    cdef float32 current_threshold, previous_threshold, previous_threshold_negative
+    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
+    cdef intp r, i, previous_r, previous_r_negative
+
+    # Obtain array that contains the indices of the training examples sorted according to the current feature...
+    cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
+    cdef IndexedFloat32Array* indexed_array = indexed_array_wrapper.array
+
+    if indexed_array == NULL:
+        indexed_array = dereference(cache_global)[feature_index]
+
+    cdef intp num_indexed_values = indexed_array.num_elements
+    cdef IndexedFloat32* indexed_values = indexed_array.data
 
     # Start a new search based on the current statistics when processing a new feature...
     cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
@@ -438,11 +470,6 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, FeatureMatri
     cdef uint32 sum_of_weights = 0
     cdef intp first_r = 0
     cdef intp last_negative_r = -1
-    # Temporary variables
-    cdef HeadCandidate* current_head
-    cdef float32 current_threshold, previous_threshold, previous_threshold_negative
-    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
-    cdef intp r, i, previous_r, previous_r_negative
 
     # Traverse examples with feature values < 0 in ascending order until the first example with weight > 0 is
     # encountered...
