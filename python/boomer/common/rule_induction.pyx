@@ -806,21 +806,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(cache_local_iterator)
 
 
-cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
-    """
-    Creates and returns a new condition.
-
-    :param feature_index:   The index of the feature that is used by the condition
-    :param comparator:      The type of the operator used by the condition
-    :param threshold:       The threshold that is used by the condition
-    """
-    cdef Condition condition
-    condition.feature_index = feature_index
-    condition.comparator = comparator
-    condition.threshold = threshold
-    return condition
-
-
 cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp condition_end, intp condition_previous,
                                 float32 threshold):
     """
@@ -1067,6 +1052,21 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     filtered_indexed_array.num_elements = i
     indexed_array_wrapper.array = filtered_indexed_array
     indexed_array_wrapper.num_conditions = num_conditions
+
+
+cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
+    """
+    Creates and returns a new condition.
+
+    :param feature_index:   The index of the feature that is used by the condition
+    :param comparator:      The type of the operator used by the condition
+    :param threshold:       The threshold that is used by the condition
+    """
+    cdef Condition condition
+    condition.feature_index = feature_index
+    condition.comparator = comparator
+    condition.threshold = threshold
+    return condition
 
 
 cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp num_statistics,
