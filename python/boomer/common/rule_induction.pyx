@@ -202,9 +202,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Notify the statistics about the examples that are included in the sub-sample...
         statistics.resetSampledStatistics()
 
-        for i in range(num_statistics):
-            weight = 1 if weights is None else weights[i]
-            statistics.addSampledStatistic(i, weight)
+        for r in range(num_statistics):
+            weight = 1 if weights is None else weights[r]
+            statistics.addSampledStatistic(r, weight)
 
         # Sub-sample labels, if necessary...
         cdef intp[::1] sampled_label_indices
