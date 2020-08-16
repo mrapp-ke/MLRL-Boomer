@@ -180,7 +180,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Temporary variables
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
         cdef HeadCandidate* current_head = NULL
-        cdef float64[::1] predicted_scores
         cdef float32 previous_threshold, current_threshold, previous_threshold_negative
         cdef uint32 weight
         cdef intp c, f, r, i, first_r, previous_r, last_negative_r, previous_r_negative
