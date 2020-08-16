@@ -763,9 +763,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
-                        uint32_array_scalar_pair = pruning.prune(cache_global, conditions, covered_statistics_mask,
-                                                                 covered_statistics_target, weights, num_predictions,
-                                                                 label_indices, statistics, head_refinement)
+                        uint32_array_scalar_pair = pruning.prune(cache_global, conditions, head,
+                                                                 covered_statistics_mask, covered_statistics_target,
+                                                                 weights, statistics, head_refinement)
                         covered_statistics_mask = uint32_array_scalar_pair.first
                         covered_statistics_target = uint32_array_scalar_pair.second
 
