@@ -56,7 +56,7 @@ cdef class RuleInduction:
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng, ModelBuilder model_builder):
+                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
@@ -83,6 +83,8 @@ cdef class RuleInduction:
         :param max_head_refinements:    The maximum number of times the head of a rule may be refined after a new
                                         condition has been added to its body. Must be at least 1 or -1, if the number of
                                         refinements should not be restricted
+        :param num_threads:             The number of threads to be used for evaluating the potential refinements of the
+                                        rule in parallel. Must be at least 1
         :param rng:                     The random number generator to be used
         :param model_builder:           The builder, the rule should be added to
         :return:                        1, if a rule has been induced, 0 otherwise
@@ -148,7 +150,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng, ModelBuilder model_builder):
+                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder):
         # The statistics, which serve as the basis for learning the new rule
         cdef AbstractStatistics* statistics = self.statistics_ptr.get()
         # The total number of statistics
@@ -247,7 +249,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     covered_statistics_mask, covered_statistics_target)
 
                 # Search for the best condition among all available features to be added to the current rule...
-                for c in prange(num_sampled_features, nogil=True, schedule='dynamic'):
+                for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = c if sampled_feature_indices is None else sampled_feature_indices[c]
                     nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,

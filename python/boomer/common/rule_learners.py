@@ -5,6 +5,7 @@
 
 Provides base classes for implementing single- or multi-label rule learning algorithms.
 """
+import os
 from abc import abstractmethod
 from ast import literal_eval
 from typing import List
@@ -126,6 +127,15 @@ def create_max_head_refinements(max_head_refinements: int) -> int:
         raise ValueError('Invalid value given for parameter \'max_head_refinements\': ' + str(max_head_refinements))
 
     return max_head_refinements
+
+
+def create_num_threads(num_threads: int) -> int:
+    if num_threads == -1:
+        return os.cpu_count()
+    elif num_threads < 1:
+        raise ValueError('Invalid value given for parameter \'num_threads\': ' + str(num_threads))
+
+    return num_threads
 
 
 def parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
