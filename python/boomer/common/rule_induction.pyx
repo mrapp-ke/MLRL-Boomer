@@ -239,9 +239,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     sampled_feature_indices = feature_sub_sampling.sub_sample(num_features, rng)
                     num_sampled_features = sampled_feature_indices.shape[0]
 
-                # Search for the best condition among all available features to be added to the current rule. For each
-                # feature, the examples are traversed in descending order of their respective feature values. For each
-                # potential condition, a quality score is calculated to keep track of the best possible refinement.
+                # Search for the best condition among all available features to be added to the current rule...
                 with nogil:
                     for c in range(num_sampled_features):
                         f = c if sampled_feature_indices is None else sampled_feature_indices[c]
