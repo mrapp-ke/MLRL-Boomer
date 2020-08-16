@@ -757,9 +757,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 # all features are constant.
                 return False
             else:
-                num_predictions = head.numPredictions_
-                label_indices = head.labelIndices_
-
                 if weights is not None:
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
