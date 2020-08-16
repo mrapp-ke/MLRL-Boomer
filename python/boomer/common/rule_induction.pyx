@@ -18,6 +18,7 @@ from libcpp.pair cimport pair
 from libcpp.memory cimport unique_ptr, make_shared
 
 from cython.operator cimport dereference, postincrement
+from cython.parallel cimport prange
 
 
 """
@@ -246,13 +247,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                     covered_statistics_mask, covered_statistics_target)
 
                 # Search for the best condition among all available features to be added to the current rule...
-                with nogil:
-                    for c in range(num_sampled_features):
-                        f = c if sampled_feature_indices is None else sampled_feature_indices[c]
-                        nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
-                        current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
-                                                               total_sum_of_weights, cache_global, cache_local,
-                                                               statistics, head_refinement, best_refinement.head)
+                for c in prange(num_sampled_features, nogil=True, schedule='dynamic'):
+                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
+                    current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
+                                                           total_sum_of_weights, cache_global, cache_local, statistics,
+                                                           head_refinement, best_refinement.head)
+
+                    with gil:
                         refinements[f] = current_refinement
 
                 # Pick the best refinement among the refinements that have been found for the different features...
