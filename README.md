@@ -24,7 +24,7 @@ In addition, the following features that may speed up training or reduce the mem
  
 * Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
 * Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
-* Multi-threading support enables to parallelize the evaluation of potential refinements of a rule across multiple CPU cores. 
+* Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores. 
 
 ## Project structure
 
