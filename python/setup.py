@@ -1,3 +1,5 @@
+import sys
+
 import numpy
 from Cython.Build import cythonize
 from setuptools import setup, Extension
@@ -7,6 +9,9 @@ ANNOTATE = True
 
 # True, if all Cython compiler optimizations should be disabled
 DEBUG = False
+
+# The compiler/linker argument to enable OpenMP support
+COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
 
 sources = [
     '**/*.pyx',
@@ -31,8 +36,8 @@ sources = [
 ]
 
 extensions = [
-    Extension(name='*', sources=sources, language='c++',
-              define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")])
+    Extension(name='*', sources=sources, language='c++', extra_compile_args=[COMPILE_FLAG_OPEN_MP],
+              extra_link_args=[COMPILE_FLAG_OPEN_MP], define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")])
 ]
 
 compiler_directives = {
