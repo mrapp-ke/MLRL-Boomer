@@ -180,7 +180,6 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Temporary variables
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
         cdef HeadCandidate* current_head = NULL
-        cdef Prediction* prediction
         cdef float64[::1] predicted_scores
         cdef float32 previous_threshold, current_threshold, previous_threshold_negative
         cdef uint32 weight
@@ -773,16 +772,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
-                    refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
-
-                    for r in range(num_statistics):
-                        if covered_statistics_mask[r] == covered_statistics_target:
-                            refinement_search_ptr.get().updateSearch(r, 1)
-
-                    prediction = head_refinement.calculate_prediction(refinement_search_ptr.get(), False, False)
-
-                    for c in range(num_predictions):
-                        head.predictedScores_[c] = prediction.predictedScores_[c]
+                    __recalculate_predictions(statistics, num_statistics, head_refinement, covered_statistics_mask,
+                                              covered_statistics_target, head)
 
                 # Apply post-processor, if necessary...
                 if post_processor is not None:
@@ -1076,3 +1067,47 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     filtered_indexed_array.num_elements = i
     indexed_array_wrapper.array = filtered_indexed_array
     indexed_array_wrapper.num_conditions = num_conditions
+
+
+cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp num_statistics,
+                                           HeadRefinement head_refinement, uint32[::1] covered_statistics_mask,
+                                           uint32 covered_statistics_target, HeadCandidate* head):
+    """
+    Updates the scores that a predicted by the head of a rule, based on all available statistics.
+
+    :param statistics:                  A pointer to an object of type `AbstractStatistics` that stores the available
+                                        statistics
+    :param num_statistics:              The number of available statistics
+    :param head_refinement:             The strategy that was used to find the head of the rule
+    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
+                                        the indices of the statistics that are covered by the rule
+    :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
+                                        are covered by the rule
+    :param head:                        A pointer to an object of type `HeadCandidate`, representing the head of the
+                                        rule
+    """
+    # The number labels for which the head predicts
+    cdef intp num_predictions = head.numPredictions_
+    # An array that stores the labels for which the head predicts
+    cdef intp* label_indices = head.labelIndices_
+    # An array that stores the scores that are predicted by the head
+    cdef float64* predicted_scores = head.predictedScores_
+    # Temporary variables
+    cdef AbstractRefinementSearch* refinement_search
+    cdef Prediction* prediction
+    cdef float64* updated_scores
+    cdef intp r, c
+
+    try:
+        refinement_search = statistics.beginSearch(num_predictions, label_indices)
+
+        for r in range(num_statistics):
+            if covered_statistics_mask[r] == covered_statistics_target:
+                refinement_search.updateSearch(r, 1)
+                prediction = head_refinement.calculate_prediction(refinement_search, False, False)
+                updated_scores = prediction.predictedScores_
+
+                for c in range(num_predictions):
+                    predicted_scores[c] = updated_scores[c]
+    finally:
+        del refinement_search
