@@ -4,6 +4,7 @@
 Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
 (non-decomposable) loss function that is applied example-wise.
 """
+from boomer.boosting._lapack cimport init_lapack
 from boomer.boosting.example_wise_losses cimport ExampleWiseLoss
 from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation
 
@@ -23,5 +24,7 @@ cdef class ExampleWiseStatistics(GradientStatistics):
         """
         cdef shared_ptr[AbstractExampleWiseLoss] loss_function_ptr = loss_function.loss_function_ptr
         cdef shared_ptr[ExampleWiseRuleEvaluationImpl] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
+        cdef shared_ptr[Lapack] lapack_ptr
+        lapack_ptr.reset(init_lapack())
         self.statistics_ptr = <shared_ptr[AbstractStatistics]>make_shared[ExampleWiseStatisticsImpl](
-            loss_function_ptr, rule_evaluation_ptr)
+            loss_function_ptr, rule_evaluation_ptr, lapack_ptr)
