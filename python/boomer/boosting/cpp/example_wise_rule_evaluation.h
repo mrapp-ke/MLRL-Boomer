@@ -63,20 +63,6 @@ namespace boosting {
 
             std::shared_ptr<Blas> blasPtr_;
 
-            float64* dsysvTmpArray1_;
-
-            int* dsysvTmpArray2_;
-
-            double* dsysvTmpArray3_;
-
-            int dsysvLwork_;
-
-            float64* dspmvTmpArray_;
-
-            float64* tmpGradients_;
-
-            float64* tmpHessians_;
-
         public:
 
             /**
@@ -89,8 +75,6 @@ namespace boosting {
              */
             ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
                                           std::shared_ptr<Lapack> lapackPtr);
-
-            ~ExampleWiseRuleEvaluationImpl();
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
@@ -150,6 +134,25 @@ namespace boosting {
              * @param sumsOfHessians        A pointer to an array of type `float64`, shape
              *                              `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)`,
              *                              representing the sums of Hessians for individual labels
+             * @param tmpGradients          A pointer to an array of type `float64`, shape `(num_labels)` that will be
+             *                              used to temporarily store gradients. May contain arbitrary values
+             * @param tmpHessians           A pointer to an array of type `float64`, shape
+             *                              `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)` that
+             *                              will be used to temporarily store Hessians. May contain arbitrary values
+             * @param dsysvLwork            The value for the parameter "lwork" to be used by Lapack's DSYSV routine
+             * @param dsysvTmpArray1        A pointer to an array of type `float64`, shape
+             *                              `(prediction.numPredictions_, prediction.numPredictions_)` that will be used
+             *                              to temporarily store values computed by Lapack's DSYSV routine. May contain
+             *                              arbitrary values
+             * @param dsysvTmpArray2        A pointer to an array of type `int`, shape `(prediction.numPredictions_)`
+             *                              that will be used to temporarily store values computed by Lapack's DSYSV
+             *                              routine. May contain arbitrary values
+             * @param dsysvTmpArray3        A pointer to an array of type `double`, shape `(lwork)` that will be used to
+             *                              temporarily store values computed by Lapack's DSYSV routine. May contain
+             *                              arbitrary values
+             * @param dspmvTmpArray         A pointer to an array of type `float64`, shape
+             *                              `(prediction.numPredictions_)` that will be used to temporarily store values
+             *                              computed by Blas' DSPMV routine. May contain arbitrary values
              * @param uncovered             False, if the rule covers the sums of gradient and Hessians that are stored
              *                              in the array `sumsOfGradients` and `sumsOfHessians`, True, if the rule
              *                              covers the difference between the sums of gradients and Hessians that are
@@ -160,7 +163,10 @@ namespace boosting {
              */
             void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                                 float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                                float64* sumsOfHessians, bool uncovered, Prediction* prediction);
+                                                float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
+                                                int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                                double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
+                                                Prediction* prediction);
 
     };
 
