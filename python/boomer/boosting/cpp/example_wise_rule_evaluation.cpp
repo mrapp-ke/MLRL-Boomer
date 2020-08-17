@@ -88,21 +88,6 @@ ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2Regulariz
     l2RegularizationWeight_ = l2RegularizationWeight;
     blasPtr_ = blasPtr;
     lapackPtr_ = lapackPtr;
-    dsysvTmpArray1_ = NULL;
-    dsysvTmpArray2_ = NULL;
-    dsysvTmpArray3_ = NULL;
-    dspmvTmpArray_ = NULL;
-    tmpGradients_ = NULL;
-    tmpHessians_ = NULL;
-}
-
-ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
-    free(dsysvTmpArray1_);
-    free(dsysvTmpArray2_);
-    free(dsysvTmpArray3_);
-    free(dspmvTmpArray_);
-    free(tmpGradients_);
-    free(tmpHessians_);
 }
 
 void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
@@ -163,55 +148,25 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
                                                                    const float64* totalSumsOfGradients,
                                                                    float64* sumsOfGradients,
                                                                    const float64* totalSumsOfHessians,
-                                                                   float64* sumsOfHessians, bool uncovered,
-                                                                   Prediction* prediction) {
+                                                                   float64* sumsOfHessians, float64* tmpGradients,
+                                                                   float64* tmpHessians, int dsysvLwork,
+                                                                   float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                                                   double* dsysvTmpArray3, float64* dspmvTmpArray,
+                                                                   bool uncovered, Prediction* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores`
     intp numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
     float64* predictedScores = prediction->predictedScores_;
-    // Arrays that are used to temporarily store values that are computed by the DSYSV or DSPMV routine
-    float64* dsysvTmpArray1 = dsysvTmpArray1_;
-    int* dsysvTmpArray2 = dsysvTmpArray2_;
-    double* dsysvTmpArray3 = dsysvTmpArray3_;
-    int dsysvLwork = dsysvLwork_;
-    float64* dspmvTmpArray = dspmvTmpArray_;
-
-    // To avoid array recreation each time this function is called, the arrays for temporarily storing values that are
-    // computed by the DSYSV or DSPMV routine are only initialized if they have not been initialized yet
-    if (dsysvTmpArray1 == NULL) {
-        dsysvTmpArray1 = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
-        dsysvTmpArray1_ = dsysvTmpArray1;
-        dsysvTmpArray2 = (int*) malloc(numPredictions * sizeof(int));
-        dsysvTmpArray2_ = dsysvTmpArray2;
-        dspmvTmpArray = (float64*) malloc(numPredictions * sizeof(float64));
-        dspmvTmpArray_ = dspmvTmpArray;
-
-        // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-        dsysvLwork = lapackPtr_.get()->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numPredictions);
-        dsysvLwork_ = dsysvLwork;
-        dsysvTmpArray3 = (double*) malloc(dsysvLwork * sizeof(double));
-        dsysvTmpArray3_ = dsysvTmpArray3;
-    }
 
     float64* gradients;
     float64* hessians;
 
     if (uncovered) {
-        gradients = tmpGradients_;
-        hessians = tmpHessians_;
+        gradients = tmpGradients;
+        hessians = tmpHessians;
         intp i = 0;
-
-        // To avoid array recreation each time this function is called, the arrays for storing the gradients and
-        // hessians are only initialized if they have not been initialized yet
-        if (gradients == NULL) {
-            gradients = (float64*) malloc(numPredictions * sizeof(float64));
-            tmpGradients_ = gradients;
-            intp numHessians = linalg::triangularNumber(numPredictions);
-            hessians = (float64*) malloc(numHessians * sizeof(float64));
-            tmpHessians_ = hessians;
-        }
 
         for (intp c = 0; c < numPredictions; c++) {
             intp l = labelIndices != NULL ? labelIndices[c] : c;

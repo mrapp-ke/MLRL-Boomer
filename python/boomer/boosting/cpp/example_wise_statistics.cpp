@@ -7,10 +7,11 @@ using namespace boosting;
 
 
 ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(
-        std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr, intp numPredictions, const intp* labelIndices,
-        intp numLabels, const float64* gradients, const float64* totalSumsOfGradients, const float64* hessians,
-        const float64* totalSumsOfHessians) {
+        std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
+        intp numPredictions, const intp* labelIndices, intp numLabels, const float64* gradients,
+        const float64* totalSumsOfGradients, const float64* hessians, const float64* totalSumsOfHessians) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
+    lapackPtr_ = lapackPtr;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
     numLabels_ = numLabels;
@@ -29,6 +30,12 @@ ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(
     accumulatedSumsOfHessians_ = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     prediction_ = new LabelWisePrediction(numPredictions, predictedScores, NULL, 0);
+    tmpGradients_ = NULL;
+    tmpHessians_ = NULL;
+    dsysvTmpArray1_ = NULL;
+    dsysvTmpArray2_ = NULL;
+    dsysvTmpArray3_ = NULL;
+    dspmvTmpArray_ = NULL;
 }
 
 ExampleWiseRefinementSearchImpl::~ExampleWiseRefinementSearchImpl() {
@@ -36,6 +43,12 @@ ExampleWiseRefinementSearchImpl::~ExampleWiseRefinementSearchImpl() {
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
+    free(tmpGradients_);
+    free(tmpHessians_);
+    free(dsysvTmpArray1_);
+    free(dsysvTmpArray2_);
+    free(dsysvTmpArray3_);
+    free(dspmvTmpArray_);
     delete prediction_;
 }
 
@@ -95,16 +108,37 @@ LabelWisePrediction* ExampleWiseRefinementSearchImpl::calculateLabelWisePredicti
 Prediction* ExampleWiseRefinementSearchImpl::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
+
+    // To avoid array recreation each time this function is called, the temporary arrays are only initialized if they
+    // have not been initialized yet
+    if (tmpGradients_ == NULL) {
+        tmpGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+        intp numHessians = linalg::triangularNumber(numPredictions_);
+        tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+        dsysvTmpArray1_ = (float64*) malloc(numPredictions_ * numPredictions_ * sizeof(float64));
+        dsysvTmpArray2_ = (int*) malloc(numPredictions_ * sizeof(int));
+        dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+
+        // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
+        dsysvLwork_ = lapackPtr_.get()->queryDsysvLworkParameter(dsysvTmpArray1_, prediction_->predictedScores_,
+                                                                 numPredictions_);
+        dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
+    }
+
     ruleEvaluationPtr_.get()->calculateExampleWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
-                                                             totalSumsOfHessians_, sumsOfHessians, uncovered,
-                                                             prediction_);
+                                                             totalSumsOfHessians_, sumsOfHessians, tmpGradients_,
+                                                             tmpHessians_, dsysvLwork_, dsysvTmpArray1_,
+                                                             dsysvTmpArray2_, dsysvTmpArray3_, dspmvTmpArray_,
+                                                             uncovered, prediction_);
     return prediction_;
 }
 
 ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                                     std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr) {
+                                                     std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                                     std::shared_ptr<Lapack> lapackPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
+    lapackPtr_ = lapackPtr;
     currentScores_ = NULL;
     gradients_ = NULL;
     totalSumsOfGradients_ = NULL;
@@ -197,8 +231,8 @@ void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint
 AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new ExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels, gradients_,
-                                               totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
+    return new ExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, lapackPtr_, numPredictions, labelIndices, numLabels,
+                                               gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
 void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, HeadCandidate* head) {
