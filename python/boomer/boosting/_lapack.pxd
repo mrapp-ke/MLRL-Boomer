@@ -8,8 +8,6 @@ scipy.
 """
 from boomer.common._arrays cimport float64
 
-from libcpp.memory cimport shared_ptr, make_shared
-
 from scipy.linalg.cython_lapack cimport dsysv
 
 
@@ -31,10 +29,10 @@ cdef extern from "cpp/lapack.h" nogil:
                    double* tmpArray3, float64* output, int n, int lwork, float64 l2RegularizationWeight) except +
 
 
-cdef inline shared_ptr[Lapack] init_lapack():
+cdef inline Lapack* init_lapack():
     """
     Creates a new wrapper for executing different LAPACK routines.
 
-    :return: A pointer an object of type `Lapack` that allows to execute different LAPACK routines
+    :return: A pointer to an object of type `Lapack` that allows to execute different LAPACK routines
     """
-    return make_shared[Lapack](dsysv)
+    return new Lapack(dsysv)
