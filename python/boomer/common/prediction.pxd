@@ -32,7 +32,11 @@ cdef class TransformationFunction:
     cdef object transform_matrix(self, float64[:, ::1] m)
 
 
-cdef class SignFunction(TransformationFunction):
+cdef class ThresholdFunction(TransformationFunction):
+
+    # Attributes
+
+    cdef readonly float64 threshold
 
     # Functions:
 

@@ -9,13 +9,14 @@ from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
 from boomer.boosting.example_wise_statistics import ExampleWiseStatistics
 from boomer.boosting.head_refinement import FullHeadRefinement
-from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
+from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
+    LabelWiseSquaredHingeLoss
 from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
 from boomer.boosting.label_wise_statistics import LabelWiseStatistics
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.boosting.statistics import GradientStatistics
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
-from boomer.common.prediction import Predictor, DensePredictor, SignFunction
+from boomer.common.prediction import Predictor, DensePredictor, ThresholdFunction
 from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
@@ -33,6 +34,8 @@ HEAD_REFINEMENT_FULL = 'full'
 LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
 
 LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
+
+LOSS_LABEL_WISE_SQUARED_HINGE = 'label-wise-squared-hinge-loss'
 
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
@@ -134,7 +137,8 @@ class Boomer(MLRuleLearner):
         return name
 
     def _create_predictor(self) -> Predictor:
-        return DensePredictor(SignFunction())
+        threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
+        return DensePredictor(ThresholdFunction(threshold))
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
@@ -174,6 +178,8 @@ class Boomer(MLRuleLearner):
 
         if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
             return LabelWiseSquaredErrorLoss()
+        elif loss == LOSS_LABEL_WISE_SQUARED_HINGE:
+            return LabelWiseSquaredHingeLoss()
         elif loss == LOSS_LABEL_WISE_LOGISTIC:
             return LabelWiseLogisticLoss()
         elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:

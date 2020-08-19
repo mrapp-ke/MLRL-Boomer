@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
-from boomer.common.prediction import Predictor, DensePredictor, SignFunction
+from boomer.common.prediction import Predictor, DensePredictor, ThresholdFunction
 from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
@@ -226,4 +226,4 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self) -> Predictor:
-        return DensePredictor(SignFunction())
+        return DensePredictor(ThresholdFunction(0))

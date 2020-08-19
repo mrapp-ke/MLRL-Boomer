@@ -101,12 +101,19 @@ cdef class TransformationFunction:
         pass
 
 
-cdef class SignFunction(TransformationFunction):
+cdef class ThresholdFunction(TransformationFunction):
     """
-    Transforms predictions according to the sign function (1 if x > 0, 0 otherwise).
+    Transforms predictions according to a threshold function (1 if x > threshold, 0 otherwise).
     """
 
+    def __cinit__(self, float64 threshold):
+        """
+        :param threshold: The threshold
+        """
+        self.threshold = threshold
+
     cdef object transform_matrix(self, float64[:, ::1] m):
+        cdef float64 threshold = self.threshold
         cdef intp num_rows = m.shape[0]
         cdef intp num_cols = m.shape[1]
         cdef uint8[:, ::1] result = c_matrix_uint8(num_rows, num_cols)
@@ -114,6 +121,6 @@ cdef class SignFunction(TransformationFunction):
 
         for r in range(num_rows):
             for c in range(num_cols):
-                result[r, c] = m[r, c] > 0
+                result[r, c] = m[r, c] > threshold
 
         return np.asarray(result)

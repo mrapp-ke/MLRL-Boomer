@@ -31,6 +31,14 @@ cdef extern from "cpp/label_wise_losses.h" namespace "boosting" nogil:
                                                            intp labelIndex, float64 predictedScore)
 
 
+    cdef cppclass LabelWiseSquaredHingeLossImpl(AbstractLabelWiseLoss):
+
+        # Functions:
+
+        pair[float64, float64] calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+                                                           intp labelIndex, float64 predictedScore)
+
+
 cdef class LabelWiseLoss:
 
     # Attributes:
@@ -41,5 +49,10 @@ cdef class LabelWiseLoss:
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     pass
 
+
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
+    pass
+
+
+cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
     pass
