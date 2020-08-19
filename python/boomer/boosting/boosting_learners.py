@@ -23,7 +23,7 @@ from boomer.common.sequential_rule_induction import SequentialRuleInduction
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
-from boomer.common.rule_learners import MLRuleLearner
+from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
     create_max_head_refinements
@@ -43,8 +43,9 @@ class Boomer(MLRuleLearner):
     classification rules.
     """
 
-    def __init__(self, random_state: int = 1, max_rules: int = 1000, time_limit: int = -1, head_refinement: str = None,
-                 loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
+    def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
+                 label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, time_limit: int = -1,
+                 head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
@@ -91,7 +92,7 @@ class Boomer(MLRuleLearner):
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
         """
-        super().__init__(random_state)
+        super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
