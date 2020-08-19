@@ -8,7 +8,8 @@ from runnables import RuleLearnerRunnable
 class SecoRunnable(RuleLearnerRunnable):
 
     def _create_learner(self, args):
-        return SeparateAndConquerRuleLearner(random_state=args.random_state, max_rules=args.max_rules,
+        return SeparateAndConquerRuleLearner(random_state=args.random_state, feature_format=args.feature_format,
+                                             label_format=args.label_format, max_rules=args.max_rules,
                                              time_limit=args.time_limit, loss=args.loss, heuristic=args.heuristic,
                                              pruning=args.pruning, label_sub_sampling=args.label_sub_sampling,
                                              instance_sub_sampling=args.instance_sub_sampling,
