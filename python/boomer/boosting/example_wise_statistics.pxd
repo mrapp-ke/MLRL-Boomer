@@ -1,4 +1,5 @@
 from boomer.common._arrays cimport uint32, intp, float64
+from boomer.boosting._lapack cimport Lapack
 from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 from boomer.common.head_refinement cimport HeadCandidate
@@ -18,8 +19,8 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         ExampleWiseRefinementSearchImpl(shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
-                                        intp numPredictions, const intp* labelIndices, intp numLabels,
-                                        const float64* gradients, const float64* totalSumsOfGradients,
+                                        shared_ptr[Lapack] lapackPtr, intp numPredictions, const intp* labelIndices,
+                                        intp numLabels, const float64* gradients, const float64* totalSumsOfGradients,
                                         const float64* hessians, const float64* totalSumsOfHessians) except +
 
         # Functions:
@@ -38,7 +39,8 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         ExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                  shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr) except +
+                                  shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
+                                  shared_ptr[Lapack] lapackPtr) except +
 
         # Functions:
 

@@ -74,14 +74,14 @@ cdef class FeatureMatrix:
     A base class for all classes that provide column-wise access to the feature values of the training examples.
     """
 
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
+    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
         """
-        Creates and returns a pointer to a struct of type `IndexedFloat32Array` that stores the indices of training
-        examples, as well as their feature values, for a specific feature, sorted in ascending order by the feature
-        values.
+        Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
+        them in ascending order by the feature values and stores the in a given struct of type `IndexedFloat32Array`.
 
         :param feature_index:   The index of the feature
-        :return:                A pointer to a struct of type `IndexedFloat32Array`
+        :param indexed_array:   A pointer to a struct of type `IndexedFloat32Array`, which should be used to store the
+                                indices
         """
         pass
 
@@ -102,17 +102,13 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         self.num_features = x.shape[1]
         self.x = x
 
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
+    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
         # Class members
         cdef const float32[::1, :] x = self.x
         # The number of elements to be returned
         cdef intp num_elements = x.shape[0]
-        # The array to be returned
+        # The array that stores the indices
         cdef IndexedFloat32* sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
-        # The struct to be returned
-        cdef IndexedFloat32Array* indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
-        dereference(indexed_array).num_elements = num_elements
-        dereference(indexed_array).data = sorted_array
         # Temporary variables
         cdef intp i
 
@@ -121,7 +117,10 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
             sorted_array[i].value = x[i, feature_index]
 
         qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
-        return indexed_array
+
+        # Update the given struct...
+        indexed_array.num_elements = num_elements
+        indexed_array.data = sorted_array
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -150,7 +149,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         self.x_row_indices = x_row_indices
         self.x_col_indices = x_col_indices
 
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil:
+    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
         # Class members
         cdef const float32[::1] x_data = self.x_data
         cdef const intp[::1] x_row_indices = self.x_row_indices
@@ -161,10 +160,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         cdef intp end = x_col_indices[feature_index + 1]
         # The number of elements to be returned
         cdef intp num_elements = end - start
-        # The struct to be returned
-        cdef IndexedFloat32Array* indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
-        dereference(indexed_array).num_elements = num_elements
-        # The array to be returned
+        # The array that stores the indices
         cdef IndexedFloat32* sorted_array = NULL
         # Temporary variables
         cdef intp i, j
@@ -180,5 +176,6 @@ cdef class CscFeatureMatrix(FeatureMatrix):
 
             qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
 
-        dereference(indexed_array).data = sorted_array
-        return indexed_array
+        # Update the given struct...
+        indexed_array.num_elements = num_elements
+        indexed_array.data = sorted_array

@@ -11,6 +11,7 @@
 #include "example_wise_rule_evaluation.h"
 #include "example_wise_losses.h"
 #include "statistics.h"
+#include "lapack.h"
 #include <memory>
 
 
@@ -25,6 +26,8 @@ namespace boosting {
         private:
 
             std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+
+            std::shared_ptr<Lapack> lapackPtr_;
 
             intp numPredictions_;
 
@@ -50,12 +53,28 @@ namespace boosting {
 
             LabelWisePrediction* prediction_;
 
+            float64* tmpGradients_;
+
+            float64* tmpHessians_;
+
+            int dsysvLwork_;
+
+            float64* dsysvTmpArray1_;
+
+            int* dsysvTmpArray2_;
+
+            double* dsysvTmpArray3_;
+
+            float64* dspmvTmpArray_;
+
         public:
 
             /**
              * @param ruleEvaluationPtr     A shared pointer to an object of type `ExampleWiseRuleEvaluationImpl` to be
              *                              used for calculating the predictions, as well as corresponding quality
              *                              scores of rules
+             * @param lapackPtr             A shared pointer to an object of type `Lapack` that allows to execute
+             *                              different lapack routines
              * @param numPredictions        The number of labels to be considered by the search
              * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
              *                              the indices of the labels that should be considered by the search or NULL,
@@ -75,9 +94,10 @@ namespace boosting {
              *                              search
              */
             ExampleWiseRefinementSearchImpl(std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
-                                            intp numPredictions, const intp* labelIndices, intp numLabels,
-                                            const float64* gradients, const float64* totalSumsOfGradients,
-                                            const float64* hessians, const float64* totalSumsOfHessians);
+                                            std::shared_ptr<Lapack> lapackPtr, intp numPredictions,
+                                            const intp* labelIndices, intp numLabels, const float64* gradients,
+                                            const float64* totalSumsOfGradients, const float64* hessians,
+                                            const float64* totalSumsOfHessians);
 
             ~ExampleWiseRefinementSearchImpl();
 
@@ -103,6 +123,8 @@ namespace boosting {
 
             std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr_;
 
+            std::shared_ptr<Lapack> lapackPtr_;
+
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
             float64* currentScores_;
@@ -123,9 +145,12 @@ namespace boosting {
              * @param ruleEvaluationPtr A shared pointer to an object of type `ExampleWiseRuleEvaluationImpl`, to be
              *                          used for calculating the predictions, as well as corresponding quality scores,
              *                          of rules
+             * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
+             *                          Lapack routines
              */
             ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                      std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr);
+                                      std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                      std::shared_ptr<Lapack> lapackPtr);
 
             ~ExampleWiseStatisticsImpl();
 
