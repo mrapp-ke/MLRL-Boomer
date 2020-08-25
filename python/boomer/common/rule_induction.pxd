@@ -35,7 +35,7 @@ cdef class RuleInduction:
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng, ModelBuilder model_builder)
+                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
@@ -56,4 +56,4 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
                           InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
                           Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, RNG rng, ModelBuilder model_builder)
+                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder)
