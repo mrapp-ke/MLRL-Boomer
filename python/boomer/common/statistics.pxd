@@ -1,7 +1,6 @@
 from boomer.common._arrays cimport uint32, intp
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport AbstractLabelMatrix
-from boomer.common.head_refinement cimport HeadCandidate
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -51,7 +50,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
-        void applyPrediction(intp statisticIndex, HeadCandidate* head)
+        void applyPrediction(intp statisticIndex, Prediction* prediction)
 
 
 cdef class Statistics:

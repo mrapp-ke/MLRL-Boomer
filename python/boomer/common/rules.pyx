@@ -578,12 +578,12 @@ cdef class ModelBuilder:
         """
         pass
 
-    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         """
         Adds a new rule to the model.
 
-        :param head:                            A pointer to an object of type `HeadCandidate`, representing the head of
+        :param head:                            A pointer to an object of type `Prediction`, representing the head of
                                                 the rule
         :param conditions:                      A list that contains the rule's conditions
         :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of
@@ -641,7 +641,7 @@ cdef class RuleListBuilder(ModelBuilder):
             else:
                 rule_list.add_rule(default_rule)
 
-    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
         cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None

@@ -3,7 +3,6 @@ from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWi
 from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch, \
     AbstractDecomposableRefinementSearch
-from boomer.common.head_refinement cimport HeadCandidate
 from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
 from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
 from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationImpl
@@ -55,7 +54,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
 cdef class LabelWiseStatistics(GradientStatistics):

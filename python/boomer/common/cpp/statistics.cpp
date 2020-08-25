@@ -56,6 +56,6 @@ AbstractRefinementSearch* AbstractStatistics::beginSearch(intp numLabelIndices, 
     return NULL;
 }
 
-void AbstractStatistics::applyPrediction(intp statisticIndex, HeadCandidate* head) {
+void AbstractStatistics::applyPrediction(intp statisticIndex, Prediction* prediction) {
 
 }

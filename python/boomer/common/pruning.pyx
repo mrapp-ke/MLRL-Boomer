@@ -22,7 +22,7 @@ cdef class Pruning:
     """
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
-                                         double_linked_list[Condition] conditions, HeadCandidate* head,
+                                         double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
                                          HeadRefinement head_refinement):
@@ -36,7 +36,7 @@ cdef class Pruning:
                                             as their values for the respective feature, sorted in ascending order by the
                                             feature values
         :param conditions:                  A list that contains the conditions of the existing rule
-        :param head:                        A pointer to an object of type `HeadCandidate` representing the head of the
+        :param head:                        A pointer to an object of type `Prediction` representing the head of the
                                             existing rule
         :param covered_examples_mask:       An array of dtype uint, shape `(num_examples)` that is used to keep track of
                                             the indices of the examples that are covered by the existing rule
@@ -62,7 +62,7 @@ cdef class IREP(Pruning):
     """
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
-                                         double_linked_list[Condition] conditions, HeadCandidate* head,
+                                         double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
                                          HeadRefinement head_refinement):

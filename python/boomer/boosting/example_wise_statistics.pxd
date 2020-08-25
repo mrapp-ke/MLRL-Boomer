@@ -2,7 +2,6 @@ from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
-from boomer.common.head_refinement cimport HeadCandidate
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
 from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
@@ -52,7 +51,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
 cdef class ExampleWiseStatistics(GradientStatistics):
