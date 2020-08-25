@@ -27,7 +27,7 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     accumulatedSumsOfHessians_ = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
-    prediction_ = new LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0);
+    prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
@@ -70,7 +70,8 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
+LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
+                                                                                          bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
@@ -99,7 +100,7 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
 }
 
 void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
-                                                     DefaultPrediction* defaultPrediction) {
+                                                     Prediction* defaultPrediction) {
     // Class members
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     // The number of examples

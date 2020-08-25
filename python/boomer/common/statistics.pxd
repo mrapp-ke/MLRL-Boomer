@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint32, intp
+from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -17,9 +17,9 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void resetSearch() nogil
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
+        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
     cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
@@ -30,17 +30,16 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void resetSearch()
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
+        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
     cdef cppclass AbstractStatistics:
 
         # Functions:
 
-        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr,
-                                    DefaultPrediction* defaultPrediction)
+        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr, Prediction* defaultPrediction)
 
         void resetSampledStatistics()
 

@@ -4,10 +4,10 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
+from boomer.common._predictions cimport PredictionCandidate
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractRefinementSearch
-from boomer.common.rule_evaluation cimport Prediction
 
 from libcpp.memory cimport unique_ptr
 
@@ -76,7 +76,7 @@ cdef class IREP(Pruning):
         cdef intp* label_indices = head.labelIndices_
         # Temporary variables
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
-        cdef Prediction* prediction
+        cdef PredictionCandidate* prediction
         cdef Condition condition
         cdef Comparator comparator
         cdef float32 threshold

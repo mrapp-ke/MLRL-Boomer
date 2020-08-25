@@ -4,7 +4,7 @@
 Provides classes that implement strategies for finding the heads of rules.
 """
 from boomer.common._arrays cimport array_intp, array_float64
-from boomer.common.rule_evaluation cimport LabelWisePrediction
+from boomer.common._predictions cimport LabelWisePredictionCandidate
 
 from libc.stdlib cimport malloc
 
@@ -48,8 +48,8 @@ cdef class HeadRefinement:
         """
         pass
 
-    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
-                                          bint accumulated) nogil:
+    cdef PredictionCandidate* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
+                                                   bint accumulated) nogil:
         """
         Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score, using a
         `AbstractRefinementSearch`.
@@ -64,8 +64,8 @@ cdef class HeadRefinement:
         :param accumulated          0, if the rule covers all examples that have been provided since the
                                     `RefinementSearch` has been reset for the last time, 1, if the rule covers all
                                     examples that have been  provided so far
-        :return:                    A pointer to an object of type `Prediction` that stores the optimal scores to be
-                                    predicted by the rule, as well as its overall quality score
+        :return:                    A pointer to an object of type `PredictionCandidate` that stores the optimal scores
+                                    to be predicted by the rule, as well as its overall quality score
         """
         pass
 
@@ -78,7 +78,8 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   const intp* label_indices, AbstractRefinementSearch* refinement_search,
                                   bint uncovered, bint accumulated) nogil:
-        cdef LabelWisePrediction* prediction = refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
+        cdef LabelWisePredictionCandidate* prediction = refinement_search.calculateLabelWisePrediction(uncovered,
+                                                                                                       accumulated)
         cdef intp num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
@@ -116,7 +117,6 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         # Return NULL, as the quality_score of the found head is worse than that of `best_head`...
         return NULL
 
-    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
-                                          bint accumulated) nogil:
-        cdef Prediction* prediction = refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
-        return prediction
+    cdef PredictionCandidate* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
+                                                   bint accumulated) nogil:
+        return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)

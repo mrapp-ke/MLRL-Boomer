@@ -4,11 +4,12 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
+from boomer.common._predictions cimport Prediction
 from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, DefaultRuleEvaluation
+from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -133,7 +134,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
         cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
         cdef AbstractStatistics* statistics = self.statistics_ptr.get()
-        cdef DefaultPrediction* default_prediction = NULL
+        cdef Prediction* default_prediction = NULL
         cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
 
         try:
