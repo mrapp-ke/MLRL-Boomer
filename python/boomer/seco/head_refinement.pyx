@@ -11,9 +11,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
     def __cinit__(self, LiftFunction lift_function):
         self.lift_function_ptr = lift_function.lift_function_ptr
 
-    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  const intp* label_indices, AbstractRefinementSearch* refinement_search,
-                                  bint uncovered, bint accumulated) nogil:
+    cdef PredictionCandidate* find_head(self, PredictionCandidate* best_head, PredictionCandidate* recyclable_head,
+                                        const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                        bint uncovered, bint accumulated) nogil:
         cdef LabelWisePredictionCandidate* prediction = refinement_search.calculateLabelWisePrediction(uncovered,
                                                                                                        accumulated)
         cdef float64* predicted_scores = prediction.predictedScores_
@@ -59,9 +59,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
 
                 best_head_candidate_length = num_predictions
 
-            if best_head == NULL or best_quality_score < best_head.qualityScore_:
+            if best_head == NULL or best_quality_score < best_head.overallQualityScore_:
                 if recyclable_head == NULL:
-                    # Create a new `HeadCandidate` and return it...
+                    # Create a new `PredictionCandidate` and return it...
                     candidate_label_indices = <intp*>malloc(best_head_candidate_length * sizeof(intp))
                     candidate_predicted_scores = <float64*>malloc(best_head_candidate_length * sizeof(float64))
 
@@ -74,8 +74,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
                             candidate_label_indices[c] = label_indices[c]
                             candidate_predicted_scores[c] = predicted_scores[c]
 
-                    return new HeadCandidate(best_head_candidate_length, candidate_label_indices,
-                                             candidate_predicted_scores, best_quality_score)
+                    return new PredictionCandidate(best_head_candidate_length, candidate_label_indices,
+                                                   candidate_predicted_scores, best_quality_score)
                 else:
                     candidate_label_indices = recyclable_head.labelIndices_
                     candidate_predicted_scores = recyclable_head.predictedScores_
@@ -97,7 +97,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
                             candidate_label_indices[c] = label_indices[c]
                             candidate_predicted_scores[c] = predicted_scores[c]
 
-                    recyclable_head.qualityScore_ = best_quality_score
+                    recyclable_head.overallQualityScore_ = best_quality_score
                     return recyclable_head
 
             # Return NULL, as the quality_score of the found head is worse than that of `best_head`...

@@ -134,7 +134,7 @@ namespace boosting {
 
             AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, HeadCandidate* head) override;
+            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
 
     };
 

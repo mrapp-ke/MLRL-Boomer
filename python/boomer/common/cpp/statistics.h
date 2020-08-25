@@ -6,8 +6,8 @@
 #pragma once
 
 #include "arrays.h"
+#include "predictions.h"
 #include "rule_evaluation.h"
-#include "head_refinement.h"
 #include <memory>
 
 
@@ -254,9 +254,9 @@ class AbstractStatistics {
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param head              A pointer to an object of type `HeadCandidate`, representing the head of the newly
-         *                          induced rule
+         * @param head              A pointer to an object of type `Prediction`, representing the predictions of the
+         *                          newly induced rule
          */
-        virtual void applyPrediction(intp statisticIndex, HeadCandidate* head);
+        virtual void applyPrediction(intp statisticIndex, Prediction* prediction);
 
 };

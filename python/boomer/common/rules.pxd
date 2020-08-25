@@ -1,6 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float32, float64
 from boomer.common._predictions cimport Prediction
-from boomer.common.head_refinement cimport HeadCandidate
 
 from libcpp.list cimport list as double_linked_list
 
@@ -157,7 +156,7 @@ cdef class ModelBuilder:
 
     cdef void set_default_rule(self, Prediction* default_prediction)
 
-    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator)
 
     cdef RuleModel build_model(self)
@@ -179,7 +178,7 @@ cdef class RuleListBuilder(ModelBuilder):
 
     cdef void set_default_rule(self, Prediction* default_prediction)
 
-    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator)
 
     cdef RuleModel build_model(self)
