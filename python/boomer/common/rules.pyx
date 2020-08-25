@@ -569,21 +569,21 @@ cdef class ModelBuilder:
     A base class for all builders that allow to incrementally build a `RuleModel`.
     """
 
-    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
+    cdef void set_default_rule(self, Prediction* default_prediction):
         """
         Initializes the model and sets its default rule.
 
-        :param scores: A pointer to an object of type `DefaultPrediction` that represents the prediction of the default
-                       rule or NULL, if no default rule should be used
+        :param scores: A pointer to an object of type `Prediction` that represents the prediction of the default rule or
+                       NULL, if no default rule should be used
         """
         pass
 
-    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         """
         Adds a new rule to the model.
 
-        :param head:                            A pointer to an object of type `HeadCandidate`, representing the head of
+        :param head:                            A pointer to an object of type `Prediction`, representing the head of
                                                 the rule
         :param conditions:                      A list that contains the rule's conditions
         :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of
@@ -611,7 +611,7 @@ cdef class RuleListBuilder(ModelBuilder):
         self.rule_list = None
         self.default_rule = None
 
-    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
+    cdef void set_default_rule(self, Prediction* default_prediction):
         cdef bint use_mask = self.use_mask
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
@@ -641,7 +641,7 @@ cdef class RuleListBuilder(ModelBuilder):
             else:
                 rule_list.add_rule(default_rule)
 
-    cdef void add_rule(self, HeadCandidate* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
         cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None

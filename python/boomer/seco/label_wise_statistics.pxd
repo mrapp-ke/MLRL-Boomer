@@ -1,8 +1,7 @@
 from boomer.common._arrays cimport intp, uint8, uint32, float64
+from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch, AbstractDecomposableRefinementSearch
-from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.seco.statistics cimport CoverageStatistics, AbstractCoverageStatistics
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationImpl
 
@@ -28,9 +27,9 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         void resetSearch()
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
+        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
     cdef cppclass LabelWiseStatisticsImpl(AbstractCoverageStatistics):
@@ -45,7 +44,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Functions:
 
-        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, DefaultPrediction* defaultPrediction)
+        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, Prediction* defaultPrediction)
 
         void resetSampledStatistics()
 
@@ -57,7 +56,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
 cdef class LabelWiseStatistics(CoverageStatistics):
