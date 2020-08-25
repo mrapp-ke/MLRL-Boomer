@@ -26,7 +26,7 @@ from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_S
 from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements
+    create_max_head_refinements, create_num_threads
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -49,7 +49,7 @@ class Boomer(MLRuleLearner):
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1):
+                 max_head_refinements: int = 1, num_threads: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -91,6 +91,8 @@ class Boomer(MLRuleLearner):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
+        :param num_threads:                         The number of threads to be used for training or -1, if the number
+                                                    of cores available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
@@ -106,6 +108,7 @@ class Boomer(MLRuleLearner):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
+        self.num_threads = num_threads
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -156,10 +159,11 @@ class Boomer(MLRuleLearner):
         default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
         rule_evaluation = self.__create_rule_evaluation(loss_function, l2_regularization_weight)
         statistics = self.__create_statistics(loss_function, rule_evaluation)
+        num_threads = create_num_threads(self.num_threads)
         rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
         return SequentialRuleInduction(rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
                                        instance_sub_sampling, feature_sub_sampling, pruning, shrinkage, min_coverage,
-                                       max_conditions, max_head_refinements)
+                                       max_conditions, max_head_refinements, num_threads)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)

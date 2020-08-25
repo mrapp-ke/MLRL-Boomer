@@ -34,6 +34,8 @@ cdef class SequentialRuleInduction:
 
     cdef intp max_head_refinements
 
+    cdef int num_threads
+
     # Functions:
 
     cpdef RuleModel induce_rules(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix,
