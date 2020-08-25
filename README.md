@@ -10,7 +10,7 @@ If you use the algorithm in a scientific publication, we would appreciate citati
 
 ## Features
 
-The algorithm that is provided by this project currently supports the following features to learn an ensemble of boosted classification rules:
+The algorithm that is provided by this project currently supports the following core functionalities to learn an ensemble of boosted classification rules:
 
 * Different label-wise or example-wise loss functions can be minimized during training (optionally using L2 regularization).
 * The rules may predict for a single label or for all labels (which enables to model local label dependencies).
@@ -19,8 +19,12 @@ The algorithm that is provided by this project currently supports the following 
 * Hyper-parameters that provide fine-grained control over the specificity/generality of rules are available.
 * The conditions of rules can be pruned based on a hold-out set.  
 * The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
-* Dense and sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
-* Dense and sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets. 
+
+In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
+ 
+* Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
+* Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
+* Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores. 
 
 ## Project structure
 
@@ -112,6 +116,9 @@ In order to run an experiment, the following command line arguments must be prov
 | `--loss`                     | Yes       | `label-wise-logistic-loss` | The name of the loss function to be minimized during training. Must be `label-wise-squared-error-loss`, `label-wise-squared-hinge-loss`, `label-wise-logistic-loss` or `example-wise-logistic-loss`.                                                           |
 | `--l2-regularization-weight` | Yes       | `1.0`                      | The weight of the L2 regularization that is applied for calculating the scores that are predicted by rules. Must be at least `0`. If `0` is used, the L2 regularization is turned off entirely, increasing the value causes the model to be more conservative. |
 | `--random-state`             | Yes       | `1`                        | The seed to the be used by random number generators.                                                                                                                                                                                                           |
+| `--feature-format`           | Yes       | `auto`                     | The format to be used for the feature matrix. Must be `sparse`, if a sparse matrix should be used, `dense`, if a dense matrix should be used, or `auto`, if the format should be chosen automatically.                                                         |
+| `--label-format`             | Yes       | `auto`                     | The format to be used for the label matrix. Must be `sparse`, if a sparse matrix should be used, `dense`, if a dense matrix should be used, or `auto`, if the format should be chosen automatically.                                                           |
+| `--num-threads`              | Yes       | `1`                        | The number of threads to be used for training. Must be at least `1` or `-1`, if the number of cores available on the machine should be used.                                                                                                                   |
 | `--log-level`                | Yes       | `info`                     | The log level to be used. Must be `debug`, `info`, `warn`, `warning`, `error`, `critical`, `fatal` or `notset`.                                                                                                                                                |
 
 In the following, the command for running an experiment using an exemplary configuration can be seen. It uses a virtual environment as discussed in section "Project setup". 
