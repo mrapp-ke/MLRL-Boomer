@@ -13,7 +13,14 @@ from libcpp.memory cimport make_shared
 from cython.operator cimport dereference
 
 
-cdef class RandomAccessLabelMatrix:
+cdef class LabelMatrix:
+    """
+    A wrapper for the abstract C++ class `AbstractLabelMatrix`.
+    """
+    pass
+
+
+cdef class RandomAccessLabelMatrix(LabelMatrix):
     """
     A wrapper for the abstract C++ class `AbstractRandomAccessLabelMatrix`.
     """
