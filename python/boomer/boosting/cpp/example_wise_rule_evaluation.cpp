@@ -21,7 +21,7 @@ ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
 
 }
 
-DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
+Prediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
         AbstractRandomAccessLabelMatrix* labelMatrix) {
     // Class members
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
@@ -80,7 +80,7 @@ DefaultPrediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPredict
     free(dsysvTmpArray2);
     free(dsysvTmpArray3);
 
-    return new DefaultPrediction(numLabels, predictedScores);
+    return new Prediction(numLabels, NULL, predictedScores);
 }
 
 ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
@@ -96,7 +96,7 @@ void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* lab
                                                                  float64* sumsOfGradients,
                                                                  const float64* totalSumsOfHessians,
                                                                  float64* sumsOfHessians, bool uncovered,
-                                                                 LabelWisePrediction* prediction) {
+                                                                 LabelWisePredictionCandidate* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores` and `qualityScores`
@@ -153,7 +153,7 @@ void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* l
                                                                    float64* tmpHessians, int dsysvLwork,
                                                                    float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                                    double* dsysvTmpArray3, float64* dspmvTmpArray,
-                                                                   bool uncovered, Prediction* prediction) {
+                                                                   bool uncovered, PredictionCandidate* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores`

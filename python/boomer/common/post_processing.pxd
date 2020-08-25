@@ -1,8 +1,8 @@
-from boomer.common.head_refinement cimport HeadCandidate
+from boomer.common._predictions cimport Prediction
 
 
 cdef class PostProcessor:
 
     # Functions:
 
-    cdef void post_process(self, HeadCandidate* head)
+    cdef void post_process(self, Prediction* prediction)

@@ -16,7 +16,7 @@ LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
 
 }
 
-DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
+Prediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
         AbstractRandomAccessLabelMatrix* labelMatrix) {
     // Class members
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
@@ -43,7 +43,7 @@ DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPredictio
         predictedScores[c] = -sumOfGradients / (sumOfHessians + l2RegularizationWeight);
     }
 
-    return new DefaultPrediction(numLabels, predictedScores);
+    return new Prediction(numLabels, NULL, predictedScores);
 }
 
 LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
@@ -55,7 +55,7 @@ void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* label
                                                                float64* sumsOfGradients,
                                                                const float64* totalSumsOfHessians,
                                                                float64* sumsOfHessians, bool uncovered,
-                                                               LabelWisePrediction* prediction) {
+                                                               LabelWisePredictionCandidate* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of labels to predict for

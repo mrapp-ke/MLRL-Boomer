@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport intp, float64
+from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction, DefaultRuleEvaluation, \
-    AbstractDefaultRuleEvaluation
+from boomer.common.rule_evaluation cimport DefaultRuleEvaluation, AbstractDefaultRuleEvaluation
 from boomer.boosting._blas cimport Blas
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
@@ -19,7 +19,7 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil
         ExampleWiseDefaultRuleEvaluationImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
                                              float64 l2RegularizationWeight, shared_ptr[Lapack] lapackPtr) except +
 
-        DefaultPrediction* calculateDefaultPrediction(AbstractRandomAccessLabelMatrix* labelMatrix) except +
+        Prediction* calculateDefaultPrediction(AbstractRandomAccessLabelMatrix* labelMatrix) except +
 
 
     cdef cppclass ExampleWiseRuleEvaluationImpl:
@@ -34,14 +34,14 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil
         void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                           float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                           float64* sumsOfHessians, bool uncovered,
-                                          LabelWisePrediction* prediction) except +
+                                          LabelWisePredictionCandidate* prediction) except +
 
         void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                             float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                             float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
                                             int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                             double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
-                                            Prediction* prediction) except +
+                                            PredictionCandidate* prediction) except +
 
 
 cdef class ExampleWiseDefaultRuleEvaluation(DefaultRuleEvaluation):

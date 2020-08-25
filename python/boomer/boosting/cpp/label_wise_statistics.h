@@ -48,7 +48,7 @@ namespace boosting {
 
             float64* accumulatedSumsOfHessians_;
 
-            LabelWisePrediction* prediction_;
+            LabelWisePredictionCandidate* prediction_;
 
         public:
 
@@ -83,7 +83,7 @@ namespace boosting {
 
             void resetSearch() override;
 
-            LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
+            LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
 
     };
 
@@ -126,7 +126,7 @@ namespace boosting {
             ~LabelWiseStatisticsImpl();
 
             void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                        DefaultPrediction* defaultPrediction) override;
+                                        Prediction* defaultPrediction) override;
 
             void resetCoveredStatistics() override;
 
@@ -134,7 +134,7 @@ namespace boosting {
 
             AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, HeadCandidate* head) override;
+            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
 
     };
 

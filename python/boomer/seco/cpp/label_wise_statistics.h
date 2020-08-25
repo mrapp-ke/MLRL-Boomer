@@ -44,7 +44,7 @@ namespace seco {
 
             float64* accumulatedConfusionMatricesCovered_;
 
-            LabelWisePrediction* prediction_;
+            LabelWisePredictionCandidate* prediction_;
 
         public:
 
@@ -85,7 +85,7 @@ namespace seco {
 
             void resetSearch() override;
 
-            LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
+            LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
 
     };
 
@@ -120,7 +120,7 @@ namespace seco {
             ~LabelWiseStatisticsImpl();
 
             void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                        DefaultPrediction* defaultPrediction) override;
+                                        Prediction* defaultPrediction) override;
 
             void resetSampledStatistics() override;
 
@@ -132,7 +132,7 @@ namespace seco {
 
             AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, HeadCandidate* head) override;
+            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
 
     };
 

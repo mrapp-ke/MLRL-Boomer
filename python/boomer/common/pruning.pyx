@@ -4,10 +4,10 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
+from boomer.common._predictions cimport PredictionCandidate
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractRefinementSearch
-from boomer.common.rule_evaluation cimport Prediction
 
 from libcpp.memory cimport unique_ptr
 
@@ -22,7 +22,7 @@ cdef class Pruning:
     """
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
-                                         double_linked_list[Condition] conditions, HeadCandidate* head,
+                                         double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
                                          HeadRefinement head_refinement):
@@ -36,7 +36,7 @@ cdef class Pruning:
                                             as their values for the respective feature, sorted in ascending order by the
                                             feature values
         :param conditions:                  A list that contains the conditions of the existing rule
-        :param head:                        A pointer to an object of type `HeadCandidate` representing the head of the
+        :param head:                        A pointer to an object of type `Prediction` representing the head of the
                                             existing rule
         :param covered_examples_mask:       An array of dtype uint, shape `(num_examples)` that is used to keep track of
                                             the indices of the examples that are covered by the existing rule
@@ -62,7 +62,7 @@ cdef class IREP(Pruning):
     """
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
-                                         double_linked_list[Condition] conditions, HeadCandidate* head,
+                                         double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
                                          HeadRefinement head_refinement):
@@ -76,7 +76,7 @@ cdef class IREP(Pruning):
         cdef intp* label_indices = head.labelIndices_
         # Temporary variables
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
-        cdef Prediction* prediction
+        cdef PredictionCandidate* prediction
         cdef Condition condition
         cdef Comparator comparator
         cdef float32 threshold

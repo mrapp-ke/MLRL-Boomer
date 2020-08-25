@@ -6,8 +6,8 @@
 #pragma once
 
 #include "arrays.h"
+#include "predictions.h"
 #include "rule_evaluation.h"
-#include "head_refinement.h"
 #include <memory>
 
 
@@ -81,11 +81,11 @@ class AbstractRefinementSearch {
          *                      `updateSearch` since the function `resetSearch` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the search has been started
          *                      via the function `Statistics#beginSearch`
-         * @return              A pointer to an object of type `LabelWisePrediction` that stores the scores to be
-         *                      predicted by the rule for each considered label, as well as the corresponding quality
+         * @return              A pointer to an object of type `LabelWisePredictionCandidate` that stores the scores to
+         *                      be predicted by the rule for each considered label, as well as the corresponding quality
          *                      scores
          */
-        virtual LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated);
+        virtual LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated);
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been
@@ -116,10 +116,10 @@ class AbstractRefinementSearch {
          *                      `updateSearch` since the function `resetSearch` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the search has been started
          *                      via the function `Statistics#beginSearch`
-         * @return              A pointer to an object of type `Prediction` that stores the scores to be predicted by
-         *                      the rule for each considered label, as well as an overall quality score
+         * @return              A pointer to an object of type `PredictionCandidate` that stores the scores to be
+         *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated);
+        virtual PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated);
 
 };
 
@@ -132,7 +132,7 @@ class AbstractDecomposableRefinementSearch : public AbstractRefinementSearch {
 
     public:
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
 };
 
@@ -158,11 +158,11 @@ class AbstractStatistics {
          *
          * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
          *                          provides random access to the labels of the training examples
-         * @param defaultPrediction A pointer to an object of type `DefaultPrediction`, representing the predictions of
-         *                          the default rule or NULL, if no default rule is available
+         * @param defaultPrediction A pointer to an object of type `Prediction`, representing the predictions of the
+         *                          default rule or NULL, if no default rule is available
          */
         virtual void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                            DefaultPrediction* defaultPrediction);
+                                            Prediction* defaultPrediction);
 
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the
@@ -254,9 +254,9 @@ class AbstractStatistics {
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param head              A pointer to an object of type `HeadCandidate`, representing the head of the newly
-         *                          induced rule
+         * @param head              A pointer to an object of type `Prediction`, representing the predictions of the
+         *                          newly induced rule
          */
-        virtual void applyPrediction(intp statisticIndex, HeadCandidate* head);
+        virtual void applyPrediction(intp statisticIndex, Prediction* prediction);
 
 };
