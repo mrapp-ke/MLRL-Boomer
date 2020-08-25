@@ -1,0 +1,47 @@
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+classes that store the predictions of rules, as well as corresponding quality scores.
+"""
+from boomer.common._arrays cimport intp, float64
+
+
+cdef extern from "cpp/predictions.h" nogil:
+
+    cdef cppclass Prediction:
+
+        # Constructors:
+
+        Prediction(intp numPredictions, intp* labelIndices, float64* predictedScores) except +
+
+        # Attributes:
+
+        intp numPredictions_
+
+        intp* labelIndices_
+
+        float64* predictedScores_
+
+
+    cdef cppclass PredictionCandidate(Prediction):
+
+        # Constructors:
+
+        PredictionCandidate(intp numPredictions, intp* labelIndices, float64* predictedScores,
+                            float64 overallQualityScore) except +
+
+        # Attributes:
+
+        float64 overallQualityScore_
+
+
+    cdef cppclass LabelWisePredictionCandidate(PredictionCandidate):
+
+        # Constructors:
+
+        LabelWisePredictionCandidate(intp numPredictions, intp* labelIndices, float64* predictedScores,
+                                     float64* qualityScores, float64 overallQualityScore) except +
+
+        # Attributes:
+
+        float64* qualityScores_

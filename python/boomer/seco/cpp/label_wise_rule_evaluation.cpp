@@ -9,7 +9,7 @@ LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
 
 }
 
-DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
+Prediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
     // The number of examples
     intp numExamples = labelMatrix->numExamples_;
     // The number of labels
@@ -33,7 +33,7 @@ DefaultPrediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPredictio
         predictedScores[c] = (numPositiveLabels > threshold ? 1 : 0);
     }
 
-    return new DefaultPrediction(numLabels, predictedScores);
+    return new Prediction(numLabels, NULL, predictedScores);
 }
 
 LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr) {
@@ -44,7 +44,7 @@ void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* label
                                                                const float64* confusionMatricesTotal,
                                                                const float64* confusionMatricesSubset,
                                                                const float64* confusionMatricesCovered, bool uncovered,
-                                                               LabelWisePrediction* prediction) {
+                                                               LabelWisePredictionCandidate* prediction) {
     // Class members
     AbstractHeuristic* heuristic = heuristicPtr_.get();
     // The number of labels to predict for

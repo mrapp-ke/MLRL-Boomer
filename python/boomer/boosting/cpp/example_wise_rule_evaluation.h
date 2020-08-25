@@ -45,7 +45,7 @@ namespace boosting {
 
             ~ExampleWiseDefaultRuleEvaluationImpl();
 
-            DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
+            Prediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
 
     };
 
@@ -79,7 +79,7 @@ namespace boosting {
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
              * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
-             * scores are stored in a given object of type `LabelWisePrediction`.
+             * scores are stored in a given object of type `LabelWisePredictionCandidate`.
              *
              * If the argument `uncovered` is True, the rule is considered to cover the difference between the sums of
              * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
@@ -104,17 +104,18 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A pointer to an object of type `LabelWisePrediction` that should be used to
-             *                              store the predicted scores and quality scores
+             * @param prediction            A pointer to an object of type `LabelWisePredictionCandidate` that should be
+             *                              used to store the predicted scores and quality scores
              */
             void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                              float64* sumsOfHessians, bool uncovered, LabelWisePrediction* prediction);
+                                              float64* sumsOfHessians, bool uncovered,
+                                              LabelWisePredictionCandidate* prediction);
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
              * of gradients and Hessians that are covered by the rule. The predicted scores and quality scores are
-             * stored in a given object of type `Prediction`.
+             * stored in a given object of type `PredictionCandidate`.
              *
              * If the argument `uncovered` is True, the rule is considered to cover the difference between the sums of
              * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
@@ -158,15 +159,15 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A pointer to an object of type `Prediction` that should be used to store the
-             *                              predicted scores and quality score
+             * @param prediction            A pointer to an object of type `PredictionCandidate` that should be used to
+             *                              store the predicted scores and quality score
              */
             void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                                 float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                 float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
                                                 int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                 double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
-                                                Prediction* prediction);
+                                                PredictionCandidate* prediction);
 
     };
 

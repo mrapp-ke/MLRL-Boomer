@@ -16,8 +16,8 @@ COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenm
 sources = [
     '**/*.pyx',
     'boomer/common/cpp/sparse.cpp',
+    'boomer/common/cpp/predictions.cpp',
     'boomer/common/cpp/input_data.cpp',
-    'boomer/common/cpp/head_refinement.cpp',
     'boomer/common/cpp/rule_evaluation.cpp',
     'boomer/common/cpp/statistics.cpp',
     'boomer/boosting/cpp/blas.cpp',
