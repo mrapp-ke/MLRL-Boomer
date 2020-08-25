@@ -71,7 +71,7 @@ cdef class FeatureMatrix:
 
     # Functions:
 
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil
+    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil
 
 
 cdef class DenseFeatureMatrix(FeatureMatrix):
@@ -82,7 +82,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil
+    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -97,4 +97,4 @@ cdef class CscFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef IndexedFloat32Array* get_sorted_feature_values(self, intp feature_index) nogil
+    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil

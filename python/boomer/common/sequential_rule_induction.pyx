@@ -17,7 +17,7 @@ cdef class SequentialRuleInduction:
     def __cinit__(self, RuleInduction rule_induction, HeadRefinement head_refinement, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                  intp min_coverage, intp max_conditions, intp max_head_refinements):
+                  intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
         :param rule_induction:          The algorithm that should be used to induce rules
         :param head_refinement:         The strategy that should be used to find the heads of rules
@@ -41,6 +41,7 @@ cdef class SequentialRuleInduction:
         :param max_head_refinements:    The maximum number of times the head of a rule may be refined after a new
                                         condition has been added to its body. Must be at least 1 or -1, if the number of
                                         refinements should not be restricted
+        :param num_threads:             The number of threads to be used for training. Must be at least 1
         """
         self.rule_induction = rule_induction
         self.head_refinement = head_refinement
@@ -53,6 +54,7 @@ cdef class SequentialRuleInduction:
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
+        self.num_threads = num_threads
 
     cpdef RuleModel induce_rules(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
@@ -80,6 +82,7 @@ cdef class SequentialRuleInduction:
         cdef intp min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
         cdef intp max_head_refinements = self.max_head_refinements
+        cdef int num_threads = self.num_threads
         cdef RNG rng = RNG.__new__(RNG, random_state)
         # The total number of labels
         cdef intp num_labels = label_matrix.num_labels
@@ -96,7 +99,7 @@ cdef class SequentialRuleInduction:
             success = rule_induction.induce_rule(nominal_attribute_mask, feature_matrix, num_labels, head_refinement,
                                                  label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                                  pruning, post_processor, min_coverage, max_conditions,
-                                                 max_head_refinements, rng, model_builder)
+                                                 max_head_refinements, num_threads, rng, model_builder)
 
             if not success:
                 break
