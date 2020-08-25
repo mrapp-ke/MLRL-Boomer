@@ -44,10 +44,10 @@ cdef class FullHeadRefinement(HeadRefinement):
             else:
                 # Modify the `recyclable_head` and return it...
                 for c in range(num_predictions):
-                    best_head.predictedScores_[c] = predicted_scores[c]
+                    recyclable_head.predictedScores_[c] = predicted_scores[c]
 
-                best_head.overallQualityScore_ = overall_quality_score
-                return best_head
+                recyclable_head.overallQualityScore_ = overall_quality_score
+                return recyclable_head
 
         # Return NULL, as the quality score of the found head is worse than that of `best_head`...
         return NULL
