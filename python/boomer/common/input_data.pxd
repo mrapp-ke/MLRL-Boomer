@@ -7,13 +7,16 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/input_data.h" nogil:
 
-    cdef cppclass AbstractRandomAccessLabelMatrix:
+    cdef cppclass AbstractLabelMatrix:
 
         # Attributes:
 
         intp numExamples_
 
         intp numLabels_
+
+
+    cdef cppclass AbstractRandomAccessLabelMatrix(AbstractLabelMatrix):
 
         # Functions:
 
@@ -42,13 +45,18 @@ cdef extern from "cpp/input_data.h" nogil:
         uint8 getLabel(intp exampleIndex, intp labelIndex)
 
 
-cdef class RandomAccessLabelMatrix:
+cdef class LabelMatrix:
 
     # Attributes:
 
     cdef readonly intp num_examples
 
     cdef readonly intp num_labels
+
+
+cdef class RandomAccessLabelMatrix(LabelMatrix):
+
+    # Attributes:
 
     cdef shared_ptr[AbstractRandomAccessLabelMatrix] label_matrix_ptr
 
