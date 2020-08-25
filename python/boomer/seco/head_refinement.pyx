@@ -77,6 +77,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
                     return new PredictionCandidate(best_head_candidate_length, candidate_label_indices,
                                                    candidate_predicted_scores, best_quality_score)
                 else:
+                    # Modify the `recyclable_head` and return it...
                     candidate_label_indices = recyclable_head.labelIndices_
                     candidate_predicted_scores = recyclable_head.predictedScores_
 
@@ -87,7 +88,6 @@ cdef class PartialHeadRefinement(HeadRefinement):
                         candidate_predicted_scores = <float64*>realloc(candidate_predicted_scores, best_head_candidate_length * sizeof(float64))
                         recyclable_head.predictedScores_ = candidate_predicted_scores
 
-                    # Modify the `recyclable_head` and return it...
                     if label_indices == NULL:
                         for c in range(best_head_candidate_length):
                             candidate_label_indices[c] = sorted_indices[c] if label_indices == NULL else label_indices[sorted_indices[c]]
