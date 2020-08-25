@@ -13,10 +13,10 @@ cdef class FullHeadRefinement(HeadRefinement):
     Allows to find the best multi-label head that predicts for all labels.
     """
 
-    cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
-                                  const intp* label_indices, AbstractRefinementSearch* refinement_search,
-                                  bint uncovered, bint accumulated) nogil:
-        cdef Prediction* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
+    cdef PredictionCandidate* find_head(self, PredictionCandidate* best_head, PredictionCandidate* recyclable_head,
+                                        const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                        bint uncovered, bint accumulated) nogil:
+        cdef PredictionCandidate* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
         cdef intp num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64 overall_quality_score = prediction.overallQualityScore_
@@ -25,9 +25,9 @@ cdef class FullHeadRefinement(HeadRefinement):
         cdef intp c
 
         # The quality score must be better than that of `best_head`...
-        if best_head == NULL or overall_quality_score < best_head.qualityScore_:
+        if best_head == NULL or overall_quality_score < best_head.overallQualityScore_:
             if recyclable_head == NULL:
-                # Create a new `HeadCandidate` and return it...
+                # Create a new `PredictionCandidate` and return it...
                 candidate_predicted_scores = <float64*>malloc(num_predictions * sizeof(float64))
 
                 for c in range(num_predictions):
@@ -39,20 +39,19 @@ cdef class FullHeadRefinement(HeadRefinement):
                     for c in range(num_predictions):
                         candidate_label_indices[c] = label_indices[c]
 
-                return new HeadCandidate(num_predictions, candidate_label_indices, candidate_predicted_scores,
-                                         overall_quality_score)
+                return new PredictionCandidate(num_predictions, candidate_label_indices, candidate_predicted_scores,
+                                               overall_quality_score)
             else:
                 # Modify the `recyclable_head` and return it...
                 for c in range(num_predictions):
-                    best_head.predictedScores_[c] = predicted_scores[c]
+                    recyclable_head.predictedScores_[c] = predicted_scores[c]
 
-                best_head.qualityScore_ = overall_quality_score
-                return best_head
+                recyclable_head.overallQualityScore_ = overall_quality_score
+                return recyclable_head
 
         # Return NULL, as the quality score of the found head is worse than that of `best_head`...
         return NULL
 
-    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
-                                          bint accumulated) nogil:
-        cdef Prediction* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
-        return prediction
+    cdef PredictionCandidate* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
+                                                   bint accumulated) nogil:
+        return refinement_search.calculateExampleWisePrediction(uncovered, accumulated)

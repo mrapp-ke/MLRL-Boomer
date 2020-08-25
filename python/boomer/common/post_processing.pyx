@@ -1,19 +1,19 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that allow to post-process rules once they have been learned.
+Provides classes that allow to post-process the predictions of rules once they have been learned.
 """
 
 
 cdef class PostProcessor:
     """
-    A base class for all classes that allow to post-process rules once they have been learned.
+    A base class for all classes that allow to post-process the predictions rules once they have been learned.
     """
 
-    cdef void post_process(self, HeadCandidate* head):
+    cdef void post_process(self, Prediction* prediction):
         """
-        Post-processes the head of a rule.
+        Post-processes the predictions of a rule.
 
-        :param head: A pointer to an object of type `HeadCandidate`, representing the head of the rule
+        :param prediction: A pointer to an object of type `Prediction`, representing the predictions of the rule
         """
         pass

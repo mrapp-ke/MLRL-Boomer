@@ -13,17 +13,18 @@ void AbstractRefinementSearch::resetSearch() {
 
 }
 
-LabelWisePrediction* AbstractRefinementSearch::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
+LabelWisePredictionCandidate* AbstractRefinementSearch::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
     return NULL;
 }
 
-Prediction* AbstractRefinementSearch::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
+PredictionCandidate* AbstractRefinementSearch::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
     return NULL;
 }
 
-Prediction* AbstractDecomposableRefinementSearch::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
+PredictionCandidate* AbstractDecomposableRefinementSearch::calculateExampleWisePrediction(bool uncovered,
+                                                                                          bool accumulated) {
     // In the decomposable case, the example-wise predictions are the same as the label-wise predictions...
-    return (Prediction*) this->calculateLabelWisePrediction(uncovered, accumulated);
+    return (PredictionCandidate*) this->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
 AbstractStatistics::~AbstractStatistics() {
@@ -31,7 +32,7 @@ AbstractStatistics::~AbstractStatistics() {
 }
 
 void AbstractStatistics::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
-                                                DefaultPrediction* defaultPrediction) {
+                                                Prediction* defaultPrediction) {
 
 }
 
@@ -55,6 +56,6 @@ AbstractRefinementSearch* AbstractStatistics::beginSearch(intp numLabelIndices, 
     return NULL;
 }
 
-void AbstractStatistics::applyPrediction(intp statisticIndex, HeadCandidate* head) {
+void AbstractStatistics::applyPrediction(intp statisticIndex, Prediction* prediction) {
 
 }
