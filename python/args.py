@@ -127,6 +127,13 @@ class ArgumentParserBuilder:
         self.add_learner_arguments(**kwargs)
         self.add_random_state_argument(**kwargs)
         parser = self.parser
+        parser.add_argument('--feature-format', type=optional_string, default='auto',
+                            help='The format to be used for the feature matrix or \'auto\'')
+        parser.add_argument('--label-format', type=optional_string, default='auto',
+                            help='The format to be used for the label matrix or \'auto\'')
+        parser.add_argument('--num-threads', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads', 1, **kwargs),
+                            help='The number of threads to be used for training or -1')
         parser.add_argument('--max-rules', type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
                             help='The maximum number of rules to be induced or -1')

@@ -15,10 +15,10 @@ from boomer.seco.statistics import CoverageStatistics
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
-from boomer.common.rule_learners import MLRuleLearner
+from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, parse_prefix_and_dict, get_int_argument, get_float_argument
+    create_max_head_refinements, create_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -55,11 +55,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     rules.
     """
 
-    def __init__(self, random_state: int = 1, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
+    def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
+                 label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
+                 head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
-                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1):
+                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -101,8 +102,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
+        :param num_threads:                         The number of threads to be used for training or -1, if the number
+                                                    of cores available on the machine should be used
         """
-        super().__init__(random_state)
+        super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
@@ -116,6 +119,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
+        self.num_threads = num_threads
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -161,9 +165,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(statistics, 0))
+        num_threads = create_num_threads(self.num_threads)
         return SequentialRuleInduction(rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
                                        instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
-                                       max_conditions, max_head_refinements)
+                                       max_conditions, max_head_refinements, num_threads)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic

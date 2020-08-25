@@ -38,7 +38,9 @@ cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil
 
         void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                             float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                            float64* sumsOfHessians, bool uncovered,
+                                            float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
+                                            int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                            double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
                                             Prediction* prediction) except +
 
 
