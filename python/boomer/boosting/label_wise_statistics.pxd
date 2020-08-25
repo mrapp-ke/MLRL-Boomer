@@ -1,9 +1,8 @@
 from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch, \
     AbstractDecomposableRefinementSearch
-from boomer.common.head_refinement cimport HeadCandidate
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, LabelWisePrediction
 from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
 from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
 from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationImpl
@@ -29,9 +28,9 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         void resetSearch()
 
-        LabelWisePrediction* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
+        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        Prediction* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
     cdef cppclass LabelWiseStatisticsImpl(AbstractGradientStatistics):
@@ -44,7 +43,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Functions:
 
         void applyDefaultPrediction(shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
-                                    DefaultPrediction* defaultPrediction)
+                                    Prediction* defaultPrediction)
 
         void resetSampledStatistics()
 
@@ -56,7 +55,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, HeadCandidate* head)
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
 cdef class LabelWiseStatistics(GradientStatistics):

@@ -29,7 +29,7 @@ ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(
     sumsOfHessians_ = sumsOfHessians;
     accumulatedSumsOfHessians_ = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-    prediction_ = new LabelWisePrediction(numPredictions, predictedScores, NULL, 0);
+    prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, NULL, 0);
     tmpGradients_ = NULL;
     tmpHessians_ = NULL;
     dsysvTmpArray1_ = NULL;
@@ -96,7 +96,8 @@ void ExampleWiseRefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePrediction* ExampleWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
+LabelWisePredictionCandidate* ExampleWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
+                                                                                            bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
@@ -105,7 +106,7 @@ LabelWisePrediction* ExampleWiseRefinementSearchImpl::calculateLabelWisePredicti
     return prediction_;
 }
 
-Prediction* ExampleWiseRefinementSearchImpl::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
+PredictionCandidate* ExampleWiseRefinementSearchImpl::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
 
@@ -155,7 +156,7 @@ ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
 }
 
 void ExampleWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                                       DefaultPrediction* defaultPrediction) {
+                                                       Prediction* defaultPrediction) {
     // Class members
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     // The number of examples
@@ -235,11 +236,11 @@ AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIn
                                                gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
-void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, HeadCandidate* head) {
+void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
-    intp numPredictions = head->numPredictions_;
-    const intp* labelIndices = head->labelIndices_;
-    const float64* predictedScores = head->predictedScores_;
+    intp numPredictions = prediction->numPredictions_;
+    const intp* labelIndices = prediction->labelIndices_;
+    const float64* predictedScores = prediction->predictedScores_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
     intp numHessians = linalg::triangularNumber(numLabels);

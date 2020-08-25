@@ -4,11 +4,11 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
+from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.head_refinement cimport HeadCandidate
 from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
-from boomer.common.rule_evaluation cimport DefaultPrediction, Prediction, DefaultRuleEvaluation
+from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -25,7 +25,7 @@ from cython.parallel cimport prange
 A struct that represents a potential refinement of a rule.
 """
 cdef struct Refinement:
-    HeadCandidate* head
+    PredictionCandidate* head
     intp feature_index
     float32 threshold
     Comparator comparator
@@ -134,7 +134,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
         cdef shared_ptr[AbstractRandomAccessLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
         cdef AbstractStatistics* statistics = self.statistics_ptr.get()
-        cdef DefaultPrediction* default_prediction = NULL
+        cdef Prediction* default_prediction = NULL
         cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
 
         try:
@@ -267,7 +267,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     current_refinement = refinements[f]
 
                     if current_refinement.head != NULL and (best_refinement.head == NULL
-                                                            or current_refinement.head.qualityScore_ < best_refinement.head.qualityScore_):
+                                                            or current_refinement.head.overallQualityScore_ < best_refinement.head.overallQualityScore_):
                         del best_refinement.head
                         best_refinement = current_refinement
                         found_refinement = True
@@ -406,7 +406,7 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
                                   unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local,
                                   FeatureMatrix feature_matrix, uint32[::1] covered_statistics_mask,
                                   uint32 covered_statistics_target, intp num_conditions, AbstractStatistics* statistics,
-                                  HeadRefinement head_refinement, HeadCandidate* head) nogil:
+                                  HeadRefinement head_refinement, PredictionCandidate* head) nogil:
     """
     Finds and returns the best refinement of an existing rule, which results from adding a new condition that
     corresponds to a certain feature.
@@ -439,8 +439,8 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be used for finding the
                                         best refinement
     :param head_refinement:             The strategy that should be used to find the head of the refined rule
-    :param head:                        A pointer to an object of type `HeadCandidate`, representing the head of the
-                                        existing rule
+    :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
+                                        the existing rule
     :return:                            A struct of type `Refinement`, representing the best refinement that has been
                                         found
     """
@@ -449,9 +449,9 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
     refinement.feature_index = feature_index
     refinement.head = NULL
     # The best head seen so far
-    cdef HeadCandidate* best_head = head
+    cdef PredictionCandidate* best_head = head
     # Temporary variables
-    cdef HeadCandidate* current_head
+    cdef PredictionCandidate* current_head
     cdef float32 current_threshold, previous_threshold, previous_threshold_negative
     cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
     cdef intp r, i, previous_r, previous_r_negative
@@ -1166,7 +1166,7 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
 
 cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp num_statistics,
                                            HeadRefinement head_refinement, uint32[::1] covered_statistics_mask,
-                                           uint32 covered_statistics_target, HeadCandidate* head):
+                                           uint32 covered_statistics_target, PredictionCandidate* head):
     """
     Updates the scores that a predicted by the head of a rule, based on all available statistics.
 
@@ -1178,8 +1178,8 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
                                         the indices of the statistics that are covered by the rule
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the rule
-    :param head:                        A pointer to an object of type `HeadCandidate`, representing the head of the
-                                        rule
+    :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
+                                        the rule
     """
     # The number labels for which the head predicts
     cdef intp num_predictions = head.numPredictions_

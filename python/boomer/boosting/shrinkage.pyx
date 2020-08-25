@@ -8,17 +8,18 @@ from boomer.common._arrays cimport intp
 
 cdef class Shrinkage(PostProcessor):
     """
-    A base class for all classes that allow to post-process the rules by shrinking their weight. The shrinkage
-    parameter, a.k.a. the learning rate, may be constant or a function depending on the number of rules learned so far.
+    A base class for all classes that allow to post-process the predictions of rules by shrinking their weight. The
+    shrinkage parameter, a.k.a. the learning rate, may be constant or a function depending on the number of rules
+    learned so far.
     """
 
-    cdef void post_process(self, HeadCandidate* head):
+    cdef void post_process(self, Prediction* prediction):
         pass
 
 
 cdef class ConstantShrinkage(Shrinkage):
     """
-    Shrinks the weights of rules by a constant shrinkage parameter.
+    Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
     """
 
     def __cinit__(self, float64 shrinkage = 1.0):
@@ -27,10 +28,10 @@ cdef class ConstantShrinkage(Shrinkage):
         """
         self.shrinkage = shrinkage
 
-    cdef void post_process(self, HeadCandidate* head):
+    cdef void post_process(self, Prediction* prediction):
         cdef float64 shrinkage = self.shrinkage
-        cdef intp num_predictions = head.numPredictions_
-        cdef float64* predicted_scores = head.predictedScores_
+        cdef intp num_predictions = prediction.numPredictions_
+        cdef float64* predicted_scores = prediction.predictedScores_
         cdef intp c
 
         for c in range(num_predictions):
