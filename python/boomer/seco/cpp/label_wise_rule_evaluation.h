@@ -24,7 +24,7 @@ namespace seco {
 
             ~LabelWiseDefaultRuleEvaluationImpl();
 
-            DefaultPrediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
+            Prediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) override;
 
     };
 
@@ -49,7 +49,7 @@ namespace seco {
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on
              * confusion matrices. The predicted scores and quality scores are stored in a given object of type
-             * `LabelWisePrediction`.
+             * `LabelWisePredictionCandidate`.
              *
              * @param labelIndices              A pointer to an array of type `intp`, shape
              *                                  `(prediction.numPredictions_)`, representing the indices of the labels
@@ -72,14 +72,14 @@ namespace seco {
              * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
              *                                  correspond to the examples that are covered by rule, True, if they
              *                                  correspond to the examples that are not covered by the rule
-             * @param prediction                A pointer to an object of type `LabelWisePrediction` that should be used
-             *                                  to store the predicted scores and quality scores
+             * @param prediction                A pointer to an object of type `LabelWisePredictionCandidate` that
+             *                                  should be used to store the predicted scores and quality scores
              */
             void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
                                               const float64* confusionMatricesTotal,
                                               const float64* confusionMatricesSubset,
                                               const float64* confusionMatricesCovered, bool uncovered,
-                                              LabelWisePrediction* prediction);
+                                              LabelWisePredictionCandidate* prediction);
 
     };
 

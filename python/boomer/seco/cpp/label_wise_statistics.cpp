@@ -23,7 +23,7 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     accumulatedConfusionMatricesCovered_ = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
-    prediction_ = new LabelWisePrediction(numPredictions, predictedScores, qualityScores, 0);
+    prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
 }
 
 LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
@@ -70,7 +70,8 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePrediction* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
+LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
+                                                                                          bool accumulated) {
     float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
     ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, minorityLabels_, confusionMatricesTotal_,
                                                            confusionMatricesSubset_, confusionMatricesCovered,
@@ -94,7 +95,7 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
 }
 
 void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
-                                                     DefaultPrediction* defaultPrediction) {
+                                                     Prediction* defaultPrediction) {
     // The number of examples
     intp numExamples = labelMatrixPtr.get()->numExamples_;
     // The number of labels

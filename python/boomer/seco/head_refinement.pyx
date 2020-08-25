@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport float64, array_intp, array_float64
+from boomer.common._predictions cimport LabelWisePredictionCandidate
 from boomer.common._tuples cimport IndexedFloat64, compare_indexed_float64
-from boomer.common.rule_evaluation cimport LabelWisePrediction
 from boomer.seco.lift_functions cimport LiftFunction
 
 from libc.stdlib cimport qsort, malloc, realloc, free
@@ -14,7 +14,8 @@ cdef class PartialHeadRefinement(HeadRefinement):
     cdef HeadCandidate* find_head(self, HeadCandidate* best_head, HeadCandidate* recyclable_head,
                                   const intp* label_indices, AbstractRefinementSearch* refinement_search,
                                   bint uncovered, bint accumulated) nogil:
-        cdef LabelWisePrediction* prediction = refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
+        cdef LabelWisePredictionCandidate* prediction = refinement_search.calculateLabelWisePrediction(uncovered,
+                                                                                                       accumulated)
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
         cdef intp num_predictions = prediction.numPredictions_
@@ -104,10 +105,9 @@ cdef class PartialHeadRefinement(HeadRefinement):
         finally:
             free(sorted_indices)
 
-    cdef Prediction* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
-                                          bint accumulated) nogil:
-        cdef Prediction* prediction = refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
-        return prediction
+    cdef PredictionCandidate* calculate_prediction(self, AbstractRefinementSearch* refinement_search, bint uncovered,
+                                                   bint accumulated) nogil:
+        return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
 
 
 cdef inline intp* __argsort(float64* a, intp num_elements) nogil:

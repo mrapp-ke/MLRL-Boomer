@@ -569,12 +569,12 @@ cdef class ModelBuilder:
     A base class for all builders that allow to incrementally build a `RuleModel`.
     """
 
-    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
+    cdef void set_default_rule(self, Prediction* default_prediction):
         """
         Initializes the model and sets its default rule.
 
-        :param scores: A pointer to an object of type `DefaultPrediction` that represents the prediction of the default
-                       rule or NULL, if no default rule should be used
+        :param scores: A pointer to an object of type `Prediction` that represents the prediction of the default rule or
+                       NULL, if no default rule should be used
         """
         pass
 
@@ -611,7 +611,7 @@ cdef class RuleListBuilder(ModelBuilder):
         self.rule_list = None
         self.default_rule = None
 
-    cdef void set_default_rule(self, DefaultPrediction* default_prediction):
+    cdef void set_default_rule(self, Prediction* default_prediction):
         cdef bint use_mask = self.use_mask
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
