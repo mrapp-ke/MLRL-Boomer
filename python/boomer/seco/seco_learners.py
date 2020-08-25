@@ -15,7 +15,7 @@ from boomer.seco.statistics import CoverageStatistics
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
-from boomer.common.rule_learners import MLRuleLearner
+from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
     create_max_head_refinements, create_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument
@@ -55,8 +55,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     rules.
     """
 
-    def __init__(self, random_state: int = 1, max_rules: int = 500, time_limit: int = -1, head_refinement: str = None,
-                 lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
+    def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
+                 label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
+                 head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
                  min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1):
@@ -104,7 +105,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         :param num_threads:                         The number of threads to be used for training or -1, if the number
                                                     of cores available on the machine should be used
         """
-        super().__init__(random_state)
+        super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_refinement = head_refinement
