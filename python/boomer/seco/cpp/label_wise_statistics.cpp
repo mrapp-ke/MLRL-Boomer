@@ -235,7 +235,7 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
 
                 // Decrement the total sum of uncovered labels, if the prediction for the current example and label is
                 // correct...
-                if (predictedLabel != trueLabel) {
+                if (predictedLabel == trueLabel) {
                     sumUncoveredLabels_ -= labelWeight;
                 }
 
