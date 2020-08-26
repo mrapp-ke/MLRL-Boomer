@@ -125,17 +125,16 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRan
             }
         }
 
-        uint8 predictedLabel = (numPositiveLabels > threshold ? 1 : 0);
-
-        // Rules should predict the opposite of the default rule...
-        minorityLabels[c] = predictedLabel > 0 ? 0 : 1;
+        // Rules should predict the minority label, i.e., the opposite of the default rule...
+        uint8 minorityLabel = (numPositiveLabels > threshold ? 0 : 1);
+        minorityLabels[c] = minorityLabel;
 
         for (intp r = 0; r < numExamples; r++) {
             uint8 trueLabel = labelMatrixPtr.get()->getLabel(r, c);
 
             // Increment the total number of uncovered labels, if the default rule's prediction for the current example
             // and label is incorrect...
-            if (predictedLabel != trueLabel) {
+            if (minorityLabel == trueLabel) {
                 sumUncoveredLabels++;
             }
 
