@@ -134,6 +134,7 @@ PredictionCandidate* ExampleWiseRefinementSearchImpl::calculateExampleWisePredic
     return prediction_;
 }
 
+// TODO Remove constructor
 ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
                                                      std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                                      std::shared_ptr<Lapack> lapackPtr) {
@@ -145,6 +146,28 @@ ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExa
     totalSumsOfGradients_ = NULL;
     hessians_ = NULL;
     totalSumsOfHessians_ = NULL;
+}
+
+ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                                     std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                                     std::shared_ptr<Lapack> lapackPtr,
+                                                     std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                                     float64* gradients, float64* hessians, float64* currentScores) {
+    lossFunctionPtr_ = lossFunctionPtr;
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+    lapackPtr_ = lapackPtr;
+    labelMatrixPtr_ = labelMatrixPtr;
+    gradients_ = gradients;
+    hessians_ = hessians;
+    currentScores_ = currentScores;
+    // The number of labels
+    intp numLabels = labelMatrixPtr_.get()->numLabels_;
+    // The number of hessians
+    intp numHessians = linalg::triangularNumber(numLabels);
+    // An array that stores the column-wise sums of the matrix of gradients
+    totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
+    // An array that stores the column-wise sums of the matrix of Hessians
+    totalSumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
 }
 
 ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
@@ -278,16 +301,12 @@ AbstractStatistics* ExampleWiseStatisticsFactoryImpl::create() {
     intp numLabels = labelMatrix->numLabels_;
     // The number of hessians
     intp numHessians = linalg::triangularNumber(numLabels);
-    // A matrix that stores the currently predicted scores for each example and label
-    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // A matrix that stores the gradients for each example
     float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // An array that stores the column-wise sums of the matrix of gradients
-    float64* totalSumsOfGradients = (float64*) malloc(numLabels * sizeof(float64));
     // A matrix that stores the Hessians for each example
     float64* hessians = (float64*) malloc(numExamples * numHessians * sizeof(float64));
-    // An array that stores the column-wise sums of the matrix of Hessians
-    float64* totalSumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
+    // A matrix that stores the currently predicted scores for each example and label
+    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
 
     for (intp r = 0; r < numExamples; r++) {
         intp offset = r * numLabels;
@@ -302,6 +321,6 @@ AbstractStatistics* ExampleWiseStatisticsFactoryImpl::create() {
                                                     &hessians[r * numHessians]);
     }
 
-    // TODO
-    return NULL;
+    return new ExampleWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_, labelMatrixPtr_, gradients,
+                                         hessians, currentScores);
 }
