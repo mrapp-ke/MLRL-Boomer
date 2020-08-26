@@ -215,27 +215,33 @@ AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndi
 void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     intp numPredictions = prediction->numPredictions_;
     const intp* labelIndices = prediction->labelIndices_;
+    const float64* predictedScores = prediction->predictedScores_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
 
     // Only the labels that are predicted by the new rule must be considered...
     for (intp c = 0; c < numPredictions; c++) {
         intp l = labelIndices != NULL ? labelIndices[c] : c;
-        intp i = offset + l;
-        float64 labelWeight = uncoveredLabels_[i];
+        uint8 predictedLabel = predictedScores[c];
+        uint8 minorityLabel = minorityLabels_[l];
 
-        if (labelWeight > 0) {
-            uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, l);
-            uint8 predictedLabel = minorityLabels_[l];
+        // Do only consider predictions that are different from the default rule's predictions...
+        if (predictedLabel == minorityLabel) {
+            intp i = offset + l;
+            float64 labelWeight = uncoveredLabels_[i];
 
-            // Decrement the total sum of uncovered labels, if the default rule's prediction for the current example and
-            // label is incorrect...
-            if (predictedLabel != trueLabel) {
-                sumUncoveredLabels_ -= labelWeight;
+            if (labelWeight > 0) {
+                uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, l);
+
+                // Decrement the total sum of uncovered labels, if the prediction for the current example and label is
+                // correct...
+                if (predictedLabel != trueLabel) {
+                    sumUncoveredLabels_ -= labelWeight;
+                }
+
+                // Mark the current example and label as covered...
+                uncoveredLabels_[i] = 0;
             }
-
-            // Mark the current example and label as covered...
-            uncoveredLabels_[i] = 0;
         }
     }
 }
