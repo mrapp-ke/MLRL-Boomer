@@ -167,4 +167,27 @@ namespace boosting {
 
     };
 
+    /**
+     * A factory that allows to create new instances of the class `ExampleWiseStatisticsImpl`.
+     */
+    class ExampleWiseStatisticsFactoryImpl : public AbstractStatisticsFactory {
+
+        private:
+
+            std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
+
+        public:
+
+            /**
+             * @param labelMatrixPtr A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                       provides random access to the labels of the training examples
+             */
+            ExampleWiseStatisticsFactoryImpl(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
+
+            ~ExampleWiseStatisticsFactoryImpl();
+
+            AbstractStatistics* create() override;
+
+    };
+
 }

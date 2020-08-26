@@ -245,3 +245,17 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
         }
     }
 }
+
+LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+    labelMatrixPtr_ = labelMatrixPtr;
+}
+
+LabelWiseStatisticsFactoryImpl::~LabelWiseStatisticsFactoryImpl() {
+
+}
+
+AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
+    // TODO
+    return NULL;
+}

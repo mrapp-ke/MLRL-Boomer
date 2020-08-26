@@ -195,3 +195,17 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
         hessians_[i] = pair.second;
     }
 }
+
+LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+    labelMatrixPtr_ = labelMatrixPtr;
+}
+
+LabelWiseStatisticsFactoryImpl::~LabelWiseStatisticsFactoryImpl() {
+
+}
+
+AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
+    // TODO
+    return NULL;
+}
