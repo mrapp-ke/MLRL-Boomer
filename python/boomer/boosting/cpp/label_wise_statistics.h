@@ -145,15 +145,26 @@ namespace boosting {
 
         private:
 
+            std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
+
+            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
         public:
 
             /**
-             * @param labelMatrixPtr A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
-             *                       provides random access to the labels of the training examples
+             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractLabelWiseLoss`, representing the
+             *                          loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationPtr A shared pointer to an object of type `LabelWiseRuleEvaluationImpl`, to be used
+             *                          for calculating the predictions, as well as corresponding quality scores, of
+             *                          rules
+             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                          provides random access to the labels of the training examples
              */
-            LabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
+            LabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                           std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                           std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
 
             ~LabelWiseStatisticsFactoryImpl();
 

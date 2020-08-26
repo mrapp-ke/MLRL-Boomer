@@ -247,7 +247,9 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
 }
 
 LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
+        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
@@ -256,6 +258,55 @@ LabelWiseStatisticsFactoryImpl::~LabelWiseStatisticsFactoryImpl() {
 }
 
 AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
+    // Class members
+    AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
+    // The number of examples
+    intp numExamples = labelMatrix->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix->numLabels_;
+    // A matrix that stores the weights of individual examples and labels that are still uncovered
+    float64* uncoveredLabels = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // The sum of weights of all examples and labels that remain to be covered
+    float64 sumUncoveredLabels = 0;
+    // An array that stores whether rules should predict individual labels as relevant (1) or irrelevant (0)
+    uint8* minorityLabels = (uint8*) malloc(numLabels * sizeof(uint8));
+    // A matrix that stores a confusion matrix, which takes into account all examples, for each label
+    float64* confusionMatricesTotal = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
+    // A matrix that stores a confusion matrix, which takes into account the examples covered by the previous refinement
+    // of a rule, for each label
+    float64* confusionMatricesSubset = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
+    // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
+    float64 threshold = numExamples / 2.0;
+
+    for (intp c = 0; c < numLabels; c++) {
+        intp numPositiveLabels = 0;
+
+        for (intp r = 0; r < numExamples; r++) {
+            uint8 trueLabel = labelMatrix->getLabel(r, c);
+
+            if (trueLabel) {
+                numPositiveLabels++;
+            }
+        }
+
+        // Rules should predict the minority label, i.e., the opposite of the default rule...
+        uint8 minorityLabel = (numPositiveLabels > threshold ? 0 : 1);
+        minorityLabels[c] = minorityLabel;
+
+        for (intp r = 0; r < numExamples; r++) {
+            uint8 trueLabel = labelMatrix->getLabel(r, c);
+
+            // Increment the total number of uncovered labels, if the default rule's prediction for the current example
+            // and label is incorrect...
+            if (minorityLabel == trueLabel) {
+                sumUncoveredLabels++;
+            }
+
+            // Mark the current example and label as uncovered...
+            uncoveredLabels[r * numLabels + c] = 1;
+        }
+    }
+
     // TODO
     return NULL;
 }

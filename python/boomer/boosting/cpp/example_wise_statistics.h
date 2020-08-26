@@ -174,15 +174,31 @@ namespace boosting {
 
         private:
 
+            std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr_;
+
+            std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+
+            std::shared_ptr<Lapack> lapackPtr_;
+
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
         public:
 
             /**
-             * @param labelMatrixPtr A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
-             *                       provides random access to the labels of the training examples
+             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractExampleWiseLoss`, representing
+             *                          the loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationPtr A shared pointer to an object of type `ExampleWiseRuleEvaluationImpl`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
+             * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
+             *                          Lapack routines
+             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                          provides random access to the labels of the training examples
              */
-            ExampleWiseStatisticsFactoryImpl(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
+            ExampleWiseStatisticsFactoryImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                             std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                             std::shared_ptr<Lapack> lapackPtr,
+                                             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
 
             ~ExampleWiseStatisticsFactoryImpl();
 
