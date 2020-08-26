@@ -148,9 +148,33 @@ namespace boosting {
              * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
              *                          Lapack routines
              */
+             // TODO Remove constructor
             ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
                                       std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                       std::shared_ptr<Lapack> lapackPtr);
+
+            /**
+             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractExampleWiseLoss`, representing
+             *                          the loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationPtr A shared pointer to an object of type `ExampleWiseRuleEvaluationImpl`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
+             * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
+             *                          Lapack routines
+             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                          provides random access to the labels of the training examples
+             * @param gradients         A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                          representing the gradients
+             * @param hessians          A pointer to an array of type `float64`, shape
+             *                          `(num_examples, num_labels + (num_labels + 1) // 2)`, representing the Hessians
+             * @param currentScores     A pointer to an array of type `float64`, shape `(num_examples, num_labels`),
+             *                          representing the currently predicted scores
+             */
+            ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                      std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                      std::shared_ptr<Lapack> lapackPtr,
+                                      std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                      float64* gradients, float64* hessians, float64* currentScores);
 
             ~ExampleWiseStatisticsImpl();
 
