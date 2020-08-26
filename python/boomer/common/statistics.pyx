@@ -10,3 +10,9 @@ cdef class Statistics:
     A wrapper for the C++ class `AbstractStatistics`.
     """
     pass
+
+
+cdef class StatisticsFactory:
+    """
+    A wrapper for the C++ class `AbstractStatisticsFactory`.
+    """
