@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
-from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch, \
+from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsFactory, AbstractRefinementSearch, \
     AbstractDecomposableRefinementSearch
 from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
 from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
@@ -56,6 +56,19 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
+
+
+    cdef cppclass LabelWiseStatisticsFactoryImpl(AbstractStatisticsFactory):
+
+        # Constructors:
+
+        LabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
+                                       shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr,
+                                       shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+
+        # Functions:
+
+        AbstractStatistics* create()
 
 
 cdef class LabelWiseStatistics(GradientStatistics):
