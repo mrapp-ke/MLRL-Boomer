@@ -79,12 +79,31 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
     return prediction_;
 }
 
+// TODO Remove constructor
 LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     uncoveredLabels_ = NULL;
     minorityLabels_ = NULL;
     confusionMatricesTotal_ = NULL;
     confusionMatricesSubset_ = NULL;
+}
+
+LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                                 std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                                 float64* uncoveredLabels, float64 sumUncoveredLabels,
+                                                 uint8* minorityLabels) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+    labelMatrixPtr_ = labelMatrixPtr;
+    uncoveredLabels_ = uncoveredLabels;
+    sumUncoveredLabels_ = sumUncoveredLabels;
+    minorityLabels_ = minorityLabels;
+    // The number of labels
+    intp numLabels = labelMatrixPtr.get()->numLabels_;
+    // A matrix that stores a confusion matrix, which takes into account all examples, for each label
+    confusionMatricesTotal_ = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
+    // A matrix that stores a confusion matrix, which takes into account the examples covered by the previous refinement
+    // of a rule, for each label
+    confusionMatricesSubset_ = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
 }
 
 LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
@@ -270,11 +289,6 @@ AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
     float64 sumUncoveredLabels = 0;
     // An array that stores whether rules should predict individual labels as relevant (1) or irrelevant (0)
     uint8* minorityLabels = (uint8*) malloc(numLabels * sizeof(uint8));
-    // A matrix that stores a confusion matrix, which takes into account all examples, for each label
-    float64* confusionMatricesTotal = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-    // A matrix that stores a confusion matrix, which takes into account the examples covered by the previous refinement
-    // of a rule, for each label
-    float64* confusionMatricesSubset = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
     float64 threshold = numExamples / 2.0;
 
@@ -307,6 +321,6 @@ AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
         }
     }
 
-    // TODO
-    return NULL;
+    return new LabelWiseStatisticsImpl(ruleEvaluationPtr_, labelMatrixPtr_, uncoveredLabels, sumUncoveredLabels,
+                                       minorityLabels);
 }
