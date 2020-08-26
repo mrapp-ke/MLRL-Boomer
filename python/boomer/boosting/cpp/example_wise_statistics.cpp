@@ -253,3 +253,17 @@ void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction*
     lossFunction->calculateGradientsAndHessians(labelMatrixPtr_.get(), statisticIndex, &currentScores_[offset],
                                                 &gradients_[offset], &hessians_[statisticIndex * numHessians]);
 }
+
+ExampleWiseStatisticsFactoryImpl::ExampleWiseStatisticsFactoryImpl(
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+    labelMatrixPtr_ = labelMatrixPtr;
+}
+
+ExampleWiseStatisticsFactoryImpl::~ExampleWiseStatisticsFactoryImpl() {
+
+}
+
+AbstractStatistics* ExampleWiseStatisticsFactoryImpl::create() {
+    // TODO
+    return NULL;
+}
