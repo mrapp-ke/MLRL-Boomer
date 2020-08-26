@@ -120,8 +120,27 @@ namespace boosting {
              *                          for calculating the predictions, as well as corresponding quality scores, of
              *                          rules
              */
+            // TODO Remove constructor
             LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
                                     std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr);
+
+            /**
+             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractLabelWiseLoss`, representing the
+             *                          loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationPtr A shared pointer to an object of type `LabelWiseRuleEvaluationImpl`, to be used
+             *                          for calculating the predictions, as well as corresponding quality scores, of
+             *                          rules
+             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                          provides random access to the labels of the training examples
+             * @param gradients         A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                          representing the gradients
+             * @param hessians          A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                          representing the Hessians
+             */
+            LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                    std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                    std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
+                                    float64* hessians);
 
             ~LabelWiseStatisticsImpl();
 
