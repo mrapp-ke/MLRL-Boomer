@@ -255,7 +255,12 @@ void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction*
 }
 
 ExampleWiseStatisticsFactoryImpl::ExampleWiseStatisticsFactoryImpl(
+        std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+        std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+    lossFunctionPtr_ = lossFunctionPtr;
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+    lapackPtr_ = lapackPtr;
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
@@ -264,6 +269,39 @@ ExampleWiseStatisticsFactoryImpl::~ExampleWiseStatisticsFactoryImpl() {
 }
 
 AbstractStatistics* ExampleWiseStatisticsFactoryImpl::create() {
+    // Class members
+    AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
+    AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
+    // The number of examples
+    intp numExamples = labelMatrix->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix->numLabels_;
+    // The number of hessians
+    intp numHessians = linalg::triangularNumber(numLabels);
+    // A matrix that stores the currently predicted scores for each example and label
+    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // A matrix that stores the gradients for each example
+    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // An array that stores the column-wise sums of the matrix of gradients
+    float64* totalSumsOfGradients = (float64*) malloc(numLabels * sizeof(float64));
+    // A matrix that stores the Hessians for each example
+    float64* hessians = (float64*) malloc(numExamples * numHessians * sizeof(float64));
+    // An array that stores the column-wise sums of the matrix of Hessians
+    float64* totalSumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
+
+    for (intp r = 0; r < numExamples; r++) {
+        intp offset = r * numLabels;
+
+        for (intp c = 0; c < numLabels; c++) {
+            // Store the score that is initially predicted for the current example and label...
+            currentScores[offset + c] = 0;
+        }
+
+        // Calculate the initial gradients and Hessians for the current example...
+        lossFunction->calculateGradientsAndHessians(labelMatrix, r, &currentScores[offset], &gradients[offset],
+                                                    &hessians[r * numHessians]);
+    }
+
     // TODO
     return NULL;
 }
