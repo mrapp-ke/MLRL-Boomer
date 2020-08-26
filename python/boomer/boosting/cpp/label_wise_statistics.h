@@ -136,11 +136,13 @@ namespace boosting {
              *                          representing the gradients
              * @param hessians          A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
              *                          representing the Hessians
+             * @param current_scores    A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                          representing the currently predicted scores
              */
             LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
                                     std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                     std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
-                                    float64* hessians);
+                                    float64* hessians, float64* current_scores);
 
             ~LabelWiseStatisticsImpl();
 
