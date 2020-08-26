@@ -131,18 +131,24 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         del self.cache_global
 
     cdef void induce_default_rule(self, RandomAccessLabelMatrix label_matrix, ModelBuilder model_builder):
-        cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
+        # Initialize statistics...
         cdef shared_ptr[AbstractRandomAccessLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
         cdef AbstractStatistics* statistics = self.statistics_ptr.get()
+        statistics.applyDefaultPrediction(label_matrix_ptr, NULL)
+
+        # Learn default rule, if necessary...
+        cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
         cdef Prediction* default_prediction = NULL
-        cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
+        cdef intp num_statistics, r
 
         try:
             if default_rule_evaluation_ptr != NULL:
-                default_rule_evaluation = default_rule_evaluation_ptr.get()
-                default_prediction = default_rule_evaluation.calculateDefaultPrediction(label_matrix_ptr.get())
+                default_prediction = default_rule_evaluation_ptr.get().calculateDefaultPrediction(label_matrix_ptr.get())
+                num_statistics = label_matrix.num_examples
 
-            statistics.applyDefaultPrediction(label_matrix_ptr, default_prediction)
+                for r in range(num_statistics):
+                    statistics.applyPrediction(r, default_prediction)
+
             model_builder.set_default_rule(default_prediction)
         finally:
             del default_prediction

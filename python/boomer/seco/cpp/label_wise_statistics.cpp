@@ -111,11 +111,21 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRan
     // A matrix that stores a confusion matrix, which takes into account the examples covered by the previous refinement
     // of a rule, for each label
     float64* confusionMatricesSubset = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-    // An array that stores the predictions of the default rule of NULL, if no default rule is used
-    float64* predictedScores = defaultPrediction == NULL ? NULL : defaultPrediction->predictedScores_;
+    // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
+    float64 threshold = numExamples / 2.0;
 
     for (intp c = 0; c < numLabels; c++) {
-        uint8 predictedLabel = predictedScores != NULL ? (uint8) predictedScores[c] : 0;
+        intp numPositiveLabels = 0;
+
+        for (intp r = 0; r < numExamples; r++) {
+            uint8 trueLabel = labelMatrixPtr.get()->getLabel(r, c);
+
+            if (trueLabel) {
+                numPositiveLabels++;
+            }
+        }
+
+        uint8 predictedLabel = (numPositiveLabels > threshold ? 1 : 0);
 
         // Rules should predict the opposite of the default rule...
         minorityLabels[c] = predictedLabel > 0 ? 0 : 1;

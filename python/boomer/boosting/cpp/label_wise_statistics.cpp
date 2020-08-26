@@ -117,23 +117,20 @@ void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRan
     float64* hessians = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // An array that stores the column-wise sums of the matrix of hessians
     float64* totalSumsOfHessians = (float64*) malloc(numLabels * sizeof(float64));
-    // An array that stores the predictions of the default rule or NULL, if no default rule is used
-    float64* predictedScores = defaultPrediction != NULL ? defaultPrediction->predictedScores_ : NULL;
 
-    for (intp c = 0; c < numLabels; c++) {
-        float64 predictedScore = predictedScores != NULL ? predictedScores[c] : 0;
+    for (intp r = 0; r < numExamples; r++) {
+        intp offset = r * numLabels;
 
-        for (intp r = 0; r < numExamples; r++) {
-            intp i = r * numLabels + c;
+        for (intp c = 0; c < numLabels; c++) {
+            intp i = offset + c;
 
             // Calculate the gradient and Hessian for the current example and label...
-            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrixPtr.get(), r, c,
-                                                                                         predictedScore);
+            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrixPtr.get(), r, c, 0);
             gradients[i] = pair.first;
             hessians[i] = pair.second;
 
             // Store the score that is predicted by the default rule for the current example and label...
-            currentScores[i] = predictedScore;
+            currentScores[i] = 0;
         }
     }
 
