@@ -43,6 +43,7 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
         """
         cdef shared_ptr[AbstractLabelWiseLoss] loss_function_ptr = loss_function.loss_function_ptr
         cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
+
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             self.statistics_factory_ptr =  <shared_ptr[AbstractStatisticsFactory]>make_shared[LabelWiseStatisticsFactoryImpl](
                 loss_function_ptr, rule_evaluation_ptr, label_matrix.label_matrix_ptr)
