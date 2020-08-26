@@ -115,7 +115,25 @@ namespace seco {
              *                          for calculating the predictions, as well as corresponding quality scores, of
              *                          rules
              */
+             // TODO Remove constructor
             LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr);
+
+            /**
+             * @param ruleEvaluationPtr     A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores, of rules
+             * @param labelMatrixPtr        A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                              provides random access to the labels of the training examples
+             * @param uncoveredLabels       A pointer to an array of type `float64`, shape `(numExamples, numLabels)`,
+             *                              indicating which examples and labels remain to be covered
+             * @param sumUncoveredLabels    The sum of weights of all labels that remain to be covered
+             * @param minorityLabels        A pointer to an array of type `uint8`, shape `(numLabels)`, indicating
+             *                              whether rules should predict individual labels as relevant (1) or irrelevant
+             *                              (0)
+             */
+            LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                    std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                    float64* uncoveredLabels, float64 sumUncoveredLabels, uint8* minorityLabels);
 
             ~LabelWiseStatisticsImpl();
 
