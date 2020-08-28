@@ -14,11 +14,14 @@ cdef class SequentialRuleInduction:
     `ModelBuilder`.
     """
 
-    def __cinit__(self, RuleInduction rule_induction, HeadRefinement head_refinement, list stopping_criteria,
-                  LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                  FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                  intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
+    def __cinit__(self, StatisticsFactory statistics_factory, RuleInduction rule_induction,
+                  HeadRefinement head_refinement, list stopping_criteria, LabelSubSampling label_sub_sampling,
+                  InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
+                  PostProcessor post_processor, intp min_coverage, intp max_conditions, intp max_head_refinements,
+                  int num_threads):
         """
+        :param statistics_factory:      The factory that should be used to create the statistics which serve as the
+                                        basis for learning rules
         :param rule_induction:          The algorithm that should be used to induce rules
         :param head_refinement:         The strategy that should be used to find the heads of rules
         :param stopping_criteria        A list that contains the stopping criteria that should be used to decide whether
@@ -43,6 +46,7 @@ cdef class SequentialRuleInduction:
                                         refinements should not be restricted
         :param num_threads:             The number of threads to be used for training. Must be at least 1
         """
+        self.statistics_factory = statistics_factory
         self.rule_induction = rule_induction
         self.head_refinement = head_refinement
         self.stopping_criteria = stopping_criteria
