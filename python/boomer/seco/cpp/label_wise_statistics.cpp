@@ -79,15 +79,6 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
     return prediction_;
 }
 
-// TODO Remove constructor
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
-    uncoveredLabels_ = NULL;
-    minorityLabels_ = NULL;
-    confusionMatricesTotal_ = NULL;
-    confusionMatricesSubset_ = NULL;
-}
-
 LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                                  std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                  float64* uncoveredLabels, float64 sumUncoveredLabels,

@@ -134,20 +134,6 @@ PredictionCandidate* ExampleWiseRefinementSearchImpl::calculateExampleWisePredic
     return prediction_;
 }
 
-// TODO Remove constructor
-ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                                     std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
-                                                     std::shared_ptr<Lapack> lapackPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
-    lapackPtr_ = lapackPtr;
-    currentScores_ = NULL;
-    gradients_ = NULL;
-    totalSumsOfGradients_ = NULL;
-    hessians_ = NULL;
-    totalSumsOfHessians_ = NULL;
-}
-
 ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
                                                      std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                                      std::shared_ptr<Lapack> lapackPtr,
