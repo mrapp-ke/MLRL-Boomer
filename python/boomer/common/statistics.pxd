@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
-from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractRandomAccessLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -37,9 +37,6 @@ cdef extern from "cpp/statistics.h" nogil:
     cdef cppclass AbstractStatistics:
 
         # Functions:
-
-        void applyDefaultPrediction(shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
-                                    Prediction* defaultPrediction)
 
         void resetSampledStatistics()
 

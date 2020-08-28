@@ -1,6 +1,5 @@
 from boomer.common._arrays cimport uint32, intp
 from boomer.common._predictions cimport Prediction
-from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 
 from libcpp cimport bool
@@ -12,9 +11,6 @@ cdef extern from "cpp/statistics.h" namespace "boosting" nogil:
     cdef cppclass AbstractGradientStatistics(AbstractStatistics):
 
         # Functions:
-
-        void applyDefaultPrediction(shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
-                                    Prediction* defaultPrediction)
 
         void resetSampledStatistics()
 

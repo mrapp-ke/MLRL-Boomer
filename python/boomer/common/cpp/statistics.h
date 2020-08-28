@@ -147,24 +147,6 @@ class AbstractStatistics {
         virtual ~AbstractStatistics();
 
         /**
-         * Computes the initial statistics with respect to the predictions of the default rule and the ground truth
-         * labels.
-         *
-         * This function must be called exactly once prior to the invocation of any other function provided by this
-         * class.
-         *
-         * As this function is guaranteed to be invoked first, it may be used to initialize any internal state, i.e., to
-         * compute and store global information that is required by the other functions that will be called later.
-         *
-         * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
-         *                          provides random access to the labels of the training examples
-         * @param defaultPrediction A pointer to an object of type `Prediction`, representing the predictions of the
-         *                          default rule or NULL, if no default rule is available
-         */
-        virtual void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                            Prediction* defaultPrediction);
-
-        /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the
          * respective statistics must be provided via subsequent calls to the function `addSampledStatistic`.
          *

@@ -164,9 +164,6 @@ namespace boosting {
 
             ~ExampleWiseStatisticsImpl();
 
-            void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                        Prediction* defaultPrediction) override;
-
             void resetCoveredStatistics() override;
 
             void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;

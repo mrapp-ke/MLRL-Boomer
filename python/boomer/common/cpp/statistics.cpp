@@ -31,11 +31,6 @@ AbstractStatistics::~AbstractStatistics() {
 
 }
 
-void AbstractStatistics::applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                                Prediction* defaultPrediction) {
-
-}
-
 void AbstractStatistics::resetSampledStatistics() {
 
 }
