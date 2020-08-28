@@ -5,7 +5,10 @@ Provides classes that allow to sequentially induce models that consist of severa
 """
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport Rule, RuleList
+from boomer.common.statistics cimport AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
+
+from libcpp.memory cimport unique_ptr
 
 
 cdef class SequentialRuleInduction:
@@ -75,6 +78,7 @@ cdef class SequentialRuleInduction:
         :param model_builder:           The builder that should be used to build the model
         :return:                        A model that contains the induced classification rules
         """
+        cdef StatisticsFactory statistics_factory = self.statistics_factory
         cdef RuleInduction rule_induction = self.rule_induction
         cdef HeadRefinement head_refinement = self.head_refinement
         cdef list stopping_criteria = self.stopping_criteria
@@ -93,9 +97,11 @@ cdef class SequentialRuleInduction:
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
         # Temporary variables
+        cdef unique_ptr[AbstractStatistics] statistics_ptr
         cdef bint success
 
         # Induce default rule...
+        statistics_ptr.reset(statistics_factory.create(label_matrix))
         rule_induction.induce_default_rule(label_matrix, model_builder)
 
         while __should_continue(stopping_criteria, num_rules):
