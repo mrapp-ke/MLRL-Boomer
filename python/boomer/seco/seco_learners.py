@@ -6,10 +6,11 @@ from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
+from boomer.common.statistics import StatisticsFactory
 from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
-from boomer.seco.label_wise_statistics import LabelWiseStatistics
+from boomer.seco.label_wise_statistics import LabelWiseStatistics, LabelWiseStatisticsFactory
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.seco.statistics import CoverageStatistics
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
@@ -153,6 +154,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         default_rule_evaluation = self.__create_default_rule_evaluation()
         heuristic = self.__create_heuristic()
         statistics = self.__create_statistics(heuristic)
+        statistics_factory = self.__create_statistics_factory(heuristic)
         rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
         lift_function = self.__create_lift_function(num_labels)
         head_refinement = self.__create_head_refinement(lift_function)
@@ -166,7 +168,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(statistics, 0))
         num_threads = create_num_threads(self.num_threads)
-        return SequentialRuleInduction(rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
+        return SequentialRuleInduction(statistics_factory, rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
                                        instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
                                        max_conditions, max_head_refinements, num_threads)
 
@@ -203,6 +205,13 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
         if loss == AVERAGING_LABEL_WISE:
             return LabelWiseStatistics(LabelWiseRuleEvaluation(heuristic))
+        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
+
+    def __create_statistics_factory(self, heuristic: Heuristic) -> StatisticsFactory:
+        loss = self.loss
+
+        if loss == AVERAGING_LABEL_WISE:
+            return LabelWiseStatisticsFactory(LabelWiseRuleEvaluation(heuristic))
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:

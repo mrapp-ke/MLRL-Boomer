@@ -1,6 +1,7 @@
 from boomer.common._arrays cimport uint8, uint32, intp
 from boomer.common.rules cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport RuleInduction
+from boomer.common.statistics cimport StatisticsFactory
 from boomer.common.head_refinement cimport HeadRefinement
 from boomer.common.input_data cimport RandomAccessLabelMatrix, FeatureMatrix
 from boomer.common.pruning cimport Pruning
@@ -11,6 +12,8 @@ from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling,
 cdef class SequentialRuleInduction:
 
     # Attributes:
+
+    cdef StatisticsFactory statistics_factory
 
     cdef RuleInduction rule_induction
 

@@ -7,11 +7,11 @@ Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
-from boomer.boosting.example_wise_statistics import ExampleWiseStatistics
+from boomer.boosting.example_wise_statistics import ExampleWiseStatistics, ExampleWiseStatisticsFactory
 from boomer.boosting.head_refinement import FullHeadRefinement
 from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
 from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
-from boomer.boosting.label_wise_statistics import LabelWiseStatistics
+from boomer.boosting.label_wise_statistics import LabelWiseStatistics, LabelWiseStatisticsFactory
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.boosting.statistics import GradientStatistics
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
@@ -20,6 +20,7 @@ from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
+from boomer.common.statistics import StatisticsFactory
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
@@ -158,12 +159,13 @@ class Boomer(MLRuleLearner):
         l2_regularization_weight = self.__create_l2_regularization_weight()
         default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
         rule_evaluation = self.__create_rule_evaluation(loss_function, l2_regularization_weight)
-        statistics = self.__create_statistics(loss_function, rule_evaluation)
         num_threads = create_num_threads(self.num_threads)
+        statistics = self.__create_statistics(loss_function, rule_evaluation)
+        statistics_factory = self.__create_statistics_factory(loss_function, rule_evaluation)
         rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
-        return SequentialRuleInduction(rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
-                                       instance_sub_sampling, feature_sub_sampling, pruning, shrinkage, min_coverage,
-                                       max_conditions, max_head_refinements, num_threads)
+        return SequentialRuleInduction(statistics_factory, rule_induction, head_refinement, stopping_criteria,
+                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                       shrinkage, min_coverage, max_conditions, max_head_refinements, num_threads)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)
@@ -202,6 +204,12 @@ class Boomer(MLRuleLearner):
             return LabelWiseStatistics(loss_function, rule_evaluation)
         else:
             return ExampleWiseStatistics(loss_function, rule_evaluation)
+
+    def __create_statistics_factory(self, loss_function, rule_evaluation) -> StatisticsFactory:
+        if isinstance(loss_function, LabelWiseLoss):
+            return LabelWiseStatisticsFactory(loss_function, rule_evaluation)
+        else:
+            return ExampleWiseStatisticsFactory(loss_function, rule_evaluation)
 
     def __create_head_refinement(self, loss_function) -> HeadRefinement:
         head_refinement = self.head_refinement
