@@ -61,13 +61,6 @@ cdef extern from "cpp/statistics.h" nogil:
         AbstractStatistics* create()
 
 
-cdef class Statistics:
-
-    # Attributes:
-
-    cdef shared_ptr[AbstractStatistics] statistics_ptr
-
-
 cdef class StatisticsFactory:
 
     # Attributes:

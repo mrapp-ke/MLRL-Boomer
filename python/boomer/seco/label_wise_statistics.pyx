@@ -6,21 +6,7 @@ each label.
 """
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
 
-from libcpp.memory cimport unique_ptr, make_shared
-
-
-cdef class LabelWiseStatistics(CoverageStatistics):
-    """
-    A wrapper for the C++ class `LabelWiseStatisticsImpl`.
-    """
-
-    def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation):
-        """
-        :param rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as well as
-                                corresponding quality scores, of rules
-        """
-        cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
-        self.statistics_ptr = <shared_ptr[AbstractStatistics]>make_shared[LabelWiseStatisticsImpl](rule_evaluation_ptr)
+from libcpp.memory cimport unique_ptr
 
 
 cdef class LabelWiseStatisticsFactory(StatisticsFactory):

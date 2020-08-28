@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common._predictions cimport Prediction
 from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
-from boomer.common.statistics cimport Statistics, AbstractStatistics, AbstractRefinementSearch
+from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -31,7 +31,3 @@ cdef extern from "cpp/statistics.h" namespace "seco" nogil:
         AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
 
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
-
-
-cdef class CoverageStatistics(Statistics):
-    pass

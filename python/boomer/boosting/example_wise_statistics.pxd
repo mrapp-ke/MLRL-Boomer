@@ -4,7 +4,7 @@ from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractRandomAcc
 from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsFactory, StatisticsFactory, \
     AbstractRefinementSearch
 from boomer.boosting._lapack cimport Lapack
-from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
+from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
 from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluationImpl
 
@@ -68,10 +68,6 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Functions:
 
         AbstractStatistics* create()
-
-
-cdef class ExampleWiseStatistics(GradientStatistics):
-    pass
 
 
 cdef class ExampleWiseStatisticsFactory(StatisticsFactory):

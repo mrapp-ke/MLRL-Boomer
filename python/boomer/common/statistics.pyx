@@ -5,13 +5,6 @@ Provides wrappers for classes that allow to store statistics about the labels of
 """
 
 
-cdef class Statistics:
-    """
-    A wrapper for the C++ class `AbstractStatistics`.
-    """
-    pass
-
-
 cdef class StatisticsFactory:
     """
     A wrapper for the C++ class `AbstractStatisticsFactory`.
