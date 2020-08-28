@@ -106,50 +106,6 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                                     Prediction* defaultPrediction) {
-    // Class members
-    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
-    // The number of examples
-    intp numExamples = labelMatrixPtr.get()->numExamples_;
-    // The number of labels
-    intp numLabels = labelMatrixPtr.get()->numLabels_;
-    // A matrix that stores the currently predicted scores for each example and label
-    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // A matrix that stores the gradients for each example and label
-    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // An array that stores the column-wise sums of the matrix of gradients
-    float64* totalSumsOfGradients = (float64*) malloc(numLabels * sizeof(float64));
-    // A matrix that stores the Hessians for each example and label
-    float64* hessians = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // An array that stores the column-wise sums of the matrix of hessians
-    float64* totalSumsOfHessians = (float64*) malloc(numLabels * sizeof(float64));
-
-    for (intp r = 0; r < numExamples; r++) {
-        intp offset = r * numLabels;
-
-        for (intp c = 0; c < numLabels; c++) {
-            intp i = offset + c;
-
-            // Calculate the gradient and Hessian for the current example and label...
-            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrixPtr.get(), r, c, 0);
-            gradients[i] = pair.first;
-            hessians[i] = pair.second;
-
-            // Store the score that is predicted by the default rule for the current example and label...
-            currentScores[i] = 0;
-        }
-    }
-
-    // Store class members...
-    labelMatrixPtr_ = labelMatrixPtr;
-    currentScores_ = currentScores;
-    gradients_ = gradients;
-    totalSumsOfGradients_ = totalSumsOfGradients;
-    hessians_ = hessians;
-    totalSumsOfHessians_ = totalSumsOfHessians;
-}
-
 void LabelWiseStatisticsImpl::resetCoveredStatistics() {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     arrays::setToZeros(totalSumsOfGradients_, numLabels);

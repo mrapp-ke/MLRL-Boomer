@@ -129,9 +129,6 @@ namespace seco {
 
             ~LabelWiseStatisticsImpl();
 
-            void applyDefaultPrediction(std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                        Prediction* defaultPrediction) override;
-
             void resetSampledStatistics() override;
 
             void addSampledStatistic(intp statisticIndex, uint32 weight) override;

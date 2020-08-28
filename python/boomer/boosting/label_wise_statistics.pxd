@@ -42,9 +42,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void applyDefaultPrediction(shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
-                                    Prediction* defaultPrediction)
-
         void resetSampledStatistics()
 
         void addSampledStatistic(intp statisticIndex, uint32 weight)
