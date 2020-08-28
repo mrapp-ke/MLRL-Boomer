@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
-from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractRandomAccessLabelMatrix
 from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsFactory, StatisticsFactory, \
     AbstractRefinementSearch
 from boomer.boosting._lapack cimport Lapack
@@ -75,4 +75,15 @@ cdef class ExampleWiseStatistics(GradientStatistics):
 
 
 cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
-    pass
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractExampleWiseLoss] loss_function_ptr
+
+    cdef shared_ptr[ExampleWiseRuleEvaluationImpl] rule_evaluation_ptr
+
+    cdef shared_ptr[Lapack] lapack_ptr
+
+    # Functions:
+
+    cdef AbstractStatistics* create(self, RandomAccessLabelMatrix label_matrix)
