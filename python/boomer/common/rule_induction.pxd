@@ -29,13 +29,15 @@ cdef class RuleInduction:
 
     # Functions:
 
-    cdef void induce_default_rule(self, RandomAccessLabelMatrix label_matrix, ModelBuilder model_builder)
+    cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
+                                  ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder)
+    cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
+                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          ModelBuilder model_builder)
 
 
 cdef class ExactGreedyRuleInduction(RuleInduction):
@@ -44,16 +46,16 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr
 
-    cdef shared_ptr[AbstractStatistics] statistics_ptr
-
     cdef unordered_map[intp, IndexedFloat32Array*]* cache_global
 
     # Functions:
 
-    cdef void induce_default_rule(self, RandomAccessLabelMatrix label_matrix, ModelBuilder model_builder)
+    cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
+                                  ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder)
+    cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
+                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          ModelBuilder model_builder)
