@@ -230,27 +230,18 @@ AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
 
         for (intp r = 0; r < numExamples; r++) {
             uint8 trueLabel = labelMatrix->getLabel(r, c);
-
-            if (trueLabel) {
-                numPositiveLabels++;
-            }
-        }
-
-        // Rules should predict the minority label, i.e., the opposite of the default rule...
-        uint8 minorityLabel = (numPositiveLabels > threshold ? 0 : 1);
-        minorityLabels[c] = minorityLabel;
-
-        for (intp r = 0; r < numExamples; r++) {
-            uint8 trueLabel = labelMatrix->getLabel(r, c);
-
-            // Increment the total number of uncovered labels, if the default rule's prediction for the current example
-            // and label is incorrect...
-            if (minorityLabel == trueLabel) {
-                sumUncoveredLabels++;
-            }
+            numPositiveLabels += trueLabel;
 
             // Mark the current example and label as uncovered...
             uncoveredLabels[r * numLabels + c] = 1;
+        }
+
+        if (numPositiveLabels > threshold) {
+            minorityLabels[c] = 0;
+            sumUncoveredLabels += (numExamples - numPositiveLabels);
+        } else {
+            minorityLabels[c] = 1;
+            sumUncoveredLabels += numPositiveLabels;
         }
     }
 
