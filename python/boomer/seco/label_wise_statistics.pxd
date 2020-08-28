@@ -78,4 +78,11 @@ cdef class LabelWiseStatistics(CoverageStatistics):
 
 
 cdef class LabelWiseStatisticsFactory(StatisticsFactory):
-    pass
+
+    # Attributes:
+
+    cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr
+
+    # Functions:
+
+    cdef AbstractStatistics* create(self, RandomAccessLabelMatrix label_matrix)
