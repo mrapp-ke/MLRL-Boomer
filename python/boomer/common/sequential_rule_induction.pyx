@@ -102,14 +102,14 @@ cdef class SequentialRuleInduction:
 
         # Induce default rule...
         statistics_ptr.reset(statistics_factory.create(label_matrix))
-        rule_induction.induce_default_rule(label_matrix, model_builder)
+        rule_induction.induce_default_rule(statistics_ptr.get(), label_matrix, model_builder)
 
         while __should_continue(stopping_criteria, statistics_ptr.get(), num_rules):
             # Induce a new rule...
-            success = rule_induction.induce_rule(nominal_attribute_mask, feature_matrix, num_labels, head_refinement,
-                                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                                 pruning, post_processor, min_coverage, max_conditions,
-                                                 max_head_refinements, num_threads, rng, model_builder)
+            success = rule_induction.induce_rule(statistics_ptr.get(), nominal_attribute_mask, feature_matrix,
+                                                 num_labels, head_refinement, label_sub_sampling, instance_sub_sampling,
+                                                 feature_sub_sampling, pruning, post_processor, min_coverage,
+                                                 max_conditions, max_head_refinements, num_threads, rng, model_builder)
 
             if not success:
                 break

@@ -7,13 +7,12 @@ Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
-from boomer.boosting.example_wise_statistics import ExampleWiseStatistics, ExampleWiseStatisticsFactory
+from boomer.boosting.example_wise_statistics import ExampleWiseStatisticsFactory
 from boomer.boosting.head_refinement import FullHeadRefinement
 from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
 from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
-from boomer.boosting.label_wise_statistics import LabelWiseStatistics, LabelWiseStatisticsFactory
+from boomer.boosting.label_wise_statistics import LabelWiseStatisticsFactory
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
-from boomer.boosting.statistics import GradientStatistics
 from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_evaluation import DefaultRuleEvaluation
@@ -160,9 +159,8 @@ class Boomer(MLRuleLearner):
         default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
         rule_evaluation = self.__create_rule_evaluation(loss_function, l2_regularization_weight)
         num_threads = create_num_threads(self.num_threads)
-        statistics = self.__create_statistics(loss_function, rule_evaluation)
         statistics_factory = self.__create_statistics_factory(loss_function, rule_evaluation)
-        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
+        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
         return SequentialRuleInduction(statistics_factory, rule_induction, head_refinement, stopping_criteria,
                                        label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
                                        shrinkage, min_coverage, max_conditions, max_head_refinements, num_threads)
@@ -198,12 +196,6 @@ class Boomer(MLRuleLearner):
             return LabelWiseRuleEvaluation(l2_regularization_weight)
         else:
             return ExampleWiseRuleEvaluation(l2_regularization_weight)
-
-    def __create_statistics(self, loss_function, rule_evaluation) -> GradientStatistics:
-        if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseStatistics(loss_function, rule_evaluation)
-        else:
-            return ExampleWiseStatistics(loss_function, rule_evaluation)
 
     def __create_statistics_factory(self, loss_function, rule_evaluation) -> StatisticsFactory:
         if isinstance(loss_function, LabelWiseLoss):

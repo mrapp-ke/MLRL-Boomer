@@ -10,9 +10,8 @@ from boomer.common.statistics import StatisticsFactory
 from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
-from boomer.seco.label_wise_statistics import LabelWiseStatistics, LabelWiseStatisticsFactory
+from boomer.seco.label_wise_statistics import LabelWiseStatisticsFactory
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
-from boomer.seco.statistics import CoverageStatistics
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
@@ -153,9 +152,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         default_rule_evaluation = self.__create_default_rule_evaluation()
         heuristic = self.__create_heuristic()
-        statistics = self.__create_statistics(heuristic)
         statistics_factory = self.__create_statistics_factory(heuristic)
-        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation, statistics)
+        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
         lift_function = self.__create_lift_function(num_labels)
         head_refinement = self.__create_head_refinement(lift_function)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
@@ -198,13 +196,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
         if loss == AVERAGING_LABEL_WISE:
             return LabelWiseDefaultRuleEvaluation()
-        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
-
-    def __create_statistics(self, heuristic: Heuristic) -> CoverageStatistics:
-        loss = self.loss
-
-        if loss == AVERAGING_LABEL_WISE:
-            return LabelWiseStatistics(LabelWiseRuleEvaluation(heuristic))
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_statistics_factory(self, heuristic: Heuristic) -> StatisticsFactory:
