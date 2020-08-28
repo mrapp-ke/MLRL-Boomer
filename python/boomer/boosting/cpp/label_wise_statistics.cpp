@@ -80,18 +80,6 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
     return prediction_;
 }
 
-// TODO Remove constructor
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                                 std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
-    currentScores_ = NULL;
-    gradients_ = NULL;
-    totalSumsOfGradients_ = NULL;
-    hessians_ = NULL;
-    totalSumsOfHessians_ = NULL;
-}
-
 LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
                                                  std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                                  std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,

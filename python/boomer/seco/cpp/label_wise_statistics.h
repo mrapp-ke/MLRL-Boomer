@@ -111,14 +111,6 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationPtr A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used
-             *                          for calculating the predictions, as well as corresponding quality scores, of
-             *                          rules
-             */
-             // TODO Remove constructor
-            LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr);
-
-            /**
              * @param ruleEvaluationPtr     A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be
              *                              used for calculating the predictions, as well as corresponding quality
              *                              scores, of rules
