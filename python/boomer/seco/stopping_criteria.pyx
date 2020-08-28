@@ -1,4 +1,4 @@
-from boomer.seco.statistics cimport CoverageStatistics, AbstractCoverageStatistics
+from boomer.seco.statistics cimport AbstractCoverageStatistics
 
 
 cdef class UncoveredLabelsCriterion(StoppingCriterion):
