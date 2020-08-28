@@ -104,7 +104,7 @@ cdef class SequentialRuleInduction:
         statistics_ptr.reset(statistics_factory.create(label_matrix))
         rule_induction.induce_default_rule(label_matrix, model_builder)
 
-        while __should_continue(stopping_criteria, num_rules):
+        while __should_continue(stopping_criteria, statistics_ptr.get(), num_rules):
             # Induce a new rule...
             success = rule_induction.induce_rule(nominal_attribute_mask, feature_matrix, num_labels, head_refinement,
                                                  label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
@@ -119,19 +119,21 @@ cdef class SequentialRuleInduction:
         return model_builder.build_model()
 
 
-cdef inline bint __should_continue(list stopping_criteria, intp num_rules):
+cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, intp num_rules):
     """
     Returns whether additional rules should be induced, according to some stopping criteria, or not.
 
     :param stopping_criteria:   A list that contains the stopping criteria that should be used to decide whether
                                 additional rules should be induced or not
+    :param statistics:          A pointer to an object of type `AbstractStatistics` which will serve as the basis for
+                                learning the next rule
     :param num_rules:           The number of rules induced so far (including the default rule)
     :return:                    True, if additional rules should be induced, False otherwise
     """
     cdef StoppingCriterion stopping_criterion
 
     for stopping_criterion in stopping_criteria:
-        if not stopping_criterion.should_continue(num_rules):
+        if not stopping_criterion.should_continue(statistics, num_rules):
             return False
 
     return True
