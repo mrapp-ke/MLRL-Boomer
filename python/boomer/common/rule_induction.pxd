@@ -30,7 +30,7 @@ cdef class RuleInduction:
     # Functions:
 
     cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
-                                  ModelBuilder model_builder)
+                                  HeadRefinement head_refinement, ModelBuilder model_builder)
 
     cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
@@ -51,7 +51,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     # Functions:
 
     cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
-                                  ModelBuilder model_builder)
+                                  HeadRefinement head_refinement, ModelBuilder model_builder)
 
     cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
+from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
@@ -155,6 +155,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         statistics_factory = self.__create_statistics_factory(heuristic)
         rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
         lift_function = self.__create_lift_function(num_labels)
+        default_rule_head_refinement = FullHeadRefinement()
         head_refinement = self.__create_head_refinement(lift_function)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
@@ -166,9 +167,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(0))
         num_threads = create_num_threads(self.num_threads)
-        return SequentialRuleInduction(statistics_factory, rule_induction, head_refinement, stopping_criteria, label_sub_sampling,
-                                       instance_sub_sampling, feature_sub_sampling, pruning, None, min_coverage,
-                                       max_conditions, max_head_refinements, num_threads)
+        return SequentialRuleInduction(statistics_factory, rule_induction, default_rule_head_refinement,
+                                       head_refinement, stopping_criteria, label_sub_sampling, instance_sub_sampling,
+                                       feature_sub_sampling, pruning, None, min_coverage, max_conditions,
+                                       max_head_refinements, num_threads)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
