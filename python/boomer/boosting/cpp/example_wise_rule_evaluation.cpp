@@ -33,24 +33,24 @@ void AbstractExampleWiseRuleEvaluation::calculateExampleWisePrediction(const int
 
 }
 
-ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
-                                                             std::shared_ptr<Blas> blasPtr,
-                                                             std::shared_ptr<Lapack> lapackPtr) {
+RegularizedExampleWiseRuleEvaluationImpl::RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
+                                                                                   std::shared_ptr<Blas> blasPtr,
+                                                                                   std::shared_ptr<Lapack> lapackPtr) {
     l2RegularizationWeight_ = l2RegularizationWeight;
     blasPtr_ = blasPtr;
     lapackPtr_ = lapackPtr;
 }
 
-ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
+RegularizedExampleWiseRuleEvaluationImpl::~RegularizedExampleWiseRuleEvaluationImpl() {
 
 }
 
-void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
-                                                                 const float64* totalSumsOfGradients,
-                                                                 float64* sumsOfGradients,
-                                                                 const float64* totalSumsOfHessians,
-                                                                 float64* sumsOfHessians, bool uncovered,
-                                                                 LabelWisePredictionCandidate* prediction) {
+void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                            const float64* totalSumsOfGradients,
+                                                                            float64* sumsOfGradients,
+                                                                            const float64* totalSumsOfHessians,
+                                                                            float64* sumsOfHessians, bool uncovered,
+                                                                            LabelWisePredictionCandidate* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores` and `qualityScores`
@@ -99,15 +99,19 @@ void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* lab
     prediction->overallQualityScore_ = overallQualityScore;
 }
 
-void ExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* labelIndices,
-                                                                   const float64* totalSumsOfGradients,
-                                                                   float64* sumsOfGradients,
-                                                                   const float64* totalSumsOfHessians,
-                                                                   float64* sumsOfHessians, float64* tmpGradients,
-                                                                   float64* tmpHessians, int dsysvLwork,
-                                                                   float64* dsysvTmpArray1, int* dsysvTmpArray2,
-                                                                   double* dsysvTmpArray3, float64* dspmvTmpArray,
-                                                                   bool uncovered, PredictionCandidate* prediction) {
+void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* labelIndices,
+                                                                              const float64* totalSumsOfGradients,
+                                                                              float64* sumsOfGradients,
+                                                                              const float64* totalSumsOfHessians,
+                                                                              float64* sumsOfHessians,
+                                                                              float64* tmpGradients,
+                                                                              float64* tmpHessians, int dsysvLwork,
+                                                                              float64* dsysvTmpArray1,
+                                                                              int* dsysvTmpArray2,
+                                                                              double* dsysvTmpArray3,
+                                                                              float64* dspmvTmpArray,
+                                                                              bool uncovered,
+                                                                              PredictionCandidate* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores`
