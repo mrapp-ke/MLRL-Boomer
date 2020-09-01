@@ -66,7 +66,7 @@ cdef class SequentialRuleInduction:
         self.num_threads = num_threads
 
     cpdef RuleModel induce_rules(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix,
-                                 RandomAccessLabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
+                                 LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
@@ -74,8 +74,7 @@ cdef class SequentialRuleInduction:
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
                                         the training examples
-        :param label_matrix:            A `RandomAccessLabelMatrix` that provides random access to the labels of the
-                                        training examples
+        :param label_matrix:            A `LabelMatrix` that provides access to the labels of the training examples
         :param random_state:            The seed to be used by RNGs
         :param model_builder:           The builder that should be used to build the model
         :return:                        A model that contains the induced classification rules

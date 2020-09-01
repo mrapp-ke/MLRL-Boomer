@@ -10,11 +10,11 @@ cdef class StatisticsFactory:
     A wrapper for the C++ class `AbstractStatisticsFactory`.
     """
 
-    cdef AbstractStatistics* create(self, RandomAccessLabelMatrix label_matrix):
+    cdef AbstractStatistics* create(self, LabelMatrix label_matrix):
         """
         Creates a new instance of the class `AbstractStatistics`.
 
-        :param:     A `RandomAccessLabelMatrix` that provides access to the labels of the training examples
+        :param:     A `LabelMatrix` that provides access to the labels of the training examples
         :return:    A pointer to an object of type `AbstractStatistics` that has been created
         """
         pass

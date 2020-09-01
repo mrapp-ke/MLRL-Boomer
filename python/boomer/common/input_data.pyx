@@ -39,8 +39,8 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
         """
         cdef intp num_examples = y.shape[0]
         cdef intp num_labels = y.shape[1]
-        self.label_matrix_ptr = <shared_ptr[AbstractRandomAccessLabelMatrix]>make_shared[DenseLabelMatrixImpl](
-                num_examples, num_labels, &y[0, 0])
+        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
+                                                                                                   num_labels, &y[0, 0])
         self.num_examples = num_examples
         self.num_labels = num_labels
 
@@ -70,8 +70,9 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
                 dok_matrix.addValue(r, c)
 
         dok_matrix_ptr.reset(dok_matrix)
-        self.label_matrix_ptr = <shared_ptr[AbstractRandomAccessLabelMatrix]>make_shared[DokLabelMatrixImpl](
-                num_examples, num_labels, dok_matrix_ptr)
+        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](num_examples,
+                                                                                                 num_labels,
+                                                                                                 dok_matrix_ptr)
         self.num_examples = num_examples
         self.num_labels = num_labels
 
