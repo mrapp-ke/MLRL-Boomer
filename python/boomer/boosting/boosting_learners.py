@@ -6,15 +6,14 @@
 Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
-from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
+from boomer.boosting.example_wise_rule_evaluation import ExampleWiseRuleEvaluation
 from boomer.boosting.example_wise_statistics import ExampleWiseStatisticsFactory
 from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
-from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
+from boomer.boosting.label_wise_rule_evaluation import LabelWiseRuleEvaluation
 from boomer.boosting.label_wise_statistics import LabelWiseStatisticsFactory
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
-from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
@@ -156,11 +155,10 @@ class Boomer(MLRuleLearner):
         default_rule_head_refinement = FullHeadRefinement()
         head_refinement = self.__create_head_refinement(loss_function)
         l2_regularization_weight = self.__create_l2_regularization_weight()
-        default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
         rule_evaluation = self.__create_rule_evaluation(loss_function, l2_regularization_weight)
         num_threads = create_num_threads(self.num_threads)
         statistics_factory = self.__create_statistics_factory(loss_function, rule_evaluation)
-        rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
+        rule_induction = ExactGreedyRuleInduction()
         return SequentialRuleInduction(statistics_factory, rule_induction, default_rule_head_refinement,
                                        head_refinement, stopping_criteria, label_sub_sampling, instance_sub_sampling,
                                        feature_sub_sampling, pruning, shrinkage, min_coverage, max_conditions,
@@ -185,12 +183,6 @@ class Boomer(MLRuleLearner):
         elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
             return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
-
-    def __create_default_rule_evaluation(self, loss_function, l2_regularization_weight: float) -> DefaultRuleEvaluation:
-        if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
-        else:
-            return ExampleWiseDefaultRuleEvaluation(loss_function, l2_regularization_weight)
 
     def __create_rule_evaluation(self, loss_function, l2_regularization_weight: float):
         if isinstance(loss_function, LabelWiseLoss):

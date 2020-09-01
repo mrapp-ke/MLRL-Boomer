@@ -15,7 +15,7 @@ from libc.stdlib cimport abs, malloc, realloc, free
 
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
-from libcpp.memory cimport unique_ptr, make_shared
+from libcpp.memory cimport unique_ptr
 
 from cython.operator cimport dereference, postincrement
 from cython.parallel cimport prange
@@ -108,16 +108,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     the conditions are considered.
     """
 
-    def __cinit__(self, DefaultRuleEvaluation default_rule_evaluation):
-        """
-        :param default_rule_evaluation: The `DefaultRuleEvaluation` to be used for calculating the scores that are
-                                        predicted by the default rule or None, if no default rule should be induced
-        """
-        if default_rule_evaluation is None:
-            self.default_rule_evaluation_ptr = <shared_ptr[AbstractDefaultRuleEvaluation]>NULL
-        else:
-            self.default_rule_evaluation_ptr = default_rule_evaluation.default_rule_evaluation_ptr
-
+    def __cinit__(self):
         self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
 
     def __dealloc__(self):
