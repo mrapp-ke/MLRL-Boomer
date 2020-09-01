@@ -9,15 +9,6 @@ from boomer.seco.heuristics cimport Heuristic
 from libcpp.memory cimport make_shared
 
 
-cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
-    """
-    A wrapper for the C++ class `LabelWiseDefaultRuleEvaluationImpl`.
-    """
-
-    def __cinit__(self):
-        self.default_rule_evaluation_ptr = <shared_ptr[AbstractDefaultRuleEvaluation]>make_shared[LabelWiseDefaultRuleEvaluationImpl]()
-
-
 cdef class LabelWiseRuleEvaluation:
     """
     A wrapper for the C++ class `LabelWiseRuleEvaluationImpl`.

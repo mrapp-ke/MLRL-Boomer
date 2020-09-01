@@ -5,38 +5,6 @@
 using namespace seco;
 
 
-LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
-
-}
-
-Prediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
-        AbstractRandomAccessLabelMatrix* labelMatrix) {
-    // The number of examples
-    intp numExamples = labelMatrix->numExamples_;
-    // The number of labels
-    intp numLabels = labelMatrix->numLabels_;
-    // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
-    float64 threshold = numExamples / 2.0;
-    // An array that stores the scores that are predicted by the default rule
-    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
-
-    for (intp c = 0; c < numLabels; c++) {
-        intp numPositiveLabels = 0;
-
-        for (intp r = 0; r < numExamples; r++) {
-            uint8 trueLabel = labelMatrix->getLabel(r, c);
-
-            if (trueLabel) {
-                numPositiveLabels++;
-            }
-        }
-
-        predictedScores[c] = (numPositiveLabels > threshold ? 1 : 0);
-    }
-
-    return new Prediction(numLabels, NULL, predictedScores);
-}
-
 LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr) {
     heuristicPtr_ = heuristicPtr;
 }
