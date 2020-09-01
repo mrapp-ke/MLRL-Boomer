@@ -49,16 +49,15 @@ cdef class LabelMatrix:
 
     # Attributes:
 
+    cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
+
     cdef readonly intp num_examples
 
     cdef readonly intp num_labels
 
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
-
-    # Attributes:
-
-    cdef shared_ptr[AbstractRandomAccessLabelMatrix] label_matrix_ptr
+    pass
 
 
 cdef class DenseLabelMatrix(RandomAccessLabelMatrix):

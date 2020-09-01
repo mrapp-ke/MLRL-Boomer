@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
-from boomer.common.input_data cimport RandomAccessLabelMatrix
+from boomer.common.input_data cimport LabelMatrix
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -70,4 +70,4 @@ cdef class StatisticsFactory:
 
     # Functions:
 
-    cdef AbstractStatistics* create(self, RandomAccessLabelMatrix label_matrix)
+    cdef AbstractStatistics* create(self, LabelMatrix label_matrix)

@@ -4,12 +4,12 @@
 Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
 (non-decomposable) loss function that is applied example-wise.
 """
-from boomer.common.input_data cimport RandomAccessLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
 from boomer.boosting._lapack cimport init_lapack
 from boomer.boosting.example_wise_losses cimport ExampleWiseLoss
 from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation
 
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport unique_ptr, dynamic_pointer_cast
 
 
 cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
@@ -30,14 +30,14 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
         lapack_ptr.reset(init_lapack())
         self.lapack_ptr = lapack_ptr
 
-    cdef AbstractStatistics* create(self, RandomAccessLabelMatrix label_matrix):
+    cdef AbstractStatistics* create(self, LabelMatrix label_matrix):
         cdef unique_ptr[AbstractStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
-            statistics_factory_ptr.reset(new ExampleWiseStatisticsFactoryImpl(self.loss_function_ptr,
-                                                                              self.rule_evaluation_ptr,
-                                                                              self.lapack_ptr,
-                                                                              label_matrix.label_matrix_ptr))
+            statistics_factory_ptr.reset(new ExampleWiseStatisticsFactoryImpl(
+                self.loss_function_ptr, self.rule_evaluation_ptr, self.lapack_ptr,
+                dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
+                    label_matrix.label_matrix_ptr)))
         else:
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
 
