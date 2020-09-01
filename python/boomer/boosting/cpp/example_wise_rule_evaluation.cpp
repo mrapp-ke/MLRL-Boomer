@@ -1,87 +1,11 @@
 #include "example_wise_rule_evaluation.h"
 #include "linalg.h"
-#include "blas.h"
-#include "lapack.h"
 #include <cstddef>
 #include <stdlib.h>
 #include <math.h>
 
 using namespace boosting;
 
-
-ExampleWiseDefaultRuleEvaluationImpl::ExampleWiseDefaultRuleEvaluationImpl(
-        std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr, float64 l2RegularizationWeight,
-        std::shared_ptr<Lapack> lapackPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    l2RegularizationWeight_ = l2RegularizationWeight;
-    lapackPtr_ = lapackPtr;
-}
-
-ExampleWiseDefaultRuleEvaluationImpl::~ExampleWiseDefaultRuleEvaluationImpl() {
-
-}
-
-Prediction* ExampleWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(
-        AbstractRandomAccessLabelMatrix* labelMatrix) {
-    // Class members
-    AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
-    float64 l2RegularizationWeight = l2RegularizationWeight_;
-    // The number of examples
-    intp numExamples = labelMatrix->numExamples_;
-    // The number of labels
-    intp numLabels = labelMatrix->numLabels_;
-    // The number of hessians
-    intp numHessians = linalg::triangularNumber(numLabels);
-    // An array that stores the gradients for an example
-    float64* gradients = (float64*) malloc(numLabels * sizeof(float64));
-    // An array that stores the sums of gradients
-    float64* sumsOfGradients = (float64*) malloc(numLabels * sizeof(float64));
-    arrays::setToZeros(sumsOfGradients, numLabels);
-    // An array that stores the Hessians for an example
-    float64* hessians = (float64*) malloc(numHessians * sizeof(float64));
-    // An array that stores the sums of Hessians
-    float64* sumsOfHessians = (float64*) malloc(numHessians * sizeof(float64));
-    arrays::setToZeros(sumsOfHessians, numHessians);
-    // An array of zeros that stores the scores to be predicted by the default rule
-    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
-    arrays::setToZeros(predictedScores, numLabels);
-    // Arrays that are used to temporarily store values that are computed by LAPACK's DSYSV routine
-    float64* dsysvTmpArray1 = (float64*) malloc(numLabels * numLabels * sizeof(float64));
-    int* dsysvTmpArray2 = (int*) malloc(numLabels * sizeof(int));
-
-
-    for (intp r = 0; r < numExamples; r++) {
-        // Calculate the gradients and Hessians for the current example...
-        lossFunction->calculateGradientsAndHessians(labelMatrix, r, predictedScores, gradients, hessians);
-
-        for (intp c = 0; c < numLabels; c++) {
-            sumsOfGradients[c] += gradients[c];
-        }
-
-        for (intp c = 0; c < numHessians; c++) {
-            sumsOfHessians[c] += hessians[c];
-        }
-    }
-
-    // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-    int lwork = lapackPtr_.get()->queryDsysvLworkParameter(dsysvTmpArray1, predictedScores, numLabels);
-    double* dsysvTmpArray3 = (double*) malloc(lwork * sizeof(double));
-
-    // Calculate the scores to be predicted by the default rule by solving the system of linear equations...
-    lapackPtr_.get()->dsysv(sumsOfHessians, sumsOfGradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,
-                            predictedScores, numLabels, lwork, l2RegularizationWeight);
-
-    // Free allocated memory...
-    free(gradients);
-    free(sumsOfGradients);
-    free(hessians);
-    free(sumsOfHessians);
-    free(dsysvTmpArray1);
-    free(dsysvTmpArray2);
-    free(dsysvTmpArray3);
-
-    return new Prediction(numLabels, NULL, predictedScores);
-}
 
 ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
                                                              std::shared_ptr<Blas> blasPtr,
