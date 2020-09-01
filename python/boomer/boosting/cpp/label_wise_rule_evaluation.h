@@ -66,7 +66,7 @@ namespace boosting {
      * Hessians that have been calculated according to a loss function that is applied label-wise using L2
      * regularization.
      */
-    class LabelWiseRuleEvaluationImpl : public AbstractLabelWiseRuleEvaluation {
+    class RegularizedLabelWiseRuleEvaluationImpl : public AbstractLabelWiseRuleEvaluation {
 
         private:
 
@@ -78,9 +78,9 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight);
+            RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight);
 
-            ~LabelWiseRuleEvaluationImpl();
+            ~RegularizedLabelWiseRuleEvaluationImpl();
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the

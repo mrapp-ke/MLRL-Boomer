@@ -9,7 +9,14 @@ from libcpp.memory cimport make_shared
 
 cdef class LabelWiseRuleEvaluation:
     """
-    A wrapper for the C++ class `LabelWiseRuleEvaluationImpl`.
+    A wrapper for the abstract C++ class `AbstractLabelWiseRuleEvaluation`.
+    """
+    pass
+
+
+cdef class RegularizedLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
+    """
+    A wrapper for the C++ class `RegularizedLabelWiseRuleEvaluationImpl`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):
@@ -17,4 +24,5 @@ cdef class LabelWiseRuleEvaluation:
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
                                          to be predicted by rules
         """
-        self.rule_evaluation_ptr = make_shared[LabelWiseRuleEvaluationImpl](l2_regularization_weight)
+        self.rule_evaluation_ptr = <shared_ptr[AbstractLabelWiseRuleEvaluation]>make_shared[RegularizedLabelWiseRuleEvaluationImpl](
+            l2_regularization_weight)
