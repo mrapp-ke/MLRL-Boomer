@@ -137,25 +137,25 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
                                   HeadRefinement head_refinement, ModelBuilder model_builder):
-        # Initialize statistics...
-        cdef shared_ptr[AbstractRandomAccessLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
+        cdef unique_ptr[PredictionCandidate] default_prediction_ptr
+        cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
+        cdef intp num_examples, i
 
-        # Learn default rule, if necessary...
-        cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
-        cdef Prediction* default_prediction = NULL
-        cdef intp num_statistics, r
+        if head_refinement is not None:
+            num_examples = label_matrix.num_examples
+            statistics.resetSampledStatistics()
 
-        try:
-            if default_rule_evaluation_ptr != NULL:
-                default_prediction = default_rule_evaluation_ptr.get().calculateDefaultPrediction(label_matrix_ptr.get())
-                num_statistics = label_matrix.num_examples
+            for i in range(num_examples):
+                statistics.addSampledStatistic(i, 1)
 
-                for r in range(num_statistics):
-                    statistics.applyPrediction(r, default_prediction)
+            refinement_search_ptr.reset(statistics.beginSearch(0, NULL))
+            default_prediction_ptr.reset(head_refinement.find_head(NULL, NULL, NULL, refinement_search_ptr.get(), True,
+                                                                   False))
 
-            model_builder.set_default_rule(default_prediction)
-        finally:
-            del default_prediction
+            for i in range(num_examples):
+                statistics.applyPrediction(i, default_prediction_ptr.get())
+
+            model_builder.set_default_rule(default_prediction_ptr.get())
 
     cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
