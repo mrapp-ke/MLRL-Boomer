@@ -7,7 +7,6 @@ from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.statistics cimport AbstractRefinementSearch
-from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
