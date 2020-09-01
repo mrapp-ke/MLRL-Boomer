@@ -10,7 +10,6 @@
 #include "../../common/cpp/predictions.h"
 #include "blas.h"
 #include "lapack.h"
-#include "example_wise_losses.h"
 #include <memory>
 
 
