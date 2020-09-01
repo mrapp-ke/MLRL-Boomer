@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../../common/cpp/arrays.h"
-#include "../../common/cpp/rule_evaluation.h"
+#include "../../common/cpp/predictions.h"
 #include "blas.h"
 #include "lapack.h"
 #include "example_wise_losses.h"
@@ -15,39 +15,6 @@
 
 
 namespace boosting {
-
-    /**
-     * Allows to calculate the predictions of a default rule such that they minimize a loss function that is applied
-     * example-wise.
-     */
-    class ExampleWiseDefaultRuleEvaluationImpl : public AbstractDefaultRuleEvaluation {
-
-        private:
-
-            std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr_;
-
-            float64 l2RegularizationWeight_;
-
-            std::shared_ptr<Lapack> lapackPtr_;
-
-        public:
-
-            /**
-             * @param lossFunctionPtr           A shared pointer to an object of type `AbstractExampleWiseLoss`,
-             *                                  representing the loss function to be minimized
-             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
-             *                                  scores to be predicted by the default rule
-             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
-             *                                  different LAPACK routines
-             */
-            ExampleWiseDefaultRuleEvaluationImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                                 float64 l2RegularizationWeight, std::shared_ptr<Lapack> lapackPtr);
-
-            ~ExampleWiseDefaultRuleEvaluationImpl();
-
-            Prediction* calculateDefaultPrediction(AbstractRandomAccessLabelMatrix* labelMatrix) override;
-
-    };
 
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a
