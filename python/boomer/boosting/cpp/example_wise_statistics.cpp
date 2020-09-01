@@ -138,7 +138,8 @@ ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExa
                                                      std::shared_ptr<ExampleWiseRuleEvaluationImpl> ruleEvaluationPtr,
                                                      std::shared_ptr<Lapack> lapackPtr,
                                                      std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                                     float64* gradients, float64* hessians, float64* currentScores) {
+                                                     float64* gradients, float64* hessians, float64* currentScores)
+    : AbstractGradientStatistics(labelMatrixPtr.get()->numExamples_) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     lapackPtr_ = lapackPtr;

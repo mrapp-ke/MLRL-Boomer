@@ -139,20 +139,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                   HeadRefinement head_refinement, ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
-        cdef intp num_examples, i
+        cdef intp num_statistics, i
 
         if head_refinement is not None:
-            num_examples = label_matrix.num_examples
+            num_statistics = statistics.numStatistics_
             statistics.resetSampledStatistics()
 
-            for i in range(num_examples):
+            for i in range(num_statistics):
                 statistics.addSampledStatistic(i, 1)
 
             refinement_search_ptr.reset(statistics.beginSearch(0, NULL))
             default_prediction_ptr.reset(head_refinement.find_head(NULL, NULL, NULL, refinement_search_ptr.get(), True,
                                                                    False))
 
-            for i in range(num_examples):
+            for i in range(num_statistics):
                 statistics.applyPrediction(i, default_prediction_ptr.get())
 
             model_builder.set_default_rule(default_prediction_ptr.get())
@@ -164,7 +164,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
         # The total number of statistics
-        cdef intp num_statistics = feature_matrix.num_examples
+        cdef intp num_statistics = statistics.numStatistics_
         # The total number of features
         cdef intp num_features = feature_matrix.num_features
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
