@@ -6,7 +6,7 @@
 Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
-from boomer.boosting.example_wise_rule_evaluation import ExampleWiseRuleEvaluation
+from boomer.boosting.example_wise_rule_evaluation import RegularizedExampleWiseRuleEvaluation
 from boomer.boosting.example_wise_statistics import ExampleWiseStatisticsFactory
 from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
 from boomer.boosting.label_wise_rule_evaluation import RegularizedLabelWiseRuleEvaluation
@@ -188,7 +188,7 @@ class Boomer(MLRuleLearner):
         if isinstance(loss_function, LabelWiseLoss):
             return RegularizedLabelWiseRuleEvaluation(l2_regularization_weight)
         else:
-            return ExampleWiseRuleEvaluation(l2_regularization_weight)
+            return RegularizedExampleWiseRuleEvaluation(l2_regularization_weight)
 
     def __create_statistics_factory(self, loss_function, rule_evaluation) -> StatisticsFactory:
         if isinstance(loss_function, LabelWiseLoss):

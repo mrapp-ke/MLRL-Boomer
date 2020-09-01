@@ -127,7 +127,7 @@ namespace boosting {
      * Hessians that have been calculated according to a loss function that is applied example wise using L2
      * regularization.
      */
-    class ExampleWiseRuleEvaluationImpl : public AbstractExampleWiseRuleEvaluation {
+    class RegularizedExampleWiseRuleEvaluationImpl : public AbstractExampleWiseRuleEvaluation {
 
         private:
 
@@ -147,10 +147,10 @@ namespace boosting {
              * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
-                                          std::shared_ptr<Lapack> lapackPtr);
+            RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
+                                                     std::shared_ptr<Lapack> lapackPtr);
 
-            ~ExampleWiseRuleEvaluationImpl();
+            ~RegularizedExampleWiseRuleEvaluationImpl();
 
             void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,

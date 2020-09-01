@@ -6,7 +6,7 @@ from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsFact
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
-from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluationImpl
+from boomer.boosting.example_wise_rule_evaluation cimport AbstractExampleWiseRuleEvaluation
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -18,7 +18,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        ExampleWiseRefinementSearchImpl(shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
+        ExampleWiseRefinementSearchImpl(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                         shared_ptr[Lapack] lapackPtr, intp numPredictions, const intp* labelIndices,
                                         intp numLabels, const float64* gradients, const float64* totalSumsOfGradients,
                                         const float64* hessians, const float64* totalSumsOfHessians) except +
@@ -39,7 +39,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         ExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                  shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
+                                  shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                   shared_ptr[Lapack] lapackPtr) except +
 
         # Functions:
@@ -58,7 +58,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         ExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                         shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
+                                         shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                          shared_ptr[Lapack] lapackPtr,
                                          shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
 
@@ -73,7 +73,7 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
 
     cdef shared_ptr[AbstractExampleWiseLoss] loss_function_ptr
 
-    cdef shared_ptr[ExampleWiseRuleEvaluationImpl] rule_evaluation_ptr
+    cdef shared_ptr[AbstractExampleWiseRuleEvaluation] rule_evaluation_ptr
 
     cdef shared_ptr[Lapack] lapack_ptr
 

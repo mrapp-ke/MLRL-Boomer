@@ -9,13 +9,29 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil:
 
+    cdef cppclass AbstractExampleWiseRuleEvaluation:
 
-    cdef cppclass ExampleWiseRuleEvaluationImpl:
+        # Functions:
+
+        void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                          float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                          float64* sumsOfHessians, bool uncovered,
+                                          LabelWisePredictionCandidate* prediction) except +
+
+        void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                            float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                            float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
+                                            int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                            double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
+                                            PredictionCandidate* prediction) except +
+
+
+    cdef cppclass RegularizedExampleWiseRuleEvaluationImpl(AbstractExampleWiseRuleEvaluation):
 
         # Constructors:
 
-        ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, shared_ptr[Blas] blasPtr,
-                                      shared_ptr[Lapack] lapackPtr) except +
+        RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, shared_ptr[Blas] blasPtr,
+                                                 shared_ptr[Lapack] lapackPtr) except +
 
         # Functions:
 
@@ -36,4 +52,8 @@ cdef class ExampleWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef shared_ptr[ExampleWiseRuleEvaluationImpl] rule_evaluation_ptr
+    cdef shared_ptr[AbstractExampleWiseRuleEvaluation] rule_evaluation_ptr
+
+
+cdef class RegularizedExampleWiseRuleEvaluation(ExampleWiseRuleEvaluation):
+    pass
