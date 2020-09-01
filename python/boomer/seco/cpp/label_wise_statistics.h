@@ -24,7 +24,7 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
             intp numPredictions_;
 
@@ -49,8 +49,8 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationPtr         A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to
-             *                                  be used for calculating the predictions, as well as corresponding
+             * @param ruleEvaluationPtr         A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`
+             *                                  to be used for calculating the predictions, as well as corresponding
              *                                  quality scores, of rules
              * @param numPredictions            The number of labels to be considered by the search
              * @param labelIndices              An array of type `intp`, shape `(numPredictions)`, representing the
@@ -72,7 +72,7 @@ namespace seco {
              *                                  matrix that takes into account all all examples, which are covered by
              *                                  the previous refinement of the rule, for each label
              */
-            LabelWiseRefinementSearchImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+            LabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                           intp numPredictions, const intp* labelIndices,
                                           std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                           const float64* uncoveredLabels, const uint8* minorityLabels,
@@ -96,7 +96,7 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
@@ -111,8 +111,8 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationPtr     A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be
-             *                              used for calculating the predictions, as well as corresponding quality
+             * @param ruleEvaluationPtr     A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation` to
+             *                              be used for calculating the predictions, as well as corresponding quality
              *                              scores, of rules
              * @param labelMatrixPtr        A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
              *                              provides random access to the labels of the training examples
@@ -123,7 +123,7 @@ namespace seco {
              *                              whether rules should predict individual labels as relevant (1) or irrelevant
              *                              (0)
              */
-            LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+            LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                     std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                     float64* uncoveredLabels, float64 sumUncoveredLabels, uint8* minorityLabels);
 
@@ -150,20 +150,20 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
         public:
 
             /**
-             * @param ruleEvaluationPtr A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be used
-             *                          for calculating the predictions, as well as corresponding quality scores, of
-             *                          rules
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation` to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
              * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
              *                          provides random access to the labels of the training examples
              */
-            LabelWiseStatisticsFactoryImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+            LabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                            std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
 
             ~LabelWiseStatisticsFactoryImpl();

@@ -11,11 +11,19 @@ from libcpp.memory cimport make_shared
 
 cdef class LabelWiseRuleEvaluation:
     """
-    A wrapper for the C++ class `LabelWiseRuleEvaluationImpl`.
+    A wrapper for the abstract C++ class `AbstractLabelWiseRuleEvaluation`.
+    """
+    pass
+
+
+cdef class HeuristicLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
+    """
+    A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationImpl`.
     """
 
     def __cinit__(self, Heuristic heuristic):
         """
         :param heuristic: The heuristic that should be used
         """
-        self.rule_evaluation_ptr = make_shared[LabelWiseRuleEvaluationImpl](heuristic.heuristic_ptr)
+        self.rule_evaluation_ptr = <shared_ptr[AbstractLabelWiseRuleEvaluation]>make_shared[HeuristicLabelWiseRuleEvaluationImpl](
+            heuristic.heuristic_ptr)

@@ -8,7 +8,7 @@ from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsFactory
 from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
-from boomer.seco.label_wise_rule_evaluation import LabelWiseRuleEvaluation
+from boomer.seco.label_wise_rule_evaluation import HeuristicLabelWiseRuleEvaluation
 from boomer.seco.label_wise_statistics import LabelWiseStatisticsFactory
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
@@ -195,7 +195,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         loss = self.loss
 
         if loss == AVERAGING_LABEL_WISE:
-            return LabelWiseStatisticsFactory(LabelWiseRuleEvaluation(heuristic))
+            return LabelWiseStatisticsFactory(HeuristicLabelWiseRuleEvaluation(heuristic))
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:

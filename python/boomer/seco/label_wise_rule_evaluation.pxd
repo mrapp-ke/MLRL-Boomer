@@ -8,11 +8,20 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
 
-    cdef cppclass LabelWiseRuleEvaluationImpl:
+    cdef cppclass AbstractLabelWiseRuleEvaluation:
+
+        # Functions:
+
+        void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal, const float64* confusionMatricesSubset,
+                                          const float64* confusionMatricesCovered, bool uncovered,
+                                          LabelWisePredictionCandidate* prediction) except +
+
+    cdef cppclass HeuristicLabelWiseRuleEvaluationImpl(AbstractLabelWiseRuleEvaluation):
 
         # Constructors:
 
-        LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic) except +
+        HeuristicLabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic) except +
 
         # Functions:
 
@@ -26,4 +35,8 @@ cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr
+    cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr
+
+
+cdef class HeuristicLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
+    pass

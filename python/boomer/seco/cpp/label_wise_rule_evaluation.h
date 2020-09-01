@@ -65,7 +65,7 @@ namespace seco {
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
      * heuristic that is applied using label-wise averaging.
      */
-    class LabelWiseRuleEvaluationImpl : public AbstractLabelWiseRuleEvaluation {
+    class HeuristicLabelWiseRuleEvaluationImpl : public AbstractLabelWiseRuleEvaluation {
 
         private:
 
@@ -77,9 +77,9 @@ namespace seco {
              * @param heuristicPtr  A shared pointer to an object of type `AbstractHeuristic`, representing the
              *                      heuristic to be optimized
              */
-            LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr);
+            HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr);
 
-            ~LabelWiseRuleEvaluationImpl();
+            ~HeuristicLabelWiseRuleEvaluationImpl();
 
             void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
                                               const float64* confusionMatricesTotal,
