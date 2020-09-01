@@ -7,12 +7,42 @@
 using namespace boosting;
 
 
+AbstractExampleWiseRuleEvaluation::~AbstractExampleWiseRuleEvaluation() {
+
+}
+
+void AbstractExampleWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                     const float64* totalSumsOfGradients,
+                                                                     float64* sumsOfGradients,
+                                                                     const float64* totalSumsOfHessians,
+                                                                     float64* sumsOfHessians, bool uncovered,
+                                                                     LabelWisePredictionCandidate* prediction) {
+
+}
+
+void AbstractExampleWiseRuleEvaluation::calculateExampleWisePrediction(const intp* labelIndices,
+                                                                       const float64* totalSumsOfGradients,
+                                                                       float64* sumsOfGradients,
+                                                                       const float64* totalSumsOfHessians,
+                                                                       float64* sumsOfHessians, float64* tmpGradients,
+                                                                       float64* tmpHessians, int dsysvLwork,
+                                                                       float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                                                       double* dsysvTmpArray3, float64* dspmvTmpArray,
+                                                                       bool uncovered,
+                                                                       PredictionCandidate* prediction) {
+
+}
+
 ExampleWiseRuleEvaluationImpl::ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
                                                              std::shared_ptr<Blas> blasPtr,
                                                              std::shared_ptr<Lapack> lapackPtr) {
     l2RegularizationWeight_ = l2RegularizationWeight;
     blasPtr_ = blasPtr;
     lapackPtr_ = lapackPtr;
+}
+
+ExampleWiseRuleEvaluationImpl::~ExampleWiseRuleEvaluationImpl() {
+
 }
 
 void ExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,

@@ -1,6 +1,6 @@
 /**
- * Implements classes for calculating the predictions of rules, as well as corresponding quality scores, such that they
- * minimize a loss function that is applied example-wise.
+ * Implements classes for calculating the predictions of rules, as well as corresponding quality scores, based on the
+ * gradients and Hessians that have been calculated according to a loss function that is applied example-wise.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -16,31 +16,15 @@
 namespace boosting {
 
     /**
-     * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they minimize a
-     * loss function that is applied example-wise.
+     * An abstract base class for all classes that allow to calculate the predictions of rule, as well as corresponding
+     * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
+     * is applied example-wise.
      */
-    class ExampleWiseRuleEvaluationImpl {
-
-        private:
-
-            float64 l2RegularizationWeight_;
-
-            std::shared_ptr<Lapack> lapackPtr_;
-
-            std::shared_ptr<Blas> blasPtr_;
+    class AbstractExampleWiseRuleEvaluation {
 
         public:
 
-            /**
-             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
-             *                                  scores to be predicted by rules
-             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
-             *                                  different BLAS routines
-             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
-             *                                  different LAPACK routines
-             */
-            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
-                                          std::shared_ptr<Lapack> lapackPtr);
+            virtual ~AbstractExampleWiseRuleEvaluation();
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
@@ -73,10 +57,10 @@ namespace boosting {
              * @param prediction            A pointer to an object of type `LabelWisePredictionCandidate` that should be
              *                              used to store the predicted scores and quality scores
              */
-            void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
-                                              float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                              float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePredictionCandidate* prediction);
+            virtual void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                                      float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                                      float64* sumsOfHessians, bool uncovered,
+                                                      LabelWisePredictionCandidate* prediction);
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
@@ -128,12 +112,57 @@ namespace boosting {
              * @param prediction            A pointer to an object of type `PredictionCandidate` that should be used to
              *                              store the predicted scores and quality score
              */
+            virtual void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                                        float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                                        float64* sumsOfHessians, float64* tmpGradients,
+                                                        float64* tmpHessians, int dsysvLwork, float64* dsysvTmpArray1,
+                                                        int* dsysvTmpArray2, double* dsysvTmpArray3,
+                                                        float64* dspmvTmpArray, bool uncovered,
+                                                        PredictionCandidate* prediction);
+
+    };
+
+    /**
+     * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
+     * Hessians that have been calculated according to a loss function that is applied example wise using L2
+     * regularization.
+     */
+    class ExampleWiseRuleEvaluationImpl : public AbstractExampleWiseRuleEvaluation {
+
+        private:
+
+            float64 l2RegularizationWeight_;
+
+            std::shared_ptr<Lapack> lapackPtr_;
+
+            std::shared_ptr<Blas> blasPtr_;
+
+        public:
+
+            /**
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
+             *                                  different BLAS routines
+             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             *                                  different LAPACK routines
+             */
+            ExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
+                                          std::shared_ptr<Lapack> lapackPtr);
+
+            ~ExampleWiseRuleEvaluationImpl();
+
+            void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+                                              float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                                              float64* sumsOfHessians, bool uncovered,
+                                              LabelWisePredictionCandidate* prediction) override;
+
             void calculateExampleWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
                                                 float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                 float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
                                                 int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                 double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
-                                                PredictionCandidate* prediction);
+                                                PredictionCandidate* prediction) override;
 
     };
 
