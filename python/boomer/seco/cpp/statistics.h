@@ -21,6 +21,11 @@ namespace seco {
         public:
 
             /**
+             * @param numStatistics The number of statistics.
+             */
+            AbstractCoverageStatistics(intp numStatistics);
+
+            /**
              * The sum of weights of all labels that remain to be covered.
              */
             float64 sumUncoveredLabels_;

@@ -144,7 +144,17 @@ class AbstractStatistics {
 
     public:
 
+        /**
+         * @param numStatistics The number of statistics
+         */
+        AbstractStatistics(intp numStatistics);
+
         virtual ~AbstractStatistics();
+
+        /**
+         * The number of statistics.
+         */
+        intp numStatistics_;
 
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the

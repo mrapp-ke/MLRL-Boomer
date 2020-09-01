@@ -36,6 +36,10 @@ cdef extern from "cpp/statistics.h" nogil:
 
     cdef cppclass AbstractStatistics:
 
+        # Attributes:
+
+        intp numStatistics_
+
         # Functions:
 
         void resetSampledStatistics()

@@ -20,6 +20,11 @@ namespace boosting {
 
         public:
 
+            /**
+             * @param numStatistics The number of statistics.
+             */
+            AbstractGradientStatistics(intp numStatistics);
+
             void resetSampledStatistics() override;
 
             void addSampledStatistic(intp statisticIndex, uint32 weight) override;
