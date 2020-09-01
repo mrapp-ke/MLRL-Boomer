@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
+from boomer.common._predictions cimport PredictionCandidate, LabelWisePredictionCandidate
 from boomer.boosting._blas cimport Blas
 from boomer.boosting._lapack cimport Lapack
 
