@@ -52,7 +52,8 @@ cdef class RuleInduction:
                                 inducing the default rule
         :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
                                 examples
-        :param head_refinement: The strategy that should be used to find the head of the default rule
+        :param head_refinement: The strategy that should be used to find the head of the default rule or None, if no
+                                default rule should be used
         :param model_builder:   The builder, the default rule should be added to
         """
         pass
