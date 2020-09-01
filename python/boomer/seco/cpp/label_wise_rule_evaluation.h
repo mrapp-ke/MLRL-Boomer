@@ -1,6 +1,6 @@
 /**
- * Implements classes for calculating the predictions of rules, as well as corresponding quality scores, such that they
- * optimize a heuristic that is applied using label-wise averaging.
+ * Implements classes for calculating the predictions of rules, as well as corresponding quality scores, based on
+ * confusion matrices that have been computed for each label individually.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -15,22 +15,14 @@
 namespace seco {
 
     /**
-     * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
-     * heuristic that is applied using label-wise averaging.
+     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
+     * quality scores, based on confusion matrices that have been computed for each label individually.
      */
-    class LabelWiseRuleEvaluationImpl {
-
-        private:
-
-            std::shared_ptr<AbstractHeuristic> heuristicPtr_;
+    class AbstractLabelWiseRuleEvaluation {
 
         public:
 
-            /**
-             * @param heuristicPtr  A shared pointer to an object of type `AbstractHeuristic`, representing the
-             *                      heuristic to be optimized
-             */
-            LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr);
+            virtual ~AbstractLabelWiseRuleEvaluation();
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on
@@ -61,11 +53,39 @@ namespace seco {
              * @param prediction                A pointer to an object of type `LabelWisePredictionCandidate` that
              *                                  should be used to store the predicted scores and quality scores
              */
+            virtual void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+                                                      const float64* confusionMatricesTotal,
+                                                      const float64* confusionMatricesSubset,
+                                                      const float64* confusionMatricesCovered, bool uncovered,
+                                                      LabelWisePredictionCandidate* prediction);
+
+    };
+
+    /**
+     * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
+     * heuristic that is applied using label-wise averaging.
+     */
+    class LabelWiseRuleEvaluationImpl : public AbstractLabelWiseRuleEvaluation {
+
+        private:
+
+            std::shared_ptr<AbstractHeuristic> heuristicPtr_;
+
+        public:
+
+            /**
+             * @param heuristicPtr  A shared pointer to an object of type `AbstractHeuristic`, representing the
+             *                      heuristic to be optimized
+             */
+            LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr);
+
+            ~LabelWiseRuleEvaluationImpl();
+
             void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
                                               const float64* confusionMatricesTotal,
                                               const float64* confusionMatricesSubset,
                                               const float64* confusionMatricesCovered, bool uncovered,
-                                              LabelWisePredictionCandidate* prediction);
+                                              LabelWisePredictionCandidate* prediction) override;
 
     };
 
