@@ -7,7 +7,6 @@
 
 #include "arrays.h"
 #include "predictions.h"
-#include "rule_evaluation.h"
 #include <memory>
 
 
