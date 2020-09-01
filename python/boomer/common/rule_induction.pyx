@@ -43,15 +43,13 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
-                                  HeadRefinement head_refinement, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, AbstractStatistics* statistics, HeadRefinement head_refinement,
+                                  ModelBuilder model_builder):
         """
         Induces the default rule.
 
         :param statistics:      A pointer to an object of type `AbstractStatistics` which should serve as the basis for
                                 inducing the default rule
-        :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
-                                examples
         :param head_refinement: The strategy that should be used to find the head of the default rule or None, if no
                                 default rule should be used
         :param model_builder:   The builder, the default rule should be added to
@@ -135,8 +133,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
-                                  HeadRefinement head_refinement, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, AbstractStatistics* statistics, HeadRefinement head_refinement,
+                                  ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
         cdef intp num_statistics, i
