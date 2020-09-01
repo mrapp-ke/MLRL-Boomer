@@ -8,12 +8,11 @@ Provides a scikit-learn implementations of boosting algorithms
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.boosting.example_wise_rule_evaluation import ExampleWiseDefaultRuleEvaluation, ExampleWiseRuleEvaluation
 from boomer.boosting.example_wise_statistics import ExampleWiseStatisticsFactory
-from boomer.boosting.head_refinement import FullHeadRefinement
 from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
 from boomer.boosting.label_wise_rule_evaluation import LabelWiseDefaultRuleEvaluation, LabelWiseRuleEvaluation
 from boomer.boosting.label_wise_statistics import LabelWiseStatisticsFactory
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
-from boomer.common.head_refinement import SingleLabelHeadRefinement, HeadRefinement
+from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_evaluation import DefaultRuleEvaluation
 from boomer.common.rule_induction import ExactGreedyRuleInduction
