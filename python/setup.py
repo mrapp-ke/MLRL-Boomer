@@ -18,7 +18,6 @@ sources = [
     'boomer/common/cpp/sparse.cpp',
     'boomer/common/cpp/predictions.cpp',
     'boomer/common/cpp/input_data.cpp',
-    'boomer/common/cpp/rule_evaluation.cpp',
     'boomer/common/cpp/statistics.cpp',
     'boomer/boosting/cpp/blas.cpp',
     'boomer/boosting/cpp/lapack.cpp',
