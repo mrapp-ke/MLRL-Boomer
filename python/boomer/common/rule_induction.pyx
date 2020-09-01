@@ -44,7 +44,7 @@ cdef class RuleInduction:
     """
 
     cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
-                                  ModelBuilder model_builder):
+                                  HeadRefinement head_refinement, ModelBuilder model_builder):
         """
         Induces the default rule.
 
@@ -52,6 +52,7 @@ cdef class RuleInduction:
                                 inducing the default rule
         :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
                                 examples
+        :param head_refinement: The strategy that should be used to find the head of the default rule
         :param model_builder:   The builder, the default rule should be added to
         """
         pass
@@ -134,7 +135,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         del self.cache_global
 
     cdef void induce_default_rule(self, AbstractStatistics* statistics, RandomAccessLabelMatrix label_matrix,
-                                  ModelBuilder model_builder):
+                                  HeadRefinement head_refinement, ModelBuilder model_builder):
         # Initialize statistics...
         cdef shared_ptr[AbstractRandomAccessLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
 

@@ -153,6 +153,7 @@ class Boomer(MLRuleLearner):
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         loss_function = self.__create_loss_function()
+        default_rule_head_refinement = FullHeadRefinement()
         head_refinement = self.__create_head_refinement(loss_function)
         l2_regularization_weight = self.__create_l2_regularization_weight()
         default_rule_evaluation = self.__create_default_rule_evaluation(loss_function, l2_regularization_weight)
@@ -160,9 +161,10 @@ class Boomer(MLRuleLearner):
         num_threads = create_num_threads(self.num_threads)
         statistics_factory = self.__create_statistics_factory(loss_function, rule_evaluation)
         rule_induction = ExactGreedyRuleInduction(default_rule_evaluation)
-        return SequentialRuleInduction(statistics_factory, rule_induction, head_refinement, stopping_criteria,
-                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                       shrinkage, min_coverage, max_conditions, max_head_refinements, num_threads)
+        return SequentialRuleInduction(statistics_factory, rule_induction, default_rule_head_refinement,
+                                       head_refinement, stopping_criteria, label_sub_sampling, instance_sub_sampling,
+                                       feature_sub_sampling, pruning, shrinkage, min_coverage, max_conditions,
+                                       max_head_refinements, num_threads)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)

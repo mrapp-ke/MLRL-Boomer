@@ -17,6 +17,8 @@ cdef class SequentialRuleInduction:
 
     cdef RuleInduction rule_induction
 
+    cdef HeadRefinement default_rule_head_refinement
+
     cdef HeadRefinement head_refinement
 
     cdef list stopping_criteria

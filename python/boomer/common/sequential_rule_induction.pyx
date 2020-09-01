@@ -18,14 +18,15 @@ cdef class SequentialRuleInduction:
     """
 
     def __cinit__(self, StatisticsFactory statistics_factory, RuleInduction rule_induction,
-                  HeadRefinement head_refinement, list stopping_criteria, LabelSubSampling label_sub_sampling,
-                  InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
-                  PostProcessor post_processor, intp min_coverage, intp max_conditions, intp max_head_refinements,
-                  int num_threads):
+                  HeadRefinement default_rule_head_refinement, HeadRefinement head_refinement, list stopping_criteria,
+                  LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                  FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                  intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
         :param statistics_factory:      The factory that should be used to create the statistics which serve as the
                                         basis for learning rules
         :param rule_induction:          The algorithm that should be used to induce rules
+        :param default_rule_head_refinement:    The strategy that should be used to find the head of the default rule
         :param head_refinement:         The strategy that should be used to find the heads of rules
         :param stopping_criteria        A list that contains the stopping criteria that should be used to decide whether
                                         additional rules should be induced or not
@@ -51,6 +52,7 @@ cdef class SequentialRuleInduction:
         """
         self.statistics_factory = statistics_factory
         self.rule_induction = rule_induction
+        self.default_rule_head_refinement = default_rule_head_refinement
         self.head_refinement = head_refinement
         self.stopping_criteria = stopping_criteria
         self.label_sub_sampling = label_sub_sampling
@@ -80,6 +82,7 @@ cdef class SequentialRuleInduction:
         """
         cdef StatisticsFactory statistics_factory = self.statistics_factory
         cdef RuleInduction rule_induction = self.rule_induction
+        cdef HeadRefinement default_rule_head_refinement = self.default_rule_head_refinement
         cdef HeadRefinement head_refinement = self.head_refinement
         cdef list stopping_criteria = self.stopping_criteria
         cdef LabelSubSampling label_sub_sampling = self.label_sub_sampling
@@ -102,7 +105,8 @@ cdef class SequentialRuleInduction:
 
         # Induce default rule...
         statistics_ptr.reset(statistics_factory.create(label_matrix))
-        rule_induction.induce_default_rule(statistics_ptr.get(), label_matrix, model_builder)
+        rule_induction.induce_default_rule(statistics_ptr.get(), label_matrix, default_rule_head_refinement,
+                                           model_builder)
 
         while __should_continue(stopping_criteria, statistics_ptr.get(), num_rules):
             # Induce a new rule...
