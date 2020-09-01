@@ -7,9 +7,10 @@ using namespace seco;
 
 
 LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
-        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr, intp numPredictions, const intp* labelIndices,
-        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, const float64* uncoveredLabels,
-        const uint8* minorityLabels, const float64* confusionMatricesTotal, const float64* confusionMatricesSubset) {
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, intp numPredictions,
+        const intp* labelIndices, std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+        const float64* uncoveredLabels, const uint8* minorityLabels, const float64* confusionMatricesTotal,
+        const float64* confusionMatricesSubset) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
@@ -79,7 +80,7 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
     return prediction_;
 }
 
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                  std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                  float64* uncoveredLabels, float64 sumUncoveredLabels,
                                                  uint8* minorityLabels)
@@ -200,7 +201,7 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
 }
 
 LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
-        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;

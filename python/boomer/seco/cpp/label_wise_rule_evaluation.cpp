@@ -18,19 +18,22 @@ void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* l
 
 }
 
-LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr) {
+HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(
+        std::shared_ptr<AbstractHeuristic> heuristicPtr) {
     heuristicPtr_ = heuristicPtr;
 }
 
-LabelWiseRuleEvaluationImpl::~LabelWiseRuleEvaluationImpl() {
+HeuristicLabelWiseRuleEvaluationImpl::~HeuristicLabelWiseRuleEvaluationImpl() {
 
 }
 
-void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
-                                                               const float64* confusionMatricesTotal,
-                                                               const float64* confusionMatricesSubset,
-                                                               const float64* confusionMatricesCovered, bool uncovered,
-                                                               LabelWisePredictionCandidate* prediction) {
+void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                        const uint8* minorityLabels,
+                                                                        const float64* confusionMatricesTotal,
+                                                                        const float64* confusionMatricesSubset,
+                                                                        const float64* confusionMatricesCovered,
+                                                                        bool uncovered,
+                                                                        LabelWisePredictionCandidate* prediction) {
     // Class members
     AbstractHeuristic* heuristic = heuristicPtr_.get();
     // The number of labels to predict for

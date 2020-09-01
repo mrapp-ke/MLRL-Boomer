@@ -4,7 +4,7 @@ from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatr
 from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsFactory, StatisticsFactory, \
     AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.seco.statistics cimport AbstractCoverageStatistics
-from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationImpl
+from boomer.seco.label_wise_rule_evaluation cimport AbstractLabelWiseRuleEvaluation
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -16,7 +16,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Constructors:
 
-        LabelWiseRefinementSearchImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr, intp numLabels,
+        LabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr, intp numLabels,
                                       const intp* labelIndices,
                                       shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
                                       const float64* uncoveredLabels, const uint8* minorityLabels,
@@ -38,7 +38,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Constructors:
 
-        LabelWiseStatisticsImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr) except +
+        LabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
         # Attributes:
 
@@ -63,7 +63,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Constructors:
 
-        LabelWiseStatisticsFactoryImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr,
+        LabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
                                        shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
 
         # Functions:
@@ -75,7 +75,7 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
 
     # Attributes:
 
-    cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr
+    cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr
 
     # Functions:
 
