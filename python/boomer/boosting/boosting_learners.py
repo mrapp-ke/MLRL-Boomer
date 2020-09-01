@@ -9,7 +9,7 @@ from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
 from boomer.boosting.example_wise_rule_evaluation import ExampleWiseRuleEvaluation
 from boomer.boosting.example_wise_statistics import ExampleWiseStatisticsFactory
 from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
-from boomer.boosting.label_wise_rule_evaluation import LabelWiseRuleEvaluation
+from boomer.boosting.label_wise_rule_evaluation import RegularizedLabelWiseRuleEvaluation
 from boomer.boosting.label_wise_statistics import LabelWiseStatisticsFactory
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
@@ -186,7 +186,7 @@ class Boomer(MLRuleLearner):
 
     def __create_rule_evaluation(self, loss_function, l2_regularization_weight: float):
         if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseRuleEvaluation(l2_regularization_weight)
+            return RegularizedLabelWiseRuleEvaluation(l2_regularization_weight)
         else:
             return ExampleWiseRuleEvaluation(l2_regularization_weight)
 

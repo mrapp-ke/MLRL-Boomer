@@ -19,20 +19,20 @@ void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* l
 
 }
 
-LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
+RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
     l2RegularizationWeight_ = l2RegularizationWeight;
 }
 
-LabelWiseRuleEvaluationImpl::~LabelWiseRuleEvaluationImpl() {
+RegularizedLabelWiseRuleEvaluationImpl::~RegularizedLabelWiseRuleEvaluationImpl() {
 
 }
 
-void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
-                                                               const float64* totalSumsOfGradients,
-                                                               float64* sumsOfGradients,
-                                                               const float64* totalSumsOfHessians,
-                                                               float64* sumsOfHessians, bool uncovered,
-                                                               LabelWisePredictionCandidate* prediction) {
+void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                          const float64* totalSumsOfGradients,
+                                                                          float64* sumsOfGradients,
+                                                                          const float64* totalSumsOfHessians,
+                                                                          float64* sumsOfHessians, bool uncovered,
+                                                                          LabelWisePredictionCandidate* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of labels to predict for

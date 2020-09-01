@@ -6,9 +6,9 @@ using namespace boosting;
 
 
 LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
-        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr, intp numPredictions, const intp* labelIndices,
-        intp numLabels, const float64* gradients, const float64* totalSumsOfGradients, const float64* hessians,
-        const float64* totalSumsOfHessians) {
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, intp numPredictions,
+        const intp* labelIndices, intp numLabels, const float64* gradients, const float64* totalSumsOfGradients,
+        const float64* hessians, const float64* totalSumsOfHessians) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
@@ -81,7 +81,7 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
 }
 
 LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                                 std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+                                                 std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                  std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                  float64* gradients, float64* hessians, float64* currentScores)
     : AbstractGradientStatistics(labelMatrixPtr.get()->numExamples_) {
@@ -162,7 +162,7 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
 
 LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;

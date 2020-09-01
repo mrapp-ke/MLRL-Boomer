@@ -5,7 +5,7 @@ from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsFact
     AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
-from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationImpl
+from boomer.boosting.label_wise_rule_evaluation cimport AbstractLabelWiseRuleEvaluation
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -17,10 +17,10 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        LabelWiseRefinementSearchImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr, intp numPredictions,
-                                      const intp* labelIndices, intp numLabels, const float64* gradients,
-                                      const float64* totalSumsOfGradients, const float64* hessians,
-                                      const float64* totalSumsOfHessians) except +
+        LabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
+                                      intp numPredictions, const intp* labelIndices, intp numLabels,
+                                      const float64* gradients, const float64* totalSumsOfGradients,
+                                      const float64* hessians, const float64* totalSumsOfHessians) except +
 
         # Functions:
 
@@ -38,7 +38,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         LabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
-                                shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr) except +
+                                shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
         # Functions:
 
@@ -60,7 +60,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         LabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
-                                       shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr,
+                                       shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
                                        shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
 
         # Functions:
@@ -74,7 +74,7 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
 
     cdef shared_ptr[AbstractLabelWiseLoss] loss_function_ptr
 
-    cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr
+    cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr
 
     # Functions:
 
