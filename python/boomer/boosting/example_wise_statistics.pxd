@@ -39,6 +39,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         ExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+                                  shared_ptr[AbstractExampleWiseRuleEvaluation] defaultRuleEvaluationPtr,
                                   shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                   shared_ptr[Lapack] lapackPtr) except +
 
@@ -58,6 +59,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         ExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+                                         shared_ptr[AbstractExampleWiseRuleEvaluation] defaultRuleEvaluationPtr,
                                          shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                          shared_ptr[Lapack] lapackPtr,
                                          shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
@@ -72,6 +74,8 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
     # Attributes:
 
     cdef shared_ptr[AbstractExampleWiseLoss] loss_function_ptr
+
+    cdef shared_ptr[AbstractExampleWiseRuleEvaluation] default_rule_evaluation_ptr
 
     cdef shared_ptr[AbstractExampleWiseRuleEvaluation] rule_evaluation_ptr
 
