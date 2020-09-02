@@ -23,32 +23,35 @@ cdef class SequentialRuleInduction:
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                   intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
-        :param statistics_factory:      The factory that should be used to create the statistics which serve as the
-                                        basis for learning rules
-        :param rule_induction:          The algorithm that should be used to induce rules
+        :param statistics_factory:              The factory that should be used to create the statistics which serve as
+                                                the basis for learning rules
+        :param rule_induction:                  The algorithm that should be used to induce rules
         :param default_rule_head_refinement:    The strategy that should be used to find the head of the default rule
-        :param head_refinement:         The strategy that should be used to find the heads of rules
-        :param stopping_criteria        A list that contains the stopping criteria that should be used to decide whether
-                                        additional rules should be induced or not
-        :param label_sub_sampling:      The strategy that should be used for sub-sampling the labels each time a new
-                                        classification rule is learned or None, if no sub-sampling should be used
-        :param instance_sub_sampling:   The strategy that should be used for sub-sampling the training examples each
-                                        time a new classification rule is learned or None, if no sub-sampling should be
-                                        used
-        :param feature_sub_sampling:    The strategy that should be used for sub-sampling the features each time a
-                                        classification rule is refined or None, if no sub-sampling should be used
-        :param pruning:                 The strategy that should be used for pruning rules or None, if no pruning should
-                                        be used
-        :param post_processor:          The post-processor that should be used to post-process the rule once it has been
-                                        learned or None, if no post-processing should be used
-        :param min_coverage:            The minimum number of training examples that must be covered by a rule. Must be
-                                        at least 1
-        :param max_conditions:          The maximum number of conditions to be included in a rule's body. Must be at
-                                        least 1 or -1, if the number of conditions should not be restricted
-        :param max_head_refinements:    The maximum number of times the head of a rule may be refined after a new
-                                        condition has been added to its body. Must be at least 1 or -1, if the number of
-                                        refinements should not be restricted
-        :param num_threads:             The number of threads to be used for training. Must be at least 1
+        :param head_refinement:                 The strategy that should be used to find the heads of rules
+        :param stopping_criteria                A list that contains the stopping criteria that should be used to decide
+                                                whether additional rules should be induced or not
+        :param label_sub_sampling:              The strategy that should be used for sub-sampling the labels each time a
+                                                new classification rule is learned or None, if no sub-sampling should be
+                                                used
+        :param instance_sub_sampling:           The strategy that should be used for sub-sampling the training examples
+                                                each time a new classification rule is learned or None, if no
+                                                sub-sampling should be used
+        :param feature_sub_sampling:            The strategy that should be used for sub-sampling the features each time
+                                                a classification rule is refined or None, if no sub-sampling should be
+                                                used
+        :param pruning:                         The strategy that should be used for pruning rules or None, if no
+                                                pruning should be used
+        :param post_processor:                  The post-processor that should be used to post-process the rule once it
+                                                has been learned or None, if no post-processing should be used
+        :param min_coverage:                    The minimum number of training examples that must be covered by a rule.
+                                                Must be at least 1
+        :param max_conditions:                  The maximum number of conditions to be included in a rule's body. Must
+                                                be at least 1 or -1, if the number of conditions should not be
+                                                restricted
+        :param max_head_refinements:            The maximum number of times the head of a rule may be refined after a
+                                                new condition has been added to its body. Must be at least 1 or -1, if
+                                                the number of refinements should not be restricted
+        :param num_threads:                     The number of threads to be used for training. Must be at least 1
         """
         self.statistics_factory = statistics_factory
         self.rule_induction = rule_induction
