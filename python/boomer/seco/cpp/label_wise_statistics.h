@@ -90,9 +90,24 @@ namespace seco {
     };
 
     /**
+     * An abstract base class for all classes that allow to store the elements of confusion matrices that are computed
+     * independently for each label.
+     */
+    class AbstractLabelWiseStatistics : public AbstractCoverageStatistics {
+
+        public:
+
+            /**
+             * @param numStatistics The number of statistics
+             */
+            AbstractLabelWiseStatistics(intp numStatistics);
+
+    };
+
+    /**
      * Allows to store the elements of confusion matrices that are computed independently for each label.
      */
-    class LabelWiseStatisticsImpl : public AbstractCoverageStatistics {
+    class LabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         private:
 
