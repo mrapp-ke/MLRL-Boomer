@@ -14,7 +14,7 @@ from libcpp.memory cimport unique_ptr, dynamic_pointer_cast
 
 cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
     """
-    A wrapper for the C++ class `ExampleWiseStatisticsFactoryImpl`.
+    A factory that allows to create instances of the class `ExampleWiseStatisticsImpl`.
     """
 
     def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluation default_rule_evaluation,

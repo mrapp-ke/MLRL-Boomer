@@ -7,7 +7,7 @@ Provides wrappers for classes that allow to store statistics about the labels of
 
 cdef class StatisticsFactory:
     """
-    A wrapper for the C++ class `AbstractStatisticsFactory`.
+    A factory that allow to create instances of the class `AbstractStatistics`.
     """
 
     cdef AbstractStatistics* create(self, LabelMatrix label_matrix):
