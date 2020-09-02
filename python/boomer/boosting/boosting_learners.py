@@ -194,7 +194,7 @@ class Boomer(MLRuleLearner):
         if isinstance(loss_function, LabelWiseLoss):
             return LabelWiseStatisticsFactory(loss_function, rule_evaluation, rule_evaluation)
         else:
-            return ExampleWiseStatisticsFactory(loss_function, rule_evaluation)
+            return ExampleWiseStatisticsFactory(loss_function, rule_evaluation, rule_evaluation)
 
     def __create_head_refinement(self, loss_function) -> HeadRefinement:
         head_refinement = self.head_refinement

@@ -136,11 +136,13 @@ PredictionCandidate* ExampleWiseRefinementSearchImpl::calculateExampleWisePredic
 
 ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(
         std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+        std::shared_ptr<AbstractExampleWiseRuleEvaluation> defaultRuleEvaluationPtr,
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
     : AbstractGradientStatistics(labelMatrixPtr.get()->numExamples_) {
     lossFunctionPtr_ = lossFunctionPtr;
+    defaultRuleEvaluationPtr_ = defaultRuleEvaluationPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     lapackPtr_ = lapackPtr;
     labelMatrixPtr_ = labelMatrixPtr;
@@ -223,9 +225,11 @@ void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction*
 
 ExampleWiseStatisticsFactoryImpl::ExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+        std::shared_ptr<AbstractExampleWiseRuleEvaluation> defaultRuleEvaluationPtr,
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
+    defaultRuleEvaluationPtr_ = defaultRuleEvaluationPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     lapackPtr_ = lapackPtr;
     labelMatrixPtr_ = labelMatrixPtr;
@@ -265,6 +269,6 @@ AbstractStatistics* ExampleWiseStatisticsFactoryImpl::create() {
                                                     &hessians[r * numHessians]);
     }
 
-    return new ExampleWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_, labelMatrixPtr_, gradients,
-                                         hessians, currentScores);
+    return new ExampleWiseStatisticsImpl(lossFunctionPtr_, defaultRuleEvaluationPtr_, ruleEvaluationPtr_, lapackPtr_,
+                                         labelMatrixPtr_, gradients, hessians, currentScores);
 }

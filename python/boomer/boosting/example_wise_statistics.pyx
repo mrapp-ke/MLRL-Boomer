@@ -17,14 +17,19 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
     A wrapper for the C++ class `ExampleWiseStatisticsFactoryImpl`.
     """
 
-    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluation rule_evaluation):
+    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluation default_rule_evaluation,
+                  ExampleWiseRuleEvaluation rule_evaluation):
         """
-        :param loss_function:   The loss function to be used for calculating gradients and Hessians
-        :param rule_evaluation: The `ExampleWiseRuleEvaluation` to be used for calculating the predictions, as well as
-                                corresponding quality scores, of rules
-        :param label_matrix:    A label matrix that provides random access to the labels of the training examples
+        :param loss_function:           The loss function to be used for calculating gradients and Hessians
+        :param default_rule_evaluation: The `ExampleWiseRuleEvaluation` to be used for calculating the predictions, as
+                                        well as corresponding quality scores, of the default rules
+        :param rule_evaluation:         The `ExampleWiseRuleEvaluation` to be used for calculating the predictions, as
+                                        well as corresponding quality scores, of rules
+        :param label_matrix:            A label matrix that provides random access to the labels of the training
+                                        examples
         """
         self.loss_function_ptr = loss_function.loss_function_ptr
+        self.default_rule_evaluation_ptr = default_rule_evaluation.rule_evaluation_ptr
         self.rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
         cdef shared_ptr[Lapack] lapack_ptr
         lapack_ptr.reset(init_lapack())
@@ -35,7 +40,7 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory_ptr.reset(new ExampleWiseStatisticsFactoryImpl(
-                self.loss_function_ptr, self.rule_evaluation_ptr, self.lapack_ptr,
+                self.loss_function_ptr, self.default_rule_evaluation_ptr, self.rule_evaluation_ptr, self.lapack_ptr,
                 dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
                     label_matrix.label_matrix_ptr)))
         else:
