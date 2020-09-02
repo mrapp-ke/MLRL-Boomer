@@ -161,7 +161,7 @@ namespace boosting {
     };
 
     /**
-     * A factory that allows to create new instances of the class `LabelWiseStatisticsImpl`.
+     * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
      */
     class LabelWiseStatisticsFactoryImpl : public AbstractStatisticsFactory {
 
