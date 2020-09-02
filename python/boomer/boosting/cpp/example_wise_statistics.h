@@ -211,7 +211,7 @@ namespace boosting {
     /**
      * A factory that allows to create new instances of the class `DenseExampleWiseStatisticsImpl`.
      */
-    class ExampleWiseStatisticsFactoryImpl : public AbstractStatisticsFactory {
+    class DenseExampleWiseStatisticsFactoryImpl : public AbstractExampleWiseStatisticsFactory {
 
         private:
 
@@ -236,14 +236,14 @@ namespace boosting {
              * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
              *                          provides random access to the labels of the training examples
              */
-            ExampleWiseStatisticsFactoryImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                             std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                             std::shared_ptr<Lapack> lapackPtr,
-                                             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
+            DenseExampleWiseStatisticsFactoryImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                                  std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
+                                                  std::shared_ptr<Lapack> lapackPtr,
+                                                  std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
 
-            ~ExampleWiseStatisticsFactoryImpl();
+            ~DenseExampleWiseStatisticsFactoryImpl();
 
-            AbstractStatistics* create() override;
+            AbstractExampleWiseStatistics* create() override;
 
     };
 

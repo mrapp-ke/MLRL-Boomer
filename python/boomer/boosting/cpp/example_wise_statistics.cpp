@@ -236,7 +236,7 @@ AbstractExampleWiseStatistics* AbstractExampleWiseStatisticsFactory::create() {
     return NULL;
 }
 
-ExampleWiseStatisticsFactoryImpl::ExampleWiseStatisticsFactoryImpl(
+DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
@@ -246,11 +246,11 @@ ExampleWiseStatisticsFactoryImpl::ExampleWiseStatisticsFactoryImpl(
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-ExampleWiseStatisticsFactoryImpl::~ExampleWiseStatisticsFactoryImpl() {
+DenseExampleWiseStatisticsFactoryImpl::~DenseExampleWiseStatisticsFactoryImpl() {
 
 }
 
-AbstractStatistics* ExampleWiseStatisticsFactoryImpl::create() {
+AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
     // Class members
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();

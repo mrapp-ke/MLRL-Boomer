@@ -182,7 +182,7 @@ namespace boosting {
     /**
      * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
      */
-    class LabelWiseStatisticsFactoryImpl : public AbstractStatisticsFactory {
+    class DenseLabelWiseStatisticsFactoryImpl : public AbstractLabelWiseStatisticsFactory {
 
         private:
 
@@ -203,13 +203,13 @@ namespace boosting {
              * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
              *                          provides random access to the labels of the training examples
              */
-            LabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                           std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                           std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
+            DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                                std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                                std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
 
-            ~LabelWiseStatisticsFactoryImpl();
+            ~DenseLabelWiseStatisticsFactoryImpl();
 
-            AbstractStatistics* create() override;
+            AbstractLabelWiseStatistics* create() override;
 
     };
 

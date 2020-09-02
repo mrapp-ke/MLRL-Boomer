@@ -58,11 +58,3 @@ AbstractRefinementSearch* AbstractStatistics::beginSearch(intp numLabelIndices, 
 void AbstractStatistics::applyPrediction(intp statisticIndex, Prediction* prediction) {
 
 }
-
-AbstractStatisticsFactory::~AbstractStatisticsFactory() {
-
-}
-
-AbstractStatistics* AbstractStatisticsFactory::create() {
-    return NULL;
-}

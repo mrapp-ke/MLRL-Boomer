@@ -1,8 +1,7 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
-from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsFactory, StatisticsFactory, \
-    AbstractRefinementSearch
+from boomer.common.statistics cimport AbstractStatistics, StatisticsFactory, AbstractRefinementSearch
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
@@ -74,18 +73,18 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         AbstractExampleWiseStatistics* create()
 
 
-    cdef cppclass ExampleWiseStatisticsFactoryImpl(AbstractStatisticsFactory):
+    cdef cppclass DenseExampleWiseStatisticsFactoryImpl(AbstractExampleWiseStatisticsFactory):
 
         # Constructors:
 
-        ExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                         shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
-                                         shared_ptr[Lapack] lapackPtr,
-                                         shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+        DenseExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+                                              shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                              shared_ptr[Lapack] lapackPtr,
+                                              shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
 
         # Functions:
 
-        AbstractStatistics* create()
+        AbstractExampleWiseStatistics* create()
 
 
 cdef class ExampleWiseStatisticsFactory(StatisticsFactory):

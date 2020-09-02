@@ -251,21 +251,3 @@ class AbstractStatistics {
         virtual void applyPrediction(intp statisticIndex, Prediction* prediction);
 
 };
-
-/**
- * An abstract base class for all classes that allow to create new instances of the class `AbstractStatistics`.
- */
-class AbstractStatisticsFactory {
-
-    public:
-
-        virtual ~AbstractStatisticsFactory();
-
-        /**
-         * Creates a new instance of the class `AbstractStatistics`.
-         *
-         * @return A pointer to an object of type `AbstractStatistics` that has been created
-         */
-        virtual AbstractStatistics* create();
-
-};
