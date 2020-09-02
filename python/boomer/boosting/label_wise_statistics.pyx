@@ -25,16 +25,16 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
         :param rule_evaluation:         The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
                                         well as corresponding quality scores, of rules
         """
-        self.loss_function_ptr = loss_function.loss_function_ptr
-        self.default_rule_evaluation_ptr = default_rule_evaluation.rule_evaluation_ptr
-        self.rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
+        self.loss_function = loss_function
+        self.default_rule_evaluation = default_rule_evaluation
+        self.rule_evaluation = rule_evaluation
 
     cdef AbstractStatistics* get(self, LabelMatrix label_matrix):
         cdef unique_ptr[AbstractLabelWiseStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory_ptr.reset(new DenseLabelWiseStatisticsFactoryImpl(
-                self.loss_function_ptr, self.default_rule_evaluation_ptr,
+                self.loss_function.loss_function_ptr, self.default_rule_evaluation.rule_evaluation_ptr,
                 dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
                     label_matrix.label_matrix_ptr)))
         else:
