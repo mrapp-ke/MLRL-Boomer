@@ -50,12 +50,12 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
-    cdef cppclass LabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
+    cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
 
         # Constructors:
 
-        LabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
-                                shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
+        DenseLabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
+                                     shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
         # Functions:
 

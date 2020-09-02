@@ -85,10 +85,11 @@ AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(intp numStatistics)
 
 }
 
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                                 std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                                 std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                                 float64* gradients, float64* hessians, float64* currentScores)
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
+        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
+        float64* currentScores)
     : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
@@ -104,7 +105,7 @@ LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWi
     totalSumsOfHessians_ = (float64*) malloc(numLabels * sizeof(float64));
 }
 
-LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
+DenseLabelWiseStatisticsImpl::~DenseLabelWiseStatisticsImpl() {
     free(currentScores_);
     free(gradients_);
     free(totalSumsOfGradients_);
@@ -112,13 +113,13 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::resetCoveredStatistics() {
+void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     arrays::setToZeros(totalSumsOfGradients_, numLabels);
     arrays::setToZeros(totalSumsOfHessians_, numLabels);
 }
 
-void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
     float64 signedWeight = remove ? -((float64) weight) : weight;
@@ -132,14 +133,14 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
     }
 }
 
-AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new LabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels, gradients_,
                                              totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = prediction->numPredictions_;
     const intp* labelIndices = prediction->labelIndices_;
@@ -209,6 +210,6 @@ AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
         }
     }
 
-    return new LabelWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, labelMatrixPtr_, gradients, hessians,
-                                       currentScores);
+    return new DenseLabelWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, labelMatrixPtr_, gradients, hessians,
+                                            currentScores);
 }
