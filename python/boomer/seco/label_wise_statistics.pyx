@@ -10,9 +10,9 @@ from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
 from libcpp.memory cimport unique_ptr, dynamic_pointer_cast
 
 
-cdef class LabelWiseStatisticsFactory(StatisticsFactory):
+cdef class LabelWiseStatisticsProvider(StatisticsProvider):
     """
-    A factory that allows to create instances of the class `LabelWiseStatisticsImpl`.
+    A factory that allows to create instances of the class `AbstractLabelWiseStatistics`.
     """
 
     def __cinit__(self, LabelWiseRuleEvaluation default_rule_evaluation, LabelWiseRuleEvaluation rule_evaluation):
@@ -25,7 +25,7 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
         self.default_rule_evaluation_ptr = default_rule_evaluation.rule_evaluation_ptr
         self.rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
 
-    cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix):
+    cdef AbstractStatistics* get(self, LabelMatrix label_matrix):
         cdef unique_ptr[AbstractLabelWiseStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
@@ -37,6 +37,3 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
 
         return statistics_factory_ptr.get().create()
-
-    cdef AbstractStatistics* copy_statistics(self, AbstractStatistics* statistics):
-        return statistics

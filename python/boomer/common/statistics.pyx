@@ -5,26 +5,18 @@ Provides wrappers for classes that allow to store statistics about the labels of
 """
 
 
-cdef class StatisticsFactory:
+cdef class StatisticsProvider:
     """
-    A factory that allow to create instances of the class `AbstractStatistics`.
+    Provides access to an instance of the class `AbstractStatistics`.
     """
 
-    cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix):
+    cdef AbstractStatistics* get(self, LabelMatrix label_matrix):
         """
-        Creates a new instance of the class `AbstractStatistics`, representing the initial statistics as computed based
-        on the ground truth labels.
+        Returns an instance of the class `AbstractStatistics`. If such an instance has not been created yet, it will be
+        initialized based on the given label matrix. Otherwise, the instance which has been created earlier will be
+        returned.
 
         :param label_matrix:    A `LabelMatrix` that provides access to the labels of the training examples
-        :return:                A pointer to an object of type `AbstractStatistics` that has been created
-        """
-        pass
-
-    cdef AbstractStatistics* copy_statistics(self, AbstractStatistics* statistics):
-        """
-        Creates a new instance of the class `AbstractStatistics` by copying an existing instance.
-
-        :param statistics:  A pointer to an object of type `AbstractStatistics` that should be copied
-        :return:            A pointer to an object of type `AbstractStatistics` that has been created
+        :return:                A pointer to an object of type `AbstractStatistics`
         """
         pass
