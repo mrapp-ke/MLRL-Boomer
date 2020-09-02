@@ -84,7 +84,7 @@ cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory = DenseLabelWiseStatisticsFactory.__new__(DenseLabelWiseStatisticsFactory,
-                                                                         self.rule_evaluation, label_matrix)
+                                                                         self.default_rule_evaluation, label_matrix)
         else:
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
 
