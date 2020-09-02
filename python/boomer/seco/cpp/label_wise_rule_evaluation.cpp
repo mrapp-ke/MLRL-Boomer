@@ -19,8 +19,9 @@ void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* l
 }
 
 HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(
-        std::shared_ptr<AbstractHeuristic> heuristicPtr) {
+        std::shared_ptr<AbstractHeuristic> heuristicPtr, bool predictMajority) {
     heuristicPtr_ = heuristicPtr;
+    predictMajority_ = predictMajority;
 }
 
 HeuristicLabelWiseRuleEvaluationImpl::~HeuristicLabelWiseRuleEvaluationImpl() {
@@ -36,6 +37,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const in
                                                                         LabelWisePredictionCandidate* prediction) {
     // Class members
     AbstractHeuristic* heuristic = heuristicPtr_.get();
+    bool predictMajority = predictMajority_;
     // The number of labels to predict for
     intp numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
@@ -49,7 +51,8 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const in
         intp l = labelIndices != NULL ? labelIndices[c] : c;
 
         // Set the score to be predicted for the current label...
-        float64 score = (float64) minorityLabels[l];
+        uint8 minorityLabel = minorityLabels[l];
+        float64 score = (float64) (predictMajority ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
         predictedScores[c] = score;
 
         // Calculate the quality score for the current label...

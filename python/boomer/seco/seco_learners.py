@@ -195,8 +195,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         loss = self.loss
 
         if loss == AVERAGING_LABEL_WISE:
+            default_rule_evaluation = HeuristicLabelWiseRuleEvaluation(heuristic, predictMajority=True)
             rule_evaluation = HeuristicLabelWiseRuleEvaluation(heuristic)
-            return LabelWiseStatisticsProviderFactory(rule_evaluation, rule_evaluation)
+            return LabelWiseStatisticsProviderFactory(default_rule_evaluation, rule_evaluation)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:

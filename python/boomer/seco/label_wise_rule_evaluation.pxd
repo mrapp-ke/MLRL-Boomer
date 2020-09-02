@@ -21,7 +21,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
 
         # Constructors:
 
-        HeuristicLabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic) except +
+        HeuristicLabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic, bool predictMajority) except +
 
         # Functions:
 
