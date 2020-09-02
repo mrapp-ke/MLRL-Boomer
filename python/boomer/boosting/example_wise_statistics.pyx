@@ -35,7 +35,7 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
         lapack_ptr.reset(init_lapack())
         self.lapack_ptr = lapack_ptr
 
-    cdef AbstractStatistics* create(self, LabelMatrix label_matrix):
+    cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix):
         cdef unique_ptr[AbstractStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
