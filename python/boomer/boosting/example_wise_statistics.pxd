@@ -47,13 +47,13 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
-    cdef cppclass ExampleWiseStatisticsImpl(AbstractExampleWiseStatistics):
+    cdef cppclass DenseExampleWiseStatisticsImpl(AbstractExampleWiseStatistics):
 
         # Constructors:
 
-        ExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                  shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
-                                  shared_ptr[Lapack] lapackPtr) except +
+        DenseExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+                                       shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                       shared_ptr[Lapack] lapackPtr) except +
 
         # Functions:
 

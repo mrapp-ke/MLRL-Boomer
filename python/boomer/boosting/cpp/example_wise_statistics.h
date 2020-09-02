@@ -19,7 +19,7 @@ namespace boosting {
 
     /**
      * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by an
-    `* object of type `ExampleWiseStatisticsImpl`.
+    `* object of type `DenseExampleWiseStatisticsImpl`.
      */
     class ExampleWiseRefinementSearchImpl : public AbstractRefinementSearch {
 
@@ -130,7 +130,7 @@ namespace boosting {
      * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied example-wise using dense data structures.
      */
-    class ExampleWiseStatisticsImpl : public AbstractExampleWiseStatistics {
+    class DenseExampleWiseStatisticsImpl : public AbstractExampleWiseStatistics {
 
         private:
 
@@ -171,13 +171,13 @@ namespace boosting {
              * @param currentScores     A pointer to an array of type `float64`, shape `(num_examples, num_labels`),
              *                          representing the currently predicted scores
              */
-            ExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                      std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                      std::shared_ptr<Lapack> lapackPtr,
-                                      std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                      float64* gradients, float64* hessians, float64* currentScores);
+            DenseExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+                                          std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
+                                          std::shared_ptr<Lapack> lapackPtr,
+                                          std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                          float64* gradients, float64* hessians, float64* currentScores);
 
-            ~ExampleWiseStatisticsImpl();
+            ~DenseExampleWiseStatisticsImpl();
 
             void resetCoveredStatistics() override;
 
@@ -190,7 +190,7 @@ namespace boosting {
     };
 
     /**
-     * A factory that allows to create new instances of the class `ExampleWiseStatisticsImpl`.
+     * A factory that allows to create new instances of the class `DenseExampleWiseStatisticsImpl`.
      */
     class ExampleWiseStatisticsFactoryImpl : public AbstractStatisticsFactory {
 
