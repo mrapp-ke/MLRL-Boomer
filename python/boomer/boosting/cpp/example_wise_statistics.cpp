@@ -139,7 +139,7 @@ AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(intp numStatistics)
 
 }
 
-ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(
+DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
@@ -162,7 +162,7 @@ ExampleWiseStatisticsImpl::ExampleWiseStatisticsImpl(
     totalSumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
 }
 
-ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
+DenseExampleWiseStatisticsImpl::~DenseExampleWiseStatisticsImpl() {
     free(currentScores_);
     free(gradients_);
     free(totalSumsOfGradients_);
@@ -170,14 +170,14 @@ ExampleWiseStatisticsImpl::~ExampleWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void ExampleWiseStatisticsImpl::resetCoveredStatistics() {
+void DenseExampleWiseStatisticsImpl::resetCoveredStatistics() {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     arrays::setToZeros(totalSumsOfGradients_, numLabels);
     intp numHessians = linalg::triangularNumber(numLabels);
     arrays::setToZeros(totalSumsOfHessians_, numHessians);
 }
 
-void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
     float64 signedWeight = remove ? -((float64) weight) : weight;
     intp numElements = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numElements;
@@ -198,14 +198,14 @@ void ExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint
     }
 }
 
-AbstractRefinementSearch* ExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new ExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, lapackPtr_, numPredictions, labelIndices, numLabels,
                                                gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
-void ExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void DenseExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = prediction->numPredictions_;
     const intp* labelIndices = prediction->labelIndices_;
@@ -270,6 +270,6 @@ AbstractStatistics* ExampleWiseStatisticsFactoryImpl::create() {
                                                     &hessians[r * numHessians]);
     }
 
-    return new ExampleWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_, labelMatrixPtr_, gradients,
-                                         hessians, currentScores);
+    return new DenseExampleWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_, labelMatrixPtr_,
+                                              gradients, hessians, currentScores);
 }
