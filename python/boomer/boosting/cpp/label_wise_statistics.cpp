@@ -80,12 +80,15 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
     return prediction_;
 }
 
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                                 std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                                 std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                                 float64* gradients, float64* hessians, float64* currentScores)
+LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(
+        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> defaultRuleEvaluationPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
+        float64* currentScores)
     : AbstractGradientStatistics(labelMatrixPtr.get()->numExamples_) {
     lossFunctionPtr_ = lossFunctionPtr;
+    defaultRuleEvaluationPtr_ = defaultRuleEvaluationPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
     gradients_ = gradients;
@@ -162,9 +165,11 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
 
 LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> defaultRuleEvaluationPtr,
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
+    defaultRuleEvaluationPtr_ = defaultRuleEvaluationPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
 }
@@ -204,6 +209,6 @@ AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
         }
     }
 
-    return new LabelWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, labelMatrixPtr_, gradients, hessians,
-                                       currentScores);
+    return new LabelWiseStatisticsImpl(lossFunctionPtr_, defaultRuleEvaluationPtr_, ruleEvaluationPtr_, labelMatrixPtr_,
+                                       gradients, hessians, currentScores);
 }

@@ -192,7 +192,7 @@ class Boomer(MLRuleLearner):
 
     def __create_statistics_factory(self, loss_function, rule_evaluation) -> StatisticsFactory:
         if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseStatisticsFactory(loss_function, rule_evaluation)
+            return LabelWiseStatisticsFactory(loss_function, rule_evaluation, rule_evaluation)
         else:
             return ExampleWiseStatisticsFactory(loss_function, rule_evaluation)
 
