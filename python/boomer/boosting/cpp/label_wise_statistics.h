@@ -96,7 +96,7 @@ namespace boosting {
         public:
 
             /**
-             * @param numStatistics The number of statistics.
+             * @param numStatistics The number of statistics
              */
             AbstractLabelWiseStatistics(intp numStatistics);
 
