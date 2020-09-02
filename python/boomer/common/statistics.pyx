@@ -19,3 +19,12 @@ cdef class StatisticsFactory:
         :return:                A pointer to an object of type `AbstractStatistics` that has been created
         """
         pass
+
+    cdef AbstractStatistics* copy_statistics(self, AbstractStatistics* statistics):
+        """
+        Creates a new instance of the class `AbstractStatistics` by copying an existing instance.
+
+        :param statistics:  A pointer to an object of type `AbstractStatistics` that should be copied
+        :return:            A pointer to an object of type `AbstractStatistics` that has been created
+        """
+        pass
