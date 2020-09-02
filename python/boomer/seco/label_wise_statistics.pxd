@@ -72,6 +72,13 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
+    cdef cppclass AbstractLabelWiseStatisticsFactory:
+
+        # Functions:
+
+        AbstractLabelWiseStatistics* create()
+
+
     cdef cppclass LabelWiseStatisticsFactoryImpl(AbstractStatisticsFactory):
 
         # Constructors:
