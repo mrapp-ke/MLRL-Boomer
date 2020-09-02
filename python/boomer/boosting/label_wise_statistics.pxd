@@ -33,7 +33,24 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
-    cdef cppclass LabelWiseStatisticsImpl(AbstractGradientStatistics):
+    cdef cppclass AbstractLabelWiseStatistics(AbstractGradientStatistics):
+
+        # Functions:
+
+        void resetSampledStatistics()
+
+        void addSampledStatistic(intp statisticIndex, uint32 weight)
+
+        void resetCoveredStatistics()
+
+        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
+
+        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
+
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
+
+
+    cdef cppclass LabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
 
         # Constructors:
 
