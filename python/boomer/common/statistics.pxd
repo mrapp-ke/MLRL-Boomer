@@ -59,4 +59,11 @@ cdef class StatisticsProvider:
 
     # Functions:
 
-    cdef AbstractStatistics* get(self, LabelMatrix label_matrix)
+    cdef AbstractStatistics* get(self)
+
+
+cdef class StatisticsProviderFactory:
+
+    # Functions:
+
+    cdef StatisticsProvider create(self, LabelMatrix label_matrix)
