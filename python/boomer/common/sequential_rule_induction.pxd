@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint8, uint32, intp
 from boomer.common.rules cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport RuleInduction
-from boomer.common.statistics cimport StatisticsFactory
+from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.head_refinement cimport HeadRefinement
 from boomer.common.input_data cimport LabelMatrix, FeatureMatrix
 from boomer.common.pruning cimport Pruning
@@ -13,7 +13,7 @@ cdef class SequentialRuleInduction:
 
     # Attributes:
 
-    cdef StatisticsFactory statistics_factory
+    cdef StatisticsProvider statistics_provider
 
     cdef RuleInduction rule_induction
 

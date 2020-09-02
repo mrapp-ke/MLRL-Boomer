@@ -12,9 +12,9 @@ from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluat
 from libcpp.memory cimport unique_ptr, dynamic_pointer_cast
 
 
-cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
+cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
     """
-    A factory that allows to create instances of the class `ExampleWiseStatisticsImpl`.
+    Provides access to an instance of the class `AbstractExampleWiseStatistics`.
     """
 
     def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluation default_rule_evaluation,
@@ -35,7 +35,7 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
         lapack_ptr.reset(init_lapack())
         self.lapack_ptr = lapack_ptr
 
-    cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix):
+    cdef AbstractStatistics* get(self, LabelMatrix label_matrix):
         cdef unique_ptr[AbstractExampleWiseStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
@@ -47,6 +47,3 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
 
         return statistics_factory_ptr.get().create()
-
-    cdef AbstractStatistics* copy_statistics(self, AbstractStatistics* statistics):
-        return statistics

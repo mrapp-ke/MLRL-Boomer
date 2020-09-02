@@ -55,10 +55,8 @@ cdef extern from "cpp/statistics.h" nogil:
         void applyPrediction(intp statisticIndex, Prediction* prediction)
 
 
-cdef class StatisticsFactory:
+cdef class StatisticsProvider:
 
     # Functions:
 
-    cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix)
-
-    cdef AbstractStatistics* copy_statistics(self, AbstractStatistics* statistics)
+    cdef AbstractStatistics* get(self, LabelMatrix label_matrix)
