@@ -4,8 +4,8 @@ from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatr
 from boomer.common.statistics cimport AbstractStatistics, StatisticsProvider, AbstractRefinementSearch, \
     AbstractDecomposableRefinementSearch
 from boomer.boosting.statistics cimport AbstractGradientStatistics
-from boomer.boosting.label_wise_losses cimport AbstractLabelWiseLoss
-from boomer.boosting.label_wise_rule_evaluation cimport AbstractLabelWiseRuleEvaluation
+from boomer.boosting.label_wise_losses cimport LabelWiseLoss, AbstractLabelWiseLoss
+from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, AbstractLabelWiseRuleEvaluation
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -96,11 +96,11 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     # Attributes:
 
-    cdef shared_ptr[AbstractLabelWiseLoss] loss_function_ptr
+    cdef LabelWiseLoss loss_function
 
-    cdef shared_ptr[AbstractLabelWiseRuleEvaluation] default_rule_evaluation_ptr
+    cdef LabelWiseRuleEvaluation default_rule_evaluation
 
-    cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr
+    cdef LabelWiseRuleEvaluation rule_evaluation
 
     # Functions:
 
