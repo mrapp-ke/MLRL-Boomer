@@ -141,10 +141,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             default_prediction_ptr.reset(head_refinement.find_head(NULL, NULL, NULL, refinement_search_ptr.get(), True,
                                                                    False))
 
+            statistics_provider.switch_rule_evaluation()
+
             for i in range(num_statistics):
                 statistics.applyPrediction(i, default_prediction_ptr.get())
 
             model_builder.set_default_rule(default_prediction_ptr.get())
+        else:
+            statistics_provider.switch_rule_evaluation()
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
