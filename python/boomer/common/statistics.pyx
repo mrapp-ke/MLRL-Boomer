@@ -15,7 +15,7 @@ cdef class StatisticsFactory:
         Creates a new instance of the class `AbstractStatistics`, representing the initial statistics as computed based
         on the ground truth labels.
 
-        :param:     A `LabelMatrix` that provides access to the labels of the training examples
-        :return:    A pointer to an object of type `AbstractStatistics` that has been created
+        :param label_matrix:    A `LabelMatrix` that provides access to the labels of the training examples
+        :return:                A pointer to an object of type `AbstractStatistics` that has been created
         """
         pass
