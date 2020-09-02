@@ -228,6 +228,14 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Predic
                                                 &gradients_[offset], &hessians_[statisticIndex * numHessians]);
 }
 
+AbstractExampleWiseStatisticsFactory::~AbstractExampleWiseStatisticsFactory() {
+
+}
+
+AbstractExampleWiseStatistics* AbstractExampleWiseStatisticsFactory::create() {
+    return NULL;
+}
+
 ExampleWiseStatisticsFactoryImpl::ExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,

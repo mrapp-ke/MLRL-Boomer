@@ -67,6 +67,13 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
+    cdef cppclass AbstractExampleWiseStatisticsFactory:
+
+        # Functions:
+
+        AbstractExampleWiseStatistics* create()
+
+
     cdef cppclass ExampleWiseStatisticsFactoryImpl(AbstractStatisticsFactory):
 
         # Constructors:
