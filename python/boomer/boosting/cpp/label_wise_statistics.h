@@ -95,10 +95,25 @@ namespace boosting {
 
         public:
 
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
             /**
-             * @param numStatistics The number of statistics
+             * @param numStatistics     The number of statistics
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
              */
-            AbstractLabelWiseStatistics(intp numStatistics);
+            AbstractLabelWiseStatistics(intp numStatistics,
+                                        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr);
+
+            /**
+             * Sets the implementation to be used for calculating the predictions, as well as corresponding quality
+             * scores, of rules.
+             *
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation` to be
+             *                          set
+             */
+            void setRuleEvaluation(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr);
 
     };
 
@@ -111,8 +126,6 @@ namespace boosting {
         private:
 
             std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
-
-            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 

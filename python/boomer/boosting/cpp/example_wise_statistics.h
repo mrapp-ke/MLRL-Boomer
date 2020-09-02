@@ -119,10 +119,25 @@ namespace boosting {
 
         public:
 
+            std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr_;
+
             /**
-             * @param numStatistics The number of statistics
+             * @param numStatistics     The number of statistics
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
              */
-            AbstractExampleWiseStatistics(intp numStatistics);
+            AbstractExampleWiseStatistics(intp numStatistics,
+                                          std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr);
+
+            /**
+             * Sets the implementation to be used for calculating the predictions, as well as corresponding quality
+             * scores, of rules.
+             *
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation` to be
+             *                          set
+             */
+            void setRuleEvaluation(std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr);
 
     };
 
@@ -135,8 +150,6 @@ namespace boosting {
         private:
 
             std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr_;
-
-            std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr_;
 
             std::shared_ptr<Lapack> lapackPtr_;
 
