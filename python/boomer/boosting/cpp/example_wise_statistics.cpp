@@ -135,9 +135,15 @@ PredictionCandidate* DenseExampleWiseRefinementSearchImpl::calculateExampleWiseP
     return prediction_;
 }
 
-AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(intp numStatistics)
+AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
+        intp numStatistics, std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr)
     : AbstractGradientStatistics(numStatistics) {
+    this->setRuleEvaluation(ruleEvaluationPtr);
+}
 
+void AbstractExampleWiseStatistics::setRuleEvaluation(
+        std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
@@ -145,9 +151,8 @@ DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
-    : AbstractExampleWiseStatistics(labelMatrixPtr.get()->numExamples_) {
+    : AbstractExampleWiseStatistics(labelMatrixPtr.get()->numExamples_, ruleEvaluationPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
     lapackPtr_ = lapackPtr;
     labelMatrixPtr_ = labelMatrixPtr;
     gradients_ = gradients;

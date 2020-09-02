@@ -80,17 +80,22 @@ LabelWisePredictionCandidate* DenseLabelWiseRefinementSearchImpl::calculateLabel
     return prediction_;
 }
 
-AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(intp numStatistics)
+AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
+        intp numStatistics, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
     : AbstractCoverageStatistics(numStatistics) {
+    this->setRuleEvaluation(ruleEvaluationPtr);
+}
 
+void AbstractLabelWiseStatistics::setRuleEvaluation(
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
         float64 sumUncoveredLabels, uint8* minorityLabels)
-    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
+    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_, ruleEvaluationPtr) {
     labelMatrixPtr_ = labelMatrixPtr;
     uncoveredLabels_ = uncoveredLabels;
     sumUncoveredLabels_ = sumUncoveredLabels;
