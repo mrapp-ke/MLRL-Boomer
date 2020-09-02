@@ -28,19 +28,17 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
         :param label_matrix:            A label matrix that provides random access to the labels of the training
                                         examples
         """
-        self.loss_function_ptr = loss_function.loss_function_ptr
-        self.default_rule_evaluation_ptr = default_rule_evaluation.rule_evaluation_ptr
-        self.rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
-        cdef shared_ptr[Lapack] lapack_ptr
-        lapack_ptr.reset(init_lapack())
-        self.lapack_ptr = lapack_ptr
+        self.loss_function = loss_function
+        self.default_rule_evaluation = default_rule_evaluation
+        self.rule_evaluation = rule_evaluation
 
     cdef AbstractStatistics* get(self, LabelMatrix label_matrix):
         cdef unique_ptr[AbstractExampleWiseStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory_ptr.reset(new DenseExampleWiseStatisticsFactoryImpl(
-                self.loss_function_ptr, self.default_rule_evaluation_ptr, self.lapack_ptr,
+                self.loss_function.loss_function_ptr, self.default_rule_evaluation.rule_evaluation_ptr,
+                shared_ptr[Lapack](init_lapack()),
                 dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
                     label_matrix.label_matrix_ptr)))
         else:
