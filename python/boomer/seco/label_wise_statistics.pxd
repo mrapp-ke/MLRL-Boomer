@@ -38,6 +38,8 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Functions:
 
+        void setRuleEvaluation(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr)
+
         void resetSampledStatistics()
 
         void addSampledStatistic(intp statisticIndex, uint32 weight)

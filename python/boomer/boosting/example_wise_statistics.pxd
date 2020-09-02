@@ -39,6 +39,8 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
+        void setRuleEvaluation(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr)
+
         void resetCoveredStatistics()
 
         void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
