@@ -174,7 +174,7 @@ AbstractLabelWiseStatistics* AbstractLabelWiseStatisticsFactory::create() {
     return NULL;
 }
 
-LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
+DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
@@ -183,11 +183,11 @@ LabelWiseStatisticsFactoryImpl::LabelWiseStatisticsFactoryImpl(
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-LabelWiseStatisticsFactoryImpl::~LabelWiseStatisticsFactoryImpl() {
+DenseLabelWiseStatisticsFactoryImpl::~DenseLabelWiseStatisticsFactoryImpl() {
 
 }
 
-AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
+AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // Class members
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();

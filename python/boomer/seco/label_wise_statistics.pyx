@@ -26,10 +26,10 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
         self.rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
 
     cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix):
-        cdef unique_ptr[AbstractStatisticsFactory] statistics_factory_ptr
+        cdef unique_ptr[AbstractLabelWiseStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
-            statistics_factory_ptr.reset(new LabelWiseStatisticsFactoryImpl(
+            statistics_factory_ptr.reset(new DenseLabelWiseStatisticsFactoryImpl(
                 self.default_rule_evaluation_ptr,
                 dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
                     label_matrix.label_matrix_ptr)))
