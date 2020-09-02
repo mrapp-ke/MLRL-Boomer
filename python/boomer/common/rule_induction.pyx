@@ -6,7 +6,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.statistics cimport AbstractRefinementSearch
+from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -41,20 +41,20 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, AbstractStatistics* statistics, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
                                   ModelBuilder model_builder):
         """
         Induces the default rule.
 
-        :param statistics:      A pointer to an object of type `AbstractStatistics` which should serve as the basis for
-                                inducing the default rule
-        :param head_refinement: The strategy that should be used to find the head of the default rule or None, if no
-                                default rule should be used
-        :param model_builder:   The builder, the default rule should be added to
+        :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
+                                    the basis for inducing the default rule
+        :param head_refinement:     The strategy that should be used to find the head of the default rule or None, if no
+                                    default rule should be used
+        :param model_builder:       The builder, the default rule should be added to
         """
         pass
 
-    cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
@@ -63,8 +63,8 @@ cdef class RuleInduction:
         """
         Induces a new classification rule.
 
-        :param statistics:              A pointer to an object of type `AbstractStatistics` which should serve as the
-                                        basis for inducing the new rule
+        :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
+                                        as the basis for inducing the new rule
         :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
@@ -122,13 +122,15 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, AbstractStatistics* statistics, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
+        cdef AbstractStatistics* statistics
         cdef intp num_statistics, i
 
         if head_refinement is not None:
+            statistics = statistics_provider.get()
             num_statistics = statistics.numStatistics_
             statistics.resetSampledStatistics()
 
@@ -144,12 +146,14 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
             model_builder.set_default_rule(default_prediction_ptr.get())
 
-    cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
+        # The statistics
+        cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
         cdef intp num_statistics = statistics.numStatistics_
         # The total number of features

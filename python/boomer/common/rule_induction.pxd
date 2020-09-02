@@ -3,7 +3,7 @@ from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32Array
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.input_data cimport FeatureMatrix
-from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
@@ -27,10 +27,10 @@ cdef class RuleInduction:
 
     # Functions:
 
-    cdef void induce_default_rule(self, AbstractStatistics* statistics, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
                                   ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
@@ -46,10 +46,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Functions:
 
-    cdef void induce_default_rule(self, AbstractStatistics* statistics, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
                                   ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, AbstractStatistics* statistics, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
