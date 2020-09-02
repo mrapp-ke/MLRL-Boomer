@@ -104,9 +104,9 @@ namespace boosting {
 
     /**
      * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
-     * applied label-wise.
+     * applied label-wise using dense data structures.
      */
-    class LabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
+    class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         private:
 
@@ -143,12 +143,12 @@ namespace boosting {
              * @param current_scores    A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
              *                          representing the currently predicted scores
              */
-            LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                    std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                    std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
-                                    float64* hessians, float64* current_scores);
+            DenseLabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                         float64* gradients, float64* hessians, float64* current_scores);
 
-            ~LabelWiseStatisticsImpl();
+            ~DenseLabelWiseStatisticsImpl();
 
             void resetCoveredStatistics() override;
 

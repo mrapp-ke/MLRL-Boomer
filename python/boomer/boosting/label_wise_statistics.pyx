@@ -13,7 +13,7 @@ from libcpp.memory cimport unique_ptr, dynamic_pointer_cast
 
 cdef class LabelWiseStatisticsFactory(StatisticsFactory):
     """
-    A factory that allows to create instances of the class `LabelWiseStatisticsImpl`.
+    A factory that allows to create instances of the class `DenseLabelWiseStatisticsImpl`.
     """
 
     def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluation default_rule_evaluation,
