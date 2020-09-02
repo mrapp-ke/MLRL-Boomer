@@ -85,10 +85,10 @@ AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(intp numStatistics)
 
 }
 
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                                 std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                                 float64* uncoveredLabels, float64 sumUncoveredLabels,
-                                                 uint8* minorityLabels)
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
+        float64 sumUncoveredLabels, uint8* minorityLabels)
     : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
@@ -104,21 +104,21 @@ LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWi
     confusionMatricesSubset_ = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
 }
 
-LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
+DenseLabelWiseStatisticsImpl::~DenseLabelWiseStatisticsImpl() {
     free(uncoveredLabels_);
     free(minorityLabels_);
     free(confusionMatricesTotal_);
     free(confusionMatricesSubset_);
 }
 
-void LabelWiseStatisticsImpl::resetSampledStatistics() {
+void DenseLabelWiseStatisticsImpl::resetSampledStatistics() {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
     arrays::setToZeros(confusionMatricesTotal_, numElements);
     arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
-void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
+void DenseLabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
 
@@ -138,14 +138,14 @@ void LabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 we
     }
 }
 
-void LabelWiseStatisticsImpl::resetCoveredStatistics() {
+void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
     // Reset confusion matrices to 0...
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     int numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
     arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
-void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
     float64 signedWeight = remove ? -((float64) weight) : weight;
@@ -164,14 +164,14 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
     }
 }
 
-AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numPredictions = labelIndices == NULL ? labelMatrixPtr_.get()->numLabels_ : numLabelIndices;
     return new LabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, labelMatrixPtr_,
                                              uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
                                              confusionMatricesSubset_);
 }
 
-void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     intp numPredictions = prediction->numPredictions_;
     const intp* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
@@ -252,6 +252,6 @@ AbstractStatistics* LabelWiseStatisticsFactoryImpl::create() {
         }
     }
 
-    return new LabelWiseStatisticsImpl(ruleEvaluationPtr_, labelMatrixPtr_, uncoveredLabels, sumUncoveredLabels,
-                                       minorityLabels);
+    return new DenseLabelWiseStatisticsImpl(ruleEvaluationPtr_, labelMatrixPtr_, uncoveredLabels, sumUncoveredLabels,
+                                            minorityLabels);
 }

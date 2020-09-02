@@ -18,7 +18,7 @@ namespace seco {
 
     /**
      * Allows to search for the best refinement of a rule based on the confusion matrices previously stored by an object
-     * of type `LabelWiseStatisticsImpl`.
+     * of type `DenseLabelWiseStatisticsImpl`.
      */
     class LabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
 
@@ -105,9 +105,10 @@ namespace seco {
     };
 
     /**
-     * Allows to store the elements of confusion matrices that are computed independently for each label.
+     * Allows to store the elements of confusion matrices that are computed independently for each label using dense
+     * data structures.
      */
-    class LabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
+    class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         private:
 
@@ -138,11 +139,11 @@ namespace seco {
              *                              whether rules should predict individual labels as relevant (1) or irrelevant
              *                              (0)
              */
-            LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                    std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                    float64* uncoveredLabels, float64 sumUncoveredLabels, uint8* minorityLabels);
+            DenseLabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                         float64* uncoveredLabels, float64 sumUncoveredLabels, uint8* minorityLabels);
 
-            ~LabelWiseStatisticsImpl();
+            ~DenseLabelWiseStatisticsImpl();
 
             void resetSampledStatistics() override;
 
@@ -159,7 +160,7 @@ namespace seco {
     };
 
     /**
-     * A factory that allows to create new instances of the class `LabelWiseStatisticsImpl`.
+     * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
      */
     class LabelWiseStatisticsFactoryImpl : public AbstractStatisticsFactory {
 
