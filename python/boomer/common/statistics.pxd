@@ -61,6 +61,8 @@ cdef class StatisticsProvider:
 
     cdef AbstractStatistics* get(self)
 
+    cdef void switch_rule_evaluation(self)
+
 
 cdef class StatisticsProviderFactory:
 
