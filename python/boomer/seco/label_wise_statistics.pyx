@@ -25,7 +25,7 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
         self.default_rule_evaluation_ptr = default_rule_evaluation.rule_evaluation_ptr
         self.rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
 
-    cdef AbstractStatistics* create(self, LabelMatrix label_matrix):
+    cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix):
         cdef unique_ptr[AbstractStatisticsFactory] statistics_factory_ptr
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):

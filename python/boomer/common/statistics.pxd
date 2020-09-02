@@ -70,4 +70,4 @@ cdef class StatisticsFactory:
 
     # Functions:
 
-    cdef AbstractStatistics* create(self, LabelMatrix label_matrix)
+    cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix)
