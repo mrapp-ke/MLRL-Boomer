@@ -14,14 +14,15 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
-    cdef cppclass ExampleWiseRefinementSearchImpl(AbstractRefinementSearch):
+    cdef cppclass DenseExampleWiseRefinementSearchImpl(AbstractRefinementSearch):
 
         # Constructors:
 
-        ExampleWiseRefinementSearchImpl(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
-                                        shared_ptr[Lapack] lapackPtr, intp numPredictions, const intp* labelIndices,
-                                        intp numLabels, const float64* gradients, const float64* totalSumsOfGradients,
-                                        const float64* hessians, const float64* totalSumsOfHessians) except +
+        DenseExampleWiseRefinementSearchImpl(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                             shared_ptr[Lapack] lapackPtr, intp numPredictions,
+                                             const intp* labelIndices, intp numLabels, const float64* gradients,
+                                             const float64* totalSumsOfGradients, const float64* hessians,
+                                             const float64* totalSumsOfHessians) except +
 
         # Functions:
 
