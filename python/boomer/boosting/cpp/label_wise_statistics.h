@@ -88,10 +88,25 @@ namespace boosting {
     };
 
     /**
+     * An abstract base class for all classes that store gradients and Hessians that are calculated according to a
+     * differentiable loss function that is applied label-wise.
+     */
+    class AbstractLabelWiseStatistics : public AbstractGradientStatistics {
+
+        public:
+
+            /**
+             * @param numStatistics The number of statistics.
+             */
+            AbstractLabelWiseStatistics(intp numStatistics);
+
+    };
+
+    /**
      * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied label-wise.
      */
-    class LabelWiseStatisticsImpl : public AbstractGradientStatistics {
+    class LabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         private:
 

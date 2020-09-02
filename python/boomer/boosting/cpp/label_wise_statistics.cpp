@@ -80,11 +80,16 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
     return prediction_;
 }
 
+AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(intp numStatistics)
+    : AbstractGradientStatistics(numStatistics) {
+
+}
+
 LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
                                                  std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                  std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                  float64* gradients, float64* hessians, float64* currentScores)
-    : AbstractGradientStatistics(labelMatrixPtr.get()->numExamples_) {
+    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
