@@ -18,6 +18,14 @@ cdef class StatisticsProvider:
         """
         pass
 
+    cdef void switch_rule_evaluation(self):
+        """
+        Allows to switch the implementation that is used for calculating the predictions of rules, as well as
+        corresponding quality scores, from the one that was iniatally used for the default rule to another that will be
+        used for all remaining rules.
+        """
+        pass
+
 
 cdef class StatisticsProviderFactory:
     """
