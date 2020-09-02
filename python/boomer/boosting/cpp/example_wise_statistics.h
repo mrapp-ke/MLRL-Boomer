@@ -112,10 +112,25 @@ namespace boosting {
     };
 
     /**
-     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
-     * applied example-wise.
+     * An abstract base class for all classes that allow to store gradients and Hessians that are calculated according
+     * to a differentiable loss function that is applied example-wise.
      */
-    class ExampleWiseStatisticsImpl : public AbstractGradientStatistics {
+    class AbstractExampleWiseStatistics : public AbstractGradientStatistics {
+
+        public:
+
+            /**
+             * @param numStatistics The number of statistics
+             */
+            AbstractExampleWiseStatistics(intp numStatistics);
+
+    };
+
+    /**
+     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
+     * applied example-wise using dense data structures.
+     */
+    class ExampleWiseStatisticsImpl : public AbstractExampleWiseStatistics {
 
         private:
 
