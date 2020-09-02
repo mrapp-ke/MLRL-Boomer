@@ -18,9 +18,9 @@ namespace boosting {
 
     /**
      * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by an
-     * object of type `LabelWiseStatisticsImpl`.
+     * object of type `DenseLabelWiseStatisticsImpl`.
      */
-    class LabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
+    class DenseLabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
 
         private:
 
@@ -72,12 +72,12 @@ namespace boosting {
              *                              the sum of the Hessians of all examples, which should be considered by the
              *                              search, for each label
              */
-            LabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                          intp numPredictions, const intp* labelIndices, intp numLabels,
-                                          const float64* gradients, const float64* totalSumsOfGradients,
-                                          const float64* hessians, const float64* totalSumsOfHessians);
+            DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                               intp numPredictions, const intp* labelIndices, intp numLabels,
+                                               const float64* gradients, const float64* totalSumsOfGradients,
+                                               const float64* hessians, const float64* totalSumsOfHessians);
 
-            ~LabelWiseRefinementSearchImpl();
+            ~DenseLabelWiseRefinementSearchImpl();
 
             void updateSearch(intp statisticIndex, uint32 weight) override;
 
