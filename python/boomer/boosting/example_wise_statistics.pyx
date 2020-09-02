@@ -47,3 +47,6 @@ cdef class ExampleWiseStatisticsFactory(StatisticsFactory):
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
 
         return statistics_factory_ptr.get().create()
+
+    cdef AbstractStatistics* copy_statistics(self, AbstractStatistics* statistics):
+        return statistics

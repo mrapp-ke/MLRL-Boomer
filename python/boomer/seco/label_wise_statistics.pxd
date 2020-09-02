@@ -82,3 +82,5 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
     # Functions:
 
     cdef AbstractStatistics* create_initial_statistics(self, LabelMatrix label_matrix)
+
+    cdef AbstractStatistics* copy_statistics(self, AbstractStatistics* statistics)
