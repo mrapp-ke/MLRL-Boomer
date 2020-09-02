@@ -38,7 +38,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         LabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
-                                shared_ptr[AbstractLabelWiseRuleEvaluation] defaultRuleEvaluationPtr,
                                 shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
         # Functions:
@@ -61,7 +60,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         LabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
-                                       shared_ptr[AbstractLabelWiseRuleEvaluation] defaultRuleEvaluationPtr,
                                        shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
                                        shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
 
