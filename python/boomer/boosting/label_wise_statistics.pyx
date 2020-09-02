@@ -34,7 +34,7 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory_ptr.reset(new LabelWiseStatisticsFactoryImpl(
-                self.loss_function_ptr, self.rule_evaluation_ptr,
+                self.loss_function_ptr, self.default_rule_evaluation_ptr,
                 dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
                     label_matrix.label_matrix_ptr)))
         else:
