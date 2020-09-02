@@ -5,10 +5,8 @@ Provides classes that allow to sequentially induce models that consist of severa
 """
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport Rule, RuleList
-from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
-
-from libcpp.memory cimport unique_ptr
 
 
 cdef class SequentialRuleInduction:
@@ -17,14 +15,14 @@ cdef class SequentialRuleInduction:
     `ModelBuilder`.
     """
 
-    def __cinit__(self, StatisticsProvider statistics_provider, RuleInduction rule_induction,
+    def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, RuleInduction rule_induction,
                   HeadRefinement default_rule_head_refinement, HeadRefinement head_refinement, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                   intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
-        :param statistics_provider:             The provider that provides access to the statistics which serve as the
-                                                basis for learning rules
+        :param statistics_provider_factory:     A factory that allows to create a provider that provides access to the
+                                                statistics which serve as the basis for learning rules
         :param rule_induction:                  The algorithm that should be used to induce rules
         :param default_rule_head_refinement:    The strategy that should be used to find the head of the default rule
         :param head_refinement:                 The strategy that should be used to find the heads of rules
@@ -53,7 +51,7 @@ cdef class SequentialRuleInduction:
                                                 the number of refinements should not be restricted
         :param num_threads:                     The number of threads to be used for training. Must be at least 1
         """
-        self.statistics_provider = statistics_provider
+        self.statistics_provider_factory = statistics_provider_factory
         self.rule_induction = rule_induction
         self.default_rule_head_refinement = default_rule_head_refinement
         self.head_refinement = head_refinement
@@ -82,7 +80,8 @@ cdef class SequentialRuleInduction:
         :param model_builder:           The builder that should be used to build the model
         :return:                        A model that contains the induced classification rules
         """
-        cdef StatisticsProvider statistics_provider = self.statistics_provider
+        # Class members
+        cdef StatisticsProviderFactory statistics_provider_factory = self.statistics_provider_factory
         cdef RuleInduction rule_induction = self.rule_induction
         cdef HeadRefinement default_rule_head_refinement = self.default_rule_head_refinement
         cdef HeadRefinement head_refinement = self.head_refinement
@@ -96,22 +95,22 @@ cdef class SequentialRuleInduction:
         cdef intp max_conditions = self.max_conditions
         cdef intp max_head_refinements = self.max_head_refinements
         cdef int num_threads = self.num_threads
+        # The random number generator to be used
         cdef RNG rng = RNG.__new__(RNG, random_state)
         # The total number of labels
         cdef intp num_labels = label_matrix.num_labels
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef intp num_rules = 1
         # Temporary variables
-        cdef unique_ptr[AbstractStatistics] statistics_ptr
         cdef bint success
 
         # Induce default rule...
-        statistics_ptr.reset(statistics_provider.get(label_matrix))
-        rule_induction.induce_default_rule(statistics_ptr.get(), default_rule_head_refinement, model_builder)
+        cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
+        rule_induction.induce_default_rule(statistics_provider.get(), default_rule_head_refinement, model_builder)
 
-        while __should_continue(stopping_criteria, statistics_ptr.get(), num_rules):
+        while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             # Induce a new rule...
-            success = rule_induction.induce_rule(statistics_ptr.get(), nominal_attribute_mask, feature_matrix,
+            success = rule_induction.induce_rule(statistics_provider.get(), nominal_attribute_mask, feature_matrix,
                                                  num_labels, head_refinement, label_sub_sampling, instance_sub_sampling,
                                                  feature_sub_sampling, pruning, post_processor, min_coverage,
                                                  max_conditions, max_head_refinements, num_threads, rng, model_builder)

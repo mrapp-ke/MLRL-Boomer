@@ -1,8 +1,8 @@
 from boomer.common._arrays cimport intp, uint8, uint32, float64
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
-from boomer.common.statistics cimport AbstractStatistics, StatisticsProvider, AbstractRefinementSearch, \
-    AbstractDecomposableRefinementSearch
+from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics, \
+    AbstractRefinementSearch, AbstractDecomposableRefinementSearch
 from boomer.seco.statistics cimport AbstractCoverageStatistics
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, AbstractLabelWiseRuleEvaluation
 
@@ -91,7 +91,38 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         AbstractLabelWiseStatistics* create()
 
 
+cdef class LabelWiseStatisticsFactory:
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractLabelWiseStatisticsFactory] statistics_factory_ptr
+
+    # Functions:
+
+    cdef AbstractLabelWiseStatistics* create(self)
+
+
+cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
+
+    # Functions:
+
+    cdef AbstractLabelWiseStatistics* create(self)
+
+
 cdef class LabelWiseStatisticsProvider(StatisticsProvider):
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractLabelWiseStatistics] statistics_ptr
+
+    cdef LabelWiseRuleEvaluation rule_evaluation
+
+    # Functions:
+
+    cdef AbstractStatistics* get(self)
+
+
+cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
 
     # Attributes:
 
@@ -101,4 +132,4 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     # Functions:
 
-    cdef AbstractStatistics* get(self, LabelMatrix label_matrix)
+    cdef StatisticsProvider create(self, LabelMatrix label_matrix)
