@@ -75,6 +75,8 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
 
     # Attributes:
 
+    cdef shared_ptr[AbstractLabelWiseRuleEvaluation] default_rule_evaluation_ptr
+
     cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr
 
     # Functions:

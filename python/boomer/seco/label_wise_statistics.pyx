@@ -15,11 +15,14 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
     A factory that allows to create instances of the class `LabelWiseStatisticsImpl`.
     """
 
-    def __cinit__(self, LabelWiseRuleEvaluation rule_evaluation):
+    def __cinit__(self, LabelWiseRuleEvaluation default_rule_evaluation, LabelWiseRuleEvaluation rule_evaluation):
         """
-        :param rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as well as
-                                corresponding quality scores, of rules
+        :param default_rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
+                                        well as corresponding quality scores, of the default rule
+        :param rule_evaluation:         The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
+                                        well as corresponding quality scores, of rules
         """
+        self.default_rule_evaluation_ptr = default_rule_evaluation.rule_evaluation_ptr
         self.rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
 
     cdef AbstractStatistics* create(self, LabelMatrix label_matrix):
@@ -27,7 +30,8 @@ cdef class LabelWiseStatisticsFactory(StatisticsFactory):
 
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory_ptr.reset(new LabelWiseStatisticsFactoryImpl(
-                self.rule_evaluation_ptr, dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
+                self.default_rule_evaluation_ptr,
+                dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](
                     label_matrix.label_matrix_ptr)))
         else:
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
