@@ -21,7 +21,7 @@ namespace boosting {
      * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by an
     `* object of type `DenseExampleWiseStatisticsImpl`.
      */
-    class ExampleWiseRefinementSearchImpl : public AbstractRefinementSearch {
+    class DenseExampleWiseRefinementSearchImpl : public AbstractRefinementSearch {
 
         private:
 
@@ -93,13 +93,13 @@ namespace boosting {
              *                              Hessians of all examples, which should be considered by the
              *                              search
              */
-            ExampleWiseRefinementSearchImpl(std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                            std::shared_ptr<Lapack> lapackPtr, intp numPredictions,
-                                            const intp* labelIndices, intp numLabels, const float64* gradients,
-                                            const float64* totalSumsOfGradients, const float64* hessians,
-                                            const float64* totalSumsOfHessians);
+            DenseExampleWiseRefinementSearchImpl(std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
+                                                 std::shared_ptr<Lapack> lapackPtr, intp numPredictions,
+                                                 const intp* labelIndices, intp numLabels, const float64* gradients,
+                                                 const float64* totalSumsOfGradients, const float64* hessians,
+                                                 const float64* totalSumsOfHessians);
 
-            ~ExampleWiseRefinementSearchImpl();
+            ~DenseExampleWiseRefinementSearchImpl();
 
             void updateSearch(intp statisticIndex, uint32 weight) override;
 

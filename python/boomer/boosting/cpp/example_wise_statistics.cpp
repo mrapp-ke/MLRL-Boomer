@@ -6,7 +6,7 @@
 using namespace boosting;
 
 
-ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(
+DenseExampleWiseRefinementSearchImpl::DenseExampleWiseRefinementSearchImpl(
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         intp numPredictions, const intp* labelIndices, intp numLabels, const float64* gradients,
         const float64* totalSumsOfGradients, const float64* hessians, const float64* totalSumsOfHessians) {
@@ -38,7 +38,7 @@ ExampleWiseRefinementSearchImpl::ExampleWiseRefinementSearchImpl(
     dspmvTmpArray_ = NULL;
 }
 
-ExampleWiseRefinementSearchImpl::~ExampleWiseRefinementSearchImpl() {
+DenseExampleWiseRefinementSearchImpl::~DenseExampleWiseRefinementSearchImpl() {
     free(sumsOfGradients_);
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
@@ -52,7 +52,7 @@ ExampleWiseRefinementSearchImpl::~ExampleWiseRefinementSearchImpl() {
     delete prediction_;
 }
 
-void ExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
+void DenseExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
     // Add the gradients and Hessians of the example at the given index (weighted by the given weight) to the current
     // sum of gradients and Hessians...
     intp offsetGradients = statisticIndex * numLabels_;
@@ -72,7 +72,7 @@ void ExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 w
     }
 }
 
-void ExampleWiseRefinementSearchImpl::resetSearch() {
+void DenseExampleWiseRefinementSearchImpl::resetSearch() {
     intp numHessians = linalg::triangularNumber(numPredictions_);
 
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
@@ -96,8 +96,8 @@ void ExampleWiseRefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePredictionCandidate* ExampleWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
-                                                                                            bool accumulated) {
+LabelWisePredictionCandidate* DenseExampleWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
+                                                                                                 bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
@@ -106,7 +106,8 @@ LabelWisePredictionCandidate* ExampleWiseRefinementSearchImpl::calculateLabelWis
     return prediction_;
 }
 
-PredictionCandidate* ExampleWiseRefinementSearchImpl::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
+PredictionCandidate* DenseExampleWiseRefinementSearchImpl::calculateExampleWisePrediction(bool uncovered,
+                                                                                          bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
 
@@ -201,8 +202,9 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex,
 AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new ExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, lapackPtr_, numPredictions, labelIndices, numLabels,
-                                               gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
+    return new DenseExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, lapackPtr_, numPredictions, labelIndices,
+                                                    numLabels, gradients_, totalSumsOfGradients_, hessians_,
+                                                    totalSumsOfHessians_);
 }
 
 void DenseExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
