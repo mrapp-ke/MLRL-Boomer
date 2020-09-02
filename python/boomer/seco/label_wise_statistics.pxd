@@ -12,16 +12,16 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
-    cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
+    cdef cppclass DenseLabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
 
         # Constructors:
 
-        LabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr, intp numLabels,
-                                      const intp* labelIndices,
-                                      shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
-                                      const float64* uncoveredLabels, const uint8* minorityLabels,
-                                      const float64* confusionMatricesTotal,
-                                      const float64* confusionMatricesSubset) except +
+        DenseLabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr, intp numLabels,
+                                          const intp* labelIndices,
+                                          shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
+                                          const float64* uncoveredLabels, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal,
+                                          const float64* confusionMatricesSubset) except +
 
         # Functions:
 

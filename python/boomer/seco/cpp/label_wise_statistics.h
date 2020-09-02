@@ -20,7 +20,7 @@ namespace seco {
      * Allows to search for the best refinement of a rule based on the confusion matrices previously stored by an object
      * of type `DenseLabelWiseStatisticsImpl`.
      */
-    class LabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
+    class DenseLabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
 
         private:
 
@@ -72,14 +72,14 @@ namespace seco {
              *                                  matrix that takes into account all all examples, which are covered by
              *                                  the previous refinement of the rule, for each label
              */
-            LabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                          intp numPredictions, const intp* labelIndices,
-                                          std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                          const float64* uncoveredLabels, const uint8* minorityLabels,
-                                          const float64* confusionMatricesTotal,
-                                          const float64* confusionMatricesSubset);
+            DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                               intp numPredictions, const intp* labelIndices,
+                                               std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                               const float64* uncoveredLabels, const uint8* minorityLabels,
+                                               const float64* confusionMatricesTotal,
+                                               const float64* confusionMatricesSubset);
 
-            ~LabelWiseRefinementSearchImpl();
+            ~DenseLabelWiseRefinementSearchImpl();
 
             void updateSearch(intp statisticIndex, uint32 weight) override;
 

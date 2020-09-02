@@ -6,7 +6,7 @@
 using namespace seco;
 
 
-LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
+DenseLabelWiseRefinementSearchImpl::DenseLabelWiseRefinementSearchImpl(
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, intp numPredictions,
         const intp* labelIndices, std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
         const float64* uncoveredLabels, const uint8* minorityLabels, const float64* confusionMatricesTotal,
@@ -27,13 +27,13 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
 }
 
-LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
+DenseLabelWiseRefinementSearchImpl::~DenseLabelWiseRefinementSearchImpl() {
     free(confusionMatricesCovered_);
     free(accumulatedConfusionMatricesCovered_);
     delete prediction_;
 }
 
-void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
+void DenseLabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
 
@@ -51,7 +51,7 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
     }
 }
 
-void LabelWiseRefinementSearchImpl::resetSearch() {
+void DenseLabelWiseRefinementSearchImpl::resetSearch() {
     // Allocate an array for storing the accumulated confusion matrices, if necessary...
     if (accumulatedConfusionMatricesCovered_ == NULL) {
         accumulatedConfusionMatricesCovered_ =
@@ -71,8 +71,8 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
-                                                                                          bool accumulated) {
+LabelWisePredictionCandidate* DenseLabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
+                                                                                               bool accumulated) {
     float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
     ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, minorityLabels_, confusionMatricesTotal_,
                                                            confusionMatricesSubset_, confusionMatricesCovered,
@@ -166,9 +166,9 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, u
 
 AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numPredictions = labelIndices == NULL ? labelMatrixPtr_.get()->numLabels_ : numLabelIndices;
-    return new LabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, labelMatrixPtr_,
-                                             uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
-                                             confusionMatricesSubset_);
+    return new DenseLabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, labelMatrixPtr_,
+                                                  uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
+                                                  confusionMatricesSubset_);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
