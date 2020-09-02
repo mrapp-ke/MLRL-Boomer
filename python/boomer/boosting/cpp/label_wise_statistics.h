@@ -97,6 +97,8 @@ namespace boosting {
 
             std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
 
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> defaultRuleEvaluationPtr_;
+
             std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
@@ -114,21 +116,27 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractLabelWiseLoss`, representing the
-             *                          loss function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
-             *                          used for calculating the predictions, as well as corresponding quality scores,
-             *                          of rules
-             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
-             *                          provides random access to the labels of the training examples
-             * @param gradients         A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                          representing the gradients
-             * @param hessians          A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                          representing the Hessians
-             * @param current_scores    A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                          representing the currently predicted scores
+             * @param lossFunctionPtr           A shared pointer to an object of type `AbstractLabelWiseLoss`,
+             *                                  representing the loss function to be used for calculating gradients and
+             *                                  Hessians
+             * @param defaultRuleEvaluationPtr  A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`,
+             *                                  to be used for calculating the predictions, as well as corresponding
+             *                                  quality scores, of the default rule
+             * @param ruleEvaluationPtr         A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`,
+             *                                  to be used for calculating the predictions, as well as corresponding
+             *                                  quality scores, of rules
+             * @param labelMatrixPtr            A shared pointer to an object of type `AbstractRandomAccessLabelMatrix`
+             *                                  that provides random access to the labels of the training examples
+             * @param gradients                 A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels)`, representing the gradients
+             * @param hessians                  A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels)`, representing the Hessians
+             * @param current_scores            A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels)`, representing the currently predicted
+             *                                  scores
              */
             LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                    std::shared_ptr<AbstractLabelWiseRuleEvaluation> defaultRuleEvaluationPtr,
                                     std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                     std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
                                     float64* hessians, float64* current_scores);
@@ -154,6 +162,8 @@ namespace boosting {
 
             std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
 
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> defaultRuleEvaluationPtr_;
+
             std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
@@ -161,15 +171,20 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractLabelWiseLoss`, representing the
-             *                          loss function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
-             *                          used for calculating the predictions, as well as corresponding quality scores,
-             *                          of rules
-             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
-             *                          provides random access to the labels of the training examples
+             * @param lossFunctionPtr           A shared pointer to an object of type `AbstractLabelWiseLoss`,
+             *                                  representing the loss function to be used for calculating gradients and
+             *                                  Hessians
+             * @param defaultRuleEvaluationPtr  A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`,
+             *                                  to be used for calculating the predictions, as well as corresponding
+             *                                  quality scores, of the default rule
+             * @param ruleEvaluationPtr         A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`,
+             *                                  to be used for calculating the predictions, as well as corresponding
+             *                                  quality scores, of rules
+             * @param labelMatrixPtr            A shared pointer to an object of type `AbstractRandomAccessLabelMatrix`
+             *                                  that provides random access to the labels of the training examples
              */
             LabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                           std::shared_ptr<AbstractLabelWiseRuleEvaluation> defaultRuleEvaluationPtr,
                                            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                            std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
 
