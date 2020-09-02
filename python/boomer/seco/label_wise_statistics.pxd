@@ -51,11 +51,11 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
-    cdef cppclass LabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
+    cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
 
         # Constructors:
 
-        LabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
+        DenseLabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
         # Functions:
 
