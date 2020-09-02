@@ -13,14 +13,14 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
+    cdef cppclass DenseLabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
 
         # Constructors:
 
-        LabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
-                                      intp numPredictions, const intp* labelIndices, intp numLabels,
-                                      const float64* gradients, const float64* totalSumsOfGradients,
-                                      const float64* hessians, const float64* totalSumsOfHessians) except +
+        DenseLabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
+                                           intp numPredictions, const intp* labelIndices, intp numLabels,
+                                           const float64* gradients, const float64* totalSumsOfGradients,
+                                           const float64* hessians, const float64* totalSumsOfHessians) except +
 
         # Functions:
 
