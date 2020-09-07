@@ -23,7 +23,7 @@ struct IndexedFloat32 {
  */
 struct IndexedFloat32Array {
     IndexedFloat32* data;
-    intp num_elements;
+    intp numElements;
 };
 
 /**

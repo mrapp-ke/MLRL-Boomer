@@ -127,7 +127,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
 
         # Update the given struct...
-        indexed_array.num_elements = num_elements
+        indexed_array.numElements = num_elements
         indexed_array.data = sorted_array
 
 
@@ -185,5 +185,5 @@ cdef class CscFeatureMatrix(FeatureMatrix):
             qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
 
         # Update the given struct...
-        indexed_array.num_elements = num_elements
+        indexed_array.numElements = num_elements
         indexed_array.data = sorted_array

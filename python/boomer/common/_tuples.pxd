@@ -14,7 +14,7 @@ cdef extern from "cpp/tuples.h" nogil:
 
     cdef struct IndexedFloat32Array:
         IndexedFloat32* data
-        intp num_elements
+        intp numElements
 
     cdef struct IndexedFloat64:
         intp index

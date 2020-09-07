@@ -129,7 +129,7 @@ cdef class IREP(Pruning):
             # corresponds to...
             indexed_array = dereference(sorted_feature_values_map)[feature_index]
             indexed_values = dereference(indexed_array).data
-            num_indexed_values = dereference(indexed_array).num_elements
+            num_indexed_values = dereference(indexed_array).numElements
 
             # Start a new search when processing a new condition...
             refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
