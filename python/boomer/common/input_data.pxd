@@ -8,12 +8,7 @@ from libcpp.memory cimport shared_ptr
 cdef extern from "cpp/input_data.h" nogil:
 
     cdef cppclass AbstractLabelMatrix:
-
-        # Attributes:
-
-        intp numExamples_
-
-        intp numLabels_
+        pass
 
 
     cdef cppclass AbstractRandomAccessLabelMatrix(AbstractLabelMatrix):
