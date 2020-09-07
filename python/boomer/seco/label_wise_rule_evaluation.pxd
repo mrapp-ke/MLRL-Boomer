@@ -1,7 +1,5 @@
 from boomer.common._arrays cimport uint8, intp, float64
-from boomer.common._predictions cimport Prediction, LabelWisePredictionCandidate
-from boomer.common.input_data cimport AbstractLabelMatrix
-from boomer.common.rule_evaluation cimport DefaultRuleEvaluation, AbstractDefaultRuleEvaluation
+from boomer.common._predictions cimport LabelWisePredictionCandidate
 from boomer.seco.heuristics cimport AbstractHeuristic
 
 from libcpp cimport bool
@@ -10,18 +8,20 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
 
-    cdef cppclass LabelWiseDefaultRuleEvaluationImpl(AbstractDefaultRuleEvaluation):
+    cdef cppclass AbstractLabelWiseRuleEvaluation:
 
         # Functions:
 
-        Prediction* calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) except +
+        void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+                                          const float64* confusionMatricesTotal, const float64* confusionMatricesSubset,
+                                          const float64* confusionMatricesCovered, bool uncovered,
+                                          LabelWisePredictionCandidate* prediction) except +
 
-
-    cdef cppclass LabelWiseRuleEvaluationImpl:
+    cdef cppclass HeuristicLabelWiseRuleEvaluationImpl(AbstractLabelWiseRuleEvaluation):
 
         # Constructors:
 
-        LabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic) except +
+        HeuristicLabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic, bool predictMajority) except +
 
         # Functions:
 
@@ -31,12 +31,12 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
                                           LabelWisePredictionCandidate* prediction) except +
 
 
-cdef class LabelWiseDefaultRuleEvaluation(DefaultRuleEvaluation):
-    pass
-
-
 cdef class LabelWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef shared_ptr[LabelWiseRuleEvaluationImpl] rule_evaluation_ptr
+    cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr
+
+
+cdef class HeuristicLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
+    pass

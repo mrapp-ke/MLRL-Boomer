@@ -15,12 +15,15 @@ cdef extern from "cpp/input_data.h" nogil:
 
         intp numLabels_
 
+
+    cdef cppclass AbstractRandomAccessLabelMatrix(AbstractLabelMatrix):
+
         # Functions:
 
         uint8 getLabel(intp exampleIndex, intp labelIndex)
 
 
-    cdef cppclass DenseLabelMatrixImpl(AbstractLabelMatrix):
+    cdef cppclass DenseLabelMatrixImpl(AbstractRandomAccessLabelMatrix):
 
         # Constructors:
 
@@ -31,7 +34,7 @@ cdef extern from "cpp/input_data.h" nogil:
         uint8 getLabel(intp exampleIndex, intp labelIndex)
 
 
-    cdef cppclass DokLabelMatrixImpl(AbstractLabelMatrix):
+    cdef cppclass DokLabelMatrixImpl(AbstractRandomAccessLabelMatrix):
 
         # Constructors:
 
@@ -46,18 +49,22 @@ cdef class LabelMatrix:
 
     # Attributes:
 
+    cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
+
     cdef readonly intp num_examples
 
     cdef readonly intp num_labels
 
-    cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
 
-
-cdef class DenseLabelMatrix(LabelMatrix):
+cdef class RandomAccessLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class DokLabelMatrix(LabelMatrix):
+cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
+    pass
+
+
+cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     pass
 
 

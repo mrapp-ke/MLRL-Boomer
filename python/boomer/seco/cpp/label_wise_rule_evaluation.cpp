@@ -5,48 +5,39 @@
 using namespace seco;
 
 
-LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
+AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
 
 }
 
-Prediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
-    // The number of examples
-    intp numExamples = labelMatrix->numExamples_;
-    // The number of labels
-    intp numLabels = labelMatrix->numLabels_;
-    // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
-    float64 threshold = numExamples / 2.0;
-    // An array that stores the scores that are predicted by the default rule
-    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
+void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+                                                                   const float64* confusionMatricesTotal,
+                                                                   const float64* confusionMatricesSubset,
+                                                                   const float64* confusionMatricesCovered,
+                                                                   bool uncovered,
+                                                                   LabelWisePredictionCandidate* prediction) {
 
-    for (intp c = 0; c < numLabels; c++) {
-        intp numPositiveLabels = 0;
-
-        for (intp r = 0; r < numExamples; r++) {
-            uint8 trueLabel = labelMatrix->getLabel(r, c);
-
-            if (trueLabel) {
-                numPositiveLabels++;
-            }
-        }
-
-        predictedScores[c] = (numPositiveLabels > threshold ? 1 : 0);
-    }
-
-    return new Prediction(numLabels, NULL, predictedScores);
 }
 
-LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr) {
+HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(
+        std::shared_ptr<AbstractHeuristic> heuristicPtr, bool predictMajority) {
     heuristicPtr_ = heuristicPtr;
+    predictMajority_ = predictMajority;
 }
 
-void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
-                                                               const float64* confusionMatricesTotal,
-                                                               const float64* confusionMatricesSubset,
-                                                               const float64* confusionMatricesCovered, bool uncovered,
-                                                               LabelWisePredictionCandidate* prediction) {
+HeuristicLabelWiseRuleEvaluationImpl::~HeuristicLabelWiseRuleEvaluationImpl() {
+
+}
+
+void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                        const uint8* minorityLabels,
+                                                                        const float64* confusionMatricesTotal,
+                                                                        const float64* confusionMatricesSubset,
+                                                                        const float64* confusionMatricesCovered,
+                                                                        bool uncovered,
+                                                                        LabelWisePredictionCandidate* prediction) {
     // Class members
     AbstractHeuristic* heuristic = heuristicPtr_.get();
+    bool predictMajority = predictMajority_;
     // The number of labels to predict for
     intp numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
@@ -60,7 +51,8 @@ void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* label
         intp l = labelIndices != NULL ? labelIndices[c] : c;
 
         // Set the score to be predicted for the current label...
-        float64 score = (float64) minorityLabels[l];
+        uint8 minorityLabel = minorityLabels[l];
+        float64 score = (float64) (predictMajority ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
         predictedScores[c] = score;
 
         // Calculate the quality score for the current label...
