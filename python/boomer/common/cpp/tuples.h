@@ -34,3 +34,36 @@ struct IndexedFloat64 {
     intp index;
     float64 value;
 };
+
+
+namespace tuples {
+
+    /**
+     * Compares the values of two structs of type `IndexedFloat32`.
+     *
+     * @param a A pointer to the first struct
+     * @param b A pointer to the second struct
+     * @return  -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
+     *          equal, or 1 if the value of the first struct is greater than the value of the second struct
+     */
+    static inline int compareIndexedFloat32(const void* a, const void* b) {
+        float32 v1 = ((IndexedFloat32*) a)->value;
+        float32 v2 = ((IndexedFloat32*) b)->value;
+        return v1 < v2 ? -1 : (v1 == v2 ? 0 : 1);
+    }
+
+    /**
+     * Compares the values of two structs of type `IndexedFloat64`.
+     *
+     * @param a A pointer to the first struct
+     * @param b A pointer to the second struct
+     * @return  -1 if the value of the first struct is smaller than the value of the second struct, 0 if both values are
+     *          equal, or 1 if the value of the first struct is greater than the value of the second struct
+     */
+    static inline int compareIndexedFloat64(const void* a, const void* b) {
+        float64 v1 = ((IndexedFloat64*) a)->value;
+        float64 v2 = ((IndexedFloat64*) b)->value;
+        return v1 < v2 ? -1 : (v1 == v2 ? 0 : 1);
+    }
+
+}
