@@ -1,11 +1,12 @@
 from boomer.common._arrays cimport uint32, intp, float64
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
-from boomer.common.input_data cimport AbstractLabelMatrix
-from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
+from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
+from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics, \
+    AbstractRefinementSearch
 from boomer.boosting._lapack cimport Lapack
-from boomer.boosting.statistics cimport GradientStatistics, AbstractGradientStatistics
-from boomer.boosting.example_wise_losses cimport AbstractExampleWiseLoss
-from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluationImpl
+from boomer.boosting.statistics cimport AbstractGradientStatistics
+from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, AbstractExampleWiseLoss
+from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, AbstractExampleWiseRuleEvaluation
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -13,14 +14,15 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
-    cdef cppclass ExampleWiseRefinementSearchImpl(AbstractRefinementSearch):
+    cdef cppclass DenseExampleWiseRefinementSearchImpl(AbstractRefinementSearch):
 
         # Constructors:
 
-        ExampleWiseRefinementSearchImpl(shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
-                                        shared_ptr[Lapack] lapackPtr, intp numPredictions, const intp* labelIndices,
-                                        intp numLabels, const float64* gradients, const float64* totalSumsOfGradients,
-                                        const float64* hessians, const float64* totalSumsOfHessians) except +
+        DenseExampleWiseRefinementSearchImpl(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                             shared_ptr[Lapack] lapackPtr, intp numPredictions,
+                                             const intp* labelIndices, intp numLabels, const float64* gradients,
+                                             const float64* totalSumsOfGradients, const float64* hessians,
+                                             const float64* totalSumsOfHessians) except +
 
         # Functions:
 
@@ -33,17 +35,11 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
-    cdef cppclass ExampleWiseStatisticsImpl(AbstractGradientStatistics):
-
-        # Constructors:
-
-        ExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                  shared_ptr[ExampleWiseRuleEvaluationImpl] ruleEvaluationPtr,
-                                  shared_ptr[Lapack] lapackPtr) except +
+    cdef cppclass AbstractExampleWiseStatistics(AbstractGradientStatistics):
 
         # Functions:
 
-        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr, Prediction* defaultPrediction)
+        void setRuleEvaluation(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr)
 
         void resetCoveredStatistics()
 
@@ -54,5 +50,87 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
-cdef class ExampleWiseStatistics(GradientStatistics):
-    pass
+    cdef cppclass DenseExampleWiseStatisticsImpl(AbstractExampleWiseStatistics):
+
+        # Constructors:
+
+        DenseExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+                                       shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                       shared_ptr[Lapack] lapackPtr) except +
+
+        # Functions:
+
+        void resetCoveredStatistics()
+
+        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
+
+        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
+
+        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
+
+
+    cdef cppclass AbstractExampleWiseStatisticsFactory:
+
+        # Functions:
+
+        AbstractExampleWiseStatistics* create()
+
+
+    cdef cppclass DenseExampleWiseStatisticsFactoryImpl(AbstractExampleWiseStatisticsFactory):
+
+        # Constructors:
+
+        DenseExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+                                              shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                              shared_ptr[Lapack] lapackPtr,
+                                              shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+
+        # Functions:
+
+        AbstractExampleWiseStatistics* create()
+
+
+cdef class ExampleWiseStatisticsFactory:
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractExampleWiseStatisticsFactory] statistics_factory_ptr
+
+    # Functions:
+
+    cdef AbstractExampleWiseStatistics* create(self)
+
+
+cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
+
+    # Functions:
+
+    cdef AbstractExampleWiseStatistics* create(self)
+
+
+cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractExampleWiseStatistics] statistics_ptr
+
+    cdef ExampleWiseRuleEvaluation rule_evaluation
+
+    # Functions:
+
+    cdef AbstractStatistics* get(self)
+
+
+cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
+
+    # Attributes:
+
+    cdef ExampleWiseLoss loss_function
+
+    cdef ExampleWiseRuleEvaluation default_rule_evaluation
+
+    cdef ExampleWiseRuleEvaluation rule_evaluation
+
+    # Functions:
+
+    cdef StatisticsProvider create(self, LabelMatrix label_matrix)

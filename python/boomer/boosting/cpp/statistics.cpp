@@ -3,6 +3,11 @@
 using namespace boosting;
 
 
+AbstractGradientStatistics::AbstractGradientStatistics(intp numStatistics)
+    : AbstractStatistics(numStatistics) {
+
+}
+
 void AbstractGradientStatistics::resetSampledStatistics() {
     // This function is equivalent to the function `resetCoveredStatistics`...
     this->resetCoveredStatistics();

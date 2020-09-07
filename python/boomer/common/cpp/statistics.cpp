@@ -27,12 +27,11 @@ PredictionCandidate* AbstractDecomposableRefinementSearch::calculateExampleWiseP
     return (PredictionCandidate*) this->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-AbstractStatistics::~AbstractStatistics() {
-
+AbstractStatistics::AbstractStatistics(intp numStatistics) {
+    numStatistics_ = numStatistics;
 }
 
-void AbstractStatistics::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
-                                                Prediction* defaultPrediction) {
+AbstractStatistics::~AbstractStatistics() {
 
 }
 
