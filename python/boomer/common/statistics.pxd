@@ -14,7 +14,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateSearch(intp statisticIndex, uint32 weight)
 
-        void resetSearch() nogil
+        void resetSearch()
 
         LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
