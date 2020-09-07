@@ -10,10 +10,6 @@ cdef extern from "cpp/predictions.h" nogil:
 
     cdef cppclass Prediction:
 
-        # Constructors:
-
-        Prediction(intp numPredictions, intp* labelIndices, float64* predictedScores) except +
-
         # Attributes:
 
         intp numPredictions_
@@ -36,11 +32,6 @@ cdef extern from "cpp/predictions.h" nogil:
 
 
     cdef cppclass LabelWisePredictionCandidate(PredictionCandidate):
-
-        # Constructors:
-
-        LabelWisePredictionCandidate(intp numPredictions, intp* labelIndices, float64* predictedScores,
-                                     float64* qualityScores, float64 overallQualityScore) except +
 
         # Attributes:
 
