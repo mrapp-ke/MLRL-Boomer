@@ -10,12 +10,17 @@ AbstractLabelMatrix::~AbstractLabelMatrix() {
 
 }
 
-uint8 AbstractLabelMatrix::getLabel(intp exampleIndex, intp labelIndex) {
+AbstractRandomAccessLabelMatrix::AbstractRandomAccessLabelMatrix(intp numExamples, intp numLabels)
+    : AbstractLabelMatrix(numExamples, numLabels) {
+
+}
+
+uint8 AbstractRandomAccessLabelMatrix::getLabel(intp exampleIndex, intp labelIndex) {
     return 0;
 }
 
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(intp numExamples, intp numLabels, const uint8* y)
-    : AbstractLabelMatrix(numExamples, numLabels) {
+    : AbstractRandomAccessLabelMatrix(numExamples, numLabels) {
     y_ = y;
 }
 
@@ -29,7 +34,7 @@ uint8 DenseLabelMatrixImpl::getLabel(intp exampleIndex, intp labelIndex) {
 }
 
 DokLabelMatrixImpl::DokLabelMatrixImpl(intp numExamples, intp numLabels, std::shared_ptr<BinaryDokMatrix> dokMatrixPtr)
-    : AbstractLabelMatrix(numExamples, numLabels) {
+    : AbstractRandomAccessLabelMatrix(numExamples, numLabels) {
     dokMatrixPtr_ = dokMatrixPtr;
 }
 

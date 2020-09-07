@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport AbstractLabelMatrix
+from boomer.common.input_data cimport AbstractRandomAccessLabelMatrix
 
 from libcpp.memory cimport shared_ptr
 
@@ -10,7 +10,7 @@ cdef extern from "cpp/example_wise_losses.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void calculateGradientsAndHessians(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+        void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix, intp exampleIndex,
                                            float64* predictedScores, float64* gradients, float64* hessians)
 
 
@@ -18,7 +18,7 @@ cdef extern from "cpp/example_wise_losses.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void calculateGradientsAndHessians(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
+        void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix, intp exampleIndex,
                                            float64* predictedScores, float64* gradients, float64* hessians)
 
 

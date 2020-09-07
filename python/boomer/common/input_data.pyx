@@ -20,7 +20,14 @@ cdef class LabelMatrix:
     pass
 
 
-cdef class DenseLabelMatrix(LabelMatrix):
+cdef class RandomAccessLabelMatrix(LabelMatrix):
+    """
+    A wrapper for the abstract C++ class `AbstractRandomAccessLabelMatrix`.
+    """
+    pass
+
+
+cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
     """
     A wrapper for the C++ class `DenseLabelMatrix`.
     """
@@ -38,7 +45,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
         self.num_labels = num_labels
 
 
-cdef class DokLabelMatrix(LabelMatrix):
+cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     """
     A wrapper for the C++ class `DokLabelMatrix`.
     """

@@ -5,17 +5,15 @@ Provides classes that implement algorithms for inducing individual classificatio
 """
 from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
 from boomer.common._predictions cimport Prediction, PredictionCandidate
-from boomer.common.input_data cimport AbstractLabelMatrix
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.statistics cimport Statistics, AbstractRefinementSearch
-from boomer.common.rule_evaluation cimport DefaultRuleEvaluation
+from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
 
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
-from libcpp.memory cimport unique_ptr, make_shared
+from libcpp.memory cimport unique_ptr
 
 from cython.operator cimport dereference, postincrement
 from cython.parallel cimport prange
@@ -43,23 +41,30 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
+                                  ModelBuilder model_builder):
         """
         Induces the default rule.
 
-        :param label_matrix:    A `LabelMatrix` that provides random access to the labels of the training examples
-        :param model_builder:   The builder, the default rule should be added to
+        :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
+                                    the basis for inducing the default rule
+        :param head_refinement:     The strategy that should be used to find the head of the default rule or None, if no
+                                    default rule should be used
+        :param model_builder:       The builder, the default rule should be added to
         """
         pass
 
-    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder):
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
+                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
+        :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
+                                        as the basis for inducing the new rule
         :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
@@ -101,19 +106,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     the conditions are considered.
     """
 
-    def __cinit__(self, DefaultRuleEvaluation default_rule_evaluation, Statistics statistics):
-        """
-        :param default_rule_evaluation: The `DefaultRuleEvaluation` to be used for calculating the scores that are
-                                        predicted by the default rule or None, if no default rule should be induced
-        :param statistics:              The `Statistics` to be used for storing the statistics, which serve as the basis
-                                        for learning new rules or refining existing ones
-        """
-        if default_rule_evaluation is None:
-            self.default_rule_evaluation_ptr = <shared_ptr[AbstractDefaultRuleEvaluation]>NULL
-        else:
-            self.default_rule_evaluation_ptr = default_rule_evaluation.default_rule_evaluation_ptr
-
-        self.statistics_ptr = statistics.statistics_ptr
+    def __cinit__(self):
         self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
 
     def __dealloc__(self):
@@ -129,32 +122,44 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, LabelMatrix label_matrix, ModelBuilder model_builder):
-        cdef shared_ptr[AbstractDefaultRuleEvaluation] default_rule_evaluation_ptr = self.default_rule_evaluation_ptr
-        cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
-        cdef AbstractStatistics* statistics = self.statistics_ptr.get()
-        cdef Prediction* default_prediction = NULL
-        cdef AbstractDefaultRuleEvaluation* default_rule_evaluation
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
+                                  ModelBuilder model_builder):
+        cdef unique_ptr[PredictionCandidate] default_prediction_ptr
+        cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
+        cdef AbstractStatistics* statistics
+        cdef intp num_statistics, i
 
-        try:
-            if default_rule_evaluation_ptr != NULL:
-                default_rule_evaluation = default_rule_evaluation_ptr.get()
-                default_prediction = default_rule_evaluation.calculateDefaultPrediction(label_matrix_ptr.get())
+        if head_refinement is not None:
+            statistics = statistics_provider.get()
+            num_statistics = statistics.numStatistics_
+            statistics.resetSampledStatistics()
 
-            statistics.applyDefaultPrediction(label_matrix_ptr, default_prediction)
-            model_builder.set_default_rule(default_prediction)
-        finally:
-            del default_prediction
+            for i in range(num_statistics):
+                statistics.addSampledStatistic(i, 1)
 
-    cdef bint induce_rule(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix, intp num_labels,
-                          HeadRefinement head_refinement, LabelSubSampling label_sub_sampling,
-                          InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
-                          Pruning pruning, PostProcessor post_processor, intp min_coverage, intp max_conditions,
-                          intp max_head_refinements, int num_threads, RNG rng, ModelBuilder model_builder):
-        # The statistics, which serve as the basis for learning the new rule
-        cdef AbstractStatistics* statistics = self.statistics_ptr.get()
+            refinement_search_ptr.reset(statistics.beginSearch(0, NULL))
+            default_prediction_ptr.reset(head_refinement.find_head(NULL, NULL, NULL, refinement_search_ptr.get(), True,
+                                                                   False))
+
+            statistics_provider.switch_rule_evaluation()
+
+            for i in range(num_statistics):
+                statistics.applyPrediction(i, default_prediction_ptr.get())
+
+            model_builder.set_default_rule(default_prediction_ptr.get())
+        else:
+            statistics_provider.switch_rule_evaluation()
+
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
+                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                          FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          ModelBuilder model_builder):
+        # The statistics
+        cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
-        cdef intp num_statistics = feature_matrix.num_examples
+        cdef intp num_statistics = statistics.numStatistics_
         # The total number of features
         cdef intp num_features = feature_matrix.num_features
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
