@@ -55,10 +55,6 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
                                               shared_ptr[Lapack] lapackPtr,
                                               shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
 
-        # Functions:
-
-        AbstractExampleWiseStatistics* create()
-
 
 cdef class ExampleWiseStatisticsFactory:
 
