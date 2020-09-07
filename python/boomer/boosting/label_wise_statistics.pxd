@@ -22,34 +22,12 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
                                            const float64* gradients, const float64* totalSumsOfGradients,
                                            const float64* hessians, const float64* totalSumsOfHessians) except +
 
-        # Functions:
-
-        void updateSearch(intp statisticIndex, uint32 weight)
-
-        void resetSearch()
-
-        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
-
-        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
-
 
     cdef cppclass AbstractLabelWiseStatistics(AbstractGradientStatistics):
 
         # Functions:
 
         void setRuleEvaluation(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr)
-
-        void resetSampledStatistics()
-
-        void addSampledStatistic(intp statisticIndex, uint32 weight)
-
-        void resetCoveredStatistics()
-
-        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
-
-        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
-
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
     cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
@@ -58,20 +36,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         DenseLabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
                                      shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
-
-        # Functions:
-
-        void resetSampledStatistics()
-
-        void addSampledStatistic(intp statisticIndex, uint32 weight)
-
-        void resetCoveredStatistics()
-
-        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
-
-        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
-
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
 
 
     cdef cppclass AbstractLabelWiseStatisticsFactory:
@@ -88,10 +52,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         DenseLabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
                                             shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
                                             shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
-
-        # Functions:
-
-        AbstractLabelWiseStatistics* create()
 
 
 cdef class LabelWiseStatisticsFactory:
