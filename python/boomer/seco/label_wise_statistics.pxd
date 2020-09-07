@@ -14,12 +14,12 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Constructors:
 
-        DenseLabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr, intp numLabels,
-                                          const intp* labelIndices,
-                                          shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
-                                          const float64* uncoveredLabels, const uint8* minorityLabels,
-                                          const float64* confusionMatricesTotal,
-                                          const float64* confusionMatricesSubset) except +
+        DenseLabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr, 
+                                           intp numLabels, const intp* labelIndices,
+                                           shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
+                                           const float64* uncoveredLabels, const uint8* minorityLabels,
+                                           const float64* confusionMatricesTotal,
+                                           const float64* confusionMatricesSubset) except +
 
 
     cdef cppclass AbstractLabelWiseStatistics(AbstractCoverageStatistics):
