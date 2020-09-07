@@ -18,13 +18,13 @@ namespace boosting {
 
     /**
      * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by an
-     * object of type `LabelWiseStatisticsImpl`.
+     * object of type `DenseLabelWiseStatisticsImpl`.
      */
-    class LabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
+    class DenseLabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
 
         private:
 
-            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
             intp numPredictions_;
 
@@ -53,8 +53,8 @@ namespace boosting {
         public:
 
             /**
-             * @param ruleEvaluationPtr     A shared pointer to an object of type `LabelWiseRuleEvaluationImpl` to be
-             *                              used for calculating the predictions, as well as corresponding quality
+             * @param ruleEvaluationPtr     A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation` to
+             *                              be used for calculating the predictions, as well as corresponding quality
              *                              scores of rules
              * @param numPredictions        The number of labels to be considered by the search
              * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
@@ -72,12 +72,12 @@ namespace boosting {
              *                              the sum of the Hessians of all examples, which should be considered by the
              *                              search, for each label
              */
-            LabelWiseRefinementSearchImpl(std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr,
-                                          intp numPredictions, const intp* labelIndices, intp numLabels,
-                                          const float64* gradients, const float64* totalSumsOfGradients,
-                                          const float64* hessians, const float64* totalSumsOfHessians);
+            DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                               intp numPredictions, const intp* labelIndices, intp numLabels,
+                                               const float64* gradients, const float64* totalSumsOfGradients,
+                                               const float64* hessians, const float64* totalSumsOfHessians);
 
-            ~LabelWiseRefinementSearchImpl();
+            ~DenseLabelWiseRefinementSearchImpl();
 
             void updateSearch(intp statisticIndex, uint32 weight) override;
 
@@ -88,18 +88,46 @@ namespace boosting {
     };
 
     /**
-     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
-     * applied label-wise.
+     * An abstract base class for all classes that store gradients and Hessians that are calculated according to a
+     * differentiable loss function that is applied label-wise.
      */
-    class LabelWiseStatisticsImpl : public AbstractGradientStatistics {
+    class AbstractLabelWiseStatistics : public AbstractGradientStatistics {
+
+        public:
+
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
+            /**
+             * @param numStatistics     The number of statistics
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
+             */
+            AbstractLabelWiseStatistics(intp numStatistics,
+                                        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr);
+
+            /**
+             * Sets the implementation to be used for calculating the predictions, as well as corresponding quality
+             * scores, of rules.
+             *
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation` to be
+             *                          set
+             */
+            void setRuleEvaluation(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr);
+
+    };
+
+    /**
+     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
+     * applied label-wise using dense data structures.
+     */
+    class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         private:
 
             std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
 
-            std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr_;
-
-            std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr_;
+            std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
             float64* currentScores_;
 
@@ -116,17 +144,24 @@ namespace boosting {
             /**
              * @param lossFunctionPtr   A shared pointer to an object of type `AbstractLabelWiseLoss`, representing the
              *                          loss function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `LabelWiseRuleEvaluationImpl`, to be used
-             *                          for calculating the predictions, as well as corresponding quality scores, of
-             *                          rules
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
+             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                          provides random access to the labels of the training examples
+             * @param gradients         A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                          representing the gradients
+             * @param hessians          A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                          representing the Hessians
+             * @param current_scores    A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+             *                          representing the currently predicted scores
              */
-            LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                    std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr);
+            DenseLabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+                                         float64* gradients, float64* hessians, float64* current_scores);
 
-            ~LabelWiseStatisticsImpl();
-
-            void applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
-                                        Prediction* defaultPrediction) override;
+            ~DenseLabelWiseStatisticsImpl();
 
             void resetCoveredStatistics() override;
 
@@ -135,6 +170,59 @@ namespace boosting {
             AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
 
             void applyPrediction(intp statisticIndex, Prediction* prediction) override;
+
+    };
+
+    /**
+     * An abstract base class for all classes that allow to create new instances of the class
+     * `AbstractLabelWiseStatistics`.
+     */
+    class AbstractLabelWiseStatisticsFactory {
+
+        public:
+
+            virtual ~AbstractLabelWiseStatisticsFactory();
+
+            /**
+             * Creates a new instance of the class `AbstractLabelWiseStatistics`.
+             *
+             * @return A pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+             */
+            virtual AbstractLabelWiseStatistics* create();
+
+    };
+
+    /**
+     * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
+     */
+    class DenseLabelWiseStatisticsFactoryImpl : public AbstractLabelWiseStatisticsFactory {
+
+        private:
+
+            std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
+
+            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
+            std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
+
+        public:
+
+            /**
+             * @param lossFunctionPtr   A shared pointer to an object of type `AbstractLabelWiseLoss`, representing the
+             *                          loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
+             *                          used for calculating the predictions, as well as corresponding quality scores,
+             *                          of rules
+             * @param labelMatrixPtr    A shared pointer to an object of type `AbstractRandomAccessLabelMatrix` that
+             *                          provides random access to the labels of the training examples
+             */
+            DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                                std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                                std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr);
+
+            ~DenseLabelWiseStatisticsFactoryImpl();
+
+            AbstractLabelWiseStatistics* create() override;
 
     };
 

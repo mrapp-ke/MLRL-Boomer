@@ -1,60 +1,38 @@
 #include "label_wise_rule_evaluation.h"
 #include "linalg.h"
 #include <cstddef>
-#include <utility>
+#include <math.h>
 
 using namespace boosting;
 
 
-LabelWiseDefaultRuleEvaluationImpl::LabelWiseDefaultRuleEvaluationImpl(
-        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr, float64 l2RegularizationWeight) {
-    lossFunctionPtr_ = lossFunctionPtr;
+AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
+
+}
+
+void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                   const float64* totalSumsOfGradients,
+                                                                   float64* sumsOfGradients,
+                                                                   const float64* totalSumsOfHessians,
+                                                                   float64* sumsOfHessians, bool uncovered,
+                                                                   LabelWisePredictionCandidate* prediction) {
+
+}
+
+RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
     l2RegularizationWeight_ = l2RegularizationWeight;
 }
 
-LabelWiseDefaultRuleEvaluationImpl::~LabelWiseDefaultRuleEvaluationImpl() {
+RegularizedLabelWiseRuleEvaluationImpl::~RegularizedLabelWiseRuleEvaluationImpl() {
 
 }
 
-Prediction* LabelWiseDefaultRuleEvaluationImpl::calculateDefaultPrediction(AbstractLabelMatrix* labelMatrix) {
-    // Class members
-    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
-    float64 l2RegularizationWeight = l2RegularizationWeight_;
-    // The number of examples
-    intp numExamples = labelMatrix->numExamples_;
-    // The number of labels
-    intp numLabels = labelMatrix->numLabels_;
-    // An array that stores the scores that are predicted by the default rule
-    float64* predictedScores = (float64*) malloc(numLabels * sizeof(float64));
-
-    for (intp c = 0; c < numLabels; c++) {
-        float64 sumOfGradients = 0;
-        float64 sumOfHessians = 0;
-
-        for (intp r = 0; r < numExamples; r++) {
-            // Calculate the gradient and Hessian for the current example and label...
-            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrix, r, c, 0);
-            sumOfGradients += pair.first;
-            sumOfHessians += pair.second;
-        }
-
-        // Calculate the score to be predicted by the default rule for the current label...
-        predictedScores[c] = -sumOfGradients / (sumOfHessians + l2RegularizationWeight);
-    }
-
-    return new Prediction(numLabels, NULL, predictedScores);
-}
-
-LabelWiseRuleEvaluationImpl::LabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
-    l2RegularizationWeight_ = l2RegularizationWeight;
-}
-
-void LabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
-                                                               const float64* totalSumsOfGradients,
-                                                               float64* sumsOfGradients,
-                                                               const float64* totalSumsOfHessians,
-                                                               float64* sumsOfHessians, bool uncovered,
-                                                               LabelWisePredictionCandidate* prediction) {
+void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+                                                                          const float64* totalSumsOfGradients,
+                                                                          float64* sumsOfGradients,
+                                                                          const float64* totalSumsOfHessians,
+                                                                          float64* sumsOfHessians, bool uncovered,
+                                                                          LabelWisePredictionCandidate* prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of labels to predict for

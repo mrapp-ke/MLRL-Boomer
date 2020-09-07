@@ -5,10 +5,10 @@
 using namespace boosting;
 
 
-LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
-        std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr, intp numPredictions, const intp* labelIndices,
-        intp numLabels, const float64* gradients, const float64* totalSumsOfGradients, const float64* hessians,
-        const float64* totalSumsOfHessians) {
+DenseLabelWiseRefinementSearchImpl::DenseLabelWiseRefinementSearchImpl(
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, intp numPredictions,
+        const intp* labelIndices, intp numLabels, const float64* gradients, const float64* totalSumsOfGradients,
+        const float64* hessians, const float64* totalSumsOfHessians) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
@@ -30,7 +30,7 @@ LabelWiseRefinementSearchImpl::LabelWiseRefinementSearchImpl(
     prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
 }
 
-LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
+DenseLabelWiseRefinementSearchImpl::~DenseLabelWiseRefinementSearchImpl() {
     free(sumsOfGradients_);
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
@@ -38,7 +38,7 @@ LabelWiseRefinementSearchImpl::~LabelWiseRefinementSearchImpl() {
     delete prediction_;
 }
 
-void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
+void DenseLabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the current sum of gradients and Hessians...
     intp offset = statisticIndex * numLabels_;
@@ -51,7 +51,7 @@ void LabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 wei
     }
 }
 
-void LabelWiseRefinementSearchImpl::resetSearch() {
+void DenseLabelWiseRefinementSearchImpl::resetSearch() {
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
     if (accumulatedSumsOfGradients_ == NULL) {
         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
@@ -70,8 +70,8 @@ void LabelWiseRefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
-                                                                                          bool accumulated) {
+LabelWisePredictionCandidate* DenseLabelWiseRefinementSearchImpl::calculateLabelWisePrediction(bool uncovered,
+                                                                                               bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_, totalSumsOfGradients_, sumsOfGradients,
@@ -80,18 +80,37 @@ LabelWisePredictionCandidate* LabelWiseRefinementSearchImpl::calculateLabelWiseP
     return prediction_;
 }
 
-LabelWiseStatisticsImpl::LabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                                 std::shared_ptr<LabelWiseRuleEvaluationImpl> ruleEvaluationPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
-    currentScores_ = NULL;
-    gradients_ = NULL;
-    totalSumsOfGradients_ = NULL;
-    hessians_ = NULL;
-    totalSumsOfHessians_ = NULL;
+AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
+        intp numStatistics, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractGradientStatistics(numStatistics) {
+    this->setRuleEvaluation(ruleEvaluationPtr);
 }
 
-LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
+void AbstractLabelWiseStatistics::setRuleEvaluation(
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+}
+
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
+        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
+        float64* currentScores)
+    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_, ruleEvaluationPtr) {
+    lossFunctionPtr_ = lossFunctionPtr;
+    labelMatrixPtr_ = labelMatrixPtr;
+    gradients_ = gradients;
+    hessians_ = hessians;
+    currentScores_ = currentScores;
+    // The number of labels
+    intp numLabels = labelMatrixPtr.get()->numLabels_;
+    // An array that stores the column-wise sums of the matrix of gradients
+    totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
+    // An array that stores the column-wise sums of the matrix of hessians
+    totalSumsOfHessians_ = (float64*) malloc(numLabels * sizeof(float64));
+}
+
+DenseLabelWiseStatisticsImpl::~DenseLabelWiseStatisticsImpl() {
     free(currentScores_);
     free(gradients_);
     free(totalSumsOfGradients_);
@@ -99,60 +118,13 @@ LabelWiseStatisticsImpl::~LabelWiseStatisticsImpl() {
     free(totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::applyDefaultPrediction(std::shared_ptr<AbstractLabelMatrix> labelMatrixPtr,
-                                                     Prediction* defaultPrediction) {
-    // Class members
-    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
-    // The number of examples
-    intp numExamples = labelMatrixPtr.get()->numExamples_;
-    // The number of labels
-    intp numLabels = labelMatrixPtr.get()->numLabels_;
-    // A matrix that stores the currently predicted scores for each example and label
-    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // A matrix that stores the gradients for each example and label
-    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // An array that stores the column-wise sums of the matrix of gradients
-    float64* totalSumsOfGradients = (float64*) malloc(numLabels * sizeof(float64));
-    // A matrix that stores the Hessians for each example and label
-    float64* hessians = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // An array that stores the column-wise sums of the matrix of hessians
-    float64* totalSumsOfHessians = (float64*) malloc(numLabels * sizeof(float64));
-    // An array that stores the predictions of the default rule or NULL, if no default rule is used
-    float64* predictedScores = defaultPrediction != NULL ? defaultPrediction->predictedScores_ : NULL;
-
-    for (intp c = 0; c < numLabels; c++) {
-        float64 predictedScore = predictedScores != NULL ? predictedScores[c] : 0;
-
-        for (intp r = 0; r < numExamples; r++) {
-            intp i = r * numLabels + c;
-
-            // Calculate the gradient and Hessian for the current example and label...
-            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrixPtr.get(), r, c,
-                                                                                         predictedScore);
-            gradients[i] = pair.first;
-            hessians[i] = pair.second;
-
-            // Store the score that is predicted by the default rule for the current example and label...
-            currentScores[i] = predictedScore;
-        }
-    }
-
-    // Store class members...
-    labelMatrixPtr_ = labelMatrixPtr;
-    currentScores_ = currentScores;
-    gradients_ = gradients;
-    totalSumsOfGradients_ = totalSumsOfGradients;
-    hessians_ = hessians;
-    totalSumsOfHessians_ = totalSumsOfHessians;
-}
-
-void LabelWiseStatisticsImpl::resetCoveredStatistics() {
+void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     arrays::setToZeros(totalSumsOfGradients_, numLabels);
     arrays::setToZeros(totalSumsOfHessians_, numLabels);
 }
 
-void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
     float64 signedWeight = remove ? -((float64) weight) : weight;
@@ -166,14 +138,14 @@ void LabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32
     }
 }
 
-AbstractRefinementSearch* LabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new LabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels, gradients_,
-                                             totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
+    return new DenseLabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels,
+                                                  gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
-void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = prediction->numPredictions_;
     const intp* labelIndices = prediction->labelIndices_;
@@ -197,4 +169,60 @@ void LabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* p
         gradients_[i] = pair.first;
         hessians_[i] = pair.second;
     }
+}
+
+AbstractLabelWiseStatisticsFactory::~AbstractLabelWiseStatisticsFactory() {
+
+}
+
+AbstractLabelWiseStatistics* AbstractLabelWiseStatisticsFactory::create() {
+    return NULL;
+}
+
+DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
+        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+    lossFunctionPtr_ = lossFunctionPtr;
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+    labelMatrixPtr_ = labelMatrixPtr;
+}
+
+DenseLabelWiseStatisticsFactoryImpl::~DenseLabelWiseStatisticsFactoryImpl() {
+
+}
+
+AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
+    // Class members
+    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
+    AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
+    // The number of examples
+    intp numExamples = labelMatrix->numExamples_;
+    // The number of labels
+    intp numLabels = labelMatrix->numLabels_;
+    // A matrix that stores the gradients for each example and label
+    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // A matrix that stores the Hessians for each example and label
+    float64* hessians = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    // A matrix that stores the currently predicted scores for each example and label
+    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+
+    for (intp r = 0; r < numExamples; r++) {
+        intp offset = r * numLabels;
+
+        for (intp c = 0; c < numLabels; c++) {
+            intp i = offset + c;
+
+            // Calculate the initial gradient and Hessian for the current example and label...
+            std::pair<float64, float64> pair = lossFunction->calculateGradientAndHessian(labelMatrix, r, c, 0);
+            gradients[i] = pair.first;
+            hessians[i] = pair.second;
+
+            // Store the score that is initially predicted for the current example and label...
+            currentScores[i] = 0;
+        }
+    }
+
+    return new DenseLabelWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, labelMatrixPtr_, gradients, hessians,
+                                            currentScores);
 }
