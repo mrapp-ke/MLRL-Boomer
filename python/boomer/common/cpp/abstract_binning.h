@@ -2,7 +2,6 @@
 
 #include "arrays.h"
 #include "statistics.h"
-#include <vector>
 
 class AbstractBinning{
 
@@ -10,15 +9,8 @@ class AbstractBinning{
 
         virtual ~AbstractBinning();
 
-        //Ich bin mit nicht sicher, ob der observer hier gehändelt werden sollte (siehe klassische Observermethoden unten)
-        virtual AbstractStatistic* createBins(indexedFloatArray* originalMatrix, intp numTargetElements, BinningObserver* observer);
+        virtual void createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer);
 
         void addObserver(BinningObserver* obs);
-
-    private:
-
-        vector < class BinningObserver * > obs;
-
-        void notify();
 
 };
