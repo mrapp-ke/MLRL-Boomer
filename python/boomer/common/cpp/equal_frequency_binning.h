@@ -5,7 +5,7 @@
 #include "abstract_binning.h"
 #include <vector>
 
-class EqualWidthBinning : AbstractBinning{
+class EqualWidthBinning : public AbstractBinning{
 
     private:
 
@@ -13,6 +13,8 @@ class EqualWidthBinning : AbstractBinning{
 
     public:
 
-        void createBins(intp numBins) override;
+        EqualWidthBinning(intp numBins);
+
+        void createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer) override;
 
 };

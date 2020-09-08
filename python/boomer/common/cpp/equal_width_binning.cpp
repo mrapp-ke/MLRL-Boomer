@@ -3,7 +3,11 @@
 
 intp EqualWidthBinning::numBins_;
 
-void EqualWidthBinningImpl::createBins(intp numBins_, intp currentFeatureIndex){
+EqualWidthBinning::EqualWidthBinning(intp numBins){
+    numBins_ = numBins;
+}
+
+void EqualWidthBinningImpl::createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer);{
     intp length = originalMatrix->size;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
