@@ -23,4 +23,4 @@ class AbstractBinning{
 
         void notify();
 
-}
+};
