@@ -1,4 +1,4 @@
-#include "../../common/cpp/arrays.h"
+#include "arrays.h"
 #include "abstract_binning.h"
 
 class BinningObserver{

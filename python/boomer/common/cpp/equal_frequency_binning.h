@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../common/cpp/arrays.h"
-#include "../../common/cpp/statistics.h"
+#include "arrays.h"
+#include "statistics.h"
 #include "abstract_binning.h"
 #include <vector>
 
