@@ -6,8 +6,6 @@ Provides a function that allows to create a wrapper for executing different BLAS
 The function pointers to the different BLAS routines are initialized such that they refer to the functions provided by
 scipy.
 """
-from boomer.common._arrays cimport float64
-
 from scipy.linalg.cython_blas cimport ddot, dspmv
 
 
@@ -22,12 +20,6 @@ cdef extern from "cpp/blas.h" nogil:
         # Constructors:
 
         Blas(ddot_t ddotFunction, dspmv_t dspmvFunction) except +
-
-        # Functions:
-
-        float64 ddot(float64* x, float64* y, int n)
-
-        void dspmv(float64* a, float64* x, float64* output, int n)
 
 
 cdef inline Blas* init_blas():
