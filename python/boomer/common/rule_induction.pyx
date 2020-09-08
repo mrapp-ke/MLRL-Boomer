@@ -400,7 +400,7 @@ cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32
         if indexed_array == NULL:
             indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
             indexed_array.data = NULL
-            indexed_array.num_elements = 0
+            indexed_array.numElements = 0
             dereference(cache_global)[feature_index] = indexed_array
 
 
@@ -479,7 +479,7 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
                              covered_statistics_target)
         indexed_array = indexed_array_wrapper.array
 
-    cdef intp num_indexed_values = indexed_array.num_elements
+    cdef intp num_indexed_values = indexed_array.numElements
     indexed_values = indexed_array.data
 
     # Start a new search based on the current statistics when processing a new feature...
@@ -996,7 +996,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                         `covered_statistics_mask` that are covered by the new rule
     """
     cdef IndexedFloat32* indexed_values = indexed_array.data
-    cdef intp num_indexed_values = indexed_array.num_elements
+    cdef intp num_indexed_values = indexed_array.numElements
     cdef bint descending = condition_end < condition_start
     cdef uint32 updated_target, weight
     cdef intp start, end, direction, i, r, j, index, num_steps
@@ -1089,7 +1089,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
         free(filtered_indexed_array.data)
 
     filtered_indexed_array.data = filtered_array
-    filtered_indexed_array.num_elements = num_elements
+    filtered_indexed_array.numElements = num_elements
     indexed_array_wrapper.num_conditions = num_conditions
     return updated_target
 
@@ -1119,7 +1119,7 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     if filtered_indexed_array != NULL:
         filtered_array = filtered_indexed_array.data
 
-    cdef intp max_elements = indexed_array.num_elements
+    cdef intp max_elements = indexed_array.numElements
     cdef intp i = 0
     cdef IndexedFloat32* indexed_values
     cdef intp r, index
@@ -1148,7 +1148,7 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
         filtered_indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
 
     filtered_indexed_array.data = filtered_array
-    filtered_indexed_array.num_elements = i
+    filtered_indexed_array.numElements = i
     indexed_array_wrapper.array = filtered_indexed_array
     indexed_array_wrapper.num_conditions = num_conditions
 
