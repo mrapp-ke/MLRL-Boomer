@@ -9,4 +9,4 @@ class BinningObserver{
 
         BinningObserver(AbstractBinning* toWatch);
 
-}
+};

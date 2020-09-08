@@ -15,4 +15,4 @@ class EqualWidthBinning : AbstractBinning{
 
         void createBins(intp numBins) override;
 
-}
+};
