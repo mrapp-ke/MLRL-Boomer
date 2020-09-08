@@ -5,8 +5,6 @@ class BinningObserver{
 
     public:
 
-        void onBinUpdate(intp binIndex, IndexedFloat32* updatedMatrix);
-
-        BinningObserver(AbstractBinning* toWatch);
+        virtual void onBinUpdate(intp binIndex, IndexedFloat32* indexedValue);
 
 };
