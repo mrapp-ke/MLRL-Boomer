@@ -7,7 +7,7 @@ void EqualWidthBinningImpl::createBins(intp numBins_, intp currentFeatureIndex){
     intp length = originalMatrix->size;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
-        //TODO: inform observer we have no new matrix
+        //TODO: inform observer that no approximation is necessary
         return;
     }
     /*  Simple Python Implementation as example
@@ -34,7 +34,7 @@ void EqualWidthBinningImpl::createBins(intp numBins_, intp currentFeatureIndex){
     //Initializing result array
     indexedFloatArray *results = (indexedFloatArray*)malloc(sizeof(indexedFloatArray));
     results->size = numBins_;
-    float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array
+    float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array?
     results->data = resultData;
     numFeatures = 7; //TODO: Replace "7" with the number of features
     intp boundaries[numBins_ + 1] {0};
