@@ -3,7 +3,7 @@
 
 Provides model classes that are used to build rule-based models.
 """
-from boomer.common._arrays cimport array_uint32, array_intp, array_float32, array_float64
+from boomer.common._arrays cimport array_uint32, array_float32, array_float64
 from boomer.common._arrays cimport c_matrix_uint8, c_matrix_float64
 
 from cython.operator cimport dereference, postincrement
@@ -303,10 +303,10 @@ cdef class PartialHead(Head):
     A partial head that assigns a numerical score to one or several labels.
     """
 
-    def __cinit__(self, intp[::1] label_indices = None, float64[::1] scores = None):
+    def __cinit__(self, uint32[::1] label_indices = None, float64[::1] scores = None):
         """
-        :param label_indices:   An array of type `intp`, shape `(num_predicted_labels)`, representing the indices of the
-                                labels for which the rule predicts
+        :param label_indices:   An array of type `uint32`, shape `(num_predicted_labels)`, representing the indices of
+                                the labels for which the rule predicts
         :param scores:          An array of type `float64`, shape `(num_predicted_labels)`, representing the scores that
                                 are predicted by the rule
         """
@@ -322,7 +322,7 @@ cdef class PartialHead(Head):
         self.scores = scores
 
     cdef void predict(self, float64[::1] predictions, uint8[::1] mask = None):
-        cdef intp[::1] label_indices = self.label_indices
+        cdef uint32[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
         cdef intp num_labels = label_indices.shape[0]
         cdef intp c, l
@@ -694,7 +694,7 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef float64* predicted_scores = head.predictedScores_
         cdef intp* label_indices = head.labelIndices_
         cdef float64[::1] head_scores = array_float64(num_predictions)
-        cdef intp[::1] head_label_indices
+        cdef uint32[::1] head_label_indices
         cdef Head rule_head
         cdef intp c
 
@@ -704,7 +704,7 @@ cdef class RuleListBuilder(ModelBuilder):
         if label_indices == NULL:
             rule_head = FullHead.__new__(FullHead, head_scores)
         else:
-            head_label_indices = array_intp(num_predictions)
+            head_label_indices = array_uint32(num_predictions)
 
             for c in range(num_predictions):
                 head_label_indices[c] = label_indices[c]

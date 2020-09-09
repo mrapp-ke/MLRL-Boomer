@@ -94,7 +94,7 @@ cdef class PartialHead(Head):
 
     # Attributes:
 
-    cdef readonly intp[::1] label_indices
+    cdef readonly uint32[::1] label_indices
 
     cdef readonly float64[::1] scores
 
