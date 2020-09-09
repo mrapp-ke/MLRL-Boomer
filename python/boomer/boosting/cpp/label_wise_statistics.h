@@ -28,7 +28,7 @@ namespace boosting {
 
             intp numPredictions_;
 
-            const intp* labelIndices_;
+            const uint32* labelIndices_;
 
             intp numLabels_;
 
@@ -57,9 +57,9 @@ namespace boosting {
              *                              be used for calculating the predictions, as well as corresponding quality
              *                              scores of rules
              * @param numPredictions        The number of labels to be considered by the search
-             * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
-             *                              the indices of the labels that should be considered by the search or NULL,
-             *                              if all labels should be considered
+             * @param labelIndices          A pointer to an array of type `uint32`, shape `(numPredictions)`,
+             *                              representing the indices of the labels that should be considered by the
+             *                              search or NULL, if all labels should be considered
              * @param numLabels             The total number of labels
              * @param gradients             A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
              *                              representing the gradient for each example and label
@@ -73,7 +73,7 @@ namespace boosting {
              *                              search, for each label
              */
             DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                               intp numPredictions, const intp* labelIndices, intp numLabels,
+                                               intp numPredictions, const uint32* labelIndices, intp numLabels,
                                                const float64* gradients, const float64* totalSumsOfGradients,
                                                const float64* hessians, const float64* totalSumsOfHessians);
 
@@ -167,7 +167,7 @@ namespace boosting {
 
             void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
+            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(intp statisticIndex, Prediction* prediction) override;
 

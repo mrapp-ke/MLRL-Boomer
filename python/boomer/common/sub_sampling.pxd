@@ -36,7 +36,7 @@ cdef class FeatureSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_features, RNG rng)
+    cdef uint32[::1] sub_sample(self, intp num_features, RNG rng)
 
 
 cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
@@ -47,14 +47,14 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_features, RNG rng)
+    cdef uint32[::1] sub_sample(self, intp num_features, RNG rng)
 
 
 cdef class LabelSubSampling:
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng)
+    cdef uint32[::1] sub_sample(self, intp num_labels, RNG rng)
 
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
@@ -65,4 +65,4 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
     # Functions:
 
-    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng)
+    cdef uint32[::1] sub_sample(self, intp num_labels, RNG rng)

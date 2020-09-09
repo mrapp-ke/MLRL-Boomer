@@ -11,7 +11,7 @@ AbstractExampleWiseRuleEvaluation::~AbstractExampleWiseRuleEvaluation() {
 
 }
 
-void AbstractExampleWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices,
+void AbstractExampleWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                      const float64* totalSumsOfGradients,
                                                                      float64* sumsOfGradients,
                                                                      const float64* totalSumsOfHessians,
@@ -20,7 +20,7 @@ void AbstractExampleWiseRuleEvaluation::calculateLabelWisePrediction(const intp*
 
 }
 
-void AbstractExampleWiseRuleEvaluation::calculateExampleWisePrediction(const intp* labelIndices,
+void AbstractExampleWiseRuleEvaluation::calculateExampleWisePrediction(const uint32* labelIndices,
                                                                        const float64* totalSumsOfGradients,
                                                                        float64* sumsOfGradients,
                                                                        const float64* totalSumsOfHessians,
@@ -45,7 +45,7 @@ RegularizedExampleWiseRuleEvaluationImpl::~RegularizedExampleWiseRuleEvaluationI
 
 }
 
-void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                             const float64* totalSumsOfGradients,
                                                                             float64* sumsOfGradients,
                                                                             const float64* totalSumsOfHessians,
@@ -99,7 +99,7 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(cons
     prediction->overallQualityScore_ = overallQualityScore;
 }
 
-void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const intp* labelIndices,
+void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const uint32* labelIndices,
                                                                               const float64* totalSumsOfGradients,
                                                                               float64* sumsOfGradients,
                                                                               const float64* totalSumsOfHessians,

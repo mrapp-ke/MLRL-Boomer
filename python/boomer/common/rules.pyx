@@ -692,7 +692,7 @@ cdef class RuleListBuilder(ModelBuilder):
 
         cdef intp num_predictions = head.numPredictions_
         cdef float64* predicted_scores = head.predictedScores_
-        cdef intp* label_indices = head.labelIndices_
+        cdef uint32* label_indices = head.labelIndices_
         cdef float64[::1] head_scores = array_float64(num_predictions)
         cdef uint32[::1] head_label_indices
         cdef Head rule_head

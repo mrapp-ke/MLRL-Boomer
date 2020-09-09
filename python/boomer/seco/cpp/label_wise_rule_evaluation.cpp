@@ -9,7 +9,8 @@ AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
 
 }
 
-void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
+                                                                   const uint8* minorityLabels,
                                                                    const float64* confusionMatricesTotal,
                                                                    const float64* confusionMatricesSubset,
                                                                    const float64* confusionMatricesCovered,
@@ -28,7 +29,7 @@ HeuristicLabelWiseRuleEvaluationImpl::~HeuristicLabelWiseRuleEvaluationImpl() {
 
 }
 
-void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                         const uint8* minorityLabels,
                                                                         const float64* confusionMatricesTotal,
                                                                         const float64* confusionMatricesSubset,

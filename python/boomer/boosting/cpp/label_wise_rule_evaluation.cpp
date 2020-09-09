@@ -10,7 +10,7 @@ AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
 
 }
 
-void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices,
+void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                    const float64* totalSumsOfGradients,
                                                                    float64* sumsOfGradients,
                                                                    const float64* totalSumsOfHessians,
@@ -27,7 +27,7 @@ RegularizedLabelWiseRuleEvaluationImpl::~RegularizedLabelWiseRuleEvaluationImpl(
 
 }
 
-void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                           const float64* totalSumsOfGradients,
                                                                           float64* sumsOfGradients,
                                                                           const float64* totalSumsOfHessians,
