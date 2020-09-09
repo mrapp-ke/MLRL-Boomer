@@ -3,7 +3,7 @@
 
 Provides classes for making predictions using rule-based models.
 """
-from boomer.common._arrays cimport uint8, intp, c_matrix_uint8
+from boomer.common._arrays cimport uint8, c_matrix_uint8
 
 import numpy as np
 
@@ -107,10 +107,10 @@ cdef class SignFunction(TransformationFunction):
     """
 
     cdef object transform_matrix(self, float64[:, ::1] m):
-        cdef intp num_rows = m.shape[0]
-        cdef intp num_cols = m.shape[1]
+        cdef uint32 num_rows = m.shape[0]
+        cdef uint32 num_cols = m.shape[1]
         cdef uint8[:, ::1] result = c_matrix_uint8(num_rows, num_cols)
-        cdef intp r, c
+        cdef uint32 r, c
 
         for r in range(num_rows):
             for c in range(num_cols):
