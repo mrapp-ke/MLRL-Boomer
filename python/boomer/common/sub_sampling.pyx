@@ -222,7 +222,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(intp num_t
     :return:            An array of type `uint32`, shape `(num_total)`, representing the weights of the elements
     """
     cdef uint32[::1] weights = array_uint32(num_total)
-    cdef intp[::1] pool = array_intp(num_total)
+    cdef uint32[::1] pool = array_uint32(num_total)
     cdef uint32 random_index, j
     cdef intp i
 
