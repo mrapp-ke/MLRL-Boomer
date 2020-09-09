@@ -27,8 +27,9 @@ PredictionCandidate* AbstractDecomposableRefinementSearch::calculateExampleWiseP
     return (PredictionCandidate*) this->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-AbstractStatistics::AbstractStatistics(intp numStatistics) {
+AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels) {
     numStatistics_ = numStatistics;
+    numLabels_ = numLabels;
 }
 
 AbstractStatistics::~AbstractStatistics() {

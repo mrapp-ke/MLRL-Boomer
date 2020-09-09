@@ -146,14 +146,19 @@ class AbstractStatistics {
         /**
          * @param numStatistics The number of statistics
          */
-        AbstractStatistics(intp numStatistics);
+        AbstractStatistics(uint32 numStatistics, uint32 numLabels);
 
         virtual ~AbstractStatistics();
 
         /**
          * The number of statistics.
          */
-        intp numStatistics_;
+        uint32 numStatistics_;
+
+        /**
+         * The number of labels.
+         */
+        uint32 numLabels_;
 
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the

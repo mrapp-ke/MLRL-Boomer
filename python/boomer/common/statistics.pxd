@@ -29,7 +29,9 @@ cdef extern from "cpp/statistics.h" nogil:
 
         # Attributes:
 
-        intp numStatistics_
+        uint32 numStatistics_
+
+        uint32 numLabels_
 
         # Functions:
 
