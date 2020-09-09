@@ -31,7 +31,7 @@ cdef class RuleInduction:
                                   ModelBuilder model_builder)
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -50,7 +50,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                                   ModelBuilder model_builder)
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,

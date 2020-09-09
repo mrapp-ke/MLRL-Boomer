@@ -97,8 +97,6 @@ cdef class SequentialRuleInduction:
         cdef int num_threads = self.num_threads
         # The random number generator to be used
         cdef RNG rng = RNG.__new__(RNG, random_state)
-        # The total number of labels
-        cdef intp num_labels = label_matrix.num_labels
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef uint32 num_rules = 1
         # Temporary variables
@@ -111,7 +109,7 @@ cdef class SequentialRuleInduction:
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             # Induce a new rule...
             success = rule_induction.induce_rule(statistics_provider, nominal_attribute_mask, feature_matrix,
-                                                 num_labels, head_refinement, label_sub_sampling, instance_sub_sampling,
+                                                 head_refinement, label_sub_sampling, instance_sub_sampling,
                                                  feature_sub_sampling, pruning, post_processor, min_coverage,
                                                  max_conditions, max_head_refinements, num_threads, rng, model_builder)
 
