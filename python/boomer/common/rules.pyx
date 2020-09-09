@@ -81,30 +81,30 @@ cdef class ConjunctiveBody(Body):
     for nominal conditions, respectively.
     """
 
-    def __cinit__(self, intp[::1] leq_feature_indices = None, float32[::1] leq_thresholds = None,
-                  intp[::1] gr_feature_indices = None, float32[::1] gr_thresholds = None,
-                  intp[::1] eq_feature_indices = None, float32[::1] eq_thresholds = None,
-                  intp[::1] neq_feature_indices = None, float32[::1] neq_thresholds = None):
+    def __cinit__(self, uint32[::1] leq_feature_indices = None, float32[::1] leq_thresholds = None,
+                  uint32[::1] gr_feature_indices = None, float32[::1] gr_thresholds = None,
+                  uint32[::1] eq_feature_indices = None, float32[::1] eq_thresholds = None,
+                  uint32[::1] neq_feature_indices = None, float32[::1] neq_thresholds = None):
         """
-        :param leq_feature_indices: An array of type `intp`, shape `(num_leq_conditions)`, representing the indices of
+        :param leq_feature_indices: An array of type `uint32`, shape `(num_leq_conditions)`, representing the indices of
                                     the features, the numerical conditions that use the <= operator correspond to or
                                     None, if the body does not contain such a condition
         :param leq_thresholds:      An array of type `float32`, shape `(num_leq_condition)`, representing the thresholds
                                     of the numerical conditions that use the <= operator or None, if the body does not
                                     contain such a condition
-        :param gr_feature_indices:  An array of type `intp`, shape `(num_gr_conditions)`, representing the indices of
+        :param gr_feature_indices:  An array of type `uint32`, shape `(num_gr_conditions)`, representing the indices of
                                     the features, the numerical conditions that use the > operator correspond to or
                                     None, if the body does not contain such a condition
         :param gr_thresholds:       An array of type `float32`, shape `(num_gr_conditions)`, representing the thresholds
                                     of the numerical conditions that use the > operator or None, if the body does not
                                     contain such a condition
-        :param eq_feature_indices:  An array of type `intp`, shape `(num_eq_conditions)`, representing the indices of
+        :param eq_feature_indices:  An array of type `uint32`, shape `(num_eq_conditions)`, representing the indices of
                                     the features, the nominal conditions that use the = operator correspond to or None,
                                     if the body does not contain such a condition
         :param eq_thresholds:       An array of type `float32`, shape `(num_eq_conditions)`, representing the thresholds
                                     of the nominal conditions that use the = operator or None, if the body does not
                                     contain such a condition
-        :param neq_feature_indices: An array of type `intp`, shape `(num_neq_conditions)`, representing the indices of
+        :param neq_feature_indices: An array of type `uint32`, shape `(num_neq_conditions)`, representing the indices of
                                     the features, the nominal conditions that use the != operator correspond to or None,
                                     if the body does not contain such a condition
         :param neq_thresholds:      An array of type `float32`, shape `(num_neq_conditions)`, representing the
@@ -141,7 +141,7 @@ cdef class ConjunctiveBody(Body):
         self.neq_thresholds = state[7]
 
     cdef bint covers(self, float32[::1] example):
-        cdef intp[::1] feature_indices = self.leq_feature_indices
+        cdef uint32[::1] feature_indices = self.leq_feature_indices
         cdef float32[::1] thresholds = self.leq_thresholds
         cdef intp num_conditions = feature_indices.shape[0]
         cdef intp i, c
@@ -194,7 +194,7 @@ cdef class ConjunctiveBody(Body):
             tmp_array1[c] = example_data[i]
             tmp_array2[c] = n
 
-        cdef intp[::1] feature_indices = self.leq_feature_indices
+        cdef uint32[::1] feature_indices = self.leq_feature_indices
         cdef float32[::1] thresholds = self.leq_thresholds
         cdef intp num_conditions = feature_indices.shape[0]
         cdef float32 feature_value
@@ -644,16 +644,16 @@ cdef class RuleListBuilder(ModelBuilder):
     cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        intp[::1] num_conditions_per_comparator):
         cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
-        cdef intp[::1] leq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef uint32[::1] leq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
         num_conditions = num_conditions_per_comparator[<intp>Comparator.GR]
-        cdef intp[::1] gr_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef uint32[::1] gr_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] gr_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
         num_conditions = num_conditions_per_comparator[<intp>Comparator.EQ]
-        cdef intp[::1] eq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef uint32[::1] eq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] eq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
         num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
-        cdef intp[::1] neq_feature_indices = array_intp(num_conditions) if num_conditions > 0 else None
+        cdef uint32[::1] neq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
         cdef double_linked_list[Condition].iterator iterator = conditions.begin()
         cdef intp leq_i = 0
