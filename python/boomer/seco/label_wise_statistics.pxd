@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport intp, uint8, float64
+from boomer.common._arrays cimport intp, uint8, uint32, float64
 from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics, \
     AbstractDecomposableRefinementSearch
@@ -15,7 +15,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         # Constructors:
 
         DenseLabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
-                                           intp numLabels, const intp* labelIndices,
+                                           intp numLabels, const uint32* labelIndices,
                                            shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
                                            const float64* uncoveredLabels, const uint8* minorityLabels,
                                            const float64* confusionMatricesTotal,

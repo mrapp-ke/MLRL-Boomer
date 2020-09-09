@@ -73,7 +73,7 @@ cdef class IREP(Pruning):
         # The number of labels for which the existing rule predicts
         cdef intp num_predictions = head.numPredictions_
         # An array that stores the indices of the labels for which the existing rule predicts
-        cdef intp* label_indices = head.labelIndices_
+        cdef uint32* label_indices = head.labelIndices_
         # Temporary variables
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
         cdef PredictionCandidate* prediction

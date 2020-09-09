@@ -3,7 +3,7 @@
 
 Provides classes that implement strategies for sub-sampling training examples, features or labels.
 """
-from boomer.common._arrays cimport float64, array_uint32, array_intp
+from boomer.common._arrays cimport float64, array_uint32
 
 from libc.math cimport log2
 
@@ -91,14 +91,14 @@ cdef class FeatureSubSampling:
     A base class for all classes that implement a strategy for sub-sampling features.
     """
 
-    cdef intp[::1] sub_sample(self, intp num_features, RNG rng):
+    cdef uint32[::1] sub_sample(self, intp num_features, RNG rng):
         """
         Creates and returns a sub-sample of the available features.
 
         :param num_features:    The total number of available features
         :param rng:             The random number generator to be used
-        :return:                An array of type `intp`, shape `(num_samples)`, representing the indices of the features
-                                contained in the sub-sample
+        :return:                An array of type `uint32`, shape `(num_samples)`, representing the indices of the
+                                features contained in the sub-sample
         """
         pass
 
@@ -116,7 +116,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef intp[::1] sub_sample(self, intp num_features, RNG rng):
+    cdef uint32[::1] sub_sample(self, intp num_features, RNG rng):
          cdef float32 sample_size = self.sample_size
          cdef intp num_samples
 
@@ -133,13 +133,13 @@ cdef class LabelSubSampling:
     A base class for all classes that implement a strategy for sub-sampling labels.
     """
 
-    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng):
+    cdef uint32[::1] sub_sample(self, intp num_labels, RNG rng):
         """
         Creates and returns a sub-sample of the available labels.
         
         :param num_labels:  The total number of available labels
         :param rng:         The random number generator to be used
-        :return:            An array of type `intp`, shape `(num_samples)`, representing the indices of the labels
+        :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices of the labels
                             contained in the sub-sample
         """
         pass
@@ -153,7 +153,7 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
         """
         self.num_samples = num_samples
 
-    cdef intp[::1] sub_sample(self, intp num_labels, RNG rng):
+    cdef uint32[::1] sub_sample(self, intp num_labels, RNG rng):
         cdef intp num_samples = self.num_samples
         return __sample_indices_without_replacement(num_labels, num_samples, rng)
 
@@ -245,7 +245,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(intp num_t
     return weights
 
 
-cdef inline intp[::1] __sample_indices_without_replacement(intp num_total, intp num_samples, RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement(intp num_total, intp num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement. The method that is used internally is
     chosen automatically, depending on the ratio `num_samples / num_total`.
@@ -253,7 +253,7 @@ cdef inline intp[::1] __sample_indices_without_replacement(intp num_total, intp 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of type `intp`, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
     cdef float64 ratio = (<float64>num_samples) / (<float64>num_total) if num_total != 0 else 1.0
@@ -270,8 +270,8 @@ cdef inline intp[::1] __sample_indices_without_replacement(intp num_total, intp 
         return __sample_indices_without_replacement_via_random_permutation(num_total, num_samples, rng)
 
 
-cdef inline intp[::1] __sample_indices_without_replacement_via_tracking_selection(intp num_total, intp num_samples,
-                                                                                  RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement_via_tracking_selection(intp num_total, intp num_samples,
+                                                                                    RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement by using a set to keep track of the
     indices that have already been selected. This method is suitable if `num_samples` is much smaller than `num_total`.
@@ -279,10 +279,10 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_tracking_selectio
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of type `intp`, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
-    cdef intp[::1] indices = array_intp(num_samples)
+    cdef uint32[::1] indices = array_uint32(num_samples)
     cdef set[uint32] selected_indices  # Stack-allocated set
     cdef bint should_continue
     cdef uint32 random_index
@@ -300,8 +300,8 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_tracking_selectio
     return indices
 
 
-cdef inline intp[::1] __sample_indices_without_replacement_via_reservoir_sampling(intp num_total, intp num_samples,
-                                                                                  RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement_via_reservoir_sampling(intp num_total, intp num_samples,
+                                                                                    RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement using a reservoir sampling algorithm.
     This method is suitable if `num_samples` is almost as large as `num_total`.
@@ -309,10 +309,10 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_reservoir_samplin
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of type `intp`, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
-    cdef intp[::1] indices = array_intp(num_samples)
+    cdef uint32[::1] indices = array_uint32(num_samples)
     cdef uint32 random_index
     cdef intp i
 
@@ -328,8 +328,8 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_reservoir_samplin
     return indices
 
 
-cdef inline intp[::1] __sample_indices_without_replacement_via_random_permutation(intp num_total, intp num_samples,
-                                                                                  RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement_via_random_permutation(intp num_total, intp num_samples,
+                                                                                    RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement by first generating a random
     permutation of the available indices using the Fisher-Yates shuffle and then returning the first `num_samples`
@@ -338,10 +338,10 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_random_permutatio
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of type `intp`, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
-    cdef intp[::1] indices = array_intp(num_total)
+    cdef uint32[::1] indices = array_uint32(num_total)
     cdef uint32 random_index
     cdef intp i, tmp
 

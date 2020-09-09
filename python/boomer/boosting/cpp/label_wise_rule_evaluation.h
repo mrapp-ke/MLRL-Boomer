@@ -33,9 +33,10 @@ namespace boosting {
              * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              * `totalSumsOfHessians` and `sumsOfHessians`, respectively.
              *
-             * @param labelIndices          A pointer to an array of type `intp`, shape `(prediction.numPredictions_)`,
-             *                              representing the indices of the labels for which the rule should predict or
-             *                              NULL, if the rule should predict for all labels
+             * @param labelIndices          A pointer to an array of type `uint32`, shape
+             *                              `(prediction.numPredictions_)`, representing the indices of the labels for
+             *                              which the rule should predict or NULL, if the rule should predict for all
+             *                              labels
              * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels), representing
              *                              the total sums of gradients for individual labels
              * @param sumsOfGradients       A pointer to an array of type `float64`, shape
@@ -54,7 +55,7 @@ namespace boosting {
              * @param prediction            A pointer to an object of type `LabelWisePredictionCandidate` that should be
              *                              used to store the predicted scores and quality scores
              */
-            virtual void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+            virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
                                                       LabelWisePredictionCandidate* prediction);
@@ -82,7 +83,7 @@ namespace boosting {
 
             ~RegularizedLabelWiseRuleEvaluationImpl();
 
-            void calculateLabelWisePrediction(const intp* labelIndices, const float64* totalSumsOfGradients,
+            void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,
                                               LabelWisePredictionCandidate* prediction) override;

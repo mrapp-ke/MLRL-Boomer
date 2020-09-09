@@ -230,13 +230,13 @@ class AbstractStatistics {
          * search from scratch, a different set of labels may be specified.
          *
          * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `intp`, shape `(numPredictions)`, representing the
+         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be considered by the search or None, if all labels
          *                          should be considered
          * @return                  A pointer to an object of type `AbstractRefinementSearch` to be used to conduct the
          *                          search
          */
-        virtual AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices);
+        virtual AbstractRefinementSearch* beginSearch(intp numLabelIndices, const uint32* labelIndices);
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.

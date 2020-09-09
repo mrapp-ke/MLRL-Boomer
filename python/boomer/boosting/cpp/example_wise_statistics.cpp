@@ -8,7 +8,7 @@ using namespace boosting;
 
 DenseExampleWiseRefinementSearchImpl::DenseExampleWiseRefinementSearchImpl(
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
-        intp numPredictions, const intp* labelIndices, intp numLabels, const float64* gradients,
+        intp numPredictions, const uint32* labelIndices, intp numLabels, const float64* gradients,
         const float64* totalSumsOfGradients, const float64* hessians, const float64* totalSumsOfHessians) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     lapackPtr_ = lapackPtr;
@@ -204,7 +204,8 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex,
     }
 }
 
-AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices,
+                                                                      const uint32* labelIndices) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new DenseExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, lapackPtr_, numPredictions, labelIndices,
@@ -215,7 +216,7 @@ AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(intp numLa
 void DenseExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = prediction->numPredictions_;
-    const intp* labelIndices = prediction->labelIndices_;
+    const uint32* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;

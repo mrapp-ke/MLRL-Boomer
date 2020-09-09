@@ -193,7 +193,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
         cdef Refinement current_refinement
-        cdef intp[::1] sampled_feature_indices
+        cdef uint32[::1] sampled_feature_indices
         cdef intp num_sampled_features
         cdef uint32 weight
         cdef bint nominal
@@ -220,13 +220,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             statistics.addSampledStatistic(r, weight)
 
         # Sub-sample labels, if necessary...
-        cdef intp[::1] sampled_label_indices
-        cdef const intp* label_indices
+        cdef uint32[::1] sampled_label_indices
+        cdef const uint32* label_indices
         cdef intp num_predictions
 
         if label_sub_sampling is None:
             sampled_label_indices = None
-            label_indices = <const intp*>NULL
+            label_indices = <const uint32*>NULL
             num_predictions = 0
         else:
             sampled_label_indices = label_sub_sampling.sub_sample(num_labels, rng)
@@ -404,7 +404,7 @@ cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32
             dereference(cache_global)[feature_index] = indexed_array
 
 
-cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_label_indices, const intp* label_indices,
+cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_label_indices, const uint32* label_indices,
                                   uint32[::1] weights, uint32 total_sum_of_weights,
                                   unordered_map[intp, IndexedFloat32Array*]* cache_global,
                                   unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local,
@@ -419,7 +419,7 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
     :param nominal                      1, if the feature, the new condition should correspond to, is nominal, 0
                                         otherwise
     :param num_label_indices:           The number of elements in the array `label_indices`
-    :param label_indices:               A pointer to an array of type `intp`, shape `(num_predictions)`, representing
+    :param label_indices:               A pointer to an array of type `uint32`, shape `(num_predictions)`, representing
                                         the indices of the labels for which the refined rule may predict
     :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
                                         the training examples or None, if all training examples are weighed equally
@@ -1188,7 +1188,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
     # The number labels for which the head predicts
     cdef intp num_predictions = head.numPredictions_
     # An array that stores the labels for which the head predicts
-    cdef intp* label_indices = head.labelIndices_
+    cdef uint32* label_indices = head.labelIndices_
     # An array that stores the scores that are predicted by the head
     cdef float64* predicted_scores = head.predictedScores_
     # Temporary variables
