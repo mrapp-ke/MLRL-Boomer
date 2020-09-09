@@ -123,11 +123,12 @@ namespace boosting {
 
             /**
              * @param numStatistics     The number of statistics
+             * @param numLabels         The number of labels
              * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation`, to be
              *                          used for calculating the predictions, as well as corresponding quality scores,
              *                          of rules
              */
-            AbstractExampleWiseStatistics(intp numStatistics,
+            AbstractExampleWiseStatistics(uint32 numStatistics, uint32 numLabels,
                                           std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr);
 
             /**

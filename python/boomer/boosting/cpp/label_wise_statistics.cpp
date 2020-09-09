@@ -81,8 +81,8 @@ LabelWisePredictionCandidate* DenseLabelWiseRefinementSearchImpl::calculateLabel
 }
 
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        intp numStatistics, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics) {
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractGradientStatistics(numStatistics, numLabels) {
     this->setRuleEvaluation(ruleEvaluationPtr);
 }
 
@@ -96,18 +96,17 @@ DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
-    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_, ruleEvaluationPtr) {
+    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_, labelMatrixPtr.get()->numLabels_,
+                                  ruleEvaluationPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     labelMatrixPtr_ = labelMatrixPtr;
     gradients_ = gradients;
     hessians_ = hessians;
     currentScores_ = currentScores;
-    // The number of labels
-    intp numLabels = labelMatrixPtr.get()->numLabels_;
     // An array that stores the column-wise sums of the matrix of gradients
-    totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
+    totalSumsOfGradients_ = (float64*) malloc(numLabels_ * sizeof(float64));
     // An array that stores the column-wise sums of the matrix of hessians
-    totalSumsOfHessians_ = (float64*) malloc(numLabels * sizeof(float64));
+    totalSumsOfHessians_ = (float64*) malloc(numLabels_ * sizeof(float64));
 }
 
 DenseLabelWiseStatisticsImpl::~DenseLabelWiseStatisticsImpl() {
@@ -119,19 +118,17 @@ DenseLabelWiseStatisticsImpl::~DenseLabelWiseStatisticsImpl() {
 }
 
 void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    arrays::setToZeros(totalSumsOfGradients_, numLabels);
-    arrays::setToZeros(totalSumsOfHessians_, numLabels);
+    arrays::setToZeros(totalSumsOfGradients_, numLabels_);
+    arrays::setToZeros(totalSumsOfHessians_, numLabels_);
 }
 
 void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numLabels;
+    intp offset = statisticIndex * numLabels_;
     float64 signedWeight = remove ? -((float64) weight) : weight;
 
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the total sums of gradients and Hessians...
-    for (intp c = 0; c < numLabels; c++) {
+    for (intp c = 0; c < numLabels_; c++) {
         intp i = offset + c;
         totalSumsOfGradients_[c] += (signedWeight * gradients_[i]);
         totalSumsOfHessians_[c] += (signedWeight * hessians_[i]);
@@ -140,9 +137,8 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, u
 
 AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
                                                                     const uint32* labelIndices) {
-    uint32 numLabels = labelMatrixPtr_.get()->numLabels_;
-    uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new DenseLabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels,
+    uint32 numPredictions = labelIndices == NULL ? numLabels_ : numLabelIndices;
+    return new DenseLabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels_,
                                                   gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
@@ -151,8 +147,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Predicti
     uint32 numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numLabels;
+    intp offset = statisticIndex * numLabels_;
 
     // Only the labels that are predicted by the new rule must be considered...
     for (intp c = 0; c < numPredictions; c++) {

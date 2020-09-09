@@ -3,8 +3,8 @@
 using namespace boosting;
 
 
-AbstractGradientStatistics::AbstractGradientStatistics(intp numStatistics)
-    : AbstractStatistics(numStatistics) {
+AbstractGradientStatistics::AbstractGradientStatistics(uint32 numStatistics, uint32 numLabels)
+    : AbstractStatistics(numStatistics, numLabels) {
 
 }
 

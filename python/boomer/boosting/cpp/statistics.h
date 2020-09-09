@@ -22,8 +22,9 @@ namespace boosting {
 
             /**
              * @param numStatistics The number of statistics
+             * @param numLabels     The number of labels
              */
-            AbstractGradientStatistics(intp numStatistics);
+            AbstractGradientStatistics(uint32 numStatistics, uint32 numLabels);
 
             void resetSampledStatistics() override;
 

@@ -136,8 +136,8 @@ PredictionCandidate* DenseExampleWiseRefinementSearchImpl::calculateExampleWiseP
 }
 
 AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
-        intp numStatistics, std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics) {
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractGradientStatistics(numStatistics, numLabels) {
     this->setRuleEvaluation(ruleEvaluationPtr);
 }
 
@@ -151,19 +151,18 @@ DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
-    : AbstractExampleWiseStatistics(labelMatrixPtr.get()->numExamples_, ruleEvaluationPtr) {
+    : AbstractExampleWiseStatistics(labelMatrixPtr.get()->numExamples_, labelMatrixPtr.get()->numLabels_,
+                                    ruleEvaluationPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     lapackPtr_ = lapackPtr;
     labelMatrixPtr_ = labelMatrixPtr;
     gradients_ = gradients;
     hessians_ = hessians;
     currentScores_ = currentScores;
-    // The number of labels
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
     // The number of hessians
-    intp numHessians = linalg::triangularNumber(numLabels);
+    intp numHessians = linalg::triangularNumber(numLabels_);
     // An array that stores the column-wise sums of the matrix of gradients
-    totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
+    totalSumsOfGradients_ = (float64*) malloc(numLabels_ * sizeof(float64));
     // An array that stores the column-wise sums of the matrix of Hessians
     totalSumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
 }
@@ -177,39 +176,36 @@ DenseExampleWiseStatisticsImpl::~DenseExampleWiseStatisticsImpl() {
 }
 
 void DenseExampleWiseStatisticsImpl::resetCoveredStatistics() {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    arrays::setToZeros(totalSumsOfGradients_, numLabels);
-    intp numHessians = linalg::triangularNumber(numLabels);
+    arrays::setToZeros(totalSumsOfGradients_, numLabels_);
+    intp numHessians = linalg::triangularNumber(numLabels_);
     arrays::setToZeros(totalSumsOfHessians_, numHessians);
 }
 
 void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
     float64 signedWeight = remove ? -((float64) weight) : weight;
-    intp numElements = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numElements;
+    intp offset = statisticIndex * numLabels_;
 
     // Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
     // gradients...
-    for (intp c = 0; c < numElements; c++) {
+    for (intp c = 0; c < numLabels_; c++) {
         totalSumsOfGradients_[c] += (signedWeight * gradients_[offset + c]);
     }
 
-    numElements = linalg::triangularNumber(numElements);
-    offset = statisticIndex * numElements;
+    intp numHessians = linalg::triangularNumber(numLabels_);
+    offset = statisticIndex * numHessians;
 
     // Add the Hessians of the example at the given index (weighted by the given weight) to the total sums of
     // Hessians...
-    for (intp c = 0; c < numElements; c++) {
+    for (intp c = 0; c < numHessians; c++) {
         totalSumsOfHessians_[c] += (signedWeight * hessians_[offset + c]);
     }
 }
 
 AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
                                                                       const uint32* labelIndices) {
-    uint32 numLabels = labelMatrixPtr_.get()->numLabels_;
-    uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+    uint32 numPredictions = labelIndices == NULL ? numLabels_ : numLabelIndices;
     return new DenseExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, lapackPtr_, numPredictions, labelIndices,
-                                                    numLabels, gradients_, totalSumsOfGradients_, hessians_,
+                                                    numLabels_, gradients_, totalSumsOfGradients_, hessians_,
                                                     totalSumsOfHessians_);
 }
 
@@ -218,9 +214,8 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Predic
     intp numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numLabels;
-    intp numHessians = linalg::triangularNumber(numLabels);
+    intp offset = statisticIndex * numLabels_;
+    intp numHessians = linalg::triangularNumber(numLabels_);
 
     // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
     // example at the given index...
