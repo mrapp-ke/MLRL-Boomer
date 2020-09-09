@@ -42,7 +42,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 
-    cdef unordered_map[intp, IndexedFloat32Array*]* cache_global
+    cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global
 
     # Functions:
 

@@ -24,7 +24,7 @@ A struct that represents a potential refinement of a rule.
 """
 cdef struct Refinement:
     PredictionCandidate* head
-    intp feature_index
+    uint32 feature_index
     float32 threshold
     Comparator comparator
     bint covered
@@ -107,11 +107,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
+        self.cache_global = new unordered_map[uint32, IndexedFloat32Array*]()
 
     def __dealloc__(self):
-        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
-        cdef unordered_map[intp, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
+        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef unordered_map[uint32, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
         cdef IndexedFloat32Array* indexed_array
 
         while cache_global_iterator != cache_global.end():
@@ -161,7 +161,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # The total number of statistics
         cdef intp num_statistics = statistics.numStatistics_
         # The total number of features
-        cdef intp num_features = feature_matrix.num_features
+        cdef uint32 num_features = feature_matrix.num_features
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef double_linked_list[Condition] conditions
         # The total number of conditions
@@ -183,21 +183,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         covered_statistics_mask[:] = 0
         cdef uint32 covered_statistics_target = 0
         # A map that stores potential thresholds that result from all available statistics
-        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
         # A map that stores potential thresholds that result from the statistics that are covered by the current rule
-        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
+        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
 
         # Temporary variables
-        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
+        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
         cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
         cdef Refinement current_refinement
         cdef uint32[::1] sampled_feature_indices
-        cdef intp num_sampled_features
-        cdef uint32 weight
+        cdef uint32 num_sampled_features, weight, f
         cdef bint nominal
-        cdef intp r, c, f
+        cdef intp r, c
 
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
@@ -249,12 +248,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 # For each feature, update the caches `cache_global` and 'cache_local`, if necessary...
                 for c in range(num_sampled_features):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     __update_caches(f, cache_global, cache_local)
 
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
                                                            total_sum_of_weights, cache_global, cache_local,
@@ -267,7 +266,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     current_refinement = refinements[f]
 
                     if current_refinement.head != NULL and (best_refinement.head == NULL
@@ -285,7 +284,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     conditions.push_back(__make_condition(best_refinement.feature_index, best_refinement.comparator,
                                                           best_refinement.threshold))
                     num_conditions += 1
-                    num_conditions_per_comparator[<intp>best_refinement.comparator] += 1
+                    num_conditions_per_comparator[<uint32>best_refinement.comparator] += 1
 
                     if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                         # Keep the labels for which the rule predicts, if the head should not be further refined...
@@ -368,8 +367,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(cache_local_iterator)
 
 
-cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32Array*]* cache_global,
-                          unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local):
+cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFloat32Array*]* cache_global,
+                          unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local):
     """
     Updates the caches `cache_global` and `cache_local`, which store arrays that contain the indices of examples, as
     well as their values for certain features, if necessary.
@@ -404,10 +403,10 @@ cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32
             dereference(cache_global)[feature_index] = indexed_array
 
 
-cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_label_indices, const uint32* label_indices,
-                                  uint32[::1] weights, uint32 total_sum_of_weights,
-                                  unordered_map[intp, IndexedFloat32Array*]* cache_global,
-                                  unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local,
+cdef Refinement __find_refinement(uint32 feature_index, bint nominal, intp num_label_indices,
+                                  const uint32* label_indices, uint32[::1] weights, uint32 total_sum_of_weights,
+                                  unordered_map[uint32, IndexedFloat32Array*]* cache_global,
+                                  unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                   FeatureMatrix feature_matrix, uint32[::1] covered_statistics_mask,
                                   uint32 covered_statistics_target, intp num_conditions, AbstractStatistics* statistics,
                                   HeadRefinement head_refinement, PredictionCandidate* head) nogil:
@@ -1153,7 +1152,7 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     indexed_array_wrapper.num_conditions = num_conditions
 
 
-cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
+cdef inline Condition __make_condition(uint32 feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
 
