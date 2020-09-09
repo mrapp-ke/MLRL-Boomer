@@ -54,8 +54,8 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
         self.start_time = -1
 
     cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
-        cdef int start_time = self.start_time
-        cdef int current_time
+        cdef long start_time = self.start_time
+        cdef long current_time
         cdef uint32 time_limit
 
         if start_time < 0:
