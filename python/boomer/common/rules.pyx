@@ -579,14 +579,14 @@ cdef class ModelBuilder:
         pass
 
     cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
-                       intp[::1] num_conditions_per_comparator):
+                       uint32[::1] num_conditions_per_comparator):
         """
         Adds a new rule to the model.
 
         :param head:                            A pointer to an object of type `Prediction`, representing the head of
                                                 the rule
         :param conditions:                      A list that contains the rule's conditions
-        :param num_conditions_per_comparator:   An array of type `intp`, shape `(4)`, representing the number of
+        :param num_conditions_per_comparator:   An array of type `uint32`, shape `(4)`, representing the number of
                                                 conditions that use a specific operator
         """
         pass
@@ -642,8 +642,8 @@ cdef class RuleListBuilder(ModelBuilder):
                 rule_list.add_rule(default_rule)
 
     cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
-                       intp[::1] num_conditions_per_comparator):
-        cdef intp num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
+                       uint32[::1] num_conditions_per_comparator):
+        cdef uint32 num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
         cdef uint32[::1] leq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
         num_conditions = num_conditions_per_comparator[<intp>Comparator.GR]

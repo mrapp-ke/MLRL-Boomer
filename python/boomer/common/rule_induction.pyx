@@ -167,7 +167,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # The total number of conditions
         cdef intp num_conditions = 0
         # An array representing the number of conditions per type of operator
-        cdef intp[::1] num_conditions_per_comparator = array_intp(4)
+        cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
         num_conditions_per_comparator[:] = 0
         # A map that stores the best refinement for each feature
         cdef unordered_map[intp, Refinement] refinements  # Stack-allocated map
