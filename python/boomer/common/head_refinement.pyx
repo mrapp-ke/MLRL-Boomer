@@ -3,7 +3,7 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-from boomer.common._arrays cimport float64, array_intp, array_float64
+from boomer.common._arrays cimport float64
 from boomer.common._predictions cimport LabelWisePredictionCandidate
 
 from libc.stdlib cimport malloc
