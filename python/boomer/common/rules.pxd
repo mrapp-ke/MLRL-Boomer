@@ -115,9 +115,9 @@ cdef class Rule:
 
     cdef predict(self, float32[:, ::1] x, float64[:, ::1] predictions, uint8[:, ::1] mask=*)
 
-    cdef predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices, intp num_features,
-                     float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
-                     uint8[:, ::1] mask=*)
+    cdef predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
+                     uint32 num_features, float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n,
+                     float64[:, ::1] predictions, uint8[:, ::1] mask=*)
 
 
 cdef class RuleModel:
@@ -126,10 +126,10 @@ cdef class RuleModel:
 
     cdef void add_rule(self, Rule rule)
 
-    cdef float64[:, ::1] predict(self, float32[:, ::1] x, intp num_labels)
+    cdef float64[:, ::1] predict(self, float32[:, ::1] x, uint32 num_labels)
 
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                                     intp num_features, intp num_labels)
+                                     uint32 num_features, uint32 num_labels)
 
 
 cdef class RuleList(RuleModel):
@@ -144,10 +144,10 @@ cdef class RuleList(RuleModel):
 
     cdef void add_rule(self, Rule rule)
 
-    cdef float64[:, ::1] predict(self, float32[:, ::1] x, intp num_labels)
+    cdef float64[:, ::1] predict(self, float32[:, ::1] x, uint32 num_labels)
 
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                                     intp num_features, intp num_labels)
+                                     uint32 num_features, uint32 num_labels)
 
 
 cdef class ModelBuilder:

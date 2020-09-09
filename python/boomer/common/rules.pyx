@@ -385,9 +385,9 @@ cdef class Rule:
                 mask_row = None if mask is None else mask[r, :]
                 head.predict(predictions[r, :], mask_row)
 
-    cdef predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices, intp num_features,
-                     float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
-                     uint8[:, ::1] mask = None):
+    cdef predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
+                     uint32 num_features, float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n,
+                     float64[:, ::1] predictions, uint8[:, ::1] mask = None):
         """
         Applies the rule's predictions to a matrix of predictions for all examples it covers. Optionally, the prediction
         can be restricted to certain examples and labels.
@@ -454,7 +454,7 @@ cdef class RuleModel:
         """
         pass
 
-    cdef float64[:, ::1] predict(self, float32[:, ::1] x, intp num_labels):
+    cdef float64[:, ::1] predict(self, float32[:, ::1] x, uint32 num_labels):
         """
         Aggregates and returns the predictions provided by several rules.
 
@@ -469,7 +469,7 @@ cdef class RuleModel:
         pass
 
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                                     intp num_features, intp num_labels):
+                                     uint32 num_features, uint32 num_labels):
         """
         Aggregates and returns the predictions provided by several rules.
 
@@ -514,7 +514,7 @@ cdef class RuleList(RuleModel):
         cdef list rules = self.rules
         rules.append(rule)
 
-    cdef float64[:, ::1] predict(self, float32[:, ::1] x, intp num_labels):
+    cdef float64[:, ::1] predict(self, float32[:, ::1] x, uint32 num_labels):
         cdef intp num_examples = x.shape[0]
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
         predictions[:, :] = 0
@@ -536,7 +536,7 @@ cdef class RuleList(RuleModel):
         return predictions
 
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                                     intp num_features, intp num_labels):
+                                     uint32 num_features, uint32 num_labels):
         cdef intp num_examples = x_row_indices.shape[0] - 1
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
         predictions[:, :] = 0
