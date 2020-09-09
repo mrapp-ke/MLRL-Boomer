@@ -37,7 +37,7 @@ cdef inline cvarray array_intp(intp num_elements):
     :return:                The array that has been created
     """
     cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(intp)
+    cdef int itemsize = sizeof(intp)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_INTP, MODE_C_CONTIGUOUS)
     return array
 
@@ -50,7 +50,7 @@ cdef inline cvarray array_uint32(intp num_elements):
     :return:                The array that has been created
     """
     cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(uint32)
+    cdef int itemsize = sizeof(uint32)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT32, MODE_C_CONTIGUOUS)
     return array
 
@@ -63,7 +63,7 @@ cdef inline cvarray array_float32(intp num_elements):
     :return:                The array that has been created
     """
     cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(float32)
+    cdef int itemsize = sizeof(float32)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT32, MODE_C_CONTIGUOUS)
     return array
 
@@ -76,7 +76,7 @@ cdef inline cvarray array_float64(intp num_elements):
     :return:                The array that has been created
     """
     cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(float64)
+    cdef int itemsize = sizeof(float64)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
 
@@ -90,7 +90,7 @@ cdef inline cvarray c_matrix_float64(intp num_rows, intp num_cols):
     :return:            The array that has been created
     """
     cdef tuple shape = tuple([num_rows, num_cols])
-    cdef intp itemsize = sizeof(float64)
+    cdef int itemsize = sizeof(float64)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
 
@@ -104,6 +104,6 @@ cdef inline cvarray c_matrix_uint8(intp num_rows, intp num_cols):
     :return:            The array that has been created
     """
     cdef tuple shape = tuple([num_rows, num_cols])
-    cdef intp itemsize = sizeof(uint8)
+    cdef int itemsize = sizeof(uint8)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT8, MODE_C_CONTIGUOUS)
     return array
