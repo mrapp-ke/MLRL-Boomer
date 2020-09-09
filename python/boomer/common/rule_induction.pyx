@@ -55,7 +55,7 @@ cdef class RuleInduction:
         pass
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -69,7 +69,6 @@ cdef class RuleInduction:
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
                                         training examples
-        :param num_labels:              The total number of labels
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
                                         sub-sampling should be used
@@ -127,7 +126,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
         cdef AbstractStatistics* statistics
-        cdef intp num_statistics, i
+        cdef uint32 num_statistics, i
 
         if head_refinement is not None:
             statistics = statistics_provider.get()
@@ -151,7 +150,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -159,7 +158,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
-        cdef intp num_statistics = statistics.numStatistics_
+        cdef uint32 num_statistics = statistics.numStatistics_
+        # The total number of labels
+        cdef uint32 num_labels = statistics.numLabels_
         # The total number of features
         cdef uint32 num_features = feature_matrix.num_features
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -205,7 +206,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         if instance_sub_sampling is None:
             weights = None
-            total_sum_of_weights = <uint32>num_statistics
+            total_sum_of_weights = num_statistics
         else:
             uint32_array_scalar_pair = instance_sub_sampling.sub_sample(num_statistics, rng)
             weights = uint32_array_scalar_pair.first
@@ -1168,7 +1169,7 @@ cdef inline Condition __make_condition(uint32 feature_index, Comparator comparat
     return condition
 
 
-cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp num_statistics,
+cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint32 num_statistics,
                                            HeadRefinement head_refinement, uint32[::1] covered_statistics_mask,
                                            uint32 covered_statistics_target, PredictionCandidate* head):
     """
@@ -1195,8 +1196,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
     cdef AbstractRefinementSearch* refinement_search
     cdef Prediction* prediction
     cdef float64* updated_scores
-    cdef uint32 c
-    cdef intp r
+    cdef uint32 r, c
 
     try:
         refinement_search = statistics.beginSearch(num_predictions, label_indices)
