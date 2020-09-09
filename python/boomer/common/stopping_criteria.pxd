@@ -26,7 +26,7 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
 
     cdef readonly uint32 time_limit
 
-    cdef int start_time
+    cdef long start_time
 
     # Functions:
 
