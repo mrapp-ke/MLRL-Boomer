@@ -100,7 +100,7 @@ cdef class SequentialRuleInduction:
         # The total number of labels
         cdef intp num_labels = label_matrix.num_labels
         # The number of rules induced so far (starts at 1 to account for the default rule)
-        cdef intp num_rules = 1
+        cdef uint32 num_rules = 1
         # Temporary variables
         cdef bint success
 
@@ -123,7 +123,7 @@ cdef class SequentialRuleInduction:
         return model_builder.build_model()
 
 
-cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, intp num_rules):
+cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, uint32 num_rules):
     """
     Returns whether additional rules should be induced, according to some stopping criteria, or not.
 
