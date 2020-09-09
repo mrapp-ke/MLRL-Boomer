@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport float64, array_intp, array_float64
+from boomer.common._arrays cimport float64
 from boomer.common._predictions cimport LabelWisePredictionCandidate
 from boomer.common._tuples cimport IndexedFloat64, compareIndexedFloat64
 from boomer.seco.lift_functions cimport LiftFunction
