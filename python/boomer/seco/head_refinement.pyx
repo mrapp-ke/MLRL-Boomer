@@ -123,7 +123,7 @@ cdef inline uint32* __argsort(float64* a, intp num_elements) nogil:
     """
     cdef IndexedFloat64* tmp_array = <IndexedFloat64*>malloc(num_elements * sizeof(IndexedFloat64))
     cdef uint32* sorted_array = <uint32*>malloc(num_elements * sizeof(uint32))
-    cdef intp i
+    cdef uint32 i
 
     try:
         for i in range(num_elements):
