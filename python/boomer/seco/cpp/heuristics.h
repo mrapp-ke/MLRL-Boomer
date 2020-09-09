@@ -73,8 +73,8 @@ namespace seco {
              *
              * This results in the terminology given in the following table:
              *
-             *      | ground-   |           |
-             *      | truth     | predicted |
+             *            | ground-   |           |
+             *            | truth     | predicted |
              * -----------|-----------|-----------|-----
              *  covered   |         0 |         0 | CIN
              *            |         0 |         1 | CIP
