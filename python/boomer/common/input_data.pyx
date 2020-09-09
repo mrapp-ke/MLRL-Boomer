@@ -138,17 +138,17 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] x_data,
-                  const intp[::1] x_row_indices, const intp[::1] x_col_indices):
+                  const uint32[::1] x_row_indices, const uint32[::1] x_col_indices):
         """
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
         :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples
-        :param x_row_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
+        :param x_row_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
                                 row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:   An array of type `intp`, shape `(num_features + 1)`, representing the indices of the first
-                                element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
-                                at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of type `uint32`, shape `(num_features + 1)`, representing the indices of the
+                                first element in `x_data` and `x_row_indices` that corresponds to a certain feature. The
+                                index at the last position is equal to `num_non_zero_feature_values`
         """
         self.num_examples = num_examples
         self.num_features = num_features
@@ -159,8 +159,8 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
         # Class members
         cdef const float32[::1] x_data = self.x_data
-        cdef const intp[::1] x_row_indices = self.x_row_indices
-        cdef const intp[::1] x_col_indices = self.x_col_indices
+        cdef const uint32[::1] x_row_indices = self.x_row_indices
+        cdef const uint32[::1] x_col_indices = self.x_col_indices
         # The index of the first element in `x_data` and `x_row_indices` that corresponds to the given feature index
         cdef intp start = x_col_indices[feature_index]
         # The index of the last element in `x_data` and `x_row_indices` that corresponds to the given feature index

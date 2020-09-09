@@ -82,9 +82,9 @@ cdef class CscFeatureMatrix(FeatureMatrix):
 
     cdef const float32[::1] x_data
 
-    cdef const intp[::1] x_row_indices
+    cdef const uint32[::1] x_row_indices
 
-    cdef const intp[::1] x_col_indices
+    cdef const uint32[::1] x_col_indices
 
     # Functions:
 

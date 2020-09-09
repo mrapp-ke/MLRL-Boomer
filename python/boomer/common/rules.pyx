@@ -33,7 +33,7 @@ cdef class Body:
         """
         pass
 
-    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+    cdef bint covers_sparse(self, float32[::1] example_data, uint32[::1] example_indices, float32[::1] tmp_array1,
                             uint32[::1] tmp_array2, uint32 n):
         """
         Returns whether a certain example is covered by the body, or not.
@@ -42,7 +42,7 @@ cdef class Body:
 
         :param example_data:    An array of type `float32`, shape `(num_non_zero_feature_values), representing the
                                 non-zero feature values of the training examples
-        :param example_indices: An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the indices
+        :param example_indices: An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the indices
                                 of the features, the values in `example_data` correspond to
         :param tmp_array1:      An array of type `float32`, shape `(num_features)` that is used to temporarily store
                                 non-zero feature values. May contain arbitrary values
@@ -70,7 +70,7 @@ cdef class EmptyBody(Body):
     cdef bint covers(self, float32[::1] example):
         return True
 
-    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+    cdef bint covers_sparse(self, float32[::1] example_data, uint32[::1] example_indices, float32[::1] tmp_array1,
                             uint32[::1] tmp_array2, uint32 n):
         return True
 
@@ -184,7 +184,7 @@ cdef class ConjunctiveBody(Body):
 
         return True
 
-    cdef bint covers_sparse(self, float32[::1] example_data, intp[::1] example_indices, float32[::1] tmp_array1,
+    cdef bint covers_sparse(self, float32[::1] example_data, uint32[::1] example_indices, float32[::1] tmp_array1,
                             uint32[::1] tmp_array2, uint32 n):
         cdef intp num_non_zero_feature_values = example_data.shape[0]
         cdef intp i, c
@@ -385,7 +385,7 @@ cdef class Rule:
                 mask_row = None if mask is None else mask[r, :]
                 head.predict(predictions[r, :], mask_row)
 
-    cdef predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices, intp num_features,
+    cdef predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices, intp num_features,
                      float32[::1] tmp_array1, uint32[::1] tmp_array2, uint32 n, float64[:, ::1] predictions,
                      uint8[:, ::1] mask = None):
         """
@@ -396,10 +396,10 @@ cdef class Rule:
 
         :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the examples to predict for
-        :param x_row_indices:   An array of type `intp`, shape `(num_examples + 1)`, representing the indices of the
+        :param x_row_indices:   An array of type `uint32`, shape `(num_examples + 1)`, representing the indices of the
                                 first element in `x_data` and `x_col_indices` that corresponds to a certain examples.
                                 The index at the last position is equal to `num_non_zero_feature_values`
-        :param x_col_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
+        :param x_col_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
         :param num_features:    The total number of features
         :param tmp_array1:      An array of type `float32`, shape `(num_features)` that is used to temporarily store
@@ -468,7 +468,7 @@ cdef class RuleModel:
         """
         pass
 
-    cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+    cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                                      intp num_features, intp num_labels):
         """
         Aggregates and returns the predictions provided by several rules.
@@ -477,10 +477,10 @@ cdef class RuleModel:
         
         :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples 
-        :param x_row_indices:   An array of type `intp`, shape `(num_examples + 1)`, representing the indices of the
+        :param x_row_indices:   An array of type `uint32`, shape `(num_examples + 1)`, representing the indices of the
                                 first element in `x_data` and `x_col_indices` that corresponds to a certain examples.
                                 The index at the last position is equal to `num_non_zero_feature_values`
-        :param x_col_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
+        :param x_col_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
         :param num_features:    The total number of features
         :param num_labels:      The total number of labels
@@ -535,7 +535,7 @@ cdef class RuleList(RuleModel):
 
         return predictions
 
-    cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+    cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                                      intp num_features, intp num_labels):
         cdef intp num_examples = x_row_indices.shape[0] - 1
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)

@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport intp, float32, float64
+from boomer.common._arrays cimport uint32, intp, float32, float64
 from boomer.common.rules cimport RuleModel
 
 
@@ -8,7 +8,7 @@ cdef class Predictor:
 
     cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel model)
 
-    cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+    cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                              intp num_features, intp num_labels, RuleModel model)
 
 
@@ -22,7 +22,7 @@ cdef class DensePredictor(Predictor):
 
     cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel model)
 
-    cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+    cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                              intp num_features, intp num_labels, RuleModel model)
 
 cdef class TransformationFunction:
