@@ -236,7 +236,7 @@ class AbstractStatistics {
          * @return                  A pointer to an object of type `AbstractRefinementSearch` to be used to conduct the
          *                          search
          */
-        virtual AbstractRefinementSearch* beginSearch(intp numLabelIndices, const uint32* labelIndices);
+        virtual AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices);
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.

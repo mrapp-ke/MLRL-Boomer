@@ -7,7 +7,7 @@ using namespace seco;
 
 
 DenseLabelWiseRefinementSearchImpl::DenseLabelWiseRefinementSearchImpl(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, intp numPredictions,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, uint32 numPredictions,
         const uint32* labelIndices, std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
         const float64* uncoveredLabels, const uint8* minorityLabels, const float64* confusionMatricesTotal,
         const float64* confusionMatricesSubset) {
@@ -169,15 +169,16 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, u
     }
 }
 
-AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const uint32* labelIndices) {
-    intp numPredictions = labelIndices == NULL ? labelMatrixPtr_.get()->numLabels_ : numLabelIndices;
+AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
+                                                                    const uint32* labelIndices) {
+    uint32 numPredictions = labelIndices == NULL ? labelMatrixPtr_.get()->numLabels_ : numLabelIndices;
     return new DenseLabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, labelMatrixPtr_,
                                                   uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
                                                   confusionMatricesSubset_);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
-    intp numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;

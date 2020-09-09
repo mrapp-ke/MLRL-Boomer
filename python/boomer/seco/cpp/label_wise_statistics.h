@@ -26,7 +26,7 @@ namespace seco {
 
             std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
-            intp numPredictions_;
+            uint32 numPredictions_;
 
             const uint32* labelIndices_;
 
@@ -73,7 +73,7 @@ namespace seco {
              *                                  the previous refinement of the rule, for each label
              */
             DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                               intp numPredictions, const uint32* labelIndices,
+                                               uint32 numPredictions, const uint32* labelIndices,
                                                std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                const float64* uncoveredLabels, const uint8* minorityLabels,
                                                const float64* confusionMatricesTotal,
@@ -166,7 +166,7 @@ namespace seco {
 
             void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const uint32* labelIndices) override;
+            AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(intp statisticIndex, Prediction* prediction) override;
 

@@ -8,7 +8,7 @@ using namespace boosting;
 
 DenseExampleWiseRefinementSearchImpl::DenseExampleWiseRefinementSearchImpl(
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
-        intp numPredictions, const uint32* labelIndices, intp numLabels, const float64* gradients,
+        uint32 numPredictions, const uint32* labelIndices, uint32 numLabels, const float64* gradients,
         const float64* totalSumsOfGradients, const float64* hessians, const float64* totalSumsOfHessians) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     lapackPtr_ = lapackPtr;
@@ -204,10 +204,10 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex,
     }
 }
 
-AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(intp numLabelIndices,
+AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
                                                                       const uint32* labelIndices) {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+    uint32 numLabels = labelMatrixPtr_.get()->numLabels_;
+    uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new DenseExampleWiseRefinementSearchImpl(ruleEvaluationPtr_, lapackPtr_, numPredictions, labelIndices,
                                                     numLabels, gradients_, totalSumsOfGradients_, hessians_,
                                                     totalSumsOfHessians_);

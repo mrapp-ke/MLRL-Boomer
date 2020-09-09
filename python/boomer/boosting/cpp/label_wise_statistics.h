@@ -26,11 +26,11 @@ namespace boosting {
 
             std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
-            intp numPredictions_;
+            uint32 numPredictions_;
 
             const uint32* labelIndices_;
 
-            intp numLabels_;
+            uint32 numLabels_;
 
             const float64* gradients_;
 
@@ -73,7 +73,7 @@ namespace boosting {
              *                              search, for each label
              */
             DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                               intp numPredictions, const uint32* labelIndices, intp numLabels,
+                                               uint32 numPredictions, const uint32* labelIndices, uint32 numLabels,
                                                const float64* gradients, const float64* totalSumsOfGradients,
                                                const float64* hessians, const float64* totalSumsOfHessians);
 
@@ -167,7 +167,7 @@ namespace boosting {
 
             void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const uint32* labelIndices) override;
+            AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(intp statisticIndex, Prediction* prediction) override;
 

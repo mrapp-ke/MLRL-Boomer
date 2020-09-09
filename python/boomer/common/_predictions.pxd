@@ -3,7 +3,7 @@
 
 classes that store the predictions of rules, as well as corresponding quality scores.
 """
-from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common._arrays cimport uint32, float64
 
 
 cdef extern from "cpp/predictions.h" nogil:
@@ -12,7 +12,7 @@ cdef extern from "cpp/predictions.h" nogil:
 
         # Attributes:
 
-        intp numPredictions_
+        uint32 numPredictions_
 
         uint32* labelIndices_
 
@@ -23,7 +23,7 @@ cdef extern from "cpp/predictions.h" nogil:
 
         # Constructors:
 
-        PredictionCandidate(intp numPredictions, uint32* labelIndices, float64* predictedScores,
+        PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
                             float64 overallQualityScore) except +
 
         # Attributes:

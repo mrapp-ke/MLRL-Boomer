@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 
-Prediction::Prediction(intp numPredictions, uint32* labelIndices, float64* predictedScores) {
+Prediction::Prediction(uint32 numPredictions, uint32* labelIndices, float64* predictedScores) {
     numPredictions_ = numPredictions;
     labelIndices_ = labelIndices;
     predictedScores_ = predictedScores;
@@ -13,7 +13,7 @@ Prediction::~Prediction() {
     free(predictedScores_);
 }
 
-PredictionCandidate::PredictionCandidate(intp numPredictions, uint32* labelIndices, float64* predictedScores,
+PredictionCandidate::PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
                                          float64 overallQualityScore)
     : Prediction(numPredictions, labelIndices, predictedScores) {
     overallQualityScore_ = overallQualityScore;
@@ -23,7 +23,7 @@ PredictionCandidate::~PredictionCandidate() {
 
 }
 
-LabelWisePredictionCandidate::LabelWisePredictionCandidate(intp numPredictions, uint32* labelIndices,
+LabelWisePredictionCandidate::LabelWisePredictionCandidate(uint32 numPredictions, uint32* labelIndices,
                                                            float64* predictedScores, float64* qualityScores,
                                                            float64 overallQualityScore)
     : PredictionCandidate(numPredictions, labelIndices, predictedScores, overallQualityScore) {
