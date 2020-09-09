@@ -43,10 +43,9 @@ cdef class Bagging(InstanceSubSampling):
 
     cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
-        cdef intp num_samples = <intp>(sample_size * num_examples)
+        cdef uint32 num_samples = <uint32>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
-        cdef uint32 random_index
-        cdef intp i
+        cdef uint32 random_index, i
 
         weights[:] = 0
 
@@ -78,7 +77,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
     cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
-        cdef intp num_samples = <intp>(sample_size * num_examples)
+        cdef uint32 num_samples = <uint32>(sample_size * num_examples)
         cdef uint32[::1] weights = __sample_weights_without_replacement(num_examples, num_samples, rng)
         cdef pair[uint32[::1], uint32] result  # Stack-allocated pair
         result.first = weights
@@ -118,12 +117,12 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
     cdef uint32[::1] sub_sample(self, intp num_features, RNG rng):
          cdef float32 sample_size = self.sample_size
-         cdef intp num_samples
+         cdef uint32 num_samples
 
          if sample_size > 0:
-            num_samples = <intp>(sample_size * num_features)
+            num_samples = <uint32>(sample_size * num_features)
          else:
-            num_samples = <intp>(log2(num_features - 1) + 1)
+            num_samples = <uint32>(log2(num_features - 1) + 1)
 
          return __sample_indices_without_replacement(num_features, num_samples, rng)
 
@@ -194,8 +193,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_select
     cdef uint32[::1] weights = array_uint32(num_total)
     cdef set[uint32] selected_indices  # Stack-allocated set
     cdef bint should_continue
-    cdef uint32 random_index
-    cdef intp i
+    cdef uint32 random_index, i
 
     weights[:] = 0
 
@@ -223,8 +221,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(intp num_t
     """
     cdef uint32[::1] weights = array_uint32(num_total)
     cdef uint32[::1] pool = array_uint32(num_total)
-    cdef uint32 random_index, j
-    cdef intp i
+    cdef uint32 random_index, i, j
 
     # Initialize arrays...
     for i in range(num_total):
@@ -285,8 +282,7 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_tracking_select
     cdef uint32[::1] indices = array_uint32(num_samples)
     cdef set[uint32] selected_indices  # Stack-allocated set
     cdef bint should_continue
-    cdef uint32 random_index
-    cdef intp i
+    cdef uint32 random_index, i
 
     for i in range(num_samples):
         should_continue = True
@@ -313,8 +309,7 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_reservoir_sampl
                         sub-sample
     """
     cdef uint32[::1] indices = array_uint32(num_samples)
-    cdef uint32 random_index
-    cdef intp i
+    cdef uint32 random_index, i
 
     for i in range(num_samples):
         indices[i] = i
@@ -342,8 +337,7 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_random_permutat
                         sub-sample
     """
     cdef uint32[::1] indices = array_uint32(num_total)
-    cdef uint32 random_index
-    cdef intp i, tmp
+    cdef uint32 random_index, i, tmp
 
     for i in range(num_total):
         indices[i] = i
