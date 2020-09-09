@@ -48,19 +48,19 @@ cdef class ConjunctiveBody(Body):
 
     # Attributes:
 
-    cdef readonly intp[::1] leq_feature_indices
+    cdef readonly uint32[::1] leq_feature_indices
 
     cdef readonly float32[::1] leq_thresholds
 
-    cdef readonly intp[::1] gr_feature_indices
+    cdef readonly uint32[::1] gr_feature_indices
 
     cdef readonly float32[::1] gr_thresholds
 
-    cdef readonly intp[::1] eq_feature_indices
+    cdef readonly uint32[::1] eq_feature_indices
 
     cdef readonly float32[::1] eq_thresholds
 
-    cdef readonly intp[::1] neq_feature_indices
+    cdef readonly uint32[::1] neq_feature_indices
 
     cdef readonly float32[::1] neq_thresholds
 
