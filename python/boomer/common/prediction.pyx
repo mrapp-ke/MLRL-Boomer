@@ -28,7 +28,7 @@ cdef class Predictor:
         """
         pass
 
-    cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+    cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                              intp num_features, intp num_labels, RuleModel model):
         """
         Obtains and returns the predictions for given examples.
@@ -37,10 +37,10 @@ cdef class Predictor:
 
         :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples
-        :param x_row_indices:   An array of type `intp`, shape `(num_examples + 1)`, representing the indices of the
+        :param x_row_indices:   An array of type `uint32`, shape `(num_examples + 1)`, representing the indices of the
                                 first element in `x_data` and `x_col_indices` that corresponds to a certain examples.
                                 The index at the last position is equal to `num_non_zero_feature_values`
-        :param x_col_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
+        :param x_col_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
         :param num_features:    The total number of features
         :param num_labels:      The total number of labels
@@ -72,7 +72,7 @@ cdef class DensePredictor(Predictor):
         else:
             return np.asarray(predictions)
 
-    cpdef object predict_csr(self, float32[::1] x_data, intp[::1] x_row_indices, intp[::1] x_col_indices,
+    cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                              intp num_features, intp num_labels, RuleModel model):
         cdef float64[:, ::1] predictions = model.predict_csr(x_data, x_row_indices, x_col_indices, num_features,
                                                              num_labels)
