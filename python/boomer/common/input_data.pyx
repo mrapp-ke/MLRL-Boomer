@@ -3,7 +3,6 @@
 
 Provides classes that provide access to the data that is provided for training.
 """
-from boomer.common._arrays cimport intp
 from boomer.common._tuples cimport IndexedFloat32, compareIndexedFloat32
 
 from libc.stdlib cimport qsort, malloc
@@ -59,7 +58,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         """
         cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr
         cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
-        cdef intp num_rows = rows.shape[0]
+        cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
 
@@ -114,11 +113,11 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         # Class members
         cdef const float32[::1, :] x = self.x
         # The number of elements to be returned
-        cdef intp num_elements = x.shape[0]
+        cdef uint32 num_elements = x.shape[0]
         # The array that stores the indices
         cdef IndexedFloat32* sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
         # Temporary variables
-        cdef intp i
+        cdef uint32 i
 
         for i in range(num_elements):
             sorted_array[i].index = i
@@ -163,15 +162,15 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         cdef const uint32[::1] x_row_indices = self.x_row_indices
         cdef const uint32[::1] x_col_indices = self.x_col_indices
         # The index of the first element in `x_data` and `x_row_indices` that corresponds to the given feature index
-        cdef intp start = x_col_indices[feature_index]
+        cdef uint32 start = x_col_indices[feature_index]
         # The index of the last element in `x_data` and `x_row_indices` that corresponds to the given feature index
-        cdef intp end = x_col_indices[feature_index + 1]
+        cdef uint32 end = x_col_indices[feature_index + 1]
         # The number of elements to be returned
-        cdef intp num_elements = end - start
+        cdef uint32 num_elements = end - start
         # The array that stores the indices
         cdef IndexedFloat32* sorted_array = NULL
         # Temporary variables
-        cdef intp i, j
+        cdef uint32 i, j
 
         if num_elements > 0:
             sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
