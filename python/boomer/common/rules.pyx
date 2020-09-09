@@ -28,7 +28,7 @@ cdef class Body:
 
         The feature values of the example must be given as a dense C-contiguous array.
 
-        :param example: An array of dtype float, shape `(num_features)`, representing the features of an example
+        :param example: An array of type `float32`, shape `(num_features)`, representing the features of an example
         :return:        1, if the example is covered, 0 otherwise
         """
         pass
@@ -40,14 +40,14 @@ cdef class Body:
 
         The feature values of the example must be given as a sparse array.
 
-        :param example_data:    An array of dtype float, shape `(num_non_zero_feature_values), representing the non-zero
-                                feature values of the training examples
-        :param example_indices: An array of dtype int, shape `(num_non_zero_feature_values)`, representing the indices
+        :param example_data:    An array of type `float32`, shape `(num_non_zero_feature_values), representing the
+                                non-zero feature values of the training examples
+        :param example_indices: An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the indices
                                 of the features, the values in `example_data` correspond to
-        :param tmp_array1:      An array of dtype float, shape `(num_features)` that is used to temporarily store
+        :param tmp_array1:      An array of type `float32`, shape `(num_features)` that is used to temporarily store
                                 non-zero feature values. May contain arbitrary values
-        :param tmp_array2:      An array of dtype uint, shape `(num_features)` that is used to temporarily keep track of
-                                the feature indices with non-zero feature values. Must not contain any elements with
+        :param tmp_array2:      An array of type `uint32`, shape `(num_features)` that is used to temporarily keep track
+                                of the feature indices with non-zero feature values. Must not contain any elements with
                                 value `n`
         :param n:               An arbitrary number. If this function is called multiple times for different examples,
                                 but using the same `tmp_array2`, the number must be unique for each of the function
@@ -86,30 +86,30 @@ cdef class ConjunctiveBody(Body):
                   intp[::1] eq_feature_indices = None, float32[::1] eq_thresholds = None,
                   intp[::1] neq_feature_indices = None, float32[::1] neq_thresholds = None):
         """
-        :param leq_feature_indices: An array of dtype int, shape `(num_leq_conditions)`, representing the indices of the
-                                    features, the numerical conditions that use the <= operator correspond to or None,
+        :param leq_feature_indices: An array of type `intp`, shape `(num_leq_conditions)`, representing the indices of
+                                    the features, the numerical conditions that use the <= operator correspond to or
+                                    None, if the body does not contain such a condition
+        :param leq_thresholds:      An array of type `float32`, shape `(num_leq_condition)`, representing the thresholds
+                                    of the numerical conditions that use the <= operator or None, if the body does not
+                                    contain such a condition
+        :param gr_feature_indices:  An array of type `intp`, shape `(num_gr_conditions)`, representing the indices of
+                                    the features, the numerical conditions that use the > operator correspond to or
+                                    None, if the body does not contain such a condition
+        :param gr_thresholds:       An array of type `float32`, shape `(num_gr_conditions)`, representing the thresholds
+                                    of the numerical conditions that use the > operator or None, if the body does not
+                                    contain such a condition
+        :param eq_feature_indices:  An array of type `intp`, shape `(num_eq_conditions)`, representing the indices of
+                                    the features, the nominal conditions that use the = operator correspond to or None,
                                     if the body does not contain such a condition
-        :param leq_thresholds:      An array of dtype float, shape `(num_leq_condition)`, representing the thresholds of
-                                    the numerical conditions that use the <= operator or None, if the body does not
+        :param eq_thresholds:       An array of type `float32`, shape `(num_eq_conditions)`, representing the thresholds
+                                    of the nominal conditions that use the = operator or None, if the body does not
                                     contain such a condition
-        :param gr_feature_indices:  An array of dtype int, shape `(num_gr_conditions)`, representing the indices of the
-                                    features, the numerical conditions that use the > operator correspond to or None, if
-                                    the body does not contain such a condition
-        :param gr_thresholds:       An array of dtype float, shape `(num_gr_conditions)`, representing the thresholds of
-                                    the numerical conditions that use the > operator or None, if the body does not
-                                    contain such a condition
-        :param eq_feature_indices:  An array of dtype int, shape `(num_eq_conditions)`, representing the indices of the
-                                    features, the nominal conditions that use the = operator correspond to or None, if
-                                    the body does not contain such a condition
-        :param eq_thresholds:       An array of dtype float, shape `(num_eq_conditions)`, representing the thresholds of
-                                    the nominal conditions that use the = operator or None, if the body does not contain
-                                    such a condition
-        :param neq_feature_indices: An array of dtype int, shape `(num_neq_conditions)`, representing the indices of the
-                                    features, the nominal conditions that use the != operator correspond to or None, if
-                                    the body does not contain such a condition
-        :param neq_thresholds:      An array of dtype float, shape `(num_neq_conditions)`, representing the thresholds
-                                    of the nominal conditions that use the != operator or None, if the body does not
-                                    contain such a condition
+        :param neq_feature_indices: An array of type `intp`, shape `(num_neq_conditions)`, representing the indices of
+                                    the features, the nominal conditions that use the != operator correspond to or None,
+                                    if the body does not contain such a condition
+        :param neq_thresholds:      An array of type `float32`, shape `(num_neq_conditions)`, representing the
+                                    thresholds of the nominal conditions that use the != operator or None, if the body
+                                    does not contain such a condition
         """
         self.leq_feature_indices = leq_feature_indices
         self.leq_thresholds = leq_thresholds
@@ -258,9 +258,9 @@ cdef class Head:
         Applies the head's prediction to a given vector of predictions. Optionally, the prediction can be restricted to
         certain labels.
 
-        :param mask:        An array of dtype uint, shape `(num_labels)`, indicating for which labels it is allowed to
+        :param predictions: An array of type `float64`, shape `(num_labels)`, representing a vector of predictions
+        :param mask:        An array of type `uint8`, shape `(num_labels)`, indicating for which labels it is allowed to
                             predict or None, if the prediction should not be restricted
-        :param predictions: An array of dtype float, shape `(num_labels)`, representing a vector of predictions
         """
         pass
 
@@ -272,8 +272,8 @@ cdef class FullHead(Head):
 
     def __cinit__(self, float64[::1] scores = None):
         """
-        :param scores:  An array of dtype float, shape `(num_labels)`, representing the scores that are predicted by the
-                        rule for each label
+        :param scores:  An array of type `float64`, shape `(num_labels)`, representing the scores that are predicted by
+                        the rule for each label
         """
         self.scores = scores
 
@@ -305,9 +305,9 @@ cdef class PartialHead(Head):
 
     def __cinit__(self, intp[::1] label_indices = None, float64[::1] scores = None):
         """
-        :param label_indices:   An array of dtype int, shape `(num_predicted_labels)`, representing the indices of the
+        :param label_indices:   An array of type `intp`, shape `(num_predicted_labels)`, representing the indices of the
                                 labels for which the rule predicts
-        :param scores:          An array of dtype float, shape `(num_predicted_labels)`, representing the scores that
+        :param scores:          An array of type `float64`, shape `(num_predicted_labels)`, representing the scores that
                                 are predicted by the rule
         """
         self.scores = scores
@@ -366,11 +366,11 @@ cdef class Rule:
 
         The feature matrix must be given as a dense C-contiguous array.
 
-        :param x:               An array of dtype float, shape `(num_examples, num_features)`, representing the features
-                                of the examples to predict for
-        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+        :param x:               An array of type `float32`, shape `(num_examples, num_features)`, representing the
+                                features of the examples to predict for
+        :param predictions:     An array of type `float64`, shape `(num_examples, num_labels)`, representing the
                                 predictions for individual examples and labels
-        :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
+        :param mask:            An array of type `uint8`, shape `(num_examples, num_labels)`, indicating for which
                                 examples and labels it is allowed to predict or None, if the prediction should not be
                                 restricted
         """
@@ -394,26 +394,26 @@ cdef class Rule:
 
         The feature matrix must be given in compressed sparse row (CSR) format.
 
-        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+        :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the examples to predict for
-        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
-                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
-                                index at the last position is equal to `num_non_zero_feature_values`
-        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+        :param x_row_indices:   An array of type `intp`, shape `(num_examples + 1)`, representing the indices of the
+                                first element in `x_data` and `x_col_indices` that corresponds to a certain examples.
+                                The index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
         :param num_features:    The total number of features
-        :param tmp_array1:      An array of dtype float, shape `(num_features)` that is used to temporarily store
+        :param tmp_array1:      An array of type `float32`, shape `(num_features)` that is used to temporarily store
                                 non-zero feature values. May contain arbitrary values
-        :param tmp_array2:      An array of dtype uint, shape `(num_features)` that is used to temporarily keep track of
-                                the feature indices with non-zero feature values. Must not contain any elements with
+        :param tmp_array2:      An array of type `uint32`, shape `(num_features)` that is used to temporarily keep track
+                                of the feature indices with non-zero feature values. Must not contain any elements with
                                 value `n`
         :param n:               An arbitrary number. If this function is called multiple times on different rules, but
                                 using the same `tmp_array2`, the number must be unique for each of the function
                                 invocations and the numbers `n...n + num_examples` must not be used for any of the
                                 remaining invocations
-        :param predictions:     An array of dtype float, shape `(num_examples, num_labels)`, representing the
+        :param predictions:     An array of type `float64`, shape `(num_examples, num_labels)`, representing the
                                 predictions of individual examples and labels
-        :param mask:            An array of dtype uint, shape `(num_examples, num_labels)`, indicating for which
+        :param mask:            An array of type `uint8`, shape `(num_examples, num_labels)`, indicating for which
                                 examples and labels it is allowed to predict or None, if the prediction should not be
                                 restricted
         """
@@ -460,10 +460,10 @@ cdef class RuleModel:
 
         The feature matrix must be given as a dense C-contiguous array.
         
-        :param x:           An array of dtype float, shape `(num_examples, num_features)`, representing the features of
-                            the examples to predict for
+        :param x:           An array of type `float32`, shape `(num_examples, num_features)`, representing the features
+                            of the examples to predict for
         :param num_labels:  The total number of labels
-        :return:            An array of dtype float, shape `(num_examples, num_labels)`, representing the predictions
+        :return:            An array of type `float64`, shape `(num_examples, num_labels)`, representing the predictions
                             for individual examples and labels
         """
         pass
@@ -475,16 +475,16 @@ cdef class RuleModel:
 
         The feature matrix must be given in compressed sparse row (CSR) format.
         
-        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+        :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples 
-        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
-                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
-                                index at the last position is equal to `num_non_zero_feature_values`
-        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+        :param x_row_indices:   An array of type `intp`, shape `(num_examples + 1)`, representing the indices of the
+                                first element in `x_data` and `x_col_indices` that corresponds to a certain examples.
+                                The index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
         :param num_features:    The total number of features
         :param num_labels:      The total number of labels
-        :return:                An array of dtype float, shape `(num_examples, num_labels)`, representing the
+        :return:                An array of type `float64`, shape `(num_examples, num_labels)`, representing the
                                 predictions for individual examples and labels
         """
         pass
@@ -586,7 +586,7 @@ cdef class ModelBuilder:
         :param head:                            A pointer to an object of type `Prediction`, representing the head of
                                                 the rule
         :param conditions:                      A list that contains the rule's conditions
-        :param num_conditions_per_comparator:   An array of dtype int, shape `(4)`, representing the number of
+        :param num_conditions_per_comparator:   An array of type `intp`, shape `(4)`, representing the number of
                                                 conditions that use a specific operator
         """
         pass

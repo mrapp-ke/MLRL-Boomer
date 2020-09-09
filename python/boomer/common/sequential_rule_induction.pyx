@@ -71,7 +71,7 @@ cdef class SequentialRuleInduction:
         """
         Creates and returns a model that consists of several classification rules.
 
-        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
+        :param nominal_attribute_mask:  An array of type `uint8`, shape `(num_features)`, indicating whether the feature
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
                                         the training examples

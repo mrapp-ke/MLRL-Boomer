@@ -65,7 +65,7 @@ cdef class RuleInduction:
 
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
-        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
+        :param nominal_attribute_mask:  An array of type `uint8`, shape `(num_features)`, indicating whether the feature
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
                                         training examples
@@ -421,7 +421,7 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
     :param num_label_indices:           The number of elements in the array `label_indices`
     :param label_indices:               A pointer to an array of type `intp`, shape `(num_predictions)`, representing
                                         the indices of the labels for which the refined rule may predict
-    :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
+    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
                                         the training examples or None, if all training examples are weighed equally
     :param total_sum_of_weights:        The sum of the weights of all training examples
     :param cache_global:                A pointer to a map that maps feature indices to structs of type
@@ -434,9 +434,9 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
                                         feature, sorted in ascending order by the feature values
     :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of the
                                         training examples
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the existing rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the existing rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the existing rule
     :param num_conditions:              The number of conditions in the body of the existing rule
@@ -982,15 +982,15 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                         new condition and the remaining ones are not, 0, if the examples in said range
                                         are not covered and the remaining ones are
     :param num_conditions:              The total number of conditions in the rule's body (including the new one)
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the previous rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the previous rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be notified about the
                                         examples that must be considered when searching for the next refinement, i.e.,
                                         the examples that are covered by the new rule
-    :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
+    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
                                         the training examples
     :return:                            The value that is used to mark those elements in the updated
                                         `covered_statistics_mask` that are covered by the new rule
@@ -1107,9 +1107,9 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
                                         to store the filtered array
     :param num_conditions:              The total number of conditions in the current rule's body
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the previous rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the previous rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     """
@@ -1178,8 +1178,8 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
                                         statistics
     :param num_statistics:              The number of available statistics
     :param head_refinement:             The strategy that was used to find the head of the rule
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the rule
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the rule
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the rule
     :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
