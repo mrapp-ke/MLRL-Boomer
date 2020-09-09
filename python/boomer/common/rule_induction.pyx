@@ -3,7 +3,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport uint32, float64, array_uint32
+from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
@@ -58,7 +58,7 @@ cdef class RuleInduction:
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
         """
         Induces a new classification rule.
@@ -154,7 +154,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                           FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()

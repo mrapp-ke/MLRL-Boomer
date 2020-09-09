@@ -19,7 +19,7 @@ cdef class SequentialRuleInduction:
                   HeadRefinement default_rule_head_refinement, HeadRefinement head_refinement, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                  intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
+                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
         :param statistics_provider_factory:     A factory that allows to create a provider that provides access to the
                                                 statistics which serve as the basis for learning rules
@@ -91,7 +91,7 @@ cdef class SequentialRuleInduction:
         cdef FeatureSubSampling feature_sub_sampling = self.feature_sub_sampling
         cdef Pruning pruning = self.pruning
         cdef PostProcessor post_processor = self.post_processor
-        cdef intp min_coverage = self.min_coverage
+        cdef uint32 min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
         cdef intp max_head_refinements = self.max_head_refinements
         cdef int num_threads = self.num_threads
