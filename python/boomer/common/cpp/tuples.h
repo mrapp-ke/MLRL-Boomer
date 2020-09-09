@@ -31,7 +31,7 @@ struct IndexedFloat32Array {
  * value in an array.
  */
 struct IndexedFloat64 {
-    intp index;
+    uint32 index;
     float64 value;
 };
 
