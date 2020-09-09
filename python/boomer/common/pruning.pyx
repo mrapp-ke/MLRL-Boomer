@@ -3,7 +3,7 @@
 
 Provides classes that implement strategies for pruning classification rules.
 """
-from boomer.common._arrays cimport float32, float64, array_uint32
+from boomer.common._arrays cimport intp, float32, float64, array_uint32
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
@@ -21,7 +21,7 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
@@ -61,7 +61,7 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
@@ -83,7 +83,8 @@ cdef class IREP(Pruning):
         cdef float64 current_quality_score
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
-        cdef intp feature_index, num_indexed_values, i, n, r, start, end
+        cdef intp num_indexed_values, i, n, r, start, end
+        cdef uint32 feature_index
         cdef bint uncovered
 
         # Reset the statistics and start a new search...

@@ -3,6 +3,7 @@
 
 Provides classes that provide access to the data that is provided for training.
 """
+from boomer.common._arrays cimport intp
 from boomer.common._tuples cimport IndexedFloat32, compareIndexedFloat32
 
 from libc.stdlib cimport qsort, malloc
@@ -81,7 +82,7 @@ cdef class FeatureMatrix:
     A base class for all classes that provide column-wise access to the feature values of the training examples.
     """
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil:
         """
         Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
         them in ascending order by the feature values and stores the in a given struct of type `IndexedFloat32Array`.
@@ -109,7 +110,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         self.num_features = x.shape[1]
         self.x = x
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil:
         # Class members
         cdef const float32[::1, :] x = self.x
         # The number of elements to be returned
@@ -156,7 +157,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         self.x_row_indices = x_row_indices
         self.x_col_indices = x_col_indices
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil:
         # Class members
         cdef const float32[::1] x_data = self.x_data
         cdef const uint32[::1] x_row_indices = self.x_row_indices

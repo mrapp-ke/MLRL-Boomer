@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float32
+from boomer.common._arrays cimport uint8, uint32, float32
 from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._sparse cimport BinaryDokMatrix
 
@@ -62,7 +62,7 @@ cdef class FeatureMatrix:
 
     # Functions:
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
 
 
 cdef class DenseFeatureMatrix(FeatureMatrix):
@@ -73,7 +73,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -88,4 +88,4 @@ cdef class CscFeatureMatrix(FeatureMatrix):
 
     # Functions:
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil

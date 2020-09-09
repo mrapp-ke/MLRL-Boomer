@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float32, float64
+from boomer.common._arrays cimport uint8, uint32, float32, float64
 from boomer.common._predictions cimport Prediction
 
 from libcpp.list cimport list as double_linked_list
@@ -19,7 +19,7 @@ A struct that represents a condition of a rule. It consists of the index of the 
 the type of the operator that is used by the condition, as well as a threshold.
 """
 cdef struct Condition:
-    intp feature_index
+    uint32 feature_index
     Comparator comparator
     float32 threshold
 
