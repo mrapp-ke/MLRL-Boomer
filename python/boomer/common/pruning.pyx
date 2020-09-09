@@ -38,13 +38,13 @@ cdef class Pruning:
         :param conditions:                  A list that contains the conditions of the existing rule
         :param head:                        A pointer to an object of type `Prediction` representing the head of the
                                             existing rule
-        :param covered_examples_mask:       An array of dtype uint, shape `(num_examples)` that is used to keep track of
-                                            the indices of the examples that are covered by the existing rule
+        :param covered_examples_mask:       An array of type `uint32`, shape `(num_examples)` that is used to keep track
+                                            of the indices of the examples that are covered by the existing rule
         :param covered_examples_target:     The value that is used to mark those elements in `covered_examples_mask`
                                             that are covered by the existing rule
-        :param weights:                     An array of dtype int, shape `(num_examples)`, representing the weights of
-                                            all training examples, regardless of whether they are included in the prune
-                                            set or grow set
+        :param weights:                     An array of type `uint32`, shape `(num_examples)`, representing the weights
+                                            of all training examples, regardless of whether they are included in the
+                                            prune set or grow set
         :param statistics:                  A pointer to an object of type `AbstractStatistics`, which served as the
                                             basis for learning the existing rule
         :param head_refinement:             The strategy that is used to find the heads of rules

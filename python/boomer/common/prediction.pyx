@@ -19,8 +19,8 @@ cdef class Predictor:
 
         The feature matrix must be given as a dense C-contiguous array.
 
-        :param x:           An array of dtype float, shape `(num_examples, num_features)`, representing the features of
-                            the examples to predict for
+        :param x:           An array of type `float32`, shape `(num_examples, num_features)`, representing the features
+                            of the examples to predict for
         :param num_labels:  The total number of labels
         :param model:       The model to be used for making predictions
         :return:            A `np.ndarray` or a `scipy.sparse.matrix`, shape `(num_examples, num_labels)`, representing
@@ -35,12 +35,12 @@ cdef class Predictor:
 
         The feature matrix must be given in compressed sparse row (CSR) format.
 
-        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+        :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples
-        :param x_row_indices:   An array of dtype int, shape `(num_examples + 1)`, representing the indices of the first
-                                element in `x_data` and `x_col_indices` that corresponds to a certain examples. The
-                                index at the last position is equal to `num_non_zero_feature_values`
-        :param x_col_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+        :param x_row_indices:   An array of type `intp`, shape `(num_examples + 1)`, representing the indices of the
+                                first element in `x_data` and `x_col_indices` that corresponds to a certain examples.
+                                The index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
         :param num_features:    The total number of features
         :param num_labels:      The total number of labels
@@ -93,7 +93,7 @@ cdef class TransformationFunction:
         """
         Applies the transformation function to a matrix.
 
-        :param m:   An array of dtype float, shape `(num_rows, num_cols)`, the transformation function should be
+        :param m:   An array of type `float64`, shape `(num_rows, num_cols)`, the transformation function should be
                     applied to
         :return:    A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_rows, num_cols)`, representing the result of
                     the transformation

@@ -34,7 +34,7 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
 
     def __cinit__(self, const uint8[:, ::1] y):
         """
-        :param y: An array of dtype uint8, shape `(num_examples, num_labels)`, representing the labels of the training
+        :param y: An array of type `uint8`, shape `(num_examples, num_labels)`, representing the labels of the training
                   examples
         """
         cdef intp num_examples = y.shape[0]
@@ -54,7 +54,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         """
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
-        :param rows:            An array of dtype `list`, shape `(num_rows)`, storing a list for each example containing
+        :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
         cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr
@@ -103,8 +103,8 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     def __cinit__(self, const float32[::1, :] x):
         """
-        :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
-                  training examples
+        :param x: An array of type `float32`, shape `(num_examples, num_features)`, representing the feature values of
+                  the training examples
         """
         self.num_examples = x.shape[0]
         self.num_features = x.shape[1]
@@ -143,11 +143,11 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         """
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
-        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+        :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples
-        :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+        :param x_row_indices:   An array of type `intp`, shape `(num_non_zero_feature_values)`, representing the
                                 row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:   An array of dtype int, shape `(num_features + 1)`, representing the indices of the first
+        :param x_col_indices:   An array of type `intp`, shape `(num_features + 1)`, representing the indices of the first
                                 element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
                                 at the last position is equal to `num_non_zero_feature_values`
         """
