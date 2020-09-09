@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport intp, float64
+from boomer.common._arrays cimport float64
 from boomer.common._predictions cimport LabelWisePredictionCandidate
 from boomer.common._tuples cimport IndexedFloat64, compareIndexedFloat64
 from boomer.seco.lift_functions cimport LiftFunction
@@ -18,13 +18,14 @@ cdef class PartialHeadRefinement(HeadRefinement):
                                                                                                        accumulated)
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
-        cdef intp num_predictions = prediction.numPredictions_
+        cdef uint32 num_predictions = prediction.numPredictions_
+        cdef uint32* sorted_indices = NULL
+        cdef uint32 best_head_candidate_length = 0
+        cdef float64 total_quality_score = 0
         cdef float64* candidate_predicted_scores
         cdef uint32* candidate_label_indices
-        cdef uint32* sorted_indices = NULL
-        cdef intp best_head_candidate_length = 0
-        cdef float64 best_quality_score, total_quality_score = 0, quality_score, maximum_lift, max_score
-        cdef intp c
+        cdef float64 best_quality_score, quality_score, maximum_lift, max_score
+        cdef uint32 c
 
         cdef AbstractLiftFunction* lift_function = self.lift_function_ptr.get()
 
@@ -106,7 +107,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
         return refinement_search.calculateLabelWisePrediction(uncovered, accumulated)
 
 
-cdef inline uint32* __argsort(float64* a, intp num_elements) nogil:
+cdef inline uint32* __argsort(float64* a, uint32 num_elements) nogil:
     """
     Creates and returns an array that stores the indices of the elements in a given array when sorted in ascending 
     order.

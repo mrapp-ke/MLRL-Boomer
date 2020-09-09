@@ -3,7 +3,7 @@
 
 Provides model classes that are used to build rule-based models.
 """
-from boomer.common._arrays cimport intp, array_uint32, array_float32, array_float64
+from boomer.common._arrays cimport array_uint32, array_float32, array_float64
 from boomer.common._arrays cimport c_matrix_uint8, c_matrix_float64
 
 from cython.operator cimport dereference, postincrement
@@ -616,13 +616,12 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
         self.rule_list = rule_list
-        cdef intp num_predictions
+        cdef uint32 num_predictions, c
         cdef float64* predicted_scores
         cdef float64[::1] head_scores
         cdef FullHead head
         cdef EmptyBody body
         cdef Rule default_rule
-        cdef intp c
 
         if default_prediction != NULL:
             num_predictions = default_prediction.numPredictions_
@@ -690,13 +689,13 @@ cdef class RuleListBuilder(ModelBuilder):
                                                                  gr_feature_indices, gr_thresholds, eq_feature_indices,
                                                                  eq_thresholds, neq_feature_indices, neq_thresholds)
 
-        cdef intp num_predictions = head.numPredictions_
+        cdef uint32 num_predictions = head.numPredictions_
         cdef float64* predicted_scores = head.predictedScores_
         cdef uint32* label_indices = head.labelIndices_
         cdef float64[::1] head_scores = array_float64(num_predictions)
         cdef uint32[::1] head_label_indices
         cdef Head rule_head
-        cdef intp c
+        cdef uint32 c
 
         for c in range(num_predictions):
             head_scores[c] = predicted_scores[c]

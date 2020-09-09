@@ -23,14 +23,14 @@ class Prediction {
          * @param predictedScores   A pointer to an array of type `float64`, shape `(numPredictions)`, representing the
          *                          predicted scores
          */
-        Prediction(intp numPredictions, uint32* labelIndices, float64* predictedScores);
+        Prediction(uint32 numPredictions, uint32* labelIndices, float64* predictedScores);
 
         ~Prediction();
 
         /**
          * The number of labels for which the rule predicts.
          */
-        intp numPredictions_;
+        uint32 numPredictions_;
 
         /**
          * A pointer to an array of type `uint32`, shape `(numPredictions_)`, representing the indices of the labels for
@@ -61,7 +61,7 @@ class PredictionCandidate : public Prediction {
          *                              the predicted scores
          * @param overallQualityScore   A score that assesses the overall quality of the predictions
          */
-        PredictionCandidate(intp numPredictions, uint32* labelIndices, float64* predictedScores,
+        PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
                             float64 overallQualityScore);
 
         ~PredictionCandidate();
@@ -91,7 +91,7 @@ class LabelWisePredictionCandidate : public PredictionCandidate {
          *                              the quality scores for individual labels
          * @param overallQualityScore   A score that assesses the overall quality of the predictions
          */
-        LabelWisePredictionCandidate(intp numPredictions, uint32* labelIndices, float64* predictedScores,
+        LabelWisePredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
                                      float64* qualityScores, float64 overallQualityScore);
 
         ~LabelWisePredictionCandidate();

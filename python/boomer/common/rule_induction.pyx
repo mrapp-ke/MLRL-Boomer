@@ -221,7 +221,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # Sub-sample labels, if necessary...
         cdef uint32[::1] sampled_label_indices
         cdef const uint32* label_indices
-        cdef intp num_predictions
+        cdef uint32 num_predictions
 
         if label_sub_sampling is None:
             sampled_label_indices = None
@@ -403,7 +403,7 @@ cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFlo
             dereference(cache_global)[feature_index] = indexed_array
 
 
-cdef Refinement __find_refinement(uint32 feature_index, bint nominal, intp num_label_indices,
+cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num_label_indices,
                                   const uint32* label_indices, uint32[::1] weights, uint32 total_sum_of_weights,
                                   unordered_map[uint32, IndexedFloat32Array*]* cache_global,
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
@@ -1186,7 +1186,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
                                         the rule
     """
     # The number labels for which the head predicts
-    cdef intp num_predictions = head.numPredictions_
+    cdef uint32 num_predictions = head.numPredictions_
     # An array that stores the labels for which the head predicts
     cdef uint32* label_indices = head.labelIndices_
     # An array that stores the scores that are predicted by the head
@@ -1195,7 +1195,8 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
     cdef AbstractRefinementSearch* refinement_search
     cdef Prediction* prediction
     cdef float64* updated_scores
-    cdef intp r, c
+    cdef uint32 c
+    cdef intp r
 
     try:
         refinement_search = statistics.beginSearch(num_predictions, label_indices)

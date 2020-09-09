@@ -6,8 +6,8 @@ using namespace boosting;
 
 
 DenseLabelWiseRefinementSearchImpl::DenseLabelWiseRefinementSearchImpl(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, intp numPredictions,
-        const uint32* labelIndices, intp numLabels, const float64* gradients, const float64* totalSumsOfGradients,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, uint32 numPredictions,
+        const uint32* labelIndices, uint32 numLabels, const float64* gradients, const float64* totalSumsOfGradients,
         const float64* hessians, const float64* totalSumsOfHessians) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     numPredictions_ = numPredictions;
@@ -138,16 +138,17 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, u
     }
 }
 
-AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const uint32* labelIndices) {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
+                                                                    const uint32* labelIndices) {
+    uint32 numLabels = labelMatrixPtr_.get()->numLabels_;
+    uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new DenseLabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, numLabels,
                                                   gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
-    intp numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
     intp numLabels = labelMatrixPtr_.get()->numLabels_;

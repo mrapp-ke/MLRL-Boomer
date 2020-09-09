@@ -3,7 +3,7 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-from boomer.common._arrays cimport intp, float64
+from boomer.common._arrays cimport float64
 from boomer.common._predictions cimport LabelWisePredictionCandidate
 
 from libc.stdlib cimport malloc
@@ -80,15 +80,15 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
                                         bint uncovered, bint accumulated) nogil:
         cdef LabelWisePredictionCandidate* prediction = refinement_search.calculateLabelWisePrediction(uncovered,
                                                                                                        accumulated)
-        cdef intp num_predictions = prediction.numPredictions_
+        cdef uint32 num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
-        cdef intp best_c = 0
+        cdef uint32 best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
         cdef uint32* candidate_label_indices
         cdef float64* candidate_predicted_scores
         cdef float64 quality_score
-        cdef intp c
+        cdef uint32 c
 
         # Find the best single-label head...
         for c in range(1, num_predictions):
@@ -132,12 +132,12 @@ cdef class FullHeadRefinement(HeadRefinement):
                                         const uint32* label_indices, AbstractRefinementSearch* refinement_search,
                                         bint uncovered, bint accumulated) nogil:
         cdef PredictionCandidate* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
-        cdef intp num_predictions = prediction.numPredictions_
+        cdef uint32 num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64 overall_quality_score = prediction.overallQualityScore_
         cdef uint32* candidate_label_indices = NULL
         cdef float64* candidate_predicted_scores
-        cdef intp c
+        cdef uint32 c
 
         # The quality score must be better than that of `best_head`...
         if best_head == NULL or overall_quality_score < best_head.overallQualityScore_:
