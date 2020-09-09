@@ -3,7 +3,6 @@
 
 Provides classes that provide access to the data that is provided for training.
 """
-from boomer.common._arrays cimport uint32
 from boomer.common._tuples cimport IndexedFloat32, compareIndexedFloat32
 
 from libc.stdlib cimport qsort, malloc
@@ -37,8 +36,8 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
         :param y: An array of type `uint8`, shape `(num_examples, num_labels)`, representing the labels of the training
                   examples
         """
-        cdef intp num_examples = y.shape[0]
-        cdef intp num_labels = y.shape[1]
+        cdef uint32 num_examples = y.shape[0]
+        cdef uint32 num_labels = y.shape[1]
         self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
                                                                                                    num_labels, &y[0, 0])
         self.num_examples = num_examples
@@ -50,7 +49,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     A wrapper for the C++ class `DokLabelMatrix`.
     """
 
-    def __cinit__(self, intp num_examples, intp num_labels, list[::1] rows):
+    def __cinit__(self, uint32 num_examples, uint32 num_labels, list[::1] rows):
         """
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
@@ -138,8 +137,8 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     The feature matrix must be given in compressed sparse column (CSC) format.
     """
 
-    def __cinit__(self, intp num_examples, intp num_features, const float32[::1] x_data, const intp[::1] x_row_indices,
-                  const intp[::1] x_col_indices):
+    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] x_data,
+                  const intp[::1] x_row_indices, const intp[::1] x_col_indices):
         """
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features

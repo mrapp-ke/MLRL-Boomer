@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint8, intp, float32
+from boomer.common._arrays cimport uint8, uint32, intp, float32
 from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._sparse cimport BinaryDokMatrix
 
@@ -19,14 +19,14 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y) except +
+        DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, uint8* y) except +
 
 
     cdef cppclass DokLabelMatrixImpl(AbstractRandomAccessLabelMatrix):
 
         # Constructors:
 
-        DokLabelMatrixImpl(intp numExamples, intp numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
+        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
 
 
 cdef class LabelMatrix:
@@ -35,9 +35,9 @@ cdef class LabelMatrix:
 
     cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
 
-    cdef readonly intp num_examples
+    cdef readonly uint32 num_examples
 
-    cdef readonly intp num_labels
+    cdef readonly uint32 num_labels
 
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
@@ -56,9 +56,9 @@ cdef class FeatureMatrix:
 
     # Attributes:
 
-    cdef readonly intp num_examples
+    cdef readonly uint32 num_examples
 
-    cdef readonly intp num_features
+    cdef readonly uint32 num_features
 
     # Functions:
 
