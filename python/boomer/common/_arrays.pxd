@@ -29,19 +29,6 @@ ELSE:
     DEF FORMAT_FLOAT64 = 'd'
 
 
-cdef inline cvarray array_intp(intp num_elements):
-    """
-    Creates and returns a new C-contiguous array of type `intp`, shape `(num_elements)`.
-
-    :param num_elements:    The number of elements in the array
-    :return:                The array that has been created
-    """
-    cdef tuple shape = tuple([num_elements])
-    cdef int itemsize = sizeof(intp)
-    cdef cvarray array = cvarray(shape, itemsize, FORMAT_INTP, MODE_C_CONTIGUOUS)
-    return array
-
-
 cdef inline cvarray array_uint32(intp num_elements):
     """
     Creates and returns a new C-contiguous array of type `uint32`, shape `(num_elements)`.
