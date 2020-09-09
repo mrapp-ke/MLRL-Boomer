@@ -33,7 +33,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
                 sorted_indices = __argsort(quality_scores, num_predictions)
 
                 maximum_lift = lift_function.getMaxLift()
-                for c in range(0, num_predictions):
+                for c in range(num_predictions):
                     # select the top element of sorted_label_indices excluding labels already contained
                     total_quality_score += 1 - quality_scores[sorted_indices[c]]
 
@@ -51,7 +51,7 @@ cdef class PartialHeadRefinement(HeadRefinement):
                         # prunable by decomposition
                         break
             else:
-                for c in range(0, num_predictions):
+                for c in range(num_predictions):
                     # select the top element of sorted_label_indices excluding labels already contained
                     total_quality_score += 1 - quality_scores[c]
 
@@ -66,11 +66,11 @@ cdef class PartialHeadRefinement(HeadRefinement):
                     candidate_predicted_scores = <float64*>malloc(best_head_candidate_length * sizeof(float64))
 
                     if label_indices == NULL:
-                        for c in range(0, best_head_candidate_length):
+                        for c in range(best_head_candidate_length):
                             candidate_label_indices[c] = sorted_indices[c] if label_indices == NULL else label_indices[sorted_indices[c]]
                             candidate_predicted_scores[c] = predicted_scores[sorted_indices[c]]
                     else:
-                        for c in range(0, best_head_candidate_length):
+                        for c in range(best_head_candidate_length):
                             candidate_label_indices[c] = label_indices[c]
                             candidate_predicted_scores[c] = predicted_scores[c]
 
