@@ -97,8 +97,8 @@ cdef class FeatureSubSampling:
 
         :param num_features:    The total number of available features
         :param rng:             The random number generator to be used
-        :return:                An array of dtype int, shape `(num_samples)`, representing the indices of the features
-                                contained in the sub-sample
+        :return:                An array of dtype `intp`, shape `(num_samples)`, representing the indices of the
+                                features contained in the sub-sample
         """
         pass
 
@@ -139,7 +139,7 @@ cdef class LabelSubSampling:
         
         :param num_labels:  The total number of available labels
         :param rng:         The random number generator to be used
-        :return:            An array of dtype int, shape `(num_samples)`, representing the indices of the labels
+        :return:            An array of dtype `intp`, shape `(num_samples)`, representing the indices of the labels
                             contained in the sub-sample
         """
         pass
@@ -253,7 +253,7 @@ cdef inline intp[::1] __sample_indices_without_replacement(intp num_total, intp 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of dtype int, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of dtype `intp`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
     cdef float64 ratio = (<float64>num_samples) / (<float64>num_total) if num_total != 0 else 1.0
@@ -279,7 +279,7 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_tracking_selectio
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of dtype int, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of dtype `intp`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
     cdef intp[::1] indices = array_intp(num_samples)
@@ -309,7 +309,7 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_reservoir_samplin
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of dtype int, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of dtype `intp`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
     cdef intp[::1] indices = array_intp(num_samples)
@@ -338,7 +338,7 @@ cdef inline intp[::1] __sample_indices_without_replacement_via_random_permutatio
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
     :param rng:         The random number generator to be used
-    :return:            An array of dtype int, shape `(num_samples)`, representing the indices contained in the
+    :return:            An array of dtype `intp`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
     cdef intp[::1] indices = array_intp(num_total)
