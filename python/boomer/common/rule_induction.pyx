@@ -165,7 +165,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef double_linked_list[Condition] conditions
         # The total number of conditions
-        cdef intp num_conditions = 0
+        cdef uint32 num_conditions = 0
         # An array representing the number of conditions per type of operator
         cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
         num_conditions_per_comparator[:] = 0
@@ -408,8 +408,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, intp num_l
                                   unordered_map[uint32, IndexedFloat32Array*]* cache_global,
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                   FeatureMatrix feature_matrix, uint32[::1] covered_statistics_mask,
-                                  uint32 covered_statistics_target, intp num_conditions, AbstractStatistics* statistics,
-                                  HeadRefinement head_refinement, PredictionCandidate* head) nogil:
+                                  uint32 covered_statistics_target, uint32 num_conditions,
+                                  AbstractStatistics* statistics, HeadRefinement head_refinement,
+                                  PredictionCandidate* head) nogil:
     """
     Finds and returns the best refinement of an existing rule, which results from adding a new condition that
     corresponds to a certain feature.
@@ -958,7 +959,7 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
 cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                             IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp condition_start,
                                             intp condition_end, Comparator condition_comparator, bint covered,
-                                            intp num_conditions, uint32[::1] covered_statistics_mask,
+                                            uint32 num_conditions, uint32[::1] covered_statistics_mask,
                                             uint32 covered_statistics_target, AbstractStatistics* statistics,
                                             uint32[::1] weights):
     """
@@ -1094,7 +1095,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
 
 
 cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
-                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp num_conditions,
+                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, uint32 num_conditions,
                                       uint32[::1] covered_statistics_mask, uint32 covered_statistics_target) nogil:
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the

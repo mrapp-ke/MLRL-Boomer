@@ -20,7 +20,7 @@ be updated.
 """
 cdef struct IndexedFloat32ArrayWrapper:
     IndexedFloat32Array* array
-    intp num_conditions
+    uint32 num_conditions
 
 
 cdef class RuleInduction:
