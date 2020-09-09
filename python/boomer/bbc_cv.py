@@ -91,7 +91,7 @@ class BbcCvAdapter(CrossValidation):
 
         :param model:               The model that should be used to make predictions
         :param test_indices:        The indices of the test examples
-        :param test_x:              An array of dtype `float`, shape `(num_examples, num_features)`, representing the
+        :param test_x:              An array of type `float`, shape `(num_examples, num_features)`, representing the
                                     features of the test examples
         :param num_total_examples:  The total number of examples
         :param num_labels:          The number of labels
