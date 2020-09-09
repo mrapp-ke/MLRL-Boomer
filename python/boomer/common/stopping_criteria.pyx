@@ -13,7 +13,7 @@ cdef class StoppingCriterion:
     not.
     """
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, intp num_rules):
+    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
         """
         Returns, whether more rules should be induced, or not.
 
@@ -30,14 +30,14 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
     A stopping criterion that ensures that the number of rules does not exceed a certain maximum.
     """
 
-    def __cinit__(self, intp max_rules):
+    def __cinit__(self, uint32 max_rules):
         """
         :param max_rules: The maximum number of rules
         """
         self.max_rules = max_rules
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, intp num_rules):
-        cdef intp max_rules = self.max_rules
+    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
+        cdef uint32 max_rules = self.max_rules
         return num_rules < max_rules
 
 
@@ -46,16 +46,17 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
     A stopping criterion that ensures that a time limit is not exceeded.
     """
 
-    def __cinit__(self, intp time_limit):
+    def __cinit__(self, uint32 time_limit):
         """
         :param time_limit: The time limit in seconds
         """
         self.time_limit = time_limit
         self.start_time = -1
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, intp num_rules):
-        cdef intp start_time = self.start_time
-        cdef intp current_time, time_limit
+    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
+        cdef int start_time = self.start_time
+        cdef int current_time
+        cdef uint32 time_limit
 
         if start_time < 0:
             start_time = timer()
@@ -64,4 +65,4 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
         else:
             current_time = timer()
             time_limit = self.time_limit
-            return current_time - start_time < time_limit
+            return (current_time - start_time) < time_limit
