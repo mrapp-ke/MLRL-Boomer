@@ -3,7 +3,7 @@
 
 Provides classes for making predictions using rule-based models.
 """
-from boomer.common._arrays cimport uint8, c_matrix_uint8
+from boomer.common._arrays cimport uint8, intp, c_matrix_uint8
 
 import numpy as np
 
@@ -13,7 +13,7 @@ cdef class Predictor:
     A base class for all classes that allow to make predictions based on rule-based models.
     """
 
-    cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel model):
+    cpdef object predict(self, float32[:, ::1] x, uint32 num_labels, RuleModel model):
         """
         Obtains and returns the predictions for given examples.
 
@@ -29,7 +29,7 @@ cdef class Predictor:
         pass
 
     cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                             intp num_features, intp num_labels, RuleModel model):
+                             uint32 num_features, uint32 num_labels, RuleModel model):
         """
         Obtains and returns the predictions for given examples.
 
@@ -63,7 +63,7 @@ cdef class DensePredictor(Predictor):
         """
         self.transformation_function = transformation_function
 
-    cpdef object predict(self, float32[:, ::1] x, intp num_labels, RuleModel model):
+    cpdef object predict(self, float32[:, ::1] x, uint32 num_labels, RuleModel model):
         cdef float64[:, ::1] predictions = model.predict(x, num_labels)
         cdef TransformationFunction transformation_function = self.transformation_function
 
@@ -73,7 +73,7 @@ cdef class DensePredictor(Predictor):
             return np.asarray(predictions)
 
     cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                             intp num_features, intp num_labels, RuleModel model):
+                             uint32 num_features, uint32 num_labels, RuleModel model):
         cdef float64[:, ::1] predictions = model.predict_csr(x_data, x_row_indices, x_col_indices, num_features,
                                                              num_labels)
         cdef TransformationFunction transformation_function = self.transformation_function
