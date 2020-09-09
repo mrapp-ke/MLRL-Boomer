@@ -15,7 +15,7 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng):
         """
         Creates and returns a sub-sample of the available training examples.
 
@@ -41,7 +41,7 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
         cdef uint32 num_samples = <uint32>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
@@ -75,7 +75,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef pair[uint32[::1], uint32] sub_sample(self, intp num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng):
         cdef float32 sample_size = self.sample_size
         cdef uint32 num_samples = <uint32>(sample_size * num_examples)
         cdef uint32[::1] weights = __sample_weights_without_replacement(num_examples, num_samples, rng)
@@ -90,7 +90,7 @@ cdef class FeatureSubSampling:
     A base class for all classes that implement a strategy for sub-sampling features.
     """
 
-    cdef uint32[::1] sub_sample(self, intp num_features, RNG rng):
+    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG rng):
         """
         Creates and returns a sub-sample of the available features.
 
@@ -115,7 +115,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, intp num_features, RNG rng):
+    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG rng):
          cdef float32 sample_size = self.sample_size
          cdef uint32 num_samples
 
@@ -132,7 +132,7 @@ cdef class LabelSubSampling:
     A base class for all classes that implement a strategy for sub-sampling labels.
     """
 
-    cdef uint32[::1] sub_sample(self, intp num_labels, RNG rng):
+    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG rng):
         """
         Creates and returns a sub-sample of the available labels.
         
@@ -146,18 +146,18 @@ cdef class LabelSubSampling:
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
-    def __cinit__(self, intp num_samples):
+    def __cinit__(self, uint32 num_samples):
         """
         :param num_samples: The number of labels to be included in the sample
         """
         self.num_samples = num_samples
 
-    cdef uint32[::1] sub_sample(self, intp num_labels, RNG rng):
-        cdef intp num_samples = self.num_samples
+    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG rng):
+        cdef uint32 num_samples = self.num_samples
         return __sample_indices_without_replacement(num_labels, num_samples, rng)
 
 
-cdef inline uint32[::1] __sample_weights_without_replacement(intp num_total, intp num_samples, RNG rng):
+cdef inline uint32[::1] __sample_weights_without_replacement(uint32 num_total, uint32 num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
     are set to 0. The method that is used internally is chosen automatically, depending on the ratio
@@ -178,8 +178,8 @@ cdef inline uint32[::1] __sample_weights_without_replacement(intp num_total, int
         return __sample_weights_without_replacement_via_pool(num_total, num_samples, rng)
 
 
-cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_selection(intp num_total, intp num_samples,
-                                                                                    RNG rng):
+cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_selection(uint32 num_total,
+                                                                                    uint32 num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
     are set to 0, by using a set to keep track of the elements that have already been selected. This method is suitable
@@ -209,7 +209,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_select
     return weights
 
 
-cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(intp num_total, intp num_samples, RNG rng):
+cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(uint32 num_total, uint32 num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
     are set to 0, by using a pool, i.e., an array, to keep track of the elements that have not been selected yet.
@@ -242,7 +242,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(intp num_t
     return weights
 
 
-cdef inline uint32[::1] __sample_indices_without_replacement(intp num_total, intp num_samples, RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement(uint32 num_total, uint32 num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement. The method that is used internally is
     chosen automatically, depending on the ratio `num_samples / num_total`.
@@ -267,8 +267,8 @@ cdef inline uint32[::1] __sample_indices_without_replacement(intp num_total, int
         return __sample_indices_without_replacement_via_random_permutation(num_total, num_samples, rng)
 
 
-cdef inline uint32[::1] __sample_indices_without_replacement_via_tracking_selection(intp num_total, intp num_samples,
-                                                                                    RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement_via_tracking_selection(uint32 num_total,
+                                                                                    uint32 num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement by using a set to keep track of the
     indices that have already been selected. This method is suitable if `num_samples` is much smaller than `num_total`.
@@ -296,8 +296,8 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_tracking_select
     return indices
 
 
-cdef inline uint32[::1] __sample_indices_without_replacement_via_reservoir_sampling(intp num_total, intp num_samples,
-                                                                                    RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement_via_reservoir_sampling(uint32 num_total,
+                                                                                    uint32 num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement using a reservoir sampling algorithm.
     This method is suitable if `num_samples` is almost as large as `num_total`.
@@ -323,8 +323,8 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_reservoir_sampl
     return indices
 
 
-cdef inline uint32[::1] __sample_indices_without_replacement_via_random_permutation(intp num_total, intp num_samples,
-                                                                                    RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement_via_random_permutation(uint32 num_total,
+                                                                                    uint32 num_samples, RNG rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement by first generating a random
     permutation of the available indices using the Fisher-Yates shuffle and then returning the first `num_samples`
