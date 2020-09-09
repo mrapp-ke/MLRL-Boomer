@@ -143,8 +143,8 @@ cdef class ConjunctiveBody(Body):
     cdef bint covers(self, float32[::1] example):
         cdef uint32[::1] feature_indices = self.leq_feature_indices
         cdef float32[::1] thresholds = self.leq_thresholds
-        cdef intp num_conditions = feature_indices.shape[0]
-        cdef intp i, c
+        cdef uint32 num_conditions = feature_indices.shape[0]
+        cdef uint32 i, c
 
         for i in range(num_conditions):
             c = feature_indices[i]
@@ -186,8 +186,8 @@ cdef class ConjunctiveBody(Body):
 
     cdef bint covers_sparse(self, float32[::1] example_data, uint32[::1] example_indices, float32[::1] tmp_array1,
                             uint32[::1] tmp_array2, uint32 n):
-        cdef intp num_non_zero_feature_values = example_data.shape[0]
-        cdef intp i, c
+        cdef uint32 num_non_zero_feature_values = example_data.shape[0]
+        cdef uint32 i, c
 
         for i in range(num_non_zero_feature_values):
             c = example_indices[i]
@@ -196,7 +196,7 @@ cdef class ConjunctiveBody(Body):
 
         cdef uint32[::1] feature_indices = self.leq_feature_indices
         cdef float32[::1] thresholds = self.leq_thresholds
-        cdef intp num_conditions = feature_indices.shape[0]
+        cdef uint32 num_conditions = feature_indices.shape[0]
         cdef float32 feature_value
 
         for i in range(num_conditions):
@@ -286,8 +286,8 @@ cdef class FullHead(Head):
 
     cdef void predict(self, float64[::1] predictions, uint8[::1] mask = None):
         cdef float64[::1] scores = self.scores
-        cdef intp num_cols = predictions.shape[0]
-        cdef intp c
+        cdef uint32 num_cols = predictions.shape[0]
+        cdef uint32 c
 
         for c in range(num_cols):
             if mask is not None:
@@ -324,8 +324,8 @@ cdef class PartialHead(Head):
     cdef void predict(self, float64[::1] predictions, uint8[::1] mask = None):
         cdef uint32[::1] label_indices = self.label_indices
         cdef float64[::1] scores = self.scores
-        cdef intp num_labels = label_indices.shape[0]
-        cdef intp c, l
+        cdef uint32 num_labels = label_indices.shape[0]
+        cdef uint32 c, l
 
         for c in range(num_labels):
             l = label_indices[c]
@@ -376,9 +376,9 @@ cdef class Rule:
         """
         cdef Body body = self.body
         cdef Head head = self.head
-        cdef intp num_examples = x.shape[0]
+        cdef uint32 num_examples = x.shape[0]
         cdef uint8[::1] mask_row
-        cdef intp r
+        cdef uint32 r
 
         for r in range(num_examples):
             if body.covers(x[r, :]):
@@ -419,10 +419,10 @@ cdef class Rule:
         """
         cdef Body body = self.body
         cdef Head head = self.head
-        cdef intp num_examples = x_row_indices.shape[0] - 1
+        cdef uint32 num_examples = x_row_indices.shape[0] - 1
         cdef uint32 current_n = n
         cdef uint8[::1] mask_row
-        cdef intp r, start, end
+        cdef uint32 r, start, end
 
         for r in range(num_examples):
             start = x_row_indices[r]
@@ -515,7 +515,7 @@ cdef class RuleList(RuleModel):
         rules.append(rule)
 
     cdef float64[:, ::1] predict(self, float32[:, ::1] x, uint32 num_labels):
-        cdef intp num_examples = x.shape[0]
+        cdef uint32 num_examples = x.shape[0]
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
         predictions[:, :] = 0
         cdef bint use_mask = self.use_mask
@@ -537,7 +537,7 @@ cdef class RuleList(RuleModel):
 
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                                      uint32 num_features, uint32 num_labels):
-        cdef intp num_examples = x_row_indices.shape[0] - 1
+        cdef uint32 num_examples = x_row_indices.shape[0] - 1
         cdef float64[:, ::1] predictions = c_matrix_float64(num_examples, num_labels)
         predictions[:, :] = 0
         cdef bint use_mask = self.use_mask
@@ -643,23 +643,23 @@ cdef class RuleListBuilder(ModelBuilder):
 
     cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
                        uint32[::1] num_conditions_per_comparator):
-        cdef uint32 num_conditions = num_conditions_per_comparator[<intp>Comparator.LEQ]
+        cdef uint32 num_conditions = num_conditions_per_comparator[<uint32>Comparator.LEQ]
         cdef uint32[::1] leq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-        num_conditions = num_conditions_per_comparator[<intp>Comparator.GR]
+        num_conditions = num_conditions_per_comparator[<uint32>Comparator.GR]
         cdef uint32[::1] gr_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] gr_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-        num_conditions = num_conditions_per_comparator[<intp>Comparator.EQ]
+        num_conditions = num_conditions_per_comparator[<uint32>Comparator.EQ]
         cdef uint32[::1] eq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] eq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-        num_conditions = num_conditions_per_comparator[<intp>Comparator.NEQ]
+        num_conditions = num_conditions_per_comparator[<uint32>Comparator.NEQ]
         cdef uint32[::1] neq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
         cdef double_linked_list[Condition].iterator iterator = conditions.begin()
-        cdef intp leq_i = 0
-        cdef intp gr_i = 0
-        cdef intp eq_i = 0
-        cdef intp neq_i = 0
+        cdef uint32 leq_i = 0
+        cdef uint32 gr_i = 0
+        cdef uint32 eq_i = 0
+        cdef uint32 neq_i = 0
         cdef Condition condition
         cdef Comparator comparator
 
