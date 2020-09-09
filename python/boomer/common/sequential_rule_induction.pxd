@@ -33,7 +33,7 @@ cdef class SequentialRuleInduction:
 
     cdef PostProcessor post_processor
 
-    cdef intp min_coverage
+    cdef uint32 min_coverage
 
     cdef intp max_conditions
 
