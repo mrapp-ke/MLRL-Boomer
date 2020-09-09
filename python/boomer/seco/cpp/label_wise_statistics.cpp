@@ -146,7 +146,7 @@ void DenseLabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint
 void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
     // Reset confusion matrices to 0...
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    int numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
+    intp numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
     arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
