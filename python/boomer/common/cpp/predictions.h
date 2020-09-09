@@ -17,10 +17,10 @@ class Prediction {
 
         /**
          * @param numPredictions    The number of labels for which the rule predicts
-         * @param labelIndices      A pointer to an array of type intp, shape `(numPredictions)`, representing the
+         * @param labelIndices      A pointer to an array of type `intp`, shape `(numPredictions)`, representing the
          *                          indices of the labels for which the rule predicts of NULL, if the rule predicts for
          *                          all labels
-         * @param predictedScores   A pointer to an array of type float64, shape `(numPredictions)`, representing the
+         * @param predictedScores   A pointer to an array of type `float64`, shape `(numPredictions)`, representing the
          *                          predicted scores
          */
         Prediction(intp numPredictions, intp* labelIndices, float64* predictedScores);
@@ -33,13 +33,13 @@ class Prediction {
         intp numPredictions_;
 
         /**
-         * A pointer to an array of type intp, shape `(numPredictions_)`, representing the indices of the labels for
+         * A pointer to an array of type `intp`, shape `(numPredictions_)`, representing the indices of the labels for
          * which the rule predicts or NULL, if the rule predicts for all labels.
          */
         intp* labelIndices_;
 
         /**
-         * A pointer to an array of type float64, shape `(numPredictions_)`, representing the predicted scores.
+         * A pointer to an array of type `float64`, shape `(numPredictions_)`, representing the predicted scores.
          */
         float64* predictedScores_;
 
@@ -54,10 +54,10 @@ class PredictionCandidate : public Prediction {
 
         /**
          * @param numPredictions        The number of labels for which the rule predicts
-         * @param labelIndices          A pointer to an array of type intp, shape `(numPredictions)`, representing the
+         * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing the
          *                              indices of the labels for which the rule predicts of NULL, if the rule predicts
          *                              for all labels
-         * @param predictedScores       A pointer to an array of type float64, shape `(numPredictions)`, representing
+         * @param predictedScores       A pointer to an array of type `float64`, shape `(numPredictions)`, representing
          *                              the predicted scores
          * @param overallQualityScore   A score that assesses the overall quality of the predictions
          */
@@ -82,12 +82,12 @@ class LabelWisePredictionCandidate : public PredictionCandidate {
 
         /**
          * @param numPredictions        The number of labels for which the rule predicts
-         * @param labelIndices          A pointer to an array of type intp, shape `(numPredictions)`, representing the
+         * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing the
          *                              indices of the labels for which the rule predicts of NULL, if the rule predicts
          *                              for all labels
-         * @param predictedScores       A pointer to an array of type float64, shape `(numPredictions)`, representing
+         * @param predictedScores       A pointer to an array of type `float64`, shape `(numPredictions)`, representing
          *                              the predicted scores
-         * @param qualityScores         A pointer to an array of type float64, shape `(numPredictions)`, representing
+         * @param qualityScores         A pointer to an array of type `float64`, shape `(numPredictions)`, representing
          *                              the quality scores for individual labels
          * @param overallQualityScore   A score that assesses the overall quality of the predictions
          */
@@ -97,7 +97,7 @@ class LabelWisePredictionCandidate : public PredictionCandidate {
         ~LabelWisePredictionCandidate();
 
         /**
-         * A pointer to an array of type float64, shape `(numPredictions_)`, representing the quality scores for
+         * A pointer to an array of type `float64`, shape `(numPredictions_)`, representing the quality scores for
          * individual labels.
          */
         float64* qualityScores_;
