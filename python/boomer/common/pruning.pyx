@@ -67,9 +67,9 @@ cdef class IREP(Pruning):
                                          uint32[::1] weights, AbstractStatistics* statistics,
                                          HeadRefinement head_refinement):
         # The total number of training examples
-        cdef intp num_examples = covered_examples_mask.shape[0]
+        cdef uint32 num_examples = covered_examples_mask.shape[0]
         # The number of conditions of the existing rule
-        cdef intp num_conditions = conditions.size()
+        cdef uint32 num_conditions = conditions.size()
         # The number of labels for which the existing rule predicts
         cdef uint32 num_predictions = head.numPredictions_
         # An array that stores the indices of the labels for which the existing rule predicts
@@ -107,7 +107,7 @@ cdef class IREP(Pruning):
         cdef float64 best_quality_score = prediction.overallQualityScore_
         cdef uint32[::1] best_covered_examples_mask = covered_examples_mask
         cdef uint32 best_covered_examples_target = covered_examples_target
-        cdef intp num_pruned_conditions = 0
+        cdef uint32 num_pruned_conditions = 0
 
         # Initialize array that is used to keep track of the examples that are covered by the current rule...
         cdef uint32[::1] current_covered_examples_mask = array_uint32(num_examples)
