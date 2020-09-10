@@ -1122,10 +1122,9 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
         filtered_array = filtered_indexed_array.data
 
     cdef intp max_elements = indexed_array.numElements
-    cdef intp i = 0
+    cdef uint32 i = 0
     cdef IndexedFloat32* indexed_values
-    cdef uint32 index
-    cdef intp r
+    cdef uint32 index, r
 
     if max_elements > 0:
         indexed_values = indexed_array.data
