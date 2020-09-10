@@ -13,7 +13,7 @@
  * value in an array.
  */
 struct IndexedFloat32 {
-    intp index;
+    uint32 index;
     float32 value;
 };
 

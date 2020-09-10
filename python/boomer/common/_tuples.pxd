@@ -9,7 +9,7 @@ from boomer.common._arrays cimport uint32, intp, float32, float64
 cdef extern from "cpp/tuples.h" nogil:
 
     cdef struct IndexedFloat32:
-        intp index
+        uint32 index
         float32 value
 
     cdef struct IndexedFloat32Array:
