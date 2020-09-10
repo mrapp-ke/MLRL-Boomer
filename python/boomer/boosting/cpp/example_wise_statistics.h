@@ -101,7 +101,7 @@ namespace boosting {
 
             ~DenseExampleWiseRefinementSearchImpl();
 
-            void updateSearch(intp statisticIndex, uint32 weight) override;
+            void updateSearch(uint32 statisticIndex, uint32 weight) override;
 
             void resetSearch() override;
 
@@ -195,11 +195,11 @@ namespace boosting {
 
             void resetCoveredStatistics() override;
 
-            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+            void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
             AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 
     };
 

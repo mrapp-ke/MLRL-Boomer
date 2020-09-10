@@ -13,7 +13,7 @@ void AbstractGradientStatistics::resetSampledStatistics() {
     this->resetCoveredStatistics();
 }
 
-void AbstractGradientStatistics::addSampledStatistic(intp statisticIndex, uint32 weight) {
+void AbstractGradientStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
     // This function is equivalent to the function `updateCoveredStatistic`...
     this->updateCoveredStatistic(statisticIndex, weight, false);
 }

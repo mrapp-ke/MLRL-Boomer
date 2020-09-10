@@ -33,7 +33,7 @@ DenseLabelWiseRefinementSearchImpl::~DenseLabelWiseRefinementSearchImpl() {
     delete prediction_;
 }
 
-void DenseLabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
+void DenseLabelWiseRefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
     intp numLabels = labelMatrixPtr_.get()->numLabels_;
     intp offset = statisticIndex * numLabels;
 
@@ -121,7 +121,7 @@ void DenseLabelWiseStatisticsImpl::resetSampledStatistics() {
     arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
-void DenseLabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
+void DenseLabelWiseStatisticsImpl::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
     intp offset = statisticIndex * numLabels_;
 
     for (intp c = 0; c < numLabels_; c++) {
@@ -146,7 +146,7 @@ void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
     arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
-void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
     intp offset = statisticIndex * numLabels_;
     float64 signedWeight = remove ? -((float64) weight) : weight;
 
@@ -172,7 +172,7 @@ AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLa
                                                   confusionMatricesSubset_);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
     uint32 numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
