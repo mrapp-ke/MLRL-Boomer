@@ -932,10 +932,10 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
     cdef bint ascending = condition_end < condition_previous
     cdef intp direction = 1 if ascending else -1
     cdef intp start = condition_end + direction
-    cdef intp num_steps = abs(start - condition_previous)
+    cdef uint32 num_steps = abs(start - condition_previous)
     cdef float32 feature_value
     cdef bint adjust
-    cdef intp i, r
+    cdef uint32 i, r
 
     # Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
     # current sub-sample...
