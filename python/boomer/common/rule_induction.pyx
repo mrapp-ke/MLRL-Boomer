@@ -999,8 +999,8 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     cdef IndexedFloat32* indexed_values = indexed_array.data
     cdef uint32 num_indexed_values = indexed_array.numElements
     cdef bint descending = condition_end < condition_start
-    cdef uint32 updated_target, weight, index, num_steps
-    cdef intp start, end, direction, i, r, j
+    cdef uint32 updated_target, weight, index, num_steps, i, r, j
+    cdef intp start, end, direction
 
     # Determine the number of elements in the filtered array...
     cdef uint32 num_condition_steps = abs(condition_start - condition_end)
