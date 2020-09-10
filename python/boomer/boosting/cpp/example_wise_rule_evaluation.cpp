@@ -54,7 +54,7 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(cons
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores` and `qualityScores`
-    intp numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
     float64* predictedScores = prediction->predictedScores_;
     // The array that should be used to store the quality scores
@@ -70,15 +70,15 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(cons
     }
 
     // For each label, calculate the score to be predicted, as well as a quality score...
-    for (intp c = 0; c < numPredictions; c++) {
+    for (uint32 c = 0; c < numPredictions; c++) {
         float64 sumOfGradients = sumsOfGradients[c];
-        intp c2 = linalg::triangularNumber(c + 1) - 1;
+        uint32 c2 = linalg::triangularNumber(c + 1) - 1;
         float64 sumOfHessians = sumsOfHessians[c2];
 
         if (uncovered) {
-            intp l = labelIndices != NULL ? labelIndices[c] : c;
+            uint32 l = labelIndices != NULL ? labelIndices[c] : c;
             sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
-            intp l2 = linalg::triangularNumber(l + 1) - 1;
+            uint32 l2 = linalg::triangularNumber(l + 1) - 1;
             sumOfHessians = totalSumsOfHessians[l2] - sumOfHessians;
         }
 
@@ -115,7 +115,7 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(co
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores`
-    intp numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
     float64* predictedScores = prediction->predictedScores_;
 
@@ -125,15 +125,15 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(co
     if (uncovered) {
         gradients = tmpGradients;
         hessians = tmpHessians;
-        intp i = 0;
+        uint32 i = 0;
 
-        for (intp c = 0; c < numPredictions; c++) {
-            intp l = labelIndices != NULL ? labelIndices[c] : c;
+        for (uint32 c = 0; c < numPredictions; c++) {
+            uint32 l = labelIndices != NULL ? labelIndices[c] : c;
             gradients[c] = totalSumsOfGradients[l] - sumsOfGradients[c];
-            intp offset = linalg::triangularNumber(l);
+            uint32 offset = linalg::triangularNumber(l);
 
-            for (intp c2 = 0; c2 < c + 1; c2++) {
-                intp l2 = offset + (labelIndices != NULL ? labelIndices[c2] : c2);
+            for (uint32 c2 = 0; c2 < c + 1; c2++) {
+                uint32 l2 = offset + (labelIndices != NULL ? labelIndices[c2] : c2);
                 hessians[i] = totalSumsOfHessians[l2] - sumsOfHessians[i];
                 i++;
             }

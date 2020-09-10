@@ -57,7 +57,7 @@ class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
          * @param labelIndex    The index of the label
          * @return              1, if the label is relevant, 0 otherwise
          */
-        virtual uint8 getLabel(intp exampleIndex, intp labelIndex);
+        virtual uint8 getLabel(uint32 exampleIndex, uint32 labelIndex);
 
 };
 
@@ -82,7 +82,7 @@ class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
         ~DenseLabelMatrixImpl();
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex) override;
+        uint8 getLabel(uint32 exampleIndex, uint32 labelIndex) override;
 
 };
 
@@ -108,6 +108,6 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
         ~DokLabelMatrixImpl();
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex) override;
+        uint8 getLabel(uint32 exampleIndex, uint32 labelIndex) override;
 
 };
