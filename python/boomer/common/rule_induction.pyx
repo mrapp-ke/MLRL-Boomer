@@ -458,9 +458,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     # Temporary variables
     cdef PredictionCandidate* current_head
     cdef float32 current_threshold, previous_threshold, previous_threshold_negative
-    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative,
-    cdef uint32 total_accumulated_sum_of_weights, i
-    cdef intp r, previous_r, previous_r_negative
+    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative
+    cdef uint32 total_accumulated_sum_of_weights, i, r, previous_r, previous_r_negative
 
     # Obtain array that contains the indices of the training examples sorted according to the current feature...
     cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
