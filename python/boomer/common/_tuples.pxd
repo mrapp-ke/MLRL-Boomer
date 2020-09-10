@@ -3,7 +3,7 @@
 
 Provides Cython wrappers for the type definitions of tuples, as well as corresponding utility functions.
 """
-from boomer.common._arrays cimport uint32, intp, float32, float64
+from boomer.common._arrays cimport uint32, float32, float64
 
 
 cdef extern from "cpp/tuples.h" nogil:
@@ -14,7 +14,7 @@ cdef extern from "cpp/tuples.h" nogil:
 
     cdef struct IndexedFloat32Array:
         IndexedFloat32* data
-        intp numElements
+        uint32 numElements
 
     cdef struct IndexedFloat64:
         uint32 index
