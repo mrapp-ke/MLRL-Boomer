@@ -458,8 +458,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     # Temporary variables
     cdef PredictionCandidate* current_head
     cdef float32 current_threshold, previous_threshold, previous_threshold_negative
-    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
-    cdef intp r, i, previous_r, previous_r_negative
+    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative,
+    cdef uint32 total_accumulated_sum_of_weights, i
+    cdef intp r, previous_r, previous_r_negative
 
     # Obtain array that contains the indices of the training examples sorted according to the current feature...
     cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
@@ -999,8 +1000,8 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     cdef IndexedFloat32* indexed_values = indexed_array.data
     cdef intp num_indexed_values = indexed_array.numElements
     cdef bint descending = condition_end < condition_start
-    cdef uint32 updated_target, weight
-    cdef intp start, end, direction, i, r, j, index, num_steps
+    cdef uint32 updated_target, weight, index
+    cdef intp start, end, direction, i, r, j, num_steps
 
     # Determine the number of elements in the filtered array...
     cdef intp num_condition_steps = abs(condition_start - condition_end)
@@ -1123,7 +1124,8 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     cdef intp max_elements = indexed_array.numElements
     cdef intp i = 0
     cdef IndexedFloat32* indexed_values
-    cdef intp r, index
+    cdef uint32 index
+    cdef intp r
 
     if max_elements > 0:
         indexed_values = indexed_array.data
