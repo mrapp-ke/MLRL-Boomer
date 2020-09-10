@@ -29,7 +29,7 @@ ELSE:
     DEF FORMAT_FLOAT64 = 'd'
 
 
-cdef inline cvarray array_uint32(intp num_elements):
+cdef inline cvarray array_uint32(uint32 num_elements):
     """
     Creates and returns a new C-contiguous array of type `uint32`, shape `(num_elements)`.
 
@@ -42,7 +42,7 @@ cdef inline cvarray array_uint32(intp num_elements):
     return array
 
 
-cdef inline cvarray array_float32(intp num_elements):
+cdef inline cvarray array_float32(uint32 num_elements):
     """
     Creates and returns a new C-contiguous array of type `float32`, shape `(num_elements)`.
 
@@ -55,7 +55,7 @@ cdef inline cvarray array_float32(intp num_elements):
     return array
 
 
-cdef inline cvarray array_float64(intp num_elements):
+cdef inline cvarray array_float64(uint32 num_elements):
     """
     Creates and returns a new C-contiguous array of type `float64`, shape `(num_elements)`.
 
@@ -68,7 +68,7 @@ cdef inline cvarray array_float64(intp num_elements):
     return array
 
 
-cdef inline cvarray c_matrix_float64(intp num_rows, intp num_cols):
+cdef inline cvarray c_matrix_float64(uint32 num_rows, uint32 num_cols):
     """
     Creates and returns a new C-contiguous array of type `float64`, shape `(num_rows, num_cols)`.
 
@@ -82,7 +82,7 @@ cdef inline cvarray c_matrix_float64(intp num_rows, intp num_cols):
     return array
 
 
-cdef inline cvarray c_matrix_uint8(intp num_rows, intp num_cols):
+cdef inline cvarray c_matrix_uint8(uint32 num_rows, uint32 num_cols):
     """
     Creates and returns a new C-contiguous array of type `uint8`, shape `(num_rows, num_cols)`.
 
