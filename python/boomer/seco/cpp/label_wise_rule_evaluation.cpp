@@ -40,7 +40,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
     AbstractHeuristic* heuristic = heuristicPtr_.get();
     bool predictMajority = predictMajority_;
     // The number of labels to predict for
-    intp numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
     float64* predictedScores = prediction->predictedScores_;
     // The array that should be used to store the quality scores
@@ -48,8 +48,8 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
     // The overall quality score, i.e., the average of the quality scores for each label
     float64 overallQualityScore = 0;
 
-    for (intp c = 0; c < numPredictions; c++) {
-        intp l = labelIndices != NULL ? labelIndices[c] : c;
+    for (uint32 c = 0; c < numPredictions; c++) {
+        uint32 l = labelIndices != NULL ? labelIndices[c] : c;
 
         // Set the score to be predicted for the current label...
         uint8 minorityLabel = minorityLabels[l];
@@ -57,14 +57,14 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
         predictedScores[c] = score;
 
         // Calculate the quality score for the current label...
-        intp offsetC = c * NUM_CONFUSION_MATRIX_ELEMENTS;
-        intp offsetL = l * NUM_CONFUSION_MATRIX_ELEMENTS;
-        intp uin, uip, urn, urp;
+        uint32 offsetC = c * NUM_CONFUSION_MATRIX_ELEMENTS;
+        uint32 offsetL = l * NUM_CONFUSION_MATRIX_ELEMENTS;
+        uint32 uin, uip, urn, urp;
 
-        intp cin = confusionMatricesCovered[offsetC + IN];
-        intp cip = confusionMatricesCovered[offsetC + IP];
-        intp crn = confusionMatricesCovered[offsetC + RN];
-        intp crp = confusionMatricesCovered[offsetC + RP];
+        uint32 cin = confusionMatricesCovered[offsetC + IN];
+        uint32 cip = confusionMatricesCovered[offsetC + IP];
+        uint32 crn = confusionMatricesCovered[offsetC + RN];
+        uint32 crp = confusionMatricesCovered[offsetC + RP];
 
         if (uncovered) {
             uin = cin + confusionMatricesTotal[offsetL + IN] - confusionMatricesSubset[offsetL + IN];

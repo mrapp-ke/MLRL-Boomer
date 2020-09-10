@@ -36,9 +36,9 @@ namespace boosting {
              *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
              *                          should be written to. May contain arbitrary values
              */
-            virtual void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix, intp exampleIndex,
-                                                       const float64* predictedScores, float64* gradients,
-                                                       float64* hessians);
+            virtual void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
+                                                       uint32 exampleIndex, const float64* predictedScores,
+                                                       float64* gradients, float64* hessians);
 
     };
 
@@ -51,7 +51,7 @@ namespace boosting {
 
             ~ExampleWiseLogisticLossImpl();
 
-            void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix, intp exampleIndex,
+            void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
                                                const float64* predictedScores, float64* gradients,
                                                float64* hessians) override;
 
