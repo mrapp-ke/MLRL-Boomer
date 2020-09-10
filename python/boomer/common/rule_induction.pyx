@@ -195,9 +195,9 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef IndexedFloat32* indexed_values
         cdef Refinement current_refinement
         cdef uint32[::1] sampled_feature_indices
-        cdef uint32 num_sampled_features, weight, f
+        cdef uint32 num_sampled_features, weight, f, r
         cdef bint nominal
-        cdef intp r, c
+        cdef intp c
 
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
