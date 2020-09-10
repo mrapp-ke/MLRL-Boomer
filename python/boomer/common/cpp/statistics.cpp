@@ -5,7 +5,7 @@ AbstractRefinementSearch::~AbstractRefinementSearch() {
 
 }
 
-void AbstractRefinementSearch::updateSearch(intp statisticIndex, uint32 weight) {
+void AbstractRefinementSearch::updateSearch(uint32 statisticIndex, uint32 weight) {
 
 }
 
@@ -40,7 +40,7 @@ void AbstractStatistics::resetSampledStatistics() {
 
 }
 
-void AbstractStatistics::addSampledStatistic(intp statisticIndex, uint32 weight) {
+void AbstractStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
 
 }
 
@@ -48,7 +48,7 @@ void AbstractStatistics::resetCoveredStatistics() {
 
 }
 
-void AbstractStatistics::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void AbstractStatistics::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
 
 }
 
@@ -56,6 +56,6 @@ AbstractRefinementSearch* AbstractStatistics::beginSearch(uint32 numLabelIndices
     return NULL;
 }
 
-void AbstractStatistics::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void AbstractStatistics::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
 
 }

@@ -38,7 +38,7 @@ DenseLabelWiseRefinementSearchImpl::~DenseLabelWiseRefinementSearchImpl() {
     delete prediction_;
 }
 
-void DenseLabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
+void DenseLabelWiseRefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the current sum of gradients and Hessians...
     intp offset = statisticIndex * numLabels_;
@@ -122,7 +122,7 @@ void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
     arrays::setToZeros(totalSumsOfHessians_, numLabels_);
 }
 
-void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
     intp offset = statisticIndex * numLabels_;
     float64 signedWeight = remove ? -((float64) weight) : weight;
 
@@ -142,7 +142,7 @@ AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLa
                                                   gradients_, totalSumsOfGradients_, hessians_, totalSumsOfHessians_);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     uint32 numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;

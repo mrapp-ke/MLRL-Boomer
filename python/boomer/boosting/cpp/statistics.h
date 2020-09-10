@@ -28,7 +28,7 @@ namespace boosting {
 
             void resetSampledStatistics() override;
 
-            void addSampledStatistic(intp statisticIndex, uint32 weight) override;
+            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override;
 
     };
 

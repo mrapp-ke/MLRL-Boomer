@@ -81,7 +81,7 @@ namespace seco {
 
             ~DenseLabelWiseRefinementSearchImpl();
 
-            void updateSearch(intp statisticIndex, uint32 weight) override;
+            void updateSearch(uint32 statisticIndex, uint32 weight) override;
 
             void resetSearch() override;
 
@@ -161,15 +161,15 @@ namespace seco {
 
             void resetSampledStatistics() override;
 
-            void addSampledStatistic(intp statisticIndex, uint32 weight) override;
+            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override;
 
             void resetCoveredStatistics() override;
 
-            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+            void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
             AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 
     };
 

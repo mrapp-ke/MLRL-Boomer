@@ -37,7 +37,7 @@ class AbstractRefinementSearch {
          * @param statistic_index   The index of the covered statistic
          * @param weight            The weight of the covered statistic
          */
-        virtual void updateSearch(intp statisticIndex, uint32 weight);
+        virtual void updateSearch(uint32 statisticIndex, uint32 weight);
 
         /**
          * Resets the internal state of the search that has been updated via preceding calls to the function
@@ -187,7 +187,7 @@ class AbstractStatistics {
          * @param statisticIndex    The index of the statistic that should be considered
          * @param weight            The weight of the statistic that should be considered
          */
-        virtual void addSampledStatistic(intp statisticIndex, uint32 weight);
+        virtual void addSampledStatistic(uint32 statisticIndex, uint32 weight);
 
         /**
          * Resets the statistics which should be considered in the following for refining an existing rule. The indices
@@ -221,7 +221,7 @@ class AbstractStatistics {
          * @param remove            False, if the statistic should be considered, True, if the statistic should not be
          *                          considered anymore
          */
-        virtual void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove);
+        virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove);
 
         /**
          * Starts a new search for the best refinement of a rule. The statistics that are covered by such a refinement
@@ -253,6 +253,6 @@ class AbstractStatistics {
          * @param head              A pointer to an object of type `Prediction`, representing the predictions of the
          *                          newly induced rule
          */
-        virtual void applyPrediction(intp statisticIndex, Prediction* prediction);
+        virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction);
 
 };

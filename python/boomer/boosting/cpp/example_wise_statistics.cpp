@@ -52,7 +52,7 @@ DenseExampleWiseRefinementSearchImpl::~DenseExampleWiseRefinementSearchImpl() {
     delete prediction_;
 }
 
-void DenseExampleWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
+void DenseExampleWiseRefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
     // Add the gradients and Hessians of the example at the given index (weighted by the given weight) to the current
     // sum of gradients and Hessians...
     intp offsetGradients = statisticIndex * numLabels_;
@@ -181,7 +181,7 @@ void DenseExampleWiseStatisticsImpl::resetCoveredStatistics() {
     arrays::setToZeros(totalSumsOfHessians_, numHessians);
 }
 
-void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
     float64 signedWeight = remove ? -((float64) weight) : weight;
     intp offset = statisticIndex * numLabels_;
 
@@ -209,7 +209,7 @@ AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(uint32 num
                                                     totalSumsOfHessians_);
 }
 
-void DenseExampleWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     intp numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
