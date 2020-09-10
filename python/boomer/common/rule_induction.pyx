@@ -480,7 +480,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                              covered_statistics_target)
         indexed_array = indexed_array_wrapper.array
 
-    cdef intp num_indexed_values = indexed_array.numElements
+    cdef uint32 num_indexed_values = indexed_array.numElements
     indexed_values = indexed_array.data
 
     # Start a new search based on the current statistics when processing a new feature...
@@ -997,17 +997,17 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                         `covered_statistics_mask` that are covered by the new rule
     """
     cdef IndexedFloat32* indexed_values = indexed_array.data
-    cdef intp num_indexed_values = indexed_array.numElements
+    cdef uint32 num_indexed_values = indexed_array.numElements
     cdef bint descending = condition_end < condition_start
     cdef uint32 updated_target, weight, index, num_steps
     cdef intp start, end, direction, i, r, j
 
     # Determine the number of elements in the filtered array...
-    cdef intp num_condition_steps = abs(condition_start - condition_end)
-    cdef intp num_elements = num_condition_steps
+    cdef uint32 num_condition_steps = abs(condition_start - condition_end)
+    cdef uint32 num_elements = num_condition_steps
 
     if not covered:
-        num_elements = num_indexed_values - num_elements
+        num_elements = (num_indexed_values - num_elements) if num_indexed_values > num_elements else 0
 
     # Allocate filtered array...
     cdef IndexedFloat32* filtered_array = NULL
@@ -1120,7 +1120,7 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     if filtered_indexed_array != NULL:
         filtered_array = filtered_indexed_array.data
 
-    cdef intp max_elements = indexed_array.numElements
+    cdef uint32 max_elements = indexed_array.numElements
     cdef uint32 i = 0
     cdef IndexedFloat32* indexed_values
     cdef uint32 index, r
