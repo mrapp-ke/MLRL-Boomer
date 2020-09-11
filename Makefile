@@ -18,18 +18,18 @@ clean: clean_compile clean_venv
 
 venv:
 	@echo "Creating virtual Python environment..."
-	python3.8 -m venv venv
+	python3 -m venv venv
 	@echo "Installing compile-time dependency \"numpy\" into virtual environment..."
-	venv/bin/pip3.8 install numpy
+	venv/bin/pip install numpy
 	@echo "Installing compile-time dependency \"scipy\" into virtual environment..."
-	venv/bin/pip3.8 install scipy
+	venv/bin/pip install scipy
 	@echo "Installing compile-time dependency \"Cython\" into virtual environment..."
-	venv/bin/pip3.8 install Cython
+	venv/bin/pip install Cython
 
 compile: venv
 	@echo "Compiling Cython code..."
-	cd python/ && ../venv/bin/python3.8 setup.py build_ext --inplace
+	cd python/ && ../venv/bin/python setup.py build_ext --inplace
 
 install: compile
 	@echo "Installing package into virtual environment..."
-	venv/bin/pip3.8 install python/
+	venv/bin/pip install python/
