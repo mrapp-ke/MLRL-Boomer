@@ -1,34 +1,18 @@
-from boomer.common._arrays cimport intp, float64
-from boomer.common.input_data cimport AbstractLabelMatrix
-
-from libcpp.pair cimport pair
 from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/label_wise_losses.h" namespace "boosting" nogil:
 
     cdef cppclass AbstractLabelWiseLoss:
-
-        # Functions:
-
-        pair[float64, float64] calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
-                                                           intp labelIndex, float64 predictedScore)
+        pass
 
 
     cdef cppclass LabelWiseLogisticLossImpl(AbstractLabelWiseLoss):
-
-        # Functions:
-
-        pair[float64, float64] calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
-                                                           intp labelIndex, float64 predictedScore)
+        pass
 
 
     cdef cppclass LabelWiseSquaredErrorLossImpl(AbstractLabelWiseLoss):
-
-        # Functions:
-
-        pair[float64, float64] calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
-                                                           intp labelIndex, float64 predictedScore)
+        pass
 
 
     cdef cppclass LabelWiseSquaredHingeLossImpl(AbstractLabelWiseLoss):

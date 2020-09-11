@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32, intp
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
-from boomer.common.input_data cimport AbstractLabelMatrix
+from boomer.common.input_data cimport LabelMatrix
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -14,19 +14,6 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateSearch(intp statisticIndex, uint32 weight)
 
-        void resetSearch() nogil
-
-        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
-
-        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
-
-
-    cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
-
-        # Functions:
-
-        void updateSearch(intp statisticIndex, uint32 weight)
-
         void resetSearch()
 
         LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
@@ -34,11 +21,17 @@ cdef extern from "cpp/statistics.h" nogil:
         PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
+    cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
+        pass
+
+
     cdef cppclass AbstractStatistics:
 
-        # Functions:
+        # Attributes:
 
-        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr, Prediction* defaultPrediction)
+        intp numStatistics_
+
+        # Functions:
 
         void resetSampledStatistics()
 
@@ -53,8 +46,17 @@ cdef extern from "cpp/statistics.h" nogil:
         void applyPrediction(intp statisticIndex, Prediction* prediction)
 
 
-cdef class Statistics:
+cdef class StatisticsProvider:
 
-    # Attributes
+    # Functions:
 
-    cdef shared_ptr[AbstractStatistics] statistics_ptr
+    cdef AbstractStatistics* get(self)
+
+    cdef void switch_rule_evaluation(self)
+
+
+cdef class StatisticsProviderFactory:
+
+    # Functions:
+
+    cdef StatisticsProvider create(self, LabelMatrix label_matrix)

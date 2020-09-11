@@ -1,63 +1,95 @@
-from boomer.common._arrays cimport intp, uint8, uint32, float64
-from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
-from boomer.common.input_data cimport LabelMatrix, AbstractLabelMatrix
-from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch, AbstractDecomposableRefinementSearch
-from boomer.seco.statistics cimport CoverageStatistics, AbstractCoverageStatistics
-from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationImpl
+from boomer.common._arrays cimport intp, uint8, float64
+from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
+from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics, \
+    AbstractDecomposableRefinementSearch
+from boomer.seco.statistics cimport AbstractCoverageStatistics
+from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, AbstractLabelWiseRuleEvaluation
 
-from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
-    cdef cppclass LabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
+    cdef cppclass DenseLabelWiseRefinementSearchImpl(AbstractDecomposableRefinementSearch):
 
         # Constructors:
 
-        LabelWiseRefinementSearchImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr, intp numLabels,
-                                      const intp* labelIndices, shared_ptr[AbstractLabelMatrix] labelMatrixPtr,
-                                      const float64* uncoveredLabels, const uint8* minorityLabels,
-                                      const float64* confusionMatricesTotal,
-                                      const float64* confusionMatricesSubset) except +
+        DenseLabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
+                                           intp numLabels, const intp* labelIndices,
+                                           shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr,
+                                           const float64* uncoveredLabels, const uint8* minorityLabels,
+                                           const float64* confusionMatricesTotal,
+                                           const float64* confusionMatricesSubset) except +
+
+
+    cdef cppclass AbstractLabelWiseStatistics(AbstractCoverageStatistics):
 
         # Functions:
 
-        void updateSearch(intp statisticIndex, uint32 weight)
-
-        void resetSearch()
-
-        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
-
-        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+        void setRuleEvaluation(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr)
 
 
-    cdef cppclass LabelWiseStatisticsImpl(AbstractCoverageStatistics):
+    cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
 
         # Constructors:
 
-        LabelWiseStatisticsImpl(shared_ptr[LabelWiseRuleEvaluationImpl] ruleEvaluationPtr) except +
+        DenseLabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
-        # Attributes:
 
-        float64 sumUncoveredLabels_;
+    cdef cppclass AbstractLabelWiseStatisticsFactory:
 
         # Functions:
 
-        void applyDefaultPrediction(AbstractLabelMatrix* labelMatrix, Prediction* defaultPrediction)
-
-        void resetSampledStatistics()
-
-        void addSampledStatistic(intp statisticIndex, uint32 weight)
-
-        void resetCoveredStatistics()
-
-        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
-
-        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
-
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
+        AbstractLabelWiseStatistics* create()
 
 
-cdef class LabelWiseStatistics(CoverageStatistics):
-    pass
+    cdef cppclass DenseLabelWiseStatisticsFactoryImpl(AbstractLabelWiseStatisticsFactory):
+
+        # Constructors:
+
+        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
+                                            shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+
+
+cdef class LabelWiseStatisticsFactory:
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractLabelWiseStatisticsFactory] statistics_factory_ptr
+
+    # Functions:
+
+    cdef AbstractLabelWiseStatistics* create(self)
+
+
+cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
+
+    # Functions:
+
+    cdef AbstractLabelWiseStatistics* create(self)
+
+
+cdef class LabelWiseStatisticsProvider(StatisticsProvider):
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractLabelWiseStatistics] statistics_ptr
+
+    cdef LabelWiseRuleEvaluation rule_evaluation
+
+    # Functions:
+
+    cdef AbstractStatistics* get(self)
+
+
+cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
+
+    # Attributes:
+
+    cdef LabelWiseRuleEvaluation default_rule_evaluation
+
+    cdef LabelWiseRuleEvaluation rule_evaluation
+
+    # Functions:
+
+    cdef StatisticsProvider create(self, LabelMatrix label_matrix)

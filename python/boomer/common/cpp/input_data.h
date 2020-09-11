@@ -11,7 +11,7 @@
 
 
 /**
- * An abstract base class for all label matrices that provide random access to the labels of the training examples.
+ * An abstract base class for all label matrix that provide access to the labels of the training examples.
  */
 class AbstractLabelMatrix {
 
@@ -35,6 +35,21 @@ class AbstractLabelMatrix {
          */
         intp numLabels_;
 
+};
+
+/**
+ * An abstract base class for all label matrices that provide random access to the labels of the training examples.
+ */
+class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
+
+    public:
+
+        /**
+         * @param numExamples   The number of examples
+         * @param numLabels     The number of labels
+         */
+        AbstractRandomAccessLabelMatrix(intp numExamples, intp numLabels);
+
         /**
          * Returns whether a specific label of the example at a given index is relevant or irrelevant.
          *
@@ -49,7 +64,7 @@ class AbstractLabelMatrix {
 /**
  * Implements random access to the labels of the training examples based on a C-contiguous array.
  */
-class DenseLabelMatrixImpl : public AbstractLabelMatrix {
+class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
     private:
 
@@ -75,7 +90,7 @@ class DenseLabelMatrixImpl : public AbstractLabelMatrix {
  * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of keys
  * (DOK) format.
  */
-class DokLabelMatrixImpl : public AbstractLabelMatrix {
+class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
     private:
 

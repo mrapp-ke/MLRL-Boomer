@@ -3,7 +3,7 @@
 
 Provides implementations of sparse matrices.
 """
-from boomer.common._arrays cimport uint8, uint32
+from boomer.common._arrays cimport uint32
 
 
 cdef extern from "cpp/sparse.h" nogil:
@@ -17,5 +17,3 @@ cdef extern from "cpp/sparse.h" nogil:
         # Functions:
 
         void addValue(uint32 row, uint32 column)
-
-        uint8 getValue(uint32 row, uint32 column)
