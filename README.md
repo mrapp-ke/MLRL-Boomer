@@ -127,5 +127,5 @@ In order to run an experiment, the following command line arguments must be prov
 In the following, the command for running an experiment using an exemplary configuration can be seen. It uses a virtual environment as discussed in section "Project setup". 
 
 ```
-venv/bin/python3.8 python/main_boomer.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --num-rules 1000 --instance-sub-sampling bagging --feature-sub-sampling random-feature-selection --loss label-wise-logistic-loss --shrinkage 0.3 --pruning None --head-refinement single-label
+venv/bin/python3 python/main_boomer.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --num-rules 1000 --instance-sub-sampling bagging --feature-sub-sampling random-feature-selection --loss label-wise-logistic-loss --shrinkage 0.3 --pruning None --head-refinement single-label
 ```
