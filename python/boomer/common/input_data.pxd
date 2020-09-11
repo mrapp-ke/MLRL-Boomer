@@ -8,56 +8,47 @@ from libcpp.memory cimport shared_ptr
 cdef extern from "cpp/input_data.h" nogil:
 
     cdef cppclass AbstractLabelMatrix:
-
-        # Attributes:
-
-        intp numExamples_
-
-        intp numLabels_
-
-        # Functions:
-
-        uint8 getLabel(intp exampleIndex, intp labelIndex)
+        pass
 
 
-    cdef cppclass DenseLabelMatrixImpl(AbstractLabelMatrix):
+    cdef cppclass AbstractRandomAccessLabelMatrix(AbstractLabelMatrix):
+        pass
+
+
+    cdef cppclass DenseLabelMatrixImpl(AbstractRandomAccessLabelMatrix):
 
         # Constructors:
 
         DenseLabelMatrixImpl(intp numExamples, intp numLabels, uint8* y) except +
 
-        # Functions:
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex)
-
-
-    cdef cppclass DokLabelMatrixImpl(AbstractLabelMatrix):
+    cdef cppclass DokLabelMatrixImpl(AbstractRandomAccessLabelMatrix):
 
         # Constructors:
 
         DokLabelMatrixImpl(intp numExamples, intp numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
-
-        # Functions:
-
-        uint8 getLabel(intp exampleIndex, intp labelIndex)
 
 
 cdef class LabelMatrix:
 
     # Attributes:
 
+    cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
+
     cdef readonly intp num_examples
 
     cdef readonly intp num_labels
 
-    cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
 
-
-cdef class DenseLabelMatrix(LabelMatrix):
+cdef class RandomAccessLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class DokLabelMatrix(LabelMatrix):
+cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
+    pass
+
+
+cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     pass
 
 

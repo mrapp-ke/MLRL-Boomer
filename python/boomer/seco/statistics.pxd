@@ -1,10 +1,5 @@
-from boomer.common._arrays cimport uint32, intp, float64
-from boomer.common._predictions cimport Prediction
-from boomer.common.input_data cimport AbstractLabelMatrix
-from boomer.common.statistics cimport Statistics, AbstractStatistics, AbstractRefinementSearch
-
-from libcpp cimport bool
-from libcpp.memory cimport shared_ptr
+from boomer.common._arrays cimport float64
+from boomer.common.statistics cimport AbstractStatistics
 
 
 cdef extern from "cpp/statistics.h" namespace "seco" nogil:
@@ -14,23 +9,3 @@ cdef extern from "cpp/statistics.h" namespace "seco" nogil:
         # Attributes:
 
         float64 sumUncoveredLabels_;
-
-        # Functions:
-
-        void applyDefaultPrediction(shared_ptr[AbstractLabelMatrix] labelMatrixPtr, Prediction* defaultPrediction)
-
-        void resetSampledStatistics()
-
-        void addSampledStatistic(intp statisticIndex, uint32 weight)
-
-        void resetCoveredStatistics()
-
-        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
-
-        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
-
-        void applyPrediction(intp statisticIndex, const intp* labelIndices, Prediction* prediction)
-
-
-cdef class CoverageStatistics(Statistics):
-    pass

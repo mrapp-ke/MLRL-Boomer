@@ -4,7 +4,7 @@
 Provides classes that provide access to the data that is provided for training.
 """
 from boomer.common._arrays cimport uint32
-from boomer.common._tuples cimport IndexedFloat32, compare_indexed_float32
+from boomer.common._tuples cimport IndexedFloat32, compareIndexedFloat32
 
 from libc.stdlib cimport qsort, malloc
 
@@ -20,7 +20,14 @@ cdef class LabelMatrix:
     pass
 
 
-cdef class DenseLabelMatrix(LabelMatrix):
+cdef class RandomAccessLabelMatrix(LabelMatrix):
+    """
+    A wrapper for the abstract C++ class `AbstractRandomAccessLabelMatrix`.
+    """
+    pass
+
+
+cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
     """
     A wrapper for the C++ class `DenseLabelMatrix`.
     """
@@ -38,7 +45,7 @@ cdef class DenseLabelMatrix(LabelMatrix):
         self.num_labels = num_labels
 
 
-cdef class DokLabelMatrix(LabelMatrix):
+cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     """
     A wrapper for the C++ class `DokLabelMatrix`.
     """
@@ -117,10 +124,10 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
             sorted_array[i].index = i
             sorted_array[i].value = x[i, feature_index]
 
-        qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
+        qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compareIndexedFloat32)
 
         # Update the given struct...
-        indexed_array.num_elements = num_elements
+        indexed_array.numElements = num_elements
         indexed_array.data = sorted_array
 
 
@@ -175,8 +182,8 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                 sorted_array[i].value = x_data[j]
                 i += 1
 
-            qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compare_indexed_float32)
+            qsort(sorted_array, num_elements, sizeof(IndexedFloat32), &compareIndexedFloat32)
 
         # Update the given struct...
-        indexed_array.num_elements = num_elements
+        indexed_array.numElements = num_elements
         indexed_array.data = sorted_array
