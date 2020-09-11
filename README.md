@@ -56,7 +56,7 @@ In addition, the following features that may speed up training or reduce the mem
 
 ## Project setup
 
-The library provided by this project requires Python 3.7 and uses C extensions for Python using [Cython](https://cython.org) to speed up computation. It is recommended to create a virtual environment using the correct version of Python (which requires that this particular Python version is installed on the host) and providing all dependencies that are required to compile the Cython code (`numpy`, `scipy` and `Cython`). IDEs such as PyCharm may provide an option to create such a virtual environment automatically. For manual installation, the project comes with a Makefile that allows to create a virtual environment via the command
+The library provided by this project requires Python 3.8 and uses C extensions for Python using [Cython](https://cython.org) to speed up computation. It is recommended to create a virtual environment using the correct version of Python (which requires that this particular Python version is installed on the host) and providing all dependencies that are required to compile the Cython code (`numpy`, `scipy` and `Cython`). IDEs such as PyCharm may provide an option to create such a virtual environment automatically. For manual installation, the project comes with a Makefile that allows to create a virtual environment via the command
 ```
 make venv
 ```  
@@ -127,5 +127,5 @@ In order to run an experiment, the following command line arguments must be prov
 In the following, the command for running an experiment using an exemplary configuration can be seen. It uses a virtual environment as discussed in section "Project setup". 
 
 ```
-venv/bin/python3.7 python/main_boomer.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --num-rules 1000 --instance-sub-sampling bagging --feature-sub-sampling random-feature-selection --loss label-wise-logistic-loss --shrinkage 0.3 --pruning None --head-refinement single-label
+venv/bin/python3 python/main_boomer.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --num-rules 1000 --instance-sub-sampling bagging --feature-sub-sampling random-feature-selection --loss label-wise-logistic-loss --shrinkage 0.3 --pruning None --head-refinement single-label
 ```
