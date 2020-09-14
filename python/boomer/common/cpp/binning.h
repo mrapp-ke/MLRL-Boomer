@@ -5,6 +5,14 @@
 #include "tuples.h"
 #include <math.h>
 
+class BinningObserver{
+
+    public:
+
+        virtual void onBinUpdate(intp binIndex, IndexedFloat32* indexedValue);
+
+};
+
 class AbstractBinning{
 
     public:
@@ -12,14 +20,6 @@ class AbstractBinning{
         virtual ~AbstractBinning();
 
         virtual void createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer);
-
-};
-
-class BinningObserver{
-
-    public:
-
-        virtual void onBinUpdate(intp binIndex, IndexedFloat32* indexedValue);
 
 };
 

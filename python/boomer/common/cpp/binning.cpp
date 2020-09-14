@@ -1,10 +1,6 @@
 #include "binning.h"
 
 //Former abstract_binning
-AbstractBinning::AbstractBinning(){
-
-}
-
 AbstractBinning::~AbstractBinning(){
 
 }
