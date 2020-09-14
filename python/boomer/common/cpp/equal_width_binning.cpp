@@ -1,8 +1,6 @@
 #include "equal_width_binning.h"
 #include <math.h>
 
-intp EqualWidthBinning::numBins_;
-
 EqualWidthBinning::EqualWidthBinning(intp numBins){
     numBins_ = numBins;
 }

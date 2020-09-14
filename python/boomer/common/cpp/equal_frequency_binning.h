@@ -8,7 +8,7 @@ class EqualFrequencyBinning : public AbstractBinning{
 
     private:
 
-        static intp numBins_;
+        intp numBins_;
 
     public:
 
