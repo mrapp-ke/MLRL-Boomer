@@ -2,6 +2,8 @@
 
 #include "arrays.h"
 #include "statistics.h"
+#include "tuples.h"
+#include "binning_observer.h"
 
 class AbstractBinning{
 
