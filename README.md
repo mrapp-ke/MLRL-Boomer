@@ -47,11 +47,10 @@ In addition, the following features that may speed up training or reduce the mem
     |-- main_seco.py                    Can be used to start an experiment, i.e., to train and evaluate a model using the separate-and-conquer algorithm
     |-- setup.py                        Distutil definition of the library for installation via pip
     |-- ...
-|-- slurm                               Directory that contains bash scripts for running jobs using the Slurm workload manager
-    |-- ...
 |-- Makefile                            Makefile for compiling the Cython source files and installing a Python virtual environment
 |-- README.md                           This file
 |-- settings.zip                        PyCharm settings for syntax highlighting of Cython code
+|-- ...
 ```
 
 ## Project setup
