@@ -1,5 +1,8 @@
+#pragma once
+
 #include "arrays.h"
 #include "abstract_binning.h"
+#include "tuples.h"
 
 class BinningObserver{
 
