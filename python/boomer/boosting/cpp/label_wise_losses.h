@@ -79,8 +79,9 @@ namespace boosting {
 
             ~LabelWiseSquaredHingeLossImpl();
 
-            std::pair<float64, float64> calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix, intp exampleIndex,
-                                                                    intp labelIndex, float64 predictedScore) override;
+            std::pair<float64, float64> calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix,
+                                                                    uint32 exampleIndex, uint32 labelIndex,
+                                                                    float64 predictedScore) override;
 
     };
 
