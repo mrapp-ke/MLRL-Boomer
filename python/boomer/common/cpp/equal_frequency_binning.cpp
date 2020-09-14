@@ -27,24 +27,25 @@ void EqualFrequencyBinningImpl::createBins(IndexedFloat32Array* indexedArray, Bi
      *          result.append(tmp)      #write tmp to i-st spot in result array
      *      return result               #return pointer
      */
-    intp n = length/numBins_; //number of elements per bin
-    //Initializing result array
-    indexedFloatArray *results = (indexedFloatArray*)malloc(sizeof(indexedFloatArray));
-    results->size = numBins_;
-    float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array?
-    results->data = resultData;
-    numFeatures = 7; //TODO: Replace "7" with the number of features
-    for(intp i = 0; i < numBins_; i++){
-        float tmp[numFeatures] {0};
-        for(intp j = i * n; j < (i + 1) * n; j++){
-            if(j >= length){
-                break;
-            }
-            for(intp k = 0; k < numFeatures; k++){ //adding all feature values
-                tmp[k] = tmp[k] + originalMatrix->data[j][k];
-            }
-        }
-        result->data[i] = tmp;
-    }
-    //TODO: Inform observer that a new matrix is available
+    /*  intp n = length/numBins_; //number of elements per bin
+     *  //Initializing result array
+     *  indexedFloatArray *results = (indexedFloatArray*)malloc(sizeof(indexedFloatArray));
+     *  results->size = numBins_;
+     *  float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array?
+     *  results->data = resultData;
+     *  numFeatures = 7; //TODO: Replace "7" with the number of features
+     *  for(intp i = 0; i < numBins_; i++){
+     *      float tmp[numFeatures] {0};
+     *      for(intp j = i * n; j < (i + 1) * n; j++){
+     *          if(j >= length){
+     *              break;
+     *          }
+     *       for(intp k = 0; k < numFeatures; k++){ //adding all feature values
+     *           tmp[k] = tmp[k] + originalMatrix->data[j][k];
+     *       }
+     *   }
+     *   result->data[i] = tmp;
+     *  }
+     * //TODO: Inform observer that a new matrix is available
+     */
 }
