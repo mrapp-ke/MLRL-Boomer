@@ -7,8 +7,8 @@ EqualWidthBinning::EqualWidthBinning(intp numBins){
     numBins_ = numBins;
 }
 
-void EqualWidthBinningImpl::createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer);{
-    intp length = originalMatrix->size;
+void EqualWidthBinning::createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer){
+    intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
         //TODO: inform observer that no approximation is necessary

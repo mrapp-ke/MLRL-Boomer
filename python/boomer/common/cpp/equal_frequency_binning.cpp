@@ -2,12 +2,12 @@
 
 intp EqualFrequencyBinning::numBins_;
 
-EqualFrequencyBinning::EqualFrequencyBinning(numBins){
+EqualFrequencyBinning::EqualFrequencyBinning(intp numBins){
     numBins_ = numBins;
 }
 
-void EqualFrequencyBinningImpl::createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer);{
-    intp length = originalMatrix->size;
+void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer){
+    intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
         //TODO: inform observer that no approximation is necessary

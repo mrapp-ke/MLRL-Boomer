@@ -3,17 +3,16 @@
 #include "arrays.h"
 #include "statistics.h"
 #include "abstract_binning.h"
-#include <vector>
 
-class EqualWidthBinning : public AbstractBinning{
+class EqualFrequencyBinning : public AbstractBinning{
 
     private:
 
-        intp numBins_;
+        static intp numBins_;
 
     public:
 
-        EqualWidthBinning(intp numBins);
+        EqualFrequencyBinning(intp numBins);
 
         void createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer) override;
 

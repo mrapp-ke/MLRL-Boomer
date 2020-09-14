@@ -3,13 +3,12 @@
 #include "arrays.h"
 #include "statistics.h"
 #include "abstract_binning.h"
-#include <vector>
 
 class EqualWidthBinning : public AbstractBinning{
 
     private:
 
-        intp numBins_;
+        static intp numBins_;
 
     public:
 
