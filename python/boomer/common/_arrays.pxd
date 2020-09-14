@@ -29,81 +29,68 @@ ELSE:
     DEF FORMAT_FLOAT64 = 'd'
 
 
-cdef inline cvarray array_intp(intp num_elements):
+cdef inline cvarray array_uint32(uint32 num_elements):
     """
-    Creates and returns a new C-contiguous array of dtype `intp`, shape `(num_elements)`.
+    Creates and returns a new C-contiguous array of type `uint32`, shape `(num_elements)`.
 
     :param num_elements:    The number of elements in the array
     :return:                The array that has been created
     """
     cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(intp)
-    cdef cvarray array = cvarray(shape, itemsize, FORMAT_INTP, MODE_C_CONTIGUOUS)
-    return array
-
-
-cdef inline cvarray array_uint32(intp num_elements):
-    """
-    Creates and returns a new C-contiguous array of dtype `uint32`, shape `(num_elements)`.
-
-    :param num_elements:    The number of elements in the array
-    :return:                The array that has been created
-    """
-    cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(uint32)
+    cdef int itemsize = sizeof(uint32)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT32, MODE_C_CONTIGUOUS)
     return array
 
 
-cdef inline cvarray array_float32(intp num_elements):
+cdef inline cvarray array_float32(uint32 num_elements):
     """
-    Creates and returns a new C-contiguous array of dtype `float32`, shape `(num_elements)`.
+    Creates and returns a new C-contiguous array of type `float32`, shape `(num_elements)`.
 
     :param num_elements:    The number of elements in the array
     :return:                The array that has been created
     """
     cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(float32)
+    cdef int itemsize = sizeof(float32)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT32, MODE_C_CONTIGUOUS)
     return array
 
 
-cdef inline cvarray array_float64(intp num_elements):
+cdef inline cvarray array_float64(uint32 num_elements):
     """
-    Creates and returns a new C-contiguous array of dtype `float64`, shape `(num_elements)`.
+    Creates and returns a new C-contiguous array of type `float64`, shape `(num_elements)`.
 
     :param num_elements:    The number of elements in the array
     :return:                The array that has been created
     """
     cdef tuple shape = tuple([num_elements])
-    cdef intp itemsize = sizeof(float64)
+    cdef int itemsize = sizeof(float64)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
 
 
-cdef inline cvarray c_matrix_float64(intp num_rows, intp num_cols):
+cdef inline cvarray c_matrix_float64(uint32 num_rows, uint32 num_cols):
     """
-    Creates and returns a new C-contiguous array of dtype `float64`, shape `(num_rows, num_cols)`.
+    Creates and returns a new C-contiguous array of type `float64`, shape `(num_rows, num_cols)`.
 
     :param num_rows:    The number of rows in the array
     :param num_cols:    The number of columns in the array
     :return:            The array that has been created
     """
     cdef tuple shape = tuple([num_rows, num_cols])
-    cdef intp itemsize = sizeof(float64)
+    cdef int itemsize = sizeof(float64)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
 
 
-cdef inline cvarray c_matrix_uint8(intp num_rows, intp num_cols):
+cdef inline cvarray c_matrix_uint8(uint32 num_rows, uint32 num_cols):
     """
-    Creates and returns a new C-contiguous array of dtype `uint8`, shape `(num_rows, num_cols)`.
+    Creates and returns a new C-contiguous array of type `uint8`, shape `(num_rows, num_cols)`.
 
     :param num_rows:    The number of rows in the array
     :param num_cols:    The number of columns in the array
     :return:            The array that has been created
     """
     cdef tuple shape = tuple([num_rows, num_cols])
-    cdef intp itemsize = sizeof(uint8)
+    cdef int itemsize = sizeof(uint8)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_UINT8, MODE_C_CONTIGUOUS)
     return array

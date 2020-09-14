@@ -3,7 +3,6 @@
 
 Provides classes that provide access to the data that is provided for training.
 """
-from boomer.common._arrays cimport uint32
 from boomer.common._tuples cimport IndexedFloat32, compareIndexedFloat32
 
 from libc.stdlib cimport qsort, malloc
@@ -34,11 +33,11 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
 
     def __cinit__(self, const uint8[:, ::1] y):
         """
-        :param y: An array of dtype uint8, shape `(num_examples, num_labels)`, representing the labels of the training
+        :param y: An array of type `uint8`, shape `(num_examples, num_labels)`, representing the labels of the training
                   examples
         """
-        cdef intp num_examples = y.shape[0]
-        cdef intp num_labels = y.shape[1]
+        cdef uint32 num_examples = y.shape[0]
+        cdef uint32 num_labels = y.shape[1]
         self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
                                                                                                    num_labels, &y[0, 0])
         self.num_examples = num_examples
@@ -50,16 +49,16 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     A wrapper for the C++ class `DokLabelMatrix`.
     """
 
-    def __cinit__(self, intp num_examples, intp num_labels, list[::1] rows):
+    def __cinit__(self, uint32 num_examples, uint32 num_labels, list[::1] rows):
         """
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
-        :param rows:            An array of dtype `list`, shape `(num_rows)`, storing a list for each example containing
+        :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
         cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr
         cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
-        cdef intp num_rows = rows.shape[0]
+        cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
 
@@ -82,7 +81,7 @@ cdef class FeatureMatrix:
     A base class for all classes that provide column-wise access to the feature values of the training examples.
     """
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil:
         """
         Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
         them in ascending order by the feature values and stores the in a given struct of type `IndexedFloat32Array`.
@@ -103,22 +102,22 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
     def __cinit__(self, const float32[::1, :] x):
         """
-        :param x: An array of dtype float, shape `(num_examples, num_features)`, representing the feature values of the
-                  training examples
+        :param x: An array of type `float32`, shape `(num_examples, num_features)`, representing the feature values of
+                  the training examples
         """
         self.num_examples = x.shape[0]
         self.num_features = x.shape[1]
         self.x = x
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil:
         # Class members
         cdef const float32[::1, :] x = self.x
         # The number of elements to be returned
-        cdef intp num_elements = x.shape[0]
+        cdef uint32 num_elements = x.shape[0]
         # The array that stores the indices
         cdef IndexedFloat32* sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))
         # Temporary variables
-        cdef intp i
+        cdef uint32 i
 
         for i in range(num_elements):
             sorted_array[i].index = i
@@ -138,18 +137,18 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     The feature matrix must be given in compressed sparse column (CSC) format.
     """
 
-    def __cinit__(self, intp num_examples, intp num_features, const float32[::1] x_data, const intp[::1] x_row_indices,
-                  const intp[::1] x_col_indices):
+    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] x_data,
+                  const uint32[::1] x_row_indices, const uint32[::1] x_col_indices):
         """
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
-        :param x_data:          An array of dtype float, shape `(num_non_zero_feature_values)`, representing the
+        :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
                                 non-zero feature values of the training examples
-        :param x_row_indices:   An array of dtype int, shape `(num_non_zero_feature_values)`, representing the
+        :param x_row_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
                                 row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:   An array of dtype int, shape `(num_features + 1)`, representing the indices of the first
-                                element in `x_data` and `x_row_indices` that corresponds to a certain feature. The index
-                                at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of type `uint32`, shape `(num_features + 1)`, representing the indices of the
+                                first element in `x_data` and `x_row_indices` that corresponds to a certain feature. The
+                                index at the last position is equal to `num_non_zero_feature_values`
         """
         self.num_examples = num_examples
         self.num_features = num_features
@@ -157,21 +156,21 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         self.x_row_indices = x_row_indices
         self.x_col_indices = x_col_indices
 
-    cdef void fetch_sorted_feature_values(self, intp feature_index, IndexedFloat32Array* indexed_array) nogil:
+    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil:
         # Class members
         cdef const float32[::1] x_data = self.x_data
-        cdef const intp[::1] x_row_indices = self.x_row_indices
-        cdef const intp[::1] x_col_indices = self.x_col_indices
+        cdef const uint32[::1] x_row_indices = self.x_row_indices
+        cdef const uint32[::1] x_col_indices = self.x_col_indices
         # The index of the first element in `x_data` and `x_row_indices` that corresponds to the given feature index
-        cdef intp start = x_col_indices[feature_index]
+        cdef uint32 start = x_col_indices[feature_index]
         # The index of the last element in `x_data` and `x_row_indices` that corresponds to the given feature index
-        cdef intp end = x_col_indices[feature_index + 1]
+        cdef uint32 end = x_col_indices[feature_index + 1]
         # The number of elements to be returned
-        cdef intp num_elements = end - start
+        cdef uint32 num_elements = end - start
         # The array that stores the indices
         cdef IndexedFloat32* sorted_array = NULL
         # Temporary variables
-        cdef intp i, j
+        cdef uint32 i, j
 
         if num_elements > 0:
             sorted_array = <IndexedFloat32*>malloc(num_elements * sizeof(IndexedFloat32))

@@ -10,7 +10,7 @@ AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
 
 }
 
-void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const intp* labelIndices,
+void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                    const float64* totalSumsOfGradients,
                                                                    float64* sumsOfGradients,
                                                                    const float64* totalSumsOfHessians,
@@ -27,7 +27,7 @@ RegularizedLabelWiseRuleEvaluationImpl::~RegularizedLabelWiseRuleEvaluationImpl(
 
 }
 
-void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const intp* labelIndices,
+void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                           const float64* totalSumsOfGradients,
                                                                           float64* sumsOfGradients,
                                                                           const float64* totalSumsOfHessians,
@@ -36,7 +36,7 @@ void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const 
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of labels to predict for
-    intp numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
     float64* predictedScores = prediction->predictedScores_;
     // The array that should be used to store the quality scores
@@ -45,12 +45,12 @@ void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const 
     float64 overallQualityScore = 0;
 
     // For each label, calculate a score to be predicted, as well as a corresponding quality score...
-    for (intp c = 0; c < numPredictions; c++) {
+    for (uint32 c = 0; c < numPredictions; c++) {
         float64 sumOfGradients = sumsOfGradients[c];
         float64 sumOfHessians =  sumsOfHessians[c];
 
         if (uncovered) {
-            intp l = labelIndices != NULL ? labelIndices[c] : c;
+            uint32 l = labelIndices != NULL ? labelIndices[c] : c;
             sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
             sumOfHessians = totalSumsOfHessians[l] - sumOfHessians;
         }
