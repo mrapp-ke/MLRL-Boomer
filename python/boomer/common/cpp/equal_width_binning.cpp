@@ -31,30 +31,31 @@ void EqualWidthBinningImpl::createBins(IndexedFloat32Array* indexedArray, Binnin
      *          result += [tmp]     #write tmp to the i-st element of the result array
      *      return result           #return pointer to the result array
      */
-    float min = originalMatrix[0][currentFeatureIndex];
-    intp bound_min = floor(min);
-    float max = originalMatrix[originalMatrix->size][currentFeatureIndex];
-    intp w = int(ceil((max - min)/numBins_))
-    //Initializing result array
-    indexedFloatArray *results = (indexedFloatArray*)malloc(sizeof(indexedFloatArray));
-    results->size = numBins_;
-    float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array?
-    results->data = resultData;
-    numFeatures = 7; //TODO: Replace "7" with the number of features
-    intp boundaries[numBins_ + 1] {0};
-    for(intp i = 0; i < numBins_ + 1; i++){
-        boundaries[i] = bound_min + w * i;
-    }
-    for(intp i = 0; i < numBins_; i++){
-        float tmp[numFeatures] {0};
-        for(intp j = 0; j < length; j++){
-            if(boundaries[i]<= j && j < boundaries[i + 1]){
-                for(intp k = 0; k < numFeatures; k++){ //adding all feature values
-                    tmp[k] = tmp[k] + originalMatrix->data[j][k];
-                }
-            }
-        }
-        result->data[i] = tmp;
-    }
-    //TODO: Inform observer that a new matrix is available
+    /*  float min = originalMatrix[0][currentFeatureIndex];
+     *  intp bound_min = floor(min);
+     *  float max = originalMatrix[originalMatrix->size][currentFeatureIndex];
+     *  intp w = int(ceil((max - min)/numBins_))
+        //Initializing result array
+     *  indexedFloatArray *results = (indexedFloatArray*)malloc(sizeof(indexedFloatArray));
+     *  results->size = numBins_;
+     *  float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array?
+     *  results->data = resultData;
+     *  numFeatures = 7; //TODO: Replace "7" with the number of features
+     *  intp boundaries[numBins_ + 1] {0};
+     *  for(intp i = 0; i < numBins_ + 1; i++){
+     *      boundaries[i] = bound_min + w * i;
+     *  }
+     *  for(intp i = 0; i < numBins_; i++){
+     *      float tmp[numFeatures] {0};
+     *      for(intp j = 0; j < length; j++){
+     *          if(boundaries[i]<= j && j < boundaries[i + 1]){
+     *              for(intp k = 0; k < numFeatures; k++){ //adding all feature values
+     *                  tmp[k] = tmp[k] + originalMatrix->data[j][k];
+     *              }
+     *          }
+     *      }
+     *      result->data[i] = tmp;
+     *  }
+     * //TODO: Inform observer that a new matrix is available
+     */
 }
