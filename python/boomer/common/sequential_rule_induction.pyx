@@ -19,7 +19,7 @@ cdef class SequentialRuleInduction:
                   HeadRefinement default_rule_head_refinement, HeadRefinement head_refinement, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                  intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
+                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
         :param statistics_provider_factory:     A factory that allows to create a provider that provides access to the
                                                 statistics which serve as the basis for learning rules
@@ -71,7 +71,7 @@ cdef class SequentialRuleInduction:
         """
         Creates and returns a model that consists of several classification rules.
 
-        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
+        :param nominal_attribute_mask:  An array of type `uint8`, shape `(num_features)`, indicating whether the feature
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
                                         the training examples
@@ -91,16 +91,14 @@ cdef class SequentialRuleInduction:
         cdef FeatureSubSampling feature_sub_sampling = self.feature_sub_sampling
         cdef Pruning pruning = self.pruning
         cdef PostProcessor post_processor = self.post_processor
-        cdef intp min_coverage = self.min_coverage
+        cdef uint32 min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
         cdef intp max_head_refinements = self.max_head_refinements
         cdef int num_threads = self.num_threads
         # The random number generator to be used
         cdef RNG rng = RNG.__new__(RNG, random_state)
-        # The total number of labels
-        cdef intp num_labels = label_matrix.num_labels
         # The number of rules induced so far (starts at 1 to account for the default rule)
-        cdef intp num_rules = 1
+        cdef uint32 num_rules = 1
         # Temporary variables
         cdef bint success
 
@@ -111,7 +109,7 @@ cdef class SequentialRuleInduction:
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             # Induce a new rule...
             success = rule_induction.induce_rule(statistics_provider, nominal_attribute_mask, feature_matrix,
-                                                 num_labels, head_refinement, label_sub_sampling, instance_sub_sampling,
+                                                 head_refinement, label_sub_sampling, instance_sub_sampling,
                                                  feature_sub_sampling, pruning, post_processor, min_coverage,
                                                  max_conditions, max_head_refinements, num_threads, rng, model_builder)
 
@@ -123,7 +121,7 @@ cdef class SequentialRuleInduction:
         return model_builder.build_model()
 
 
-cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, intp num_rules):
+cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, uint32 num_rules):
     """
     Returns whether additional rules should be induced, according to some stopping criteria, or not.
 

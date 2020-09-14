@@ -3,7 +3,7 @@
 
 Provides classes that implement strategies for finding the heads of rules.
 """
-from boomer.common._arrays cimport float64, array_intp, array_float64
+from boomer.common._arrays cimport float64
 from boomer.common._predictions cimport LabelWisePredictionCandidate
 
 from libc.stdlib cimport malloc
@@ -15,7 +15,7 @@ cdef class HeadRefinement:
     """
 
     cdef PredictionCandidate* find_head(self, PredictionCandidate* best_head, PredictionCandidate* recyclable_head,
-                                        const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                        const uint32* label_indices, AbstractRefinementSearch* refinement_search,
                                         bint uncovered, bint accumulated) nogil:
         """
         Finds and returns the best head for a rule given the predictions that are provided by a
@@ -31,7 +31,7 @@ cdef class HeadRefinement:
         :param recyclable_head:     A pointer to an instance of the C++ class `PredictionCandidate` that may be modified
                                     instead of creating a new instance to avoid unnecessary memory allocations or NULL,
                                     if no such instance is available
-        :param label_indices:       A pointer to an array of type `intp`, shape `(num_predictions)`, representing the
+        :param label_indices:       A pointer to an array of type `uint32`, shape `(num_predictions)`, representing the
                                     indices of the labels for which the head may predict or NULL, if the head may
                                     predict for all labels
         :param refinement_search:   A pointer to an object of type `AbstractRefinementSearch` to be used for calculating
@@ -76,19 +76,19 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
 
     cdef PredictionCandidate* find_head(self, PredictionCandidate* best_head, PredictionCandidate* recyclable_head,
-                                        const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                        const uint32* label_indices, AbstractRefinementSearch* refinement_search,
                                         bint uncovered, bint accumulated) nogil:
         cdef LabelWisePredictionCandidate* prediction = refinement_search.calculateLabelWisePrediction(uncovered,
                                                                                                        accumulated)
-        cdef intp num_predictions = prediction.numPredictions_
+        cdef uint32 num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64* quality_scores = prediction.qualityScores_
-        cdef intp best_c = 0
+        cdef uint32 best_c = 0
         cdef float64 best_quality_score = quality_scores[best_c]
-        cdef intp* candidate_label_indices
+        cdef uint32* candidate_label_indices
         cdef float64* candidate_predicted_scores
         cdef float64 quality_score
-        cdef intp c
+        cdef uint32 c
 
         # Find the best single-label head...
         for c in range(1, num_predictions):
@@ -102,7 +102,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
         if best_head == NULL or best_quality_score < best_head.overallQualityScore_:
             if recyclable_head == NULL:
                 # Create a new `PredictionCandidate` and return it...
-                candidate_label_indices = <intp*>malloc(sizeof(intp))
+                candidate_label_indices = <uint32*>malloc(sizeof(uint32))
                 candidate_label_indices[0] = best_c if label_indices == NULL else label_indices[best_c]
                 candidate_predicted_scores = <float64*>malloc(sizeof(float64))
                 candidate_predicted_scores[0] = predicted_scores[best_c]
@@ -129,15 +129,15 @@ cdef class FullHeadRefinement(HeadRefinement):
     """
 
     cdef PredictionCandidate* find_head(self, PredictionCandidate* best_head, PredictionCandidate* recyclable_head,
-                                        const intp* label_indices, AbstractRefinementSearch* refinement_search,
+                                        const uint32* label_indices, AbstractRefinementSearch* refinement_search,
                                         bint uncovered, bint accumulated) nogil:
         cdef PredictionCandidate* prediction = refinement_search.calculateExampleWisePrediction(uncovered, accumulated)
-        cdef intp num_predictions = prediction.numPredictions_
+        cdef uint32 num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
         cdef float64 overall_quality_score = prediction.overallQualityScore_
-        cdef intp* candidate_label_indices = NULL
+        cdef uint32* candidate_label_indices = NULL
         cdef float64* candidate_predicted_scores
-        cdef intp c
+        cdef uint32 c
 
         # The quality score must be better than that of `best_head`...
         if best_head == NULL or overall_quality_score < best_head.overallQualityScore_:
@@ -149,7 +149,7 @@ cdef class FullHeadRefinement(HeadRefinement):
                     candidate_predicted_scores[c] = predicted_scores[c]
 
                 if label_indices != NULL:
-                    candidate_label_indices = <intp*>malloc(num_predictions * sizeof(intp))
+                    candidate_label_indices = <uint32*>malloc(num_predictions * sizeof(uint32))
 
                     for c in range(num_predictions):
                         candidate_label_indices[c] = label_indices[c]

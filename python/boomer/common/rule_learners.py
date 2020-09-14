@@ -8,8 +8,8 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import os
 from abc import abstractmethod
 from ast import literal_eval
-from typing import List
 from enum import Enum
+from typing import List
 
 import numpy as np
 from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix, DenseFeatureMatrix, CscFeatureMatrix
@@ -23,7 +23,7 @@ from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSe
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
-from boomer.common.arrays import DTYPE_UINT8, DTYPE_UINT32, DTYPE_INTP, DTYPE_FLOAT32
+from boomer.common.arrays import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from boomer.common.learners import Learner, NominalAttributeLearner
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
@@ -232,7 +232,7 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
                 size_dense = np.prod(m.shape) * np.dtype(DTYPE_UINT8).itemsize
             else:
                 num_pointers = m.shape[1 if sparse_format == 'csc' else 0]
-                size_int = np.dtype(DTYPE_INTP).itemsize
+                size_int = np.dtype(DTYPE_UINT32).itemsize
                 size_float = np.dtype(DTYPE_FLOAT32).itemsize
                 size_sparse = (num_non_zero * size_float) + (num_non_zero * size_int) + (num_pointers * size_int)
                 size_dense = np.prod(m.shape) * size_float
@@ -274,8 +274,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
-            x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
+            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
+            x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
             feature_matrix = DenseFeatureMatrix(x)
@@ -322,8 +322,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
-            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
+            x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             num_features = x.shape[1]
             return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, num_labels, model)
         else:
