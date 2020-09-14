@@ -3,7 +3,7 @@
 
 Provides classes that implement strategies for shrinking the weights of rules.
 """
-from boomer.common._arrays cimport intp
+from boomer.common._arrays cimport uint32
 
 
 cdef class Shrinkage(PostProcessor):
@@ -30,9 +30,9 @@ cdef class ConstantShrinkage(Shrinkage):
 
     cdef void post_process(self, Prediction* prediction):
         cdef float64 shrinkage = self.shrinkage
-        cdef intp num_predictions = prediction.numPredictions_
+        cdef uint32 num_predictions = prediction.numPredictions_
         cdef float64* predicted_scores = prediction.predictedScores_
-        cdef intp c
+        cdef uint32 c
 
         for c in range(num_predictions):
             predicted_scores[c] *= shrinkage

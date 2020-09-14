@@ -3,7 +3,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
+from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
@@ -24,7 +24,7 @@ A struct that represents a potential refinement of a rule.
 """
 cdef struct Refinement:
     PredictionCandidate* head
-    intp feature_index
+    uint32 feature_index
     float32 threshold
     Comparator comparator
     bint covered
@@ -55,21 +55,20 @@ cdef class RuleInduction:
         pass
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
-        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
+        :param nominal_attribute_mask:  An array of type `uint8`, shape `(num_features)`, indicating whether the feature
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
                                         training examples
-        :param num_labels:              The total number of labels
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
                                         sub-sampling should be used
@@ -107,11 +106,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
     """
 
     def __cinit__(self):
-        self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
+        self.cache_global = new unordered_map[uint32, IndexedFloat32Array*]()
 
     def __dealloc__(self):
-        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
-        cdef unordered_map[intp, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
+        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef unordered_map[uint32, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
         cdef IndexedFloat32Array* indexed_array
 
         while cache_global_iterator != cache_global.end():
@@ -127,7 +126,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
         cdef AbstractStatistics* statistics
-        cdef intp num_statistics, i
+        cdef uint32 num_statistics, i
 
         if head_refinement is not None:
             statistics = statistics_provider.get()
@@ -151,26 +150,28 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
-        cdef intp num_statistics = statistics.numStatistics_
+        cdef uint32 num_statistics = statistics.numStatistics_
+        # The total number of labels
+        cdef uint32 num_labels = statistics.numLabels_
         # The total number of features
-        cdef intp num_features = feature_matrix.num_features
+        cdef uint32 num_features = feature_matrix.num_features
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef double_linked_list[Condition] conditions
         # The total number of conditions
-        cdef intp num_conditions = 0
+        cdef uint32 num_conditions = 0
         # An array representing the number of conditions per type of operator
-        cdef intp[::1] num_conditions_per_comparator = array_intp(4)
+        cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
         num_conditions_per_comparator[:] = 0
         # A map that stores the best refinement for each feature
-        cdef unordered_map[intp, Refinement] refinements  # Stack-allocated map
+        cdef unordered_map[uint32, Refinement] refinements  # Stack-allocated map
         # The best refinement of the current rule
         cdef Refinement best_refinement  # Stack-allocated struct
         best_refinement.head = NULL
@@ -183,21 +184,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         covered_statistics_mask[:] = 0
         cdef uint32 covered_statistics_target = 0
         # A map that stores potential thresholds that result from all available statistics
-        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
         # A map that stores potential thresholds that result from the statistics that are covered by the current rule
-        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
+        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
 
         # Temporary variables
-        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
+        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
         cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
         cdef Refinement current_refinement
-        cdef intp[::1] sampled_feature_indices
-        cdef intp num_sampled_features
-        cdef uint32 weight
+        cdef uint32[::1] sampled_feature_indices
+        cdef uint32 num_sampled_features, weight, f, r
         cdef bint nominal
-        cdef intp r, c, f
+        cdef intp c
 
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
@@ -206,7 +206,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         if instance_sub_sampling is None:
             weights = None
-            total_sum_of_weights = <uint32>num_statistics
+            total_sum_of_weights = num_statistics
         else:
             uint32_array_scalar_pair = instance_sub_sampling.sub_sample(num_statistics, rng)
             weights = uint32_array_scalar_pair.first
@@ -220,13 +220,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             statistics.addSampledStatistic(r, weight)
 
         # Sub-sample labels, if necessary...
-        cdef intp[::1] sampled_label_indices
-        cdef const intp* label_indices
-        cdef intp num_predictions
+        cdef uint32[::1] sampled_label_indices
+        cdef const uint32* label_indices
+        cdef uint32 num_predictions
 
         if label_sub_sampling is None:
             sampled_label_indices = None
-            label_indices = <const intp*>NULL
+            label_indices = <const uint32*>NULL
             num_predictions = 0
         else:
             sampled_label_indices = label_sub_sampling.sub_sample(num_labels, rng)
@@ -249,12 +249,12 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 # For each feature, update the caches `cache_global` and 'cache_local`, if necessary...
                 for c in range(num_sampled_features):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     __update_caches(f, cache_global, cache_local)
 
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
                                                            total_sum_of_weights, cache_global, cache_local,
@@ -267,7 +267,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     current_refinement = refinements[f]
 
                     if current_refinement.head != NULL and (best_refinement.head == NULL
@@ -285,7 +285,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     conditions.push_back(__make_condition(best_refinement.feature_index, best_refinement.comparator,
                                                           best_refinement.threshold))
                     num_conditions += 1
-                    num_conditions_per_comparator[<intp>best_refinement.comparator] += 1
+                    num_conditions_per_comparator[<uint32>best_refinement.comparator] += 1
 
                     if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                         # Keep the labels for which the rule predicts, if the head should not be further refined...
@@ -368,8 +368,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(cache_local_iterator)
 
 
-cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32Array*]* cache_global,
-                          unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local):
+cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFloat32Array*]* cache_global,
+                          unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local):
     """
     Updates the caches `cache_global` and `cache_local`, which store arrays that contain the indices of examples, as
     well as their values for certain features, if necessary.
@@ -404,13 +404,14 @@ cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32
             dereference(cache_global)[feature_index] = indexed_array
 
 
-cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_label_indices, const intp* label_indices,
-                                  uint32[::1] weights, uint32 total_sum_of_weights,
-                                  unordered_map[intp, IndexedFloat32Array*]* cache_global,
-                                  unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local,
+cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num_label_indices,
+                                  const uint32* label_indices, uint32[::1] weights, uint32 total_sum_of_weights,
+                                  unordered_map[uint32, IndexedFloat32Array*]* cache_global,
+                                  unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                   FeatureMatrix feature_matrix, uint32[::1] covered_statistics_mask,
-                                  uint32 covered_statistics_target, intp num_conditions, AbstractStatistics* statistics,
-                                  HeadRefinement head_refinement, PredictionCandidate* head) nogil:
+                                  uint32 covered_statistics_target, uint32 num_conditions,
+                                  AbstractStatistics* statistics, HeadRefinement head_refinement,
+                                  PredictionCandidate* head) nogil:
     """
     Finds and returns the best refinement of an existing rule, which results from adding a new condition that
     corresponds to a certain feature.
@@ -419,9 +420,9 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
     :param nominal                      1, if the feature, the new condition should correspond to, is nominal, 0
                                         otherwise
     :param num_label_indices:           The number of elements in the array `label_indices`
-    :param label_indices:               A pointer to an array of type `intp`, shape `(num_predictions)`, representing
+    :param label_indices:               A pointer to an array of type `uint32`, shape `(num_predictions)`, representing
                                         the indices of the labels for which the refined rule may predict
-    :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
+    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
                                         the training examples or None, if all training examples are weighed equally
     :param total_sum_of_weights:        The sum of the weights of all training examples
     :param cache_global:                A pointer to a map that maps feature indices to structs of type
@@ -434,9 +435,9 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
                                         feature, sorted in ascending order by the feature values
     :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of the
                                         training examples
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the existing rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the existing rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the existing rule
     :param num_conditions:              The number of conditions in the body of the existing rule
@@ -457,8 +458,8 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
     # Temporary variables
     cdef PredictionCandidate* current_head
     cdef float32 current_threshold, previous_threshold, previous_threshold_negative
-    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
-    cdef intp r, i, previous_r, previous_r_negative
+    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative
+    cdef uint32 total_accumulated_sum_of_weights, i, r, previous_r, previous_r_negative
 
     # Obtain array that contains the indices of the training examples sorted according to the current feature...
     cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
@@ -479,7 +480,7 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
                              covered_statistics_target)
         indexed_array = indexed_array_wrapper.array
 
-    cdef intp num_indexed_values = indexed_array.numElements
+    cdef uint32 num_indexed_values = indexed_array.numElements
     indexed_values = indexed_array.data
 
     # Start a new search based on the current statistics when processing a new feature...
@@ -930,10 +931,10 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
     cdef bint ascending = condition_end < condition_previous
     cdef intp direction = 1 if ascending else -1
     cdef intp start = condition_end + direction
-    cdef intp num_steps = abs(start - condition_previous)
+    cdef uint32 num_steps = abs(start - condition_previous)
     cdef float32 feature_value
     cdef bint adjust
-    cdef intp i, r
+    cdef uint32 i, r
 
     # Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
     # current sub-sample...
@@ -959,7 +960,7 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
 cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                             IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp condition_start,
                                             intp condition_end, Comparator condition_comparator, bint covered,
-                                            intp num_conditions, uint32[::1] covered_statistics_mask,
+                                            uint32 num_conditions, uint32[::1] covered_statistics_mask,
                                             uint32 covered_statistics_target, AbstractStatistics* statistics,
                                             uint32[::1] weights):
     """
@@ -982,31 +983,31 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                         new condition and the remaining ones are not, 0, if the examples in said range
                                         are not covered and the remaining ones are
     :param num_conditions:              The total number of conditions in the rule's body (including the new one)
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the previous rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the previous rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be notified about the
                                         examples that must be considered when searching for the next refinement, i.e.,
                                         the examples that are covered by the new rule
-    :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
+    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
                                         the training examples
     :return:                            The value that is used to mark those elements in the updated
                                         `covered_statistics_mask` that are covered by the new rule
     """
     cdef IndexedFloat32* indexed_values = indexed_array.data
-    cdef intp num_indexed_values = indexed_array.numElements
+    cdef uint32 num_indexed_values = indexed_array.numElements
     cdef bint descending = condition_end < condition_start
-    cdef uint32 updated_target, weight
-    cdef intp start, end, direction, i, r, j, index, num_steps
+    cdef uint32 updated_target, weight, index, num_steps, i, r, j
+    cdef intp start, end, direction
 
     # Determine the number of elements in the filtered array...
-    cdef intp num_condition_steps = abs(condition_start - condition_end)
-    cdef intp num_elements = num_condition_steps
+    cdef uint32 num_condition_steps = abs(condition_start - condition_end)
+    cdef uint32 num_elements = num_condition_steps
 
     if not covered:
-        num_elements = num_indexed_values - num_elements
+        num_elements = (num_indexed_values - num_elements) if num_indexed_values > num_elements else 0
 
     # Allocate filtered array...
     cdef IndexedFloat32* filtered_array = NULL
@@ -1095,7 +1096,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
 
 
 cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
-                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp num_conditions,
+                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, uint32 num_conditions,
                                       uint32[::1] covered_statistics_mask, uint32 covered_statistics_target) nogil:
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
@@ -1107,9 +1108,9 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
                                         to store the filtered array
     :param num_conditions:              The total number of conditions in the current rule's body
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the previous rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the previous rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     """
@@ -1119,10 +1120,10 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     if filtered_indexed_array != NULL:
         filtered_array = filtered_indexed_array.data
 
-    cdef intp max_elements = indexed_array.numElements
-    cdef intp i = 0
+    cdef uint32 max_elements = indexed_array.numElements
+    cdef uint32 i = 0
     cdef IndexedFloat32* indexed_values
-    cdef intp r, index
+    cdef uint32 index, r
 
     if max_elements > 0:
         indexed_values = indexed_array.data
@@ -1153,7 +1154,7 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     indexed_array_wrapper.num_conditions = num_conditions
 
 
-cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
+cdef inline Condition __make_condition(uint32 feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
 
@@ -1168,7 +1169,7 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp num_statistics,
+cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint32 num_statistics,
                                            HeadRefinement head_refinement, uint32[::1] covered_statistics_mask,
                                            uint32 covered_statistics_target, PredictionCandidate* head):
     """
@@ -1178,24 +1179,24 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
                                         statistics
     :param num_statistics:              The number of available statistics
     :param head_refinement:             The strategy that was used to find the head of the rule
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the rule
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the rule
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the rule
     :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
                                         the rule
     """
     # The number labels for which the head predicts
-    cdef intp num_predictions = head.numPredictions_
+    cdef uint32 num_predictions = head.numPredictions_
     # An array that stores the labels for which the head predicts
-    cdef intp* label_indices = head.labelIndices_
+    cdef uint32* label_indices = head.labelIndices_
     # An array that stores the scores that are predicted by the head
     cdef float64* predicted_scores = head.predictedScores_
     # Temporary variables
     cdef AbstractRefinementSearch* refinement_search
     cdef Prediction* prediction
     cdef float64* updated_scores
-    cdef intp r, c
+    cdef uint32 r, c
 
     try:
         refinement_search = statistics.beginSearch(num_predictions, label_indices)

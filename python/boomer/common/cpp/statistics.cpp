@@ -5,7 +5,7 @@ AbstractRefinementSearch::~AbstractRefinementSearch() {
 
 }
 
-void AbstractRefinementSearch::updateSearch(intp statisticIndex, uint32 weight) {
+void AbstractRefinementSearch::updateSearch(uint32 statisticIndex, uint32 weight) {
 
 }
 
@@ -27,8 +27,9 @@ PredictionCandidate* AbstractDecomposableRefinementSearch::calculateExampleWiseP
     return (PredictionCandidate*) this->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-AbstractStatistics::AbstractStatistics(intp numStatistics) {
+AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels) {
     numStatistics_ = numStatistics;
+    numLabels_ = numLabels;
 }
 
 AbstractStatistics::~AbstractStatistics() {
@@ -39,7 +40,7 @@ void AbstractStatistics::resetSampledStatistics() {
 
 }
 
-void AbstractStatistics::addSampledStatistic(intp statisticIndex, uint32 weight) {
+void AbstractStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
 
 }
 
@@ -47,14 +48,14 @@ void AbstractStatistics::resetCoveredStatistics() {
 
 }
 
-void AbstractStatistics::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void AbstractStatistics::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
 
 }
 
-AbstractRefinementSearch* AbstractStatistics::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+AbstractRefinementSearch* AbstractStatistics::beginSearch(uint32 numLabelIndices, const uint32* labelIndices) {
     return NULL;
 }
 
-void AbstractStatistics::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void AbstractStatistics::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
 
 }

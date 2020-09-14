@@ -21,19 +21,19 @@ class AbstractLabelMatrix {
          * @param numExamples   The number of examples
          * @param numLabels     The number of labels
          */
-        AbstractLabelMatrix(intp numExamples, intp numLabels);
+        AbstractLabelMatrix(uint32 numExamples, uint32 numLabels);
 
         virtual ~AbstractLabelMatrix();
 
         /**
          * The number of examples.
          */
-        intp numExamples_;
+        uint32 numExamples_;
 
         /**
          * The number of labels.
          */
-        intp numLabels_;
+        uint32 numLabels_;
 
 };
 
@@ -48,7 +48,7 @@ class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
          * @param numExamples   The number of examples
          * @param numLabels     The number of labels
          */
-        AbstractRandomAccessLabelMatrix(intp numExamples, intp numLabels);
+        AbstractRandomAccessLabelMatrix(uint32 numExamples, uint32 numLabels);
 
         /**
          * Returns whether a specific label of the example at a given index is relevant or irrelevant.
@@ -57,7 +57,7 @@ class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
          * @param labelIndex    The index of the label
          * @return              1, if the label is relevant, 0 otherwise
          */
-        virtual uint8 getLabel(intp exampleIndex, intp labelIndex);
+        virtual uint8 getLabel(uint32 exampleIndex, uint32 labelIndex);
 
 };
 
@@ -78,11 +78,11 @@ class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
          * @param y             A pointer to a C-contiguous array of type `uint8`, shape `(numExamples, numLabels)`,
          *                      representing the labels of the training examples
          */
-        DenseLabelMatrixImpl(intp numExamples, intp numLabels, const uint8* y);
+        DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y);
 
         ~DenseLabelMatrixImpl();
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex) override;
+        uint8 getLabel(uint32 exampleIndex, uint32 labelIndex) override;
 
 };
 
@@ -104,10 +104,10 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
          * @param dokMatrixPtr  A shared pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of
          *                      the training examples
          */
-        DokLabelMatrixImpl(intp numExamples, intp numLabels, std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
+        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
 
         ~DokLabelMatrixImpl();
 
-        uint8 getLabel(intp exampleIndex, intp labelIndex) override;
+        uint8 getLabel(uint32 exampleIndex, uint32 labelIndex) override;
 
 };

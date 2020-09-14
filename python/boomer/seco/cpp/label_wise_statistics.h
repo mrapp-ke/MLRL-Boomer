@@ -26,9 +26,9 @@ namespace seco {
 
             std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
-            intp numPredictions_;
+            uint32 numPredictions_;
 
-            const intp* labelIndices_;
+            const uint32* labelIndices_;
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
@@ -53,7 +53,7 @@ namespace seco {
              *                                  to be used for calculating the predictions, as well as corresponding
              *                                  quality scores, of rules
              * @param numPredictions            The number of labels to be considered by the search
-             * @param labelIndices              An array of type `intp`, shape `(numPredictions)`, representing the
+             * @param labelIndices              An array of type `uint32`, shape `(numPredictions)`, representing the
              *                                  indices of the labels that should be considered by the search or NULL,
              *                                  if all labels should be considered
              * @param labelMatrix               A shared pointer to an object of type `AbstractRandomAccessLabelMatrix`
@@ -73,7 +73,7 @@ namespace seco {
              *                                  the previous refinement of the rule, for each label
              */
             DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                               intp numPredictions, const intp* labelIndices,
+                                               uint32 numPredictions, const uint32* labelIndices,
                                                std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
                                                const float64* uncoveredLabels, const uint8* minorityLabels,
                                                const float64* confusionMatricesTotal,
@@ -81,7 +81,7 @@ namespace seco {
 
             ~DenseLabelWiseRefinementSearchImpl();
 
-            void updateSearch(intp statisticIndex, uint32 weight) override;
+            void updateSearch(uint32 statisticIndex, uint32 weight) override;
 
             void resetSearch() override;
 
@@ -101,11 +101,12 @@ namespace seco {
 
             /**
              * @param numStatistics     The number of statistics
+             * @param numLabels         The number of labels
              * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
              *                          used for calculating the predictions, as well as corresponding quality scores,
              *                          of rules
              */
-            AbstractLabelWiseStatistics(intp numStatistics,
+            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
                                         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr);
 
             /**
@@ -160,15 +161,15 @@ namespace seco {
 
             void resetSampledStatistics() override;
 
-            void addSampledStatistic(intp statisticIndex, uint32 weight) override;
+            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override;
 
             void resetCoveredStatistics() override;
 
-            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+            void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
+            AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 
     };
 
