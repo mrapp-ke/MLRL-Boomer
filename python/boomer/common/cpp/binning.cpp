@@ -40,27 +40,26 @@ void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, Binnin
      *          result.append(tmp)      #write tmp to i-st spot in result array
      *      return result               #return pointer
      */
-    /*  intp n = length/numBins_; //number of elements per bin
-     *  //Initializing result array
-     *  indexedFloatArray *results = (indexedFloatArray*)malloc(sizeof(indexedFloatArray));
-     *  results->size = numBins_;
-     *  float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array?
-     *  results->data = resultData;
-     *  numFeatures = 7; //TODO: Replace "7" with the number of features
-     *  for(intp i = 0; i < numBins_; i++){
-     *      float tmp[numFeatures] {0};
-     *      for(intp j = i * n; j < (i + 1) * n; j++){
-     *          if(j >= length){
-     *              break;
-     *          }
-     *       for(intp k = 0; k < numFeatures; k++){ //adding all feature values
-     *           tmp[k] = tmp[k] + originalMatrix->data[j][k];
-     *       }
-     *   }
-     *   result->data[i] = tmp;
-     *  }
-     * //TODO: Inform observer that a new matrix is available
-     */
+    intp n = length/numBins_; //number of elements per bin
+    //Initializing result array
+    IndexedFloat32Array *results = (IndexedFloat32Array*)malloc(sizeof(IndexedFloat32Array));
+    results->numElements = numBins_;
+    IndexedFloat32 *resultData = (IndexedFloat32*)malloc(numBins_ * sizeof(IndexedFloat32));
+    results->data = resultData;
+    intp numFeatures = 7; //TODO: Replace "7" with the number of features
+    for(intp i = 0; i < numBins_; i++){
+        IndexedFloat32 tmp;
+        tmp.value = 0;
+        for(intp j = i * n; j < (i + 1) * n; j++){
+            if(j >= length){
+                break;
+            }
+            tmp.value = tmp.value + indexedArray->data[j].value;
+        }
+        results->data[i] = tmp;
+        tmp.value = 0;
+    }
+    //TODO: Inform observer that a new matrix is available
 }
 
 //Former equal_width_binning
@@ -92,32 +91,31 @@ void EqualWidthBinning::createBins(IndexedFloat32Array* indexedArray, BinningObs
      *          result += [tmp]     #write tmp to the i-st element of the result array
      *      return result           #return pointer to the result array
      */
-    /*  float min = originalMatrix[0][currentFeatureIndex];
-     *  intp bound_min = floor(min);
-     *  float max = originalMatrix[originalMatrix->size][currentFeatureIndex];
-     *  intp w = int(ceil((max - min)/numBins_))
-        //Initializing result array
-     *  indexedFloatArray *results = (indexedFloatArray*)malloc(sizeof(indexedFloatArray));
-     *  results->size = numBins_;
-     *  float *resultData = (float*)malloc(numThresholds * sizeof(float)); //TODO: Change type from float to float array?
-     *  results->data = resultData;
-     *  numFeatures = 7; //TODO: Replace "7" with the number of features
-     *  intp boundaries[numBins_ + 1] {0};
-     *  for(intp i = 0; i < numBins_ + 1; i++){
-     *      boundaries[i] = bound_min + w * i;
-     *  }
-     *  for(intp i = 0; i < numBins_; i++){
-     *      float tmp[numFeatures] {0};
-     *      for(intp j = 0; j < length; j++){
-     *          if(boundaries[i]<= j && j < boundaries[i + 1]){
-     *              for(intp k = 0; k < numFeatures; k++){ //adding all feature values
-     *                  tmp[k] = tmp[k] + originalMatrix->data[j][k];
-     *              }
-     *          }
-     *      }
-     *      result->data[i] = tmp;
-     *  }
-     * //TODO: Inform observer that a new matrix is available
-     */
+     IndexedFloat32 min = indexedArray->data[0];
+     intp bound_min = floor(min.value);
+     IndexedFloat32 max = indexedArray->data[indexedArray->numElements];
+     intp w = intp(ceil((max.value - min.value)/numBins_));
+      //Initializing result array
+     indexedFloat32Array *results = (indexedFloat32Array*)malloc(sizeof(indexedFloat32Array));
+     results->numElements = numBins_;
+     IndexedFloat32 *resultData = (IndexedFloat32*)malloc(numBins_ * sizeof(IndexedFloat32));
+     results->data = resultData;
+     intp numFeatures = 7; //TODO: Replace "7" with the number of features
+     intp boundaries[numBins_ + 1] {0};
+     for(intp i = 0; i < numBins_ + 1; i++){
+        boundaries[i] = bound_min + w * i;
+     }
+     for(intp i = 0; i < numBins_; i++){
+        float tmp = 0;
+        for(intp j = 0; j < length; j++){
+            if(boundaries[i]<= j && j < boundaries[i + 1]){
+                for(intp k = 0; k < numFeatures; k++){ //adding all feature values
+                    tmp = tmp + indexedArray->data[j].value;
+                }
+            }
+        }
+        results->data[i].value = tmp;
+     }
+     //TODO: Inform observer that a new matrix is available
 }
 
