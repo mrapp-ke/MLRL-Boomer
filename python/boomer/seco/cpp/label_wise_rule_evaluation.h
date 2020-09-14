@@ -29,7 +29,7 @@ namespace seco {
              * confusion matrices. The predicted scores and quality scores are stored in a given object of type
              * `LabelWisePredictionCandidate`.
              *
-             * @param labelIndices              A pointer to an array of type `intp`, shape
+             * @param labelIndices              A pointer to an array of type `uint32`, shape
              *                                  `(prediction.numPredictions_)`, representing the indices of the labels
              *                                  for which the rule should predict or NULL, if the rule should predict
              *                                  for all labels
@@ -53,7 +53,7 @@ namespace seco {
              * @param prediction                A pointer to an object of type `LabelWisePredictionCandidate` that
              *                                  should be used to store the predicted scores and quality scores
              */
-            virtual void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+            virtual void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
                                                       const float64* confusionMatricesTotal,
                                                       const float64* confusionMatricesSubset,
                                                       const float64* confusionMatricesCovered, bool uncovered,
@@ -85,7 +85,7 @@ namespace seco {
 
             ~HeuristicLabelWiseRuleEvaluationImpl();
 
-            void calculateLabelWisePrediction(const intp* labelIndices, const uint8* minorityLabels,
+            void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
                                               const float64* confusionMatricesTotal,
                                               const float64* confusionMatricesSubset,
                                               const float64* confusionMatricesCovered, bool uncovered,

@@ -7,8 +7,8 @@ using namespace seco;
 
 
 DenseLabelWiseRefinementSearchImpl::DenseLabelWiseRefinementSearchImpl(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, intp numPredictions,
-        const intp* labelIndices, std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr, uint32 numPredictions,
+        const uint32* labelIndices, std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
         const float64* uncoveredLabels, const uint8* minorityLabels, const float64* confusionMatricesTotal,
         const float64* confusionMatricesSubset) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
@@ -33,19 +33,19 @@ DenseLabelWiseRefinementSearchImpl::~DenseLabelWiseRefinementSearchImpl() {
     delete prediction_;
 }
 
-void DenseLabelWiseRefinementSearchImpl::updateSearch(intp statisticIndex, uint32 weight) {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numLabels;
+void DenseLabelWiseRefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
+    uint32 numLabels = labelMatrixPtr_.get()->numLabels_;
+    uint32 offset = statisticIndex * numLabels;
 
-    for (intp c = 0; c < numPredictions_; c++) {
-        intp l = labelIndices_ != NULL ? labelIndices_[c] : c;
+    for (uint32 c = 0; c < numPredictions_; c++) {
+        uint32 l = labelIndices_ != NULL ? labelIndices_[c] : c;
 
         // Only uncovered labels must be considered...
         if (uncoveredLabels_[offset + l] > 0) {
             // Add the current example and label to the confusion matrix for the current label...
             uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, l);
             uint8 predictedLabel = minorityLabels_[l];
-            intp element = getConfusionMatrixElement(trueLabel, predictedLabel);
+            uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
             confusionMatricesCovered_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += weight;
         }
     }
@@ -60,11 +60,11 @@ void DenseLabelWiseRefinementSearchImpl::resetSearch() {
     }
 
     // Reset the confusion matrix for each label to zero and add its elements to the accumulated confusion matrix...
-    for (intp c = 0; c < numPredictions_; c++) {
-        intp offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
+    for (uint32 c = 0; c < numPredictions_; c++) {
+        uint32 offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
 
-        for (intp i = 0; i < NUM_CONFUSION_MATRIX_ELEMENTS; i++) {
-            intp j = offset + i;
+        for (uint32 i = 0; i < NUM_CONFUSION_MATRIX_ELEMENTS; i++) {
+            uint32 j = offset + i;
             accumulatedConfusionMatricesCovered_[j] += confusionMatricesCovered_[j];
             confusionMatricesCovered_[j] = 0;
         }
@@ -81,8 +81,8 @@ LabelWisePredictionCandidate* DenseLabelWiseRefinementSearchImpl::calculateLabel
 }
 
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        intp numStatistics, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractCoverageStatistics(numStatistics) {
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractCoverageStatistics(numStatistics, numLabels) {
     this->setRuleEvaluation(ruleEvaluationPtr);
 }
 
@@ -95,18 +95,17 @@ DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
         float64 sumUncoveredLabels, uint8* minorityLabels)
-    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_, ruleEvaluationPtr) {
+    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_, labelMatrixPtr.get()->numLabels_,
+                                  ruleEvaluationPtr) {
     labelMatrixPtr_ = labelMatrixPtr;
     uncoveredLabels_ = uncoveredLabels;
     sumUncoveredLabels_ = sumUncoveredLabels;
     minorityLabels_ = minorityLabels;
-    // The number of labels
-    intp numLabels = labelMatrixPtr.get()->numLabels_;
     // A matrix that stores a confusion matrix, which takes into account all examples, for each label
-    confusionMatricesTotal_ = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
+    confusionMatricesTotal_ = (float64*) malloc(numLabels_ * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     // A matrix that stores a confusion matrix, which takes into account the examples covered by the previous refinement
     // of a rule, for each label
-    confusionMatricesSubset_ = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
+    confusionMatricesSubset_ = (float64*) malloc(numLabels_ * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
 }
 
 DenseLabelWiseStatisticsImpl::~DenseLabelWiseStatisticsImpl() {
@@ -117,17 +116,15 @@ DenseLabelWiseStatisticsImpl::~DenseLabelWiseStatisticsImpl() {
 }
 
 void DenseLabelWiseStatisticsImpl::resetSampledStatistics() {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
+    uint32 numElements = numLabels_ * NUM_CONFUSION_MATRIX_ELEMENTS;
     arrays::setToZeros(confusionMatricesTotal_, numElements);
     arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
-void DenseLabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint32 weight) {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numLabels;
+void DenseLabelWiseStatisticsImpl::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
+    uint32 offset = statisticIndex * numLabels_;
 
-    for (intp c = 0; c < numLabels; c++) {
+    for (uint32 c = 0; c < numLabels_; c++) {
         float64 labelWeight = uncoveredLabels_[offset + c];
 
         // Only uncovered labels must be considered...
@@ -135,8 +132,8 @@ void DenseLabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint
             // Add the current example and label to the confusion matrix that corresponds to the current label...
             uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, c);
             uint8 predictedLabel = minorityLabels_[c];
-            intp element = getConfusionMatrixElement(trueLabel, predictedLabel);
-            intp i = c * NUM_CONFUSION_MATRIX_ELEMENTS + element;
+            uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
+            uint32 i = c * NUM_CONFUSION_MATRIX_ELEMENTS + element;
             confusionMatricesTotal_[i] += weight;
             confusionMatricesSubset_[i] += weight;
         }
@@ -145,17 +142,15 @@ void DenseLabelWiseStatisticsImpl::addSampledStatistic(intp statisticIndex, uint
 
 void DenseLabelWiseStatisticsImpl::resetCoveredStatistics() {
     // Reset confusion matrices to 0...
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    int numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
+    uint32 numElements = numLabels_ * NUM_CONFUSION_MATRIX_ELEMENTS;
     arrays::setToZeros(confusionMatricesSubset_, numElements);
 }
 
-void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numLabels;
+void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
+    uint32 offset = statisticIndex * numLabels_;
     float64 signedWeight = remove ? -((float64) weight) : weight;
 
-    for (intp c = 0; c < numLabels; c++) {
+    for (uint32 c = 0; c < numLabels_; c++) {
         float64 labelWeight = uncoveredLabels_[offset + c];
 
         // Only uncovered labels must be considered...
@@ -163,35 +158,35 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(intp statisticIndex, u
             // Add the current example and label to the confusion matrix that corresponds to the current label...
             uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, c);
             uint8 predictedLabel = minorityLabels_[c];
-            intp element = getConfusionMatrixElement(trueLabel, predictedLabel);
+            uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
             confusionMatricesSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += signedWeight;
         }
     }
 }
 
-AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(intp numLabelIndices, const intp* labelIndices) {
-    intp numPredictions = labelIndices == NULL ? labelMatrixPtr_.get()->numLabels_ : numLabelIndices;
+AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
+                                                                    const uint32* labelIndices) {
+    uint32 numPredictions = labelIndices == NULL ? numLabels_ : numLabelIndices;
     return new DenseLabelWiseRefinementSearchImpl(ruleEvaluationPtr_, numPredictions, labelIndices, labelMatrixPtr_,
                                                   uncoveredLabels_, minorityLabels_, confusionMatricesTotal_,
                                                   confusionMatricesSubset_);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(intp statisticIndex, Prediction* prediction) {
-    intp numPredictions = prediction->numPredictions_;
-    const intp* labelIndices = prediction->labelIndices_;
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
+    uint32 numPredictions = prediction->numPredictions_;
+    const uint32* labelIndices = prediction->labelIndices_;
     const float64* predictedScores = prediction->predictedScores_;
-    intp numLabels = labelMatrixPtr_.get()->numLabels_;
-    intp offset = statisticIndex * numLabels;
+    uint32 offset = statisticIndex * numLabels_;
 
     // Only the labels that are predicted by the new rule must be considered...
-    for (intp c = 0; c < numPredictions; c++) {
-        intp l = labelIndices != NULL ? labelIndices[c] : c;
+    for (uint32 c = 0; c < numPredictions; c++) {
+        uint32 l = labelIndices != NULL ? labelIndices[c] : c;
         uint8 predictedLabel = predictedScores[c];
         uint8 minorityLabel = minorityLabels_[l];
 
         // Do only consider predictions that are different from the default rule's predictions...
         if (predictedLabel == minorityLabel) {
-            intp i = offset + l;
+            uint32 i = offset + l;
             float64 labelWeight = uncoveredLabels_[i];
 
             if (labelWeight > 0) {
@@ -233,9 +228,9 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // Class members
     AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
-    intp numExamples = labelMatrix->numExamples_;
+    uint32 numExamples = labelMatrix->numExamples_;
     // The number of labels
-    intp numLabels = labelMatrix->numLabels_;
+    uint32 numLabels = labelMatrix->numLabels_;
     // A matrix that stores the weights of individual examples and labels that are still uncovered
     float64* uncoveredLabels = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // The sum of weights of all examples and labels that remain to be covered
@@ -245,10 +240,10 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
     float64 threshold = numExamples / 2.0;
 
-    for (intp c = 0; c < numLabels; c++) {
-        intp numPositiveLabels = 0;
+    for (uint32 c = 0; c < numLabels; c++) {
+        uint32 numPositiveLabels = 0;
 
-        for (intp r = 0; r < numExamples; r++) {
+        for (uint32 r = 0; r < numExamples; r++) {
             uint8 trueLabel = labelMatrix->getLabel(r, c);
             numPositiveLabels += trueLabel;
 

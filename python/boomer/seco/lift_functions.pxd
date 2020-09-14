@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport intp, float64
+from boomer.common._arrays cimport uint32, float64
 
 from libcpp.memory cimport shared_ptr
 
@@ -9,7 +9,7 @@ cdef extern from "cpp/lift_functions.h" namespace "seco" nogil:
 
         # Functions:
 
-        float64 calculateLift(intp numLabels)
+        float64 calculateLift(uint32 numLabels)
 
         float64 getMaxLift()
 
@@ -18,7 +18,7 @@ cdef extern from "cpp/lift_functions.h" namespace "seco" nogil:
 
         # Constructors:
 
-        PeakLiftFunctionImpl(intp numLabels, intp peakLabel, float64 maxLift, float64 curvature) except +
+        PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature) except +
 
 
 cdef class LiftFunction:

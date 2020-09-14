@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint32, intp, float64
+from boomer.common._arrays cimport uint32, float64
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics, \
@@ -18,7 +18,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         DenseLabelWiseRefinementSearchImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
-                                           intp numPredictions, const intp* labelIndices, intp numLabels,
+                                           uint32 numPredictions, const uint32* labelIndices, uint32 numLabels,
                                            const float64* gradients, const float64* totalSumsOfGradients,
                                            const float64* hessians, const float64* totalSumsOfHessians) except +
 
