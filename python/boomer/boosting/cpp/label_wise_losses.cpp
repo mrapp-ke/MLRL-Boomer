@@ -44,10 +44,8 @@ LabelWiseSquaredHingeLossImpl::~LabelWiseSquaredHingeLossImpl() {
 
 }
 
-std::pair<float64, float64> LabelWiseSquaredHingeLossImpl::calculateGradientAndHessian(AbstractLabelMatrix* labelMatrix,
-                                                                                       uint32 exampleIndex,
-                                                                                       uint32 labelIndex,
-                                                                                       float64 predictedScore) {
+std::pair<float64, float64> LabelWiseSquaredHingeLossImpl::calculateGradientAndHessian(
+        AbstractRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex, uint32 labelIndex, float64 predictedScore) {
     uint8 trueLabel = labelMatrix->getLabel(exampleIndex, labelIndex);
     float64 gradient;
     float64 hessian;
