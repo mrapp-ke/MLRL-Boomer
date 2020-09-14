@@ -56,7 +56,7 @@ In addition, the following features that may speed up training or reduce the mem
 
 ## Project setup
 
-The library provided by this project requires Python 3.8 and uses C extensions for Python using [Cython](https://cython.org) to speed up computation. It is recommended to create a virtual environment using the correct version of Python (which requires that this particular Python version is installed on the host) and providing all dependencies that are required to compile the Cython code (`numpy`, `scipy` and `Cython`). IDEs such as PyCharm may provide an option to create such a virtual environment automatically. For manual installation, the project comes with a Makefile that allows to create a virtual environment via the command
+The library provided by this project requires Python 3.8 and uses C extensions for Python using [Cython](https://cython.org) to speed up computation and to integrate with parts of the code that are implemented in C++. It is recommended to create a virtual environment using the correct version of Python (which requires that this particular Python version is installed on the host) and providing all dependencies that are required to compile the Cython code (`numpy`, `scipy` and `Cython`). IDEs such as PyCharm may provide an option to create such a virtual environment automatically. For manual installation, the project comes with a Makefile that allows to create a virtual environment via the command
 ```
 make venv
 ```  
