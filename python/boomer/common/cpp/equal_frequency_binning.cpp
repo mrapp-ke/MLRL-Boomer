@@ -1,7 +1,5 @@
 #include "equal_frequency_binning.h"
 
-intp EqualFrequencyBinning::numBins_;
-
 EqualFrequencyBinning::EqualFrequencyBinning(intp numBins){
     numBins_ = numBins;
 }
