@@ -1,6 +1,5 @@
 #include "binning.h"
 
-//Former abstract_binning
 AbstractBinning::~AbstractBinning(){
 
 }
@@ -9,12 +8,12 @@ void AbstractBinning::createBins(IndexedFloat32Array* indexedArray, BinningObser
 
 }
 
-//Former binning_observer
+
 void BinningObserver::onBinUpdate(intp binIndex, IndexedFloat32* indexedValue){
 
 };
 
-//Former equal_frequency_binning
+
 EqualFrequencyBinning::EqualFrequencyBinning(intp numBins){
     numBins_ = numBins;
 }
@@ -65,7 +64,7 @@ void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, Binnin
     //TODO: Inform observer that a new matrix is available
 }
 
-//Former equal_width_binning
+
 EqualWidthBinning::EqualWidthBinning(intp numBins){
     numBins_ = numBins;
 }
