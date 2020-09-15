@@ -118,6 +118,3 @@ cdef class CscFeatureMatrix(FeatureMatrix):
             num_examples, num_features, &x_data[0], &x_row_indices[0], &x_col_indices[0])
         self.num_examples = num_examples
         self.num_features = num_features
-        self.x_data = x_data
-        self.x_row_indices = x_row_indices
-        self.x_col_indices = x_col_indices
