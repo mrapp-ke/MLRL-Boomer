@@ -22,18 +22,16 @@ void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, Binnin
     intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
-        //TODO: inform observer that no approximation is necessary
+        for(intp i = 0; i<length; i++){
+            observer->onBinUpdate(i, &indexedArray->data[i]);
+        }
         return;
     }
     intp n = length/numBins_; //number of elements per bin
-    //Initializing result array | obsolete bc observer?
-    //IndexedFloat32Array *results = (IndexedFloat32Array*)malloc(sizeof(IndexedFloat32Array));
-    //results->numElements = numBins_;
-    //IndexedFloat32 *resultData = (IndexedFloat32*)malloc(numBins_ * sizeof(IndexedFloat32));
-    //results->data = resultData;
-    IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
     //looping over bins
     for(intp i = 0; i < numBins_; i++){
+        //we will need a new pointer in every iteration
+        IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
         tmp->value = 0;
         //looping over feature list between two bins
         for(intp j = i * n; j < ((i + 1) * n); j++){
@@ -46,7 +44,6 @@ void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, Binnin
         }
         tmp->index = i;
         observer->onBinUpdate(i, tmp);
-        tmp->value = 0;
     }
 }
 
@@ -59,7 +56,9 @@ void EqualWidthBinning::createBins(IndexedFloat32Array* indexedArray, BinningObs
     intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
-        //TODO: inform observer that no approximation is necessary
+        for(intp i = 0; i<length; i++){
+            observer->onBinUpdate(i, &indexedArray->data[i]);
+        }
         return;
     }
      //defining minimal and maximum values
@@ -68,19 +67,15 @@ void EqualWidthBinning::createBins(IndexedFloat32Array* indexedArray, BinningObs
      float max = indexedArray->data[indexedArray->numElements-1].value;
      //w stands for width and determines the span of values for a bin
      intp w = intp(ceil((max - min)/numBins_));
-      //Initializing result array | obsolete bc observer?
-     //IndexedFloat32Array *results = (IndexedFloat32Array*)malloc(sizeof(IndexedFloat32Array));
-     //results->numElements = numBins_;
-     //IndexedFloat32 *resultData = (IndexedFloat32*)malloc(numBins_ * sizeof(IndexedFloat32));
-     //results->data = resultData;
      //defining the boundaries of bins
      intp boundaries[numBins_ + 1] {0};
      for(intp i = 0; i < numBins_ + 1; i++){
         boundaries[i] = bound_min + w * i;
      }
-     IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
      //looping over bins
      for(intp i = 0; i < numBins_; i++){
+        //we will need a new pointer in every iteration
+        IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
         tmp->value = 0;
         //looping over the list and adding every element in bin i
         for(intp j = 0; j < length; j++){
