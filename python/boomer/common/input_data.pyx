@@ -78,7 +78,7 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
     A wrapper for the C++ class `DenseFeatureMatrixImpl`.
     """
 
-    def __cinit__(self, const float32[:, ::1] x):
+    def __cinit__(self, const float32[::1, :] x):
         """
         :param x: An array of type `float32`, shape `(num_examples, num_features)`, representing the feature values of
                   the training examples

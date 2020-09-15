@@ -163,8 +163,8 @@ class DenseFeatureMatrixImpl : public AbstractFeatureMatrix {
         /**
          * @param numExamples   The number of examples
          * @param numFeatures   The number of features
-         * @param x             A pointer to a C-contiguous array of type `float32`, shape `(numExamples, numFeatures)`,
-         *                      representing the feature values of the training examples
+         * @param x             A pointer to a Fortran-contiguous array of type `float32`, shape
+         *                      `(numExamples, numFeatures)`, representing the feature values of the training examples
          */
         DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x);
 
