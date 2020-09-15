@@ -67,3 +67,34 @@ uint32 AbstractFeatureMatrix::getNumCols() {
 void AbstractFeatureMatrix::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
 
 }
+
+DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x)
+    : AbstractFeatureMatrix(numExamples, numFeatures) {
+    x_ = x;
+}
+
+DenseFeatureMatrixImpl::~DenseFeatureMatrixImpl() {
+
+}
+
+void DenseFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+    // The number of elements to be returned
+    uint32 numElements = this->getNumRows();
+    // The total number of features
+    uint32 numFeatures = this->getNumCols();
+    // The array that stores the indices
+    IndexedFloat32* sortedArray = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
+
+    for (uint32 r = 0; r < numElements; r++) {
+        uint32 i = (r * numFeatures) + featureIndex;
+        sortedArray[r].index = r;
+        sortedArray[r].value = x_[i];
+    }
+
+    // Sort the array...
+    qsort(sortedArray, numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
+
+    // Update the given struct...
+    indexedArray->numElements = numElements;
+    indexedArray->data = sortedArray;
+}
