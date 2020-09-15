@@ -50,3 +50,20 @@ DokLabelMatrixImpl::~DokLabelMatrixImpl() {
 uint8 DokLabelMatrixImpl::getLabel(uint32 exampleIndex, uint32 labelIndex) {
     return dokMatrixPtr_.get()->getValue(exampleIndex, labelIndex);
 }
+
+AbstractFeatureMatrix::AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures) {
+    numExamples_ = numExamples;
+    numFeatures_ = numFeatures;
+}
+
+uint32 AbstractFeatureMatrix::getNumRows() {
+    return numExamples_;
+}
+
+uint32 AbstractFeatureMatrix::getNumCols() {
+    return numFeatures_;
+}
+
+void AbstractFeatureMatrix::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+
+}
