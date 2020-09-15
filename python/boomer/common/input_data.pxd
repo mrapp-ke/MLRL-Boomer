@@ -79,36 +79,16 @@ cdef class FeatureMatrix:
 
     # Attributes:
 
+    cdef shared_ptr[AbstractFeatureMatrix] feature_matrix_ptr
+
     cdef readonly uint32 num_examples
 
     cdef readonly uint32 num_features
 
-    # Functions:
-
-    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
-
 
 cdef class DenseFeatureMatrix(FeatureMatrix):
-
-    # Attributes:
-
-    cdef const float32[::1, :] x
-
-    # Functions:
-
-    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
+    pass
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
-
-    # Attributes:
-
-    cdef const float32[::1] x_data
-
-    cdef const uint32[::1] x_row_indices
-
-    cdef const uint32[::1] x_col_indices
-
-    # Functions:
-
-    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
+    pass
