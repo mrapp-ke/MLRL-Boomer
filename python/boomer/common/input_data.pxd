@@ -19,7 +19,7 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, uint8* y) except +
+        DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) except +
 
 
     cdef cppclass DokLabelMatrixImpl(AbstractRandomAccessLabelMatrix):
@@ -27,6 +27,25 @@ cdef extern from "cpp/input_data.h" nogil:
         # Constructors:
 
         DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
+
+
+    cdef cppclass AbstractFeatureMatrix:
+        pass
+
+
+    cdef cppclass DenseFeatureMatrixImpl(AbstractFeatureMatrix):
+
+        # Constructors:
+
+        DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) except +
+
+
+    cdef cppclass CscFeatureMatrixImpl(AbstractFeatureMatrix):
+
+        # Constructors:
+
+        CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
+                             const uint32* xColIndices) except +
 
 
 cdef class LabelMatrix:
