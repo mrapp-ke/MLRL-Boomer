@@ -46,18 +46,21 @@ void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, Binnin
     results->numElements = numBins_;
     IndexedFloat32 *resultData = (IndexedFloat32*)malloc(numBins_ * sizeof(IndexedFloat32));
     results->data = resultData;
-    intp numFeatures = 7; //TODO: Replace "7" with the number of features
+    //looping over bins
     for(intp i = 0; i < numBins_; i++){
-        IndexedFloat32 tmp;
-        tmp.value = 0;
-        for(intp j = i * n; j < (i + 1) * n; j++){
+        float tmp;
+        tmp = 0;
+        //looping over feature list between two bins
+        for(intp j = i * n; j < ((i + 1) * n); j++){
+            //if we would break out of bounds we have to break out of the loop
             if(j >= length){
                 break;
             }
-            tmp.value = tmp.value + indexedArray->data[j].value;
+            //here we aggregate the values
+            tmp = tmp + indexedArray->data[j].value;
         }
-        results->data[i] = tmp;
-        tmp.value = 0;
+        results->data[i].value = tmp;
+        tmp = 0;
     }
     //TODO: Inform observer that a new matrix is available
 }
@@ -91,27 +94,29 @@ void EqualWidthBinning::createBins(IndexedFloat32Array* indexedArray, BinningObs
      *          result += [tmp]     #write tmp to the i-st element of the result array
      *      return result           #return pointer to the result array
      */
-     IndexedFloat32 min = indexedArray->data[0];
-     intp bound_min = floor(min.value);
-     IndexedFloat32 max = indexedArray->data[indexedArray->numElements];
-     intp w = intp(ceil((max.value - min.value)/numBins_));
+     //defining minimal and maximum values
+     float min = indexedArray->data[0].value;
+     intp bound_min = floor(min);
+     float max = indexedArray->data[indexedArray->numElements-1].value;
+     //w stands for width and determines the span of values for a bin
+     intp w = intp(ceil((max - min)/numBins_));
       //Initializing result array
-     indexedFloat32Array *results = (indexedFloat32Array*)malloc(sizeof(indexedFloat32Array));
+     IndexedFloat32Array *results = (IndexedFloat32Array*)malloc(sizeof(IndexedFloat32Array));
      results->numElements = numBins_;
      IndexedFloat32 *resultData = (IndexedFloat32*)malloc(numBins_ * sizeof(IndexedFloat32));
      results->data = resultData;
-     intp numFeatures = 7; //TODO: Replace "7" with the number of features
+     //defining the boundaries of bins
      intp boundaries[numBins_ + 1] {0};
      for(intp i = 0; i < numBins_ + 1; i++){
         boundaries[i] = bound_min + w * i;
      }
+     //looping over bins
      for(intp i = 0; i < numBins_; i++){
         float tmp = 0;
+        //looping over the list and adding every element in bin i
         for(intp j = 0; j < length; j++){
             if(boundaries[i]<= j && j < boundaries[i + 1]){
-                for(intp k = 0; k < numFeatures; k++){ //adding all feature values
-                    tmp = tmp + indexedArray->data[j].value;
-                }
+                tmp = tmp + indexedArray->data[j].value;
             }
         }
         results->data[i].value = tmp;
