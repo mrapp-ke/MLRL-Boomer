@@ -12,7 +12,7 @@
 
 
 /**
- * An abstract base class for all label matrix that provide access to the labels of the training examples.
+ * An abstract base class for all label matrices that provide access to the labels of the training examples.
  */
 class AbstractLabelMatrix : public AbstractMatrix {
 
