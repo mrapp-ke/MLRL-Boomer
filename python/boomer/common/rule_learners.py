@@ -269,7 +269,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x_sparse_format = 'csc'
         x_sparse_policy = create_sparse_policy(self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy)
-        x = self._validate_data((x if x_enforce_sparse else x.toarray(order='F')),
+        x = self._validate_data((x if x_enforce_sparse else x.toarray(order='C')),
                                 accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32)
 
         if issparse(x):
@@ -285,14 +285,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         y_enforce_sparse = should_enforce_sparse(y, sparse_format='dok', policy=y_sparse_policy)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
                         accept_sparse=('lil' if y_enforce_sparse else False), ensure_2d=False, dtype=DTYPE_UINT8)
+        num_labels = y.shape[1]
 
         if issparse(y):
             rows = np.ascontiguousarray(y.rows)
-            label_matrix = DokLabelMatrix(y.shape[0], y.shape[1], rows)
+            label_matrix = DokLabelMatrix(y.shape[0], num_labels, rows)
         else:
             label_matrix = DenseLabelMatrix(y)
 
-        num_labels = label_matrix.num_labels
         self.num_labels_ = num_labels
 
         # Create an array that contains the indices of all nominal attributes, if any...
