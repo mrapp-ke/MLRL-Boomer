@@ -58,10 +58,6 @@ cdef class LabelMatrix:
 
     cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
 
-    cdef readonly uint32 num_examples
-
-    cdef readonly uint32 num_labels
-
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
     pass
@@ -80,10 +76,6 @@ cdef class FeatureMatrix:
     # Attributes:
 
     cdef shared_ptr[AbstractFeatureMatrix] feature_matrix_ptr
-
-    cdef readonly uint32 num_examples
-
-    cdef readonly uint32 num_features
 
 
 cdef class DenseFeatureMatrix(FeatureMatrix):

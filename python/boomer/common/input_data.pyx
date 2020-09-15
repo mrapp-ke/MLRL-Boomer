@@ -34,8 +34,6 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
         cdef uint32 num_labels = y.shape[1]
         self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
                                                                                                    num_labels, &y[0, 0])
-        self.num_examples = num_examples
-        self.num_labels = num_labels
 
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
@@ -66,8 +64,6 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](num_examples,
                                                                                                  num_labels,
                                                                                                  dok_matrix_ptr)
-        self.num_examples = num_examples
-        self.num_labels = num_labels
 
 
 cdef class FeatureMatrix:
@@ -92,8 +88,6 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         self.feature_matrix_ptr = <shared_ptr[AbstractFeatureMatrix]>make_shared[DenseFeatureMatrixImpl](num_examples,
                                                                                                          num_features,
                                                                                                          &x[0, 0])
-        self.num_examples = num_examples
-        self.num_features = num_features
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -116,5 +110,3 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         """
         self.feature_matrix_ptr = <shared_ptr[AbstractFeatureMatrix]>make_shared[CscFeatureMatrixImpl](
             num_examples, num_features, &x_data[0], &x_row_indices[0], &x_col_indices[0])
-        self.num_examples = num_examples
-        self.num_features = num_features
