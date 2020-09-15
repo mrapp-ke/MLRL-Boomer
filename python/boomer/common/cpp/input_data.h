@@ -6,6 +6,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "tuples.h"
 #include "sparse.h"
 #include "data.h"
 #include <memory>
@@ -108,5 +109,40 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
         ~DokLabelMatrixImpl();
 
         uint8 getLabel(uint32 exampleIndex, uint32 labelIndex) override;
+
+};
+
+/**
+ * An abstract base class for all feature matrices that provide access to the feature values of the training examples.
+ */
+class AbstractFeatureMatrix : public AbstractMatrix {
+
+    private:
+
+        uint32 numExamples_;
+
+        uint32 numFeatures_;
+
+    public:
+
+        /**
+         * @param numExamples   The number of examples
+         * @param numFeatures   The number of features
+         */
+        AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures);
+
+        /**
+         * Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
+         * them in ascending order by the feature values and stores the in a given struct of type `IndexedFloat32Array`.
+         *
+         * @param featureIndex  The index of the feature
+         * @param indexedArray  A pointer to a struct of type `IndexedFloat32Array`, which should be used to store the
+         *                      indices
+         */
+        virtual void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray);
+
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
 };
