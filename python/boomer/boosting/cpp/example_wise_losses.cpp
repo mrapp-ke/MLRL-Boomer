@@ -21,7 +21,7 @@ ExampleWiseLogisticLossImpl::~ExampleWiseLogisticLossImpl() {
 void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
                                                                 uint32 exampleIndex, const float64* predictedScores,
                                                                 float64* gradients, float64* hessians) {
-    uint32 numLabels = labelMatrix->numLabels_;
+    uint32 numLabels = labelMatrix->getNumCols();
     float64 sumOfExponentials = 1;
 
     for (uint32 c = 0; c < numLabels; c++) {

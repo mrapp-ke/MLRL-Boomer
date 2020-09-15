@@ -151,7 +151,7 @@ DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
-    : AbstractExampleWiseStatistics(labelMatrixPtr.get()->numExamples_, labelMatrixPtr.get()->numLabels_,
+    : AbstractExampleWiseStatistics(labelMatrixPtr.get()->getNumRows(), labelMatrixPtr.get()->getNumCols(),
                                     ruleEvaluationPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     lapackPtr_ = lapackPtr;
@@ -256,9 +256,9 @@ AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
-    uint32 numExamples = labelMatrix->numExamples_;
+    uint32 numExamples = labelMatrix->getNumRows();
     // The number of labels
-    uint32 numLabels = labelMatrix->numLabels_;
+    uint32 numLabels = labelMatrix->getNumCols();
     // The number of hessians
     uint32 numHessians = linalg::triangularNumber(numLabels);
     // A matrix that stores the gradients for each example
