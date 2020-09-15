@@ -173,3 +173,39 @@ class DenseFeatureMatrixImpl : public AbstractFeatureMatrix {
         void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
 
 };
+
+/**
+ * Implements column-wise access to the feature values of the training examples based on a sparse matrix in the
+ * compressed sparse column (CSC) format.
+ */
+class CscFeatureMatrixImpl : public AbstractFeatureMatrix {
+
+    private:
+
+        const float32* xData_;
+
+        const uint32* xRowIndices_;
+
+        const uint32* xColIndices_;
+
+    public:
+
+        /**
+         * @param numExamples   The number of examples
+         * @param numFeatures   The number of features
+         * @param xData         A pointer to an array of type `float32`, shape `(num_non_zero_feature_values)`,
+         *                      representing the non-zero feature values of the training examples
+         * @param xRowIndices   A pointer to an array of type `uint32`, shape `(num_non_zero_feature_values)`,
+         *                      representing the row-indices of the examples, the values in `xData` correspond to
+         * @param xColIndices   A pointer to an array of type `uint32`, shape `(num_features + 1)`, representing the
+         *                      indices of the first element in `xData` and `xRowIndices` that corresponds to a certain
+         *                      feature. The index at the last position is equal to `num_non_zero_feature_values`
+         */
+        CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
+                             const uint32* xColIndices);
+
+        ~CscFeatureMatrixImpl();
+
+        void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+
+};
