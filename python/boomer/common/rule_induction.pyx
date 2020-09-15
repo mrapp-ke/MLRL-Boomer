@@ -55,7 +55,7 @@ cdef class RuleInduction:
         pass
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
+                          AbstractFeatureMatrix* feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -67,8 +67,8 @@ cdef class RuleInduction:
                                         as the basis for inducing the new rule
         :param nominal_attribute_mask:  An array of type `uint8`, shape `(num_features)`, indicating whether the feature
                                         at a certain index is nominal (1) or not (0)
-        :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
-                                        training examples
+        :param feature_matrix:          A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
+                                        access to the feature values of the training examples
         :param head_refinement:         The strategy that is used to find the heads of rules
         :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
                                         sub-sampling should be used
@@ -130,7 +130,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         if head_refinement is not None:
             statistics = statistics_provider.get()
-            num_statistics = statistics.numStatistics_
+            num_statistics = statistics.getNumRows()
             statistics.resetSampledStatistics()
 
             for i in range(num_statistics):
@@ -150,7 +150,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, HeadRefinement head_refinement,
+                          AbstractFeatureMatrix* feature_matrix, HeadRefinement head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -158,11 +158,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
-        cdef uint32 num_statistics = statistics.numStatistics_
+        cdef uint32 num_statistics = statistics.getNumRows()
         # The total number of labels
-        cdef uint32 num_labels = statistics.numLabels_
+        cdef uint32 num_labels = statistics.getNumCols()
         # The total number of features
-        cdef uint32 num_features = feature_matrix.num_features
+        cdef uint32 num_features = feature_matrix.getNumCols()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef double_linked_list[Condition] conditions
         # The total number of conditions
@@ -408,7 +408,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                   const uint32* label_indices, uint32[::1] weights, uint32 total_sum_of_weights,
                                   unordered_map[uint32, IndexedFloat32Array*]* cache_global,
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
-                                  FeatureMatrix feature_matrix, uint32[::1] covered_statistics_mask,
+                                  AbstractFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
                                   uint32 covered_statistics_target, uint32 num_conditions,
                                   AbstractStatistics* statistics, HeadRefinement head_refinement,
                                   PredictionCandidate* head) nogil:
@@ -433,8 +433,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                         `IndexedFloat32ArrayWrapper`, storing the indices of the training examples that
                                         are covered by the existing rule, as well as their values for the respective
                                         feature, sorted in ascending order by the feature values
-    :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of the
-                                        training examples
+    :param feature_matrix:              A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
+                                        access to the feature values of the training examples
     :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
                                         of the indices of the statistics that are covered by the existing rule. It will
                                         be updated by this function
@@ -471,7 +471,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
         indexed_values = indexed_array.data
 
         if indexed_values == NULL:
-            feature_matrix.fetch_sorted_feature_values(feature_index, indexed_array)
+            feature_matrix.fetchSortedFeatureValues(feature_index, indexed_array)
             indexed_values = indexed_array.data
 
     # Filter indices, if only a subset of the contained examples is covered...

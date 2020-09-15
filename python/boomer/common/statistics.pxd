@@ -1,4 +1,5 @@
 from boomer.common._arrays cimport uint32
+from boomer.common._data cimport AbstractMatrix
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport LabelMatrix
 
@@ -25,13 +26,7 @@ cdef extern from "cpp/statistics.h" nogil:
         pass
 
 
-    cdef cppclass AbstractStatistics:
-
-        # Attributes:
-
-        uint32 numStatistics_
-
-        uint32 numLabels_
+    cdef cppclass AbstractStatistics(AbstractMatrix):
 
         # Functions:
 
