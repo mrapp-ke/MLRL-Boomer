@@ -9,6 +9,7 @@
 #include "tuples.h"
 #include "sparse.h"
 #include "data.h"
+#include<stdlib.h>
 #include <memory>
 
 
@@ -145,5 +146,30 @@ class AbstractFeatureMatrix : public AbstractMatrix {
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
+
+};
+
+/**
+ * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
+ */
+class DenseFeatureMatrixImpl : public AbstractFeatureMatrix {
+
+    private:
+
+        const float32* x_;
+
+    public:
+
+        /**
+         * @param numExamples   The number of examples
+         * @param numFeatures   The number of features
+         * @param x             A pointer to a C-contiguous array of type `float32`, shape `(numExamples, numFeatures)`,
+         *                      representing the feature values of the training examples
+         */
+        DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x);
+
+        ~DenseFeatureMatrixImpl();
+
+        void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
 
 };
