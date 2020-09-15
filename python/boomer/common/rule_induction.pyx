@@ -130,7 +130,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         if head_refinement is not None:
             statistics = statistics_provider.get()
-            num_statistics = statistics.numStatistics_
+            num_statistics = statistics.getNumRows()
             statistics.resetSampledStatistics()
 
             for i in range(num_statistics):
@@ -158,11 +158,11 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
-        cdef uint32 num_statistics = statistics.numStatistics_
+        cdef uint32 num_statistics = statistics.getNumRows()
         # The total number of labels
-        cdef uint32 num_labels = statistics.numLabels_
+        cdef uint32 num_labels = statistics.getNumCols()
         # The total number of features
-        cdef uint32 num_features = feature_matrix.getNumCols();
+        cdef uint32 num_features = feature_matrix.getNumCols()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef double_linked_list[Condition] conditions
         # The total number of conditions

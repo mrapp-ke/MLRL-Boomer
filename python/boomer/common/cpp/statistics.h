@@ -7,6 +7,7 @@
 
 #include "arrays.h"
 #include "predictions.h"
+#include "data.h"
 #include <memory>
 
 
@@ -139,7 +140,13 @@ class AbstractDecomposableRefinementSearch : public AbstractRefinementSearch {
  * An abstract base class for all classes that store statistics about the labels of the training examples, which serve
  * as the basis for learning a new rule or refining an existing one.
  */
-class AbstractStatistics {
+class AbstractStatistics : public AbstractMatrix {
+
+    private:
+
+        uint32 numStatistics_;
+
+        uint32 numLabels_;
 
     public:
 
@@ -148,17 +155,9 @@ class AbstractStatistics {
          */
         AbstractStatistics(uint32 numStatistics, uint32 numLabels);
 
-        virtual ~AbstractStatistics();
+        uint32 getNumRows() override;
 
-        /**
-         * The number of statistics.
-         */
-        uint32 numStatistics_;
-
-        /**
-         * The number of labels.
-         */
-        uint32 numLabels_;
+        uint32 getNumCols() override;
 
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the
