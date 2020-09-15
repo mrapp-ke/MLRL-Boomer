@@ -34,7 +34,7 @@ DenseLabelWiseRefinementSearchImpl::~DenseLabelWiseRefinementSearchImpl() {
 }
 
 void DenseLabelWiseRefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
-    uint32 numLabels = labelMatrixPtr_.get()->numLabels_;
+    uint32 numLabels = labelMatrixPtr_.get()->getNumCols();
     uint32 offset = statisticIndex * numLabels;
 
     for (uint32 c = 0; c < numPredictions_; c++) {
@@ -95,7 +95,7 @@ DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
         float64 sumUncoveredLabels, uint8* minorityLabels)
-    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->numExamples_, labelMatrixPtr.get()->numLabels_,
+    : AbstractLabelWiseStatistics(labelMatrixPtr.get()->getNumRows(), labelMatrixPtr.get()->getNumCols(),
                                   ruleEvaluationPtr) {
     labelMatrixPtr_ = labelMatrixPtr;
     uncoveredLabels_ = uncoveredLabels;
@@ -228,9 +228,9 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // Class members
     AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
-    uint32 numExamples = labelMatrix->numExamples_;
+    uint32 numExamples = labelMatrix->getNumRows();
     // The number of labels
-    uint32 numLabels = labelMatrix->numLabels_;
+    uint32 numLabels = labelMatrix->getNumCols();
     // A matrix that stores the weights of individual examples and labels that are still uncovered
     float64* uncoveredLabels = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // The sum of weights of all examples and labels that remain to be covered

@@ -6,8 +6,12 @@ AbstractLabelMatrix::AbstractLabelMatrix(uint32 numExamples, uint32 numLabels) {
     numLabels_ = numLabels;
 }
 
-AbstractLabelMatrix::~AbstractLabelMatrix() {
+uint32 AbstractLabelMatrix::getNumRows() {
+    return numExamples_;
+}
 
+uint32 AbstractLabelMatrix::getNumCols() {
+    return numLabels_;
 }
 
 AbstractRandomAccessLabelMatrix::AbstractRandomAccessLabelMatrix(uint32 numExamples, uint32 numLabels)
@@ -29,7 +33,7 @@ DenseLabelMatrixImpl::~DenseLabelMatrixImpl() {
 }
 
 uint8 DenseLabelMatrixImpl::getLabel(uint32 exampleIndex, uint32 labelIndex) {
-    uint32 i = (exampleIndex * numLabels_) + labelIndex;
+    uint32 i = (exampleIndex * this->getNumCols()) + labelIndex;
     return y_[i];
 }
 

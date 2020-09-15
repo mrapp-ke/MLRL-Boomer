@@ -7,13 +7,20 @@
 
 #include "arrays.h"
 #include "sparse.h"
+#include "data.h"
 #include <memory>
 
 
 /**
  * An abstract base class for all label matrix that provide access to the labels of the training examples.
  */
-class AbstractLabelMatrix {
+class AbstractLabelMatrix : public AbstractMatrix {
+
+    private:
+
+        uint32 numExamples_;
+
+        uint32 numLabels_;
 
     public:
 
@@ -23,17 +30,9 @@ class AbstractLabelMatrix {
          */
         AbstractLabelMatrix(uint32 numExamples, uint32 numLabels);
 
-        virtual ~AbstractLabelMatrix();
+        uint32 getNumRows() override;
 
-        /**
-         * The number of examples.
-         */
-        uint32 numExamples_;
-
-        /**
-         * The number of labels.
-         */
-        uint32 numLabels_;
+        uint32 getNumCols() override;
 
 };
 
