@@ -113,7 +113,8 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 };
 
 /**
- * An abstract base class for all feature matrices that provide access to the feature values of the training examples.
+ * An abstract base class for all feature matrices that provide column-wise access to the feature values of the training
+ * examples.
  */
 class AbstractFeatureMatrix : public AbstractMatrix {
 
