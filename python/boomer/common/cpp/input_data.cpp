@@ -80,15 +80,14 @@ DenseFeatureMatrixImpl::~DenseFeatureMatrixImpl() {
 void DenseFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
     // The number of elements to be returned
     uint32 numElements = this->getNumRows();
-    // The total number of features
-    uint32 numFeatures = this->getNumCols();
     // The array that stores the indices
     IndexedFloat32* sortedArray = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
+    // The first element in `x_` that corresponds to the given feature index
+    uint32 offset = featureIndex * numElements;
 
-    for (uint32 r = 0; r < numElements; r++) {
-        uint32 i = (r * numFeatures) + featureIndex;
-        sortedArray[r].index = r;
-        sortedArray[r].value = x_[i];
+    for (uint32 i = 0; i < numElements; i++) {
+        sortedArray[i].index = i;
+        sortedArray[i].value = x_[offset + i];
     }
 
     // Sort the array...

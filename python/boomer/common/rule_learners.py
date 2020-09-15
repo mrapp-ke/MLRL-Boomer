@@ -269,7 +269,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x_sparse_format = 'csc'
         x_sparse_policy = create_sparse_policy(self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy)
-        x = self._validate_data((x if x_enforce_sparse else x.toarray(order='C')),
+        x = self._validate_data((x if x_enforce_sparse else x.toarray(order='F')),
                                 accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32)
 
         if issparse(x):
