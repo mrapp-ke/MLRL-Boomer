@@ -55,6 +55,54 @@ namespace boosting {
 
         private:
 
+            /**
+             * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored
+             * by an object of type `DenseLabelWiseStatisticsImpl`.
+             */
+            class RefinementSearchImpl : public AbstractDecomposableRefinementSearch {
+
+                private:
+
+                    DenseLabelWiseStatisticsImpl* statistics_;
+
+                    uint32 numPredictions_;
+
+                    const uint32* labelIndices_;
+
+                    float64* sumsOfGradients_;
+
+                    float64* accumulatedSumsOfGradients_;
+
+                    float64* sumsOfHessians_;
+
+                    float64* accumulatedSumsOfHessians_;
+
+                    LabelWisePredictionCandidate* prediction_;
+
+                public:
+
+                    /**
+                     * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
+                     *                          stores the gradients and Hessians
+                     * @param numPredictions    The number of labels to be considered by the search
+                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
+                     *                          representing the indices of the labels that should be considered by the
+                     *                          search or NULL, if all labels should be considered
+                     */
+                    RefinementSearchImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
+                                         const uint32* labelIndices);
+
+                    ~RefinementSearchImpl();
+
+                    void updateSearch(uint32 statisticIndex, uint32 weight) override;
+
+                    void resetSearch() override;
+
+                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                                                                               bool accumulated) override;
+
+            };
+
             std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
@@ -100,53 +148,6 @@ namespace boosting {
             AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
-
-        /**
-         * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by
-         * an object of type `DenseLabelWiseStatisticsImpl`.
-         */
-        class RefinementSearchImpl : public AbstractDecomposableRefinementSearch {
-
-            private:
-
-                DenseLabelWiseStatisticsImpl* statistics_;
-
-                uint32 numPredictions_;
-
-                const uint32* labelIndices_;
-
-                float64* sumsOfGradients_;
-
-                float64* accumulatedSumsOfGradients_;
-
-                float64* sumsOfHessians_;
-
-                float64* accumulatedSumsOfHessians_;
-
-                LabelWisePredictionCandidate* prediction_;
-
-            public:
-
-                /**
-                 * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` storing the
-                 *                          gradients and Hessians
-                 * @param numPredictions    The number of labels to be considered by the search
-                 * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
-                 *                          representing the indices of the labels that should be considered by the
-                 *                          search or NULL, if all labels should be considered
-                 */
-                RefinementSearchImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
-                                     const uint32* labelIndices);
-
-                ~RefinementSearchImpl();
-
-                void updateSearch(uint32 statisticIndex, uint32 weight) override;
-
-                void resetSearch() override;
-
-                LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
-
-        };
 
     };
 
