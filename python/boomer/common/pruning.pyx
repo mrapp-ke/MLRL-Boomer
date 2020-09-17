@@ -25,7 +25,7 @@ cdef class Pruning:
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
-                                         HeadRefinement head_refinement):
+                                         AbstractHeadRefinement* head_refinement):
         """
         Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is pruned
         by removing individual conditions in a way that improves over its original quality score as measured on the
@@ -47,7 +47,8 @@ cdef class Pruning:
                                             prune set or grow set
         :param statistics:                  A pointer to an object of type `AbstractStatistics`, which served as the
                                             basis for learning the existing rule
-        :param head_refinement:             The strategy that is used to find the heads of rules
+        :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that was used to
+                                            find the head of the existing rule
         """
         pass
 
@@ -65,7 +66,7 @@ cdef class IREP(Pruning):
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
-                                         HeadRefinement head_refinement):
+                                         AbstractHeadRefinement* head_refinement):
         # The total number of training examples
         cdef uint32 num_examples = covered_examples_mask.shape[0]
         # The number of conditions of the existing rule
@@ -100,7 +101,7 @@ cdef class IREP(Pruning):
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        prediction = head_refinement.calculate_prediction(refinement_search_ptr.get(), False, False)
+        prediction = head_refinement.calculatePrediction(refinement_search_ptr.get(), False, False)
 
         # Initialize variables that are used to keep track of the best rule...
         cdef float64 best_quality_score = prediction.overallQualityScore_
@@ -165,7 +166,7 @@ cdef class IREP(Pruning):
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
-            prediction = head_refinement.calculate_prediction(refinement_search_ptr.get(), uncovered, False)
+            prediction = head_refinement.calculatePrediction(refinement_search_ptr.get(), uncovered, False)
             current_quality_score = prediction.overallQualityScore_
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):

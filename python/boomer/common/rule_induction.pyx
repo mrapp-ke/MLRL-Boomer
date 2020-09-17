@@ -42,21 +42,21 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         """
         Induces the default rule.
 
         :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
                                     the basis for inducing the default rule
-        :param head_refinement:     The strategy that should be used to find the head of the default rule or None, if no
-                                    default rule should be used
+        :param head_refinement:     A pointer to an object of type `AbstractHeadRefinement` that should be used to find
+                                    the head of the default rule or NULL, if no default rule should be induced
         :param model_builder:       The builder, the default rule should be added to
         """
         pass
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          AbstractFeatureMatrix* feature_matrix, HeadRefinement head_refinement,
+                          AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -70,7 +70,8 @@ cdef class RuleInduction:
                                         at a certain index is nominal (1) or not (0)
         :param feature_matrix:          A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
                                         access to the feature values of the training examples
-        :param head_refinement:         The strategy that is used to find the heads of rules
+        :param head_refinement:         A pointer to an object of type `AbstractHeadRefinement` that should be used to
+                                        find the head of the rule
         :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
                                         sub-sampling should be used
         :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if
@@ -120,14 +121,14 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
         cdef AbstractStatistics* statistics
         cdef uint32 num_statistics, i
 
-        if head_refinement is not None:
+        if head_refinement != NULL:
             statistics = statistics_provider.get()
             num_statistics = statistics.getNumRows()
             statistics.resetSampledStatistics()
@@ -136,8 +137,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 statistics.addSampledStatistic(i, 1)
 
             refinement_search_ptr.reset(statistics.beginSearch(0, NULL))
-            default_prediction_ptr.reset(head_refinement.find_head(NULL, NULL, NULL, refinement_search_ptr.get(), True,
-                                                                   False))
+            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL, refinement_search_ptr.get(), True,
+                                                                  False))
 
             statistics_provider.switch_rule_evaluation()
 
@@ -149,7 +150,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          AbstractFeatureMatrix* feature_matrix, HeadRefinement head_refinement,
+                          AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -409,7 +410,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                   AbstractFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
                                   uint32 covered_statistics_target, uint32 num_conditions,
-                                  AbstractStatistics* statistics, HeadRefinement head_refinement,
+                                  AbstractStatistics* statistics, AbstractHeadRefinement* head_refinement,
                                   PredictionCandidate* head) nogil:
     """
     Finds and returns the best refinement of an existing rule, which results from adding a new condition that
@@ -531,8 +532,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 if previous_threshold != current_threshold:
                     # Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     # operator (or the == operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), False, False)
+                    current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
+                                                            refinement_search_ptr.get(), False, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -555,8 +556,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
                     # Find and evaluate the best head for the current refinement, if a condition that uses the >
                     # operator (or the != operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), True, False)
+                    current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
+                                                            refinement_search_ptr.get(), True, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -599,8 +600,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                                or accumulated_sum_of_weights < total_sum_of_weights):
             # Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             # used...
-            current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                     refinement_search_ptr.get(), False, False)
+            current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
+                                                    refinement_search_ptr.get(), False, False)
 
             # If the refinement is better than the current rule...
             if current_head != NULL:
@@ -618,8 +619,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
             # Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             # used...
-            current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                     refinement_search_ptr.get(), True, False)
+            current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
+                                                    refinement_search_ptr.get(), True, False)
 
             # If the refinement is better than the current rule...
             if current_head != NULL:
@@ -676,8 +677,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 if previous_threshold != current_threshold:
                     # Find and evaluate the best head for the current refinement, if a condition that uses the >
                     # operator (or the == operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), False, False)
+                    current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
+                                                            refinement_search_ptr.get(), False, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -700,8 +701,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
                     # Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     # operator (or the != operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), True, False)
+                    current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
+                                                            refinement_search_ptr.get(), True, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -743,8 +744,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     if nominal and sum_of_weights > 0 and sum_of_weights < accumulated_sum_of_weights:
         # Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 False, False)
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+                                                False, False)
 
         # If the refinement is better than the current rule...
         if current_head != NULL:
@@ -762,8 +763,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
         # Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 True, False)
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+                                                True, False)
 
         # If the refinement is better than the current rule...
         if current_head != NULL:
@@ -794,8 +795,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
         # Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         # the condition `f != 0` in case of a nominal feature) is used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 False, nominal)
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+                                                False, nominal)
 
         # If the refinement is better than the current rule...
         if current_head != NULL:
@@ -821,8 +822,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
         # Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2` (or
         # `f == 0` in case of a nominal feature) is used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 True, nominal)
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+                                                True, nominal)
 
         # If the refinement is better than the current rule...
         if current_head != NULL:
@@ -854,8 +855,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     if not nominal and accumulated_sum_of_weights_negative > 0 and accumulated_sum_of_weights_negative < total_sum_of_weights:
         # Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 False, True)
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+                                                False, True)
 
         if current_head != NULL:
             best_head = current_head
@@ -879,8 +880,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
         # Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 True, True)
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+                                                True, True)
 
         if current_head != NULL:
             best_head = current_head
@@ -1169,7 +1170,7 @@ cdef inline Condition __make_condition(uint32 feature_index, Comparator comparat
 
 
 cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint32 num_statistics,
-                                           HeadRefinement head_refinement, uint32[::1] covered_statistics_mask,
+                                           AbstractHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
                                            uint32 covered_statistics_target, PredictionCandidate* head):
     """
     Updates the scores that a predicted by the head of a rule, based on all available statistics.
@@ -1177,7 +1178,8 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     :param statistics:                  A pointer to an object of type `AbstractStatistics` that stores the available
                                         statistics
     :param num_statistics:              The number of available statistics
-    :param head_refinement:             The strategy that was used to find the head of the rule
+    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that was used to find
+                                        the head of the rule
     :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
                                         of the indices of the statistics that are covered by the rule
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
@@ -1203,7 +1205,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
         for r in range(num_statistics):
             if covered_statistics_mask[r] == covered_statistics_target:
                 refinement_search.updateSearch(r, 1)
-                prediction = head_refinement.calculate_prediction(refinement_search, False, False)
+                prediction = head_refinement.calculatePrediction(refinement_search, False, False)
                 updated_scores = prediction.predictedScores_
 
                 for c in range(num_predictions):
