@@ -38,7 +38,7 @@ cdef class RuleInduction:
                           ModelBuilder model_builder)
 
 
-cdef class ExactGreedyRuleInduction(RuleInduction):
+cdef class TopDownGreedyRuleInduction(RuleInduction):
 
     # Attributes:
 

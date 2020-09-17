@@ -2,7 +2,7 @@
 
 from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
-from boomer.common.rule_induction import ExactGreedyRuleInduction
+from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
@@ -151,7 +151,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         heuristic = self.__create_heuristic()
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
-        rule_induction = ExactGreedyRuleInduction()
+        rule_induction = TopDownGreedyRuleInduction()
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement = FullHeadRefinement()
         head_refinement = self.__create_head_refinement(lift_function)

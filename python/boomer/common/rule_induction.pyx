@@ -97,13 +97,11 @@ cdef class RuleInduction:
         pass
 
 
-cdef class ExactGreedyRuleInduction(RuleInduction):
+cdef class TopDownGreedyRuleInduction(RuleInduction):
     """
-    Allows to induce single- or multi-label classification rules using a greedy search, where new conditions are added
-    iteratively to the (initially empty) body of a rule. At each iteration, the refinement that improves the rule the
-    most is chosen. The search stops if no refinement results in an improvement. The possible conditions to be evaluated
-    at each iteration result from an exact split finding algorithm, i.e., all possible thresholds that may be used by
-    the conditions are considered.
+    Allows to induce single- or multi-label classification rules using a top-down greedy search, where new conditions
+    are added iteratively to the (initially empty) body of a rule. At each iteration, the refinement that improves the
+    rule the most is chosen. The search stops if no refinement results in an improvement.
     """
 
     def __cinit__(self):

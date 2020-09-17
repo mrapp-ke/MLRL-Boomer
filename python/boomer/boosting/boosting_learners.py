@@ -14,7 +14,7 @@ from boomer.boosting.label_wise_statistics import LabelWiseStatisticsProviderFac
 from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
 from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
-from boomer.common.rule_induction import ExactGreedyRuleInduction
+from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
@@ -158,7 +158,7 @@ class Boomer(MLRuleLearner):
         rule_evaluation = self.__create_rule_evaluation(loss_function, l2_regularization_weight)
         num_threads = create_num_threads(self.num_threads)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation)
-        rule_induction = ExactGreedyRuleInduction()
+        rule_induction = TopDownGreedyRuleInduction()
         return SequentialRuleInduction(statistics_provider_factory, rule_induction, default_rule_head_refinement,
                                        head_refinement, stopping_criteria, label_sub_sampling, instance_sub_sampling,
                                        feature_sub_sampling, pruning, shrinkage, min_coverage, max_conditions,
