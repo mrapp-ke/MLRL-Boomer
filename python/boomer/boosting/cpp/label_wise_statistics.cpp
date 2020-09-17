@@ -5,6 +5,75 @@
 using namespace boosting;
 
 
+DenseLabelWiseStatisticsImpl::RefinementSearchImpl::RefinementSearchImpl(DenseLabelWiseStatisticsImpl* statistics,
+                                                                         uint32 numPredictions,
+                                                                         const uint32* labelIndices) {
+    statistics_ = statistics;
+    numPredictions_ = numPredictions;
+    labelIndices_ = labelIndices;
+    sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
+    arrays::setToZeros(sumsOfGradients_, numPredictions);
+    accumulatedSumsOfGradients_ = NULL;
+    sumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
+    arrays::setToZeros(sumsOfHessians_, numPredictions);
+    accumulatedSumsOfHessians_ = NULL;
+    float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
+    float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
+    prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
+}
+
+DenseLabelWiseStatisticsImpl::RefinementSearchImpl::~RefinementSearchImpl() {
+    free(sumsOfGradients_);
+    free(accumulatedSumsOfGradients_);
+    free(sumsOfHessians_);
+    free(accumulatedSumsOfHessians_);
+    delete prediction_;
+}
+
+void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
+    // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
+    // the current sum of gradients and Hessians...
+    uint32 offset = statisticIndex * statistics_->getNumCols();
+
+    for (uint32 c = 0; c < numPredictions_; c++) {
+        uint32 l = labelIndices_ != NULL ? labelIndices_[c] : c;
+        uint32 i = offset + l;
+        sumsOfGradients_[c] += (weight * statistics_->gradients_[i]);
+        sumsOfHessians_[c] += (weight * statistics_->hessians_[i]) ;
+    }
+}
+
+void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::resetSearch() {
+    // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
+    if (accumulatedSumsOfGradients_ == NULL) {
+        accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions_);
+        accumulatedSumsOfHessians_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfHessians_, numPredictions_);
+    }
+
+    // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums of gradients
+    // and hessians...
+    for (uint32 c = 0; c < numPredictions_; c++) {
+        accumulatedSumsOfGradients_[c] += sumsOfGradients_[c];
+        sumsOfGradients_[c] = 0;
+        accumulatedSumsOfHessians_[c] += sumsOfHessians_[c];
+        sumsOfHessians_[c] = 0;
+    }
+}
+
+LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::RefinementSearchImpl::calculateLabelWisePrediction(
+        bool uncovered, bool accumulated) {
+    float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
+    float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
+    statistics_->ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_,
+                                                                        statistics_->totalSumsOfGradients_,
+                                                                        sumsOfGradients,
+                                                                        statistics_->totalSumsOfHessians_,
+                                                                        sumsOfHessians, uncovered, prediction_);
+    return prediction_;
+}
+
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
         uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
     : AbstractGradientStatistics(numStatistics, numLabels) {
@@ -151,73 +220,4 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
 
     return new DenseLabelWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, labelMatrixPtr_, gradients, hessians,
                                             currentScores);
-}
-
-DenseLabelWiseStatisticsImpl::RefinementSearchImpl::RefinementSearchImpl(DenseLabelWiseStatisticsImpl* statistics,
-                                                                         uint32 numPredictions,
-                                                                         const uint32* labelIndices) {
-    statistics_ = statistics;
-    numPredictions_ = numPredictions;
-    labelIndices_ = labelIndices;
-    sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-    arrays::setToZeros(sumsOfGradients_, numPredictions);
-    accumulatedSumsOfGradients_ = NULL;
-    sumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
-    arrays::setToZeros(sumsOfHessians_, numPredictions);
-    accumulatedSumsOfHessians_ = NULL;
-    float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-    float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
-    prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
-}
-
-DenseLabelWiseStatisticsImpl::RefinementSearchImpl::~RefinementSearchImpl() {
-    free(sumsOfGradients_);
-    free(accumulatedSumsOfGradients_);
-    free(sumsOfHessians_);
-    free(accumulatedSumsOfHessians_);
-    delete prediction_;
-}
-
-void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
-    // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
-    // the current sum of gradients and Hessians...
-    uint32 offset = statisticIndex * statistics_->getNumCols();
-
-    for (uint32 c = 0; c < numPredictions_; c++) {
-        uint32 l = labelIndices_ != NULL ? labelIndices_[c] : c;
-        uint32 i = offset + l;
-        sumsOfGradients_[c] += (weight * statistics_->gradients_[i]);
-        sumsOfHessians_[c] += (weight * statistics_->hessians_[i]) ;
-    }
-}
-
-void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::resetSearch() {
-    // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
-    if (accumulatedSumsOfGradients_ == NULL) {
-        accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
-        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions_);
-        accumulatedSumsOfHessians_ = (float64*) malloc(numPredictions_ * sizeof(float64));
-        arrays::setToZeros(accumulatedSumsOfHessians_, numPredictions_);
-    }
-
-    // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums of gradients
-    // and hessians...
-    for (uint32 c = 0; c < numPredictions_; c++) {
-        accumulatedSumsOfGradients_[c] += sumsOfGradients_[c];
-        sumsOfGradients_[c] = 0;
-        accumulatedSumsOfHessians_[c] += sumsOfHessians_[c];
-        sumsOfHessians_[c] = 0;
-    }
-}
-
-LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::RefinementSearchImpl::calculateLabelWisePrediction(
-        bool uncovered, bool accumulated) {
-    float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
-    float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
-    statistics_->ruleEvaluationPtr_.get()->calculateLabelWisePrediction(labelIndices_,
-                                                                        statistics_->totalSumsOfGradients_,
-                                                                        sumsOfGradients,
-                                                                        statistics_->totalSumsOfHessians_,
-                                                                        sumsOfHessians, uncovered, prediction_);
-    return prediction_;
 }
