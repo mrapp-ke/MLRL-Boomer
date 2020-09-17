@@ -106,8 +106,8 @@ cdef class SequentialRuleInduction:
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
         rule_induction.induce_default_rule(statistics_provider, default_rule_head_refinement, model_builder)
 
+        # Induce the remaining rules...
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            # Induce a new rule...
             success = rule_induction.induce_rule(statistics_provider, nominal_attribute_mask,
                                                  feature_matrix.feature_matrix_ptr.get(), head_refinement,
                                                  label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
@@ -119,6 +119,7 @@ cdef class SequentialRuleInduction:
 
             num_rules += 1
 
+        # Build and return the final model...
         return model_builder.build_model()
 
 
