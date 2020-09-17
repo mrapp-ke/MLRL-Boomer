@@ -1,5 +1,6 @@
 from boomer.common._arrays cimport uint8, uint32, float32
 from boomer.common._tuples cimport IndexedFloat32Array
+from boomer.common._data cimport AbstractMatrix
 from boomer.common._sparse cimport BinaryDokMatrix
 
 from libcpp.memory cimport shared_ptr
@@ -7,7 +8,7 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/input_data.h" nogil:
 
-    cdef cppclass AbstractLabelMatrix:
+    cdef cppclass AbstractLabelMatrix(AbstractMatrix):
         pass
 
 
@@ -19,7 +20,7 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, uint8* y) except +
+        DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) except +
 
 
     cdef cppclass DokLabelMatrixImpl(AbstractRandomAccessLabelMatrix):
@@ -29,15 +30,33 @@ cdef extern from "cpp/input_data.h" nogil:
         DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
 
 
+    cdef cppclass AbstractFeatureMatrix(AbstractMatrix):
+
+        # Functions:
+
+        void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray)
+
+
+    cdef cppclass DenseFeatureMatrixImpl(AbstractFeatureMatrix):
+
+        # Constructors:
+
+        DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) except +
+
+
+    cdef cppclass CscFeatureMatrixImpl(AbstractFeatureMatrix):
+
+        # Constructors:
+
+        CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
+                             const uint32* xColIndices) except +
+
+
 cdef class LabelMatrix:
 
     # Attributes:
 
     cdef shared_ptr[AbstractLabelMatrix] label_matrix_ptr
-
-    cdef readonly uint32 num_examples
-
-    cdef readonly uint32 num_labels
 
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
@@ -56,36 +75,12 @@ cdef class FeatureMatrix:
 
     # Attributes:
 
-    cdef readonly uint32 num_examples
-
-    cdef readonly uint32 num_features
-
-    # Functions:
-
-    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
+    cdef shared_ptr[AbstractFeatureMatrix] feature_matrix_ptr
 
 
 cdef class DenseFeatureMatrix(FeatureMatrix):
-
-    # Attributes:
-
-    cdef const float32[::1, :] x
-
-    # Functions:
-
-    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
+    pass
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
-
-    # Attributes:
-
-    cdef const float32[::1] x_data
-
-    cdef const uint32[::1] x_row_indices
-
-    cdef const uint32[::1] x_col_indices
-
-    # Functions:
-
-    cdef void fetch_sorted_feature_values(self, uint32 feature_index, IndexedFloat32Array* indexed_array) nogil
+    pass

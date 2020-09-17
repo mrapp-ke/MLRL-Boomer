@@ -2,7 +2,7 @@
 
 This project provides a scikit-learn implementation of "BOOMER" - an algorithm for learning gradient boosted multi-label classification rules.
 
-The algorithm was first published in the following paper:
+The algorithm was first published in the following [paper](https://arxiv.org/pdf/2006.13346.pdf):
 
 *Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science. Springer, Cham*  
 
@@ -47,16 +47,15 @@ In addition, the following features that may speed up training or reduce the mem
     |-- main_seco.py                    Can be used to start an experiment, i.e., to train and evaluate a model using the separate-and-conquer algorithm
     |-- setup.py                        Distutil definition of the library for installation via pip
     |-- ...
-|-- slurm                               Directory that contains bash scripts for running jobs using the Slurm workload manager
-    |-- ...
 |-- Makefile                            Makefile for compiling the Cython source files and installing a Python virtual environment
 |-- README.md                           This file
 |-- settings.zip                        PyCharm settings for syntax highlighting of Cython code
+|-- ...
 ```
 
 ## Project setup
 
-The library provided by this project requires Python 3.8 and uses C extensions for Python using [Cython](https://cython.org) to speed up computation. It is recommended to create a virtual environment using the correct version of Python (which requires that this particular Python version is installed on the host) and providing all dependencies that are required to compile the Cython code (`numpy`, `scipy` and `Cython`). IDEs such as PyCharm may provide an option to create such a virtual environment automatically. For manual installation, the project comes with a Makefile that allows to create a virtual environment via the command
+The library provided by this project requires Python 3.8 and uses C extensions for Python using [Cython](https://cython.org) to speed up computation and to integrate with parts of the code that are implemented in C++. It is recommended to create a virtual environment using the correct version of Python (which requires that this particular Python version is installed on the host) and providing all dependencies that are required to compile the Cython code (`numpy`, `scipy` and `Cython`). IDEs such as PyCharm may provide an option to create such a virtual environment automatically. For manual installation, the project comes with a Makefile that allows to create a virtual environment via the command
 ```
 make venv
 ```  

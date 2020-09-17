@@ -18,100 +18,6 @@
 namespace boosting {
 
     /**
-     * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by an
-    `* object of type `DenseExampleWiseStatisticsImpl`.
-     */
-    class DenseExampleWiseRefinementSearchImpl : public AbstractRefinementSearch {
-
-        private:
-
-            std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr_;
-
-            std::shared_ptr<Lapack> lapackPtr_;
-
-            uint32 numPredictions_;
-
-            const uint32* labelIndices_;
-
-            uint32 numLabels_;
-
-            const float64* gradients_;
-
-            const float64* totalSumsOfGradients_;
-
-            float64* sumsOfGradients_;
-
-            float64* accumulatedSumsOfGradients_;
-
-            const float64* hessians_;
-
-            const float64* totalSumsOfHessians_;
-
-            float64* sumsOfHessians_;
-
-            float64* accumulatedSumsOfHessians_;
-
-            LabelWisePredictionCandidate* prediction_;
-
-            float64* tmpGradients_;
-
-            float64* tmpHessians_;
-
-            int dsysvLwork_;
-
-            float64* dsysvTmpArray1_;
-
-            int* dsysvTmpArray2_;
-
-            double* dsysvTmpArray3_;
-
-            float64* dspmvTmpArray_;
-
-        public:
-
-            /**
-             * @param ruleEvaluationPtr     A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation` to
-             *                              be used for calculating the predictions, as well as corresponding quality
-             *                              scores of rules
-             * @param lapackPtr             A shared pointer to an object of type `Lapack` that allows to execute
-             *                              different lapack routines
-             * @param numPredictions        The number of labels to be considered by the search
-             * @param labelIndices          A pointer to an array of type `uint32`, shape `(numPredictions)`,
-             *                              representing the indices of the labels that should be considered by the
-             *                              search or NULL, if all labels should be considered
-             * @param numLabels             The total number of labels
-             * @param gradients             A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                              representing the gradients for each example
-             * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels)`, representing
-             *                              the sum of the gradients of all examples, which should be considered by the
-             *                              search
-             * @param hessians              A pointer to an array of type `float64`, shape
-             *                              `(num_examples, (num_labels * (num_labels + 1)) / 2)`, representing the
-             *                              Hessians for each example
-             * @param totalSumsOfHessians   A pointer to an array of type `float64`, shape
-             *                              `((num_labels * (num_labels + 1)) / 2)`, representing the sum of the
-             *                              Hessians of all examples, which should be considered by the
-             *                              search
-             */
-            DenseExampleWiseRefinementSearchImpl(std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                                 std::shared_ptr<Lapack> lapackPtr, uint32 numPredictions,
-                                                 const uint32* labelIndices, uint32 numLabels, const float64* gradients,
-                                                 const float64* totalSumsOfGradients, const float64* hessians,
-                                                 const float64* totalSumsOfHessians);
-
-            ~DenseExampleWiseRefinementSearchImpl();
-
-            void updateSearch(uint32 statisticIndex, uint32 weight) override;
-
-            void resetSearch() override;
-
-            LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
-
-            PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
-
-    };
-
-    /**
      * An abstract base class for all classes that allow to store gradients and Hessians that are calculated according
      * to a differentiable loss function that is applied example-wise.
      */
@@ -149,6 +55,70 @@ namespace boosting {
     class DenseExampleWiseStatisticsImpl : public AbstractExampleWiseStatistics {
 
         private:
+
+            /**
+             * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored
+             * by an object of type `DenseExampleWiseStatisticsImpl`.
+             */
+            class RefinementSearchImpl : public AbstractRefinementSearch {
+
+                private:
+
+                    DenseExampleWiseStatisticsImpl* statistics_;
+
+                    uint32 numPredictions_;
+
+                    const uint32* labelIndices_;
+
+                    float64* sumsOfGradients_;
+
+                    float64* accumulatedSumsOfGradients_;
+
+                    float64* sumsOfHessians_;
+
+                    float64* accumulatedSumsOfHessians_;
+
+                    LabelWisePredictionCandidate* prediction_;
+
+                    float64* tmpGradients_;
+
+                    float64* tmpHessians_;
+
+                    int dsysvLwork_;
+
+                    float64* dsysvTmpArray1_;
+
+                    int* dsysvTmpArray2_;
+
+                    double* dsysvTmpArray3_;
+
+                    float64* dspmvTmpArray_;
+
+                public:
+
+                    /**
+                     * @param statistics        A pointer to an object of type `DenseExampleWiseStatisticsImpl` that
+                     *                          stores the gradients and Hessians
+                     * @param numPredictions    The number of labels to be considered by the search
+                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
+                     *                          representing the indices of the labels that should be considered by the
+                     *                          search or NULL, if all labels should be considered
+                     */
+                    RefinementSearchImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numPredictions,
+                                         const uint32* labelIndices);
+
+                    ~RefinementSearchImpl();
+
+                    void updateSearch(uint32 statisticIndex, uint32 weight) override;
+
+                    void resetSearch() override;
+
+                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                                                                               bool accumulated) override;
+
+                    PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+
+            };
 
             std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr_;
 
