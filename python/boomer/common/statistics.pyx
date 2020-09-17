@@ -21,15 +21,15 @@ cdef class StatisticsProvider:
     cdef void switch_rule_evaluation(self):
         """
         Allows to switch the implementation that is used for calculating the predictions of rules, as well as
-        corresponding quality scores, from the one that was iniatally used for the default rule to another that will be
-        used for all remaining rules.
+        corresponding quality scores, from the one that was initially used for the default rule to another one that will
+        be used for all remaining rules.
         """
         pass
 
 
 cdef class StatisticsProviderFactory:
     """
-    A factory that allows to create instances of the class `StatisticsProvider`.
+    A base class for all factories that allows to create instances of the class `StatisticsProvider`.
     """
 
     cdef StatisticsProvider create(self, LabelMatrix label_matrix):
