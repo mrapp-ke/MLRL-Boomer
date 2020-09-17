@@ -5,7 +5,6 @@ Provides wrappers for classes that allow to store the elements of confusion matr
 each label.
 """
 from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
-from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
 
