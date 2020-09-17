@@ -1,9 +1,15 @@
 from boomer.common._arrays cimport uint32
 from boomer.common._predictions cimport PredictionCandidate
-from boomer.common.head_refinement cimport AbstractRefinementSearch, HeadRefinement
+from boomer.common.head_refinement cimport AbstractRefinementSearch, HeadRefinement, AbstractHeadRefinement
 from boomer.seco.lift_functions cimport AbstractLiftFunction
 
 from libcpp.memory cimport shared_ptr
+
+
+cdef extern from "cpp/head_refinement.h" nogil:
+
+    cdef cppclass PartialHeadRefinementImpl(AbstractHeadRefinement):
+        pass
 
 
 cdef class PartialHeadRefinement(HeadRefinement):
