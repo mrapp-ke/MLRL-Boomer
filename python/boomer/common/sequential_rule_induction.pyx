@@ -7,6 +7,7 @@ from boomer.common._random cimport RNG
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
+from boomer.common.head_refinement cimport AbstractHeadRefinement
 
 
 cdef class SequentialRuleInduction:
@@ -103,13 +104,20 @@ cdef class SequentialRuleInduction:
         cdef bint success
 
         # Induce default rule...
+        cdef AbstractHeadRefinement* current_head_refinement = NULL
+
+        if default_rule_head_refinement is not None:
+            current_head_refinement = default_rule_head_refinement.head_refinement_ptr.get()
+
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
-        rule_induction.induce_default_rule(statistics_provider, default_rule_head_refinement, model_builder)
+        rule_induction.induce_default_rule(statistics_provider, current_head_refinement, model_builder)
 
         # Induce the remaining rules...
+        current_head_refinement = head_refinement.head_refinement_ptr.get()
+
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             success = rule_induction.induce_rule(statistics_provider, nominal_attribute_mask,
-                                                 feature_matrix.feature_matrix_ptr.get(), head_refinement,
+                                                 feature_matrix.feature_matrix_ptr.get(), current_head_refinement,
                                                  label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                                  pruning, post_processor, min_coverage, max_conditions,
                                                  max_head_refinements, num_threads, rng, model_builder)
