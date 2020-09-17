@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, intp, float32
-from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32Array
+from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.input_data cimport AbstractFeatureMatrix
