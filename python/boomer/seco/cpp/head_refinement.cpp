@@ -49,12 +49,11 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
     float64 bestQualityScore = 0;
 
     if (labelIndices == NULL) {
-        uint32* sortedIndices = argsort(qualityScores, numPredictions);
+        sortedIndices = argsort(qualityScores, numPredictions);
         float64 maximumLift = liftFunction->getMaxLift();
 
         for (uint32 c = 0; c < numPredictions; c++) {
-            uint32 i = sortedIndices[c];
-            sumOfQualityScores += 1 - qualityScores[i];
+            sumOfQualityScores += 1 - qualityScores[sortedIndices[c]];
             float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunction->calculateLift(c + 1);
 
             if (c == 0 || qualityScore < bestQualityScore) {
@@ -81,12 +80,6 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
             // Create a new `PredictionCandidate` and return it...
             uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
             float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
-
-            for (uint32 c = 0; c < bestNumPredictions; c++) {
-                uint32 i = labelIndices == NULL ? c : labelIndices[c];
-                candidateLabelIndices[c] = labelIndices[i];
-                candidatePredictedScores[c] = predictedScores[i];
-            }
 
             if (labelIndices == NULL) {
                 for (uint32 c = 0; c < bestNumPredictions; c++) {
