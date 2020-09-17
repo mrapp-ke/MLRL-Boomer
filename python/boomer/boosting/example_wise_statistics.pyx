@@ -6,8 +6,6 @@ Provides wrappers for classes that allow to store gradients and Hessians that ar
 """
 from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
 from boomer.boosting._lapack cimport init_lapack
-from boomer.boosting.example_wise_losses cimport ExampleWiseLoss
-from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
 
