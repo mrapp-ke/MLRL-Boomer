@@ -7,6 +7,7 @@ from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
+from boomer.common.rule_refinement cimport Refinement
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 
 from libc.math cimport fabs
@@ -18,23 +19,6 @@ from libcpp.memory cimport unique_ptr
 
 from cython.operator cimport dereference, postincrement
 from cython.parallel cimport prange
-
-
-"""
-A struct that represents a potential refinement of a rule.
-"""
-cdef struct Refinement:
-    PredictionCandidate* head
-    uint32 feature_index
-    float32 threshold
-    Comparator comparator
-    bint covered
-    uint32 covered_weights
-    intp start
-    intp end
-    intp previous
-    IndexedFloat32Array* indexed_array
-    IndexedFloat32ArrayWrapper* indexed_array_wrapper
 
 
 cdef class RuleInduction:
@@ -282,7 +266,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
-                    conditions.push_back(__make_condition(best_refinement.feature_index, best_refinement.comparator,
+                    conditions.push_back(__make_condition(best_refinement.featureIndex, best_refinement.comparator,
                                                           best_refinement.threshold))
                     num_conditions += 1
                     num_conditions_per_comparator[<uint32>best_refinement.comparator] += 1
@@ -301,18 +285,18 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_refinement.end` and therefore must be adjusted...
                     if weights is not None and abs(best_refinement.previous - best_refinement.end) > 1:
-                        best_refinement.end = __adjust_split(best_refinement.indexed_array, best_refinement.end,
+                        best_refinement.end = __adjust_split(best_refinement.indexedArray, best_refinement.end,
                                                              best_refinement.previous, best_refinement.threshold)
 
                     # Identify the examples for which the rule predicts...
-                    covered_statistics_target = __filter_current_indices(best_refinement.indexed_array,
-                                                                         best_refinement.indexed_array_wrapper,
+                    covered_statistics_target = __filter_current_indices(best_refinement.indexedArray,
+                                                                         best_refinement.indexedArrayWrapper,
                                                                          best_refinement.start, best_refinement.end,
                                                                          best_refinement.comparator,
                                                                          best_refinement.covered, num_conditions,
                                                                          covered_statistics_mask,
                                                                          covered_statistics_target, statistics, weights)
-                    total_sum_of_weights = best_refinement.covered_weights
+                    total_sum_of_weights = best_refinement.coveredWeights
 
                     if total_sum_of_weights <= min_coverage:
                         # Abort refinement process if the rule is not allowed to cover less examples...
@@ -452,7 +436,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     """
     # The current refinement of the existing rule
     cdef Refinement refinement  # Stack-allocated struct
-    refinement.feature_index = feature_index
+    refinement.featureIndex = feature_index
     refinement.head = NULL
     # The best head seen so far
     cdef PredictionCandidate* best_head = head
@@ -543,9 +527,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                         refinement.start = first_r
                         refinement.end = r
                         refinement.previous = previous_r
-                        refinement.covered_weights = sum_of_weights
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
+                        refinement.coveredWeights = sum_of_weights
+                        refinement.indexedArray = indexed_array
+                        refinement.indexedArrayWrapper = indexed_array_wrapper
                         refinement.covered = True
 
                         if nominal:
@@ -567,9 +551,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                         refinement.start = first_r
                         refinement.end = r
                         refinement.previous = previous_r
-                        refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
+                        refinement.coveredWeights = (total_sum_of_weights - sum_of_weights)
+                        refinement.indexedArray = indexed_array
+                        refinement.indexedArrayWrapper = indexed_array_wrapper
                         refinement.covered = False
 
                         if nominal:
@@ -611,9 +595,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 refinement.start = first_r
                 refinement.end = (last_negative_r + 1)
                 refinement.previous = previous_r
-                refinement.covered_weights = sum_of_weights
-                refinement.indexed_array = indexed_array
-                refinement.indexed_array_wrapper = indexed_array_wrapper
+                refinement.coveredWeights = sum_of_weights
+                refinement.indexedArray = indexed_array
+                refinement.indexedArrayWrapper = indexed_array_wrapper
                 refinement.covered = True
                 refinement.comparator = Comparator.EQ
                 refinement.threshold = previous_threshold
@@ -630,9 +614,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 refinement.start = first_r
                 refinement.end = (last_negative_r + 1)
                 refinement.previous = previous_r
-                refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-                refinement.indexed_array = indexed_array
-                refinement.indexed_array_wrapper = indexed_array_wrapper
+                refinement.coveredWeights = (total_sum_of_weights - sum_of_weights)
+                refinement.indexedArray = indexed_array
+                refinement.indexedArrayWrapper = indexed_array_wrapper
                 refinement.covered = False
                 refinement.comparator = Comparator.NEQ
                 refinement.threshold = previous_threshold
@@ -688,9 +672,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                         refinement.start = first_r
                         refinement.end = r
                         refinement.previous = previous_r
-                        refinement.covered_weights = sum_of_weights
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
+                        refinement.coveredWeights = sum_of_weights
+                        refinement.indexedArray = indexed_array
+                        refinement.indexedArrayWrapper = indexed_array_wrapper
                         refinement.covered = True
 
                         if nominal:
@@ -712,9 +696,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                         refinement.start = first_r
                         refinement.end = r
                         refinement.previous = previous_r
-                        refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
+                        refinement.coveredWeights = (total_sum_of_weights - sum_of_weights)
+                        refinement.indexedArray = indexed_array
+                        refinement.indexedArrayWrapper = indexed_array_wrapper
                         refinement.covered = False
 
                         if nominal:
@@ -755,9 +739,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             refinement.start = first_r
             refinement.end = last_negative_r
             refinement.previous = previous_r
-            refinement.covered_weights = sum_of_weights
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
+            refinement.coveredWeights = sum_of_weights
+            refinement.indexedArray = indexed_array
+            refinement.indexedArrayWrapper = indexed_array_wrapper
             refinement.covered = True
             refinement.comparator = Comparator.EQ
             refinement.threshold = previous_threshold
@@ -774,9 +758,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             refinement.start = first_r
             refinement.end = last_negative_r
             refinement.previous = previous_r
-            refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
+            refinement.coveredWeights = (total_sum_of_weights - sum_of_weights)
+            refinement.indexedArray = indexed_array
+            refinement.indexedArrayWrapper = indexed_array_wrapper
             refinement.covered = False
             refinement.comparator = Comparator.NEQ
             refinement.threshold = previous_threshold
@@ -804,20 +788,20 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             best_head = current_head
             refinement.head = current_head
             refinement.start = first_r
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
+            refinement.indexedArray = indexed_array
+            refinement.indexedArrayWrapper = indexed_array_wrapper
             refinement.covered = True
 
             if nominal:
                 refinement.end = -1
                 refinement.previous = -1
-                refinement.covered_weights = total_accumulated_sum_of_weights
+                refinement.coveredWeights = total_accumulated_sum_of_weights
                 refinement.comparator = Comparator.NEQ
                 refinement.threshold = 0.0
             else:
                 refinement.end = last_negative_r
                 refinement.previous = previous_r
-                refinement.covered_weights = accumulated_sum_of_weights
+                refinement.coveredWeights = accumulated_sum_of_weights
                 refinement.comparator = Comparator.GR
                 refinement.threshold = previous_threshold / 2.0
 
@@ -831,20 +815,20 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             best_head = current_head
             refinement.head = current_head
             refinement.start = first_r
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
+            refinement.indexedArray = indexed_array
+            refinement.indexedArrayWrapper = indexed_array_wrapper
             refinement.covered = False
 
             if nominal:
                 refinement.end = -1
                 refinement.previous = -1
-                refinement.covered_weights = (total_sum_of_weights - total_accumulated_sum_of_weights)
+                refinement.coveredWeights = (total_sum_of_weights - total_accumulated_sum_of_weights)
                 refinement.comparator = Comparator.EQ
                 refinement.threshold = 0.0
             else:
                 refinement.end = last_negative_r
                 refinement.previous = previous_r
-                refinement.covered_weights = (total_sum_of_weights - accumulated_sum_of_weights)
+                refinement.coveredWeights = (total_sum_of_weights - accumulated_sum_of_weights)
                 refinement.comparator = Comparator.LEQ
                 refinement.threshold = previous_threshold / 2.0
 
@@ -865,9 +849,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             refinement.start = 0
             refinement.end = (last_negative_r + 1)
             refinement.previous = previous_r_negative
-            refinement.covered_weights = accumulated_sum_of_weights_negative
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
+            refinement.coveredWeights = accumulated_sum_of_weights_negative
+            refinement.indexedArray = indexed_array
+            refinement.indexedArrayWrapper = indexed_array_wrapper
             refinement.covered = True
             refinement.comparator = Comparator.LEQ
 
@@ -890,9 +874,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             refinement.start = 0
             refinement.end = (last_negative_r + 1)
             refinement.previous = previous_r_negative
-            refinement.covered_weights = (total_sum_of_weights - accumulated_sum_of_weights_negative)
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
+            refinement.coveredWeights = (total_sum_of_weights - accumulated_sum_of_weights_negative)
+            refinement.indexedArray = indexed_array
+            refinement.indexedArrayWrapper = indexed_array_wrapper
             refinement.covered = False
             refinement.comparator = Comparator.GR
 
