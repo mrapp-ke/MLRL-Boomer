@@ -443,7 +443,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     :param num_conditions:              The number of conditions in the body of the existing rule
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be used for finding the
                                         best refinement
-    :param head_refinement:             The strategy that should be used to find the head of the refined rule
+    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that should be used to
+                                        find the head of the refined rule
     :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
                                         the existing rule
     :return:                            A struct of type `Refinement`, representing the best refinement that has been
