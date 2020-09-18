@@ -1,12 +1,13 @@
 #include "rule_refinement.h"
-
+#include <memory>
 
 AbstractRuleRefinement::~AbstractRuleRefinement() {
 
 }
 
 Refinement AbstractRuleRefinement::findRefinement(AbstractHeadRefinement* headRefinement,
-                                                  PredictionCandidate* currentHead) {
+                                                  PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                                  const uint32* labelIndices) {
     Refinement refinement;
     return refinement;
 }
@@ -27,13 +28,17 @@ RuleRefinementImpl::~RuleRefinementImpl() {
 }
 
 Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefinement,
-                                              PredictionCandidate* currentHead) {
+                                              PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                              const uint32* labelIndices) {
     // The current refinement of the existing rule
     Refinement refinement;
     refinement.featureIndex = featureIndex_;
     refinement.head = NULL;
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
+    // The `AbstractRefinementSearch` to be used for evaluating refinements
+    std::unique_ptr<AbstractRefinementSearch> refinementSearchPtr;
+    refinementSearchPtr.reset(statistics_->beginSearch(numLabelIndices, labelIndices));
 
     // TODO Implement
 

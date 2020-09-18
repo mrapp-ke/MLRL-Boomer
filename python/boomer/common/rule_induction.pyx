@@ -473,7 +473,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     cdef AbstractRuleRefinement* rule_refinement = new RuleRefinementImpl(statistics, indexed_array_wrapper,
                                                                           weights_ptr, total_sum_of_weights,
                                                                           feature_index, nominal)
-    cdef Refinement found_refinement = rule_refinement.findRefinement(head_refinement, head)
+    cdef Refinement found_refinement = rule_refinement.findRefinement(head_refinement, head, num_label_indices,
+                                                                      label_indices)
     del rule_refinement
 
     # Start a new search based on the current statistics when processing a new feature...
