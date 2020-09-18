@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.rule_refinement cimport Refinement
+from boomer.common.rule_refinement cimport Refinement, AbstractRuleRefinement, RuleRefinementImpl
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
 
 from libc.math cimport fabs
@@ -467,6 +467,14 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
     cdef uint32 num_indexed_values = indexed_array.numElements
     indexed_values = indexed_array.data
+
+    # TODO The following is just for testing purposes...
+    cdef const uint32* weights_ptr = <const uint32*>NULL if weights is None else &weights[0]
+    cdef AbstractRuleRefinement* rule_refinement = new RuleRefinementImpl(statistics, indexed_array_wrapper,
+                                                                          weights_ptr, total_sum_of_weights,
+                                                                          feature_index, nominal)
+    cdef Refinement found_refinement = rule_refinement.findRefinement(head_refinement)
+    del rule_refinement
 
     # Start a new search based on the current statistics when processing a new feature...
     cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
