@@ -5,7 +5,8 @@ AbstractRuleRefinement::~AbstractRuleRefinement() {
 
 }
 
-Refinement AbstractRuleRefinement::findRefinement(AbstractHeadRefinement* headRefinement) {
+Refinement AbstractRuleRefinement::findRefinement(AbstractHeadRefinement* headRefinement,
+                                                  PredictionCandidate* currentHead) {
     Refinement refinement;
     return refinement;
 }
@@ -25,8 +26,16 @@ RuleRefinementImpl::~RuleRefinementImpl() {
 
 }
 
-Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefinement) {
+Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefinement,
+                                              PredictionCandidate* currentHead) {
+    // The current refinement of the existing rule
     Refinement refinement;
+    refinement.featureIndex = featureIndex_;
+    refinement.head = NULL;
+    // The best head seen so far
+    PredictionCandidate* bestHead = currentHead;
+
     // TODO Implement
+
     return refinement;
 }

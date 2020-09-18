@@ -43,9 +43,10 @@ class AbstractRuleRefinement {
          * TODO
          *
          * @param headRefinement
+         * @param currentHead
          * @return
          */
-        virtual Refinement findRefinement(AbstractHeadRefinement* headRefinement);
+        virtual Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead);
 
 };
 
@@ -85,6 +86,6 @@ class RuleRefinementImpl : public AbstractRuleRefinement {
 
         ~RuleRefinementImpl();
 
-        Refinement findRefinement(AbstractHeadRefinement* headRefinement) override;
+        Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead) override;
 
 };
