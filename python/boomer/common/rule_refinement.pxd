@@ -7,6 +7,8 @@ from boomer.common._arrays cimport uint32, intp, float32
 from boomer.common._tuples cimport IndexedFloat32Array, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Comparator
+from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.head_refinement cimport AbstractHeadRefinement
 
 from libcpp cimport bool
 
@@ -25,3 +27,18 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         intp previous
         IndexedFloat32Array* indexedArray
         IndexedFloat32ArrayWrapper* indexedArrayWrapper
+
+
+    cdef cppclass AbstractRuleRefinement:
+
+        # Functions:
+
+        Refinement findRefinement(AbstractHeadRefinement* headRefinement)
+
+
+    cdef cppclass RuleRefinementImpl(AbstractRuleRefinement):
+
+        # Constructors:
+
+        RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                           const uint32* weights, uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) except +
