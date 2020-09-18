@@ -23,7 +23,7 @@ namespace seco {
     const uint32 NUM_CONFUSION_MATRIX_ELEMENTS = 4;
 
     /**
-     * An enum that specified all positive elements of a confusion matrix.
+     * An enum that specifies all positive elements of a confusion matrix.
      */
     enum ConfusionMatrixElement : uint32 {
         IN = 0,
