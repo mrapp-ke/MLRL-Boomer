@@ -12,11 +12,11 @@ Refinement AbstractRuleRefinement::findRefinement(AbstractHeadRefinement* headRe
     return refinement;
 }
 
-RuleRefinementImpl::RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+RuleRefinementImpl::RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray,
                                        const uint32* weights, uint32 totalSumOfWeights, uint32 featureIndex,
                                        bool nominal) {
     statistics_ = statistics;
-    indexedArrayWrapper_ = indexedArrayWrapper;
+    indexedArray_ = indexedArray;
     weights_ = weights;
     totalSumOfWeights_ = totalSumOfWeights;
     featureIndex_ = featureIndex;
@@ -39,6 +39,9 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
     // The `AbstractRefinementSearch` to be used for evaluating refinements
     std::unique_ptr<AbstractRefinementSearch> refinementSearchPtr;
     refinementSearchPtr.reset(statistics_->beginSearch(numLabelIndices, labelIndices));
+    // The example indices and feature values to be iterated
+    IndexedFloat32* indexedValues = indexedArray_->data;
+    uint32 numIndexedValues = indexedArray_->numElements;
 
     // TODO Implement
 

@@ -62,7 +62,7 @@ class RuleRefinementImpl : public AbstractRuleRefinement {
 
         AbstractStatistics* statistics_;
 
-        IndexedFloat32ArrayWrapper* indexedArrayWrapper_;
+        IndexedFloat32Array* indexedArray_;
 
         const uint32* weights_;
 
@@ -78,14 +78,14 @@ class RuleRefinementImpl : public AbstractRuleRefinement {
          * TODO
          *
          * @param statistics
-         * @param indexedArrayWrapper
+         * @param indexedArray
          * @param weights
          * @param totalSumOfWeights
          * @param featureIndex
          * @param nominal
          */
-        RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                           const uint32* weights, uint32 totalSumOfWeights, uint32 featureIndex, bool nominal);
+        RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray, const uint32* weights,
+                           uint32 totalSumOfWeights, uint32 featureIndex, bool nominal);
 
         ~RuleRefinementImpl();
 
