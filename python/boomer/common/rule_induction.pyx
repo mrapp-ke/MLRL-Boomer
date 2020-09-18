@@ -4,7 +4,7 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport float64, array_uint32
-from boomer.common._tuples cimport IndexedFloat32
+from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
@@ -389,7 +389,7 @@ cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFlo
     if indexed_array_wrapper == NULL:
         indexed_array_wrapper = <IndexedFloat32ArrayWrapper*>malloc(sizeof(IndexedFloat32ArrayWrapper))
         indexed_array_wrapper.array = NULL
-        indexed_array_wrapper.num_conditions = 0
+        indexed_array_wrapper.numConditions = 0
         cache_local[feature_index] = indexed_array_wrapper
 
     cdef IndexedFloat32Array* indexed_array = indexed_array_wrapper.array
@@ -476,7 +476,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             indexed_values = indexed_array.data
 
     # Filter indices, if only a subset of the contained examples is covered...
-    if num_conditions > indexed_array_wrapper.num_conditions:
+    if num_conditions > indexed_array_wrapper.numConditions:
         __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions, covered_statistics_mask,
                              covered_statistics_target)
         indexed_array = indexed_array_wrapper.array
@@ -1092,7 +1092,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
 
     filtered_indexed_array.data = filtered_array
     filtered_indexed_array.numElements = num_elements
-    indexed_array_wrapper.num_conditions = num_conditions
+    indexed_array_wrapper.numConditions = num_conditions
     return updated_target
 
 
@@ -1152,7 +1152,7 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     filtered_indexed_array.data = filtered_array
     filtered_indexed_array.numElements = i
     indexed_array_wrapper.array = filtered_indexed_array
-    indexed_array_wrapper.num_conditions = num_conditions
+    indexed_array_wrapper.numConditions = num_conditions
 
 
 cdef inline Condition __make_condition(uint32 feature_index, Comparator comparator, float32 threshold):
