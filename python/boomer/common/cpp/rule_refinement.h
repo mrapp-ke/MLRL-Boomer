@@ -44,9 +44,12 @@ class AbstractRuleRefinement {
          *
          * @param headRefinement
          * @param currentHead
+         * @param numLabelIndices
+         * @param labelIndices
          * @return
          */
-        virtual Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead);
+        virtual Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                          uint32 numLabelIndices, const uint32* labelIndices);
 
 };
 
@@ -86,6 +89,7 @@ class RuleRefinementImpl : public AbstractRuleRefinement {
 
         ~RuleRefinementImpl();
 
-        Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead) override;
+        Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                  uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };

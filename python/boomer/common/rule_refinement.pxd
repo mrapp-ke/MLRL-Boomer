@@ -33,7 +33,8 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
         # Functions:
 
-        Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead)
+        Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                  uint32 numLabelIndices, const uint32* labelIndices)
 
 
     cdef cppclass RuleRefinementImpl(AbstractRuleRefinement):
