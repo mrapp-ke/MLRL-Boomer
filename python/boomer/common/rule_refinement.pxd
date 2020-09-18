@@ -41,5 +41,5 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
         # Constructors:
 
-        RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                           const uint32* weights, uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) except +
+        RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray, const uint32* weights,
+                           uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) except +
