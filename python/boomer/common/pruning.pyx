@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float32, float64, array_uint32
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
-from boomer.common.statistics cimport AbstractRefinementSearch
+from boomer.common.statistics cimport AbstractStatisticsSubset
 
 from libcpp.memory cimport unique_ptr
 
@@ -76,7 +76,7 @@ cdef class IREP(Pruning):
         # An array that stores the indices of the labels for which the existing rule predicts
         cdef uint32* label_indices = head.labelIndices_
         # Temporary variables
-        cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
+        cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
         cdef PredictionCandidate* prediction
         cdef Condition condition
         cdef Comparator comparator
@@ -87,9 +87,9 @@ cdef class IREP(Pruning):
         cdef uint32 feature_index, num_indexed_values, i, n, r, start, end
         cdef bint uncovered
 
-        # Reset the statistics and start a new search...
+        # Reset the statistics and create a new, empty subset...
         statistics.resetSampledStatistics()
-        refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
+        statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -97,11 +97,11 @@ cdef class IREP(Pruning):
                 statistics.addSampledStatistic(i, 1)
 
                 if covered_examples_mask[i] == covered_examples_target:
-                    refinement_search_ptr.get().updateSearch(i, 1)
+                    statistics_subset_ptr.get().addToSubset(i, 1)
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        prediction = head_refinement.calculatePrediction(refinement_search_ptr.get(), False, False)
+        prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
 
         # Initialize variables that are used to keep track of the best rule...
         cdef float64 best_quality_score = prediction.overallQualityScore_
@@ -132,8 +132,8 @@ cdef class IREP(Pruning):
             indexed_values = dereference(indexed_array).data
             num_indexed_values = dereference(indexed_array).numElements
 
-            # Start a new search when processing a new condition...
-            refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
+            # Create a new, empty subset of the statistics when processing a new condition...
+            statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)
@@ -162,11 +162,11 @@ cdef class IREP(Pruning):
 
                 # We must only consider examples that are currently covered and contained in the prune set...
                 if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
-                    refinement_search_ptr.get().updateSearch(i, 1)
+                    statistics_subset_ptr.get().addToSubset(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
-            prediction = head_refinement.calculatePrediction(refinement_search_ptr.get(), uncovered, False)
+            prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), uncovered, False)
             current_quality_score = prediction.overallQualityScore_
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):

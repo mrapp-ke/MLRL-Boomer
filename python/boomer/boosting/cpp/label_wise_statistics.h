@@ -48,7 +48,7 @@ namespace boosting {
     };
 
     /**
-     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
+     * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied label-wise using dense data structures.
      */
     class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
@@ -56,10 +56,10 @@ namespace boosting {
         private:
 
             /**
-             * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored
-             * by an object of type `DenseLabelWiseStatisticsImpl`.
+             * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
+             * `DenseLabelWiseStatisticsImpl`.
              */
-            class RefinementSearchImpl : public AbstractDecomposableRefinementSearch {
+            class StatisticsSubsetImpl : public AbstractDecomposableStatisticsSubset {
 
                 private:
 
@@ -84,19 +84,19 @@ namespace boosting {
                     /**
                      * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the gradients and Hessians
-                     * @param numPredictions    The number of labels to be considered by the search
+                     * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
-                     *                          representing the indices of the labels that should be considered by the
-                     *                          search or NULL, if all labels should be considered
+                     *                          representing the indices of the labels that should be included in the
+                     *                          subset or NULL, if all labels should be included
                      */
-                    RefinementSearchImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
-                    ~RefinementSearchImpl();
+                    ~StatisticsSubsetImpl();
 
-                    void updateSearch(uint32 statisticIndex, uint32 weight) override;
+                    void addToSubset(uint32 statisticIndex, uint32 weight) override;
 
-                    void resetSearch() override;
+                    void resetSubset() override;
 
                     LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;
@@ -145,7 +145,7 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
+            AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 
