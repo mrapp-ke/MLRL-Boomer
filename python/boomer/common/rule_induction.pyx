@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.rule_refinement cimport Refinement, AbstractRuleRefinement, RuleRefinementImpl
+from boomer.common.rule_refinement cimport Refinement, AbstractRuleRefinement, ExactRuleRefinementImpl
 from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsSubset
 
 from libc.math cimport fabs
@@ -456,8 +456,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     # Find and return the best refinement...
     cdef const uint32* weights_ptr = <const uint32*>NULL if weights is None else &weights[0]
     cdef unique_ptr[AbstractRuleRefinement] rule_refinement_ptr
-    rule_refinement_ptr.reset(new RuleRefinementImpl(statistics, indexed_array_wrapper, indexed_array, weights_ptr,
-                                                     total_sum_of_weights, feature_index, nominal))
+    rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array_wrapper, indexed_array, weights_ptr,
+                                                          total_sum_of_weights, feature_index, nominal))
     return rule_refinement_ptr.get().findRefinement(head_refinement, head, num_label_indices, label_indices)
 
 

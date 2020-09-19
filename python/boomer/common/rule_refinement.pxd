@@ -37,10 +37,10 @@ cdef extern from "cpp/rule_refinement.h" nogil:
                                   uint32 numLabelIndices, const uint32* labelIndices)
 
 
-    cdef cppclass RuleRefinementImpl(AbstractRuleRefinement):
+    cdef cppclass ExactRuleRefinementImpl(AbstractRuleRefinement):
 
         # Constructors:
 
-        RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                           IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
-                           uint32 featureIndex, bool nominal) except +
+        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                                IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
+                                uint32 featureIndex, bool nominal) except +

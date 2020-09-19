@@ -13,9 +13,10 @@ Refinement AbstractRuleRefinement::findRefinement(AbstractHeadRefinement* headRe
     return refinement;
 }
 
-RuleRefinementImpl::RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                       IndexedFloat32Array* indexedArray, const uint32* weights,
-                                       uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) {
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
+                                                 IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                                                 IndexedFloat32Array* indexedArray, const uint32* weights,
+                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) {
     statistics_ = statistics;
     indexedArrayWrapper_ = indexedArrayWrapper;
     indexedArray_ = indexedArray;
@@ -25,12 +26,13 @@ RuleRefinementImpl::RuleRefinementImpl(AbstractStatistics* statistics, IndexedFl
     nominal_ = nominal;
 }
 
-RuleRefinementImpl::~RuleRefinementImpl() {
+ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
 
 }
 
-Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                              uint32 numLabelIndices, const uint32* labelIndices) {
+Refinement ExactRuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefinement,
+                                                   PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                                   const uint32* labelIndices) {
     // The current refinement of the existing rule
     Refinement refinement;
     refinement.featureIndex = featureIndex_;
