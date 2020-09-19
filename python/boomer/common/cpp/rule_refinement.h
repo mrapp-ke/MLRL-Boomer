@@ -57,7 +57,9 @@ class AbstractRuleRefinement {
 };
 
 /**
- * TODO
+ * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
+ * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
+ * examples for the respective feature.
  */
 class RuleRefinementImpl : public AbstractRuleRefinement {
 
