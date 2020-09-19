@@ -39,9 +39,9 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
     refinement.indexedArrayWrapper = indexedArrayWrapper_;
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
-    // The `AbstractRefinementSearch` to be used for evaluating refinements
-    std::unique_ptr<AbstractRefinementSearch> refinementSearchPtr;
-    refinementSearchPtr.reset(statistics_->beginSearch(numLabelIndices, labelIndices));
+    // Create a new, empty subset of the current statistics when processing a new feature...
+    std::unique_ptr<AbstractStatisticsSubset> statisticsSubsetPtr;
+    statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
     // The example indices and feature values to be iterated
     IndexedFloat32* indexedValues = indexedArray_->data;
     uint32 numIndexedValues = indexedArray_->numElements;
@@ -67,8 +67,8 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
         uint32 weight = weights_ == NULL ? 1 : weights_[i];
 
         if (weight > 0) {
-            // Tell the search that the example will be covered by upcoming refinements...
-            refinementSearchPtr.get()->updateSearch(i, weight);
+            // Add the example to the subset to mark it as covered by upcoming refinements...
+            statisticsSubsetPtr.get()->addToSubset(i, weight);
             sumOfWeights += weight;
             previousThreshold = currentThreshold;
             previousR = r;
@@ -98,7 +98,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the == operator in case of a nominal feature) is used...
                     PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                                refinementSearchPtr.get(), false,
+                                                                                statisticsSubsetPtr.get(), false,
                                                                                 false);
 
                     // If the refinement is better than the current rule...
@@ -123,7 +123,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the != operator in case of a nominal feature) is used...
                     currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                           refinementSearchPtr.get(), true, false);
+                                                           statisticsSubsetPtr.get(), true, false);
 
                     // If the refinement is better than the current rule...
                     if (currentHead != NULL) {
@@ -144,10 +144,10 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                         }
                     }
 
-                    // Reset the search in case of a nominal feature, as the previous examples will not be covered by
+                    // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
                     // the next condition...
                     if (nominal_) {
-                        refinementSearchPtr.get()->resetSearch();
+                        statisticsSubsetPtr.get()->resetSubset();
                         sumOfWeights = 0;
                         firstR = r;
                     }
@@ -156,8 +156,8 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                 previousThreshold = currentThreshold;
                 previousR = r;
 
-                // Tell the search that the example will be covered by upcoming refinements...
-                refinementSearchPtr.get()->updateSearch(i, weight);
+                // Add the example to the subset to mark it as covered by upcoming refinements...
+                statisticsSubsetPtr.get()->addToSubset(i, weight);
                 sumOfWeights += weight;
                 accumulatedSumOfWeights += weight;
             }
@@ -171,7 +171,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
             PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                        refinementSearchPtr.get(), false, false);
+                                                                        statisticsSubsetPtr.get(), false, false);
 
             if (currentHead != NULL) {
                 bestHead = currentHead;
@@ -187,7 +187,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             // used...
-            currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, refinementSearchPtr.get(),
+            currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(),
                                                    true, false);
 
             if (currentHead != NULL) {
@@ -203,8 +203,8 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
             }
         }
 
-        // Reset the search, if any examples with feature value < 0 have been processed...
-        refinementSearchPtr.get()->resetSearch();
+        // Reset the subset, if any examples with feature value < 0 have been processed...
+        statisticsSubsetPtr.get()->resetSubset();
     }
 
     float32 previousThresholdNegative = previousThreshold;
@@ -222,8 +222,8 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
         uint32 weight = weights_ == NULL ? 1 : weights_[i];
 
         if (weight > 0) {
-            // Tell the search that the example will be covered by upcoming refinements...
-            refinementSearchPtr.get()->updateSearch(i, weight);
+            // Add the example to the subset to mark it as covered by upcoming refinements...
+            statisticsSubsetPtr.get()->addToSubset(i, weight);
             sumOfWeights += weight;
             previousThreshold = indexedValues[r].value;
             previousR = r;
@@ -248,7 +248,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the == operator in case of a nominal feature) is used...
                     PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                                refinementSearchPtr.get(), false,
+                                                                                statisticsSubsetPtr.get(), false,
                                                                                 false);
 
                     // If the refinement is better than the current rule...
@@ -273,7 +273,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the != operator in case of a nominal feature) is used...
                     currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                           refinementSearchPtr.get(), true, false);
+                                                           statisticsSubsetPtr.get(), true, false);
 
                     // If the refinement is better than the current rule...
                     if (currentHead != NULL) {
@@ -294,10 +294,10 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                         }
                     }
 
-                    // Reset the search in case of a nominal feature, as the previous examples will not be covered by
+                    // Reset the subet in case of a nominal feature, as the previous examples will not be covered by
                     // the next condition...
                     if (nominal_) {
-                        refinementSearchPtr.get()->resetSearch();
+                        statisticsSubsetPtr.get()->resetSubset();
                         sumOfWeights = 0;
                         firstR = r;
                     }
@@ -306,8 +306,8 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
                 previousThreshold = currentThreshold;
                 previousR = r;
 
-                // Tell the search that the example will be covered by upcoming refinements...
-                refinementSearchPtr.get()->updateSearch(i, weight);
+                // Add the example to the subset to mark it as covered by upcoming refinements...
+                statisticsSubsetPtr.get()->addToSubset(i, weight);
                 sumOfWeights += weight;
                 accumulatedSumOfWeights += weight;
             }
@@ -321,7 +321,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
         PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                    refinementSearchPtr.get(), false, false);
+                                                                    statisticsSubsetPtr.get(), false, false);
 
         // If the refinement is better than the current rule...
         if (currentHead != NULL) {
@@ -338,7 +338,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
 
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         // used...
-        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, refinementSearchPtr.get(), true,
+        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(), true,
                                                false);
 
         // If the refinement is better than the current rule...
@@ -362,17 +362,17 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
     // examples with sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate
     // these examples from the ones that have already been iterated...
     if (totalAccumulatedSumOfWeights > 0 && totalAccumulatedSumOfWeights < totalSumOfWeights_) {
-        // If the feature is nominal, we must reset the search once again to ensure that the accumulated state includes
+        // If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
         // all examples that have been processed so far...
         if (nominal_) {
-            refinementSearchPtr.get()->resetSearch();
+            statisticsSubsetPtr.get()->resetSubset();
             firstR = ((intp) numIndexedValues) - 1;
         }
 
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
         PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                    refinementSearchPtr.get(), false, nominal_);
+                                                                    statisticsSubsetPtr.get(), false, nominal_);
 
         // If the refinement is better than the current rule...
         if (currentHead != NULL) {
@@ -398,7 +398,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
 
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
-        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, refinementSearchPtr.get(), true,
+        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(), true,
                                                nominal_);
 
         // If the refinement is better than the current rule...
@@ -433,7 +433,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
         PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                    refinementSearchPtr.get(), false, true);
+                                                                    statisticsSubsetPtr.get(), false, true);
 
         if (currentHead != NULL) {
             bestHead = currentHead;
@@ -458,7 +458,7 @@ Refinement RuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefine
 
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         // used...
-        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, refinementSearchPtr.get(), true,
+        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(), true,
                                                true);
 
         if (currentHead != NULL) {
