@@ -31,7 +31,7 @@ struct Refinement {
 };
 
 /**
- * An abstract base class for all classes that allow to find the best refinement of rules.
+ * An abstract base class for all classes that allow to find the best refinement of existing rules.
  */
 class AbstractRuleRefinement {
 
