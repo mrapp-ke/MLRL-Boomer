@@ -29,10 +29,10 @@ namespace seco {
             ~PartialHeadRefinementImpl();
 
             PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
-                                          const uint32* labelIndices, AbstractRefinementSearch* refinementSearch,
+                                          const uint32* labelIndices, AbstractStatisticsSubset* statisticsSubset,
                                           bool uncovered, bool accumulated) override;
 
-            PredictionCandidate* calculatePrediction(AbstractRefinementSearch* refinementSearch, bool uncovered,
+            PredictionCandidate* calculatePrediction(AbstractStatisticsSubset* statisticsSubset, bool uncovered,
                                                      bool accumulated) override;
 
     };

@@ -9,7 +9,7 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/statistics.h" nogil:
 
-    cdef cppclass AbstractRefinementSearch:
+    cdef cppclass AbstractStatisticsSubset:
 
         # Functions:
 
@@ -22,7 +22,7 @@ cdef extern from "cpp/statistics.h" nogil:
         PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
-    cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
+    cdef cppclass AbstractDecomposableStatisticsSubset(AbstractStatisticsSubset):
         pass
 
 
@@ -38,7 +38,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove)
 
-        AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices)
+        AbstractStatisticsSubset* beginSearch(uint32 numLabelIndices, const uint32* labelIndices)
 
         void applyPrediction(uint32 statisticIndex, Prediction* prediction)
 

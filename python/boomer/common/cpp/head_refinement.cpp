@@ -8,12 +8,12 @@ AbstractHeadRefinement::~AbstractHeadRefinement() {
 
 PredictionCandidate* AbstractHeadRefinement::findHead(PredictionCandidate* bestHead,
                                                       PredictionCandidate* recyclableHead, const uint32* labelIndices,
-                                                      AbstractRefinementSearch* refinementSearch, bool uncovered,
+                                                      AbstractStatisticsSubset* statisticsSubset, bool uncovered,
                                                       bool accumulated) {
     return NULL;
 }
 
-PredictionCandidate* AbstractHeadRefinement::calculatePrediction(AbstractRefinementSearch* refinementSearch,
+PredictionCandidate* AbstractHeadRefinement::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
                                                                  bool uncovered, bool accumulated) {
     return NULL;
 }
@@ -25,9 +25,9 @@ SingleLabelHeadRefinementImpl::~SingleLabelHeadRefinementImpl() {
 PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                              PredictionCandidate* recyclableHead,
                                                              const uint32* labelIndices,
-                                                             AbstractRefinementSearch* refinementSearch, bool uncovered,
+                                                             AbstractStatisticsSubset* statisticsSubset, bool uncovered,
                                                              bool accumulated) {
-    LabelWisePredictionCandidate* prediction = refinementSearch->calculateLabelWisePrediction(uncovered, accumulated);
+    LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction->numPredictions_;
     float64* qualityScores = prediction->qualityScores_;
     uint32 bestC = 0;
@@ -66,9 +66,9 @@ PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate
     return NULL;
 }
 
-PredictionCandidate* SingleLabelHeadRefinementImpl::calculatePrediction(AbstractRefinementSearch* refinementSearch,
+PredictionCandidate* SingleLabelHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
                                                                         bool uncovered, bool accumulated) {
-    return refinementSearch->calculateLabelWisePrediction(uncovered, accumulated);
+    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
 FullHeadRefinementImpl::~FullHeadRefinementImpl() {
@@ -77,9 +77,9 @@ FullHeadRefinementImpl::~FullHeadRefinementImpl() {
 
 PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                       PredictionCandidate* recyclableHead, const uint32* labelIndices,
-                                                      AbstractRefinementSearch* refinementSearch, bool uncovered,
+                                                      AbstractStatisticsSubset* statisticsSubset, bool uncovered,
                                                       bool accumulated) {
-    PredictionCandidate* prediction = refinementSearch->calculateExampleWisePrediction(uncovered, accumulated);
+    PredictionCandidate* prediction = statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction->overallQualityScore_;
 
     // The quality score must be better than that of `bestHead`...
@@ -121,7 +121,7 @@ PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestH
     return NULL;
 }
 
-PredictionCandidate* FullHeadRefinementImpl::calculatePrediction(AbstractRefinementSearch* refinementSearch,
+PredictionCandidate* FullHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
                                                                  bool uncovered, bool accumulated) {
-    return refinementSearch->calculateExampleWisePrediction(uncovered, accumulated);
+    return statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
 }

@@ -35,11 +35,11 @@ PartialHeadRefinementImpl::~PartialHeadRefinementImpl() {
 PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                          PredictionCandidate* recyclableHead,
                                                          const uint32* labelIndices,
-                                                         AbstractRefinementSearch* refinementSearch, bool uncovered,
+                                                         AbstractStatisticsSubset* statisticsSubset, bool uncovered,
                                                          bool accumulated) {
     PredictionCandidate* result = NULL;
     AbstractLiftFunction* liftFunction = liftFunctionPtr_.get();
-    LabelWisePredictionCandidate* prediction = refinementSearch->calculateLabelWisePrediction(uncovered, accumulated);
+    LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction->numPredictions_;
     float64* predictedScores = prediction->predictedScores_;
     float64* qualityScores = prediction->qualityScores_;
@@ -128,7 +128,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
     return result;
 }
 
-PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(AbstractRefinementSearch* refinementSearch,
+PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
                                                                     bool uncovered, bool accumulated) {
-    return refinementSearch->calculateLabelWisePrediction(uncovered, accumulated);
+    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }

@@ -12,14 +12,15 @@
 
 
 /**
- * An abstract base class for all classes that allow to search for the best refinement of a rule based on previously
- * stored statistics.
+ * An abstract base class for all classes that provide access to a subset of the statistics that are stored by an
+ * instance of the class `AbstractStatistics` and allows to calculate the scores to be predicted by rules that cover
+ * such a subset.
  */
-class AbstractRefinementSearch {
+class AbstractStatisticsSubset {
 
     public:
 
-        virtual ~AbstractRefinementSearch();
+        virtual ~AbstractStatisticsSubset();
 
         /**
          * Notifies the search that a specific statistic is covered by the condition that is currently considered for
@@ -124,11 +125,11 @@ class AbstractRefinementSearch {
 };
 
 /**
- * An abstract base class for all classes that allow to search for the best refinement of a rule based on previously
- * stored statistics in the decomposable case, i.e., when the label-wise predictions are the same as the example-wise
- * predictions.
+ * An abstract base class for all classes that provide access to a subset of the statistics that are stores by an
+ * instance of the class `AbstractStatistics` and allow to calculate the scores to be predicted by rules that cover such
+ * a subset in the decomposable case, i.e., if the label-wise predictions are the same as the example-wise predictions.
  */
-class AbstractDecomposableRefinementSearch : public AbstractRefinementSearch {
+class AbstractDecomposableStatisticsSubset : public AbstractStatisticsSubset {
 
     public:
 
@@ -137,8 +138,8 @@ class AbstractDecomposableRefinementSearch : public AbstractRefinementSearch {
 };
 
 /**
- * An abstract base class for all classes that store statistics about the labels of the training examples, which serve
- * as the basis for learning a new rule or refining an existing one.
+ * An abstract base class for all classes that provide access to statistics about the labels of the training examples,
+ * which serve as the basis for learning a new rule or refining an existing one.
  */
 class AbstractStatistics : public AbstractMatrix {
 
@@ -224,10 +225,10 @@ class AbstractStatistics : public AbstractMatrix {
 
         /**
          * Starts a new search for the best refinement of a rule. The statistics that are covered by such a refinement
-         * must be provided via subsequent calls to the function `AbstractRefinementSearch#updateSearch`.
+         * must be provided via subsequent calls to the function `AbstractStatisticsSubset#updateSearch`.
          *
          * This function must be called each time a new refinement is considered, unless the refinement covers all
-         * statistics previously provided via calls to the function `AbstractRefinementSearch#updateSearch`.
+         * statistics previously provided via calls to the function `AbstractStatisticsSubset#updateSearch`.
          *
          * Optionally, a subset of the available labels may be specified via the argument `labelIndices`. In such case,
          * only the specified labels will be considered by the search. When calling this function again to start another
@@ -237,10 +238,10 @@ class AbstractStatistics : public AbstractMatrix {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be considered by the search or None, if all labels
          *                          should be considered
-         * @return                  A pointer to an object of type `AbstractRefinementSearch` to be used to conduct the
+         * @return                  A pointer to an object of type `AbstractStatisticsSubset` to be used to conduct the
          *                          search
          */
-        virtual AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices);
+        virtual AbstractStatisticsSubset* beginSearch(uint32 numLabelIndices, const uint32* labelIndices);
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.
