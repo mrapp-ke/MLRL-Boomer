@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
+from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsSubset
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -124,7 +124,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
-        cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
+        cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
         cdef AbstractStatistics* statistics
         cdef uint32 num_statistics, i
 
@@ -136,8 +136,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for i in range(num_statistics):
                 statistics.addSampledStatistic(i, 1)
 
-            refinement_search_ptr.reset(statistics.beginSearch(0, NULL))
-            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL, refinement_search_ptr.get(), True,
+            statistics_subset_ptr.reset(statistics.createSubset(0, NULL))
+            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL, statistics_subset_ptr.get(), True,
                                                                   False))
 
             statistics_provider.switch_rule_evaluation()
@@ -484,9 +484,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     cdef uint32 num_indexed_values = indexed_array.numElements
     indexed_values = indexed_array.data
 
-    # Start a new search based on the current statistics when processing a new feature...
-    cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
-    refinement_search_ptr.reset(statistics.beginSearch(num_label_indices, label_indices))
+    # Create a new, empty subset of the current statistics when processing a new feature...
+    cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+    statistics_subset_ptr.reset(statistics.createSubset(num_label_indices, label_indices))
 
     # In the following, we start by processing all examples with feature values < 0...
     cdef uint32 sum_of_weights = 0
@@ -506,8 +506,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
         weight = 1 if weights is None else weights[i]
 
         if weight > 0:
-            # Tell the search that the example will be covered by upcoming refinements...
-            refinement_search_ptr.get().updateSearch(i, weight)
+            # Add the example to the subset to mark it as covered by upcoming refinements...
+            statistics_subset_ptr.get().addToSubset(i, weight)
             sum_of_weights += weight
             previous_threshold = current_threshold
             previous_r = r
@@ -534,7 +534,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                     # Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     # operator (or the == operator in case of a nominal feature) is used...
                     current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
-                                                            refinement_search_ptr.get(), False, False)
+                                                            statistics_subset_ptr.get(), False, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -558,7 +558,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                     # Find and evaluate the best head for the current refinement, if a condition that uses the >
                     # operator (or the != operator in case of a nominal feature) is used...
                     current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
-                                                            refinement_search_ptr.get(), True, False)
+                                                            statistics_subset_ptr.get(), True, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -579,18 +579,18 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                             refinement.comparator = Comparator.GR
                             refinement.threshold = (previous_threshold + current_threshold) / 2.0
 
-                    # Reset the search in case of a nominal feature, as the previous examples will not be covered by the
+                    # Reset the subset in case of a nominal feature, as the previous examples will not be covered by the
                     # next condition...
                     if nominal:
-                        refinement_search_ptr.get().resetSearch()
+                        statistics_subset_ptr.get().resetSubset()
                         sum_of_weights = 0
                         first_r = r
 
                 previous_threshold = current_threshold
                 previous_r = r
 
-                # Tell the search that the example will be covered by upcoming refinements...
-                refinement_search_ptr.get().updateSearch(i, weight)
+                # Add the example to the subset to mark it as covered by upcoming refinements...
+                statistics_subset_ptr.get().addToSubset(i, weight)
                 sum_of_weights += weight
                 accumulated_sum_of_weights += weight
 
@@ -602,7 +602,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             # Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             # used...
             current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
-                                                    refinement_search_ptr.get(), False, False)
+                                                    statistics_subset_ptr.get(), False, False)
 
             # If the refinement is better than the current rule...
             if current_head != NULL:
@@ -621,7 +621,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
             # Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             # used...
             current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
-                                                    refinement_search_ptr.get(), True, False)
+                                                    statistics_subset_ptr.get(), True, False)
 
             # If the refinement is better than the current rule...
             if current_head != NULL:
@@ -637,8 +637,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 refinement.comparator = Comparator.NEQ
                 refinement.threshold = previous_threshold
 
-        # Reset the search, if any examples with feature value < 0 have been processed...
-        refinement_search_ptr.get().resetSearch()
+        # Reset the subset, if any examples with feature value < 0 have been processed...
+        statistics_subset_ptr.get().resetSubset()
 
     previous_threshold_negative = previous_threshold
     previous_r_negative = previous_r
@@ -655,8 +655,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
         weight = 1 if weights is None else weights[i]
 
         if weight > 0:
-            # Tell the search that the example will be covered by upcoming refinements...
-            refinement_search_ptr.get().updateSearch(i, weight)
+            # Add the example to the subset to mark it as covered by upcoming refinements...
+            statistics_subset_ptr.get().addToSubset(i, weight)
             sum_of_weights += weight
             previous_threshold = indexed_values[r].value
             previous_r = r
@@ -679,7 +679,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                     # Find and evaluate the best head for the current refinement, if a condition that uses the >
                     # operator (or the == operator in case of a nominal feature) is used...
                     current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
-                                                            refinement_search_ptr.get(), False, False)
+                                                            statistics_subset_ptr.get(), False, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -703,7 +703,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                     # Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     # operator (or the != operator in case of a nominal feature) is used...
                     current_head = head_refinement.findHead(best_head, refinement.head, label_indices,
-                                                            refinement_search_ptr.get(), True, False)
+                                                            statistics_subset_ptr.get(), True, False)
 
                     # If the refinement is better than the current rule...
                     if current_head != NULL:
@@ -724,18 +724,18 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                             refinement.comparator = Comparator.LEQ
                             refinement.threshold = (previous_threshold + current_threshold) / 2.0
 
-                    # Reset the search in case of a nominal feature, as the previous examples will not be covered by the
+                    # Reset the subset in case of a nominal feature, as the previous examples will not be covered by the
                     # next condition...
                     if nominal:
-                        refinement_search_ptr.get().resetSearch()
+                        statistics_subset_ptr.get().resetSubset()
                         sum_of_weights = 0
                         first_r = r
 
                 previous_threshold = current_threshold
                 previous_r = r
 
-                # Tell the search that the example will be covered by upcoming refinements...
-                refinement_search_ptr.get().updateSearch(i, weight)
+                # Add the example to the subset to mark it as covered by upcoming refinements...
+                statistics_subset_ptr.get().addToSubset(i, weight)
                 sum_of_weights += weight
                 accumulated_sum_of_weights += weight
 
@@ -745,7 +745,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     if nominal and sum_of_weights > 0 and sum_of_weights < accumulated_sum_of_weights:
         # Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         # used...
-        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, statistics_subset_ptr.get(),
                                                 False, False)
 
         # If the refinement is better than the current rule...
@@ -764,7 +764,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
         # Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         # used...
-        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, statistics_subset_ptr.get(),
                                                 True, False)
 
         # If the refinement is better than the current rule...
@@ -788,15 +788,15 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     # examples with sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate
     # these examples from the ones that have already been iterated...
     if total_accumulated_sum_of_weights > 0 and total_accumulated_sum_of_weights < total_sum_of_weights:
-        # If the feature is nominal, we must reset the search once again to ensure that the accumulated state includes
+        # If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
         # all examples that have been processed so far...
         if nominal:
-            refinement_search_ptr.get().resetSearch()
+            statistics_subset_ptr.get().resetSubset()
             first_r = num_indexed_values - 1
 
         # Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         # the condition `f != 0` in case of a nominal feature) is used...
-        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, statistics_subset_ptr.get(),
                                                 False, nominal)
 
         # If the refinement is better than the current rule...
@@ -823,7 +823,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
         # Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2` (or
         # `f == 0` in case of a nominal feature) is used...
-        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, statistics_subset_ptr.get(),
                                                 True, nominal)
 
         # If the refinement is better than the current rule...
@@ -856,7 +856,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     if not nominal and accumulated_sum_of_weights_negative > 0 and accumulated_sum_of_weights_negative < total_sum_of_weights:
         # Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         # used...
-        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, statistics_subset_ptr.get(),
                                                 False, True)
 
         if current_head != NULL:
@@ -881,7 +881,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
         # Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         # used...
-        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
+        current_head = head_refinement.findHead(best_head, refinement.head, label_indices, statistics_subset_ptr.get(),
                                                 True, True)
 
         if current_head != NULL:
@@ -976,8 +976,8 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
                                         to store the filtered array
     :param condition_start:             The element in `indexed_values` that corresponds to the first example
-                                        (inclusive) that has been passed to the `RefinementSearch` when searching for
-                                        the new condition
+                                        (inclusive) included in the `AbstractStatisticsSubset` that is covered by the
+                                        new condition
     :param condition_end:               The element in `indexed_values` that corresponds to the last example (exclusive)
     :param condition_comparator:        The type of the operator that is used by the new condition
     :param covered                      1, if the examples in range [condition_start, condition_end) are covered by the
@@ -1194,22 +1194,19 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     cdef uint32* label_indices = head.labelIndices_
     # An array that stores the scores that are predicted by the head
     cdef float64* predicted_scores = head.predictedScores_
+    # Create a new, empty subset of the statistics
+    cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+    statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
     # Temporary variables
-    cdef AbstractRefinementSearch* refinement_search
     cdef Prediction* prediction
     cdef float64* updated_scores
     cdef uint32 r, c
 
-    try:
-        refinement_search = statistics.beginSearch(num_predictions, label_indices)
+    for r in range(num_statistics):
+        if covered_statistics_mask[r] == covered_statistics_target:
+            statistics_subset_ptr.get().addToSubset(r, 1)
+            prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
+            updated_scores = prediction.predictedScores_
 
-        for r in range(num_statistics):
-            if covered_statistics_mask[r] == covered_statistics_target:
-                refinement_search.updateSearch(r, 1)
-                prediction = head_refinement.calculatePrediction(refinement_search, False, False)
-                updated_scores = prediction.predictedScores_
-
-                for c in range(num_predictions):
-                    predicted_scores[c] = updated_scores[c]
-    finally:
-        del refinement_search
+            for c in range(num_predictions):
+                predicted_scores[c] = updated_scores[c]
