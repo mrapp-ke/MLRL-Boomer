@@ -6,7 +6,7 @@
 using namespace boosting;
 
 
-DenseExampleWiseStatisticsImpl::RefinementSearchImpl::RefinementSearchImpl(DenseExampleWiseStatisticsImpl* statistics,
+DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl* statistics,
                                                                            uint32 numPredictions,
                                                                            const uint32* labelIndices) {
     statistics_ = statistics;
@@ -29,7 +29,7 @@ DenseExampleWiseStatisticsImpl::RefinementSearchImpl::RefinementSearchImpl(Dense
     dspmvTmpArray_ = NULL;
 }
 
-DenseExampleWiseStatisticsImpl::RefinementSearchImpl::~RefinementSearchImpl() {
+DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(sumsOfGradients_);
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
@@ -43,7 +43,7 @@ DenseExampleWiseStatisticsImpl::RefinementSearchImpl::~RefinementSearchImpl() {
     delete prediction_;
 }
 
-void DenseExampleWiseStatisticsImpl::RefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
+void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
     // Add the gradients and Hessians of the example at the given index (weighted by the given weight) to the current
     // sum of gradients and Hessians...
     uint32 numLabels = statistics_->getNumCols();
@@ -64,7 +64,7 @@ void DenseExampleWiseStatisticsImpl::RefinementSearchImpl::updateSearch(uint32 s
     }
 }
 
-void DenseExampleWiseStatisticsImpl::RefinementSearchImpl::resetSearch() {
+void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     uint32 numHessians = linalg::triangularNumber(numPredictions_);
 
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
@@ -88,7 +88,7 @@ void DenseExampleWiseStatisticsImpl::RefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePredictionCandidate* DenseExampleWiseStatisticsImpl::RefinementSearchImpl::calculateLabelWisePrediction(
+LabelWisePredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -100,7 +100,7 @@ LabelWisePredictionCandidate* DenseExampleWiseStatisticsImpl::RefinementSearchIm
     return prediction_;
 }
 
-PredictionCandidate* DenseExampleWiseStatisticsImpl::RefinementSearchImpl::calculateExampleWisePrediction(
+PredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -203,11 +203,11 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticInde
     }
 }
 
-AbstractRefinementSearch* DenseExampleWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
-                                                                      const uint32* labelIndices) {
+AbstractStatisticsSubset* DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
+                                                                       const uint32* labelIndices) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new DenseExampleWiseStatisticsImpl::RefinementSearchImpl(this, numPredictions, labelIndices);
+    return new DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl(this, numPredictions, labelIndices);
 }
 
 void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
