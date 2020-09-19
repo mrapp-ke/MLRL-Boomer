@@ -1,27 +1,27 @@
 #include "statistics.h"
 
 
-AbstractRefinementSearch::~AbstractRefinementSearch() {
+AbstractStatisticsSubset::~AbstractStatisticsSubset() {
 
 }
 
-void AbstractRefinementSearch::updateSearch(uint32 statisticIndex, uint32 weight) {
+void AbstractStatisticsSubset::addToSubset(uint32 statisticIndex, uint32 weight) {
 
 }
 
-void AbstractRefinementSearch::resetSearch() {
+void AbstractStatisticsSubset::resetSubset() {
 
 }
 
-LabelWisePredictionCandidate* AbstractRefinementSearch::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
+LabelWisePredictionCandidate* AbstractStatisticsSubset::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
     return NULL;
 }
 
-PredictionCandidate* AbstractRefinementSearch::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
+PredictionCandidate* AbstractStatisticsSubset::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
     return NULL;
 }
 
-PredictionCandidate* AbstractDecomposableRefinementSearch::calculateExampleWisePrediction(bool uncovered,
+PredictionCandidate* AbstractDecomposableStatisticsSubset::calculateExampleWisePrediction(bool uncovered,
                                                                                           bool accumulated) {
     // In the decomposable case, the example-wise predictions are the same as the label-wise predictions...
     return (PredictionCandidate*) this->calculateLabelWisePrediction(uncovered, accumulated);
@@ -56,7 +56,7 @@ void AbstractStatistics::updateCoveredStatistic(uint32 statisticIndex, uint32 we
 
 }
 
-AbstractRefinementSearch* AbstractStatistics::beginSearch(uint32 numLabelIndices, const uint32* labelIndices) {
+AbstractStatisticsSubset* AbstractStatistics::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
     return NULL;
 }
 
