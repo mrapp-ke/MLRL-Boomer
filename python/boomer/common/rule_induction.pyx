@@ -484,7 +484,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     cdef uint32 num_indexed_values = indexed_array.numElements
     indexed_values = indexed_array.data
 
-    # Start a new search based on the current statistics when processing a new feature...
+    # Create a new, empty subset of the current statistics when processing a new feature...
     cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
     statistics_subset_ptr.reset(statistics.createSubset(num_label_indices, label_indices))
 
@@ -506,8 +506,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
         weight = 1 if weights is None else weights[i]
 
         if weight > 0:
-            # Tell the search that the example will be covered by upcoming refinements...
-            statistics_subset_ptr.get().updateSearch(i, weight)
+            # Add the example to the subset to mark it as covered by upcoming refinements...
+            statistics_subset_ptr.get().addToSubset(i, weight)
             sum_of_weights += weight
             previous_threshold = current_threshold
             previous_r = r
@@ -579,7 +579,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                             refinement.comparator = Comparator.GR
                             refinement.threshold = (previous_threshold + current_threshold) / 2.0
 
-                    # Reset the search in case of a nominal feature, as the previous examples will not be covered by the
+                    # Reset the subset in case of a nominal feature, as the previous examples will not be covered by the
                     # next condition...
                     if nominal:
                         statistics_subset_ptr.get().resetSearch()
@@ -589,8 +589,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 previous_threshold = current_threshold
                 previous_r = r
 
-                # Tell the search that the example will be covered by upcoming refinements...
-                statistics_subset_ptr.get().updateSearch(i, weight)
+                # Add the example to the subset to mark it as covered by upcoming refinements...
+                statistics_subset_ptr.get().addToSubset(i, weight)
                 sum_of_weights += weight
                 accumulated_sum_of_weights += weight
 
@@ -637,7 +637,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 refinement.comparator = Comparator.NEQ
                 refinement.threshold = previous_threshold
 
-        # Reset the search, if any examples with feature value < 0 have been processed...
+        # Reset the subset, if any examples with feature value < 0 have been processed...
         statistics_subset_ptr.get().resetSearch()
 
     previous_threshold_negative = previous_threshold
@@ -655,8 +655,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
         weight = 1 if weights is None else weights[i]
 
         if weight > 0:
-            # Tell the search that the example will be covered by upcoming refinements...
-            statistics_subset_ptr.get().updateSearch(i, weight)
+            # Add the example to the subset to mark it as covered by upcoming refinements...
+            statistics_subset_ptr.get().addToSubset(i, weight)
             sum_of_weights += weight
             previous_threshold = indexed_values[r].value
             previous_r = r
@@ -724,7 +724,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                             refinement.comparator = Comparator.LEQ
                             refinement.threshold = (previous_threshold + current_threshold) / 2.0
 
-                    # Reset the search in case of a nominal feature, as the previous examples will not be covered by the
+                    # Reset the subset in case of a nominal feature, as the previous examples will not be covered by the
                     # next condition...
                     if nominal:
                         statistics_subset_ptr.get().resetSearch()
@@ -734,8 +734,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 previous_threshold = current_threshold
                 previous_r = r
 
-                # Tell the search that the example will be covered by upcoming refinements...
-                statistics_subset_ptr.get().updateSearch(i, weight)
+                # Add the example to the subset to mark it as covered by upcoming refinements...
+                statistics_subset_ptr.get().addToSubset(i, weight)
                 sum_of_weights += weight
                 accumulated_sum_of_weights += weight
 
@@ -788,7 +788,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     # examples with sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate
     # these examples from the ones that have already been iterated...
     if total_accumulated_sum_of_weights > 0 and total_accumulated_sum_of_weights < total_sum_of_weights:
-        # If the feature is nominal, we must reset the search once again to ensure that the accumulated state includes
+        # If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
         # all examples that have been processed so far...
         if nominal:
             statistics_subset_ptr.get().resetSearch()
@@ -1204,7 +1204,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
 
     for r in range(num_statistics):
         if covered_statistics_mask[r] == covered_statistics_target:
-            statistics_subset_ptr.get().updateSearch(r, 1)
+            statistics_subset_ptr.get().addToSubset(r, 1)
             prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
             updated_scores = prediction.predictedScores_
 

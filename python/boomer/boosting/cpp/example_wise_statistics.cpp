@@ -43,7 +43,7 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     delete prediction_;
 }
 
-void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
+void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
     // Add the gradients and Hessians of the example at the given index (weighted by the given weight) to the current
     // sum of gradients and Hessians...
     uint32 numLabels = statistics_->getNumCols();

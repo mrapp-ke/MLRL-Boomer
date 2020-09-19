@@ -26,7 +26,7 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     delete prediction_;
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
     AbstractRandomAccessLabelMatrix* labelMatrix = statistics_->labelMatrixPtr_.get();
     uint32 numLabels = labelMatrix->getNumCols();
     uint32 offset = statisticIndex * numLabels;

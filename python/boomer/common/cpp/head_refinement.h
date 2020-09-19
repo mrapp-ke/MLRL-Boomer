@@ -24,7 +24,7 @@ class AbstractHeadRefinement {
          * `AbstractStatisticsSubset`.
          *
          * The given object of type `AbstractStatisticsSubset` must have been prepared properly via calls to the
-         * function `AbstractStatisticsSubset#updateSearch`.
+         * function `AbstractStatisticsSubset#addToSubset`.
          *
          * @param bestHead          A pointer to an object of type `PredictionCandidate` that corresponds to the best
          *                          rule known so far (as found in the previous or current refinement iteration) or
@@ -38,12 +38,12 @@ class AbstractHeadRefinement {
          *                          predict for all labels
          * @param statisticsSubset  A pointer to an object of type `AbstractStatisticsSubset` to be used for calculating
          *                          predictions and corresponding quality scores
-         * @param uncovered         False, if the rule for which the head should be found covers all examples that have
-         *                          been provided to the `AbstractStatisticsSubset` so far, True, if the rule covers all
-         *                          examples that have not been provided yet
-         * @param accumulated       False, if the rule covers all examples that have been provided since the
+         * @param uncovered         False, if the rule for which the head should be found covers all statistics that
+         *                          have been added to the `AbstractStatisticsSubset` so far, True, if the rule covers
+         *                          all statistics that have not been added yet
+         * @param accumulated       False, if the rule covers all statistics that have been added since the
          *                          `AbstractStatisticsSubset` has been reset for the last time, True, if the rule
-         *                          covers all examples that have been provided so far
+         *                          covers all statistics that have been added so far
          * @return                  A pointer to an object of type 'PredictionCandidate' that stores information about
          *                          the head that has been found, if the head is better than `bestHead`, NULL otherwise
          */
@@ -56,16 +56,16 @@ class AbstractHeadRefinement {
          * according to a `AbstractStatisticsSubset`.
          *
          * The given object of type `AbstractStatisticsSubset` must have been prepared properly via calls to the
-         * function `AbstractStatisticsSubset#updateSearch`.
+         * function `AbstractStatisticsSubset#addToSubset`.
          *
          * @param statisticsSubset  A pointer to an object of type `AbstractStatisticsSubset` to be used for calculating
          *                          predictions and corresponding quality scores
          * @param uncovered         False, if the rule for which the optimal scores should be calculated covers all
-         *                          examples that have been provided to the `AbstractStatisticsSubset` so far, True, if
-         *                          the rule covers all examples that have not been provided yet
-         * @param accumulated       False, if the rule covers all examples that have been provided since the
+         *                          statistics that have been added to the `AbstractStatisticsSubset` so far, True, if
+         *                          the rule covers all statistics that have not been added yet
+         * @param accumulated       False, if the rule covers all examples that have been added since the
          *                          `AbstractStatisticsSubset` has been reset for the last time, True, if the rule
-         *                          covers all examples that have been  provided so far
+         *                          covers all examples that have been added so far
          * @return                  A pointer to an object of type `PredictionCandidate` that stores the optimal scores
          *                          to be predicted by the rule, as well as its overall quality score
          */

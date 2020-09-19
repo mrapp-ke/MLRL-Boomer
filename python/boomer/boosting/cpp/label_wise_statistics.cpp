@@ -30,7 +30,7 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     delete prediction_;
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the current sum of gradients and Hessians...
     uint32 offset = statisticIndex * statistics_->getNumCols();
