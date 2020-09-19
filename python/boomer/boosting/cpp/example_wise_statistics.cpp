@@ -203,8 +203,8 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticInde
     }
 }
 
-AbstractStatisticsSubset* DenseExampleWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
-                                                                      const uint32* labelIndices) {
+AbstractStatisticsSubset* DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
+                                                                       const uint32* labelIndices) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl(this, numPredictions, labelIndices);
