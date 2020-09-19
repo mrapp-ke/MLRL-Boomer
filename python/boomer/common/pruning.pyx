@@ -97,7 +97,7 @@ cdef class IREP(Pruning):
                 statistics.addSampledStatistic(i, 1)
 
                 if covered_examples_mask[i] == covered_examples_target:
-                    statistics_subset_ptr.get().updateSearch(i, 1)
+                    statistics_subset_ptr.get().addToSubset(i, 1)
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
@@ -162,7 +162,7 @@ cdef class IREP(Pruning):
 
                 # We must only consider examples that are currently covered and contained in the prune set...
                 if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
-                    statistics_subset_ptr.get().updateSearch(i, 1)
+                    statistics_subset_ptr.get().addToSubset(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...

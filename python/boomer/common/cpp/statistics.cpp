@@ -5,7 +5,7 @@ AbstractStatisticsSubset::~AbstractStatisticsSubset() {
 
 }
 
-void AbstractStatisticsSubset::updateSearch(uint32 statisticIndex, uint32 weight) {
+void AbstractStatisticsSubset::addToSubset(uint32 statisticIndex, uint32 weight) {
 
 }
 

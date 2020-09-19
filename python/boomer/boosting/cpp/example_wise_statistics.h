@@ -109,7 +109,7 @@ namespace boosting {
 
                     ~StatisticsSubsetImpl();
 
-                    void updateSearch(uint32 statisticIndex, uint32 weight) override;
+                    void addToSubset(uint32 statisticIndex, uint32 weight) override;
 
                     void resetSearch() override;
 

@@ -13,7 +13,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         # Functions:
 
-        void updateSearch(uint32 statisticIndex, uint32 weight)
+        void addToSubset(uint32 statisticIndex, uint32 weight)
 
         void resetSearch()
 
