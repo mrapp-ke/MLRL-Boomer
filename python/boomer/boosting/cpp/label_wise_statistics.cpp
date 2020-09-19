@@ -5,7 +5,7 @@
 using namespace boosting;
 
 
-DenseLabelWiseStatisticsImpl::RefinementSearchImpl::RefinementSearchImpl(DenseLabelWiseStatisticsImpl* statistics,
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices) {
     statistics_ = statistics;
@@ -22,7 +22,7 @@ DenseLabelWiseStatisticsImpl::RefinementSearchImpl::RefinementSearchImpl(DenseLa
     prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
 }
 
-DenseLabelWiseStatisticsImpl::RefinementSearchImpl::~RefinementSearchImpl() {
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(sumsOfGradients_);
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
@@ -30,7 +30,7 @@ DenseLabelWiseStatisticsImpl::RefinementSearchImpl::~RefinementSearchImpl() {
     delete prediction_;
 }
 
-void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::updateSearch(uint32 statisticIndex, uint32 weight) {
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the current sum of gradients and Hessians...
     uint32 offset = statisticIndex * statistics_->getNumCols();
@@ -43,7 +43,7 @@ void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::updateSearch(uint32 sta
     }
 }
 
-void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::resetSearch() {
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSearch() {
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
     if (accumulatedSumsOfGradients_ == NULL) {
         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
@@ -62,7 +62,7 @@ void DenseLabelWiseStatisticsImpl::RefinementSearchImpl::resetSearch() {
     }
 }
 
-LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::RefinementSearchImpl::calculateLabelWisePrediction(
+LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -133,11 +133,11 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
     }
 }
 
-AbstractRefinementSearch* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
+AbstractStatisticsSubset* DenseLabelWiseStatisticsImpl::beginSearch(uint32 numLabelIndices,
                                                                     const uint32* labelIndices) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new DenseLabelWiseStatisticsImpl::RefinementSearchImpl(this, numPredictions, labelIndices);
+    return new DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl(this, numPredictions, labelIndices);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {

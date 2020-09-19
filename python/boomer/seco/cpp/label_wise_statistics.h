@@ -48,7 +48,7 @@ namespace seco {
     };
 
     /**
-     * Allows to store the elements of confusion matrices that are computed independently for each label using dense
+     * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
      */
     class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
@@ -56,10 +56,10 @@ namespace seco {
         private:
 
             /**
-             * Allows to search for the best refinement of a rule based on the confusion matrices previously stored by
-             * an object of type `DenseLabelWiseStatisticsImpl`.
+             * Provides access to a subset of the confusion matrices that are stored by an instance of the class
+             * `DenseLabelWiseStatisticsImpl`.
              */
-            class RefinementSearchImpl : public AbstractDecomposableRefinementSearch {
+            class StatisticsSubsetImpl : public AbstractDecomposableStatisticsSubset {
 
                 private:
 
@@ -85,10 +85,10 @@ namespace seco {
                      *                          indices of the labels that should be considered by the search or NULL,
                      *                          if all labels should be considered
                      */
-                    RefinementSearchImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
-                    ~RefinementSearchImpl();
+                    ~StatisticsSubsetImpl();
 
                     void updateSearch(uint32 statisticIndex, uint32 weight) override;
 
@@ -138,7 +138,7 @@ namespace seco {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
+            AbstractStatisticsSubset* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 
