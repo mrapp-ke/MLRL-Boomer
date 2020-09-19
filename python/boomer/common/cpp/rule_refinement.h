@@ -61,7 +61,7 @@ class AbstractRuleRefinement {
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  */
-class RuleRefinementImpl : public AbstractRuleRefinement {
+class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
@@ -99,11 +99,11 @@ class RuleRefinementImpl : public AbstractRuleRefinement {
          * @param featureIndex          The index of the feature, the new condition corresponds to
          * @param nominal               True, if the feature at index `featureIndex` is nominal, false otherwise
          */
-        RuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                           IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
-                           uint32 featureIndex, bool nominal);
+        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                                IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
+                                uint32 featureIndex, bool nominal);
 
-        ~RuleRefinementImpl();
+        ~ExactRuleRefinementImpl();
 
         Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
