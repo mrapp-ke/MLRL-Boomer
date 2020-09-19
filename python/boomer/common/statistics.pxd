@@ -38,7 +38,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove)
 
-        AbstractStatisticsSubset* beginSearch(uint32 numLabelIndices, const uint32* labelIndices)
+        AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices)
 
         void applyPrediction(uint32 statisticIndex, Prediction* prediction)
 

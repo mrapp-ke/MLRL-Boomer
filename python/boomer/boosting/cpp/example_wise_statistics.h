@@ -167,7 +167,7 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractStatisticsSubset* beginSearch(uint32 numLabelIndices, const uint32* labelIndices) override;
+            AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 

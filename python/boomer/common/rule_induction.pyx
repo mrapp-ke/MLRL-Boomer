@@ -136,7 +136,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for i in range(num_statistics):
                 statistics.addSampledStatistic(i, 1)
 
-            statistics_subset_ptr.reset(statistics.beginSearch(0, NULL))
+            statistics_subset_ptr.reset(statistics.createSubset(0, NULL))
             default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL, statistics_subset_ptr.get(), True,
                                                                   False))
 
@@ -486,7 +486,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
     # Start a new search based on the current statistics when processing a new feature...
     cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
-    statistics_subset_ptr.reset(statistics.beginSearch(num_label_indices, label_indices))
+    statistics_subset_ptr.reset(statistics.createSubset(num_label_indices, label_indices))
 
     # In the following, we start by processing all examples with feature values < 0...
     cdef uint32 sum_of_weights = 0
@@ -1196,7 +1196,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     cdef float64* predicted_scores = head.predictedScores_
     # Create a new, empty subset of the statistics
     cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
-    statistics_subset_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
+    statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
     # Temporary variables
     cdef Prediction* prediction
     cdef float64* updated_scores

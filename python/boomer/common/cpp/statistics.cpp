@@ -56,7 +56,7 @@ void AbstractStatistics::updateCoveredStatistic(uint32 statisticIndex, uint32 we
 
 }
 
-AbstractStatisticsSubset* AbstractStatistics::beginSearch(uint32 numLabelIndices, const uint32* labelIndices) {
+AbstractStatisticsSubset* AbstractStatistics::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
     return NULL;
 }
 
