@@ -64,7 +64,7 @@ void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 st
     }
 }
 
-void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSearch() {
+void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     uint32 numHessians = linalg::triangularNumber(numPredictions_);
 
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...

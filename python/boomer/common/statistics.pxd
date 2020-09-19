@@ -15,7 +15,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void addToSubset(uint32 statisticIndex, uint32 weight)
 
-        void resetSearch()
+        void resetSubset()
 
         LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
