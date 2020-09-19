@@ -9,7 +9,7 @@ void AbstractStatisticsSubset::addToSubset(uint32 statisticIndex, uint32 weight)
 
 }
 
-void AbstractStatisticsSubset::resetSearch() {
+void AbstractStatisticsSubset::resetSubset() {
 
 }
 

@@ -84,10 +84,10 @@ namespace boosting {
                     /**
                      * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the gradients and Hessians
-                     * @param numPredictions    The number of labels to be considered by the search
+                     * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
-                     *                          representing the indices of the labels that should be considered by the
-                     *                          search or NULL, if all labels should be considered
+                     *                          representing the indices of the labels that should be included in the
+                     *                          subset or NULL, if all labels should be included
                      */
                     StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
@@ -96,7 +96,7 @@ namespace boosting {
 
                     void addToSubset(uint32 statisticIndex, uint32 weight) override;
 
-                    void resetSearch() override;
+                    void resetSubset() override;
 
                     LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;

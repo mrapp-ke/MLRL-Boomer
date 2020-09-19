@@ -43,7 +43,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
     }
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSearch() {
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
     if (accumulatedSumsOfGradients_ == NULL) {
         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));

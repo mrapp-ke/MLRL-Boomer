@@ -45,7 +45,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
     }
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSearch() {
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     // Allocate an array for storing the accumulated confusion matrices, if necessary...
     if (accumulatedConfusionMatricesCovered_ == NULL) {
         accumulatedConfusionMatricesCovered_ =

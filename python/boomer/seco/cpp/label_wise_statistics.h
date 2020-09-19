@@ -78,11 +78,11 @@ namespace seco {
                 public:
 
                     /**
-                     * @param statistics        A pointer to an object of tyep `DenseLabelWiseStatisticsImpl` that
+                     * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the confusion matrices
-                     * @param numPredictions    The number of labels to be considered by the search
+                     * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      An array of type `uint32`, shape `(numPredictions)`, representing the
-                     *                          indices of the labels that should be considered by the search or NULL,
+                     *                          indices of the labels that should be included in the subset or NULL,
                      *                          if all labels should be considered
                      */
                     StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
@@ -92,7 +92,7 @@ namespace seco {
 
                     void addToSubset(uint32 statisticIndex, uint32 weight) override;
 
-                    void resetSearch() override;
+                    void resetSubset() override;
 
                     LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;

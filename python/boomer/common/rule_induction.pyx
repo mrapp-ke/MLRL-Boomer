@@ -582,7 +582,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                     # Reset the subset in case of a nominal feature, as the previous examples will not be covered by the
                     # next condition...
                     if nominal:
-                        statistics_subset_ptr.get().resetSearch()
+                        statistics_subset_ptr.get().resetSubset()
                         sum_of_weights = 0
                         first_r = r
 
@@ -638,7 +638,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                 refinement.threshold = previous_threshold
 
         # Reset the subset, if any examples with feature value < 0 have been processed...
-        statistics_subset_ptr.get().resetSearch()
+        statistics_subset_ptr.get().resetSubset()
 
     previous_threshold_negative = previous_threshold
     previous_r_negative = previous_r
@@ -727,7 +727,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                     # Reset the subset in case of a nominal feature, as the previous examples will not be covered by the
                     # next condition...
                     if nominal:
-                        statistics_subset_ptr.get().resetSearch()
+                        statistics_subset_ptr.get().resetSubset()
                         sum_of_weights = 0
                         first_r = r
 
@@ -791,7 +791,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
         # If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
         # all examples that have been processed so far...
         if nominal:
-            statistics_subset_ptr.get().resetSearch()
+            statistics_subset_ptr.get().resetSubset()
             first_r = num_indexed_values - 1
 
         # Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
