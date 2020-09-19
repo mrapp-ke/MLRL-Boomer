@@ -470,9 +470,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
     # TODO The following is just for testing purposes...
     cdef const uint32* weights_ptr = <const uint32*>NULL if weights is None else &weights[0]
-    cdef AbstractRuleRefinement* rule_refinement = new RuleRefinementImpl(statistics, indexed_array,
-                                                                          weights_ptr, total_sum_of_weights,
-                                                                          feature_index, nominal)
+    cdef AbstractRuleRefinement* rule_refinement = new RuleRefinementImpl(statistics, indexed_array_wrapper,
+                                                                          indexed_array, weights_ptr,
+                                                                          total_sum_of_weights, feature_index, nominal)
     cdef Refinement found_refinement = rule_refinement.findRefinement(head_refinement, head, num_label_indices,
                                                                       label_indices)
     del rule_refinement
