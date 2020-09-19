@@ -1,5 +1,5 @@
 /**
- * Implements classes that provide access to the labels of training examples.
+ * Implements classes that provide access to statistics about the labels of training examples.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
