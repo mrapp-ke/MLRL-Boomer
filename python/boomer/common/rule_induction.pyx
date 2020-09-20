@@ -51,7 +51,7 @@ cdef class RuleInduction:
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
         :param nominal_feature_set:     A pointer to an object of type `AbstractNominalFeatureSet` that allows to check
-                                        whether individual features are nominal or not or NULL, if no feature is nominal
+                                        whether individual features are nominal or not
         :param feature_matrix:          A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
                                         access to the feature values of the training examples
         :param head_refinement:         A pointer to an object of type `AbstractHeadRefinement` that should be used to
@@ -239,7 +239,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
-                    nominal = nominal_feature_set != NULL and nominal_feature_set.get(f)
+                    nominal = nominal_feature_set.get(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
                                                            total_sum_of_weights, cache_global, cache_local,
                                                            feature_matrix, covered_statistics_mask,
