@@ -143,7 +143,7 @@ class AbstractDecomposableStatisticsSubset : public AbstractStatisticsSubset {
  * An abstract base class for all classes that provide access to statistics about the labels of the training examples,
  * which serve as the basis for learning a new rule or refining an existing one.
  */
-class AbstractStatistics : public AbstractMatrix {
+class AbstractStatistics : public IMatrix {
 
     private:
 
