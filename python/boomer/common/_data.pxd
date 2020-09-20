@@ -8,10 +8,23 @@ from boomer.common._arrays cimport uint32
 
 cdef extern from "cpp/data.h" nogil:
 
-    cdef cppclass AbstractMatrix:
+    cdef cppclass BinaryDokMatrix:
+
+        # Constructors:
+
+        BinaryDokMatrix(uint32 numRows, uint32 numCols) except +
 
         # Functions:
 
-        uint32 getNumRows()
+        void set(uint32 row, uint32 column)
 
-        uint32 getNumCols()
+
+    cdef cppclass BinaryDokVector:
+
+        # Constructors:
+
+        BinaryDokVector(uint32 numElements) except +
+
+        # Functions:
+
+        void set(uint32 pos)

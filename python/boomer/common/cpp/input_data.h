@@ -7,7 +7,6 @@
 
 #include "arrays.h"
 #include "tuples.h"
-#include "sparse.h"
 #include "data.h"
 #include<stdlib.h>
 #include <memory>
@@ -16,49 +15,18 @@
 /**
  * An abstract base class for all label matrices that provide access to the labels of the training examples.
  */
-class AbstractLabelMatrix : public AbstractMatrix {
-
-    private:
-
-        uint32 numExamples_;
-
-        uint32 numLabels_;
+class AbstractLabelMatrix : virtual public IMatrix {
 
     public:
 
-        /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
-         */
-        AbstractLabelMatrix(uint32 numExamples, uint32 numLabels);
-
-        uint32 getNumRows() override;
-
-        uint32 getNumCols() override;
+        virtual ~AbstractLabelMatrix();
 
 };
 
 /**
  * An abstract base class for all label matrices that provide random access to the labels of the training examples.
  */
-class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
-
-    public:
-
-        /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
-         */
-        AbstractRandomAccessLabelMatrix(uint32 numExamples, uint32 numLabels);
-
-        /**
-         * Returns whether a specific label of the example at a given index is relevant or irrelevant.
-         *
-         * @param exampleIndex  The index of the example
-         * @param labelIndex    The index of the label
-         * @return              1, if the label is relevant, 0 otherwise
-         */
-        virtual uint8 getLabel(uint32 exampleIndex, uint32 labelIndex);
+class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix , virtual public IRandomAccessMatrix<uint8> {
 
 };
 
@@ -68,6 +36,10 @@ class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
 class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
     private:
+
+        uint32 numExamples_;
+
+        uint32 numLabels_;
 
         const uint8* y_;
 
@@ -83,7 +55,11 @@ class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
         ~DenseLabelMatrixImpl();
 
-        uint8 getLabel(uint32 exampleIndex, uint32 labelIndex) override;
+        uint8 get(uint32 row, uint32 col) override;
+
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
 };
 
@@ -100,16 +76,18 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
     public:
 
         /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
-         * @param dokMatrixPtr  A shared pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of
-         *                      the training examples
+         * @param dokMatrixPtr A shared pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of
+         *                     the training examples
          */
-        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
+        DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
 
         ~DokLabelMatrixImpl();
 
-        uint8 getLabel(uint32 exampleIndex, uint32 labelIndex) override;
+        uint8 get(uint32 row, uint32 col) override;
+
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
 };
 
@@ -117,7 +95,7 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
  * An abstract base class for all feature matrices that provide column-wise access to the feature values of the training
  * examples.
  */
-class AbstractFeatureMatrix : public AbstractMatrix {
+class AbstractFeatureMatrix : virtual public IMatrix {
 
     private:
 
@@ -132,6 +110,8 @@ class AbstractFeatureMatrix : public AbstractMatrix {
          * @param numFeatures   The number of features
          */
         AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures);
+
+        virtual ~AbstractFeatureMatrix();
 
         /**
          * Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
@@ -208,5 +188,41 @@ class CscFeatureMatrixImpl : public AbstractFeatureMatrix {
         ~CscFeatureMatrixImpl();
 
         void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+
+};
+
+/**
+ * An abstract base class for all sets that allow check whether individual features are nominal or not.
+ */
+class AbstractNominalFeatureSet : virtual public IRandomAccessVector<uint8> {
+
+    public:
+
+        virtual ~AbstractNominalFeatureSet();
+
+};
+
+/**
+ * Allows to check whether individual features are nominal or not based on a sparse vector that stores the indices of
+ * the nominal features in the dictionary of keys (DOK) format.
+ */
+class DokNominalFeatureSetImpl : public AbstractNominalFeatureSet {
+
+    private:
+
+        std::shared_ptr<BinaryDokVector> dokVectorPtr_;
+
+    public:
+
+        /**
+         * @param dokVectorPtr A shared pointer to an object of type `BinaryDokVector`, storing the nominal attributes
+         */
+        DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr);
+
+        ~DokNominalFeatureSetImpl();
+
+        uint8 get(uint32 pos) override;
+
+        uint32 getNumElements() override;
 
 };
