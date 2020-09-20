@@ -296,15 +296,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         self.num_labels_ = num_labels
 
-        # Create an array that contains the indices of all nominal attributes, if any...
-        nominal_attribute_indices = self.nominal_attribute_indices
-
-        if nominal_attribute_indices is not None and len(nominal_attribute_indices) > 0:
-            nominal_feature_set = DokNominalFeatureSet(nominal_attribute_indices)
-        else:
-            nominal_feature_set = None
-
         # Induce rules...
+        nominal_feature_set = DokNominalFeatureSet(self.nominal_attribute_indices)
         sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
         model_builder = self._create_model_builder()
         return sequential_rule_induction.induce_rules(nominal_feature_set, feature_matrix, label_matrix,
