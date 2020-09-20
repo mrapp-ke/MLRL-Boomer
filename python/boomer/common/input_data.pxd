@@ -1,15 +1,19 @@
 from boomer.common._arrays cimport uint8, uint32, float32
+from boomer.common._data cimport BinaryDokMatrix, BinaryDokVector
 from boomer.common._tuples cimport IndexedFloat32Array
-from boomer.common._data cimport AbstractMatrix
-from boomer.common._sparse cimport BinaryDokMatrix
 
 from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/input_data.h" nogil:
 
-    cdef cppclass AbstractLabelMatrix(AbstractMatrix):
-        pass
+    cdef cppclass AbstractLabelMatrix:
+
+        # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
 
 
     cdef cppclass AbstractRandomAccessLabelMatrix(AbstractLabelMatrix):
@@ -27,12 +31,16 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
+        DokLabelMatrixImpl(shared_ptr[BinaryDokMatrix] dokMatrixPtr) except +
 
 
-    cdef cppclass AbstractFeatureMatrix(AbstractMatrix):
+    cdef cppclass AbstractFeatureMatrix:
 
         # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
 
         void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray)
 
@@ -50,6 +58,20 @@ cdef extern from "cpp/input_data.h" nogil:
 
         CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
                              const uint32* xColIndices) except +
+
+
+    cdef cppclass AbstractNominalFeatureSet:
+
+        # Functions:
+
+        uint8 get(uint32 pos)
+
+
+    cdef cppclass DokNominalFeatureSetImpl(AbstractNominalFeatureSet):
+
+        # Constructors:
+
+        DokNominalFeatureSetImpl(shared_ptr[BinaryDokVector] dokVectorPtr) except +
 
 
 cdef class LabelMatrix:
@@ -83,4 +105,15 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
+    pass
+
+
+cdef class NominalFeatureSet:
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractNominalFeatureSet] nominal_feature_set_ptr
+
+
+cdef class DokNominalFeatureSet(NominalFeatureSet):
     pass
