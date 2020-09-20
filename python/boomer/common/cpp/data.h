@@ -15,8 +15,6 @@ class AbstractMatrix {
 
     public:
 
-        virtual ~AbstractMatrix();
-
         /**
          * Returns the number of rows in the matrix.
          *
@@ -58,8 +56,6 @@ class AbstractRandomAccessMatrix : virtual public AbstractMatrix {
 class AbstractVector {
 
     public:
-
-        virtual ~AbstractVector();
 
         /**
          * Returns the number of elements in the vector.
