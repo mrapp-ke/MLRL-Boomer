@@ -10,6 +10,8 @@ from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
 from boomer.common.head_refinement cimport AbstractHeadRefinement
 
+from libcpp.memory cimport shared_ptr
+
 
 cdef class SequentialRuleInduction:
     """
