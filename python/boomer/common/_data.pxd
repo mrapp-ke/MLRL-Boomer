@@ -17,3 +17,14 @@ cdef extern from "cpp/data.h" nogil:
         # Functions:
 
         void set(uint32 row, uint32 column)
+
+
+    cdef cppclass BinaryDokVector:
+
+        # Constructors:
+
+        BinaryDokVector(uint32 numElements) except +
+
+        # Functions:
+
+        void set(uint32 pos)
