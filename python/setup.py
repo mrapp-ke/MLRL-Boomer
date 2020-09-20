@@ -17,7 +17,6 @@ sources = [
     '**/*.pyx',
     'boomer/common/cpp/sparse.cpp',
     'boomer/common/cpp/predictions.cpp',
-    'boomer/common/cpp/data.cpp',
     'boomer/common/cpp/input_data.cpp',
     'boomer/common/cpp/statistics.cpp',
     'boomer/common/cpp/head_refinement.cpp',

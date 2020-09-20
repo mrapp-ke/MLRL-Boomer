@@ -22,14 +22,14 @@ class AbstractMatrix {
          *
          * @return The number of rows
          */
-        virtual uint32 getNumRows();
+        virtual uint32 getNumRows() = 0;
 
         /**
          * Returns the number of columns in the matrix.
          *
          * @return The number of columns
          */
-        virtual uint32 getNumCols();
+        virtual uint32 getNumCols() = 0;
 
 };
 
@@ -37,7 +37,7 @@ class AbstractMatrix {
  * An abstract base class for all two-dimensional matrices that provide random access to their elements.
  */
 template<class T>
-class AbstractRandomAccessMatrix : public AbstractMatrix {
+class AbstractRandomAccessMatrix : virtual public AbstractMatrix {
 
     public:
 
@@ -48,7 +48,7 @@ class AbstractRandomAccessMatrix : public AbstractMatrix {
          * @param col   The column of the element to be returned
          * @return      The element at the given position
          */
-        virtual T get(uint32 row, uint32 col);
+        virtual T get(uint32 row, uint32 col) = 0;
 
 };
 
@@ -66,7 +66,7 @@ class AbstractVector {
          *
          * @return The number of elements
          */
-        virtual uint32 getNumElements();
+        virtual uint32 getNumElements() = 0;
 
 };
 
@@ -74,7 +74,7 @@ class AbstractVector {
  * An abstract base class for all one-dimensional vectors that provide random access to their elements.
  */
 template<class T>
-class AbstractRandomAccessVector : public AbstractVector {
+class AbstractRandomAccessVector : virtual public AbstractVector {
 
     public:
 
@@ -84,6 +84,6 @@ class AbstractRandomAccessVector : public AbstractVector {
          * @param pos   The position of the element to be returned
          * @return      The element at the given position
          */
-        virtual T get(uint32 pos);
+        virtual T get(uint32 pos) = 0;
 
 };
