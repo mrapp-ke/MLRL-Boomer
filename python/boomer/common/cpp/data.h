@@ -35,7 +35,7 @@ class AbstractMatrix {
  * An abstract base class for all two-dimensional matrices that provide random access to their elements.
  */
 template<class T>
-class AbstractRandomAccessMatrix : virtual public AbstractMatrix {
+class AbstractRandomAccessMatrix : public AbstractMatrix {
 
     public:
 
@@ -70,7 +70,7 @@ class AbstractVector {
  * An abstract base class for all one-dimensional vectors that provide random access to their elements.
  */
 template<class T>
-class AbstractRandomAccessVector : virtual public AbstractVector {
+class AbstractRandomAccessVector : public AbstractVector {
 
     public:
 
