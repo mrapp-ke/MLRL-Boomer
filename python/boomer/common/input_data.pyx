@@ -48,8 +48,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
-        cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr
-        cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix(num_examples, num_labels)
+        cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr = make_shared[BinaryDokMatrix](num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
@@ -58,9 +57,8 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                dok_matrix.set(r, c)
+                dok_matrix_ptr.get().set(r, c)
 
-        dok_matrix_ptr.reset(dok_matrix)
         self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](dok_matrix_ptr)
 
 
