@@ -23,7 +23,7 @@ AbstractRandomAccessLabelMatrix::AbstractRandomAccessLabelMatrix(uint32 numExamp
 
 }
 
-uint8 AbstractRandomAccessLabelMatrix::getLabel(uint32 exampleIndex, uint32 labelIndex) {
+uint8 AbstractRandomAccessLabelMatrix::get(uint32 row, uint32 col) {
     return 0;
 }
 
@@ -36,8 +36,8 @@ DenseLabelMatrixImpl::~DenseLabelMatrixImpl() {
 
 }
 
-uint8 DenseLabelMatrixImpl::getLabel(uint32 exampleIndex, uint32 labelIndex) {
-    uint32 i = (exampleIndex * this->getNumCols()) + labelIndex;
+uint8 DenseLabelMatrixImpl::get(uint32 row, uint32 col) {
+    uint32 i = (row * this->getNumCols()) + col;
     return y_[i];
 }
 
@@ -51,8 +51,8 @@ DokLabelMatrixImpl::~DokLabelMatrixImpl() {
 
 }
 
-uint8 DokLabelMatrixImpl::getLabel(uint32 exampleIndex, uint32 labelIndex) {
-    return dokMatrixPtr_.get()->getValue(exampleIndex, labelIndex);
+uint8 DokLabelMatrixImpl::get(uint32 row, uint32 col) {
+    return dokMatrixPtr_.get()->getValue(row, col);
 }
 
 AbstractFeatureMatrix::AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures) {
