@@ -12,7 +12,7 @@ cdef extern from "cpp/sparse.h" nogil:
 
         # Constructors:
 
-        BinaryDokMatrix() except +
+        BinaryDokMatrix(uint32 numRows, uint32 numCols) except +
 
         # Functions:
 

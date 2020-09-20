@@ -29,9 +29,19 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
     private:
 
+        uint32 numRows_;
+
+        uint32 numCols_;
+
         std::unordered_set<std::pair<uint32, uint32>, PairHash> data_;
 
     public:
+
+        /**
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
+         */
+        BinaryDokMatrix(uint32 numRows, uint32 numCols);
 
         /**
          * Sets the element at a specific position to a non-zero value.
@@ -43,6 +53,10 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
         uint8 get(uint32 row, uint32 col) override;
 
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
+
 };
 
 /**
@@ -52,9 +66,16 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
 
     private:
 
+        uint32 numElements_;
+
         std::unordered_set<uint32> data_;
 
     public:
+
+        /**
+         * @param numElements The number of elements in the vector
+         */
+        BinaryDokVector(uint32 numElements);
 
         /**
          * Sets the element at a specific position to non-zero value.
@@ -63,12 +84,8 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
          */
         void set(uint32 pos);
 
-        /**
-         * Returns the element at a specific position.
-         *
-         * @param pos   The position of the element to be returned
-         * @return      The element at the given position
-         */
         uint8 get(uint32 pos) override;
+
+        uint32 getNumElements() override;
 
 };
