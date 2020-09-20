@@ -13,6 +13,6 @@ void BinaryDokVector::addValue(uint32 pos) {
     data_.insert(pos);
 }
 
-uint8 BinaryDokVector::getValue(uint32 pos) {
+uint8 BinaryDokVector::get(uint32 pos) {
     return data_.find(pos) != data_.end();
 }
