@@ -1,4 +1,4 @@
-#include "sparse.h"
+#include "data.h"
 
 
 BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols) {

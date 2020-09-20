@@ -6,7 +6,7 @@ Provides implementations of sparse matrices.
 from boomer.common._arrays cimport uint32
 
 
-cdef extern from "cpp/sparse.h" nogil:
+cdef extern from "cpp/data.h" nogil:
 
     cdef cppclass BinaryDokMatrix:
 
