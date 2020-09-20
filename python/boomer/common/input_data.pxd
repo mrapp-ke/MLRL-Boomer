@@ -106,3 +106,14 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
 
 cdef class CscFeatureMatrix(FeatureMatrix):
     pass
+
+
+cdef class NominalFeatureSet:
+
+    # Attributes:
+
+    cdef shared_ptr[AbstractNominalFeatureSet] nominal_feature_set_ptr
+
+
+cdef class DokNominalFeatureSet(NominalFeatureSet):
+    pass
