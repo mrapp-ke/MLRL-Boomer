@@ -1,8 +1,8 @@
-from boomer.common._arrays cimport uint8, uint32, intp, float32
+from boomer.common._arrays cimport uint32, intp, float32
 from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
-from boomer.common.input_data cimport AbstractFeatureMatrix
+from boomer.common.input_data cimport AbstractFeatureMatrix, AbstractNominalFeatureSet
 from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
@@ -30,7 +30,7 @@ cdef class RuleInduction:
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
                                   ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
                           AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
@@ -49,7 +49,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
                                   ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
                           AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
