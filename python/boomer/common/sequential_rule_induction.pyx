@@ -116,7 +116,7 @@ cdef class SequentialRuleInduction:
         rule_induction.induce_default_rule(statistics_provider, head_refinement_ptr.get(), model_builder)
 
         # Induce the remaining rules...
-        head_refinement_ptr.reset(head_refinement.head_refinement_ptr)
+        head_refinement_ptr = head_refinement.head_refinement_ptr
         cdef shared_ptr[AbstractFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
         cdef shared_ptr[AbstractNominalFeatureSet] nominal_feature_set_ptr = nominal_feature_set.nominal_feature_set_ptr
 
