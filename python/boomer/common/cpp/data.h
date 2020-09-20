@@ -32,3 +32,21 @@ class AbstractMatrix {
         virtual uint32 getNumCols();
 
 };
+
+/**
+ * An abstract base class for all one-dimensional vectors.
+ */
+class AbstractVector {
+
+    public:
+
+        virtual AbstractVector();
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements
+         */
+        virtual uint32 getNumElements();
+
+};
