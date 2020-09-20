@@ -7,7 +7,6 @@
 
 #include "arrays.h"
 #include "tuples.h"
-#include "sparse.h"
 #include "data.h"
 #include<stdlib.h>
 #include <memory>

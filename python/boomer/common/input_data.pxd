@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint8, uint32, float32
+from boomer.common._data cimport BinaryDokMatrix
 from boomer.common._tuples cimport IndexedFloat32Array
-from boomer.common._sparse cimport BinaryDokMatrix
 
 from libcpp.memory cimport shared_ptr
 
