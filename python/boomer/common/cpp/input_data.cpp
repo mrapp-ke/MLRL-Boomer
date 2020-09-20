@@ -1,30 +1,13 @@
 #include "input_data.h"
 
 
-AbstractLabelMatrix::AbstractLabelMatrix(uint32 numExamples, uint32 numLabels) {
+AbstractLabelMatrix::~AbstractLabelMatrix() {
+
+}
+
+DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) {
     numExamples_ = numExamples;
     numLabels_ = numLabels;
-}
-
-uint32 AbstractLabelMatrix::getNumRows() {
-    return numExamples_;
-}
-
-uint32 AbstractLabelMatrix::getNumCols() {
-    return numLabels_;
-}
-
-AbstractRandomAccessLabelMatrix::AbstractRandomAccessLabelMatrix(uint32 numExamples, uint32 numLabels)
-    : AbstractLabelMatrix(numExamples, numLabels) {
-
-}
-
-uint8 AbstractRandomAccessLabelMatrix::getLabel(uint32 exampleIndex, uint32 labelIndex) {
-    return 0;
-}
-
-DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y)
-    : AbstractRandomAccessLabelMatrix(numExamples, numLabels) {
     y_ = y;
 }
 
@@ -32,14 +15,20 @@ DenseLabelMatrixImpl::~DenseLabelMatrixImpl() {
 
 }
 
-uint8 DenseLabelMatrixImpl::getLabel(uint32 exampleIndex, uint32 labelIndex) {
-    uint32 i = (exampleIndex * this->getNumCols()) + labelIndex;
+uint32 DenseLabelMatrixImpl::getNumRows() {
+    return numExamples_;
+}
+
+uint32 DenseLabelMatrixImpl::getNumCols() {
+    return numLabels_;
+}
+
+uint8 DenseLabelMatrixImpl::get(uint32 row, uint32 col) {
+    uint32 i = (row * this->getNumCols()) + col;
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels,
-                                       std::shared_ptr<BinaryDokMatrix> dokMatrixPtr)
-    : AbstractRandomAccessLabelMatrix(numExamples, numLabels) {
+DokLabelMatrixImpl::DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatrixPtr) {
     dokMatrixPtr_ = dokMatrixPtr;
 }
 
@@ -47,13 +36,25 @@ DokLabelMatrixImpl::~DokLabelMatrixImpl() {
 
 }
 
-uint8 DokLabelMatrixImpl::getLabel(uint32 exampleIndex, uint32 labelIndex) {
-    return dokMatrixPtr_.get()->getValue(exampleIndex, labelIndex);
+uint32 DokLabelMatrixImpl::getNumRows() {
+    return dokMatrixPtr_.get()->getNumRows();
+}
+
+uint32 DokLabelMatrixImpl::getNumCols() {
+    return dokMatrixPtr_.get()->getNumCols();
+}
+
+uint8 DokLabelMatrixImpl::get(uint32 row, uint32 col) {
+    return dokMatrixPtr_.get()->get(row, col);
 }
 
 AbstractFeatureMatrix::AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures) {
     numExamples_ = numExamples;
     numFeatures_ = numFeatures;
+}
+
+AbstractFeatureMatrix::~AbstractFeatureMatrix() {
+
 }
 
 uint32 AbstractFeatureMatrix::getNumRows() {
@@ -137,4 +138,24 @@ void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Indexed
     // Update the given struct...
     indexedArray->numElements = numElements;
     indexedArray->data = sortedArray;
+}
+
+AbstractNominalFeatureSet::~AbstractNominalFeatureSet() {
+
+}
+
+DokNominalFeatureSetImpl::DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr) {
+    dokVectorPtr_ = dokVectorPtr;
+}
+
+DokNominalFeatureSetImpl::~DokNominalFeatureSetImpl() {
+
+}
+
+uint8 DokNominalFeatureSetImpl::get(uint32 pos) {
+    return dokVectorPtr_.get()->get(pos);
+}
+
+uint32 DokNominalFeatureSetImpl::getNumElements() {
+    return dokVectorPtr_.get()->getNumElements();
 }
