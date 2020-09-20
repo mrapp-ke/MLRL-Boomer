@@ -48,7 +48,7 @@ DokLabelMatrixImpl::~DokLabelMatrixImpl() {
 }
 
 uint8 DokLabelMatrixImpl::get(uint32 row, uint32 col) {
-    return dokMatrixPtr_.get()->getValue(row, col);
+    return dokMatrixPtr_.get()->get(row, col);
 }
 
 AbstractFeatureMatrix::AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures) {
