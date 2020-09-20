@@ -121,15 +121,17 @@ cdef class DokNominalFeatureSet(NominalFeatureSet):
     """
 
     """
-    :param nominal_feature_indices: A list which contains the indices of all nominal features
+    :param nominal_feature_indices: A list which contains the indices of all nominal features or None, if no nominal
+                                    features are available
     """
     def __cinit__(self, list nominal_feature_indices):
-        cdef uint32 num_nominal_features = len(nominal_feature_indices)
+        cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
         cdef shared_ptr[BinaryDokVector] dok_vector_ptr = make_shared[BinaryDokVector](num_nominal_features)
         cdef uint32 i
 
-        for i in nominal_feature_indices:
-            dok_vector_ptr.get().set(i)
+        if num_nominal_features > 0:
+            for i in nominal_feature_indices:
+                dok_vector_ptr.get().set(i)
 
         self.nominal_feature_set_ptr = <shared_ptr[AbstractNominalFeatureSet]>make_shared[DokNominalFeatureSetImpl](
             dok_vector_ptr)
