@@ -12,3 +12,11 @@ uint32 AbstractMatrix::getNumRows() {
 uint32 AbstractMatrix::getNumCols() {
     return 0;
 }
+
+AbstractVector::~AbstractVector() {
+
+}
+
+uint32 AbstractVector::getNumElements() {
+    return 0;
+}
