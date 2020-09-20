@@ -6,6 +6,10 @@ AbstractLabelMatrix::AbstractLabelMatrix(uint32 numExamples, uint32 numLabels) {
     numLabels_ = numLabels;
 }
 
+AbstractLabelMatrix::~AbstractLabelMatrix() {
+
+}
+
 uint32 AbstractLabelMatrix::getNumRows() {
     return numExamples_;
 }
@@ -54,6 +58,10 @@ uint8 DokLabelMatrixImpl::getLabel(uint32 exampleIndex, uint32 labelIndex) {
 AbstractFeatureMatrix::AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures) {
     numExamples_ = numExamples;
     numFeatures_ = numFeatures;
+}
+
+AbstractFeatureMatrix::~AbstractFeatureMatrix() {
+
 }
 
 uint32 AbstractFeatureMatrix::getNumRows() {

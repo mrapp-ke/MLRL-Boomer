@@ -32,6 +32,8 @@ class AbstractLabelMatrix : public AbstractMatrix {
          */
         AbstractLabelMatrix(uint32 numExamples, uint32 numLabels);
 
+        virtual ~AbstractLabelMatrix();
+
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
@@ -132,6 +134,8 @@ class AbstractFeatureMatrix : public AbstractMatrix {
          * @param numFeatures   The number of features
          */
         AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures);
+
+        virtual ~AbstractFeatureMatrix();
 
         /**
          * Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts

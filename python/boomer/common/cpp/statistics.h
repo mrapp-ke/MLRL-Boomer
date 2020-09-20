@@ -158,6 +158,8 @@ class AbstractStatistics : public AbstractMatrix {
          */
         AbstractStatistics(uint32 numStatistics, uint32 numLabels);
 
+        virtual ~AbstractStatistics();
+
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
