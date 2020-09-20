@@ -34,6 +34,25 @@ class AbstractMatrix {
 };
 
 /**
+ * An abstract base class for all two-dimensional matrices that provide random access to their elements.
+ */
+template<class T>
+class AbstractRandomAccessMatrix : public AbstractMatrix {
+
+    public:
+
+        /**
+         * Returns the element at a specific position.
+         *
+         * @param row   The row of the element to be returned
+         * @param col   The column of the element to be returned
+         * @return      The element at the given position
+         */
+        virtual T get(uint32 row, uint32 col);
+
+};
+
+/**
  * An abstract base class for all one-dimensional vectors.
  */
 class AbstractVector {
