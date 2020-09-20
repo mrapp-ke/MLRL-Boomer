@@ -23,10 +23,6 @@ AbstractRandomAccessLabelMatrix::AbstractRandomAccessLabelMatrix(uint32 numExamp
 
 }
 
-uint8 AbstractRandomAccessLabelMatrix::get(uint32 row, uint32 col) {
-    return 0;
-}
-
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y)
     : AbstractRandomAccessLabelMatrix(numExamples, numLabels) {
     y_ = y;

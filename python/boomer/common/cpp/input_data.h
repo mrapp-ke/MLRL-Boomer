@@ -43,7 +43,7 @@ class AbstractLabelMatrix : virtual public IMatrix {
 /**
  * An abstract base class for all label matrices that provide random access to the labels of the training examples.
  */
-class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
+class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix , virtual public IRandomAccessMatrix<uint8> {
 
     public:
 
@@ -52,15 +52,6 @@ class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix {
          * @param numLabels     The number of labels
          */
         AbstractRandomAccessLabelMatrix(uint32 numExamples, uint32 numLabels);
-
-        /**
-         * Returns whether a specific label of the example at a given index is relevant or irrelevant.
-         *
-         * @param row   The index of the example
-         * @param col   The index of the label
-         * @return      1, if the label is relevant, 0 otherwise
-         */
-        virtual uint8 get(uint32 row, uint32 col);
 
 };
 
