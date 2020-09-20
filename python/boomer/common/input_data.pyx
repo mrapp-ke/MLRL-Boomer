@@ -49,7 +49,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
                                 the column indices of all non-zero labels
         """
         cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr
-        cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix()
+        cdef BinaryDokMatrix* dok_matrix = new BinaryDokMatrix(num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
