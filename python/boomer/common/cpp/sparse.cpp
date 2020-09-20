@@ -1,7 +1,7 @@
 #include "sparse.h"
 
 
-void BinaryDokMatrix::addValue(uint32 row, uint32 column) {
+void BinaryDokMatrix::set(uint32 row, uint32 column) {
     data_.insert(std::make_pair(row, column));
 }
 

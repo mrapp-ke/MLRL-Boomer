@@ -16,4 +16,4 @@ cdef extern from "cpp/sparse.h" nogil:
 
         # Functions:
 
-        void addValue(uint32 row, uint32 column)
+        void set(uint32 row, uint32 column)

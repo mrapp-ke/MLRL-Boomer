@@ -39,7 +39,7 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
          * @param row       The row of the element to be set
          * @param column    The column of the element to be set
          */
-        void addValue(uint32 row, uint32 column);
+        void set(uint32 row, uint32 column);
 
         uint8 get(uint32 row, uint32 col) override;
 
