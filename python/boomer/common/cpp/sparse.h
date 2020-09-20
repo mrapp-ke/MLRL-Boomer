@@ -49,3 +49,30 @@ class BinaryDokMatrix {
         uint8 getValue(uint32 row, uint32 column);
 
 };
+
+/**
+ * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
+ */
+class BinaryDokVector {
+
+    private:
+
+        std::unordered_set<uint32> data_;
+
+    public:
+
+        /**
+         * Sets the element at a specific position to non-zero value.
+         *
+         * @param pos The position of the element to be set
+         */
+        void addValue(uint32 pos);
+
+        /**
+         * Returns the element at a specific position.
+         *
+         * @param pos The position of the element to be returned
+         */
+        uint8 getValue(uint32 pos);
+
+};
