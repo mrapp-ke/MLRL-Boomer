@@ -31,7 +31,7 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, shared_ptr[BinaryDokMatrix] dokMatrix) except +
+        DokLabelMatrixImpl(shared_ptr[BinaryDokMatrix] dokMatrix) except +
 
 
     cdef cppclass AbstractFeatureMatrix:

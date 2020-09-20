@@ -61,9 +61,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
                 dok_matrix.set(r, c)
 
         dok_matrix_ptr.reset(dok_matrix)
-        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](num_examples,
-                                                                                                 num_labels,
-                                                                                                 dok_matrix_ptr)
+        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](dok_matrix_ptr)
 
 
 cdef class FeatureMatrix:
