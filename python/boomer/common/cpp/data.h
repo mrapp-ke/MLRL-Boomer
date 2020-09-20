@@ -35,7 +35,7 @@ class IMatrix {
  * Defines an interface for all two-dimensional matrices that provide random access to their elements.
  */
 template<class T>
-class IRandomAccessMatrix : public IMatrix {
+class IRandomAccessMatrix : virtual public IMatrix {
 
     public:
 
@@ -70,7 +70,7 @@ class IVector {
  * Defines an interface for all one-dimensional vectors that provide random access to their elements.
  */
 template<class T>
-class IRandomAccessVector : public IVector {
+class IRandomAccessVector : virtual public IVector {
 
     public:
 
