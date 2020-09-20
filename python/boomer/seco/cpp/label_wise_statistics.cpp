@@ -37,7 +37,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
         // Only uncovered labels must be considered...
         if (statistics_->uncoveredLabels_[offset + l] > 0) {
             // Add the current example and label to the confusion matrix for the current label...
-            uint8 trueLabel = labelMatrix->getLabel(statisticIndex, l);
+            uint8 trueLabel = labelMatrix->get(statisticIndex, l);
             uint8 predictedLabel = statistics_->minorityLabels_[l];
             uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
             confusionMatricesCovered_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += weight;
@@ -130,7 +130,7 @@ void DenseLabelWiseStatisticsImpl::addSampledStatistic(uint32 statisticIndex, ui
         // Only uncovered labels must be considered...
         if (labelWeight > 0) {
             // Add the current example and label to the confusion matrix that corresponds to the current label...
-            uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, c);
+            uint8 trueLabel = labelMatrixPtr_.get()->get(statisticIndex, c);
             uint8 predictedLabel = minorityLabels_[c];
             uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
             uint32 i = c * NUM_CONFUSION_MATRIX_ELEMENTS + element;
@@ -158,7 +158,7 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
         // Only uncovered labels must be considered...
         if (labelWeight > 0) {
             // Add the current example and label to the confusion matrix that corresponds to the current label...
-            uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, c);
+            uint8 trueLabel = labelMatrixPtr_.get()->get(statisticIndex, c);
             uint8 predictedLabel = minorityLabels_[c];
             uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
             confusionMatricesSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += signedWeight;
@@ -192,7 +192,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
             float64 labelWeight = uncoveredLabels_[i];
 
             if (labelWeight > 0) {
-                uint8 trueLabel = labelMatrixPtr_.get()->getLabel(statisticIndex, l);
+                uint8 trueLabel = labelMatrixPtr_.get()->get(statisticIndex, l);
 
                 // Decrement the total sum of uncovered labels, if the prediction for the current example and label is
                 // correct...
@@ -246,7 +246,7 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
         uint32 numPositiveLabels = 0;
 
         for (uint32 r = 0; r < numExamples; r++) {
-            uint8 trueLabel = labelMatrix->getLabel(r, c);
+            uint8 trueLabel = labelMatrix->get(r, c);
             numPositiveLabels += trueLabel;
 
             // Mark the current example and label as uncovered...
