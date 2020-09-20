@@ -108,3 +108,30 @@ cdef class CscFeatureMatrix(FeatureMatrix):
         """
         self.feature_matrix_ptr = <shared_ptr[AbstractFeatureMatrix]>make_shared[CscFeatureMatrixImpl](
             num_examples, num_features, &x_data[0], &x_row_indices[0], &x_col_indices[0])
+
+
+cdef class NominalFeatureSet:
+    """
+    A wrapper for the C++ class `AbstractNominalFeatureSet`.
+    """
+    pass
+
+
+cdef class DokNominalFeatureSet(NominalFeatureSet):
+    """
+    A wrapper for the C++ class `DokNominalFeatureSetImpl`.
+    """
+
+    """
+    :param nominal_feature_indices: A list which contains the indices of all nominal features
+    """
+    def __cinit__(self, list nominal_feature_indices):
+        cdef uint32 num_nominal_features = len(nominal_feature_indices)
+        cdef shared_ptr[BinaryDokVector] dok_vector_ptr = make_shared[BinaryDokVector](num_nominal_features)
+        cdef uint32 i
+
+        for i in nominal_feature_indices:
+            dok_vector_ptr.get().set(i)
+
+        self.nominal_feature_set_ptr = <shared_ptr[AbstractNominalFeatureSet]>make_shared[DokNominalFeatureSetImpl](
+            dok_vector_ptr)
