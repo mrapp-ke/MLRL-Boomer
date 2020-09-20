@@ -6,6 +6,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "data.h"
 #include <unordered_set>
 #include <utility>
 
@@ -24,7 +25,7 @@ struct PairHash {
 /**
  * A sparse matrix that stores binary values using the dictionary of keys (DOK) format.
  */
-class BinaryDokMatrix {
+class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
     private:
 
@@ -40,14 +41,7 @@ class BinaryDokMatrix {
          */
         void addValue(uint32 row, uint32 column);
 
-        /**
-         * Returns the element at a specific position.
-         *
-         * @param row       The row of the element to be returned
-         * @param column    The column of the element to be returned
-         * @return          The element at the given position
-         */
-        uint8 getValue(uint32 row, uint32 column);
+        uint8 get(uint32 row, uint32 col) override;
 
 };
 
