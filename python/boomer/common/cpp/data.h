@@ -40,7 +40,7 @@ class AbstractVector {
 
     public:
 
-        virtual AbstractVector();
+        virtual ~AbstractVector();
 
         /**
          * Returns the number of elements in the vector.
