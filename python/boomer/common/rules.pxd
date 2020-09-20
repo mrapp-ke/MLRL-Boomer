@@ -4,14 +4,13 @@ from boomer.common._predictions cimport Prediction
 from libcpp.list cimport list as double_linked_list
 
 
-"""
-An enum that specifies all possible types of operators used by a condition of a rule.
-"""
-cdef enum Comparator:
-    LEQ = 0
-    GR = 1
-    EQ = 2
-    NEQ = 3
+cdef extern from "cpp/rules.h" nogil:
+
+    cdef enum Comparator:
+        LEQ
+        GR
+        EQ
+        NEQ
 
 
 """
