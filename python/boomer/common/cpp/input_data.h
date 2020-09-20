@@ -17,25 +17,9 @@
  */
 class AbstractLabelMatrix : virtual public IMatrix {
 
-    private:
-
-        uint32 numExamples_;
-
-        uint32 numLabels_;
-
     public:
 
-        /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
-         */
-        AbstractLabelMatrix(uint32 numExamples, uint32 numLabels);
-
         virtual ~AbstractLabelMatrix();
-
-        uint32 getNumRows() override;
-
-        uint32 getNumCols() override;
 
 };
 
@@ -43,14 +27,6 @@ class AbstractLabelMatrix : virtual public IMatrix {
  * An abstract base class for all label matrices that provide random access to the labels of the training examples.
  */
 class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix , virtual public IRandomAccessMatrix<uint8> {
-
-    public:
-
-        /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
-         */
-        AbstractRandomAccessLabelMatrix(uint32 numExamples, uint32 numLabels);
 
 };
 
@@ -60,6 +36,10 @@ class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix , virtual pub
 class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
     private:
+
+        uint32 numExamples_;
+
+        uint32 numLabels_;
 
         const uint8* y_;
 
@@ -77,6 +57,10 @@ class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
 
         uint8 get(uint32 row, uint32 col) override;
 
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
+
 };
 
 /**
@@ -92,16 +76,18 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
     public:
 
         /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
-         * @param dokMatrixPtr  A shared pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of
-         *                      the training examples
+         * @param dokMatrixPtr A shared pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of
+         *                     the training examples
          */
-        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels, std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
+        DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
 
         ~DokLabelMatrixImpl();
 
         uint8 get(uint32 row, uint32 col) override;
+
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
 };
 
