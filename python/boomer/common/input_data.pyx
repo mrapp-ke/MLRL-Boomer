@@ -58,7 +58,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                dok_matrix.addValue(r, c)
+                dok_matrix.set(r, c)
 
         dok_matrix_ptr.reset(dok_matrix)
         self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](num_examples,
