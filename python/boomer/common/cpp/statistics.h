@@ -143,7 +143,7 @@ class AbstractDecomposableStatisticsSubset : public AbstractStatisticsSubset {
  * An abstract base class for all classes that provide access to statistics about the labels of the training examples,
  * which serve as the basis for learning a new rule or refining an existing one.
  */
-class AbstractStatistics : public AbstractMatrix {
+class AbstractStatistics : public IMatrix {
 
     private:
 
@@ -157,6 +157,8 @@ class AbstractStatistics : public AbstractMatrix {
          * @param numStatistics The number of statistics
          */
         AbstractStatistics(uint32 numStatistics, uint32 numLabels);
+
+        virtual ~AbstractStatistics();
 
         uint32 getNumRows() override;
 
