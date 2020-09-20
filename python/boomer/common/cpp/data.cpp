@@ -25,3 +25,8 @@ AbstractVector::~AbstractVector() {
 uint32 AbstractVector::getNumElements() {
     return 0;
 }
+
+template<class T>
+T AbstractRandomAccessVector<T>::get(uint32 pos) {
+    return 0;
+}

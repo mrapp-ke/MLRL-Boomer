@@ -69,3 +69,21 @@ class AbstractVector {
         virtual uint32 getNumElements();
 
 };
+
+/**
+ * An abstract base class for all one-dimensional vectors that provide random access to their elements.
+ */
+template<class T>
+class AbstractRandomAccessVector : public AbstractVector {
+
+    public:
+
+        /**
+         * Returns the element at a specific position.
+         *
+         * @param pos   The position of the element to be returned
+         * @return      The element at the given position
+         */
+        virtual T get(uint32 pos);
+
+};
