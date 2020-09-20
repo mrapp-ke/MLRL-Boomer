@@ -48,7 +48,7 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 /**
  * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector {
+class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
 
     private:
 
@@ -69,6 +69,6 @@ class BinaryDokVector {
          * @param pos   The position of the element to be returned
          * @return      The element at the given position
          */
-        uint8 getValue(uint32 pos);
+        uint8 get(uint32 pos) override;
 
 };
