@@ -190,3 +190,39 @@ class CscFeatureMatrixImpl : public AbstractFeatureMatrix {
         void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
 
 };
+
+/**
+ * An abstract base class for all sets that allow check whether individual features are nominal or not.
+ */
+class AbstractNominalFeatureSet : virtual public IRandomAccessVector<uint8> {
+
+    public:
+
+        virtual ~AbstractNominalFeatureSet();
+
+};
+
+/**
+ * Allows to check whether individual features are nominal or not based on a sparse vector that stores the indices of
+ * the nominal features in the dictionary of keys (DOK) format.
+ */
+class DokNominalFeatureSetImpl : public AbstractNominalFeatureSet {
+
+    private:
+
+        std::shared_ptr<BinaryDokVector> dokVectorPtr_;
+
+    public:
+
+        /**
+         * @param dokVectorPtr A shared pointer to an object of type `BinaryDokVector`, storing the nominal attributes
+         */
+        DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr);
+
+        ~DokNominalFeatureSetImpl();
+
+        uint8 get(uint32 pos) override;
+
+        uint32 getNumElements() override;
+
+};
