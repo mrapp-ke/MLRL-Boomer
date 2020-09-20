@@ -74,7 +74,7 @@ cdef class SequentialRuleInduction:
         Creates and returns a model that consists of several classification rules.
 
         :param nominal_feature_set: A `NominalFeatureSet` that allows to check whether individual features are nominal
-                                    or not or None, if no features are nominal
+                                    or not
         :param feature_matrix:      The `FeatureMatrix` that provides column-wise access to the feature values of the
                                     training examples
         :param label_matrix:        A `LabelMatrix` that provides access to the labels of the training examples
@@ -105,26 +105,25 @@ cdef class SequentialRuleInduction:
         cdef bint success
 
         # Induce default rule...
-        cdef AbstractHeadRefinement* head_refinement_ptr = NULL
+        cdef shared_ptr[AbstractHeadRefinement] head_refinement_ptr
 
         if default_rule_head_refinement is not None:
-            head_refinement_ptr = default_rule_head_refinement.head_refinement_ptr.get()
+            head_refinement_ptr = default_rule_head_refinement.head_refinement_ptr
 
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
-        rule_induction.induce_default_rule(statistics_provider, head_refinement_ptr, model_builder)
+        rule_induction.induce_default_rule(statistics_provider, head_refinement_ptr.get(), model_builder)
 
         # Induce the remaining rules...
-        head_refinement_ptr = head_refinement.head_refinement_ptr.get()
-        cdef AbstractFeatureMatrix* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
-        cdef AbstractNominalFeatureSet* nominal_feature_set_ptr = \
-            <AbstractNominalFeatureSet*>NULL if nominal_feature_set is None else \
-            nominal_feature_set.nominal_feature_set_ptr.get()
+        head_refinement_ptr.reset(head_refinement.head_refinement_ptr)
+        cdef shared_ptr[AbstractFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
+        cdef shared_ptr[AbstractNominalFeatureSet] nominal_feature_set_ptr = nominal_feature_set.nominal_feature_set_ptr
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            success = rule_induction.induce_rule(statistics_provider, nominal_feature_set_ptr, feature_matrix_ptr,
-                                                 head_refinement_ptr, label_sub_sampling, instance_sub_sampling,
-                                                 feature_sub_sampling, pruning, post_processor, min_coverage,
-                                                 max_conditions, max_head_refinements, num_threads, rng, model_builder)
+            success = rule_induction.induce_rule(statistics_provider, nominal_feature_set_ptr.get(),
+                                                 feature_matrix_ptr.get(), head_refinement_ptr.get(),
+                                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                                 pruning, post_processor, min_coverage, max_conditions,
+                                                 max_head_refinements, num_threads, rng, model_builder)
 
             if not success:
                 break
