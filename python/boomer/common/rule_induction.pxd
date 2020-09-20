@@ -12,17 +12,6 @@ from boomer.common.head_refinement cimport AbstractHeadRefinement
 from libcpp.unordered_map cimport unordered_map
 
 
-"""
-A struct that contains a pointer to a struct of type `IndexedFloat32Array`, representing the indices and feature values
-of the training examples that are covered by a rule. The attribute `num_conditions` specifies how many conditions the
-rule contained when the array was updated for the last time. It may be used to check if the array is still valid or must
-be updated.
-"""
-cdef struct IndexedFloat32ArrayWrapper:
-    IndexedFloat32Array* array
-    uint32 num_conditions
-
-
 cdef class RuleInduction:
 
     # Functions:
