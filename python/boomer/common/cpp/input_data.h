@@ -16,7 +16,7 @@
 /**
  * An abstract base class for all label matrices that provide access to the labels of the training examples.
  */
-class AbstractLabelMatrix : public AbstractMatrix {
+class AbstractLabelMatrix : public IMatrix {
 
     private:
 
@@ -119,7 +119,7 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
  * An abstract base class for all feature matrices that provide column-wise access to the feature values of the training
  * examples.
  */
-class AbstractFeatureMatrix : public AbstractMatrix {
+class AbstractFeatureMatrix : public IMatrix {
 
     private:
 

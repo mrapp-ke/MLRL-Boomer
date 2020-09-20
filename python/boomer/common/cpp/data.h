@@ -1,5 +1,5 @@
 /**
- * Implements classes that provide access to data that is stored in matrices or vectors.
+ * Provides interfaces and classes that provide access to data that is stored in matrices or vectors.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -9,9 +9,9 @@
 
 
 /**
- * An abstract base class for all two-dimensional matrices.
+ * Defines an interface for all two-dimensional matrices.
  */
-class AbstractMatrix {
+class IMatrix {
 
     public:
 
@@ -32,10 +32,10 @@ class AbstractMatrix {
 };
 
 /**
- * An abstract base class for all two-dimensional matrices that provide random access to their elements.
+ * Defines an interface for all two-dimensional matrices that provide random access to their elements.
  */
 template<class T>
-class AbstractRandomAccessMatrix : public AbstractMatrix {
+class IRandomAccessMatrix : public IMatrix {
 
     public:
 
@@ -51,9 +51,9 @@ class AbstractRandomAccessMatrix : public AbstractMatrix {
 };
 
 /**
- * An abstract base class for all one-dimensional vectors.
+ * Defines an interface for all one-dimensional vectors.
  */
-class AbstractVector {
+class IVector {
 
     public:
 
@@ -67,10 +67,10 @@ class AbstractVector {
 };
 
 /**
- * An abstract base class for all one-dimensional vectors that provide random access to their elements.
+ * Defines an interface for all one-dimensional vectors that provide random access to their elements.
  */
 template<class T>
-class AbstractRandomAccessVector : public AbstractVector {
+class IRandomAccessVector : public IVector {
 
     public:
 
