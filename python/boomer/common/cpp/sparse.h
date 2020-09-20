@@ -45,6 +45,7 @@ class BinaryDokMatrix {
          *
          * @param row       The row of the element to be returned
          * @param column    The column of the element to be returned
+         * @return          The element at the given position
          */
         uint8 getValue(uint32 row, uint32 column);
 
@@ -71,7 +72,8 @@ class BinaryDokVector {
         /**
          * Returns the element at a specific position.
          *
-         * @param pos The position of the element to be returned
+         * @param pos   The position of the element to be returned
+         * @return      The element at the given position
          */
         uint8 getValue(uint32 pos);
 
