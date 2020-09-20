@@ -55,7 +55,7 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
                           AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
@@ -66,8 +66,8 @@ cdef class RuleInduction:
 
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
-        :param nominal_attribute_mask:  An array of type `uint8`, shape `(num_features)`, indicating whether the feature
-                                        at a certain index is nominal (1) or not (0)
+        :param nominal_feature_set:     A pointer to an object of type `AbstractNominalFeatureSet` that allows to check
+                                        whether individual features are nominal or not or NULL, if no feature is nominal
         :param feature_matrix:          A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
                                         access to the feature values of the training examples
         :param head_refinement:         A pointer to an object of type `AbstractHeadRefinement` that should be used to
@@ -149,7 +149,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
                           AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
@@ -255,7 +255,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
-                    nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
+                    nominal = nominal_feature_set != NULL and nominal_feature_set.get(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
                                                            total_sum_of_weights, cache_global, cache_local,
                                                            feature_matrix, covered_statistics_mask,

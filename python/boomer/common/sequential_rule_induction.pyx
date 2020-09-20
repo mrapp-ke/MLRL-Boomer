@@ -4,6 +4,7 @@
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common._random cimport RNG
+from boomer.common.input_data cimport AbstractFeatureMatrix, AbstractNominalFeatureSet
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
@@ -67,19 +68,19 @@ cdef class SequentialRuleInduction:
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
 
-    cpdef RuleModel induce_rules(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix,
+    cpdef RuleModel induce_rules(self, NominalFeatureSet nominal_feature_set, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
-        :param nominal_attribute_mask:  An array of type `uint8`, shape `(num_features)`, indicating whether the feature
-                                        at a certain index is nominal (1) or not (0)
-        :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
-                                        the training examples
-        :param label_matrix:            A `LabelMatrix` that provides access to the labels of the training examples
-        :param random_state:            The seed to be used by RNGs
-        :param model_builder:           The builder that should be used to build the model
-        :return:                        A model that contains the induced classification rules
+        :param nominal_feature_set: A `NominalFeatureSet` that allows to check whether individual features are nominal
+                                    or not or None, if no features are nominal
+        :param feature_matrix:      The `FeatureMatrix` that provides column-wise access to the feature values of the
+                                    training examples
+        :param label_matrix:        A `LabelMatrix` that provides access to the labels of the training examples
+        :param random_state:        The seed to be used by RNGs
+        :param model_builder:       The builder that should be used to build the model
+        :return:                    A model that contains the induced classification rules
         """
         # Class members
         cdef StatisticsProviderFactory statistics_provider_factory = self.statistics_provider_factory
@@ -104,23 +105,26 @@ cdef class SequentialRuleInduction:
         cdef bint success
 
         # Induce default rule...
-        cdef AbstractHeadRefinement* current_head_refinement = NULL
+        cdef AbstractHeadRefinement* head_refinement_ptr = NULL
 
         if default_rule_head_refinement is not None:
-            current_head_refinement = default_rule_head_refinement.head_refinement_ptr.get()
+            head_refinement_ptr = default_rule_head_refinement.head_refinement_ptr.get()
 
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
-        rule_induction.induce_default_rule(statistics_provider, current_head_refinement, model_builder)
+        rule_induction.induce_default_rule(statistics_provider, head_refinement_ptr, model_builder)
 
         # Induce the remaining rules...
-        current_head_refinement = head_refinement.head_refinement_ptr.get()
+        head_refinement_ptr = head_refinement.head_refinement_ptr.get()
+        cdef AbstractFeatureMatrix* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
+        cdef AbstractNominalFeatureSet* nominal_feature_set_ptr = \
+            <AbstractNominalFeatureSet*>NULL if nominal_feature_set is None else \
+            nominal_feature_set.nominal_feature_set_ptr.get()
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            success = rule_induction.induce_rule(statistics_provider, nominal_attribute_mask,
-                                                 feature_matrix.feature_matrix_ptr.get(), current_head_refinement,
-                                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                                 pruning, post_processor, min_coverage, max_conditions,
-                                                 max_head_refinements, num_threads, rng, model_builder)
+            success = rule_induction.induce_rule(statistics_provider, nominal_feature_set_ptr, feature_matrix_ptr,
+                                                 head_refinement_ptr, label_sub_sampling, instance_sub_sampling,
+                                                 feature_sub_sampling, pruning, post_processor, min_coverage,
+                                                 max_conditions, max_head_refinements, num_threads, rng, model_builder)
 
             if not success:
                 break

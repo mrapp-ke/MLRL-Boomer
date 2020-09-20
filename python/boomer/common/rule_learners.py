@@ -12,7 +12,8 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix, DenseFeatureMatrix, CscFeatureMatrix
+from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix, DenseFeatureMatrix, CscFeatureMatrix, \
+    DokNominalFeatureSet
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
 from boomer.common.rules import ModelBuilder
@@ -299,15 +300,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         nominal_attribute_indices = self.nominal_attribute_indices
 
         if nominal_attribute_indices is not None and len(nominal_attribute_indices) > 0:
-            nominal_attribute_mask = np.zeros((x.shape[1]), dtype=DTYPE_UINT8, order='C')
-            nominal_attribute_mask[nominal_attribute_indices] = 1
+            nominal_feature_set = DokNominalFeatureSet(nominal_attribute_indices)
         else:
-            nominal_attribute_mask = None
+            nominal_feature_set = None
 
         # Induce rules...
         sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
         model_builder = self._create_model_builder()
-        return sequential_rule_induction.induce_rules(nominal_attribute_mask, feature_matrix, label_matrix,
+        return sequential_rule_induction.induce_rules(nominal_feature_set, feature_matrix, label_matrix,
                                                       self.random_state, model_builder)
 
     def _predict(self, x):
