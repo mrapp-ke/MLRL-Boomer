@@ -19,6 +19,8 @@ EqualFrequencyBinning::EqualFrequencyBinning(intp numBins){
 }
 
 void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer){
+    //TODO: Elemente mit selbem Wert sollen in den gleichen Bin
+    //TODO: Sortieren
     intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
@@ -27,8 +29,11 @@ void EqualFrequencyBinning::createBins(IndexedFloat32Array* indexedArray, Binnin
         }
         return;
     }
+    //TODO: Aufrunden
     intp n = length/numBins_; //number of elements per bin
     //looping over bins
+    //Übers Orginalarray iterieren
+    //orginal Index / n
     for(intp i = 0; i < numBins_; i++){
         //we will need a new pointer in every iteration
         IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
@@ -53,6 +58,7 @@ EqualWidthBinning::EqualWidthBinning(intp numBins){
 }
 
 void EqualWidthBinning::createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer){
+    //TODO: Min und Max Suche
     intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(length <= numBins_){
@@ -61,18 +67,22 @@ void EqualWidthBinning::createBins(IndexedFloat32Array* indexedArray, BinningObs
         }
         return;
     }
-     //defining minimal and maximum values
-     float min = indexedArray->data[0].value;
-     intp bound_min = floor(min);
-     float max = indexedArray->data[indexedArray->numElements-1].value;
-     //w stands for width and determines the span of values for a bin
-     intp w = intp(ceil((max - min)/numBins_));
-     //defining the boundaries of bins
-     intp boundaries[numBins_ + 1] {0};
+    //defining minimal and maximum values
+    float min = indexedArray->data[0].value;
+    intp bound_min = floor(min);
+    float max = indexedArray->data[indexedArray->numElements-1].value;
+    //w stands for width and determines the span of values for a bin
+    intp w = intp(ceil((max - min)/numBins_));
+    //defining the boundaries of bins
+    //TODO: Bounderies unnötig
+    intp boundaries[numBins_ + 1] {0};
      for(intp i = 0; i < numBins_ + 1; i++){
         boundaries[i] = bound_min + w * i;
      }
      //looping over bins
+     //TODO: Temporäres Array überflüssig
+     //floor((Value - min) / w)
+     //Sonderfall Index kann größer sein als der letze Index
      for(intp i = 0; i < numBins_; i++){
         //we will need a new pointer in every iteration
         IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
