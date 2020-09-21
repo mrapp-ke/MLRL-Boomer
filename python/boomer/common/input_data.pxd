@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport BinaryDokMatrix, BinaryDokVector
+from boomer.common._data cimport IVector, BinaryDokVector, IMatrix, BinaryDokMatrix
 from boomer.common._tuples cimport IndexedFloat32Array
 
 from libcpp.memory cimport shared_ptr
@@ -7,13 +7,8 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/input_data.h" nogil:
 
-    cdef cppclass AbstractLabelMatrix:
-
-        # Functions:
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
+    cdef cppclass AbstractLabelMatrix(IMatrix):
+        pass
 
 
     cdef cppclass AbstractRandomAccessLabelMatrix(AbstractLabelMatrix):
@@ -34,13 +29,9 @@ cdef extern from "cpp/input_data.h" nogil:
         DokLabelMatrixImpl(shared_ptr[BinaryDokMatrix] dokMatrixPtr) except +
 
 
-    cdef cppclass AbstractFeatureMatrix:
+    cdef cppclass AbstractFeatureMatrix(IMatrix):
 
         # Functions:
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
 
         void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray)
 
@@ -60,7 +51,7 @@ cdef extern from "cpp/input_data.h" nogil:
                              const uint32* xColIndices) except +
 
 
-    cdef cppclass AbstractNominalFeatureSet:
+    cdef cppclass AbstractNominalFeatureSet(IVector):
 
         # Functions:
 
