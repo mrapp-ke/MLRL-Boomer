@@ -1,18 +1,10 @@
 #include "input_data.h"
 
 
-AbstractLabelMatrix::~AbstractLabelMatrix() {
-
-}
-
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) {
     numExamples_ = numExamples;
     numLabels_ = numLabels;
     y_ = y;
-}
-
-DenseLabelMatrixImpl::~DenseLabelMatrixImpl() {
-
 }
 
 uint32 DenseLabelMatrixImpl::getNumRows() {
@@ -32,10 +24,6 @@ DokLabelMatrixImpl::DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatri
     dokMatrixPtr_ = dokMatrixPtr;
 }
 
-DokLabelMatrixImpl::~DokLabelMatrixImpl() {
-
-}
-
 uint32 DokLabelMatrixImpl::getNumRows() {
     return dokMatrixPtr_.get()->getNumRows();
 }
@@ -48,34 +36,18 @@ uint8 DokLabelMatrixImpl::get(uint32 row, uint32 col) {
     return dokMatrixPtr_.get()->get(row, col);
 }
 
-AbstractFeatureMatrix::AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures) {
+DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
     numExamples_ = numExamples;
     numFeatures_ = numFeatures;
-}
-
-AbstractFeatureMatrix::~AbstractFeatureMatrix() {
-
-}
-
-uint32 AbstractFeatureMatrix::getNumRows() {
-    return numExamples_;
-}
-
-uint32 AbstractFeatureMatrix::getNumCols() {
-    return numFeatures_;
-}
-
-void AbstractFeatureMatrix::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
-
-}
-
-DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x)
-    : AbstractFeatureMatrix(numExamples, numFeatures) {
     x_ = x;
 }
 
-DenseFeatureMatrixImpl::~DenseFeatureMatrixImpl() {
+uint32 DenseFeatureMatrixImpl::getNumRows() {
+    return numExamples_;
+}
 
+uint32 DenseFeatureMatrixImpl::getNumCols() {
+    return numFeatures_;
 }
 
 void DenseFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
@@ -100,15 +72,20 @@ void DenseFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Index
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
-                                           const uint32* xRowIndices, const uint32* xColIndices)
-    : AbstractFeatureMatrix(numExamples, numFeatures) {
+                                           const uint32* xRowIndices, const uint32* xColIndices)  {
+    numExamples_ = numExamples;
+    numFeatures_ = numFeatures;
     xData_ = xData;
     xRowIndices_ = xRowIndices;
     xColIndices_ = xColIndices;
 }
 
-CscFeatureMatrixImpl::~CscFeatureMatrixImpl() {
+uint32 CscFeatureMatrixImpl::getNumRows() {
+    return numExamples_;
+}
 
+uint32 CscFeatureMatrixImpl::getNumCols() {
+    return numFeatures_;
 }
 
 void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
@@ -140,16 +117,8 @@ void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Indexed
     indexedArray->data = sortedArray;
 }
 
-AbstractNominalFeatureSet::~AbstractNominalFeatureSet() {
-
-}
-
 DokNominalFeatureSetImpl::DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr) {
     dokVectorPtr_ = dokVectorPtr;
-}
-
-DokNominalFeatureSetImpl::~DokNominalFeatureSetImpl() {
-
 }
 
 uint8 DokNominalFeatureSetImpl::get(uint32 pos) {

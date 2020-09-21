@@ -19,21 +19,25 @@ class AbstractLabelMatrix : virtual public IMatrix {
 
     public:
 
-        virtual ~AbstractLabelMatrix();
+        virtual ~AbstractLabelMatrix() { };
 
 };
 
 /**
  * An abstract base class for all label matrices that provide random access to the labels of the training examples.
  */
-class AbstractRandomAccessLabelMatrix : public AbstractLabelMatrix , virtual public IRandomAccessMatrix<uint8> {
+class AbstractRandomAccessLabelMatrix : virtual public AbstractLabelMatrix , virtual public IRandomAccessMatrix<uint8> {
+
+    public:
+
+        virtual ~AbstractRandomAccessLabelMatrix() { };
 
 };
 
 /**
  * Implements random access to the labels of the training examples based on a C-contiguous array.
  */
-class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
+class DenseLabelMatrixImpl : virtual public AbstractRandomAccessLabelMatrix {
 
     private:
 
@@ -53,13 +57,11 @@ class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
          */
         DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y);
 
-        ~DenseLabelMatrixImpl();
-
-        uint8 get(uint32 row, uint32 col) override;
-
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
+
+        uint8 get(uint32 row, uint32 col) override;
 
 };
 
@@ -67,7 +69,7 @@ class DenseLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
  * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of keys
  * (DOK) format.
  */
-class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
+class DokLabelMatrixImpl : virtual public AbstractRandomAccessLabelMatrix {
 
     private:
 
@@ -81,13 +83,11 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
          */
         DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
 
-        ~DokLabelMatrixImpl();
-
-        uint8 get(uint32 row, uint32 col) override;
-
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
+
+        uint8 get(uint32 row, uint32 col) override;
 
 };
 
@@ -97,21 +97,9 @@ class DokLabelMatrixImpl : public AbstractRandomAccessLabelMatrix {
  */
 class AbstractFeatureMatrix : virtual public IMatrix {
 
-    private:
-
-        uint32 numExamples_;
-
-        uint32 numFeatures_;
-
     public:
 
-        /**
-         * @param numExamples   The number of examples
-         * @param numFeatures   The number of features
-         */
-        AbstractFeatureMatrix(uint32 numExamples, uint32 numFeatures);
-
-        virtual ~AbstractFeatureMatrix();
+        virtual ~AbstractFeatureMatrix() { };
 
         /**
          * Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
@@ -122,20 +110,20 @@ class AbstractFeatureMatrix : virtual public IMatrix {
          * @param indexedArray  A pointer to a struct of type `IndexedFloat32Array`, which should be used to store the
          *                      indices and feature values
          */
-        virtual void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray);
-
-        uint32 getNumRows() override;
-
-        uint32 getNumCols() override;
+        virtual void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) = 0;
 
 };
 
 /**
  * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
  */
-class DenseFeatureMatrixImpl : public AbstractFeatureMatrix {
+class DenseFeatureMatrixImpl : virtual public AbstractFeatureMatrix {
 
     private:
+
+        uint32 numExamples_;
+
+        uint32 numFeatures_;
 
         const float32* x_;
 
@@ -149,7 +137,9 @@ class DenseFeatureMatrixImpl : public AbstractFeatureMatrix {
          */
         DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x);
 
-        ~DenseFeatureMatrixImpl();
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
         void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
 
@@ -159,9 +149,13 @@ class DenseFeatureMatrixImpl : public AbstractFeatureMatrix {
  * Implements column-wise access to the feature values of the training examples based on a sparse matrix in the
  * compressed sparse column (CSC) format.
  */
-class CscFeatureMatrixImpl : public AbstractFeatureMatrix {
+class CscFeatureMatrixImpl : virtual public AbstractFeatureMatrix {
 
     private:
+
+        uint32 numExamples_;
+
+        uint32 numFeatures_;
 
         const float32* xData_;
 
@@ -185,7 +179,9 @@ class CscFeatureMatrixImpl : public AbstractFeatureMatrix {
         CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
                              const uint32* xColIndices);
 
-        ~CscFeatureMatrixImpl();
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
         void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
 
@@ -198,7 +194,7 @@ class AbstractNominalFeatureSet : virtual public IRandomAccessVector<uint8> {
 
     public:
 
-        virtual ~AbstractNominalFeatureSet();
+        virtual ~AbstractNominalFeatureSet() { };
 
 };
 
@@ -206,7 +202,7 @@ class AbstractNominalFeatureSet : virtual public IRandomAccessVector<uint8> {
  * Allows to check whether individual features are nominal or not based on a sparse vector that stores the indices of
  * the nominal features in the dictionary of keys (DOK) format.
  */
-class DokNominalFeatureSetImpl : public AbstractNominalFeatureSet {
+class DokNominalFeatureSetImpl : virtual public AbstractNominalFeatureSet {
 
     private:
 
@@ -219,10 +215,8 @@ class DokNominalFeatureSetImpl : public AbstractNominalFeatureSet {
          */
         DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr);
 
-        ~DokNominalFeatureSetImpl();
+        uint32 getNumElements() override;
 
         uint8 get(uint32 pos) override;
-
-        uint32 getNumElements() override;
 
 };
