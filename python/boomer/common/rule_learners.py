@@ -8,11 +8,12 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import os
 from abc import abstractmethod
 from ast import literal_eval
-from typing import List
 from enum import Enum
+from typing import List
 
 import numpy as np
-from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix, DenseFeatureMatrix, CscFeatureMatrix
+from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix, DenseFeatureMatrix, CscFeatureMatrix, \
+    DokNominalFeatureSet
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
 from boomer.common.rules import ModelBuilder
@@ -23,7 +24,7 @@ from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSe
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
-from boomer.common.arrays import DTYPE_UINT8, DTYPE_UINT32, DTYPE_INTP, DTYPE_FLOAT32
+from boomer.common.arrays import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from boomer.common.learners import Learner, NominalAttributeLearner
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
@@ -232,7 +233,7 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
                 size_dense = np.prod(m.shape) * np.dtype(DTYPE_UINT8).itemsize
             else:
                 num_pointers = m.shape[1 if sparse_format == 'csc' else 0]
-                size_int = np.dtype(DTYPE_INTP).itemsize
+                size_int = np.dtype(DTYPE_UINT32).itemsize
                 size_float = np.dtype(DTYPE_FLOAT32).itemsize
                 size_sparse = (num_non_zero * size_float) + (num_non_zero * size_int) + (num_pointers * size_int)
                 size_dense = np.prod(m.shape) * size_float
@@ -274,8 +275,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
-            x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
+            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
+            x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
             feature_matrix = DenseFeatureMatrix(x)
@@ -285,29 +286,21 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         y_enforce_sparse = should_enforce_sparse(y, sparse_format='dok', policy=y_sparse_policy)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
                         accept_sparse=('lil' if y_enforce_sparse else False), ensure_2d=False, dtype=DTYPE_UINT8)
+        num_labels = y.shape[1]
 
         if issparse(y):
             rows = np.ascontiguousarray(y.rows)
-            label_matrix = DokLabelMatrix(y.shape[0], y.shape[1], rows)
+            label_matrix = DokLabelMatrix(y.shape[0], num_labels, rows)
         else:
             label_matrix = DenseLabelMatrix(y)
 
-        num_labels = label_matrix.num_labels
         self.num_labels_ = num_labels
 
-        # Create an array that contains the indices of all nominal attributes, if any...
-        nominal_attribute_indices = self.nominal_attribute_indices
-
-        if nominal_attribute_indices is not None and len(nominal_attribute_indices) > 0:
-            nominal_attribute_mask = np.zeros((x.shape[1]), dtype=DTYPE_UINT8, order='C')
-            nominal_attribute_mask[nominal_attribute_indices] = 1
-        else:
-            nominal_attribute_mask = None
-
         # Induce rules...
+        nominal_feature_set = DokNominalFeatureSet(self.nominal_attribute_indices)
         sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
         model_builder = self._create_model_builder()
-        return sequential_rule_induction.induce_rules(nominal_attribute_mask, feature_matrix, label_matrix,
+        return sequential_rule_induction.induce_rules(nominal_feature_set, feature_matrix, label_matrix,
                                                       self.random_state, model_builder)
 
     def _predict(self, x):
@@ -322,8 +315,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_INTP)
-            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_INTP)
+            x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             num_features = x.shape[1]
             return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, num_labels, model)
         else:

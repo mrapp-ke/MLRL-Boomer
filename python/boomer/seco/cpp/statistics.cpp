@@ -3,7 +3,7 @@
 using namespace seco;
 
 
-AbstractCoverageStatistics::AbstractCoverageStatistics(intp numStatistics)
-    : AbstractStatistics(numStatistics) {
+AbstractCoverageStatistics::AbstractCoverageStatistics(uint32 numStatistics, uint32 numLabels)
+    : AbstractStatistics(numStatistics, numLabels) {
 
 }

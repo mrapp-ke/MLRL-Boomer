@@ -15,10 +15,12 @@ COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenm
 
 sources = [
     '**/*.pyx',
-    'boomer/common/cpp/sparse.cpp',
+    'boomer/common/cpp/data.cpp',
     'boomer/common/cpp/predictions.cpp',
     'boomer/common/cpp/input_data.cpp',
     'boomer/common/cpp/statistics.cpp',
+    'boomer/common/cpp/head_refinement.cpp',
+    'boomer/common/cpp/rule_refinement.cpp',
     'boomer/common/cpp/binning.cpp',
     'boomer/boosting/cpp/blas.cpp',
     'boomer/boosting/cpp/lapack.cpp',
@@ -31,6 +33,7 @@ sources = [
     'boomer/boosting/cpp/example_wise_rule_evaluation.cpp',
     'boomer/seco/cpp/heuristics.cpp',
     'boomer/seco/cpp/lift_functions.cpp',
+    'boomer/seco/cpp/head_refinement.cpp',
     'boomer/seco/cpp/statistics.cpp',
     'boomer/seco/cpp/label_wise_statistics.cpp',
     'boomer/seco/cpp/label_wise_rule_evaluation.cpp'
@@ -65,7 +68,7 @@ setup(name='boomer',
           'liac-arff>=2.4.0',
           'requests>=2.23.0'
       ],
-      python_requires='>=3.7',
+      python_requires='>=3.8',
       ext_modules=cythonize(extensions, language_level='3', annotate=ANNOTATE, compiler_directives=compiler_directives),
       include_dirs=[numpy.get_include()],
       zip_safe=False)

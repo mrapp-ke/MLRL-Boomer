@@ -13,7 +13,7 @@
  * value in an array.
  */
 struct IndexedFloat32 {
-    intp index;
+    uint32 index;
     float32 value;
 };
 
@@ -23,7 +23,18 @@ struct IndexedFloat32 {
  */
 struct IndexedFloat32Array {
     IndexedFloat32* data;
-    intp numElements;
+    uint32 numElements;
+};
+
+/**
+ * A struct that contains a pointer to a struct of type `IndexedFloat32Array`, representing the indices and feature
+ * values of the training examples that are covered by a rule. The attribute `num_conditions` specifies how many
+ * conditions the rule contained when the array was updated for the last time. It may be used to check if the array is
+ * still valid or must be updated.
+ */
+struct IndexedFloat32ArrayWrapper {
+    IndexedFloat32Array* array;
+    uint32 numConditions;
 };
 
 /**
@@ -31,7 +42,7 @@ struct IndexedFloat32Array {
  * value in an array.
  */
 struct IndexedFloat64 {
-    intp index;
+    uint32 index;
     float64 value;
 };
 

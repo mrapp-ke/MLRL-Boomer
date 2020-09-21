@@ -35,7 +35,7 @@ namespace boosting {
              *                          and the Hessian that have been calculated
              */
             virtual std::pair<float64, float64> calculateGradientAndHessian(
-                    AbstractRandomAccessLabelMatrix* labelMatrix, intp exampleIndex, intp labelIndex,
+                    AbstractRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex, uint32 labelIndex,
                     float64 predictedScore);
 
     };
@@ -50,7 +50,7 @@ namespace boosting {
             ~LabelWiseLogisticLossImpl();
 
             std::pair<float64, float64> calculateGradientAndHessian(AbstractRandomAccessLabelMatrix* labelMatrix,
-                                                                    intp exampleIndex, intp labelIndex,
+                                                                    uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) override;
 
     };
@@ -65,7 +65,7 @@ namespace boosting {
             ~LabelWiseSquaredErrorLossImpl();
 
             std::pair<float64, float64> calculateGradientAndHessian(AbstractRandomAccessLabelMatrix* labelMatrix,
-                                                                    intp exampleIndex, intp labelIndex,
+                                                                    uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) override;
 
     };

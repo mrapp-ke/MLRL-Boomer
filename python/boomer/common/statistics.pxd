@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint32, intp
+from boomer.common._arrays cimport uint32
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport LabelMatrix
 
@@ -8,42 +8,42 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/statistics.h" nogil:
 
-    cdef cppclass AbstractRefinementSearch:
+    cdef cppclass AbstractStatisticsSubset:
 
         # Functions:
 
-        void updateSearch(intp statisticIndex, uint32 weight)
+        void addToSubset(uint32 statisticIndex, uint32 weight)
 
-        void resetSearch()
+        void resetSubset()
 
         LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
         PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
-    cdef cppclass AbstractDecomposableRefinementSearch(AbstractRefinementSearch):
+    cdef cppclass AbstractDecomposableStatisticsSubset(AbstractStatisticsSubset):
         pass
 
 
     cdef cppclass AbstractStatistics:
 
-        # Attributes:
-
-        intp numStatistics_
-
         # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
 
         void resetSampledStatistics()
 
-        void addSampledStatistic(intp statisticIndex, uint32 weight)
+        void addSampledStatistic(uint32 statisticIndex, uint32 weight)
 
         void resetCoveredStatistics()
 
-        void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove)
+        void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove)
 
-        AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices)
+        AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices)
 
-        void applyPrediction(intp statisticIndex, Prediction* prediction)
+        void applyPrediction(uint32 statisticIndex, Prediction* prediction)
 
 
 cdef class StatisticsProvider:

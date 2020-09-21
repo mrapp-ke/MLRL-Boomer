@@ -54,7 +54,8 @@ class Blas {
          *
          * @param a         A pointer to an array of type `float64`, shape `(n * (n + 1) / 2)`, representing the
          *                  elements in the upper-right triangle of the matrix A in a packed form
-         * @param x         A pointer to an array of type `float64`, shape `(n)`, representing the elements in the array x
+         * @param x         A pointer to an array of type `float64`, shape `(n)`, representing the elements in the array
+         *                  x
          * @param output    A pointer to an array of type `float64`, shape `(n)`, the result of the matrix-vector
          *                  operation A * x should be written to. May contain arbitrary values
          * @param n         The number of elements in the arrays `a` and `x`

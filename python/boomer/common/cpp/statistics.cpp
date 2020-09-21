@@ -1,45 +1,54 @@
 #include "statistics.h"
 
 
-AbstractRefinementSearch::~AbstractRefinementSearch() {
+AbstractStatisticsSubset::~AbstractStatisticsSubset() {
 
 }
 
-void AbstractRefinementSearch::updateSearch(intp statisticIndex, uint32 weight) {
+void AbstractStatisticsSubset::addToSubset(uint32 statisticIndex, uint32 weight) {
 
 }
 
-void AbstractRefinementSearch::resetSearch() {
+void AbstractStatisticsSubset::resetSubset() {
 
 }
 
-LabelWisePredictionCandidate* AbstractRefinementSearch::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
+LabelWisePredictionCandidate* AbstractStatisticsSubset::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
     return NULL;
 }
 
-PredictionCandidate* AbstractRefinementSearch::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
+PredictionCandidate* AbstractStatisticsSubset::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
     return NULL;
 }
 
-PredictionCandidate* AbstractDecomposableRefinementSearch::calculateExampleWisePrediction(bool uncovered,
+PredictionCandidate* AbstractDecomposableStatisticsSubset::calculateExampleWisePrediction(bool uncovered,
                                                                                           bool accumulated) {
     // In the decomposable case, the example-wise predictions are the same as the label-wise predictions...
     return (PredictionCandidate*) this->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-AbstractStatistics::AbstractStatistics(intp numStatistics) {
+AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels) {
     numStatistics_ = numStatistics;
+    numLabels_ = numLabels;
 }
 
 AbstractStatistics::~AbstractStatistics() {
 
 }
 
+uint32 AbstractStatistics::getNumRows() {
+    return numStatistics_;
+}
+
+uint32 AbstractStatistics::getNumCols() {
+    return numLabels_;
+}
+
 void AbstractStatistics::resetSampledStatistics() {
 
 }
 
-void AbstractStatistics::addSampledStatistic(intp statisticIndex, uint32 weight) {
+void AbstractStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
 
 }
 
@@ -47,14 +56,14 @@ void AbstractStatistics::resetCoveredStatistics() {
 
 }
 
-void AbstractStatistics::updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) {
+void AbstractStatistics::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
 
 }
 
-AbstractRefinementSearch* AbstractStatistics::beginSearch(intp numLabelIndices, const intp* labelIndices) {
+AbstractStatisticsSubset* AbstractStatistics::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
     return NULL;
 }
 
-void AbstractStatistics::applyPrediction(intp statisticIndex, Prediction* prediction) {
+void AbstractStatistics::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
 
 }

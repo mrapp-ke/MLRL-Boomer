@@ -9,7 +9,7 @@ AbstractExampleWiseLoss::~AbstractExampleWiseLoss() {
 }
 
 void AbstractExampleWiseLoss::calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
-                                                            intp exampleIndex, const float64* predictedScores,
+                                                            uint32 exampleIndex, const float64* predictedScores,
                                                             float64* gradients, float64* hessians) {
 
 }
@@ -19,13 +19,13 @@ ExampleWiseLogisticLossImpl::~ExampleWiseLogisticLossImpl() {
 }
 
 void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
-                                                                intp exampleIndex, const float64* predictedScores,
+                                                                uint32 exampleIndex, const float64* predictedScores,
                                                                 float64* gradients, float64* hessians) {
-    intp numLabels = labelMatrix->numLabels_;
+    uint32 numLabels = labelMatrix->getNumCols();
     float64 sumOfExponentials = 1;
 
-    for (intp c = 0; c < numLabels; c++) {
-        uint8 trueLabel = labelMatrix->getLabel(exampleIndex, c);
+    for (uint32 c = 0; c < numLabels; c++) {
+        uint8 trueLabel = labelMatrix->get(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 predictedScore = predictedScores[c];
         float64 exponential = exp(-expectedScore * predictedScore);
@@ -34,18 +34,18 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(AbstractRandomAc
     }
 
     float64 sumOfExponentialsPow = pow(sumOfExponentials, 2);
-    intp i = 0;
+    uint32 i = 0;
 
-    for (intp c = 0; c < numLabels; c++) {
-        uint8 trueLabel = labelMatrix->getLabel(exampleIndex, c);
+    for (uint32 c = 0; c < numLabels; c++) {
+        uint8 trueLabel = labelMatrix->get(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 predictedScore = predictedScores[c];
         float64 exponential = gradients[c];
         float64 tmp = (-expectedScore * exponential) / sumOfExponentials;
         gradients[c] = tmp;
 
-        for (intp c2 = 0; c2 < c; c2++) {
-            trueLabel = labelMatrix->getLabel(exampleIndex, c2);
+        for (uint32 c2 = 0; c2 < c; c2++) {
+            trueLabel = labelMatrix->get(exampleIndex, c2);
             float64 expectedScore2 = trueLabel ? 1 : -1;
             float64 predictedScore2 = predictedScores[c2];
             tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
