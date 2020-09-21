@@ -3,6 +3,7 @@
 #include "arrays.h"
 #include "statistics.h"
 #include "tuples.h"
+//TODO: Löschen nach Equal Width Update
 #include <math.h>
 
 class BinningObserver{
