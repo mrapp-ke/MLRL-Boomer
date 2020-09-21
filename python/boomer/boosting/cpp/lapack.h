@@ -67,9 +67,9 @@ class Lapack {
          * Optionally, this function allows to specify a weight to be used for L2 regularization. The given weight is
          * added to each element on the diagonal of the matrix of coefficients A.
          *
-         * @param coefficients              An array of dtype `float64`, shape `n * (n + 1) / 2)`, representing the
+         * @param coefficients              An array of type `float64`, shape `n * (n + 1) / 2)`, representing the
          *                                  coefficients
-         * @param invertedOrdinates         An array of dtype `float64`, shape `(n)`, representing the inverted
+         * @param invertedOrdinates         An array of type `float64`, shape `(n)`, representing the inverted
          *                                  ordinates, i.e., the ordinates multiplied by -1. The sign of the elements in
          *                                  this array will be inverted to when creating the matrix B
          * @param tmpArray1                 A pointer to an array of type `float64`, shape `(n, n)` that will be used to
@@ -87,8 +87,7 @@ class Lapack {
          * @param n                         The number of equations
          * @param lwork                     The value for the parameter "lwork" to be used by the DSYSV routine. Must
          *                                  have been determined using the function `queryDsysvLworkParameter`
-         * @param l2RegularizationWeight    A scalar of dtype `float64`, representing the weight of the L2
-         *                                  regularization
+         * @param l2RegularizationWeight    A scalar of type `float64`, representing the weight of the L2 regularization
          */
         void dsysv(const float64* coefficients, const float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
                    double* tmpArray3, float64* output, int n, int lwork, float64 l2RegularizationWeight);

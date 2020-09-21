@@ -20,12 +20,12 @@ namespace seco {
     /**
      * The number of elements in a confusion matrix.
      */
-    const intp NUM_CONFUSION_MATRIX_ELEMENTS = 4;
+    const uint32 NUM_CONFUSION_MATRIX_ELEMENTS = 4;
 
     /**
-     * An enum that specified all positive elements of a confusion matrix.
+     * An enum that specifies all positive elements of a confusion matrix.
      */
-    enum ConfusionMatrixElement : intp {
+    enum ConfusionMatrixElement : uint32 {
         IN = 0,
         IP = 1,
         RN = 2,
@@ -73,8 +73,8 @@ namespace seco {
              *
              * This results in the terminology given in the following table:
              *
-             *      | ground-   |           |
-             *      | truth     | predicted |
+             *            | ground-   |           |
+             *            | truth     | predicted |
              * -----------|-----------|-----------|-----
              *  covered   |         0 |         0 | CIN
              *            |         0 |         1 | CIP

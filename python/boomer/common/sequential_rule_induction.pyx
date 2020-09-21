@@ -4,9 +4,13 @@
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common._random cimport RNG
+from boomer.common.input_data cimport AbstractFeatureMatrix, AbstractNominalFeatureSet
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
+from boomer.common.head_refinement cimport AbstractHeadRefinement
+
+from libcpp.memory cimport shared_ptr
 
 
 cdef class SequentialRuleInduction:
@@ -19,7 +23,7 @@ cdef class SequentialRuleInduction:
                   HeadRefinement default_rule_head_refinement, HeadRefinement head_refinement, list stopping_criteria,
                   LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                   FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                  intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
+                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
         :param statistics_provider_factory:     A factory that allows to create a provider that provides access to the
                                                 statistics which serve as the basis for learning rules
@@ -66,19 +70,19 @@ cdef class SequentialRuleInduction:
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
 
-    cpdef RuleModel induce_rules(self, uint8[::1] nominal_attribute_mask, FeatureMatrix feature_matrix,
+    cpdef RuleModel induce_rules(self, NominalFeatureSet nominal_feature_set, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
-        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
-                                        at a certain index is nominal (1) or not (0)
-        :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
-                                        the training examples
-        :param label_matrix:            A `LabelMatrix` that provides access to the labels of the training examples
-        :param random_state:            The seed to be used by RNGs
-        :param model_builder:           The builder that should be used to build the model
-        :return:                        A model that contains the induced classification rules
+        :param nominal_feature_set: A `NominalFeatureSet` that allows to check whether individual features are nominal
+                                    or not
+        :param feature_matrix:      The `FeatureMatrix` that provides column-wise access to the feature values of the
+                                    training examples
+        :param label_matrix:        A `LabelMatrix` that provides access to the labels of the training examples
+        :param random_state:        The seed to be used by RNGs
+        :param model_builder:       The builder that should be used to build the model
+        :return:                    A model that contains the induced classification rules
         """
         # Class members
         cdef StatisticsProviderFactory statistics_provider_factory = self.statistics_provider_factory
@@ -91,39 +95,48 @@ cdef class SequentialRuleInduction:
         cdef FeatureSubSampling feature_sub_sampling = self.feature_sub_sampling
         cdef Pruning pruning = self.pruning
         cdef PostProcessor post_processor = self.post_processor
-        cdef intp min_coverage = self.min_coverage
+        cdef uint32 min_coverage = self.min_coverage
         cdef intp max_conditions = self.max_conditions
         cdef intp max_head_refinements = self.max_head_refinements
         cdef int num_threads = self.num_threads
         # The random number generator to be used
         cdef RNG rng = RNG.__new__(RNG, random_state)
-        # The total number of labels
-        cdef intp num_labels = label_matrix.num_labels
         # The number of rules induced so far (starts at 1 to account for the default rule)
-        cdef intp num_rules = 1
+        cdef uint32 num_rules = 1
         # Temporary variables
         cdef bint success
 
         # Induce default rule...
+        cdef shared_ptr[AbstractHeadRefinement] head_refinement_ptr
+
+        if default_rule_head_refinement is not None:
+            head_refinement_ptr = default_rule_head_refinement.head_refinement_ptr
+
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
-        rule_induction.induce_default_rule(statistics_provider, default_rule_head_refinement, model_builder)
+        rule_induction.induce_default_rule(statistics_provider, head_refinement_ptr.get(), model_builder)
+
+        # Induce the remaining rules...
+        head_refinement_ptr = head_refinement.head_refinement_ptr
+        cdef shared_ptr[AbstractFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
+        cdef shared_ptr[AbstractNominalFeatureSet] nominal_feature_set_ptr = nominal_feature_set.nominal_feature_set_ptr
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            # Induce a new rule...
-            success = rule_induction.induce_rule(statistics_provider, nominal_attribute_mask, feature_matrix,
-                                                 num_labels, head_refinement, label_sub_sampling, instance_sub_sampling,
-                                                 feature_sub_sampling, pruning, post_processor, min_coverage,
-                                                 max_conditions, max_head_refinements, num_threads, rng, model_builder)
+            success = rule_induction.induce_rule(statistics_provider, nominal_feature_set_ptr.get(),
+                                                 feature_matrix_ptr.get(), head_refinement_ptr.get(),
+                                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                                 pruning, post_processor, min_coverage, max_conditions,
+                                                 max_head_refinements, num_threads, rng, model_builder)
 
             if not success:
                 break
 
             num_rules += 1
 
+        # Build and return the final model...
         return model_builder.build_model()
 
 
-cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, intp num_rules):
+cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, uint32 num_rules):
     """
     Returns whether additional rules should be induced, according to some stopping criteria, or not.
 

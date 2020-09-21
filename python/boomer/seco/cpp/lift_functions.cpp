@@ -8,7 +8,7 @@ AbstractLiftFunction::~AbstractLiftFunction() {
 
 }
 
-float64 AbstractLiftFunction::calculateLift(intp numLabels) {
+float64 AbstractLiftFunction::calculateLift(uint32 numLabels) {
     return 0;
 }
 
@@ -16,7 +16,7 @@ float64 AbstractLiftFunction::getMaxLift() {
     return 0;
 }
 
-PeakLiftFunctionImpl::PeakLiftFunctionImpl(intp numLabels, intp peakLabel, float64 maxLift, float64 curvature) {
+PeakLiftFunctionImpl::PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature) {
     numLabels_ = numLabels;
     peakLabel_ = peakLabel;
     maxLift_ = maxLift;
@@ -27,13 +27,13 @@ PeakLiftFunctionImpl::~PeakLiftFunctionImpl() {
 
 }
 
-float64 PeakLiftFunctionImpl::calculateLift(intp numLabels) {
+float64 PeakLiftFunctionImpl::calculateLift(uint32 numLabels) {
     float64 normalization;
 
     if (numLabels < peakLabel_) {
-        normalization = (numLabels - 1) / ((float64) (peakLabel_ - 1));
+        normalization = ((float64) numLabels - 1) / ((float64) peakLabel_ - 1);
     } else if (numLabels > peakLabel_) {
-        normalization = (numLabels - numLabels_) / ((float64) (numLabels_ - peakLabel_));
+        normalization = ((float64) numLabels - (float64) numLabels_) / ((float64) numLabels_ - (float64) peakLabel_);
     } else {
         return maxLift_;
     }

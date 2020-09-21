@@ -5,8 +5,6 @@ Provides wrappers for classes that allow to store gradients and Hessians that ar
 (decomposable) loss function that is applied label-wise.
 """
 from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
-from boomer.boosting.label_wise_losses cimport LabelWiseLoss
-from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
 

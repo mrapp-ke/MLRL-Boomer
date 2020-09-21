@@ -25,8 +25,8 @@ namespace arrays {
      * @param numElements   The number of elements in the array
      */
     template<typename T>
-    static inline void setToZeros(T* a, intp numElements) {
-        for (intp i = 0; i < numElements; i++) {
+    static inline void setToZeros(T* a, uint32 numElements) {
+        for (uint32 i = 0; i < numElements; i++) {
             a[i] = 0;
         }
     }

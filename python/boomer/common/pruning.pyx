@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float32, float64, array_uint32
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
-from boomer.common.statistics cimport AbstractRefinementSearch
+from boomer.common.statistics cimport AbstractStatisticsSubset
 
 from libcpp.memory cimport unique_ptr
 
@@ -21,11 +21,11 @@ cdef class Pruning:
     to as the "grow set").
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
-                                         HeadRefinement head_refinement):
+                                         AbstractHeadRefinement* head_refinement):
         """
         Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is pruned
         by removing individual conditions in a way that improves over its original quality score as measured on the
@@ -38,16 +38,17 @@ cdef class Pruning:
         :param conditions:                  A list that contains the conditions of the existing rule
         :param head:                        A pointer to an object of type `Prediction` representing the head of the
                                             existing rule
-        :param covered_examples_mask:       An array of dtype uint, shape `(num_examples)` that is used to keep track of
-                                            the indices of the examples that are covered by the existing rule
+        :param covered_examples_mask:       An array of type `uint32`, shape `(num_examples)` that is used to keep track
+                                            of the indices of the examples that are covered by the existing rule
         :param covered_examples_target:     The value that is used to mark those elements in `covered_examples_mask`
                                             that are covered by the existing rule
-        :param weights:                     An array of dtype int, shape `(num_examples)`, representing the weights of
-                                            all training examples, regardless of whether they are included in the prune
-                                            set or grow set
+        :param weights:                     An array of type `uint32`, shape `(num_examples)`, representing the weights
+                                            of all training examples, regardless of whether they are included in the
+                                            prune set or grow set
         :param statistics:                  A pointer to an object of type `AbstractStatistics`, which served as the
                                             basis for learning the existing rule
-        :param head_refinement:             The strategy that is used to find the heads of rules
+        :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that was used to
+                                            find the head of the existing rule
         """
         pass
 
@@ -61,21 +62,21 @@ cdef class IREP(Pruning):
     set).
     """
 
-    cdef pair[uint32[::1], uint32] prune(self, unordered_map[intp, IndexedFloat32Array*]* sorted_feature_values_map,
+    cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
-                                         HeadRefinement head_refinement):
+                                         AbstractHeadRefinement* head_refinement):
         # The total number of training examples
-        cdef intp num_examples = covered_examples_mask.shape[0]
+        cdef uint32 num_examples = covered_examples_mask.shape[0]
         # The number of conditions of the existing rule
-        cdef intp num_conditions = conditions.size()
+        cdef uint32 num_conditions = conditions.size()
         # The number of labels for which the existing rule predicts
-        cdef intp num_predictions = head.numPredictions_
+        cdef uint32 num_predictions = head.numPredictions_
         # An array that stores the indices of the labels for which the existing rule predicts
-        cdef intp* label_indices = head.labelIndices_
+        cdef uint32* label_indices = head.labelIndices_
         # Temporary variables
-        cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
+        cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
         cdef PredictionCandidate* prediction
         cdef Condition condition
         cdef Comparator comparator
@@ -83,12 +84,12 @@ cdef class IREP(Pruning):
         cdef float64 current_quality_score
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
-        cdef intp feature_index, num_indexed_values, i, n, r, start, end
+        cdef uint32 feature_index, num_indexed_values, i, n, r, start, end
         cdef bint uncovered
 
-        # Reset the statistics and start a new search...
+        # Reset the statistics and create a new, empty subset...
         statistics.resetSampledStatistics()
-        refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
+        statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -96,17 +97,17 @@ cdef class IREP(Pruning):
                 statistics.addSampledStatistic(i, 1)
 
                 if covered_examples_mask[i] == covered_examples_target:
-                    refinement_search_ptr.get().updateSearch(i, 1)
+                    statistics_subset_ptr.get().addToSubset(i, 1)
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        prediction = head_refinement.calculate_prediction(refinement_search_ptr.get(), False, False)
+        prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
 
         # Initialize variables that are used to keep track of the best rule...
         cdef float64 best_quality_score = prediction.overallQualityScore_
         cdef uint32[::1] best_covered_examples_mask = covered_examples_mask
         cdef uint32 best_covered_examples_target = covered_examples_target
-        cdef intp num_pruned_conditions = 0
+        cdef uint32 num_pruned_conditions = 0
 
         # Initialize array that is used to keep track of the examples that are covered by the current rule...
         cdef uint32[::1] current_covered_examples_mask = array_uint32(num_examples)
@@ -131,8 +132,8 @@ cdef class IREP(Pruning):
             indexed_values = dereference(indexed_array).data
             num_indexed_values = dereference(indexed_array).numElements
 
-            # Start a new search when processing a new condition...
-            refinement_search_ptr.reset(statistics.beginSearch(num_predictions, label_indices))
+            # Create a new, empty subset of the statistics when processing a new condition...
+            statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)
@@ -161,11 +162,11 @@ cdef class IREP(Pruning):
 
                 # We must only consider examples that are currently covered and contained in the prune set...
                 if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
-                    refinement_search_ptr.get().updateSearch(i, 1)
+                    statistics_subset_ptr.get().addToSubset(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
-            prediction = head_refinement.calculate_prediction(refinement_search_ptr.get(), uncovered, False)
+            prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), uncovered, False)
             current_quality_score = prediction.overallQualityScore_
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
@@ -201,7 +202,7 @@ cdef class IREP(Pruning):
         return result
 
 
-cdef inline intp __upper_bound(IndexedFloat32* indexed_values, intp num_indexed_values, float32 threshold):
+cdef inline uint32 __upper_bound(IndexedFloat32* indexed_values, uint32 num_indexed_values, float32 threshold):
     """
     Returns the index of the first example in `indexed_values` with feature value > threshold. If no such example is
     found, `num_indexed_values` is returned.
@@ -213,9 +214,9 @@ cdef inline intp __upper_bound(IndexedFloat32* indexed_values, intp num_indexed_
     :return:                    The index of the first example in `indexed_values` with feature value > threshold or
                                 `num_indexed_values`, if no such example is found
     """
-    cdef intp first = 0
-    cdef intp last = num_indexed_values
-    cdef intp pivot
+    cdef uint32 first = 0
+    cdef uint32 last = num_indexed_values
+    cdef uint32 pivot
     cdef float32 pivot_value
 
     while first < last:
@@ -230,7 +231,7 @@ cdef inline intp __upper_bound(IndexedFloat32* indexed_values, intp num_indexed_
     return first
 
 
-cdef inline intp __lower_bound(IndexedFloat32* indexed_values, intp num_indexed_values, float32 threshold):
+cdef inline uint32 __lower_bound(IndexedFloat32* indexed_values, uint32 num_indexed_values, float32 threshold):
     """
     Returns the index of the first example in `indexed_values` with feature value >= threshold. If no such example is
     found, `num_indexed_values` is returned.
@@ -242,9 +243,9 @@ cdef inline intp __lower_bound(IndexedFloat32* indexed_values, intp num_indexed_
     :return:                    The index of the first example in `indexed_values` with feature value >= threshold or
                                 `num_indexed_values`, if no such example is found
     """
-    cdef intp first = 0
-    cdef intp last = num_indexed_values
-    cdef intp pivot
+    cdef uint32 first = 0
+    cdef uint32 last = num_indexed_values
+    cdef uint32 pivot
     cdef float32 pivot_value
 
     while first < last:

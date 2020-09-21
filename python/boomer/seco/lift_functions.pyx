@@ -18,7 +18,7 @@ cdef class PeakLiftFunction(LiftFunction):
     A wrapper for the C++ class `PeakLiftFunctionImpl`.
     """
 
-    def __cinit__(self, intp num_labels, intp peak_label, float64 max_lift, float64 curvature):
+    def __cinit__(self, uint32 num_labels, uint32 peak_label, float64 max_lift, float64 curvature):
         """
         :param num_labels:  The total number of available labels. Must be greater than 0
         :param peak_label:  The number of labels for which the lift is maximum. Must be in [1, numLabels]

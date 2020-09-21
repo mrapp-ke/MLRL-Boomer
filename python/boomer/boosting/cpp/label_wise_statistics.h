@@ -17,77 +17,6 @@
 namespace boosting {
 
     /**
-     * Allows to search for the best refinement of a rule based on the gradients and Hessians previously stored by an
-     * object of type `DenseLabelWiseStatisticsImpl`.
-     */
-    class DenseLabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
-
-        private:
-
-            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
-
-            intp numPredictions_;
-
-            const intp* labelIndices_;
-
-            intp numLabels_;
-
-            const float64* gradients_;
-
-            const float64* totalSumsOfGradients_;
-
-            float64* sumsOfGradients_;
-
-            float64* accumulatedSumsOfGradients_;
-
-            const float64* hessians_;
-
-            const float64* totalSumsOfHessians_;
-
-            float64* sumsOfHessians_;
-
-            float64* accumulatedSumsOfHessians_;
-
-            LabelWisePredictionCandidate* prediction_;
-
-        public:
-
-            /**
-             * @param ruleEvaluationPtr     A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation` to
-             *                              be used for calculating the predictions, as well as corresponding quality
-             *                              scores of rules
-             * @param numPredictions        The number of labels to be considered by the search
-             * @param labelIndices          A pointer to an array of type `intp`, shape `(numPredictions)`, representing
-             *                              the indices of the labels that should be considered by the search or NULL,
-             *                              if all labels should be considered
-             * @param numLabels             The total number of labels
-             * @param gradients             A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                              representing the gradient for each example and label
-             * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels)`, representing
-             *                              the sum of the gradients of all examples, which should be considered by the
-             *                              search, for each label
-             * @param hessians              A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                              representing the Hessian for each example and label
-             * @param totalSumsOfHessians   A pointer to an array of type `float64`, shape `(num_labels)`, representing
-             *                              the sum of the Hessians of all examples, which should be considered by the
-             *                              search, for each label
-             */
-            DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                               intp numPredictions, const intp* labelIndices, intp numLabels,
-                                               const float64* gradients, const float64* totalSumsOfGradients,
-                                               const float64* hessians, const float64* totalSumsOfHessians);
-
-            ~DenseLabelWiseRefinementSearchImpl();
-
-            void updateSearch(intp statisticIndex, uint32 weight) override;
-
-            void resetSearch() override;
-
-            LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
-
-    };
-
-    /**
      * An abstract base class for all classes that store gradients and Hessians that are calculated according to a
      * differentiable loss function that is applied label-wise.
      */
@@ -99,11 +28,12 @@ namespace boosting {
 
             /**
              * @param numStatistics     The number of statistics
+             * @param numLabels         The number of labels
              * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
              *                          used for calculating the predictions, as well as corresponding quality scores,
              *                          of rules
              */
-            AbstractLabelWiseStatistics(intp numStatistics,
+            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
                                         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr);
 
             /**
@@ -118,12 +48,60 @@ namespace boosting {
     };
 
     /**
-     * Allows to store gradients and Hessians that are calculated according to a differentiable loss function that is
+     * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied label-wise using dense data structures.
      */
     class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         private:
+
+            /**
+             * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
+             * `DenseLabelWiseStatisticsImpl`.
+             */
+            class StatisticsSubsetImpl : public AbstractDecomposableStatisticsSubset {
+
+                private:
+
+                    DenseLabelWiseStatisticsImpl* statistics_;
+
+                    uint32 numPredictions_;
+
+                    const uint32* labelIndices_;
+
+                    float64* sumsOfGradients_;
+
+                    float64* accumulatedSumsOfGradients_;
+
+                    float64* sumsOfHessians_;
+
+                    float64* accumulatedSumsOfHessians_;
+
+                    LabelWisePredictionCandidate* prediction_;
+
+                public:
+
+                    /**
+                     * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
+                     *                          stores the gradients and Hessians
+                     * @param numPredictions    The number of elements in the array `labelIndices`
+                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
+                     *                          representing the indices of the labels that should be included in the
+                     *                          subset or NULL, if all labels should be included
+                     */
+                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
+                                         const uint32* labelIndices);
+
+                    ~StatisticsSubsetImpl();
+
+                    void addToSubset(uint32 statisticIndex, uint32 weight) override;
+
+                    void resetSubset() override;
+
+                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                                                                               bool accumulated) override;
+
+            };
 
             std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
 
@@ -165,11 +143,11 @@ namespace boosting {
 
             void resetCoveredStatistics() override;
 
-            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+            void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
+            AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 
     };
 

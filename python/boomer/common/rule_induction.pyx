@@ -3,10 +3,12 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport uint32, float64, array_uint32, array_intp
+from boomer.common._arrays cimport float64, array_uint32
+from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.statistics cimport AbstractStatistics, AbstractRefinementSearch
+from boomer.common.rule_refinement cimport Refinement, AbstractRuleRefinement, ExactRuleRefinementImpl
+from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsSubset
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -19,58 +21,41 @@ from cython.operator cimport dereference, postincrement
 from cython.parallel cimport prange
 
 
-"""
-A struct that represents a potential refinement of a rule.
-"""
-cdef struct Refinement:
-    PredictionCandidate* head
-    intp feature_index
-    float32 threshold
-    Comparator comparator
-    bint covered
-    uint32 covered_weights
-    intp start
-    intp end
-    intp previous
-    IndexedFloat32Array* indexed_array
-    IndexedFloat32ArrayWrapper* indexed_array_wrapper
-
-
 cdef class RuleInduction:
     """
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         """
         Induces the default rule.
 
         :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
                                     the basis for inducing the default rule
-        :param head_refinement:     The strategy that should be used to find the head of the default rule or None, if no
-                                    default rule should be used
+        :param head_refinement:     A pointer to an object of type `AbstractHeadRefinement` that should be used to find
+                                    the head of the default rule or NULL, if no default rule should be induced
         :param model_builder:       The builder, the default rule should be added to
         """
         pass
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
+                          AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
-        :param nominal_attribute_mask:  An array of dtype uint, shape `(num_features)`, indicating whether the feature
-                                        at a certain index is nominal (1) or not (0)
-        :param feature_matrix:          A `FeatureMatrix` that provides column-wise access to the feature values of the
-                                        training examples
-        :param num_labels:              The total number of labels
-        :param head_refinement:         The strategy that is used to find the heads of rules
+        :param nominal_feature_set:     A pointer to an object of type `AbstractNominalFeatureSet` that allows to check
+                                        whether individual features are nominal or not
+        :param feature_matrix:          A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
+                                        access to the feature values of the training examples
+        :param head_refinement:         A pointer to an object of type `AbstractHeadRefinement` that should be used to
+                                        find the head of the rule
         :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
                                         sub-sampling should be used
         :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if
@@ -97,21 +82,19 @@ cdef class RuleInduction:
         pass
 
 
-cdef class ExactGreedyRuleInduction(RuleInduction):
+cdef class TopDownGreedyRuleInduction(RuleInduction):
     """
-    Allows to induce single- or multi-label classification rules using a greedy search, where new conditions are added
-    iteratively to the (initially empty) body of a rule. At each iteration, the refinement that improves the rule the
-    most is chosen. The search stops if no refinement results in an improvement. The possible conditions to be evaluated
-    at each iteration result from an exact split finding algorithm, i.e., all possible thresholds that may be used by
-    the conditions are considered.
+    Allows to induce single- or multi-label classification rules using a top-down greedy search, where new conditions
+    are added iteratively to the (initially empty) body of a rule. At each iteration, the refinement that improves the
+    rule the most is chosen. The search stops if no refinement results in an improvement.
     """
 
     def __cinit__(self):
-        self.cache_global = new unordered_map[intp, IndexedFloat32Array*]()
+        self.cache_global = new unordered_map[uint32, IndexedFloat32Array*]()
 
     def __dealloc__(self):
-        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
-        cdef unordered_map[intp, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
+        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef unordered_map[uint32, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
         cdef IndexedFloat32Array* indexed_array
 
         while cache_global_iterator != cache_global.end():
@@ -122,24 +105,24 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, HeadRefinement head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
-        cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
+        cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
         cdef AbstractStatistics* statistics
-        cdef intp num_statistics, i
+        cdef uint32 num_statistics, i
 
-        if head_refinement is not None:
+        if head_refinement != NULL:
             statistics = statistics_provider.get()
-            num_statistics = statistics.numStatistics_
+            num_statistics = statistics.getNumRows()
             statistics.resetSampledStatistics()
 
             for i in range(num_statistics):
                 statistics.addSampledStatistic(i, 1)
 
-            refinement_search_ptr.reset(statistics.beginSearch(0, NULL))
-            default_prediction_ptr.reset(head_refinement.find_head(NULL, NULL, NULL, refinement_search_ptr.get(), True,
-                                                                   False))
+            statistics_subset_ptr.reset(statistics.createSubset(0, NULL))
+            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL, statistics_subset_ptr.get(), True,
+                                                                  False))
 
             statistics_provider.switch_rule_evaluation()
 
@@ -150,27 +133,29 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, uint8[::1] nominal_attribute_mask,
-                          FeatureMatrix feature_matrix, intp num_labels, HeadRefinement head_refinement,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
+                          AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          intp min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
                           ModelBuilder model_builder):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
-        cdef intp num_statistics = statistics.numStatistics_
+        cdef uint32 num_statistics = statistics.getNumRows()
+        # The total number of labels
+        cdef uint32 num_labels = statistics.getNumCols()
         # The total number of features
-        cdef intp num_features = feature_matrix.num_features
+        cdef uint32 num_features = feature_matrix.getNumCols()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef double_linked_list[Condition] conditions
         # The total number of conditions
-        cdef intp num_conditions = 0
+        cdef uint32 num_conditions = 0
         # An array representing the number of conditions per type of operator
-        cdef intp[::1] num_conditions_per_comparator = array_intp(4)
+        cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
         num_conditions_per_comparator[:] = 0
         # A map that stores the best refinement for each feature
-        cdef unordered_map[intp, Refinement] refinements  # Stack-allocated map
+        cdef unordered_map[uint32, Refinement] refinements  # Stack-allocated map
         # The best refinement of the current rule
         cdef Refinement best_refinement  # Stack-allocated struct
         best_refinement.head = NULL
@@ -183,21 +168,20 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
         covered_statistics_mask[:] = 0
         cdef uint32 covered_statistics_target = 0
         # A map that stores potential thresholds that result from all available statistics
-        cdef unordered_map[intp, IndexedFloat32Array*]* cache_global = self.cache_global
+        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
         # A map that stores potential thresholds that result from the statistics that are covered by the current rule
-        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
+        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
 
         # Temporary variables
-        cdef unordered_map[intp, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
+        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
         cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
         cdef Refinement current_refinement
-        cdef intp[::1] sampled_feature_indices
-        cdef intp num_sampled_features
-        cdef uint32 weight
+        cdef uint32[::1] sampled_feature_indices
+        cdef uint32 num_sampled_features, weight, f, r
         cdef bint nominal
-        cdef intp r, c, f
+        cdef intp c
 
         # Sub-sample examples, if necessary...
         cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
@@ -206,7 +190,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
         if instance_sub_sampling is None:
             weights = None
-            total_sum_of_weights = <uint32>num_statistics
+            total_sum_of_weights = num_statistics
         else:
             uint32_array_scalar_pair = instance_sub_sampling.sub_sample(num_statistics, rng)
             weights = uint32_array_scalar_pair.first
@@ -220,13 +204,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
             statistics.addSampledStatistic(r, weight)
 
         # Sub-sample labels, if necessary...
-        cdef intp[::1] sampled_label_indices
-        cdef const intp* label_indices
-        cdef intp num_predictions
+        cdef uint32[::1] sampled_label_indices
+        cdef const uint32* label_indices
+        cdef uint32 num_predictions
 
         if label_sub_sampling is None:
             sampled_label_indices = None
-            label_indices = <const intp*>NULL
+            label_indices = <const uint32*>NULL
             num_predictions = 0
         else:
             sampled_label_indices = label_sub_sampling.sub_sample(num_labels, rng)
@@ -249,13 +233,13 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 # For each feature, update the caches `cache_global` and 'cache_local`, if necessary...
                 for c in range(num_sampled_features):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     __update_caches(f, cache_global, cache_local)
 
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
-                    nominal = nominal_attribute_mask is not None and nominal_attribute_mask[f] > 0
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    nominal = nominal_feature_set.get(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
                                                            total_sum_of_weights, cache_global, cache_local,
                                                            feature_matrix, covered_statistics_mask,
@@ -267,7 +251,7 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
-                    f = c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
                     current_refinement = refinements[f]
 
                     if current_refinement.head != NULL and (best_refinement.head == NULL
@@ -282,10 +266,10 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
-                    conditions.push_back(__make_condition(best_refinement.feature_index, best_refinement.comparator,
+                    conditions.push_back(__make_condition(best_refinement.featureIndex, best_refinement.comparator,
                                                           best_refinement.threshold))
                     num_conditions += 1
-                    num_conditions_per_comparator[<intp>best_refinement.comparator] += 1
+                    num_conditions_per_comparator[<uint32>best_refinement.comparator] += 1
 
                     if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                         # Keep the labels for which the rule predicts, if the head should not be further refined...
@@ -301,18 +285,18 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_refinement.end` and therefore must be adjusted...
                     if weights is not None and abs(best_refinement.previous - best_refinement.end) > 1:
-                        best_refinement.end = __adjust_split(best_refinement.indexed_array, best_refinement.end,
+                        best_refinement.end = __adjust_split(best_refinement.indexedArray, best_refinement.end,
                                                              best_refinement.previous, best_refinement.threshold)
 
                     # Identify the examples for which the rule predicts...
-                    covered_statistics_target = __filter_current_indices(best_refinement.indexed_array,
-                                                                         best_refinement.indexed_array_wrapper,
+                    covered_statistics_target = __filter_current_indices(best_refinement.indexedArray,
+                                                                         best_refinement.indexedArrayWrapper,
                                                                          best_refinement.start, best_refinement.end,
                                                                          best_refinement.comparator,
                                                                          best_refinement.covered, num_conditions,
                                                                          covered_statistics_mask,
                                                                          covered_statistics_target, statistics, weights)
-                    total_sum_of_weights = best_refinement.covered_weights
+                    total_sum_of_weights = best_refinement.coveredWeights
 
                     if total_sum_of_weights <= min_coverage:
                         # Abort refinement process if the rule is not allowed to cover less examples...
@@ -368,8 +352,8 @@ cdef class ExactGreedyRuleInduction(RuleInduction):
                 postincrement(cache_local_iterator)
 
 
-cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32Array*]* cache_global,
-                          unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local):
+cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFloat32Array*]* cache_global,
+                          unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local):
     """
     Updates the caches `cache_global` and `cache_local`, which store arrays that contain the indices of examples, as
     well as their values for certain features, if necessary.
@@ -389,7 +373,7 @@ cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32
     if indexed_array_wrapper == NULL:
         indexed_array_wrapper = <IndexedFloat32ArrayWrapper*>malloc(sizeof(IndexedFloat32ArrayWrapper))
         indexed_array_wrapper.array = NULL
-        indexed_array_wrapper.num_conditions = 0
+        indexed_array_wrapper.numConditions = 0
         cache_local[feature_index] = indexed_array_wrapper
 
     cdef IndexedFloat32Array* indexed_array = indexed_array_wrapper.array
@@ -404,13 +388,14 @@ cdef void __update_caches(intp feature_index, unordered_map[intp, IndexedFloat32
             dereference(cache_global)[feature_index] = indexed_array
 
 
-cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_label_indices, const intp* label_indices,
-                                  uint32[::1] weights, uint32 total_sum_of_weights,
-                                  unordered_map[intp, IndexedFloat32Array*]* cache_global,
-                                  unordered_map[intp, IndexedFloat32ArrayWrapper*] &cache_local,
-                                  FeatureMatrix feature_matrix, uint32[::1] covered_statistics_mask,
-                                  uint32 covered_statistics_target, intp num_conditions, AbstractStatistics* statistics,
-                                  HeadRefinement head_refinement, PredictionCandidate* head) nogil:
+cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num_label_indices,
+                                  const uint32* label_indices, uint32[::1] weights, uint32 total_sum_of_weights,
+                                  unordered_map[uint32, IndexedFloat32Array*]* cache_global,
+                                  unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
+                                  AbstractFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
+                                  uint32 covered_statistics_target, uint32 num_conditions,
+                                  AbstractStatistics* statistics, AbstractHeadRefinement* head_refinement,
+                                  PredictionCandidate* head) nogil:
     """
     Finds and returns the best refinement of an existing rule, which results from adding a new condition that
     corresponds to a certain feature.
@@ -419,9 +404,9 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
     :param nominal                      1, if the feature, the new condition should correspond to, is nominal, 0
                                         otherwise
     :param num_label_indices:           The number of elements in the array `label_indices`
-    :param label_indices:               A pointer to an array of type `intp`, shape `(num_predictions)`, representing
+    :param label_indices:               A pointer to an array of type `uint32`, shape `(num_predictions)`, representing
                                         the indices of the labels for which the refined rule may predict
-    :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
+    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
                                         the training examples or None, if all training examples are weighed equally
     :param total_sum_of_weights:        The sum of the weights of all training examples
     :param cache_global:                A pointer to a map that maps feature indices to structs of type
@@ -432,34 +417,23 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
                                         `IndexedFloat32ArrayWrapper`, storing the indices of the training examples that
                                         are covered by the existing rule, as well as their values for the respective
                                         feature, sorted in ascending order by the feature values
-    :param feature_matrix:              A `FeatureMatrix` that provides column-wise access to the feature values of the
-                                        training examples
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the existing rule. It will be
-                                        updated by this function
+    :param feature_matrix:              A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
+                                        access to the feature values of the training examples
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the existing rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the existing rule
     :param num_conditions:              The number of conditions in the body of the existing rule
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be used for finding the
                                         best refinement
-    :param head_refinement:             The strategy that should be used to find the head of the refined rule
+    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that should be used to
+                                        find the head of the refined rule
     :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
                                         the existing rule
     :return:                            A struct of type `Refinement`, representing the best refinement that has been
                                         found
     """
-    # The current refinement of the existing rule
-    cdef Refinement refinement  # Stack-allocated struct
-    refinement.feature_index = feature_index
-    refinement.head = NULL
-    # The best head seen so far
-    cdef PredictionCandidate* best_head = head
-    # Temporary variables
-    cdef PredictionCandidate* current_head
-    cdef float32 current_threshold, previous_threshold, previous_threshold_negative
-    cdef uint32 weight, accumulated_sum_of_weights, accumulated_sum_of_weights_negative, total_accumulated_sum_of_weights
-    cdef intp r, i, previous_r, previous_r_negative
-
     # Obtain array that contains the indices of the training examples sorted according to the current feature...
     cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
     cdef IndexedFloat32Array* indexed_array = indexed_array_wrapper.array
@@ -470,439 +444,21 @@ cdef Refinement __find_refinement(intp feature_index, bint nominal, intp num_lab
         indexed_values = indexed_array.data
 
         if indexed_values == NULL:
-            feature_matrix.fetch_sorted_feature_values(feature_index, indexed_array)
+            feature_matrix.fetchSortedFeatureValues(feature_index, indexed_array)
             indexed_values = indexed_array.data
 
     # Filter indices, if only a subset of the contained examples is covered...
-    if num_conditions > indexed_array_wrapper.num_conditions:
+    if num_conditions > indexed_array_wrapper.numConditions:
         __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions, covered_statistics_mask,
                              covered_statistics_target)
         indexed_array = indexed_array_wrapper.array
 
-    cdef intp num_indexed_values = indexed_array.numElements
-    indexed_values = indexed_array.data
-
-    # Start a new search based on the current statistics when processing a new feature...
-    cdef unique_ptr[AbstractRefinementSearch] refinement_search_ptr
-    refinement_search_ptr.reset(statistics.beginSearch(num_label_indices, label_indices))
-
-    # In the following, we start by processing all examples with feature values < 0...
-    cdef uint32 sum_of_weights = 0
-    cdef intp first_r = 0
-    cdef intp last_negative_r = -1
-
-    # Traverse examples with feature values < 0 in ascending order until the first example with weight > 0 is
-    # encountered...
-    for r in range(num_indexed_values):
-        current_threshold = indexed_values[r].value
-
-        if current_threshold >= 0:
-            break
-
-        last_negative_r = r
-        i = indexed_values[r].index
-        weight = 1 if weights is None else weights[i]
-
-        if weight > 0:
-            # Tell the search that the example will be covered by upcoming refinements...
-            refinement_search_ptr.get().updateSearch(i, weight)
-            sum_of_weights += weight
-            previous_threshold = current_threshold
-            previous_r = r
-            break
-
-    accumulated_sum_of_weights = sum_of_weights
-
-    # Traverse the remaining examples with feature values < 0 in ascending order...
-    if sum_of_weights > 0:
-        for r in range(r + 1, num_indexed_values):
-            current_threshold = indexed_values[r].value
-
-            if current_threshold >= 0:
-                break
-
-            last_negative_r = r
-            i = indexed_values[r].index
-            weight = 1 if weights is None else weights[i]
-
-            # Do only consider examples that are included in the current sub-sample...
-            if weight > 0:
-                # Split points between examples with the same feature value must not be considered...
-                if previous_threshold != current_threshold:
-                    # Find and evaluate the best head for the current refinement, if a condition that uses the <=
-                    # operator (or the == operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), False, False)
-
-                    # If the refinement is better than the current rule...
-                    if current_head != NULL:
-                        best_head = current_head
-                        refinement.head = current_head
-                        refinement.start = first_r
-                        refinement.end = r
-                        refinement.previous = previous_r
-                        refinement.covered_weights = sum_of_weights
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
-                        refinement.covered = True
-
-                        if nominal:
-                            refinement.comparator = Comparator.EQ
-                            refinement.threshold = previous_threshold
-                        else:
-                            refinement.comparator = Comparator.LEQ
-                            refinement.threshold = (previous_threshold + current_threshold) / 2.0
-
-                    # Find and evaluate the best head for the current refinement, if a condition that uses the >
-                    # operator (or the != operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), True, False)
-
-                    # If the refinement is better than the current rule...
-                    if current_head != NULL:
-                        best_head = current_head
-                        refinement.head = current_head
-                        refinement.start = first_r
-                        refinement.end = r
-                        refinement.previous = previous_r
-                        refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
-                        refinement.covered = False
-
-                        if nominal:
-                            refinement.comparator = Comparator.NEQ
-                            refinement.threshold = previous_threshold
-                        else:
-                            refinement.comparator = Comparator.GR
-                            refinement.threshold = (previous_threshold + current_threshold) / 2.0
-
-                    # Reset the search in case of a nominal feature, as the previous examples will not be covered by the
-                    # next condition...
-                    if nominal:
-                        refinement_search_ptr.get().resetSearch()
-                        sum_of_weights = 0
-                        first_r = r
-
-                previous_threshold = current_threshold
-                previous_r = r
-
-                # Tell the search that the example will be covered by upcoming refinements...
-                refinement_search_ptr.get().updateSearch(i, weight)
-                sum_of_weights += weight
-                accumulated_sum_of_weights += weight
-
-        # If the feature is nominal and the examples that have been iterated so far do not all have the same feature
-        # value, or if not all examples have been iterated so far, we must evaluate additional conditions
-        # `f == previous_threshold` and `f != previous_threshold`...
-        if nominal and sum_of_weights > 0 and (sum_of_weights < accumulated_sum_of_weights
-                                               or accumulated_sum_of_weights < total_sum_of_weights):
-            # Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
-            # used...
-            current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                     refinement_search_ptr.get(), False, False)
-
-            # If the refinement is better than the current rule...
-            if current_head != NULL:
-                best_head = current_head
-                refinement.head = current_head
-                refinement.start = first_r
-                refinement.end = (last_negative_r + 1)
-                refinement.previous = previous_r
-                refinement.covered_weights = sum_of_weights
-                refinement.indexed_array = indexed_array
-                refinement.indexed_array_wrapper = indexed_array_wrapper
-                refinement.covered = True
-                refinement.comparator = Comparator.EQ
-                refinement.threshold = previous_threshold
-
-            # Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
-            # used...
-            current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                     refinement_search_ptr.get(), True, False)
-
-            # If the refinement is better than the current rule...
-            if current_head != NULL:
-                best_head = current_head
-                refinement.head = current_head
-                refinement.start = first_r
-                refinement.end = (last_negative_r + 1)
-                refinement.previous = previous_r
-                refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-                refinement.indexed_array = indexed_array
-                refinement.indexed_array_wrapper = indexed_array_wrapper
-                refinement.covered = False
-                refinement.comparator = Comparator.NEQ
-                refinement.threshold = previous_threshold
-
-        # Reset the search, if any examples with feature value < 0 have been processed...
-        refinement_search_ptr.get().resetSearch()
-
-    previous_threshold_negative = previous_threshold
-    previous_r_negative = previous_r
-    accumulated_sum_of_weights_negative = accumulated_sum_of_weights
-
-    # We continue by processing all examples with feature values >= 0...
-    sum_of_weights = 0
-    first_r = num_indexed_values - 1
-
-    # Traverse examples with feature values >= 0 in descending order until the first example with weight > 0 is
-    # encountered...
-    for r in range(first_r, last_negative_r, -1):
-        i = indexed_values[r].index
-        weight = 1 if weights is None else weights[i]
-
-        if weight > 0:
-            # Tell the search that the example will be covered by upcoming refinements...
-            refinement_search_ptr.get().updateSearch(i, weight)
-            sum_of_weights += weight
-            previous_threshold = indexed_values[r].value
-            previous_r = r
-            break
-
-    accumulated_sum_of_weights = sum_of_weights
-
-    # Traverse the remaining examples with feature values >= 0 in descending order...
-    if sum_of_weights > 0:
-        for r in range(r - 1, last_negative_r, -1):
-            i = indexed_values[r].index
-            weight = 1 if weights is None else weights[i]
-
-            # Do only consider examples that are included in the current sub-sample...
-            if weight > 0:
-                current_threshold = indexed_values[r].value
-
-                # Split points between examples with the same feature value must not be considered...
-                if previous_threshold != current_threshold:
-                    # Find and evaluate the best head for the current refinement, if a condition that uses the >
-                    # operator (or the == operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), False, False)
-
-                    # If the refinement is better than the current rule...
-                    if current_head != NULL:
-                        best_head = current_head
-                        refinement.head = current_head
-                        refinement.start = first_r
-                        refinement.end = r
-                        refinement.previous = previous_r
-                        refinement.covered_weights = sum_of_weights
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
-                        refinement.covered = True
-
-                        if nominal:
-                            refinement.comparator = Comparator.EQ
-                            refinement.threshold = previous_threshold
-                        else:
-                            refinement.comparator = Comparator.GR
-                            refinement.threshold = (previous_threshold + current_threshold) / 2.0
-
-                    # Find and evaluate the best head for the current refinement, if a condition that uses the <=
-                    # operator (or the != operator in case of a nominal feature) is used...
-                    current_head = head_refinement.find_head(best_head, refinement.head, label_indices,
-                                                             refinement_search_ptr.get(), True, False)
-
-                    # If the refinement is better than the current rule...
-                    if current_head != NULL:
-                        best_head = current_head
-                        refinement.head = current_head
-                        refinement.start = first_r
-                        refinement.end = r
-                        refinement.previous = previous_r
-                        refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-                        refinement.indexed_array = indexed_array
-                        refinement.indexed_array_wrapper = indexed_array_wrapper
-                        refinement.covered = False
-
-                        if nominal:
-                            refinement.comparator = Comparator.NEQ
-                            refinement.threshold = previous_threshold
-                        else:
-                            refinement.comparator = Comparator.LEQ
-                            refinement.threshold = (previous_threshold + current_threshold) / 2.0
-
-                    # Reset the search in case of a nominal feature, as the previous examples will not be covered by the
-                    # next condition...
-                    if nominal:
-                        refinement_search_ptr.get().resetSearch()
-                        sum_of_weights = 0
-                        first_r = r
-
-                previous_threshold = current_threshold
-                previous_r = r
-
-                # Tell the search that the example will be covered by upcoming refinements...
-                refinement_search_ptr.get().updateSearch(i, weight)
-                sum_of_weights += weight
-                accumulated_sum_of_weights += weight
-
-    # If the feature is nominal and the examples with feature values >= 0 that have been iterated so far do not all have
-    # the same feature value, we must evaluate additional conditions `f == previous_threshold` and
-    # `f != previous_threshold`...
-    if nominal and sum_of_weights > 0 and sum_of_weights < accumulated_sum_of_weights:
-        # Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
-        # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 False, False)
-
-        # If the refinement is better than the current rule...
-        if current_head != NULL:
-            best_head = current_head
-            refinement.head = current_head
-            refinement.start = first_r
-            refinement.end = last_negative_r
-            refinement.previous = previous_r
-            refinement.covered_weights = sum_of_weights
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
-            refinement.covered = True
-            refinement.comparator = Comparator.EQ
-            refinement.threshold = previous_threshold
-
-        # Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
-        # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 True, False)
-
-        # If the refinement is better than the current rule...
-        if current_head != NULL:
-            best_head = current_head
-            refinement.head = current_head
-            refinement.start = first_r
-            refinement.end = last_negative_r
-            refinement.previous = previous_r
-            refinement.covered_weights = (total_sum_of_weights - sum_of_weights)
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
-            refinement.covered = False
-            refinement.comparator = Comparator.NEQ
-            refinement.threshold = previous_threshold
-
-    total_accumulated_sum_of_weights = accumulated_sum_of_weights_negative + accumulated_sum_of_weights
-
-    # If the sum of weights of all examples that have been iterated so far (including those with feature values < 0 and
-    # those with feature values >= 0) is less than the sum of of weights of all examples, this means that there are
-    # examples with sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate
-    # these examples from the ones that have already been iterated...
-    if total_accumulated_sum_of_weights > 0 and total_accumulated_sum_of_weights < total_sum_of_weights:
-        # If the feature is nominal, we must reset the search once again to ensure that the accumulated state includes
-        # all examples that have been processed so far...
-        if nominal:
-            refinement_search_ptr.get().resetSearch()
-            first_r = num_indexed_values - 1
-
-        # Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
-        # the condition `f != 0` in case of a nominal feature) is used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 False, nominal)
-
-        # If the refinement is better than the current rule...
-        if current_head != NULL:
-            best_head = current_head
-            refinement.head = current_head
-            refinement.start = first_r
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
-            refinement.covered = True
-
-            if nominal:
-                refinement.end = -1
-                refinement.previous = -1
-                refinement.covered_weights = total_accumulated_sum_of_weights
-                refinement.comparator = Comparator.NEQ
-                refinement.threshold = 0.0
-            else:
-                refinement.end = last_negative_r
-                refinement.previous = previous_r
-                refinement.covered_weights = accumulated_sum_of_weights
-                refinement.comparator = Comparator.GR
-                refinement.threshold = previous_threshold / 2.0
-
-        # Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2` (or
-        # `f == 0` in case of a nominal feature) is used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 True, nominal)
-
-        # If the refinement is better than the current rule...
-        if current_head != NULL:
-            best_head = current_head
-            refinement.head = current_head
-            refinement.start = first_r
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
-            refinement.covered = False
-
-            if nominal:
-                refinement.end = -1
-                refinement.previous = -1
-                refinement.covered_weights = (total_sum_of_weights - total_accumulated_sum_of_weights)
-                refinement.comparator = Comparator.EQ
-                refinement.threshold = 0.0
-            else:
-                refinement.end = last_negative_r
-                refinement.previous = previous_r
-                refinement.covered_weights = (total_sum_of_weights - accumulated_sum_of_weights)
-                refinement.comparator = Comparator.LEQ
-                refinement.threshold = previous_threshold / 2.0
-
-    # If the feature is numerical and there are other examples than those with feature values < 0 that have been
-    # processed earlier, we must evaluate additional conditions that separate the examples with feature values < 0 from
-    # the remaining ones (unlike in the nominal case, these conditions cannot be evaluated earlier, because it remains
-    # unclear what the thresholds of the conditions should be until the examples with feature values >= 0 have been
-    # processed).
-    if not nominal and accumulated_sum_of_weights_negative > 0 and accumulated_sum_of_weights_negative < total_sum_of_weights:
-        # Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
-        # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 False, True)
-
-        if current_head != NULL:
-            best_head = current_head
-            refinement.head = current_head
-            refinement.start = 0
-            refinement.end = (last_negative_r + 1)
-            refinement.previous = previous_r_negative
-            refinement.covered_weights = accumulated_sum_of_weights_negative
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
-            refinement.covered = True
-            refinement.comparator = Comparator.LEQ
-
-            if total_accumulated_sum_of_weights < total_sum_of_weights:
-                # If the condition separates an example with feature value < 0 from an (sparse) example with feature
-                # value == 0
-                refinement.threshold = previous_threshold_negative / 2.0
-            else:
-                # If the condition separates an examples with feature value < 0 from an example with feature value > 0
-                refinement.threshold = previous_threshold_negative + (fabs(previous_threshold - previous_threshold_negative) / 2.0)
-
-        # Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
-        # used...
-        current_head = head_refinement.find_head(best_head, refinement.head, label_indices, refinement_search_ptr.get(),
-                                                 True, True)
-
-        if current_head != NULL:
-            best_head = current_head
-            refinement.head = current_head
-            refinement.start = 0
-            refinement.end = (last_negative_r + 1)
-            refinement.previous = previous_r_negative
-            refinement.covered_weights = (total_sum_of_weights - accumulated_sum_of_weights_negative)
-            refinement.indexed_array = indexed_array
-            refinement.indexed_array_wrapper = indexed_array_wrapper
-            refinement.covered = False
-            refinement.comparator = Comparator.GR
-
-            if total_accumulated_sum_of_weights < total_sum_of_weights:
-                # If the condition separates an example with feature value < 0 from an (sparse) example with feature
-                # value == 0
-                refinement.threshold = previous_threshold_negative / 2.0
-            else:
-                # If the condition separates an examples with feature value < 0 from an example with feature value > 0
-                refinement.threshold = previous_threshold_negative + (fabs(previous_threshold - previous_threshold_negative) / 2.0)
-
-    return refinement
+    # Find and return the best refinement...
+    cdef const uint32* weights_ptr = <const uint32*>NULL if weights is None else &weights[0]
+    cdef unique_ptr[AbstractRuleRefinement] rule_refinement_ptr
+    rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array_wrapper, indexed_array, weights_ptr,
+                                                          total_sum_of_weights, feature_index, nominal))
+    return rule_refinement_ptr.get().findRefinement(head_refinement, head, num_label_indices, label_indices)
 
 
 cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp condition_end, intp condition_previous,
@@ -930,10 +486,10 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
     cdef bint ascending = condition_end < condition_previous
     cdef intp direction = 1 if ascending else -1
     cdef intp start = condition_end + direction
-    cdef intp num_steps = abs(start - condition_previous)
+    cdef uint32 num_steps = abs(start - condition_previous)
     cdef float32 feature_value
     cdef bint adjust
-    cdef intp i, r
+    cdef uint32 i, r
 
     # Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
     # current sub-sample...
@@ -959,7 +515,7 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
 cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                             IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp condition_start,
                                             intp condition_end, Comparator condition_comparator, bint covered,
-                                            intp num_conditions, uint32[::1] covered_statistics_mask,
+                                            uint32 num_conditions, uint32[::1] covered_statistics_mask,
                                             uint32 covered_statistics_target, AbstractStatistics* statistics,
                                             uint32[::1] weights):
     """
@@ -974,39 +530,39 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
                                         to store the filtered array
     :param condition_start:             The element in `indexed_values` that corresponds to the first example
-                                        (inclusive) that has been passed to the `RefinementSearch` when searching for
-                                        the new condition
+                                        (inclusive) included in the `AbstractStatisticsSubset` that is covered by the
+                                        new condition
     :param condition_end:               The element in `indexed_values` that corresponds to the last example (exclusive)
     :param condition_comparator:        The type of the operator that is used by the new condition
     :param covered                      1, if the examples in range [condition_start, condition_end) are covered by the
                                         new condition and the remaining ones are not, 0, if the examples in said range
                                         are not covered and the remaining ones are
     :param num_conditions:              The total number of conditions in the rule's body (including the new one)
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the previous rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the previous rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be notified about the
                                         examples that must be considered when searching for the next refinement, i.e.,
                                         the examples that are covered by the new rule
-    :param weights:                     An array of dtype uint, shape `(num_statistics)`, representing the weights of
+    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
                                         the training examples
     :return:                            The value that is used to mark those elements in the updated
                                         `covered_statistics_mask` that are covered by the new rule
     """
     cdef IndexedFloat32* indexed_values = indexed_array.data
-    cdef intp num_indexed_values = indexed_array.numElements
+    cdef uint32 num_indexed_values = indexed_array.numElements
     cdef bint descending = condition_end < condition_start
-    cdef uint32 updated_target, weight
-    cdef intp start, end, direction, i, r, j, index, num_steps
+    cdef uint32 updated_target, weight, index, num_steps, i, r, j
+    cdef intp start, end, direction
 
     # Determine the number of elements in the filtered array...
-    cdef intp num_condition_steps = abs(condition_start - condition_end)
-    cdef intp num_elements = num_condition_steps
+    cdef uint32 num_condition_steps = abs(condition_start - condition_end)
+    cdef uint32 num_elements = num_condition_steps
 
     if not covered:
-        num_elements = num_indexed_values - num_elements
+        num_elements = (num_indexed_values - num_elements) if num_indexed_values > num_elements else 0
 
     # Allocate filtered array...
     cdef IndexedFloat32* filtered_array = NULL
@@ -1090,12 +646,12 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
 
     filtered_indexed_array.data = filtered_array
     filtered_indexed_array.numElements = num_elements
-    indexed_array_wrapper.num_conditions = num_conditions
+    indexed_array_wrapper.numConditions = num_conditions
     return updated_target
 
 
 cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
-                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp num_conditions,
+                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, uint32 num_conditions,
                                       uint32[::1] covered_statistics_mask, uint32 covered_statistics_target) nogil:
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
@@ -1107,9 +663,9 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
                                         to store the filtered array
     :param num_conditions:              The total number of conditions in the current rule's body
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the previous rule. It will be
-                                        updated by this function
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the previous rule. It will
+                                        be updated by this function
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the previous rule
     """
@@ -1119,10 +675,10 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     if filtered_indexed_array != NULL:
         filtered_array = filtered_indexed_array.data
 
-    cdef intp max_elements = indexed_array.numElements
-    cdef intp i = 0
+    cdef uint32 max_elements = indexed_array.numElements
+    cdef uint32 i = 0
     cdef IndexedFloat32* indexed_values
-    cdef intp r, index
+    cdef uint32 index, r
 
     if max_elements > 0:
         indexed_values = indexed_array.data
@@ -1150,10 +706,10 @@ cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
     filtered_indexed_array.data = filtered_array
     filtered_indexed_array.numElements = i
     indexed_array_wrapper.array = filtered_indexed_array
-    indexed_array_wrapper.num_conditions = num_conditions
+    indexed_array_wrapper.numConditions = num_conditions
 
 
-cdef inline Condition __make_condition(intp feature_index, Comparator comparator, float32 threshold):
+cdef inline Condition __make_condition(uint32 feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
 
@@ -1168,8 +724,8 @@ cdef inline Condition __make_condition(intp feature_index, Comparator comparator
     return condition
 
 
-cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp num_statistics,
-                                           HeadRefinement head_refinement, uint32[::1] covered_statistics_mask,
+cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint32 num_statistics,
+                                           AbstractHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
                                            uint32 covered_statistics_target, PredictionCandidate* head):
     """
     Updates the scores that a predicted by the head of a rule, based on all available statistics.
@@ -1177,36 +733,34 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, intp 
     :param statistics:                  A pointer to an object of type `AbstractStatistics` that stores the available
                                         statistics
     :param num_statistics:              The number of available statistics
-    :param head_refinement:             The strategy that was used to find the head of the rule
-    :param covered_statistics_mask:     An array of dtype uint, shape `(num_statistics)` that is used to keep track of
-                                        the indices of the statistics that are covered by the rule
+    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that was used to find
+                                        the head of the rule
+    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
+                                        of the indices of the statistics that are covered by the rule
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
                                         are covered by the rule
     :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
                                         the rule
     """
     # The number labels for which the head predicts
-    cdef intp num_predictions = head.numPredictions_
+    cdef uint32 num_predictions = head.numPredictions_
     # An array that stores the labels for which the head predicts
-    cdef intp* label_indices = head.labelIndices_
+    cdef uint32* label_indices = head.labelIndices_
     # An array that stores the scores that are predicted by the head
     cdef float64* predicted_scores = head.predictedScores_
+    # Create a new, empty subset of the statistics
+    cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+    statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
     # Temporary variables
-    cdef AbstractRefinementSearch* refinement_search
     cdef Prediction* prediction
     cdef float64* updated_scores
-    cdef intp r, c
+    cdef uint32 r, c
 
-    try:
-        refinement_search = statistics.beginSearch(num_predictions, label_indices)
+    for r in range(num_statistics):
+        if covered_statistics_mask[r] == covered_statistics_target:
+            statistics_subset_ptr.get().addToSubset(r, 1)
+            prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
+            updated_scores = prediction.predictedScores_
 
-        for r in range(num_statistics):
-            if covered_statistics_mask[r] == covered_statistics_target:
-                refinement_search.updateSearch(r, 1)
-                prediction = head_refinement.calculate_prediction(refinement_search, False, False)
-                updated_scores = prediction.predictedScores_
-
-                for c in range(num_predictions):
-                    predicted_scores[c] = updated_scores[c]
-    finally:
-        del refinement_search
+            for c in range(num_predictions):
+                predicted_scores[c] = updated_scores[c]

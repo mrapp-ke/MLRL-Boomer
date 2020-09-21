@@ -26,7 +26,7 @@ namespace seco {
              * @param numLabels The number of labels for which the lift should be calculated
              * @return          The lift that has been calculated
              */
-            virtual float64 calculateLift(intp numLabels);
+            virtual float64 calculateLift(uint32 numLabels);
 
             /**
              * Returns the maximum lift possible.
@@ -45,9 +45,9 @@ namespace seco {
 
         private:
 
-            intp numLabels_;
+            uint32 numLabels_;
 
-            intp peakLabel_;
+            uint32 peakLabel_;
 
             float64 maxLift_;
 
@@ -62,11 +62,11 @@ namespace seco {
              * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
              *                  smaller value results in a flatter curvature. Must be greater than 0
              */
-            PeakLiftFunctionImpl(intp numLabels, intp peakLabel, float64 maxLift, float64 curvature);
+            PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature);
 
             ~PeakLiftFunctionImpl();
 
-            float64 calculateLift(intp numLabels) override;
+            float64 calculateLift(uint32 numLabels) override;
 
             float64 getMaxLift() override;
 

@@ -17,79 +17,6 @@
 namespace seco {
 
     /**
-     * Allows to search for the best refinement of a rule based on the confusion matrices previously stored by an object
-     * of type `DenseLabelWiseStatisticsImpl`.
-     */
-    class DenseLabelWiseRefinementSearchImpl : public AbstractDecomposableRefinementSearch {
-
-        private:
-
-            std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
-
-            intp numPredictions_;
-
-            const intp* labelIndices_;
-
-            std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
-
-            const float64* uncoveredLabels_;
-
-            const uint8* minorityLabels_;
-
-            const float64* confusionMatricesTotal_;
-
-            const float64* confusionMatricesSubset_;
-
-            float64* confusionMatricesCovered_;
-
-            float64* accumulatedConfusionMatricesCovered_;
-
-            LabelWisePredictionCandidate* prediction_;
-
-        public:
-
-            /**
-             * @param ruleEvaluationPtr         A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`
-             *                                  to be used for calculating the predictions, as well as corresponding
-             *                                  quality scores, of rules
-             * @param numPredictions            The number of labels to be considered by the search
-             * @param labelIndices              An array of type `intp`, shape `(numPredictions)`, representing the
-             *                                  indices of the labels that should be considered by the search or NULL,
-             *                                  if all labels should be considered
-             * @param labelMatrix               A shared pointer to an object of type `AbstractRandomAccessLabelMatrix`
-             *                                  that provides random access to the labels of the training examples
-             * @param uncoveredLabels           A pointer to an array of type `float64`, shape
-             *                                  `(numExamples, numLabels)`, indicating which examples and labels remain
-             *                                  to be covered
-             * @param minorityLabels            A pointer to an array of type `uint8`, shape `(numLabels)`, indicating
-             *                                  whether rules should predict individual labels as relevant (1) or
-             *                                  irrelevant (0)
-             * @param confusionMatricesTotal    A pointer to a C-contiguous array of type `float64`, shape
-             *                                  `(num_labels, NUM_CONFUSION_MATRIX_ELEMENTS)`, storing a confusion
-             *                                  matrix that takes into account all examples for each label
-             * @param confusionMatricesSubset   A pointer to a C-contiguous array of type `float64`, shape
-             *                                  `(num_labels, NUM_CONFUSION_MATRIX_ELEMENTS)`, storing a confusion
-             *                                  matrix that takes into account all all examples, which are covered by
-             *                                  the previous refinement of the rule, for each label
-             */
-            DenseLabelWiseRefinementSearchImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                               intp numPredictions, const intp* labelIndices,
-                                               std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr,
-                                               const float64* uncoveredLabels, const uint8* minorityLabels,
-                                               const float64* confusionMatricesTotal,
-                                               const float64* confusionMatricesSubset);
-
-            ~DenseLabelWiseRefinementSearchImpl();
-
-            void updateSearch(intp statisticIndex, uint32 weight) override;
-
-            void resetSearch() override;
-
-            LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) override;
-
-    };
-
-    /**
      * An abstract base class for all classes that allow to store the elements of confusion matrices that are computed
      * independently for each label.
      */
@@ -101,11 +28,12 @@ namespace seco {
 
             /**
              * @param numStatistics     The number of statistics
+             * @param numLabels         The number of labels
              * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractLabelWiseRuleEvaluation`, to be
              *                          used for calculating the predictions, as well as corresponding quality scores,
              *                          of rules
              */
-            AbstractLabelWiseStatistics(intp numStatistics,
+            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
                                         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr);
 
             /**
@@ -120,12 +48,56 @@ namespace seco {
     };
 
     /**
-     * Allows to store the elements of confusion matrices that are computed independently for each label using dense
+     * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
      */
     class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         private:
+
+            /**
+             * Provides access to a subset of the confusion matrices that are stored by an instance of the class
+             * `DenseLabelWiseStatisticsImpl`.
+             */
+            class StatisticsSubsetImpl : public AbstractDecomposableStatisticsSubset {
+
+                private:
+
+                    DenseLabelWiseStatisticsImpl* statistics_;
+
+                    uint32 numPredictions_;
+
+                    const uint32* labelIndices_;
+
+                    float64* confusionMatricesCovered_;
+
+                    float64* accumulatedConfusionMatricesCovered_;
+
+                    LabelWisePredictionCandidate* prediction_;
+
+                public:
+
+                    /**
+                     * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
+                     *                          stores the confusion matrices
+                     * @param numPredictions    The number of elements in the array `labelIndices`
+                     * @param labelIndices      An array of type `uint32`, shape `(numPredictions)`, representing the
+                     *                          indices of the labels that should be included in the subset or NULL,
+                     *                          if all labels should be considered
+                     */
+                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
+                                         const uint32* labelIndices);
+
+                    ~StatisticsSubsetImpl();
+
+                    void addToSubset(uint32 statisticIndex, uint32 weight) override;
+
+                    void resetSubset() override;
+
+                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                                                                               bool accumulated) override;
+
+            };
 
             std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr_;
 
@@ -160,15 +132,15 @@ namespace seco {
 
             void resetSampledStatistics() override;
 
-            void addSampledStatistic(intp statisticIndex, uint32 weight) override;
+            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override;
 
             void resetCoveredStatistics() override;
 
-            void updateCoveredStatistic(intp statisticIndex, uint32 weight, bool remove) override;
+            void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractRefinementSearch* beginSearch(intp numLabelIndices, const intp* labelIndices) override;
+            AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
 
-            void applyPrediction(intp statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 
     };
 
