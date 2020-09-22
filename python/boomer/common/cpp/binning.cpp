@@ -53,7 +53,6 @@ void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* inde
 
 
 void EqualWidthBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer){
-    //TODO: Min und Max Suche
     intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
     if(numBins > length){
@@ -61,8 +60,15 @@ void EqualWidthBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedA
     }
     //defining minimal and maximum values
     float min = indexedArray->data[0].value;
+    float max = indexedArray->data[0].value;
+    for(intp i = 1; i < length; i++){
+        if(indexedArray->data[i].value < min){
+            min = indexedArray->data[i].value;
+        }else if(max < indexedArray->data[i].value){
+            max = indexedArray->data[i].value;
+        }
+    }
     intp bound_min = floor(min);
-    float max = indexedArray->data[indexedArray->numElements-1].value;
     //w stands for width and determines the span of values for a bin
     intp w = intp(ceil((max - min)/numBins));
     //defining the boundaries of bins
