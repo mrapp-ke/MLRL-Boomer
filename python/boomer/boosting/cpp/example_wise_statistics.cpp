@@ -248,10 +248,6 @@ DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-DenseExampleWiseStatisticsFactoryImpl::~DenseExampleWiseStatisticsFactoryImpl() {
-
-}
-
 AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
     // Class members
     AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();

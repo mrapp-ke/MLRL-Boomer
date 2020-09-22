@@ -227,8 +227,6 @@ namespace boosting {
                                                   std::shared_ptr<Lapack> lapackPtr,
                                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            ~DenseExampleWiseStatisticsFactoryImpl();
-
             AbstractExampleWiseStatistics* create() override;
 
     };
