@@ -42,15 +42,6 @@ static inline float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, fl
     return 1 - ((numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal)));
 }
 
-AbstractHeuristic::~AbstractHeuristic() {
-
-}
-
-float64 AbstractHeuristic::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                   float64 uip, float64 urn, float64 urp) {
-    return 0;
-}
-
 float64 PrecisionImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                float64 uip, float64 urn, float64 urp) {
     return precision(cin, cip, crn, crp);
