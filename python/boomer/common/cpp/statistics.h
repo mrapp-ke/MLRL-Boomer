@@ -168,7 +168,7 @@ class AbstractStatistics : virtual public IMatrix {
          * This function is supposed to reset any non-global internal state that only holds for a certain subset of the
          * available statistics and therefore becomes invalid when a different subset of the statistics should be used.
          */
-        virtual void resetSampledStatistics();
+        virtual void resetSampledStatistics() = 0;
 
         /**
          * Adds a specific statistic to the sub-sample that should be considered in the following for learning a new
@@ -185,7 +185,7 @@ class AbstractStatistics : virtual public IMatrix {
          * @param statisticIndex    The index of the statistic that should be considered
          * @param weight            The weight of the statistic that should be considered
          */
-        virtual void addSampledStatistic(uint32 statisticIndex, uint32 weight);
+        virtual void addSampledStatistic(uint32 statisticIndex, uint32 weight) = 0;
 
         /**
          * Resets the statistics which should be considered in the following for refining an existing rule. The indices
@@ -197,7 +197,7 @@ class AbstractStatistics : virtual public IMatrix {
          * This function is supposed to reset any non-global internal state that only holds for a certain subset of the
          * available statistics and therefore becomes invalid when a different subset of the statistics should be used.
          */
-        virtual void resetCoveredStatistics();
+        virtual void resetCoveredStatistics() = 0;
 
         /**
          * Adds a specific statistic to the subset that is covered by an existing rule and therefore should be
@@ -219,7 +219,7 @@ class AbstractStatistics : virtual public IMatrix {
          * @param remove            False, if the statistic should be considered, True, if the statistic should not be
          *                          considered anymore
          */
-        virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove);
+        virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) = 0;
 
         /**
          * Creates a new, empty subset of the statistics. Individual statistics that are covered by a refinement of a
@@ -238,7 +238,7 @@ class AbstractStatistics : virtual public IMatrix {
          *                          should be included
          * @return                  A pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual StatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices);
+        virtual StatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.
@@ -250,7 +250,7 @@ class AbstractStatistics : virtual public IMatrix {
          * @param head              A pointer to an object of type `Prediction`, representing the predictions of the
          *                          newly induced rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction);
+        virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction) = 0;
 
         uint32 getNumRows() override;
 
