@@ -62,7 +62,7 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
 
     cdef void switch_rule_evaluation(self):
         cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
-        cdef shared_ptr[AbstractExampleWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
+        cdef shared_ptr[IExampleWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
         self.statistics_ptr.get().setRuleEvaluation(rule_evaluation_ptr)
 
 

@@ -7,13 +7,13 @@ using namespace boosting;
 
 
 AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr)
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr)
     : AbstractGradientStatistics(numStatistics, numLabels) {
     this->setRuleEvaluation(ruleEvaluationPtr);
 }
 
 void AbstractExampleWiseStatistics::setRuleEvaluation(
-        std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr) {
+        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
@@ -146,7 +146,7 @@ PredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-        std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
+        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
     : AbstractExampleWiseStatistics(labelMatrixPtr.get()->getNumRows(), labelMatrixPtr.get()->getNumCols(),
@@ -232,7 +232,7 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Pred
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-        std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
+        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;

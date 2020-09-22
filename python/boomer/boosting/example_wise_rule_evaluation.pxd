@@ -7,11 +7,11 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil:
 
-    cdef cppclass AbstractExampleWiseRuleEvaluation:
+    cdef cppclass IExampleWiseRuleEvaluation:
         pass
 
 
-    cdef cppclass RegularizedExampleWiseRuleEvaluationImpl(AbstractExampleWiseRuleEvaluation):
+    cdef cppclass RegularizedExampleWiseRuleEvaluationImpl(IExampleWiseRuleEvaluation):
 
         # Constructors:
 
@@ -23,7 +23,7 @@ cdef class ExampleWiseRuleEvaluation:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractExampleWiseRuleEvaluation] rule_evaluation_ptr
+    cdef shared_ptr[IExampleWiseRuleEvaluation] rule_evaluation_ptr
 
 
 cdef class RegularizedExampleWiseRuleEvaluation(ExampleWiseRuleEvaluation):
