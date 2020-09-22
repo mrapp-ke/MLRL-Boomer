@@ -31,13 +31,13 @@ struct Refinement {
 };
 
 /**
- * An abstract base class for all classes that allow to find the best refinement of existing rules.
+ * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
-class AbstractRuleRefinement {
+class IRuleRefinement {
 
     public:
 
-        virtual ~AbstractRuleRefinement() { };
+        virtual ~IRuleRefinement() { };
 
         /**
          * Finds and returns the best refinement of an existing rule.
@@ -61,7 +61,7 @@ class AbstractRuleRefinement {
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  */
-class ExactRuleRefinementImpl : virtual public AbstractRuleRefinement {
+class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
