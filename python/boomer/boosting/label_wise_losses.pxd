@@ -25,5 +25,6 @@ cdef class LabelWiseLoss:
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     pass
 
+
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     pass
