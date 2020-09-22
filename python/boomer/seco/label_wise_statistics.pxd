@@ -1,4 +1,4 @@
-from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
+from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.seco.statistics cimport AbstractCoverageStatistics
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, AbstractLabelWiseRuleEvaluation
@@ -34,7 +34,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         # Constructors:
 
         DenseLabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
-                                            shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+                                            shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 
 cdef class LabelWiseStatisticsFactory:

@@ -4,7 +4,7 @@
 Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
 (non-decomposable) loss function that is applied example-wise.
 """
-from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
 from boomer.boosting._lapack cimport init_lapack
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
@@ -40,7 +40,7 @@ cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
         """
         self.statistics_factory_ptr = <shared_ptr[AbstractExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
             loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, shared_ptr[Lapack](init_lapack()),
-            dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](label_matrix.label_matrix_ptr))
+            dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
 cdef class ExampleWiseStatisticsProvider(StatisticsProvider):

@@ -88,7 +88,7 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
         std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
     : AbstractLabelWiseStatistics(labelMatrixPtr.get()->getNumRows(), labelMatrixPtr.get()->getNumCols(),
                                   ruleEvaluationPtr) {
@@ -177,7 +177,7 @@ AbstractLabelWiseStatistics* AbstractLabelWiseStatisticsFactory::create() {
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
@@ -190,7 +190,7 @@ DenseLabelWiseStatisticsFactoryImpl::~DenseLabelWiseStatisticsFactoryImpl() {
 AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // Class members
     AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
-    AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
+    IRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
     uint32 numExamples = labelMatrix->getNumRows();
     // The number of labels

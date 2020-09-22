@@ -1,4 +1,4 @@
-from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
+from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.statistics cimport AbstractGradientStatistics
@@ -40,7 +40,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         DenseExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
                                               shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                               shared_ptr[Lapack] lapackPtr,
-                                              shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+                                              shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 
 cdef class ExampleWiseStatisticsFactory:

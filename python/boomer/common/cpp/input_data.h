@@ -13,31 +13,31 @@
 
 
 /**
- * An abstract base class for all label matrices that provide access to the labels of the training examples.
+ * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
-class AbstractLabelMatrix : virtual public IMatrix {
+class ILabelMatrix : virtual public IMatrix {
 
     public:
 
-        virtual ~AbstractLabelMatrix() { };
+        virtual ~ILabelMatrix() { };
 
 };
 
 /**
- * An abstract base class for all label matrices that provide random access to the labels of the training examples.
+ * Defines an interface for all label matrices that provide random access to the labels of the training examples.
  */
-class AbstractRandomAccessLabelMatrix : virtual public AbstractLabelMatrix , virtual public IRandomAccessMatrix<uint8> {
+class IRandomAccessLabelMatrix : virtual public ILabelMatrix , virtual public IRandomAccessMatrix<uint8> {
 
     public:
 
-        virtual ~AbstractRandomAccessLabelMatrix() { };
+        virtual ~IRandomAccessLabelMatrix() { };
 
 };
 
 /**
  * Implements random access to the labels of the training examples based on a C-contiguous array.
  */
-class DenseLabelMatrixImpl : virtual public AbstractRandomAccessLabelMatrix {
+class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
     private:
 
@@ -69,7 +69,7 @@ class DenseLabelMatrixImpl : virtual public AbstractRandomAccessLabelMatrix {
  * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of keys
  * (DOK) format.
  */
-class DokLabelMatrixImpl : virtual public AbstractRandomAccessLabelMatrix {
+class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
     private:
 
@@ -92,14 +92,14 @@ class DokLabelMatrixImpl : virtual public AbstractRandomAccessLabelMatrix {
 };
 
 /**
- * An abstract base class for all feature matrices that provide column-wise access to the feature values of the training
+ * Defines an interface for all feature matrices that provide column-wise access to the feature values of the training
  * examples.
  */
-class AbstractFeatureMatrix : virtual public IMatrix {
+class IFeatureMatrix : virtual public IMatrix {
 
     public:
 
-        virtual ~AbstractFeatureMatrix() { };
+        virtual ~IFeatureMatrix() { };
 
         /**
          * Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
@@ -117,7 +117,7 @@ class AbstractFeatureMatrix : virtual public IMatrix {
 /**
  * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
  */
-class DenseFeatureMatrixImpl : virtual public AbstractFeatureMatrix {
+class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
 
     private:
 
@@ -149,7 +149,7 @@ class DenseFeatureMatrixImpl : virtual public AbstractFeatureMatrix {
  * Implements column-wise access to the feature values of the training examples based on a sparse matrix in the
  * compressed sparse column (CSC) format.
  */
-class CscFeatureMatrixImpl : virtual public AbstractFeatureMatrix {
+class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
 
     private:
 
@@ -188,13 +188,13 @@ class CscFeatureMatrixImpl : virtual public AbstractFeatureMatrix {
 };
 
 /**
- * An abstract base class for all sets that allow check whether individual features are nominal or not.
+ * Defines an interface for all sets that allow check whether individual features are nominal or not.
  */
-class AbstractNominalFeatureSet : virtual public IRandomAccessVector<uint8> {
+class INominalFeatureSet : virtual public IRandomAccessVector<uint8> {
 
     public:
 
-        virtual ~AbstractNominalFeatureSet() { };
+        virtual ~INominalFeatureSet() { };
 
 };
 
@@ -202,7 +202,7 @@ class AbstractNominalFeatureSet : virtual public IRandomAccessVector<uint8> {
  * Allows to check whether individual features are nominal or not based on a sparse vector that stores the indices of
  * the nominal features in the dictionary of keys (DOK) format.
  */
-class DokNominalFeatureSetImpl : virtual public AbstractNominalFeatureSet {
+class DokNominalFeatureSetImpl : virtual public INominalFeatureSet {
 
     private:
 

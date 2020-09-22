@@ -27,7 +27,7 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
 }
 
 void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
-    AbstractRandomAccessLabelMatrix* labelMatrix = statistics_->labelMatrixPtr_.get();
+    IRandomAccessLabelMatrix* labelMatrix = statistics_->labelMatrixPtr_.get();
     uint32 numLabels = labelMatrix->getNumCols();
     uint32 offset = statisticIndex * numLabels;
 
@@ -89,8 +89,8 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
-        float64 sumUncoveredLabels, uint8* minorityLabels)
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels, float64 sumUncoveredLabels,
+        uint8* minorityLabels)
     : AbstractLabelWiseStatistics(labelMatrixPtr.get()->getNumRows(), labelMatrixPtr.get()->getNumCols(),
                                   ruleEvaluationPtr) {
     labelMatrixPtr_ = labelMatrixPtr;
@@ -217,7 +217,7 @@ AbstractLabelWiseStatistics* AbstractLabelWiseStatisticsFactory::create() {
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
 }
@@ -228,7 +228,7 @@ DenseLabelWiseStatisticsFactoryImpl::~DenseLabelWiseStatisticsFactoryImpl() {
 
 AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // Class members
-    AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
+    IRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
     uint32 numExamples = labelMatrix->getNumRows();
     // The number of labels
