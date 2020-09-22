@@ -8,7 +8,7 @@ from libcpp.memory cimport make_shared
 
 cdef class LabelWiseLoss:
     """
-    A wrapper for the abstract C++ class `AbstractLabelWiseLoss`.
+    A wrapper for the pure virtual C++ class `ILabelWiseLoss`.
     """
     pass
 
@@ -19,7 +19,7 @@ cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function_ptr = <shared_ptr[AbstractLabelWiseLoss]>make_shared[LabelWiseLogisticLossImpl]()
+        self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseLogisticLossImpl]()
 
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
@@ -28,7 +28,7 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function_ptr = <shared_ptr[AbstractLabelWiseLoss]>make_shared[LabelWiseSquaredErrorLossImpl]()
+        self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseSquaredErrorLossImpl]()
 
 
 cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
@@ -37,4 +37,4 @@ cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function_ptr = <shared_ptr[AbstractLabelWiseLoss]>make_shared[LabelWiseSquaredHingeLossImpl]()
+        self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseSquaredHingeLossImpl]()

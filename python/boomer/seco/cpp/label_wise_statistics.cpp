@@ -6,6 +6,16 @@
 using namespace seco;
 
 
+AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
+                                                         std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractCoverageStatistics(numStatistics, numLabels) {
+    this->setRuleEvaluation(ruleEvaluationPtr);
+}
+
+void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+}
+
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices) {
@@ -27,7 +37,7 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
 }
 
 void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
-    AbstractRandomAccessLabelMatrix* labelMatrix = statistics_->labelMatrixPtr_.get();
+    IRandomAccessLabelMatrix* labelMatrix = statistics_->labelMatrixPtr_.get();
     uint32 numLabels = labelMatrix->getNumCols();
     uint32 offset = statisticIndex * numLabels;
 
@@ -76,21 +86,10 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
     return prediction_;
 }
 
-AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractCoverageStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
-}
-
-void AbstractLabelWiseStatistics::setRuleEvaluation(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
-}
-
-DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
-        float64 sumUncoveredLabels, uint8* minorityLabels)
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                                           std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                                                           float64* uncoveredLabels, float64 sumUncoveredLabels,
+                                                           uint8* minorityLabels)
     : AbstractLabelWiseStatistics(labelMatrixPtr.get()->getNumRows(), labelMatrixPtr.get()->getNumCols(),
                                   ruleEvaluationPtr) {
     labelMatrixPtr_ = labelMatrixPtr;
@@ -166,8 +165,7 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
     }
 }
 
-AbstractStatisticsSubset* DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
-                                                                     const uint32* labelIndices) {
+IStatisticsSubset* DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return new DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl(this, numPredictions, labelIndices);
@@ -207,28 +205,16 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
     }
 }
 
-AbstractLabelWiseStatisticsFactory::~AbstractLabelWiseStatisticsFactory() {
-
-}
-
-AbstractLabelWiseStatistics* AbstractLabelWiseStatisticsFactory::create() {
-    return NULL;
-}
-
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<AbstractRandomAccessLabelMatrix> labelMatrixPtr) {
+        std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-DenseLabelWiseStatisticsFactoryImpl::~DenseLabelWiseStatisticsFactoryImpl() {
-
-}
-
 AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // Class members
-    AbstractRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
+    IRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
     uint32 numExamples = labelMatrix->getNumRows();
     // The number of labels

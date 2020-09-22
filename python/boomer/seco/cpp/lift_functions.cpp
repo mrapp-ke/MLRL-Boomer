@@ -4,27 +4,11 @@
 using namespace seco;
 
 
-AbstractLiftFunction::~AbstractLiftFunction() {
-
-}
-
-float64 AbstractLiftFunction::calculateLift(uint32 numLabels) {
-    return 0;
-}
-
-float64 AbstractLiftFunction::getMaxLift() {
-    return 0;
-}
-
 PeakLiftFunctionImpl::PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature) {
     numLabels_ = numLabels;
     peakLabel_ = peakLabel;
     maxLift_ = maxLift;
     exponent_ = 1.0 / curvature;
-}
-
-PeakLiftFunctionImpl::~PeakLiftFunctionImpl() {
-
 }
 
 float64 PeakLiftFunctionImpl::calculateLift(uint32 numLabels) {

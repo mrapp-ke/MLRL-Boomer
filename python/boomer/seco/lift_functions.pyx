@@ -8,7 +8,7 @@ from libcpp.memory cimport make_shared
 
 cdef class LiftFunction:
     """
-    A wrapper for the C++ class `AbstractLiftFunction`.
+    A wrapper for the pure virtual C++ class `ILiftFunction`.
     """
     pass
 
@@ -26,7 +26,5 @@ cdef class PeakLiftFunction(LiftFunction):
         :param curvature:   The curvature of the lift function. A greater value results in a steeper curvature, a
                             smaller value results in a flatter curvature. Must be greater than 0
         """
-        self.lift_function_ptr = <shared_ptr[AbstractLiftFunction]>make_shared[PeakLiftFunctionImpl](num_labels,
-                                                                                                     peak_label,
-                                                                                                     max_lift,
-                                                                                                     curvature)
+        self.lift_function_ptr = <shared_ptr[ILiftFunction]>make_shared[PeakLiftFunctionImpl](num_labels, peak_label,
+                                                                                              max_lift, curvature)
