@@ -31,23 +31,10 @@ void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* inde
         n = length/numBins + 1;     //n is rounded up
     }
     //looping over bins
-    //Übers Orginalarray iterieren
-    //orginal Index / n
-    for(intp i = 0; i < numBins; i++){
-        //we will need a new pointer in every iteration
-        IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
-        tmp->value = 0;
-        //looping over feature list between two bins
-        for(intp j = i * n; j < ((i + 1) * n); j++){
-            //if we would break out of bounds we have to break out of the loop
-            if(j >= length){
-                break;
-            }
-            //here we aggregate the values
-            tmp->value = tmp->value + indexedArray->data[j].value;
-        }
-        tmp->index = i;
-        observer->onBinUpdate(i, tmp);
+    intp index;
+    for(intp i = 0; i < length; i++){
+        index = i / n;
+        observer->onBinUpdate(index, indexedArray->data[i]);
     }
 }
 
