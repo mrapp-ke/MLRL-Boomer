@@ -152,8 +152,6 @@ namespace boosting {
             RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
                                                      std::shared_ptr<Lapack> lapackPtr);
 
-            ~RegularizedExampleWiseRuleEvaluationImpl();
-
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,

@@ -83,8 +83,6 @@ namespace seco {
              */
             HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr, bool predictMajority);
 
-            ~HeuristicLabelWiseRuleEvaluationImpl();
-
             void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
                                               const float64* confusionMatricesTotal,
                                               const float64* confusionMatricesSubset,

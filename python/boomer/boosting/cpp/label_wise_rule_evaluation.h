@@ -81,8 +81,6 @@ namespace boosting {
              */
             RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight);
 
-            ~RegularizedLabelWiseRuleEvaluationImpl();
-
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,

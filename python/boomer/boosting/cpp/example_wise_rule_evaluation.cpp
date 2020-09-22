@@ -41,10 +41,6 @@ RegularizedExampleWiseRuleEvaluationImpl::RegularizedExampleWiseRuleEvaluationIm
     lapackPtr_ = lapackPtr;
 }
 
-RegularizedExampleWiseRuleEvaluationImpl::~RegularizedExampleWiseRuleEvaluationImpl() {
-
-}
-
 void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                             const float64* totalSumsOfGradients,
                                                                             float64* sumsOfGradients,
