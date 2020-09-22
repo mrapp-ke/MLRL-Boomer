@@ -183,21 +183,21 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractExampleWiseStatisticsFactory();
+            virtual ~AbstractExampleWiseStatisticsFactory() = { };
 
             /**
              * Creates a new instance of the class `AbstractExampleWiseStatistics`.
              *
              * @return A pointer to an object of type `AbstractExampleWiseStatistics` that has been created
              */
-            virtual AbstractExampleWiseStatistics* create();
+            virtual AbstractExampleWiseStatistics* create() = 0;
 
     };
 
     /**
      * A factory that allows to create new instances of the class `DenseExampleWiseStatisticsImpl`.
      */
-    class DenseExampleWiseStatisticsFactoryImpl : public AbstractExampleWiseStatisticsFactory {
+    class DenseExampleWiseStatisticsFactoryImpl : virtual public AbstractExampleWiseStatisticsFactory {
 
         private:
 

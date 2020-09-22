@@ -165,14 +165,6 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
     }
 }
 
-AbstractLabelWiseStatisticsFactory::~AbstractLabelWiseStatisticsFactory() {
-
-}
-
-AbstractLabelWiseStatistics* AbstractLabelWiseStatisticsFactory::create() {
-    return NULL;
-}
-
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
         std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,

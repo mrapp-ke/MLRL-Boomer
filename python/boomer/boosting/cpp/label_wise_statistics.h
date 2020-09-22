@@ -161,21 +161,21 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractLabelWiseStatisticsFactory();
+            virtual ~AbstractLabelWiseStatisticsFactory() = { };
 
             /**
              * Creates a new instance of the class `AbstractLabelWiseStatistics`.
              *
              * @return A pointer to an object of type `AbstractLabelWiseStatistics` that has been created
              */
-            virtual AbstractLabelWiseStatistics* create();
+            virtual AbstractLabelWiseStatistics* create() = 0;
 
     };
 
     /**
      * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
      */
-    class DenseLabelWiseStatisticsFactoryImpl : public AbstractLabelWiseStatisticsFactory {
+    class DenseLabelWiseStatisticsFactoryImpl : virtual public AbstractLabelWiseStatisticsFactory {
 
         private:
 
