@@ -14,10 +14,6 @@ std::pair<float64, float64> AbstractLabelWiseLoss::calculateGradientAndHessian(I
     return std::make_pair(0, 0);
 }
 
-LabelWiseLogisticLossImpl::~LabelWiseLogisticLossImpl() {
-
-}
-
 std::pair<float64, float64> LabelWiseLogisticLossImpl::calculateGradientAndHessian(
         IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex, uint32 labelIndex, float64 predictedScore) {
     uint8 trueLabel = labelMatrix->get(exampleIndex, labelIndex);
@@ -26,10 +22,6 @@ std::pair<float64, float64> LabelWiseLogisticLossImpl::calculateGradientAndHessi
     float64 gradient = -expectedScore / (1 + exponential);
     float64 hessian = (pow(expectedScore, 2) * exponential) / pow(1 + exponential, 2);
     return std::make_pair(gradient, hessian);
-}
-
-LabelWiseSquaredErrorLossImpl::~LabelWiseSquaredErrorLossImpl() {
-
 }
 
 std::pair<float64, float64> LabelWiseSquaredErrorLossImpl::calculateGradientAndHessian(

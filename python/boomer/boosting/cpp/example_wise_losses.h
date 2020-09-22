@@ -49,8 +49,6 @@ namespace boosting {
 
         public:
 
-            ~ExampleWiseLogisticLossImpl();
-
             void calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
                                                const float64* predictedScores, float64* gradients,
                                                float64* hessians) override;
