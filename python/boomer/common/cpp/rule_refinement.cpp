@@ -25,10 +25,6 @@ ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
     nominal_ = nominal;
 }
 
-ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
-
-}
-
 Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                                    uint32 numLabelIndices, const uint32* labelIndices) {
     // The current refinement of the existing rule
