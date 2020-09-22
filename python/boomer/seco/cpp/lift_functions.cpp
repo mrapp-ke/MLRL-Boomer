@@ -23,10 +23,6 @@ PeakLiftFunctionImpl::PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, f
     exponent_ = 1.0 / curvature;
 }
 
-PeakLiftFunctionImpl::~PeakLiftFunctionImpl() {
-
-}
-
 float64 PeakLiftFunctionImpl::calculateLift(uint32 numLabels) {
     float64 normalization;
 

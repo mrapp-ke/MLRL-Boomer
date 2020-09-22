@@ -64,8 +64,6 @@ namespace seco {
              */
             PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature);
 
-            ~PeakLiftFunctionImpl();
-
             float64 calculateLift(uint32 numLabels) override;
 
             float64 getMaxLift() override;
