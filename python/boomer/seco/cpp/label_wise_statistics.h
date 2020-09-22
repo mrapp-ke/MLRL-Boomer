@@ -152,7 +152,7 @@ namespace seco {
 
         public:
 
-            virtual ~ILabelWiseStatisticsFactory() = { };
+            virtual ~ILabelWiseStatisticsFactory() { };
 
             /**
              * Creates a new instance of the class `AbstractLabelWiseStatistics`.
