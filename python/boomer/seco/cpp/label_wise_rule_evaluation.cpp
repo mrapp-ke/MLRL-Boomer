@@ -25,10 +25,6 @@ HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(
     predictMajority_ = predictMajority;
 }
 
-HeuristicLabelWiseRuleEvaluationImpl::~HeuristicLabelWiseRuleEvaluationImpl() {
-
-}
-
 void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                         const uint8* minorityLabels,
                                                                         const float64* confusionMatricesTotal,

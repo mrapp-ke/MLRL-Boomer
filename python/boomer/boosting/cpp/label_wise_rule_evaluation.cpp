@@ -23,10 +23,6 @@ RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(f
     l2RegularizationWeight_ = l2RegularizationWeight;
 }
 
-RegularizedLabelWiseRuleEvaluationImpl::~RegularizedLabelWiseRuleEvaluationImpl() {
-
-}
-
 void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
                                                                           const float64* totalSumsOfGradients,
                                                                           float64* sumsOfGradients,
