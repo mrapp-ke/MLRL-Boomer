@@ -1,7 +1,7 @@
 from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.boosting.statistics cimport AbstractGradientStatistics
-from boomer.boosting.label_wise_losses cimport LabelWiseLoss, AbstractLabelWiseLoss
+from boomer.boosting.label_wise_losses cimport LabelWiseLoss, ILabelWiseLoss
 from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, ILabelWiseRuleEvaluation
 
 from libcpp.memory cimport shared_ptr
@@ -20,7 +20,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        DenseLabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
+        DenseLabelWiseStatisticsImpl(shared_ptr[ILabelWiseLoss] lossFunctionPtr,
                                      shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
 
@@ -35,7 +35,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
+        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[ILabelWiseLoss] lossFunctionPtr,
                                             shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr,
                                             shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 

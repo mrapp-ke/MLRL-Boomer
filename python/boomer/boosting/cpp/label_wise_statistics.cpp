@@ -84,7 +84,7 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
     return prediction_;
 }
 
-DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                                                            std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                                                            float64* gradients, float64* hessians,
@@ -139,7 +139,7 @@ IStatisticsSubset* DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelInd
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
-    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
+    ILabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
@@ -165,8 +165,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
 }
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
-        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-        std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<ILabelWiseLoss> lossFunctionPtr, std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
@@ -175,7 +174,7 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 
 AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     // Class members
-    AbstractLabelWiseLoss* lossFunction = lossFunctionPtr_.get();
+    ILabelWiseLoss* lossFunction = lossFunctionPtr_.get();
     IRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
     uint32 numExamples = labelMatrix->getNumRows();
