@@ -21,6 +21,7 @@ sources = [
     'boomer/common/cpp/statistics.cpp',
     'boomer/common/cpp/head_refinement.cpp',
     'boomer/common/cpp/rule_refinement.cpp',
+    'boomer/common/cpp/binning.cpp',
     'boomer/boosting/cpp/blas.cpp',
     'boomer/boosting/cpp/lapack.cpp',
     'boomer/boosting/cpp/label_wise_losses.cpp',
