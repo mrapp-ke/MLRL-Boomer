@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float32, float64, array_uint32
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
-from boomer.common.statistics cimport AbstractStatisticsSubset
+from boomer.common.statistics cimport IStatisticsSubset
 
 from libcpp.memory cimport unique_ptr
 
@@ -76,7 +76,7 @@ cdef class IREP(Pruning):
         # An array that stores the indices of the labels for which the existing rule predicts
         cdef uint32* label_indices = head.labelIndices_
         # Temporary variables
-        cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
         cdef PredictionCandidate* prediction
         cdef Condition condition
         cdef Comparator comparator

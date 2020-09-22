@@ -40,7 +40,7 @@ void AbstractStatistics::updateCoveredStatistic(uint32 statisticIndex, uint32 we
 
 }
 
-AbstractStatisticsSubset* AbstractStatistics::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
+IStatisticsSubset* AbstractStatistics::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
     return NULL;
 }
 

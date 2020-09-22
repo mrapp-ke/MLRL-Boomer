@@ -31,7 +31,7 @@ PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<AbstractLif
 PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                          PredictionCandidate* recyclableHead,
                                                          const uint32* labelIndices,
-                                                         AbstractStatisticsSubset* statisticsSubset, bool uncovered,
+                                                         IStatisticsSubset* statisticsSubset, bool uncovered,
                                                          bool accumulated) {
     PredictionCandidate* result = NULL;
     AbstractLiftFunction* liftFunction = liftFunctionPtr_.get();
@@ -124,7 +124,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
     return result;
 }
 
-PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
-                                                                    bool uncovered, bool accumulated) {
+PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+                                                                    bool accumulated) {
     return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }

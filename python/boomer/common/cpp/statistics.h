@@ -12,15 +12,15 @@
 
 
 /**
- * An abstract base class for all classes that provide access to a subset of the statistics that are stored by an
- * instance of the class `AbstractStatistics` and allows to calculate the scores to be predicted by rules that cover
- * such a subset.
+ * Defines an interface for all classes that provide access to a subset of the statistics that are stored by an instance
+ * of the class `AbstractStatistics` and allows to calculate the scores to be predicted by rules that cover such a
+ * subset.
  */
-class AbstractStatisticsSubset {
+class IStatisticsSubset {
 
     public:
 
-        virtual ~AbstractStatisticsSubset() = { };
+        virtual ~IStatisticsSubset() = { };
 
         /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
@@ -131,7 +131,7 @@ class AbstractStatisticsSubset {
  * instance of the class `AbstractStatistics` and allow to calculate the scores to be predicted by rules that cover such
  * a subset in the decomposable case, i.e., if the label-wise predictions are the same as the example-wise predictions.
  */
-class AbstractDecomposableStatisticsSubset : virtual public AbstractStatisticsSubset {
+class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
 
     public:
 
@@ -229,10 +229,10 @@ class AbstractStatistics : virtual public IMatrix {
 
         /**
          * Creates a new, empty subset of the statistics. Individual statistics that are covered by a refinement of a
-         * rule can be added to the subset via subsequent calls to the function `AbstractStatisticsSubset#addToSubset`.
+         * rule can be added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
          *
          * This function must be called each time a new refinement is considered, unless the refinement covers all
-         * statistics previously provided via calls to the function `AbstractStatisticsSubset#addToSubset`.
+         * statistics previously provided via calls to the function `IStatisticsSubset#addToSubset`.
          *
          * Optionally, a subset of the available labels may be specified via the argument `labelIndices`. In such case,
          * only the statistics that correspond to the specified labels will be included in the subset. When calling this
@@ -242,9 +242,9 @@ class AbstractStatistics : virtual public IMatrix {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be included in the subset or None, if all labels
          *                          should be included
-         * @return                  A pointer to an object of type `AbstractStatisticsSubset` that has been created
+         * @return                  A pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices);
+        virtual StatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices);
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.

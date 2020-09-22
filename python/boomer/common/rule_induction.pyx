@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsSubset
+from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -124,7 +124,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
-        cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
         cdef AbstractStatistics* statistics
         cdef uint32 num_statistics, i
 
@@ -485,7 +485,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     indexed_values = indexed_array.data
 
     # Create a new, empty subset of the current statistics when processing a new feature...
-    cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+    cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
     statistics_subset_ptr.reset(statistics.createSubset(num_label_indices, label_indices))
 
     # In the following, we start by processing all examples with feature values < 0...
@@ -976,8 +976,8 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
                                         to store the filtered array
     :param condition_start:             The element in `indexed_values` that corresponds to the first example
-                                        (inclusive) included in the `AbstractStatisticsSubset` that is covered by the
-                                        new condition
+                                        (inclusive) included in the `IStatisticsSubset` that is covered by the new
+                                        condition
     :param condition_end:               The element in `indexed_values` that corresponds to the last example (exclusive)
     :param condition_comparator:        The type of the operator that is used by the new condition
     :param covered                      1, if the examples in range [condition_start, condition_end) are covered by the
@@ -1195,7 +1195,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     # An array that stores the scores that are predicted by the head
     cdef float64* predicted_scores = head.predictedScores_
     # Create a new, empty subset of the statistics
-    cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+    cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
     statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
     # Temporary variables
     cdef Prediction* prediction
