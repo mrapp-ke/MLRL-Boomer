@@ -2,22 +2,6 @@
 #include <stdlib.h>
 
 
-AbstractHeadRefinement::~AbstractHeadRefinement() {
-
-}
-
-PredictionCandidate* AbstractHeadRefinement::findHead(PredictionCandidate* bestHead,
-                                                      PredictionCandidate* recyclableHead, const uint32* labelIndices,
-                                                      AbstractStatisticsSubset* statisticsSubset, bool uncovered,
-                                                      bool accumulated) {
-    return NULL;
-}
-
-PredictionCandidate* AbstractHeadRefinement::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
-                                                                 bool uncovered, bool accumulated) {
-    return NULL;
-}
-
 PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                              PredictionCandidate* recyclableHead,
                                                              const uint32* labelIndices,

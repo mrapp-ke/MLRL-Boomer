@@ -17,7 +17,7 @@ class AbstractHeadRefinement {
 
     public:
 
-        virtual ~AbstractHeadRefinement();
+        virtual ~AbstractHeadRefinement() = { };
 
         /**
          * Finds and returns the best head for a rule given the predictions that are provided by a
@@ -49,7 +49,7 @@ class AbstractHeadRefinement {
          */
         virtual PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
                                               const uint32* labelIndices, AbstractStatisticsSubset* statisticsSubset,
-                                              bool uncovered, bool accumulated);
+                                              bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score,
@@ -70,14 +70,14 @@ class AbstractHeadRefinement {
          *                          to be predicted by the rule, as well as its overall quality score
          */
         virtual PredictionCandidate* calculatePrediction(AbstractStatisticsSubset* statisticsSubset, bool uncovered,
-                                                         bool accumulated);
+                                                         bool accumulated) = 0;
 
 };
 
 /**
  * Allows to find the best single-label head that predicts for a single label.
  */
-class SingleLabelHeadRefinementImpl : public AbstractHeadRefinement {
+class SingleLabelHeadRefinementImpl : virtual public AbstractHeadRefinement {
 
     public:
 
@@ -93,7 +93,7 @@ class SingleLabelHeadRefinementImpl : public AbstractHeadRefinement {
 /**
  * Allows to find the best multi-label head that predicts for all labels.
  */
-class FullHeadRefinementImpl : public AbstractHeadRefinement {
+class FullHeadRefinementImpl : virtual public AbstractHeadRefinement {
 
     public:
 

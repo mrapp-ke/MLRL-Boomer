@@ -12,7 +12,7 @@
 
 namespace seco {
 
-    class PartialHeadRefinementImpl : public AbstractHeadRefinement {
+    class PartialHeadRefinementImpl : virtual public AbstractHeadRefinement {
 
         private:
 
