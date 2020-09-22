@@ -188,8 +188,6 @@ namespace seco {
             DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            ~DenseLabelWiseStatisticsFactoryImpl();
-
             AbstractLabelWiseStatistics* create() override;
 
     };
