@@ -81,8 +81,6 @@ class SingleLabelHeadRefinementImpl : public AbstractHeadRefinement {
 
     public:
 
-        ~SingleLabelHeadRefinementImpl();
-
         PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
                                       const uint32* labelIndices, AbstractStatisticsSubset* statisticsSubset,
                                       bool uncovered, bool accumulated) override;
@@ -98,8 +96,6 @@ class SingleLabelHeadRefinementImpl : public AbstractHeadRefinement {
 class FullHeadRefinementImpl : public AbstractHeadRefinement {
 
     public:
-
-        ~FullHeadRefinementImpl();
 
         PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
                                       const uint32* labelIndices, AbstractStatisticsSubset* statisticsSubset,

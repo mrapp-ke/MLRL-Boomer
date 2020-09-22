@@ -18,10 +18,6 @@ PredictionCandidate* AbstractHeadRefinement::calculatePrediction(AbstractStatist
     return NULL;
 }
 
-SingleLabelHeadRefinementImpl::~SingleLabelHeadRefinementImpl() {
-
-}
-
 PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                              PredictionCandidate* recyclableHead,
                                                              const uint32* labelIndices,
@@ -69,10 +65,6 @@ PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate
 PredictionCandidate* SingleLabelHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
                                                                         bool uncovered, bool accumulated) {
     return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
-}
-
-FullHeadRefinementImpl::~FullHeadRefinementImpl() {
-
 }
 
 PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestHead,

@@ -26,8 +26,6 @@ namespace seco {
              */
             PartialHeadRefinementImpl(std::shared_ptr<AbstractLiftFunction> liftFunctionPtr);
 
-            ~PartialHeadRefinementImpl();
-
             PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
                                           const uint32* labelIndices, AbstractStatisticsSubset* statisticsSubset,
                                           bool uncovered, bool accumulated) override;
