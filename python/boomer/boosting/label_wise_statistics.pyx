@@ -4,14 +4,14 @@
 Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
 (decomposable) loss function that is applied label-wise.
 """
-from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
 
 
 cdef class LabelWiseStatisticsFactory:
     """
-    A wrapper for the abstract C++ class `AbstractLabelWiseStatisticsFactory`.
+    A wrapper for the pure virtual C++ class `ILabelWiseStatisticsFactory`.
     """
 
     cdef AbstractLabelWiseStatistics* create(self):
@@ -37,9 +37,9 @@ cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
         :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
                                 examples
         """
-        self.statistics_factory_ptr = <shared_ptr[AbstractLabelWiseStatisticsFactory]>make_shared[DenseLabelWiseStatisticsFactoryImpl](
+        self.statistics_factory_ptr = <shared_ptr[ILabelWiseStatisticsFactory]>make_shared[DenseLabelWiseStatisticsFactoryImpl](
             loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr,
-            dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](label_matrix.label_matrix_ptr))
+            dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
 cdef class LabelWiseStatisticsProvider(StatisticsProvider):
@@ -61,7 +61,7 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     cdef void switch_rule_evaluation(self):
         cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
-        cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
+        cdef shared_ptr[ILabelWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
         self.statistics_ptr.get().setRuleEvaluation(rule_evaluation_ptr)
 
 

@@ -12,7 +12,7 @@ from libcpp.memory cimport make_shared
 
 cdef class ExampleWiseRuleEvaluation:
     """
-    A wrapper for the abstract C++ class `AbstractExampleWiseRuleEvaluation`.
+    A wrapper for the pure virtual C++ class `IExampleWiseRuleEvaluation`.
     """
     pass
 
@@ -31,5 +31,5 @@ cdef class RegularizedExampleWiseRuleEvaluation(ExampleWiseRuleEvaluation):
         blas_ptr.reset(init_blas())
         cdef shared_ptr[Lapack] lapack_ptr
         lapack_ptr.reset(init_lapack())
-        self.rule_evaluation_ptr = <shared_ptr[AbstractExampleWiseRuleEvaluation]>make_shared[RegularizedExampleWiseRuleEvaluationImpl](
+        self.rule_evaluation_ptr = <shared_ptr[IExampleWiseRuleEvaluation]>make_shared[RegularizedExampleWiseRuleEvaluationImpl](
             l2_regularization_weight, blas_ptr, lapack_ptr)

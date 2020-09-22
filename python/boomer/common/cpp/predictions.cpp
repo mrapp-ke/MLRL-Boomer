@@ -19,10 +19,6 @@ PredictionCandidate::PredictionCandidate(uint32 numPredictions, uint32* labelInd
     overallQualityScore_ = overallQualityScore;
 }
 
-PredictionCandidate::~PredictionCandidate() {
-
-}
-
 LabelWisePredictionCandidate::LabelWisePredictionCandidate(uint32 numPredictions, uint32* labelIndices,
                                                            float64* predictedScores, float64* qualityScores,
                                                            float64 overallQualityScore)

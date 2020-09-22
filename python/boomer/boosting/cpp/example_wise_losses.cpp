@@ -4,21 +4,7 @@
 using namespace boosting;
 
 
-AbstractExampleWiseLoss::~AbstractExampleWiseLoss() {
-
-}
-
-void AbstractExampleWiseLoss::calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
-                                                            uint32 exampleIndex, const float64* predictedScores,
-                                                            float64* gradients, float64* hessians) {
-
-}
-
-ExampleWiseLogisticLossImpl::~ExampleWiseLogisticLossImpl() {
-
-}
-
-void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
+void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix,
                                                                 uint32 exampleIndex, const float64* predictedScores,
                                                                 float64* gradients, float64* hessians) {
     uint32 numLabels = labelMatrix->getNumCols();

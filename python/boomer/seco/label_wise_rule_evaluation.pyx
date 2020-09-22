@@ -11,7 +11,7 @@ from libcpp.memory cimport make_shared
 
 cdef class LabelWiseRuleEvaluation:
     """
-    A wrapper for the abstract C++ class `AbstractLabelWiseRuleEvaluation`.
+    A wrapper for the pure virtual C++ class `ILabelWiseRuleEvaluation`.
     """
     pass
 
@@ -27,5 +27,5 @@ cdef class HeuristicLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
         :param predictMajority: True, if for each label the majority label should be predicted, False, if the minority
                                 label should be predicted
         """
-        self.rule_evaluation_ptr = <shared_ptr[AbstractLabelWiseRuleEvaluation]>make_shared[HeuristicLabelWiseRuleEvaluationImpl](
+        self.rule_evaluation_ptr = <shared_ptr[ILabelWiseRuleEvaluation]>make_shared[HeuristicLabelWiseRuleEvaluationImpl](
             heuristic.heuristic_ptr, predictMajority)
