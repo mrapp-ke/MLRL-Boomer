@@ -22,7 +22,7 @@ class IBinningObserver{
         *   @param binIndex         Index of the bin the example is assigned to
         *   @param indexedValue     The example value which is assigned
         */
-        virtual void onBinUpdate(intp binIndex, IndexedFloat32* indexedValue) = 0;
+        virtual void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) = 0;
 
 };
 
