@@ -22,7 +22,7 @@ namespace boosting {
      */
     class AbstractLabelWiseStatistics : public AbstractGradientStatistics {
 
-        private:
+        protected:
 
             std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
