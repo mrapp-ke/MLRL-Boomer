@@ -8,7 +8,7 @@ from libcpp.memory cimport make_shared
 
 cdef class Heuristic:
     """
-    A wrapper for the abstract C++ class `AbstractHeuristic`.
+    A wrapper for the pure virtual C++ class `IHeuristic`.
     """
     pass
 
@@ -19,7 +19,7 @@ cdef class Precision(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[PrecisionImpl]()
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[PrecisionImpl]()
 
 
 cdef class Recall(Heuristic):
@@ -28,7 +28,7 @@ cdef class Recall(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[RecallImpl]()
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[RecallImpl]()
 
 
 cdef class WRA(Heuristic):
@@ -37,7 +37,7 @@ cdef class WRA(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[WRAImpl]()
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[WRAImpl]()
 
 
 cdef class HammingLoss(Heuristic):
@@ -46,7 +46,7 @@ cdef class HammingLoss(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[HammingLossImpl]()
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[HammingLossImpl]()
 
 
 cdef class FMeasure(Heuristic):
@@ -58,7 +58,7 @@ cdef class FMeasure(Heuristic):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
-        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[FMeasureImpl](beta)
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[FMeasureImpl](beta)
 
 
 cdef class MEstimate(Heuristic):
@@ -70,4 +70,4 @@ cdef class MEstimate(Heuristic):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
-        self.heuristic_ptr = <shared_ptr[AbstractHeuristic]>make_shared[MEstimateImpl](m)
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[MEstimateImpl](m)

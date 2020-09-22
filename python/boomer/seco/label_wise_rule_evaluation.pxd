@@ -1,4 +1,4 @@
-from boomer.seco.heuristics cimport AbstractHeuristic
+from boomer.seco.heuristics cimport IHeuristic
 
 from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
@@ -14,7 +14,7 @@ cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
 
         # Constructors:
 
-        HeuristicLabelWiseRuleEvaluationImpl(AbstractHeuristic* heuristic, bool predictMajority) except +
+        HeuristicLabelWiseRuleEvaluationImpl(IHeuristic* heuristic, bool predictMajority) except +
 
 
 cdef class LabelWiseRuleEvaluation:

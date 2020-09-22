@@ -5,8 +5,8 @@
 using namespace seco;
 
 
-HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(
-        std::shared_ptr<AbstractHeuristic> heuristicPtr, bool predictMajority) {
+HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<IHeuristic> heuristicPtr,
+                                                                           bool predictMajority) {
     heuristicPtr_ = heuristicPtr;
     predictMajority_ = predictMajority;
 }
@@ -19,7 +19,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
                                                                         bool uncovered,
                                                                         LabelWisePredictionCandidate* prediction) {
     // Class members
-    AbstractHeuristic* heuristic = heuristicPtr_.get();
+    IHeuristic* heuristic = heuristicPtr_.get();
     bool predictMajority = predictMajority_;
     // The number of labels to predict for
     uint32 numPredictions = prediction->numPredictions_;
