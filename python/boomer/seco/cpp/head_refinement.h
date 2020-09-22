@@ -16,15 +16,15 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<AbstractLiftFunction> liftFunctionPtr_;
+            std::shared_ptr<ILiftFunction> liftFunctionPtr_;
 
         public:
 
             /**
-             * @param liftFunctionPtr A shared pointer to an object of type `AbstractLiftFunction` that should affect
-             *                        the quality scores of rules, depending on how many labels they predict
+             * @param liftFunctionPtr A shared pointer to an object of type `ILiftFunction` that should affect the
+             *                        quality scores of rules, depending on how many labels they predict
              */
-            PartialHeadRefinementImpl(std::shared_ptr<AbstractLiftFunction> liftFunctionPtr);
+            PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
             PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
                                           const uint32* labelIndices, IStatisticsSubset* statisticsSubset,

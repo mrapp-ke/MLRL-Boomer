@@ -5,7 +5,7 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/lift_functions.h" namespace "seco" nogil:
 
-    cdef cppclass AbstractLiftFunction:
+    cdef cppclass ILiftFunction:
 
         # Functions:
 
@@ -14,7 +14,7 @@ cdef extern from "cpp/lift_functions.h" namespace "seco" nogil:
         float64 getMaxLift()
 
 
-    cdef cppclass PeakLiftFunctionImpl(AbstractLiftFunction):
+    cdef cppclass PeakLiftFunctionImpl(ILiftFunction):
 
         # Constructors:
 
@@ -25,7 +25,7 @@ cdef class LiftFunction:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractLiftFunction] lift_function_ptr
+    cdef shared_ptr[ILiftFunction] lift_function_ptr
 
 
 cdef class PeakLiftFunction(LiftFunction):
