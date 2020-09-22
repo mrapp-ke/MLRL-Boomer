@@ -60,7 +60,7 @@ namespace boosting {
              * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
              * `DenseExampleWiseStatisticsImpl`.
              */
-            class StatisticsSubsetImpl : virtual public AbstractStatisticsSubset {
+            class StatisticsSubsetImpl : virtual public IStatisticsSubset {
 
                 private:
 
@@ -167,7 +167,7 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
+            IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
 

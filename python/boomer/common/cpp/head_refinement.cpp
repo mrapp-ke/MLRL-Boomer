@@ -5,7 +5,7 @@
 PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                              PredictionCandidate* recyclableHead,
                                                              const uint32* labelIndices,
-                                                             AbstractStatisticsSubset* statisticsSubset, bool uncovered,
+                                                             IStatisticsSubset* statisticsSubset, bool uncovered,
                                                              bool accumulated) {
     LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction->numPredictions_;
@@ -46,14 +46,14 @@ PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate
     return NULL;
 }
 
-PredictionCandidate* SingleLabelHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
+PredictionCandidate* SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset,
                                                                         bool uncovered, bool accumulated) {
     return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
 PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                       PredictionCandidate* recyclableHead, const uint32* labelIndices,
-                                                      AbstractStatisticsSubset* statisticsSubset, bool uncovered,
+                                                      IStatisticsSubset* statisticsSubset, bool uncovered,
                                                       bool accumulated) {
     PredictionCandidate* prediction = statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction->overallQualityScore_;
@@ -97,7 +97,7 @@ PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestH
     return NULL;
 }
 
-PredictionCandidate* FullHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
-                                                                 bool uncovered, bool accumulated) {
+PredictionCandidate* FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+                                                                 bool accumulated) {
     return statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
 }
