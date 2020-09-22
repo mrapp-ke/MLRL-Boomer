@@ -25,8 +25,8 @@ namespace boosting {
              * Must be implemented by subclasses to calculate the gradient (first derivative) and Hessian (second
              * derivative) of the loss function for a certain example and label.
              *
-             * @param labelMatrix       A pointer to an object of type `AbstractRandomAccessLabelMatrix` that provides
-             *                          random access to the labels of the training examples
+             * @param labelMatrix       A pointer to an object of type `IRandomAccessLabelMatrix` that provides random
+             *                          access to the labels of the training examples
              * @param exampleIndex      The index of the example for which the gradient and Hessian should be calculated
              * @param labelIndex        The index of the label for which the gradient and Hessian should be calculated
              * @param predictedScore    A scalar of type `float64`, representing the score that is predicted for the
@@ -34,9 +34,9 @@ namespace boosting {
              * @return                  A pair that contains two scalars of type `float64`, representing the gradient
              *                          and the Hessian that have been calculated
              */
-            virtual std::pair<float64, float64> calculateGradientAndHessian(
-                    AbstractRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex, uint32 labelIndex,
-                    float64 predictedScore);
+            virtual std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
+                                                                            uint32 exampleIndex, uint32 labelIndex,
+                                                                            float64 predictedScore);
 
     };
 
@@ -49,7 +49,7 @@ namespace boosting {
 
             ~LabelWiseLogisticLossImpl();
 
-            std::pair<float64, float64> calculateGradientAndHessian(AbstractRandomAccessLabelMatrix* labelMatrix,
+            std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) override;
 
@@ -64,7 +64,7 @@ namespace boosting {
 
             ~LabelWiseSquaredErrorLossImpl();
 
-            std::pair<float64, float64> calculateGradientAndHessian(AbstractRandomAccessLabelMatrix* labelMatrix,
+            std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) override;
 

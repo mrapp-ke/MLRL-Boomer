@@ -4,7 +4,7 @@
 Provides wrappers for classes that allow to store the elements of confusion matrices that are computed independently for
 each label.
 """
-from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
 
@@ -37,7 +37,7 @@ cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
         """
         self.statistics_factory_ptr = <shared_ptr[AbstractLabelWiseStatisticsFactory]>make_shared[DenseLabelWiseStatisticsFactoryImpl](
             rule_evaluation.rule_evaluation_ptr,
-            dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](label_matrix.label_matrix_ptr))
+            dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
 cdef class LabelWiseStatisticsProvider(StatisticsProvider):

@@ -4,7 +4,7 @@
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common._random cimport RNG
-from boomer.common.input_data cimport AbstractFeatureMatrix, AbstractNominalFeatureSet
+from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureSet
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
@@ -117,8 +117,8 @@ cdef class SequentialRuleInduction:
 
         # Induce the remaining rules...
         head_refinement_ptr = head_refinement.head_refinement_ptr
-        cdef shared_ptr[AbstractFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
-        cdef shared_ptr[AbstractNominalFeatureSet] nominal_feature_set_ptr = nominal_feature_set.nominal_feature_set_ptr
+        cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
+        cdef shared_ptr[INominalFeatureSet] nominal_feature_set_ptr = nominal_feature_set.nominal_feature_set_ptr
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             success = rule_induction.induce_rule(statistics_provider, nominal_feature_set_ptr.get(),
