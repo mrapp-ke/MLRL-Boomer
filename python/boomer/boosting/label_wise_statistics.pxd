@@ -1,8 +1,8 @@
-from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
+from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.boosting.statistics cimport AbstractGradientStatistics
-from boomer.boosting.label_wise_losses cimport LabelWiseLoss, AbstractLabelWiseLoss
-from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, AbstractLabelWiseRuleEvaluation
+from boomer.boosting.label_wise_losses cimport LabelWiseLoss, ILabelWiseLoss
+from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, ILabelWiseRuleEvaluation
 
 from libcpp.memory cimport shared_ptr
 
@@ -13,38 +13,38 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void setRuleEvaluation(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr)
+        void setRuleEvaluation(shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr)
 
 
     cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
 
         # Constructors:
 
-        DenseLabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
-                                     shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
+        DenseLabelWiseStatisticsImpl(shared_ptr[ILabelWiseLoss] lossFunctionPtr,
+                                     shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
 
-    cdef cppclass AbstractLabelWiseStatisticsFactory:
+    cdef cppclass ILabelWiseStatisticsFactory:
 
         # Functions:
 
         AbstractLabelWiseStatistics* create()
 
 
-    cdef cppclass DenseLabelWiseStatisticsFactoryImpl(AbstractLabelWiseStatisticsFactory):
+    cdef cppclass DenseLabelWiseStatisticsFactoryImpl(ILabelWiseStatisticsFactory):
 
         # Constructors:
 
-        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[AbstractLabelWiseLoss] lossFunctionPtr,
-                                            shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr,
-                                            shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[ILabelWiseLoss] lossFunctionPtr,
+                                            shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr,
+                                            shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 
 cdef class LabelWiseStatisticsFactory:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractLabelWiseStatisticsFactory] statistics_factory_ptr
+    cdef shared_ptr[ILabelWiseStatisticsFactory] statistics_factory_ptr
 
     # Functions:
 
