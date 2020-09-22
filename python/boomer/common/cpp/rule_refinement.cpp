@@ -2,16 +2,6 @@
 #include <math.h>
 #include <memory>
 
-AbstractRuleRefinement::~AbstractRuleRefinement() {
-
-}
-
-Refinement AbstractRuleRefinement::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                                  uint32 numLabelIndices, const uint32* labelIndices) {
-    Refinement refinement;
-    return refinement;
-}
-
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
                                                  IndexedFloat32ArrayWrapper* indexedArrayWrapper,
                                                  IndexedFloat32Array* indexedArray, const uint32* weights,
