@@ -22,9 +22,11 @@ namespace boosting {
      */
     class AbstractLabelWiseStatistics : public AbstractGradientStatistics {
 
-        public:
+        private:
 
             std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
+        public:
 
             /**
              * @param numStatistics     The number of statistics
