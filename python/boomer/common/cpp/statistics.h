@@ -20,7 +20,7 @@ class IStatisticsSubset {
 
     public:
 
-        virtual ~IStatisticsSubset() = { };
+        virtual ~IStatisticsSubset() { };
 
         /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
