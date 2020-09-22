@@ -22,7 +22,7 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractLabelWiseRuleEvaluation();
+            virtual ~AbstractLabelWiseRuleEvaluation() = { };
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
@@ -58,7 +58,7 @@ namespace boosting {
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate* prediction);
+                                                      LabelWisePredictionCandidate* prediction) = 0;
 
     };
 
@@ -67,7 +67,7 @@ namespace boosting {
      * Hessians that have been calculated according to a loss function that is applied label-wise using L2
      * regularization.
      */
-    class RegularizedLabelWiseRuleEvaluationImpl : public AbstractLabelWiseRuleEvaluation {
+    class RegularizedLabelWiseRuleEvaluationImpl : virtual public AbstractLabelWiseRuleEvaluation {
 
         private:
 

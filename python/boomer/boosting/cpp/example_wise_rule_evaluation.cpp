@@ -7,32 +7,6 @@
 using namespace boosting;
 
 
-AbstractExampleWiseRuleEvaluation::~AbstractExampleWiseRuleEvaluation() {
-
-}
-
-void AbstractExampleWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
-                                                                     const float64* totalSumsOfGradients,
-                                                                     float64* sumsOfGradients,
-                                                                     const float64* totalSumsOfHessians,
-                                                                     float64* sumsOfHessians, bool uncovered,
-                                                                     LabelWisePredictionCandidate* prediction) {
-
-}
-
-void AbstractExampleWiseRuleEvaluation::calculateExampleWisePrediction(const uint32* labelIndices,
-                                                                       const float64* totalSumsOfGradients,
-                                                                       float64* sumsOfGradients,
-                                                                       const float64* totalSumsOfHessians,
-                                                                       float64* sumsOfHessians, float64* tmpGradients,
-                                                                       float64* tmpHessians, int dsysvLwork,
-                                                                       float64* dsysvTmpArray1, int* dsysvTmpArray2,
-                                                                       double* dsysvTmpArray3, float64* dspmvTmpArray,
-                                                                       bool uncovered,
-                                                                       PredictionCandidate* prediction) {
-
-}
-
 RegularizedExampleWiseRuleEvaluationImpl::RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
                                                                                    std::shared_ptr<Blas> blasPtr,
                                                                                    std::shared_ptr<Lapack> lapackPtr) {
