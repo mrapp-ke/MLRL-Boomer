@@ -158,12 +158,6 @@ class AbstractStatistics : virtual public IMatrix {
          */
         AbstractStatistics(uint32 numStatistics, uint32 numLabels);
 
-        virtual ~AbstractStatistics();
-
-        uint32 getNumRows() override;
-
-        uint32 getNumCols() override;
-
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the
          * respective statistics must be provided via subsequent calls to the function `addSampledStatistic`.
@@ -257,5 +251,9 @@ class AbstractStatistics : virtual public IMatrix {
          *                          newly induced rule
          */
         virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction);
+
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
 };

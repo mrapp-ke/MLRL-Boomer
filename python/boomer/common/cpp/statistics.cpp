@@ -12,10 +12,6 @@ AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels) {
     numLabels_ = numLabels;
 }
 
-AbstractStatistics::~AbstractStatistics() {
-
-}
-
 uint32 AbstractStatistics::getNumRows() {
     return numStatistics_;
 }
