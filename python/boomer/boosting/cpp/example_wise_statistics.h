@@ -23,6 +23,8 @@ namespace boosting {
      */
     class AbstractExampleWiseStatistics : public AbstractGradientStatistics {
 
+        private:
+
             std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr_;
 
         public:
