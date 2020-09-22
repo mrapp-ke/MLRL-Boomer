@@ -47,8 +47,6 @@ namespace boosting {
 
         public:
 
-            ~LabelWiseLogisticLossImpl();
-
             std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) override;
@@ -61,8 +59,6 @@ namespace boosting {
     class LabelWiseSquaredErrorLossImpl : public AbstractLabelWiseLoss {
 
         public:
-
-            ~LabelWiseSquaredErrorLossImpl();
 
             std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
