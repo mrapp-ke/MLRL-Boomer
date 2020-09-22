@@ -69,19 +69,19 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<AbstractHeuristic> heuristicPtr_;
+            std::shared_ptr<IHeuristic> heuristicPtr_;
 
             bool predictMajority_;
 
         public:
 
             /**
-             * @param heuristicPtr      A shared pointer to an object of type `AbstractHeuristic`, representing the
-             *                          heuristic to be optimized
+             * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
+             *                          to be optimized
              * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
              *                          minority label should be predicted
              */
-            HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<AbstractHeuristic> heuristicPtr, bool predictMajority);
+            HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
 
             void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
                                               const float64* confusionMatricesTotal,

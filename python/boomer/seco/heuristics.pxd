@@ -5,34 +5,34 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/heuristics.h" namespace "seco" nogil:
 
-    cdef cppclass AbstractHeuristic:
+    cdef cppclass IHeuristic:
         pass
 
 
-    cdef cppclass PrecisionImpl(AbstractHeuristic):
+    cdef cppclass PrecisionImpl(IHeuristic):
         pass
 
 
-    cdef cppclass RecallImpl(AbstractHeuristic):
+    cdef cppclass RecallImpl(IHeuristic):
         pass
 
 
-    cdef cppclass WRAImpl(AbstractHeuristic):
+    cdef cppclass WRAImpl(IHeuristic):
         pass
 
 
-    cdef cppclass HammingLossImpl(AbstractHeuristic):
+    cdef cppclass HammingLossImpl(IHeuristic):
         pass
 
 
-    cdef cppclass FMeasureImpl(AbstractHeuristic):
+    cdef cppclass FMeasureImpl(IHeuristic):
 
         # Constructors:
 
         FMeasureImpl(float64 beta) except +
 
 
-    cdef cppclass MEstimateImpl(AbstractHeuristic):
+    cdef cppclass MEstimateImpl(IHeuristic):
 
         # Constructors:
 
@@ -43,7 +43,7 @@ cdef class Heuristic:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractHeuristic] heuristic_ptr
+    cdef shared_ptr[IHeuristic] heuristic_ptr
 
 
 cdef class Precision(Heuristic):
