@@ -24,7 +24,7 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractExampleWiseRuleEvaluation();
+            virtual ~AbstractExampleWiseRuleEvaluation() = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
@@ -61,7 +61,7 @@ namespace boosting {
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate* prediction);
+                                                      LabelWisePredictionCandidate* prediction) = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
@@ -120,7 +120,7 @@ namespace boosting {
                                                         float64* tmpHessians, int dsysvLwork, float64* dsysvTmpArray1,
                                                         int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                         float64* dspmvTmpArray, bool uncovered,
-                                                        PredictionCandidate* prediction);
+                                                        PredictionCandidate* prediction) = 0;
 
     };
 
@@ -129,7 +129,7 @@ namespace boosting {
      * Hessians that have been calculated according to a loss function that is applied example wise using L2
      * regularization.
      */
-    class RegularizedExampleWiseRuleEvaluationImpl : public AbstractExampleWiseRuleEvaluation {
+    class RegularizedExampleWiseRuleEvaluationImpl : virtual public AbstractExampleWiseRuleEvaluation {
 
         private:
 

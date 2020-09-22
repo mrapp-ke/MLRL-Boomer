@@ -22,7 +22,7 @@ namespace seco {
 
         public:
 
-            virtual ~AbstractLabelWiseRuleEvaluation();
+            virtual ~AbstractLabelWiseRuleEvaluation() = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on
@@ -57,7 +57,7 @@ namespace seco {
                                                       const float64* confusionMatricesTotal,
                                                       const float64* confusionMatricesSubset,
                                                       const float64* confusionMatricesCovered, bool uncovered,
-                                                      LabelWisePredictionCandidate* prediction);
+                                                      LabelWisePredictionCandidate* prediction) = 0;
 
     };
 
@@ -65,7 +65,7 @@ namespace seco {
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
      * heuristic that is applied using label-wise averaging.
      */
-    class HeuristicLabelWiseRuleEvaluationImpl : public AbstractLabelWiseRuleEvaluation {
+    class HeuristicLabelWiseRuleEvaluationImpl : virtual public AbstractLabelWiseRuleEvaluation {
 
         private:
 

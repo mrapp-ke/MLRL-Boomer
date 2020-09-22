@@ -5,20 +5,6 @@
 using namespace seco;
 
 
-AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
-
-}
-
-void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
-                                                                   const uint8* minorityLabels,
-                                                                   const float64* confusionMatricesTotal,
-                                                                   const float64* confusionMatricesSubset,
-                                                                   const float64* confusionMatricesCovered,
-                                                                   bool uncovered,
-                                                                   LabelWisePredictionCandidate* prediction) {
-
-}
-
 HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(
         std::shared_ptr<AbstractHeuristic> heuristicPtr, bool predictMajority) {
     heuristicPtr_ = heuristicPtr;

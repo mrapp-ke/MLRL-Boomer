@@ -6,19 +6,6 @@
 using namespace boosting;
 
 
-AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
-
-}
-
-void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
-                                                                   const float64* totalSumsOfGradients,
-                                                                   float64* sumsOfGradients,
-                                                                   const float64* totalSumsOfHessians,
-                                                                   float64* sumsOfHessians, bool uncovered,
-                                                                   LabelWisePredictionCandidate* prediction) {
-
-}
-
 RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
     l2RegularizationWeight_ = l2RegularizationWeight;
 }
