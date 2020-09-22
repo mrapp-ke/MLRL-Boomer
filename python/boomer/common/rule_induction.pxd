@@ -7,7 +7,7 @@ from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
-from boomer.common.head_refinement cimport AbstractHeadRefinement
+from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp.unordered_map cimport unordered_map
 
@@ -27,11 +27,11 @@ cdef class RuleInduction:
 
     # Functions:
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder)
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureSet* nominal_feature_set,
-                          IFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
+                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -46,11 +46,11 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
     # Functions:
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder)
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureSet* nominal_feature_set,
-                          IFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
+                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,

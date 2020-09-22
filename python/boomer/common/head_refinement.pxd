@@ -8,7 +8,7 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/head_refinement.h" nogil:
 
-    cdef cppclass AbstractHeadRefinement:
+    cdef cppclass IHeadRefinement:
 
         PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
                                       const uint32* labelIndices, AbstractStatisticsSubset* statisticsSubset,
@@ -18,11 +18,11 @@ cdef extern from "cpp/head_refinement.h" nogil:
                                                  bool accumulated)
 
 
-    cdef cppclass SingleLabelHeadRefinementImpl(AbstractHeadRefinement):
+    cdef cppclass SingleLabelHeadRefinementImpl(IHeadRefinement):
         pass
 
 
-    cdef cppclass FullHeadRefinementImpl(AbstractHeadRefinement):
+    cdef cppclass FullHeadRefinementImpl(IHeadRefinement):
         pass
 
 
@@ -30,7 +30,7 @@ cdef class HeadRefinement:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractHeadRefinement] head_refinement_ptr
+    cdef shared_ptr[IHeadRefinement] head_refinement_ptr
 
 
 cdef class SingleLabelHeadRefinement(HeadRefinement):
