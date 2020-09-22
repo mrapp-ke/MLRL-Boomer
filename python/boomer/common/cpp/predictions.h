@@ -64,8 +64,6 @@ class PredictionCandidate : public Prediction {
         PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
                             float64 overallQualityScore);
 
-        ~PredictionCandidate();
-
         /**
          * A score that assesses the overall quality of the predictions.
          */
