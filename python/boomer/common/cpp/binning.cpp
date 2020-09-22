@@ -41,7 +41,7 @@ void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* inde
         //set last value to the current one for the next iteration
         last_value = indexedArray->data[i].value;
         //notify observer
-        observer->onBinUpdate(index, indexedArray->data[i]);
+        observer->onBinUpdate(index, &indexedArray->data[i]);
     }
 }
 
@@ -67,13 +67,13 @@ void EqualWidthBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedA
     intp w = intp(ceil((max - min)/numBins));
     intp index;
     for(intp i = 0; i < length; i++){
-        index = floor((indexedArray->data[i] - min) / w);
+        index = floor((indexedArray->data[i].value - min) / w);
         //in some cases the calculated index can exceed the last bin, in which case we want the example in the last bin
         if(index >= numBins){
             index = numBins - 1;
         }
         //notify observer
-        observer->onBinUpdate(index, indexedArray->data[i]);
+        observer->onBinUpdate(index, &indexedArray->data[i]);
     }
 }
 
