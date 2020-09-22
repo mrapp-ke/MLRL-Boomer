@@ -24,7 +24,7 @@ namespace boosting {
 
         public:
 
-            virtual ~IExampleWiseRuleEvaluation() = 0;
+            virtual ~IExampleWiseRuleEvaluation() { };
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
