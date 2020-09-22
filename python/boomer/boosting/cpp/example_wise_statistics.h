@@ -23,9 +23,9 @@ namespace boosting {
      */
     class AbstractExampleWiseStatistics : public AbstractGradientStatistics {
 
-        public:
-
             std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr_;
+
+        public:
 
             /**
              * @param numStatistics     The number of statistics
