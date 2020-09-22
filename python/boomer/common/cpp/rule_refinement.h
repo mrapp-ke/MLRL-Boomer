@@ -42,8 +42,8 @@ class AbstractRuleRefinement {
         /**
          * Finds and returns the best refinement of an existing rule.
          *
-         * @param headRefinement    A pointer to an object of type `AbstractHeadRefinement` that should be used to find
-         *                          the head of the refined rule
+         * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to find the
+         *                          head of the refined rule
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
          *                          existing rule
          * @param numLabelIndices   The number of elements in the array `labelIndices`
@@ -51,7 +51,7 @@ class AbstractRuleRefinement {
          *                          indices of the labels for which the refined rule may predict
          * @return                  A struct of type `Refinement`, representing the best refinement that has been found
          */
-        virtual Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+        virtual Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                           uint32 numLabelIndices, const uint32* labelIndices);
 
 };
@@ -105,7 +105,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
         ~ExactRuleRefinementImpl();
 
-        Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+        Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };
