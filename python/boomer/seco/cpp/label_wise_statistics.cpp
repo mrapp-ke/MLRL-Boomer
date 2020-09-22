@@ -6,6 +6,17 @@
 using namespace seco;
 
 
+AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractCoverageStatistics(numStatistics, numLabels) {
+    this->setRuleEvaluation(ruleEvaluationPtr);
+}
+
+void AbstractLabelWiseStatistics::setRuleEvaluation(
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+}
+
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices) {
@@ -74,17 +85,6 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
                                                                         confusionMatricesCovered, uncovered,
                                                                         prediction_);
     return prediction_;
-}
-
-AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractCoverageStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
-}
-
-void AbstractLabelWiseStatistics::setRuleEvaluation(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
