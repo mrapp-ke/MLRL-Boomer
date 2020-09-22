@@ -17,7 +17,7 @@ class IHeadRefinement {
 
     public:
 
-        virtual ~IHeadRefinement() = { };
+        virtual ~IHeadRefinement() { };
 
         /**
          * Finds and returns the best head for a rule given the predictions that are provided by a `IStatisticsSubset`.
