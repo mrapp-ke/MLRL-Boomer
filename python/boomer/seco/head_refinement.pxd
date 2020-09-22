@@ -1,4 +1,4 @@
-from boomer.common.head_refinement cimport HeadRefinement, AbstractHeadRefinement
+from boomer.common.head_refinement cimport HeadRefinement, IHeadRefinement
 from boomer.seco.lift_functions cimport AbstractLiftFunction
 
 from libcpp.memory cimport shared_ptr
@@ -6,7 +6,7 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/head_refinement.h" namespace "seco" nogil:
 
-    cdef cppclass PartialHeadRefinementImpl(AbstractHeadRefinement):
+    cdef cppclass PartialHeadRefinementImpl(IHeadRefinement):
 
         # Constructors:
 

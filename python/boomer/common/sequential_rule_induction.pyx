@@ -8,7 +8,7 @@ from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureSet
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
-from boomer.common.head_refinement cimport AbstractHeadRefinement
+from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp.memory cimport shared_ptr
 
@@ -107,7 +107,7 @@ cdef class SequentialRuleInduction:
         cdef bint success
 
         # Induce default rule...
-        cdef shared_ptr[AbstractHeadRefinement] head_refinement_ptr
+        cdef shared_ptr[IHeadRefinement] head_refinement_ptr
 
         if default_rule_head_refinement is not None:
             head_refinement_ptr = default_rule_head_refinement.head_refinement_ptr

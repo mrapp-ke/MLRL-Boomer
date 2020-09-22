@@ -8,7 +8,7 @@ from libcpp.memory cimport make_shared
 
 cdef class HeadRefinement:
     """
-    A wrapper for the abstract C++ class `AbstractHeadRefinement`.
+    A wrapper for the pure virtual C++ class `IHeadRefinement`.
     """
     pass
 
@@ -19,7 +19,7 @@ cdef class SingleLabelHeadRefinement(HeadRefinement):
     """
 
     def __cinit__(self):
-        self.head_refinement_ptr = <shared_ptr[AbstractHeadRefinement]>make_shared[SingleLabelHeadRefinementImpl]()
+        self.head_refinement_ptr = <shared_ptr[IHeadRefinement]>make_shared[SingleLabelHeadRefinementImpl]()
 
 
 cdef class FullHeadRefinement(HeadRefinement):
@@ -28,4 +28,4 @@ cdef class FullHeadRefinement(HeadRefinement):
     """
 
     def __cinit__(self):
-        self.head_refinement_ptr = <shared_ptr[AbstractHeadRefinement]>make_shared[FullHeadRefinementImpl]()
+        self.head_refinement_ptr = <shared_ptr[IHeadRefinement]>make_shared[FullHeadRefinementImpl]()

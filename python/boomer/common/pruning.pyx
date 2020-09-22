@@ -25,7 +25,7 @@ cdef class Pruning:
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
-                                         AbstractHeadRefinement* head_refinement):
+                                         IHeadRefinement* head_refinement):
         """
         Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is pruned
         by removing individual conditions in a way that improves over its original quality score as measured on the
@@ -47,8 +47,8 @@ cdef class Pruning:
                                             prune set or grow set
         :param statistics:                  A pointer to an object of type `AbstractStatistics`, which served as the
                                             basis for learning the existing rule
-        :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that was used to
-                                            find the head of the existing rule
+        :param head_refinement:             A pointer to an object of type `IHeadRefinement` that was used to find the
+                                            head of the existing rule
         """
         pass
 
@@ -66,7 +66,7 @@ cdef class IREP(Pruning):
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          uint32[::1] weights, AbstractStatistics* statistics,
-                                         AbstractHeadRefinement* head_refinement):
+                                         IHeadRefinement* head_refinement):
         # The total number of training examples
         cdef uint32 num_examples = covered_examples_mask.shape[0]
         # The number of conditions of the existing rule

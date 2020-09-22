@@ -11,13 +11,13 @@
 
 
 /**
- * An abstract base class for all classes that allow to find the best head for a rule.
+ * Defines an interface for all classes that allow to find the best head for a rule.
  */
-class AbstractHeadRefinement {
+class IHeadRefinement {
 
     public:
 
-        virtual ~AbstractHeadRefinement() = { };
+        virtual ~IHeadRefinement() = { };
 
         /**
          * Finds and returns the best head for a rule given the predictions that are provided by a
@@ -77,7 +77,7 @@ class AbstractHeadRefinement {
 /**
  * Allows to find the best single-label head that predicts for a single label.
  */
-class SingleLabelHeadRefinementImpl : virtual public AbstractHeadRefinement {
+class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
 
     public:
 
@@ -93,7 +93,7 @@ class SingleLabelHeadRefinementImpl : virtual public AbstractHeadRefinement {
 /**
  * Allows to find the best multi-label head that predicts for all labels.
  */
-class FullHeadRefinementImpl : virtual public AbstractHeadRefinement {
+class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
     public:
 

@@ -42,21 +42,21 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         """
         Induces the default rule.
 
         :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
                                     the basis for inducing the default rule
-        :param head_refinement:     A pointer to an object of type `AbstractHeadRefinement` that should be used to find
-                                    the head of the default rule or NULL, if no default rule should be induced
+        :param head_refinement:     A pointer to an object of type `IHeadRefinement` that should be used to find the
+                                    head of the default rule or NULL, if no default rule should be induced
         :param model_builder:       The builder, the default rule should be added to
         """
         pass
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureSet* nominal_feature_set,
-                          IFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
+                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -70,8 +70,8 @@ cdef class RuleInduction:
                                         individual features are nominal or not
         :param feature_matrix:          A pointer to an object of type `IFeatureMatrix` that provides column-wise access
                                         to the feature values of the training examples
-        :param head_refinement:         A pointer to an object of type `AbstractHeadRefinement` that should be used to
-                                        find the head of the rule
+        :param head_refinement:         A pointer to an object of type `IHeadRefinement` that should be used to find the
+                                        head of the rule
         :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
                                         sub-sampling should be used
         :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if
@@ -121,7 +121,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
@@ -150,7 +150,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
     cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureSet* nominal_feature_set,
-                          IFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
+                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -410,7 +410,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                   IFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
                                   uint32 covered_statistics_target, uint32 num_conditions,
-                                  AbstractStatistics* statistics, AbstractHeadRefinement* head_refinement,
+                                  AbstractStatistics* statistics, IHeadRefinement* head_refinement,
                                   PredictionCandidate* head) nogil:
     """
     Finds and returns the best refinement of an existing rule, which results from adding a new condition that
@@ -443,8 +443,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     :param num_conditions:              The number of conditions in the body of the existing rule
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be used for finding the
                                         best refinement
-    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that should be used to
-                                        find the head of the refined rule
+    :param head_refinement:             A pointer to an object of type `IHeadRefinement` that should be used to find the
+                                        head of the refined rule
     :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
                                         the existing rule
     :return:                            A struct of type `Refinement`, representing the best refinement that has been
@@ -1171,7 +1171,7 @@ cdef inline Condition __make_condition(uint32 feature_index, Comparator comparat
 
 
 cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint32 num_statistics,
-                                           AbstractHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
+                                           IHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
                                            uint32 covered_statistics_target, PredictionCandidate* head):
     """
     Updates the scores that a predicted by the head of a rule, based on all available statistics.
@@ -1179,8 +1179,8 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     :param statistics:                  A pointer to an object of type `AbstractStatistics` that stores the available
                                         statistics
     :param num_statistics:              The number of available statistics
-    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that was used to find
-                                        the head of the rule
+    :param head_refinement:             A pointer to an object of type `IHeadRefinement` that was used to find the head
+                                        of the rule
     :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
                                         of the indices of the statistics that are covered by the rule
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
