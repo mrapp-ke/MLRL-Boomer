@@ -6,6 +6,17 @@
 using namespace boosting;
 
 
+AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractGradientStatistics(numStatistics, numLabels) {
+    this->setRuleEvaluation(ruleEvaluationPtr);
+}
+
+void AbstractExampleWiseStatistics::setRuleEvaluation(
+        std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+}
+
 DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl* statistics,
                                                                            uint32 numPredictions,
                                                                            const uint32* labelIndices) {
@@ -131,17 +142,6 @@ PredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
                                                                           dsysvTmpArray3_, dspmvTmpArray_, uncovered,
                                                                           prediction_);
     return prediction_;
-}
-
-AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
-}
-
-void AbstractExampleWiseStatistics::setRuleEvaluation(
-        std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(

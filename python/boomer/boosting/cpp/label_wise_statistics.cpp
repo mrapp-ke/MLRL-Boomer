@@ -5,6 +5,17 @@
 using namespace boosting;
 
 
+AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
+    : AbstractGradientStatistics(numStatistics, numLabels) {
+    this->setRuleEvaluation(ruleEvaluationPtr);
+}
+
+void AbstractLabelWiseStatistics::setRuleEvaluation(
+        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
+    ruleEvaluationPtr_ = ruleEvaluationPtr;
+}
+
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices) {
@@ -72,17 +83,6 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
                                                                         statistics_->totalSumsOfHessians_,
                                                                         sumsOfHessians, uncovered, prediction_);
     return prediction_;
-}
-
-AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
-}
-
-void AbstractLabelWiseStatistics::setRuleEvaluation(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
