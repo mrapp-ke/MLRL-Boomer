@@ -60,7 +60,7 @@ namespace boosting {
              * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
              * `DenseExampleWiseStatisticsImpl`.
              */
-            class StatisticsSubsetImpl : public AbstractStatisticsSubset {
+            class StatisticsSubsetImpl : virtual public AbstractStatisticsSubset {
 
                 private:
 

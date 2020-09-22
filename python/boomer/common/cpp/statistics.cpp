@@ -1,26 +1,6 @@
 #include "statistics.h"
 
 
-AbstractStatisticsSubset::~AbstractStatisticsSubset() {
-
-}
-
-void AbstractStatisticsSubset::addToSubset(uint32 statisticIndex, uint32 weight) {
-
-}
-
-void AbstractStatisticsSubset::resetSubset() {
-
-}
-
-LabelWisePredictionCandidate* AbstractStatisticsSubset::calculateLabelWisePrediction(bool uncovered, bool accumulated) {
-    return NULL;
-}
-
-PredictionCandidate* AbstractStatisticsSubset::calculateExampleWisePrediction(bool uncovered, bool accumulated) {
-    return NULL;
-}
-
 PredictionCandidate* AbstractDecomposableStatisticsSubset::calculateExampleWisePrediction(bool uncovered,
                                                                                           bool accumulated) {
     // In the decomposable case, the example-wise predictions are the same as the label-wise predictions...
