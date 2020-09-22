@@ -22,7 +22,7 @@ namespace seco {
 
         public:
 
-            virtual ~ILabelWiseRuleEvaluation() = 0;
+            virtual ~ILabelWiseRuleEvaluation() { };
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on
