@@ -2,7 +2,7 @@ from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.statistics cimport AbstractGradientStatistics
-from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, AbstractExampleWiseLoss
+from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, IExampleWiseLoss
 from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, IExampleWiseRuleEvaluation
 
 from libcpp.memory cimport shared_ptr
@@ -21,7 +21,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        DenseExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+        DenseExampleWiseStatisticsImpl(shared_ptr[IExampleWiseLoss] lossFunctionPtr,
                                        shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                        shared_ptr[Lapack] lapackPtr) except +
 
@@ -37,7 +37,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Constructors:
 
-        DenseExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
+        DenseExampleWiseStatisticsFactoryImpl(shared_ptr[IExampleWiseLoss] lossFunctionPtr,
                                               shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                               shared_ptr[Lapack] lapackPtr,
                                               shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
