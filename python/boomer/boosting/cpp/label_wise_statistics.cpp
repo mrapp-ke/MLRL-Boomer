@@ -6,13 +6,12 @@ using namespace boosting;
 
 
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr)
+        uint32 numStatistics, uint32 numLabels, std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr)
     : AbstractGradientStatistics(numStatistics, numLabels) {
     this->setRuleEvaluation(ruleEvaluationPtr);
 }
 
-void AbstractLabelWiseStatistics::setRuleEvaluation(
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr) {
+void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr) {
     ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
@@ -85,11 +84,11 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
     return prediction_;
 }
 
-DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
-        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
-        float64* currentScores)
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                                                           std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                                           std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                                                           float64* gradients, float64* hessians,
+                                                           float64* currentScores)
     : AbstractLabelWiseStatistics(labelMatrixPtr.get()->getNumRows(), labelMatrixPtr.get()->getNumCols(),
                                   ruleEvaluationPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
@@ -167,7 +166,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-        std::shared_ptr<AbstractLabelWiseRuleEvaluation> ruleEvaluationPtr,
+        std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
