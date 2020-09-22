@@ -25,28 +25,27 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
 
         public:
 
             /**
              * @param numStatistics     The number of statistics
              * @param numLabels         The number of labels
-             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation`, to be
-             *                          used for calculating the predictions, as well as corresponding quality scores,
-             *                          of rules
+             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
+             *                          for calculating the predictions, as well as corresponding quality scores, of
+             *                          rules
              */
             AbstractExampleWiseStatistics(uint32 numStatistics, uint32 numLabels,
-                                          std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr);
+                                          std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr);
 
             /**
              * Sets the implementation to be used for calculating the predictions, as well as corresponding quality
              * scores, of rules.
              *
-             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation` to be
-             *                          set
+             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation` to be set
              */
-            void setRuleEvaluation(std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr);
+            void setRuleEvaluation(std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr);
 
     };
 
@@ -143,9 +142,9 @@ namespace boosting {
             /**
              * @param lossFunctionPtr   A shared pointer to an object of type `AbstractExampleWiseLoss`, representing
              *                          the loss function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation`, to be
-             *                          used for calculating the predictions, as well as corresponding quality scores,
-             *                          of rules
+             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
+             *                          for calculating the predictions, as well as corresponding quality scores, of
+             *                          rules
              * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
              *                          Lapack routines
              * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
@@ -158,7 +157,7 @@ namespace boosting {
              *                          representing the currently predicted scores
              */
             DenseExampleWiseStatisticsImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                          std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
+                                          std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
                                           std::shared_ptr<Lapack> lapackPtr,
                                           std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
                                           float64* hessians, float64* currentScores);
@@ -203,7 +202,7 @@ namespace boosting {
 
             std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr_;
 
-            std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
 
             std::shared_ptr<Lapack> lapackPtr_;
 
@@ -214,16 +213,16 @@ namespace boosting {
             /**
              * @param lossFunctionPtr   A shared pointer to an object of type `AbstractExampleWiseLoss`, representing
              *                          the loss function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `AbstractExampleWiseRuleEvaluation`, to be
-             *                          used for calculating the predictions, as well as corresponding quality scores,
-             *                          of rules
+             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
+             *                          for calculating the predictions, as well as corresponding quality scores, of
+             *                          rules
              * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
              *                          Lapack routines
              * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
              *                          random access to the labels of the training examples
              */
             DenseExampleWiseStatisticsFactoryImpl(std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
-                                                  std::shared_ptr<AbstractExampleWiseRuleEvaluation> ruleEvaluationPtr,
+                                                  std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
                                                   std::shared_ptr<Lapack> lapackPtr,
                                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 

@@ -3,7 +3,7 @@ from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFact
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, AbstractExampleWiseLoss
-from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, AbstractExampleWiseRuleEvaluation
+from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, IExampleWiseRuleEvaluation
 
 from libcpp.memory cimport shared_ptr
 
@@ -14,7 +14,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void setRuleEvaluation(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr)
+        void setRuleEvaluation(shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr)
 
 
     cdef cppclass DenseExampleWiseStatisticsImpl(AbstractExampleWiseStatistics):
@@ -22,7 +22,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         DenseExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                       shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                       shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                        shared_ptr[Lapack] lapackPtr) except +
 
 
@@ -38,7 +38,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         DenseExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                              shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+                                              shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                               shared_ptr[Lapack] lapackPtr,
                                               shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
