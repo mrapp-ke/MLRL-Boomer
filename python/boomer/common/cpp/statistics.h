@@ -20,7 +20,7 @@ class AbstractStatisticsSubset {
 
     public:
 
-        virtual ~AbstractStatisticsSubset();
+        virtual ~AbstractStatisticsSubset() = { };
 
         /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
@@ -39,7 +39,7 @@ class AbstractStatisticsSubset {
          * @param statistic_index   The index of the covered statistic
          * @param weight            The weight of the covered statistic
          */
-        virtual void addToSubset(uint32 statisticIndex, uint32 weight);
+        virtual void addToSubset(uint32 statisticIndex, uint32 weight) = 0;
 
         /**
          * Resets the subset by removing all statistics that have been added via preceding calls to the function
@@ -54,7 +54,7 @@ class AbstractStatisticsSubset {
          * supposed to update the previously cached state by accumulating the current one, i.e., the accumulated cached
          * state should be the same as if `resetSubset` would not have been called at all.
          */
-        virtual void resetSubset();
+        virtual void resetSubset() = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -88,7 +88,7 @@ class AbstractStatisticsSubset {
          *                      be predicted by the rule for each considered label, as well as the corresponding quality
          *                      scores
          */
-        virtual LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated);
+        virtual LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -122,7 +122,7 @@ class AbstractStatisticsSubset {
          * @return              A pointer to an object of type `PredictionCandidate` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated);
+        virtual PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
 
 };
 
@@ -131,7 +131,7 @@ class AbstractStatisticsSubset {
  * instance of the class `AbstractStatistics` and allow to calculate the scores to be predicted by rules that cover such
  * a subset in the decomposable case, i.e., if the label-wise predictions are the same as the example-wise predictions.
  */
-class AbstractDecomposableStatisticsSubset : public AbstractStatisticsSubset {
+class AbstractDecomposableStatisticsSubset : virtual public AbstractStatisticsSubset {
 
     public:
 
