@@ -37,7 +37,7 @@ class AbstractRuleRefinement {
 
     public:
 
-        virtual ~AbstractRuleRefinement();
+        virtual ~AbstractRuleRefinement() { };
 
         /**
          * Finds and returns the best refinement of an existing rule.
@@ -52,7 +52,7 @@ class AbstractRuleRefinement {
          * @return                  A struct of type `Refinement`, representing the best refinement that has been found
          */
         virtual Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                          uint32 numLabelIndices, const uint32* labelIndices);
+                                          uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
 };
 
@@ -61,7 +61,7 @@ class AbstractRuleRefinement {
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  */
-class ExactRuleRefinementImpl : public AbstractRuleRefinement {
+class ExactRuleRefinementImpl : virtual public AbstractRuleRefinement {
 
     private:
 
