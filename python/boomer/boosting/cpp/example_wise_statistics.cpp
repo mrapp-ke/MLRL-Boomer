@@ -145,7 +145,7 @@ PredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
-        std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+        std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
@@ -210,7 +210,7 @@ IStatisticsSubset* DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelI
 }
 
 void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
-    AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
+    IExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = prediction->numPredictions_;
     const uint32* labelIndices = prediction->labelIndices_;
@@ -231,7 +231,7 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Pred
 }
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
-        std::shared_ptr<AbstractExampleWiseLoss> lossFunctionPtr,
+        std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
@@ -242,7 +242,7 @@ DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
 
 AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
     // Class members
-    AbstractExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
+    IExampleWiseLoss* lossFunction = lossFunctionPtr_.get();
     IRandomAccessLabelMatrix* labelMatrix = labelMatrixPtr_.get();
     // The number of examples
     uint32 numExamples = labelMatrix->getNumRows();

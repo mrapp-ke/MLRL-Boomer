@@ -14,11 +14,11 @@ namespace boosting {
     /**
      * A base class for all (non-decomposable) loss functions that are applied example-wise.
      */
-    class AbstractExampleWiseLoss {
+    class IExampleWiseLoss {
 
         public:
 
-            virtual ~AbstractExampleWiseLoss() { };
+            virtual ~IExampleWiseLoss() { };
 
             /**
              * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
@@ -45,7 +45,7 @@ namespace boosting {
     /**
      * A multi-label variant of the logistic loss that is applied example-wise.
      */
-    class ExampleWiseLogisticLossImpl : virtual public AbstractExampleWiseLoss {
+    class ExampleWiseLogisticLossImpl : virtual public IExampleWiseLoss {
 
         public:
 
