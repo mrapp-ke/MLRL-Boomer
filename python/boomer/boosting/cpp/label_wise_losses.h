@@ -19,7 +19,7 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractLabelWiseLoss();
+            virtual ~AbstractLabelWiseLoss() { };
 
             /**
              * Must be implemented by subclasses to calculate the gradient (first derivative) and Hessian (second
@@ -36,14 +36,14 @@ namespace boosting {
              */
             virtual std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
                                                                             uint32 exampleIndex, uint32 labelIndex,
-                                                                            float64 predictedScore);
+                                                                            float64 predictedScore) = 0;
 
     };
 
     /**
      * A multi-label variant of the logistic loss that is applied label-wise.
      */
-    class LabelWiseLogisticLossImpl : public AbstractLabelWiseLoss {
+    class LabelWiseLogisticLossImpl : virtual public AbstractLabelWiseLoss {
 
         public:
 
@@ -56,7 +56,7 @@ namespace boosting {
     /**
      * A multi-label variant of the squared error loss that is applied label-wise.
      */
-    class LabelWiseSquaredErrorLossImpl : public AbstractLabelWiseLoss {
+    class LabelWiseSquaredErrorLossImpl : virtual public AbstractLabelWiseLoss {
 
         public:
 
