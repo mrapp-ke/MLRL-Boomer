@@ -154,14 +154,14 @@ namespace boosting {
     };
 
     /**
-     * An abstract base class for all classes that allow to create new instances of the class
+     * Defines an interface for all classes that allow to create new instances of the class
      * `AbstractLabelWiseStatistics`.
      */
-    class AbstractLabelWiseStatisticsFactory {
+    class ILabelWiseStatisticsFactory {
 
         public:
 
-            virtual ~AbstractLabelWiseStatisticsFactory() = { };
+            virtual ~ILabelWiseStatisticsFactory() = { };
 
             /**
              * Creates a new instance of the class `AbstractLabelWiseStatistics`.
@@ -175,7 +175,7 @@ namespace boosting {
     /**
      * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
      */
-    class DenseLabelWiseStatisticsFactoryImpl : virtual public AbstractLabelWiseStatisticsFactory {
+    class DenseLabelWiseStatisticsFactoryImpl : virtual public ILabelWiseStatisticsFactory {
 
         private:
 

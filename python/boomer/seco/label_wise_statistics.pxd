@@ -22,14 +22,14 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         DenseLabelWiseStatisticsImpl(shared_ptr[AbstractLabelWiseRuleEvaluation] ruleEvaluationPtr) except +
 
 
-    cdef cppclass AbstractLabelWiseStatisticsFactory:
+    cdef cppclass ILabelWiseStatisticsFactory:
 
         # Functions:
 
         AbstractLabelWiseStatistics* create()
 
 
-    cdef cppclass DenseLabelWiseStatisticsFactoryImpl(AbstractLabelWiseStatisticsFactory):
+    cdef cppclass DenseLabelWiseStatisticsFactoryImpl(ILabelWiseStatisticsFactory):
 
         # Constructors:
 
@@ -41,7 +41,7 @@ cdef class LabelWiseStatisticsFactory:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractLabelWiseStatisticsFactory] statistics_factory_ptr
+    cdef shared_ptr[ILabelWiseStatisticsFactory] statistics_factory_ptr
 
     # Functions:
 
