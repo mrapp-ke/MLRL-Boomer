@@ -26,24 +26,20 @@ void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* inde
     }
     //Sorting the array
     qsort(indexedArray, length, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
-    intp n; //number of elements per Bin
-    if((length % numBins) == 0){    //if the division has no residual
-        n = length/numBins;         //n is the normal division
-    } else {
-        n = length/numBins + 1;     //n is rounded up
-    }
+    intp n = (intp) round((float) length / (float) numBins);
     //looping over bins
-    intp index = 0;             //Has to be initialized for the first iteration
-    float last_value = 0.0;     //Has to be initialized for the first iteration
+    intp binIndex = 0;               //Has to be initialized for the first iteration
+    float32 previousValue = 0.0;     //Has to be initialized for the first iteration
     for(intp i = 0; i < length; i++){
+        float32 currentValue = indexedArray->data[i].value;
         //if the value is equal to the last one it will be put in the same bin...
-        if(last_value != indexedArray->data[i].value){
-            index = i / n;  //... else we calculate it's own bin index
+        if(previousValue != currentValue){
+            binIndex = i / n;  //... else we calculate it's own bin index
         }
         //set last value to the current one for the next iteration
-        last_value = indexedArray->data[i].value;
+        previousValue = currentValue;
         //notify observer
-        observer->onBinUpdate(index, &indexedArray->data[i]);
+        observer->onBinUpdate(binIndex, &indexedArray->data[i]);
     }
 }
 
@@ -56,26 +52,29 @@ void EqualWidthBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedA
         throw std::invalid_argument("numBins has to be less or equal to the length of the example array");
     }
     //defining minimal and maximum values
-    float min = indexedArray->data[0].value;
-    float max = indexedArray->data[0].value;
+    float32 min = indexedArray->data[0].value;
+    float32 max = min;
     for(intp i = 1; i < length; i++){
-        if(indexedArray->data[i].value < min){
-            min = indexedArray->data[i].value;
-        }else if(max < indexedArray->data[i].value){
-            max = indexedArray->data[i].value;
+        float32 currentValue = indexedArray->data[i].value;
+
+        if(currentValue < min){
+            min = currentValue;
+        }else if(max < currentValue){
+            max = currentValue;
         }
     }
     //w stands for width and determines the span of values for a bin
-    intp w = intp(ceil((max - min)/numBins));
-    intp index;
+    float32 w = (max - min) / numBins;
+
     for(intp i = 0; i < length; i++){
-        index = floor((indexedArray->data[i].value - min) / w);
+        float32 currentValue = indexedArray->data[i].value;
+        intp binIndex = (intp) floor((currentValue - min) / w);
         //in some cases the calculated index can exceed the last bin, in which case we want the example in the last bin
-        if(index >= numBins){
-            index = numBins - 1;
+        if(binIndex >= numBins){
+            binIndex = numBins - 1;
         }
         //notify observer
-        observer->onBinUpdate(index, &indexedArray->data[i]);
+        observer->onBinUpdate(binIndex, &indexedArray->data[i]);
     }
 }
 
