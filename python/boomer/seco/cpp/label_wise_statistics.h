@@ -22,7 +22,7 @@ namespace seco {
      */
     class AbstractLabelWiseStatistics : public AbstractCoverageStatistics {
 
-        private:
+        protected:
 
             std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
