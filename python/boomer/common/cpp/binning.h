@@ -24,11 +24,11 @@ class BinningObserver{
 
 };
 
-class AbstractBinning{
+class IBinning{
 
     public:
 
-        virtual ~AbstractBinning();
+        virtual ~IBinning() { };
 
         /**
         *   Must be implemented by subclasses. Create a number of bags and assigns examples to those bags. The results
@@ -38,11 +38,11 @@ class AbstractBinning{
         *   @param indexedArray     An array of examples, which should be put in the bins
         *   @param observer         The BinningObserver who is notified, when new results are available
         */
-        virtual void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer);
+        virtual void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer) = 0;
 
 };
 
-class EqualFrequencyBinningImpl : public AbstractBinning{
+class EqualFrequencyBinningImpl : virtual public IBinning{
 
     public:
 
@@ -59,7 +59,7 @@ class EqualFrequencyBinningImpl : public AbstractBinning{
 
 };
 
-class EqualWidthBinningImpl : public AbstractBinning{
+class EqualWidthBinningImpl : virtual public IBinning{
 
     public:
 

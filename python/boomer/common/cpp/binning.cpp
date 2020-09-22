@@ -3,14 +3,6 @@
 #include <stdexcept>
 #include <stdlib.h>
 
-AbstractBinning::~AbstractBinning(){
-
-}
-
-void AbstractBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer){
-
-}
-
 
 void BinningObserver::onBinUpdate(intp binIndex, IndexedFloat32* indexedValue){
 
