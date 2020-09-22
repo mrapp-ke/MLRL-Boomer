@@ -22,7 +22,7 @@ namespace boosting {
 
         public:
 
-            virtual ~ILabelWiseRuleEvaluation() = { };
+            virtual ~ILabelWiseRuleEvaluation() { };
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
