@@ -17,7 +17,8 @@ void BinningObserver::onBinUpdate(intp binIndex, IndexedFloat32* indexedValue){
 };
 
 
-void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer){
+void EqualFrequencyBinningImpl::createBins(uint32 numBins, IndexedFloat32Array* indexedArray,
+                                           BinningObserver* observer){
     //Defining length of the list, because we'll use it at least four times
     intp length = indexedArray->numElements;
     //Throwing an exception if the caller doesn't fulfil the requirement
@@ -44,7 +45,7 @@ void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* inde
 }
 
 
-void EqualWidthBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer){
+void EqualWidthBinningImpl::createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer){
     //Defining length of the list, because we'll use it at least four times
     intp length = indexedArray->numElements;
     //Throwing an exception if the caller doesn't fulfil the requirement

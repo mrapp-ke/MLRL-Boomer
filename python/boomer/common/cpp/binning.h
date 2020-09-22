@@ -42,7 +42,7 @@ class AbstractBinning{
 
 };
 
-class EqualFrequencyBinning : public AbstractBinning{
+class EqualFrequencyBinningImpl : public AbstractBinning{
 
     public:
 
@@ -59,7 +59,7 @@ class EqualFrequencyBinning : public AbstractBinning{
 
 };
 
-class EqualWidthBinning : public AbstractBinning{
+class EqualWidthBinningImpl : public AbstractBinning{
 
     public:
 
