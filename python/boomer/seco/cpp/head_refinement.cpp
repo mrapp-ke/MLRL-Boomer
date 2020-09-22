@@ -28,10 +28,6 @@ PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<AbstractLif
     liftFunctionPtr_ = liftFunctionPtr;
 }
 
-PartialHeadRefinementImpl::~PartialHeadRefinementImpl() {
-
-}
-
 PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                          PredictionCandidate* recyclableHead,
                                                          const uint32* labelIndices,
