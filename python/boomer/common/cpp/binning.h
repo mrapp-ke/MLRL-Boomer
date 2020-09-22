@@ -10,9 +10,11 @@
 #include "statistics.h"
 #include "tuples.h"
 
-class BinningObserver{
+class IBinningObserver{
 
     public:
+
+        virtual ~IBinningObserver() { };
 
         /**
         *   Will be called everytime an example is assigned to a bin.
@@ -20,7 +22,7 @@ class BinningObserver{
         *   @param binIndex         Index of the bin the example is assigned to
         *   @param indexedValue     The example value which is assigned
         */
-        virtual void onBinUpdate(intp binIndex, IndexedFloat32* indexedValue);
+        virtual void onBinUpdate(intp binIndex, IndexedFloat32* indexedValue) = 0;
 
 };
 
@@ -36,9 +38,9 @@ class IBinning{
         *
         *   @param numBins          The number of bins which should be considered
         *   @param indexedArray     An array of examples, which should be put in the bins
-        *   @param observer         The BinningObserver who is notified, when new results are available
+        *   @param observer         The `IBinningObserver` who is notified, when new results are available
         */
-        virtual void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer) = 0;
+        virtual void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) = 0;
 
 };
 
@@ -53,9 +55,9 @@ class EqualFrequencyBinningImpl : virtual public IBinning{
         *
         *   @param numBins          The number of bins which should be considered
         *   @param indexedArray     An array of examples, which should be put in the bins
-        *   @param observer         The BinningObserver who is notified, when new results are available
+        *   @param observer         The `IBinningObserver` who is notified, when new results are available
         */
-        void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer) override;
+        void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) override;
 
 };
 
@@ -69,8 +71,8 @@ class EqualWidthBinningImpl : virtual public IBinning{
         *
         *   @param numBins          The number of bins which should be considered
         *   @param indexedArray     An array of examples, which should be put in the bins
-        *   @param observer         The BinningObserver who is notified, when new results are available
+        *   @param observer         The `IBinningObserver` who is notified, when new results are available
         */
-        void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer) override;
+        void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) override;
 
 };
