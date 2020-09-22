@@ -8,14 +8,14 @@ from libcpp.memory cimport make_shared
 
 cdef class LabelMatrix:
     """
-    A wrapper for the abstract C++ class `AbstractLabelMatrix`.
+    A wrapper for the pure virtual C++ class `ILabelMatrix`.
     """
     pass
 
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
     """
-    A wrapper for the abstract C++ class `AbstractRandomAccessLabelMatrix`.
+    A wrapper for the pure virtual C++ class `AbstractRandomAccessLabelMatrix`.
     """
     pass
 
@@ -32,8 +32,8 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
         """
         cdef uint32 num_examples = y.shape[0]
         cdef uint32 num_labels = y.shape[1]
-        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
-                                                                                                   num_labels, &y[0, 0])
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples, num_labels,
+                                                                                            &y[0, 0])
 
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
@@ -59,12 +59,12 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             for c in col_indices:
                 dok_matrix_ptr.get().set(r, c)
 
-        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](dok_matrix_ptr)
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](dok_matrix_ptr)
 
 
 cdef class FeatureMatrix:
     """
-    A wrapper for the abstract C++ class `AbstractFeatureMatrix`.
+    A wrapper for the pure virtual C++ class `AbstractFeatureMatrix`.
     """
     pass
 
@@ -81,9 +81,9 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         """
         cdef uint32 num_examples = x.shape[0]
         cdef uint32 num_features = x.shape[1]
-        self.feature_matrix_ptr = <shared_ptr[AbstractFeatureMatrix]>make_shared[DenseFeatureMatrixImpl](num_examples,
-                                                                                                         num_features,
-                                                                                                         &x[0, 0])
+        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[DenseFeatureMatrixImpl](num_examples,
+                                                                                                  num_features,
+                                                                                                  &x[0, 0])
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -104,13 +104,16 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                 first element in `x_data` and `x_row_indices` that corresponds to a certain feature. The
                                 index at the last position is equal to `num_non_zero_feature_values`
         """
-        self.feature_matrix_ptr = <shared_ptr[AbstractFeatureMatrix]>make_shared[CscFeatureMatrixImpl](
-            num_examples, num_features, &x_data[0], &x_row_indices[0], &x_col_indices[0])
+        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[CscFeatureMatrixImpl](num_examples,
+                                                                                                num_features,
+                                                                                                &x_data[0],
+                                                                                                &x_row_indices[0],
+                                                                                                &x_col_indices[0])
 
 
 cdef class NominalFeatureSet:
     """
-    A wrapper for the C++ class `AbstractNominalFeatureSet`.
+    A wrapper for the pure virtual C++ class `INominalFeatureSet`.
     """
     pass
 
@@ -133,5 +136,5 @@ cdef class DokNominalFeatureSet(NominalFeatureSet):
             for i in nominal_feature_indices:
                 dok_vector_ptr.get().set(i)
 
-        self.nominal_feature_set_ptr = <shared_ptr[AbstractNominalFeatureSet]>make_shared[DokNominalFeatureSetImpl](
+        self.nominal_feature_set_ptr = <shared_ptr[INominalFeatureSet]>make_shared[DokNominalFeatureSetImpl](
             dok_vector_ptr)
