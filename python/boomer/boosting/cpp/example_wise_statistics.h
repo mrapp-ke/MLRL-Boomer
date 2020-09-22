@@ -176,14 +176,14 @@ namespace boosting {
     };
 
     /**
-     * An abstract base class for all classes that allow to create new instances of the class
+     * Defines an interface for all classes that allow to create new instances of the class
      * `AbstractExampleWiseStatistics`.
      */
-    class AbstractExampleWiseStatisticsFactory {
+    class IExampleWiseStatisticsFactory {
 
         public:
 
-            virtual ~AbstractExampleWiseStatisticsFactory() = { };
+            virtual ~IExampleWiseStatisticsFactory() = { };
 
             /**
              * Creates a new instance of the class `AbstractExampleWiseStatistics`.
@@ -197,7 +197,7 @@ namespace boosting {
     /**
      * A factory that allows to create new instances of the class `DenseExampleWiseStatisticsImpl`.
      */
-    class DenseExampleWiseStatisticsFactoryImpl : virtual public AbstractExampleWiseStatisticsFactory {
+    class DenseExampleWiseStatisticsFactoryImpl : virtual public IExampleWiseStatisticsFactory {
 
         private:
 

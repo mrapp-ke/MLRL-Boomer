@@ -26,14 +26,14 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
                                        shared_ptr[Lapack] lapackPtr) except +
 
 
-    cdef cppclass AbstractExampleWiseStatisticsFactory:
+    cdef cppclass IExampleWiseStatisticsFactory:
 
         # Functions:
 
         AbstractExampleWiseStatistics* create()
 
 
-    cdef cppclass DenseExampleWiseStatisticsFactoryImpl(AbstractExampleWiseStatisticsFactory):
+    cdef cppclass DenseExampleWiseStatisticsFactoryImpl(IExampleWiseStatisticsFactory):
 
         # Constructors:
 
@@ -47,7 +47,7 @@ cdef class ExampleWiseStatisticsFactory:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractExampleWiseStatisticsFactory] statistics_factory_ptr
+    cdef shared_ptr[IExampleWiseStatisticsFactory] statistics_factory_ptr
 
     # Functions:
 
