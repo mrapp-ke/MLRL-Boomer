@@ -1,6 +1,7 @@
 #include "binning.h"
 #include <math.h>
 #include <stdexcept>
+#include <stdlib.h>
 
 AbstractBinning::~AbstractBinning(){
 
@@ -17,13 +18,14 @@ void BinningObserver::onBinUpdate(intp binIndex, IndexedFloat32* indexedValue){
 
 
 void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer){
-    //TODO: Sortieren
     //Defining length of the list, because we'll use it at least four times
     intp length = indexedArray->numElements;
     //Throwing an exception if the caller doesn't fulfil the requirement
     if(numBins > length){
         throw std::invalid_argument("numBins has to be less or equal to the length of the example array");
     }
+    //Sorting the array
+    qsort(indexedArray, length, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
     intp n; //number of elements per Bin
     if((length % numBins) == 0){    //if the division has no residual
         n = length/numBins;         //n is the normal division
