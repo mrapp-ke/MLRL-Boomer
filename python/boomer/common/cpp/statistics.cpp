@@ -19,27 +19,3 @@ uint32 AbstractStatistics::getNumRows() {
 uint32 AbstractStatistics::getNumCols() {
     return numLabels_;
 }
-
-void AbstractStatistics::resetSampledStatistics() {
-
-}
-
-void AbstractStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
-
-}
-
-void AbstractStatistics::resetCoveredStatistics() {
-
-}
-
-void AbstractStatistics::updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) {
-
-}
-
-IStatisticsSubset* AbstractStatistics::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
-    return NULL;
-}
-
-void AbstractStatistics::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
-
-}
