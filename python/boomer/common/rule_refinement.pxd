@@ -29,7 +29,7 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         IndexedFloat32ArrayWrapper* indexedArrayWrapper
 
 
-    cdef cppclass AbstractRuleRefinement:
+    cdef cppclass IRuleRefinement:
 
         # Functions:
 
@@ -37,7 +37,7 @@ cdef extern from "cpp/rule_refinement.h" nogil:
                                   uint32 numLabelIndices, const uint32* labelIndices)
 
 
-    cdef cppclass ExactRuleRefinementImpl(AbstractRuleRefinement):
+    cdef cppclass ExactRuleRefinementImpl(IRuleRefinement):
 
         # Constructors:
 
