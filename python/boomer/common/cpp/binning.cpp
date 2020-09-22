@@ -31,9 +31,13 @@ void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* inde
         n = length/numBins + 1;     //n is rounded up
     }
     //looping over bins
-    intp index;
+    intp index = 0;             //Has to be initialized
+    float last_value = 0.0;     //Has to be initialized
     for(intp i = 0; i < length; i++){
-        index = i / n;
+        if(last_value != indexedArray->data[i].value){
+            index = i / n;
+        }
+        last_value = indexedArray->data[i].value;
         observer->onBinUpdate(index, indexedArray->data[i]);
     }
 }
