@@ -119,8 +119,6 @@ namespace seco {
 
         public:
 
-            ~PrecisionImpl();
-
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
 
@@ -134,8 +132,6 @@ namespace seco {
 
         public:
 
-            ~RecallImpl();
-
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
 
@@ -148,8 +144,6 @@ namespace seco {
 
         public:
 
-            ~WRAImpl();
-
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
 
@@ -161,8 +155,6 @@ namespace seco {
     class HammingLossImpl : public AbstractHeuristic {
 
         public:
-
-            ~HammingLossImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
@@ -194,8 +186,6 @@ namespace seco {
              */
             FMeasureImpl(float64 beta);
 
-            ~FMeasureImpl();
-
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
 
@@ -225,8 +215,6 @@ namespace seco {
              * @param m The value of the m-parameter. Must be at least 0
              */
             MEstimateImpl(float64 beta);
-
-            ~MEstimateImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
