@@ -28,6 +28,8 @@ class IMatrix {
 
     public:
 
+        virtual ~IMatrix() { };
+
         /**
          * Returns the number of rows in the matrix.
          *
@@ -51,6 +53,8 @@ template<class T>
 class IRandomAccessMatrix : virtual public IMatrix {
 
     public:
+
+        virtual ~IRandomAccessMatrix() { };
 
         /**
          * Returns the element at a specific position.
@@ -107,6 +111,8 @@ class IVector {
 
     public:
 
+        virtual ~IVector() { };
+
         /**
          * Returns the number of elements in the vector.
          *
@@ -123,6 +129,8 @@ template<class T>
 class IRandomAccessVector : virtual public IVector {
 
     public:
+
+        virtual ~IRandomAccessVector() { };
 
         /**
          * Returns the element at a specific position.

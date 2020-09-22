@@ -14,18 +14,18 @@ namespace boosting {
     /**
      * A base class for all (non-decomposable) loss functions that are applied example-wise.
      */
-    class AbstractExampleWiseLoss {
+    class IExampleWiseLoss {
 
         public:
 
-            virtual ~AbstractExampleWiseLoss();
+            virtual ~IExampleWiseLoss() { };
 
             /**
              * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
              * derivatives) of the loss function for each label of a certain example.
              *
-             * @param labelMatrix       A pointer to an object of type `AbstractRandomAccessLabelMatrix` that provides
-             *                          random access to the labels of the training examples
+             * @param labelMatrix       A pointer to an object of type `IRandomAccessLabelMatrix` that provides random
+             *                          access to the labels of the training examples
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be
              *                          calculated
              * @param predictedScore    A pointer to an array of type `float64`, shape `(num_labels)`, representing the
@@ -36,22 +36,20 @@ namespace boosting {
              *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
              *                          should be written to. May contain arbitrary values
              */
-            virtual void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
-                                                       uint32 exampleIndex, const float64* predictedScores,
-                                                       float64* gradients, float64* hessians);
+            virtual void calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
+                                                       const float64* predictedScores, float64* gradients,
+                                                       float64* hessians) = 0;
 
     };
 
     /**
      * A multi-label variant of the logistic loss that is applied example-wise.
      */
-    class ExampleWiseLogisticLossImpl : public AbstractExampleWiseLoss {
+    class ExampleWiseLogisticLossImpl : virtual public IExampleWiseLoss {
 
         public:
 
-            ~ExampleWiseLogisticLossImpl();
-
-            void calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
+            void calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
                                                const float64* predictedScores, float64* gradients,
                                                float64* hessians) override;
 

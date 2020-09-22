@@ -12,15 +12,15 @@
 
 
 /**
- * An abstract base class for all classes that provide access to a subset of the statistics that are stored by an
- * instance of the class `AbstractStatistics` and allows to calculate the scores to be predicted by rules that cover
- * such a subset.
+ * Defines an interface for all classes that provide access to a subset of the statistics that are stored by an instance
+ * of the class `AbstractStatistics` and allows to calculate the scores to be predicted by rules that cover such a
+ * subset.
  */
-class AbstractStatisticsSubset {
+class IStatisticsSubset {
 
     public:
 
-        virtual ~AbstractStatisticsSubset();
+        virtual ~IStatisticsSubset() { };
 
         /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
@@ -39,7 +39,7 @@ class AbstractStatisticsSubset {
          * @param statistic_index   The index of the covered statistic
          * @param weight            The weight of the covered statistic
          */
-        virtual void addToSubset(uint32 statisticIndex, uint32 weight);
+        virtual void addToSubset(uint32 statisticIndex, uint32 weight) = 0;
 
         /**
          * Resets the subset by removing all statistics that have been added via preceding calls to the function
@@ -54,7 +54,7 @@ class AbstractStatisticsSubset {
          * supposed to update the previously cached state by accumulating the current one, i.e., the accumulated cached
          * state should be the same as if `resetSubset` would not have been called at all.
          */
-        virtual void resetSubset();
+        virtual void resetSubset() = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -88,7 +88,7 @@ class AbstractStatisticsSubset {
          *                      be predicted by the rule for each considered label, as well as the corresponding quality
          *                      scores
          */
-        virtual LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated);
+        virtual LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -122,7 +122,7 @@ class AbstractStatisticsSubset {
          * @return              A pointer to an object of type `PredictionCandidate` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated);
+        virtual PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
 
 };
 
@@ -131,7 +131,7 @@ class AbstractStatisticsSubset {
  * instance of the class `AbstractStatistics` and allow to calculate the scores to be predicted by rules that cover such
  * a subset in the decomposable case, i.e., if the label-wise predictions are the same as the example-wise predictions.
  */
-class AbstractDecomposableStatisticsSubset : public AbstractStatisticsSubset {
+class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
 
     public:
 
@@ -143,7 +143,7 @@ class AbstractDecomposableStatisticsSubset : public AbstractStatisticsSubset {
  * An abstract base class for all classes that provide access to statistics about the labels of the training examples,
  * which serve as the basis for learning a new rule or refining an existing one.
  */
-class AbstractStatistics : public IMatrix {
+class AbstractStatistics : virtual public IMatrix {
 
     private:
 
@@ -158,12 +158,6 @@ class AbstractStatistics : public IMatrix {
          */
         AbstractStatistics(uint32 numStatistics, uint32 numLabels);
 
-        virtual ~AbstractStatistics();
-
-        uint32 getNumRows() override;
-
-        uint32 getNumCols() override;
-
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the
          * respective statistics must be provided via subsequent calls to the function `addSampledStatistic`.
@@ -174,7 +168,7 @@ class AbstractStatistics : public IMatrix {
          * This function is supposed to reset any non-global internal state that only holds for a certain subset of the
          * available statistics and therefore becomes invalid when a different subset of the statistics should be used.
          */
-        virtual void resetSampledStatistics();
+        virtual void resetSampledStatistics() = 0;
 
         /**
          * Adds a specific statistic to the sub-sample that should be considered in the following for learning a new
@@ -191,7 +185,7 @@ class AbstractStatistics : public IMatrix {
          * @param statisticIndex    The index of the statistic that should be considered
          * @param weight            The weight of the statistic that should be considered
          */
-        virtual void addSampledStatistic(uint32 statisticIndex, uint32 weight);
+        virtual void addSampledStatistic(uint32 statisticIndex, uint32 weight) = 0;
 
         /**
          * Resets the statistics which should be considered in the following for refining an existing rule. The indices
@@ -203,7 +197,7 @@ class AbstractStatistics : public IMatrix {
          * This function is supposed to reset any non-global internal state that only holds for a certain subset of the
          * available statistics and therefore becomes invalid when a different subset of the statistics should be used.
          */
-        virtual void resetCoveredStatistics();
+        virtual void resetCoveredStatistics() = 0;
 
         /**
          * Adds a specific statistic to the subset that is covered by an existing rule and therefore should be
@@ -225,14 +219,14 @@ class AbstractStatistics : public IMatrix {
          * @param remove            False, if the statistic should be considered, True, if the statistic should not be
          *                          considered anymore
          */
-        virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove);
+        virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) = 0;
 
         /**
          * Creates a new, empty subset of the statistics. Individual statistics that are covered by a refinement of a
-         * rule can be added to the subset via subsequent calls to the function `AbstractStatisticsSubset#addToSubset`.
+         * rule can be added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
          *
          * This function must be called each time a new refinement is considered, unless the refinement covers all
-         * statistics previously provided via calls to the function `AbstractStatisticsSubset#addToSubset`.
+         * statistics previously provided via calls to the function `IStatisticsSubset#addToSubset`.
          *
          * Optionally, a subset of the available labels may be specified via the argument `labelIndices`. In such case,
          * only the statistics that correspond to the specified labels will be included in the subset. When calling this
@@ -242,9 +236,9 @@ class AbstractStatistics : public IMatrix {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be included in the subset or None, if all labels
          *                          should be included
-         * @return                  A pointer to an object of type `AbstractStatisticsSubset` that has been created
+         * @return                  A pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices);
+        virtual IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.
@@ -256,6 +250,10 @@ class AbstractStatistics : public IMatrix {
          * @param head              A pointer to an object of type `Prediction`, representing the predictions of the
          *                          newly induced rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction);
+        virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction) = 0;
+
+        uint32 getNumRows() override;
+
+        uint32 getNumCols() override;
 
 };

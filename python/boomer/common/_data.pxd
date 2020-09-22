@@ -8,7 +8,20 @@ from boomer.common._arrays cimport uint32
 
 cdef extern from "cpp/data.h" nogil:
 
-    cdef cppclass BinaryDokMatrix:
+    cdef cppclass IMatrix:
+
+        # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
+
+
+    cdef cppclass IRandomAccessMatrix(IMatrix):
+        pass
+
+
+    cdef cppclass BinaryDokMatrix(IRandomAccessMatrix):
 
         # Constructors:
 
@@ -19,7 +32,17 @@ cdef extern from "cpp/data.h" nogil:
         void set(uint32 row, uint32 column)
 
 
-    cdef cppclass BinaryDokVector:
+    cdef cppclass IVector:
+
+        # Functions:
+
+        uint32 getNumElements()
+
+
+    cdef cppclass IRandomAccessVector(IVector):
+        pass
+
+    cdef cppclass BinaryDokVector(IRandomAccessVector):
 
         # Constructors:
 
