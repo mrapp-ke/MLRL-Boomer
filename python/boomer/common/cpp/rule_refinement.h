@@ -103,8 +103,6 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
                                 IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal);
 
-        ~ExactRuleRefinementImpl();
-
         Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
 
