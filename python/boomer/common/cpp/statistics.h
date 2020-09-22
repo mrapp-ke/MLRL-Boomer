@@ -238,7 +238,7 @@ class AbstractStatistics : virtual public IMatrix {
          *                          should be included
          * @return                  A pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual StatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
+        virtual IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.
