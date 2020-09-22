@@ -14,15 +14,15 @@
 namespace boosting {
 
     /**
-     * An abstract base class for all classes that allow to calculate the predictions of rule, as well as corresponding
+     * Defines an interface for all classes that allow to calculate the predictions of rule, as well as corresponding
      * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
      * is applied label-wise.
      */
-    class AbstractLabelWiseRuleEvaluation {
+    class ILabelWiseRuleEvaluation {
 
         public:
 
-            virtual ~AbstractLabelWiseRuleEvaluation() = { };
+            virtual ~ILabelWiseRuleEvaluation() = { };
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
@@ -67,7 +67,7 @@ namespace boosting {
      * Hessians that have been calculated according to a loss function that is applied label-wise using L2
      * regularization.
      */
-    class RegularizedLabelWiseRuleEvaluationImpl : virtual public AbstractLabelWiseRuleEvaluation {
+    class RegularizedLabelWiseRuleEvaluationImpl : virtual public ILabelWiseRuleEvaluation {
 
         private:
 

@@ -15,14 +15,14 @@
 namespace seco {
 
     /**
-     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
+     * Defines an interface for all classes that allow to calculate the predictions of rules, as well as corresponding
      * quality scores, based on confusion matrices that have been computed for each label individually.
      */
-    class AbstractLabelWiseRuleEvaluation {
+    class ILabelWiseRuleEvaluation {
 
         public:
 
-            virtual ~AbstractLabelWiseRuleEvaluation() = 0;
+            virtual ~ILabelWiseRuleEvaluation() = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on
@@ -65,7 +65,7 @@ namespace seco {
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
      * heuristic that is applied using label-wise averaging.
      */
-    class HeuristicLabelWiseRuleEvaluationImpl : virtual public AbstractLabelWiseRuleEvaluation {
+    class HeuristicLabelWiseRuleEvaluationImpl : virtual public ILabelWiseRuleEvaluation {
 
         private:
 

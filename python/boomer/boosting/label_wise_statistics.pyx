@@ -61,7 +61,7 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     cdef void switch_rule_evaluation(self):
         cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
-        cdef shared_ptr[AbstractLabelWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
+        cdef shared_ptr[ILabelWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
         self.statistics_ptr.get().setRuleEvaluation(rule_evaluation_ptr)
 
 
