@@ -51,11 +51,11 @@ namespace seco {
      * An abstract base class for all heuristics that allows to calculate quality scores based on the elements of
      * confusion matrices.
      */
-    class AbstractHeuristic {
+    class IHeuristic {
 
         public:
 
-            virtual ~AbstractHeuristic();
+            virtual ~IHeuristic() { };
 
             /**
              * Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix. All elements
@@ -108,18 +108,16 @@ namespace seco {
              * @return      The quality score that has been calculated
              */
             virtual float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                    float64 uip, float64 urn, float64 urp);
+                                                    float64 uip, float64 urn, float64 urp) = 0;
 
     };
 
     /**
      * A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
      */
-    class PrecisionImpl : public AbstractHeuristic {
+    class PrecisionImpl : virtual public IHeuristic {
 
         public:
-
-            ~PrecisionImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
@@ -130,11 +128,9 @@ namespace seco {
      * A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is
      * (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
-    class RecallImpl : public AbstractHeuristic {
+    class RecallImpl : virtual public IHeuristic {
 
         public:
-
-            ~RecallImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
@@ -144,11 +140,9 @@ namespace seco {
     /**
      * A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
      */
-    class WRAImpl : public AbstractHeuristic {
+    class WRAImpl : virtual public IHeuristic {
 
         public:
-
-            ~WRAImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
@@ -158,11 +152,9 @@ namespace seco {
     /**
      * A heuristic that measures the fraction of incorrectly predicted labels among all labels.
      */
-    class HammingLossImpl : public AbstractHeuristic {
+    class HammingLossImpl : virtual public IHeuristic {
 
         public:
-
-            ~HammingLossImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
@@ -175,7 +167,7 @@ namespace seco {
      * heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `PrecisionImpl`. As
      * `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallImpl`.
      */
-    class FMeasureImpl : public AbstractHeuristic {
+    class FMeasureImpl : virtual public IHeuristic {
 
         private:
 
@@ -194,8 +186,6 @@ namespace seco {
              */
             FMeasureImpl(float64 beta);
 
-            ~FMeasureImpl();
-
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;
 
@@ -207,7 +197,7 @@ namespace seco {
      * heuristic `PrecisionImpl`. As `m` approaches infinity, the isometrics of this heuristic become equivalent to
      * those of the heuristic `WRAFunction`.
      */
-    class MEstimateImpl : public AbstractHeuristic {
+    class MEstimateImpl : virtual public IHeuristic {
 
         private:
 
@@ -225,8 +215,6 @@ namespace seco {
              * @param m The value of the m-parameter. Must be at least 0
              */
             MEstimateImpl(float64 beta);
-
-            ~MEstimateImpl();
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) override;

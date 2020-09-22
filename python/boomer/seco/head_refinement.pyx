@@ -9,5 +9,5 @@ cdef class PartialHeadRefinement(HeadRefinement):
     """
 
     def __cinit__(self, LiftFunction lift_function):
-        self.head_refinement_ptr = <shared_ptr[AbstractHeadRefinement]>make_shared[PartialHeadRefinementImpl](
+        self.head_refinement_ptr = <shared_ptr[IHeadRefinement]>make_shared[PartialHeadRefinementImpl](
             lift_function.lift_function_ptr)

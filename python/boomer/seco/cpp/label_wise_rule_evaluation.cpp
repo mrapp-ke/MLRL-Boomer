@@ -5,28 +5,10 @@
 using namespace seco;
 
 
-AbstractLabelWiseRuleEvaluation::~AbstractLabelWiseRuleEvaluation() {
-
-}
-
-void AbstractLabelWiseRuleEvaluation::calculateLabelWisePrediction(const uint32* labelIndices,
-                                                                   const uint8* minorityLabels,
-                                                                   const float64* confusionMatricesTotal,
-                                                                   const float64* confusionMatricesSubset,
-                                                                   const float64* confusionMatricesCovered,
-                                                                   bool uncovered,
-                                                                   LabelWisePredictionCandidate* prediction) {
-
-}
-
-HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(
-        std::shared_ptr<AbstractHeuristic> heuristicPtr, bool predictMajority) {
+HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<IHeuristic> heuristicPtr,
+                                                                           bool predictMajority) {
     heuristicPtr_ = heuristicPtr;
     predictMajority_ = predictMajority;
-}
-
-HeuristicLabelWiseRuleEvaluationImpl::~HeuristicLabelWiseRuleEvaluationImpl() {
-
 }
 
 void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
@@ -37,7 +19,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
                                                                         bool uncovered,
                                                                         LabelWisePredictionCandidate* prediction) {
     // Class members
-    AbstractHeuristic* heuristic = heuristicPtr_.get();
+    IHeuristic* heuristic = heuristicPtr_.get();
     bool predictMajority = predictMajority_;
     // The number of labels to predict for
     uint32 numPredictions = prediction->numPredictions_;
