@@ -182,7 +182,7 @@ namespace boosting {
 
         public:
 
-            virtual ~IExampleWiseStatisticsFactory() = { };
+            virtual ~IExampleWiseStatisticsFactory() { };
 
             /**
              * Creates a new instance of the class `AbstractExampleWiseStatistics`.
