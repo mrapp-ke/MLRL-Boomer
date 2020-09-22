@@ -14,11 +14,11 @@ namespace seco {
     /**
      * An abstract base class for all lift functions.
      */
-    class AbstractLiftFunction {
+    class ILiftFunction {
 
         public:
 
-            virtual ~AbstractLiftFunction() { };
+            virtual ~ILiftFunction() { };
 
             /**
              * Calculates and returns the lift for a specific number of labels.
@@ -41,7 +41,7 @@ namespace seco {
      * A lift function that monotonously increases until a certain number of labels, where the maximum lift is reached,
      * and monotonously decreases afterwards.
      */
-    class PeakLiftFunctionImpl : virtual public AbstractLiftFunction {
+    class PeakLiftFunctionImpl : virtual public ILiftFunction {
 
         private:
 

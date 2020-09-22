@@ -24,7 +24,7 @@ static inline uint32* argsort(float64* a, uint32 numElements) {
     return sortedArray;
 }
 
-PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<AbstractLiftFunction> liftFunctionPtr) {
+PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr) {
     liftFunctionPtr_ = liftFunctionPtr;
 }
 
@@ -34,7 +34,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
                                                          IStatisticsSubset* statisticsSubset, bool uncovered,
                                                          bool accumulated) {
     PredictionCandidate* result = NULL;
-    AbstractLiftFunction* liftFunction = liftFunctionPtr_.get();
+    ILiftFunction* liftFunction = liftFunctionPtr_.get();
     LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction->numPredictions_;
     float64* predictedScores = prediction->predictedScores_;
