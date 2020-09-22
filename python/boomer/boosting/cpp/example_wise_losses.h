@@ -18,7 +18,7 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractExampleWiseLoss();
+            virtual ~AbstractExampleWiseLoss() { };
 
             /**
              * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
@@ -38,14 +38,14 @@ namespace boosting {
              */
             virtual void calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
                                                        const float64* predictedScores, float64* gradients,
-                                                       float64* hessians);
+                                                       float64* hessians) = 0;
 
     };
 
     /**
      * A multi-label variant of the logistic loss that is applied example-wise.
      */
-    class ExampleWiseLogisticLossImpl : public AbstractExampleWiseLoss {
+    class ExampleWiseLogisticLossImpl : virtual public AbstractExampleWiseLoss {
 
         public:
 

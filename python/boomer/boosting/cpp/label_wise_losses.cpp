@@ -4,16 +4,6 @@
 using namespace boosting;
 
 
-AbstractLabelWiseLoss::~AbstractLabelWiseLoss() {
-
-}
-
-std::pair<float64, float64> AbstractLabelWiseLoss::calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
-                                                                               uint32 exampleIndex, uint32 labelIndex,
-                                                                               float64 predictedScore) {
-    return std::make_pair(0, 0);
-}
-
 std::pair<float64, float64> LabelWiseLogisticLossImpl::calculateGradientAndHessian(
         IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex, uint32 labelIndex, float64 predictedScore) {
     uint8 trueLabel = labelMatrix->get(exampleIndex, labelIndex);
