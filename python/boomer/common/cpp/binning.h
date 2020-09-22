@@ -14,7 +14,7 @@
 /**
  * Defines an interface to be implemented by classes that should be notified when values are assigned to bins.
  */
-class IBinningObserver{
+class IBinningObserver {
 
     public:
 
@@ -33,7 +33,7 @@ class IBinningObserver{
 /**
  * Defines an interface for methods that assign floating point values to bins.
  */
-class IBinning{
+class IBinning {
 
     public:
 
@@ -54,7 +54,7 @@ class IBinning{
 /**
  * Assigns floating point values to bins in a way such that each bin contains approximately the same number of values.
  */
-class EqualFrequencyBinningImpl : virtual public IBinning{
+class EqualFrequencyBinningImpl : virtual public IBinning {
 
     public:
 
@@ -65,7 +65,7 @@ class EqualFrequencyBinningImpl : virtual public IBinning{
 /**
  * Assigns floating point values to bins in a way such that each bin contains values from equally sized value ranges.
  */
-class EqualWidthBinningImpl : virtual public IBinning{
+class EqualWidthBinningImpl : virtual public IBinning {
 
     public:
 
