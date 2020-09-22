@@ -71,28 +71,13 @@ void EqualWidthBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedA
     intp bound_min = floor(min);
     //w stands for width and determines the span of values for a bin
     intp w = intp(ceil((max - min)/numBins));
-    //defining the boundaries of bins
-    //TODO: Bounderies unnötig
-    intp boundaries[numBins + 1] {0};
-     for(intp i = 0; i < numBins + 1; i++){
-        boundaries[i] = bound_min + w * i;
-     }
-     //looping over bins
-     //TODO: Temporäres Array überflüssig
-     //floor((Value - min) / w)
-     //Sonderfall Index kann größer sein als der letze Index
-     for(intp i = 0; i < numBins; i++){
-        //we will need a new pointer in every iteration
-        IndexedFloat32 *tmp = (IndexedFloat32*)malloc(sizeof(IndexedFloat32));
-        tmp->value = 0;
-        //looping over the list and adding every element in bin i
-        for(intp j = 0; j < length; j++){
-            if(boundaries[i]<= j && j < boundaries[i + 1]){
-                tmp->value = tmp->value + indexedArray->data[j].value;
-            }
+    intp index;
+    for(intp i = 0; i < length; i++){
+        index = floor((indexedArray->data[i] - min) / w);
+        if(index >= numBins){
+            index = numBins - 1;
         }
-        tmp->index = i;
-        observer->onBinUpdate(i, tmp);
-     }
+        observer->onBinUpdate(index, indexedArray->data[i]);
+    }
 }
 
