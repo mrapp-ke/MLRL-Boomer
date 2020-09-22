@@ -18,7 +18,7 @@ class AbstractBinning{
 
         virtual ~AbstractBinning();
 
-        virtual void createBins(IndexedFloat32Array* indexedArray, BinningObserver* observer);
+        virtual void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, BinningObserver* observer);
 
 };
 

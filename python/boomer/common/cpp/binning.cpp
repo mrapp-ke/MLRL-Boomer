@@ -1,5 +1,6 @@
 #include "binning.h"
 #include <math.h>
+#include <stdexcept>
 
 AbstractBinning::~AbstractBinning(){
 
@@ -20,14 +21,15 @@ void EqualFrequencyBinning::createBins(uint32 numBins, IndexedFloat32Array* inde
     //TODO: Sortieren
     intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
-    if(length <= numBins){
-        for(intp i = 0; i<length; i++){
-            observer->onBinUpdate(i, &indexedArray->data[i]);
-        }
-        return;
+    if(numBins > length){
+        throw std::invalid_argument("numBins has to be less or equal to the length of the example array");
     }
-    //TODO: Aufrunden
-    intp n = length/numBins; //number of elements per bin
+    intp n; //number of elements per Bin
+    if((length % numBins) == 0){    //if the division has no residual
+        n = length/numBins;         //n is the normal dievision
+    } else {
+        n = length/numBins + 1;     //n is rounded up
+    }
     //looping over bins
     //Übers Orginalarray iterieren
     //orginal Index / n
@@ -54,11 +56,8 @@ void EqualWidthBinning::createBins(uint32 numBins, IndexedFloat32Array* indexedA
     //TODO: Min und Max Suche
     intp length = indexedArray->numElements;
     //Mandatory block skipping the process, if the condition is already satisfied
-    if(length <= numBins){
-        for(intp i = 0; i<length; i++){
-            observer->onBinUpdate(i, &indexedArray->data[i]);
-        }
-        return;
+    if(numBins > length){
+        throw std::invalid_argument("numBins has to be less or equal to the length of the example array");
     }
     //defining minimal and maximum values
     float min = indexedArray->data[0].value;
