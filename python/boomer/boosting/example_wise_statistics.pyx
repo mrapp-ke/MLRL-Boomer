@@ -12,7 +12,7 @@ from libcpp.memory cimport make_shared, dynamic_pointer_cast
 
 cdef class ExampleWiseStatisticsFactory:
     """
-    A wrapper for the abstract C++ class `AbstractExampleWiseStatisticsFactory`.
+    A wrapper for the pure virtual C++ class `IExampleWiseStatisticsFactory`.
     """
 
     cdef AbstractExampleWiseStatistics* create(self):
@@ -38,7 +38,7 @@ cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
         :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
                                 examples
         """
-        self.statistics_factory_ptr = <shared_ptr[AbstractExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
+        self.statistics_factory_ptr = <shared_ptr[IExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
             loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, shared_ptr[Lapack](init_lapack()),
             dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
