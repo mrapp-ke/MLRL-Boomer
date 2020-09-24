@@ -255,7 +255,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
-                    nominal = nominal_feature_set.get(f)
+                    nominal = nominal_feature_set.getValue(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
                                                            total_sum_of_weights, cache_global, cache_local,
                                                            feature_matrix, covered_statistics_mask,
