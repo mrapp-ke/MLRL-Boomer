@@ -52,7 +52,7 @@ class IBinning {
 };
 
 /**
- *
+ *  Defines an Interface for methods, which generate histograms, for bins.
  */
 class IHistogramBuilder : virtual public IBinningObserver {
 
@@ -85,7 +85,7 @@ class EqualWidthBinningImpl : virtual public IBinning {
 };
 
 /**
- *
+ *  Generates and stores necessary data for histogram building on the base of labels
  */
 class DenseLabelWiseStatisticsImpl : virtual public IHistogramBuilder {
 
@@ -110,7 +110,7 @@ class DenseLabelWiseStatisticsImpl : virtual public IHistogramBuilder {
 };
 
 /**
- *
+ *  Generates and stores necessary data for histogram building on the base of examples
  */
 class DenseExampleWiseStatisticsImpl : virtual public IHistogramBuilder {
 
