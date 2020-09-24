@@ -29,7 +29,7 @@ cdef extern from "cpp/data.h" nogil:
 
         # Functions:
 
-        void set(uint32 row, uint32 column)
+        void setValue(uint32 row, uint32 column)
 
 
     cdef cppclass IVector:
@@ -50,4 +50,4 @@ cdef extern from "cpp/data.h" nogil:
 
         # Functions:
 
-        void set(uint32 pos)
+        void setValue(uint32 pos)

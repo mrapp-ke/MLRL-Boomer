@@ -15,7 +15,7 @@ uint32 DenseLabelMatrixImpl::getNumCols() {
     return numLabels_;
 }
 
-uint8 DenseLabelMatrixImpl::get(uint32 row, uint32 col) {
+uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) {
     uint32 i = (row * this->getNumCols()) + col;
     return y_[i];
 }
@@ -32,8 +32,8 @@ uint32 DokLabelMatrixImpl::getNumCols() {
     return dokMatrixPtr_.get()->getNumCols();
 }
 
-uint8 DokLabelMatrixImpl::get(uint32 row, uint32 col) {
-    return dokMatrixPtr_.get()->get(row, col);
+uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) {
+    return dokMatrixPtr_.get()->getValue(row, col);
 }
 
 DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
@@ -121,8 +121,8 @@ DokNominalFeatureSetImpl::DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVect
     dokVectorPtr_ = dokVectorPtr;
 }
 
-uint8 DokNominalFeatureSetImpl::get(uint32 pos) {
-    return dokVectorPtr_.get()->get(pos);
+uint8 DokNominalFeatureSetImpl::getValue(uint32 pos) {
+    return dokVectorPtr_.get()->getValue(pos);
 }
 
 uint32 DokNominalFeatureSetImpl::getNumElements() {
