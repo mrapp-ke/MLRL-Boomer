@@ -57,13 +57,13 @@ class IRandomAccessMatrix : virtual public IMatrix {
         virtual ~IRandomAccessMatrix() { };
 
         /**
-         * Returns the element at a specific position.
+         * Returns the value of the element at a specific position.
          *
-         * @param row   The row of the element to be returned
-         * @param col   The column of the element to be returned
-         * @return      The element at the given position
+         * @param row   The row of the element
+         * @param col   The column of the element
+         * @return      The value of the given element
          */
-        virtual T get(uint32 row, uint32 col) = 0;
+        virtual T getValue(uint32 row, uint32 col) = 0;
 
 };
 
@@ -89,14 +89,14 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
         BinaryDokMatrix(uint32 numRows, uint32 numCols);
 
         /**
-         * Sets the element at a specific position to a non-zero value.
+         * Sets a non-zero value to the element at a specific position.
          *
-         * @param row       The row of the element to be set
-         * @param column    The column of the element to be set
+         * @param row       The row of the element
+         * @param column    The column of the element
          */
-        void set(uint32 row, uint32 column);
+        void setValue(uint32 row, uint32 column);
 
-        uint8 get(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) override;
 
         uint32 getNumRows() override;
 
@@ -133,12 +133,12 @@ class IRandomAccessVector : virtual public IVector {
         virtual ~IRandomAccessVector() { };
 
         /**
-         * Returns the element at a specific position.
+         * Returns the value of the element at a specific position.
          *
-         * @param pos   The position of the element to be returned
-         * @return      The element at the given position
+         * @param pos   The position of the element
+         * @return      The value of the given element
          */
-        virtual T get(uint32 pos) = 0;
+        virtual T getValue(uint32 pos) = 0;
 
 };
 
@@ -161,13 +161,13 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
         BinaryDokVector(uint32 numElements);
 
         /**
-         * Sets the element at a specific position to non-zero value.
+         * Sets a non-zero value to the element at a specific position.
          *
-         * @param pos The position of the element to be set
+         * @param pos The position of the element
          */
-        void set(uint32 pos);
+        void setValue(uint32 pos);
 
-        uint8 get(uint32 pos) override;
+        uint8 getValue(uint32 pos) override;
 
         uint32 getNumElements() override;
 

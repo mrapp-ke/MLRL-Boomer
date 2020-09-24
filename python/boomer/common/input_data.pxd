@@ -55,7 +55,7 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Functions:
 
-        uint8 get(uint32 pos)
+        uint8 getValue(uint32 pos)
 
 
     cdef cppclass DokNominalFeatureSetImpl(INominalFeatureSet):

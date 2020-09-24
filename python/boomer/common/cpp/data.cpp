@@ -14,11 +14,11 @@ uint32 BinaryDokMatrix::getNumCols() {
     return numCols_;
 }
 
-void BinaryDokMatrix::set(uint32 row, uint32 column) {
+void BinaryDokMatrix::setValue(uint32 row, uint32 column) {
     data_.insert(std::make_pair(row, column));
 }
 
-uint8 BinaryDokMatrix::get(uint32 row, uint32 column) {
+uint8 BinaryDokMatrix::getValue(uint32 row, uint32 column) {
     return data_.find(std::make_pair(row, column)) != data_.end();
 }
 
@@ -30,10 +30,10 @@ uint32 BinaryDokVector::getNumElements() {
     return numElements_;
 }
 
-void BinaryDokVector::set(uint32 pos) {
+void BinaryDokVector::setValue(uint32 pos) {
     data_.insert(pos);
 }
 
-uint8 BinaryDokVector::get(uint32 pos) {
+uint8 BinaryDokVector::getValue(uint32 pos) {
     return data_.find(pos) != data_.end();
 }
