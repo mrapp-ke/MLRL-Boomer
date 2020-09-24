@@ -57,7 +57,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                dok_matrix_ptr.get().set(r, c)
+                dok_matrix_ptr.get().setValue(r, c)
 
         self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](dok_matrix_ptr)
 
@@ -134,7 +134,7 @@ cdef class DokNominalFeatureSet(NominalFeatureSet):
 
         if num_nominal_features > 0:
             for i in nominal_feature_indices:
-                dok_vector_ptr.get().set(i)
+                dok_vector_ptr.get().setValue(i)
 
         self.nominal_feature_set_ptr = <shared_ptr[INominalFeatureSet]>make_shared[DokNominalFeatureSetImpl](
             dok_vector_ptr)
