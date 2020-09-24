@@ -93,7 +93,7 @@ class DenseLabelWiseStatisticsImpl : virtual public IHistogramBuilder {
 
         DenseLabelWiseStatisticsImpl* statistics_;
 
-        uint32 numBins;
+        uint32 numBins_;
 
         float64* gradients_;
 
@@ -101,13 +101,11 @@ class DenseLabelWiseStatisticsImpl : virtual public IHistogramBuilder {
 
     public:
 
-        DenseLabelWiseStatisticsImpl(uint32 numBins);
-
         void HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
 
         void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
 
-        AbstractStatistics* build() override;
+        AbstractStatistics* build();
 
 };
 
@@ -120,7 +118,7 @@ class DenseExampleWiseStatisticsImpl : virtual public IHistogramBuilder {
 
         DenseExampleWiseStatisticsImpl* statistics_;
 
-        uint32 numBins;
+        uint32 numBins_;
 
         float64* gradients_;
 
@@ -128,12 +126,10 @@ class DenseExampleWiseStatisticsImpl : virtual public IHistogramBuilder {
 
     public:
 
-        DenseExampleWiseStatisticsImpl(uint32 numBins);
-
         void HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins);
 
         void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
 
-        AbstractStatistics* build() override;
+        AbstractStatistics* build();
 
 };
