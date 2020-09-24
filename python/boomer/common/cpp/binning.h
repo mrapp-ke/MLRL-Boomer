@@ -89,11 +89,47 @@ class EqualWidthBinningImpl : virtual public IBinning {
  */
 class DenseLabelWiseStatisticsImpl : virtual public IHistogramBuilder {
 
+    private:
+
+        DenseLabelWiseStatisticsImpl* statistics_;
+
+        uint32 numBins;
+
+        float64* gradients_;
+
+        float64* hessians_;
+
+    public:
+
+        void HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
+
+        void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
+
+        AbstractStatistics* build() override;
+
 };
 
 /**
  *
  */
 class DenseExampleWiseStatisticsImpl : virtual public IHistogramBuilder {
+
+    private:
+
+        DenseExampleWiseStatisticsImpl* statistics_;
+
+        uint32 numBins;
+
+        float64* gradients_;
+
+        float64* hessians_;
+
+    public:
+
+        void HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins);
+
+        void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
+
+        AbstractStatistics* build() override;
 
 };
