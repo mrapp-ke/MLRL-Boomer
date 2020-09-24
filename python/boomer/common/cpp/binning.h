@@ -52,6 +52,17 @@ class IBinning {
 };
 
 /**
+ *
+ */
+class IHistogramBuilder : virtual public IBinningObserver {
+
+    public:
+
+        virtual AbstractStatistics* buildHistogram() = 0;
+
+};
+
+/**
  * Assigns floating point values to bins in a way such that each bin contains approximately the same number of values.
  */
 class EqualFrequencyBinningImpl : virtual public IBinning {
@@ -70,5 +81,19 @@ class EqualWidthBinningImpl : virtual public IBinning {
     public:
 
         void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) override;
+
+};
+
+/**
+ *
+ */
+class DenseLabelWiseStatisticsImpl : virtual public IHistogramBuilder {
+
+};
+
+/**
+ *
+ */
+class DenseExampleWiseStatisticsImpl : virtual public IHistogramBuilder {
 
 };
