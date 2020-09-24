@@ -22,6 +22,75 @@ struct PairHash {
 };
 
 /**
+ * Defines an interface for all one-dimensional vectors.
+ */
+class IVector {
+
+    public:
+
+        virtual ~IVector() { };
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements
+         */
+        virtual uint32 getNumElements() = 0;
+
+};
+
+/**
+ * Defines an interface for all one-dimensional vectors that provide random access to their elements.
+ */
+template<class T>
+class IRandomAccessVector : virtual public IVector {
+
+    public:
+
+        virtual ~IRandomAccessVector() { };
+
+        /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
+         */
+        virtual T getValue(uint32 pos) = 0;
+
+};
+
+/**
+ * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
+ */
+class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
+
+    private:
+
+        uint32 numElements_;
+
+        std::unordered_set<uint32> data_;
+
+    public:
+
+        /**
+         * @param numElements The number of elements in the vector. Must be at least 1
+         */
+        BinaryDokVector(uint32 numElements);
+
+        /**
+         * Sets a non-zero value to the element at a specific position.
+         *
+         * @param pos The position of the element
+         */
+        void setValue(uint32 pos);
+
+        uint8 getValue(uint32 pos) override;
+
+        uint32 getNumElements() override;
+
+};
+
+/**
  * Defines an interface for all two-dimensional matrices.
  */
 class IMatrix {
@@ -57,13 +126,13 @@ class IRandomAccessMatrix : virtual public IMatrix {
         virtual ~IRandomAccessMatrix() { };
 
         /**
-         * Returns the element at a specific position.
+         * Returns the value of the element at a specific position.
          *
-         * @param row   The row of the element to be returned
-         * @param col   The column of the element to be returned
-         * @return      The element at the given position
+         * @param row   The row of the element. Must be in [0, getNumRows())
+         * @param col   The column of the element. Must be in [0, getNumCols())
+         * @return      The value of the given element
          */
-        virtual T get(uint32 row, uint32 col) = 0;
+        virtual T getValue(uint32 row, uint32 col) = 0;
 
 };
 
@@ -83,92 +152,23 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
     public:
 
         /**
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
+         * @param numRows   The number of rows in the matrix. Must be at least 1
+         * @param numCols   The number of columns in the matrix. Must be at least 1
          */
         BinaryDokMatrix(uint32 numRows, uint32 numCols);
 
         /**
-         * Sets the element at a specific position to a non-zero value.
+         * Sets a non-zero value to the element at a specific position.
          *
-         * @param row       The row of the element to be set
-         * @param column    The column of the element to be set
+         * @param row       The row of the element. Must be in [0, getNumRows())
+         * @param column    The column of the element. Must be in [0, getNumCols())
          */
-        void set(uint32 row, uint32 column);
+        void setValue(uint32 row, uint32 column);
 
-        uint8 get(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) override;
 
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
-
-};
-
-/**
- * Defines an interface for all one-dimensional vectors.
- */
-class IVector {
-
-    public:
-
-        virtual ~IVector() { };
-
-        /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements
-         */
-        virtual uint32 getNumElements() = 0;
-
-};
-
-/**
- * Defines an interface for all one-dimensional vectors that provide random access to their elements.
- */
-template<class T>
-class IRandomAccessVector : virtual public IVector {
-
-    public:
-
-        virtual ~IRandomAccessVector() { };
-
-        /**
-         * Returns the element at a specific position.
-         *
-         * @param pos   The position of the element to be returned
-         * @return      The element at the given position
-         */
-        virtual T get(uint32 pos) = 0;
-
-};
-
-/**
- * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
- */
-class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
-
-    private:
-
-        uint32 numElements_;
-
-        std::unordered_set<uint32> data_;
-
-    public:
-
-        /**
-         * @param numElements The number of elements in the vector
-         */
-        BinaryDokVector(uint32 numElements);
-
-        /**
-         * Sets the element at a specific position to non-zero value.
-         *
-         * @param pos The position of the element to be set
-         */
-        void set(uint32 pos);
-
-        uint8 get(uint32 pos) override;
-
-        uint32 getNumElements() override;
 
 };

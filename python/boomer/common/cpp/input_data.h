@@ -61,7 +61,7 @@ class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
         uint32 getNumCols() override;
 
-        uint8 get(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) override;
 
 };
 
@@ -87,7 +87,7 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
         uint32 getNumCols() override;
 
-        uint8 get(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) override;
 
 };
 
@@ -217,6 +217,6 @@ class DokNominalFeatureSetImpl : virtual public INominalFeatureSet {
 
         uint32 getNumElements() override;
 
-        uint8 get(uint32 pos) override;
+        uint8 getValue(uint32 pos) override;
 
 };
