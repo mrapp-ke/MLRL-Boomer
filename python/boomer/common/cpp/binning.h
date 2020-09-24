@@ -101,6 +101,8 @@ class DenseLabelWiseStatisticsImpl : virtual public IHistogramBuilder {
 
     public:
 
+        DenseLabelWiseStatisticsImpl(uint32 numBins);
+
         void HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
 
         void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
@@ -125,6 +127,8 @@ class DenseExampleWiseStatisticsImpl : virtual public IHistogramBuilder {
         float64* hessians_;
 
     public:
+
+        DenseExampleWiseStatisticsImpl(uint32 numBins);
 
         void HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins);
 
