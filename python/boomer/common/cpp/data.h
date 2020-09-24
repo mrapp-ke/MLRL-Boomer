@@ -52,7 +52,7 @@ class IRandomAccessVector : virtual public IVector {
         /**
          * Returns the value of the element at a specific position.
          *
-         * @param pos   The position of the element
+         * @param pos   The position of the element. Must be in [0, getNumElements())
          * @return      The value of the given element
          */
         virtual T getValue(uint32 pos) = 0;
@@ -73,7 +73,7 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
     public:
 
         /**
-         * @param numElements The number of elements in the vector
+         * @param numElements The number of elements in the vector. Must be at least 1
          */
         BinaryDokVector(uint32 numElements);
 
@@ -128,8 +128,8 @@ class IRandomAccessMatrix : virtual public IMatrix {
         /**
          * Returns the value of the element at a specific position.
          *
-         * @param row   The row of the element
-         * @param col   The column of the element
+         * @param row   The row of the element. Must be in [0, getNumRows())
+         * @param col   The column of the element. Must be in [0, getNumCols())
          * @return      The value of the given element
          */
         virtual T getValue(uint32 row, uint32 col) = 0;
@@ -152,16 +152,16 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
     public:
 
         /**
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
+         * @param numRows   The number of rows in the matrix. Must be at least 1
+         * @param numCols   The number of columns in the matrix. Must be at least 1
          */
         BinaryDokMatrix(uint32 numRows, uint32 numCols);
 
         /**
          * Sets a non-zero value to the element at a specific position.
          *
-         * @param row       The row of the element
-         * @param column    The column of the element
+         * @param row       The row of the element. Must be in [0, getNumRows())
+         * @param column    The column of the element. Must be in [0, getNumCols())
          */
         void setValue(uint32 row, uint32 column);
 
