@@ -53,7 +53,7 @@ struct Bin {
     uint32 numExamples;
     float32 minValue;
     float32 maxValue;
-}
+};
 
 namespace tuples {
 
