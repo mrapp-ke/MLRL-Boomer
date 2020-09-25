@@ -1,4 +1,5 @@
 #include "input_data.h"
+#include<stdlib.h>
 
 
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) {
@@ -20,20 +21,24 @@ uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) {
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatrixPtr) {
-    dokMatrixPtr_ = dokMatrixPtr;
+DokLabelMatrixImpl::DokLabelMatrixImpl(BinaryDokMatrix* matrix) {
+    matrix_ = matrix;
+}
+
+DokLabelMatrixImpl::~DokLabelMatrixImpl() {
+    delete matrix_;
 }
 
 uint32 DokLabelMatrixImpl::getNumRows() {
-    return dokMatrixPtr_.get()->getNumRows();
+    return matrix_->getNumRows();
 }
 
 uint32 DokLabelMatrixImpl::getNumCols() {
-    return dokMatrixPtr_.get()->getNumCols();
+    return matrix_->getNumCols();
 }
 
 uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) {
-    return dokMatrixPtr_.get()->getValue(row, col);
+    return matrix_->getValue(row, col);
 }
 
 DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
@@ -117,14 +122,18 @@ void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Indexed
     indexedArray->data = sortedArray;
 }
 
-DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr) {
-    dokVectorPtr_ = dokVectorPtr;
+DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(BinaryDokVector* vector) {
+    vector_ = vector;
+}
+
+DokNominalFeatureVectorImpl::~DokNominalFeatureVectorImpl() {
+    delete vector_;
 }
 
 uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
-    return dokVectorPtr_.get()->getValue(pos);
+    return vector_->getValue(pos);
 }
 
 uint32 DokNominalFeatureVectorImpl::getNumElements() {
-    return dokVectorPtr_.get()->getNumElements();
+    return vector_->getNumElements();
 }
