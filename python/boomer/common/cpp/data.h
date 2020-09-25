@@ -80,7 +80,7 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
         /**
          * Sets a non-zero value to the element at a specific position.
          *
-         * @param pos The position of the element
+         * @param pos The position of the element. Must be in [0, getNumElements())
          */
         void setValue(uint32 pos);
 
