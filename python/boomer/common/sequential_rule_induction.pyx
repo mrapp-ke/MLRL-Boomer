@@ -4,7 +4,7 @@
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common._random cimport RNG
-from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureSet
+from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureVector
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
@@ -70,19 +70,19 @@ cdef class SequentialRuleInduction:
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
 
-    cpdef RuleModel induce_rules(self, NominalFeatureSet nominal_feature_set, FeatureMatrix feature_matrix,
+    cpdef RuleModel induce_rules(self, NominalFeatureVector nominal_feature_vector, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
-        :param nominal_feature_set: A `NominalFeatureSet` that allows to check whether individual features are nominal
-                                    or not
-        :param feature_matrix:      The `FeatureMatrix` that provides column-wise access to the feature values of the
-                                    training examples
-        :param label_matrix:        A `LabelMatrix` that provides access to the labels of the training examples
-        :param random_state:        The seed to be used by RNGs
-        :param model_builder:       The builder that should be used to build the model
-        :return:                    A model that contains the induced classification rules
+        :param nominal_feature_vector:  A `NominalFeatureVector` that provides access to the information whether
+                                        individual features are nominal or not
+        :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
+                                        the training examples
+        :param label_matrix:            A `LabelMatrix` that provides access to the labels of the training examples
+        :param random_state:            The seed to be used by RNGs
+        :param model_builder:           The builder that should be used to build the model
+        :return:                        A model that contains the induced classification rules
         """
         # Class members
         cdef StatisticsProviderFactory statistics_provider_factory = self.statistics_provider_factory
@@ -118,10 +118,10 @@ cdef class SequentialRuleInduction:
         # Induce the remaining rules...
         head_refinement_ptr = head_refinement.head_refinement_ptr
         cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
-        cdef shared_ptr[INominalFeatureSet] nominal_feature_set_ptr = nominal_feature_set.nominal_feature_set_ptr
+        cdef shared_ptr[INominalFeatureVector] nominal_feature_vector_ptr = nominal_feature_vector.nominal_feature_vector_ptr
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            success = rule_induction.induce_rule(statistics_provider, nominal_feature_set_ptr.get(),
+            success = rule_induction.induce_rule(statistics_provider, nominal_feature_vector_ptr.get(),
                                                  feature_matrix_ptr.get(), head_refinement_ptr.get(),
                                                  label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                                  pruning, post_processor, min_coverage, max_conditions,
