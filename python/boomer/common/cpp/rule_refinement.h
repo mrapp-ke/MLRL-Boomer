@@ -31,19 +31,19 @@ struct Refinement {
 };
 
 /**
- * An abstract base class for all classes that allow to find the best refinement of existing rules.
+ * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
-class AbstractRuleRefinement {
+class IRuleRefinement {
 
     public:
 
-        virtual ~AbstractRuleRefinement();
+        virtual ~IRuleRefinement() { };
 
         /**
          * Finds and returns the best refinement of an existing rule.
          *
-         * @param headRefinement    A pointer to an object of type `AbstractHeadRefinement` that should be used to find
-         *                          the head of the refined rule
+         * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to find the
+         *                          head of the refined rule
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
          *                          existing rule
          * @param numLabelIndices   The number of elements in the array `labelIndices`
@@ -51,8 +51,8 @@ class AbstractRuleRefinement {
          *                          indices of the labels for which the refined rule may predict
          * @return                  A struct of type `Refinement`, representing the best refinement that has been found
          */
-        virtual Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                          uint32 numLabelIndices, const uint32* labelIndices);
+        virtual Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                          uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
 };
 
@@ -61,7 +61,7 @@ class AbstractRuleRefinement {
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  */
-class ExactRuleRefinementImpl : public AbstractRuleRefinement {
+class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
@@ -103,9 +103,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
                                 IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal);
 
-        ~ExactRuleRefinementImpl();
-
-        Refinement findRefinement(AbstractHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+        Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };
