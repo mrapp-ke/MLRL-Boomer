@@ -8,6 +8,7 @@
 
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/statistics.h"
+#include "../../common/cpp/binning.h"
 #include "label_wise_rule_evaluation.h"
 #include "label_wise_losses.h"
 #include "statistics.h"
@@ -100,6 +101,28 @@ namespace boosting {
 
                     LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;
+
+            };
+
+            class DenseLabelWiseStatisticsBinsImpl : virtual public IHistogramBuilder {
+
+                private:
+
+                    DenseLabelWiseStatisticsImpl* statistics_;
+
+                    uint32 numBins_;
+
+                    float64* gradients_;
+
+                    float64* hessians_;
+
+                public:
+
+                    void HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
+
+                    void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
+
+                    AbstractStatistics* build();
 
             };
 
