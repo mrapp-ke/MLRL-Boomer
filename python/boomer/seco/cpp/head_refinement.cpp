@@ -24,21 +24,17 @@ static inline uint32* argsort(float64* a, uint32 numElements) {
     return sortedArray;
 }
 
-PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<AbstractLiftFunction> liftFunctionPtr) {
+PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr) {
     liftFunctionPtr_ = liftFunctionPtr;
-}
-
-PartialHeadRefinementImpl::~PartialHeadRefinementImpl() {
-
 }
 
 PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                          PredictionCandidate* recyclableHead,
                                                          const uint32* labelIndices,
-                                                         AbstractStatisticsSubset* statisticsSubset, bool uncovered,
+                                                         IStatisticsSubset* statisticsSubset, bool uncovered,
                                                          bool accumulated) {
     PredictionCandidate* result = NULL;
-    AbstractLiftFunction* liftFunction = liftFunctionPtr_.get();
+    ILiftFunction* liftFunction = liftFunctionPtr_.get();
     LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction->numPredictions_;
     float64* predictedScores = prediction->predictedScores_;
@@ -128,7 +124,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
     return result;
 }
 
-PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(AbstractStatisticsSubset* statisticsSubset,
-                                                                    bool uncovered, bool accumulated) {
+PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+                                                                    bool accumulated) {
     return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }

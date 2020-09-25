@@ -1,9 +1,9 @@
-from boomer.common.input_data cimport LabelMatrix, AbstractRandomAccessLabelMatrix
+from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.statistics cimport AbstractGradientStatistics
-from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, AbstractExampleWiseLoss
-from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, AbstractExampleWiseRuleEvaluation
+from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, IExampleWiseLoss
+from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, IExampleWiseRuleEvaluation
 
 from libcpp.memory cimport shared_ptr
 
@@ -14,40 +14,40 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void setRuleEvaluation(shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr)
+        void setRuleEvaluation(shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr)
 
 
     cdef cppclass DenseExampleWiseStatisticsImpl(AbstractExampleWiseStatistics):
 
         # Constructors:
 
-        DenseExampleWiseStatisticsImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                       shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+        DenseExampleWiseStatisticsImpl(shared_ptr[IExampleWiseLoss] lossFunctionPtr,
+                                       shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                        shared_ptr[Lapack] lapackPtr) except +
 
 
-    cdef cppclass AbstractExampleWiseStatisticsFactory:
+    cdef cppclass IExampleWiseStatisticsFactory:
 
         # Functions:
 
         AbstractExampleWiseStatistics* create()
 
 
-    cdef cppclass DenseExampleWiseStatisticsFactoryImpl(AbstractExampleWiseStatisticsFactory):
+    cdef cppclass DenseExampleWiseStatisticsFactoryImpl(IExampleWiseStatisticsFactory):
 
         # Constructors:
 
-        DenseExampleWiseStatisticsFactoryImpl(shared_ptr[AbstractExampleWiseLoss] lossFunctionPtr,
-                                              shared_ptr[AbstractExampleWiseRuleEvaluation] ruleEvaluationPtr,
+        DenseExampleWiseStatisticsFactoryImpl(shared_ptr[IExampleWiseLoss] lossFunctionPtr,
+                                              shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr,
                                               shared_ptr[Lapack] lapackPtr,
-                                              shared_ptr[AbstractRandomAccessLabelMatrix] labelMatrixPtr) except +
+                                              shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 
 cdef class ExampleWiseStatisticsFactory:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractExampleWiseStatisticsFactory] statistics_factory_ptr
+    cdef shared_ptr[IExampleWiseStatisticsFactory] statistics_factory_ptr
 
     # Functions:
 

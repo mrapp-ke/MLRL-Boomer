@@ -8,7 +8,7 @@ from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, AbstractRuleRefinement, ExactRuleRefinementImpl
-from boomer.common.statistics cimport AbstractStatistics, AbstractStatisticsSubset
+from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -26,21 +26,21 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         """
         Induces the default rule.
 
         :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
                                     the basis for inducing the default rule
-        :param head_refinement:     A pointer to an object of type `AbstractHeadRefinement` that should be used to find
-                                    the head of the default rule or NULL, if no default rule should be induced
+        :param head_refinement:     A pointer to an object of type `IHeadRefinement` that should be used to find the
+                                    head of the default rule or NULL, if no default rule should be induced
         :param model_builder:       The builder, the default rule should be added to
         """
         pass
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
-                          AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureVector* nominal_feature_vector,
+                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -50,12 +50,12 @@ cdef class RuleInduction:
 
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
-        :param nominal_feature_set:     A pointer to an object of type `AbstractNominalFeatureSet` that allows to check
-                                        whether individual features are nominal or not
-        :param feature_matrix:          A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
-                                        access to the feature values of the training examples
-        :param head_refinement:         A pointer to an object of type `AbstractHeadRefinement` that should be used to
-                                        find the head of the rule
+        :param nominal_feature_vector:  A pointer to an object of type `INominalFeatureVector` that provides access to
+                                        the information whether individual features are nominal or not
+        :param feature_matrix:          A pointer to an object of type `IFeatureMatrix` that provides column-wise access
+                                        to the feature values of the training examples
+        :param head_refinement:         A pointer to an object of type `IHeadRefinement` that should be used to find the
+                                        head of the rule
         :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
                                         sub-sampling should be used
         :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if
@@ -105,10 +105,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         del self.cache_global
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, AbstractHeadRefinement* head_refinement,
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
-        cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
         cdef AbstractStatistics* statistics
         cdef uint32 num_statistics, i
 
@@ -133,8 +133,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractNominalFeatureSet* nominal_feature_set,
-                          AbstractFeatureMatrix* feature_matrix, AbstractHeadRefinement* head_refinement,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureVector* nominal_feature_vector,
+                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
@@ -239,7 +239,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
-                    nominal = nominal_feature_set.get(f)
+                    nominal = nominal_feature_vector.getValue(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
                                                            total_sum_of_weights, cache_global, cache_local,
                                                            feature_matrix, covered_statistics_mask,
@@ -392,9 +392,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                   const uint32* label_indices, uint32[::1] weights, uint32 total_sum_of_weights,
                                   unordered_map[uint32, IndexedFloat32Array*]* cache_global,
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
-                                  AbstractFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
+                                  IFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
                                   uint32 covered_statistics_target, uint32 num_conditions,
-                                  AbstractStatistics* statistics, AbstractHeadRefinement* head_refinement,
+                                  AbstractStatistics* statistics, IHeadRefinement* head_refinement,
                                   PredictionCandidate* head) nogil:
     """
     Finds and returns the best refinement of an existing rule, which results from adding a new condition that
@@ -417,8 +417,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                         `IndexedFloat32ArrayWrapper`, storing the indices of the training examples that
                                         are covered by the existing rule, as well as their values for the respective
                                         feature, sorted in ascending order by the feature values
-    :param feature_matrix:              A pointer to an object of type `AbstractFeatureMatrix` that provides column-wise
-                                        access to the feature values of the training examples
+    :param feature_matrix:              A pointer to an object of type `IFeatureMatrix` that provides column-wise access
+                                        to the feature values of the training examples
     :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
                                         of the indices of the statistics that are covered by the existing rule. It will
                                         be updated by this function
@@ -427,8 +427,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     :param num_conditions:              The number of conditions in the body of the existing rule
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be used for finding the
                                         best refinement
-    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that should be used to
-                                        find the head of the refined rule
+    :param head_refinement:             A pointer to an object of type `IHeadRefinement` that should be used to find the
+                                        head of the refined rule
     :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
                                         the existing rule
     :return:                            A struct of type `Refinement`, representing the best refinement that has been
@@ -530,8 +530,8 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
                                         to store the filtered array
     :param condition_start:             The element in `indexed_values` that corresponds to the first example
-                                        (inclusive) included in the `AbstractStatisticsSubset` that is covered by the
-                                        new condition
+                                        (inclusive) included in the `IStatisticsSubset` that is covered by the new
+                                        condition
     :param condition_end:               The element in `indexed_values` that corresponds to the last example (exclusive)
     :param condition_comparator:        The type of the operator that is used by the new condition
     :param covered                      1, if the examples in range [condition_start, condition_end) are covered by the
@@ -725,7 +725,7 @@ cdef inline Condition __make_condition(uint32 feature_index, Comparator comparat
 
 
 cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint32 num_statistics,
-                                           AbstractHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
+                                           IHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
                                            uint32 covered_statistics_target, PredictionCandidate* head):
     """
     Updates the scores that a predicted by the head of a rule, based on all available statistics.
@@ -733,8 +733,8 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     :param statistics:                  A pointer to an object of type `AbstractStatistics` that stores the available
                                         statistics
     :param num_statistics:              The number of available statistics
-    :param head_refinement:             A pointer to an object of type `AbstractHeadRefinement` that was used to find
-                                        the head of the rule
+    :param head_refinement:             A pointer to an object of type `IHeadRefinement` that was used to find the head
+                                        of the rule
     :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
                                         of the indices of the statistics that are covered by the rule
     :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
@@ -749,7 +749,7 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     # An array that stores the scores that are predicted by the head
     cdef float64* predicted_scores = head.predictedScores_
     # Create a new, empty subset of the statistics
-    cdef unique_ptr[AbstractStatisticsSubset] statistics_subset_ptr
+    cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
     statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
     # Temporary variables
     cdef Prediction* prediction

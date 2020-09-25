@@ -8,14 +8,14 @@ from libcpp.memory cimport make_shared
 
 cdef class LabelMatrix:
     """
-    A wrapper for the abstract C++ class `AbstractLabelMatrix`.
+    A wrapper for the pure virtual C++ class `ILabelMatrix`.
     """
     pass
 
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
     """
-    A wrapper for the abstract C++ class `AbstractRandomAccessLabelMatrix`.
+    A wrapper for the pure virtual C++ class `AbstractRandomAccessLabelMatrix`.
     """
     pass
 
@@ -32,8 +32,8 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
         """
         cdef uint32 num_examples = y.shape[0]
         cdef uint32 num_labels = y.shape[1]
-        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples,
-                                                                                                   num_labels, &y[0, 0])
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples, num_labels,
+                                                                                            &y[0, 0])
 
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
@@ -48,7 +48,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
-        cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr = make_shared[BinaryDokMatrix](num_examples, num_labels)
+        cdef BinaryDokMatrix* matrix = new BinaryDokMatrix(num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
@@ -57,14 +57,14 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                dok_matrix_ptr.get().set(r, c)
+                matrix.setValue(r, c)
 
-        self.label_matrix_ptr = <shared_ptr[AbstractLabelMatrix]>make_shared[DokLabelMatrixImpl](dok_matrix_ptr)
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](matrix)
 
 
 cdef class FeatureMatrix:
     """
-    A wrapper for the abstract C++ class `AbstractFeatureMatrix`.
+    A wrapper for the pure virtual C++ class `AbstractFeatureMatrix`.
     """
     pass
 
@@ -81,9 +81,9 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         """
         cdef uint32 num_examples = x.shape[0]
         cdef uint32 num_features = x.shape[1]
-        self.feature_matrix_ptr = <shared_ptr[AbstractFeatureMatrix]>make_shared[DenseFeatureMatrixImpl](num_examples,
-                                                                                                         num_features,
-                                                                                                         &x[0, 0])
+        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[DenseFeatureMatrixImpl](num_examples,
+                                                                                                  num_features,
+                                                                                                  &x[0, 0])
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -104,20 +104,23 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                 first element in `x_data` and `x_row_indices` that corresponds to a certain feature. The
                                 index at the last position is equal to `num_non_zero_feature_values`
         """
-        self.feature_matrix_ptr = <shared_ptr[AbstractFeatureMatrix]>make_shared[CscFeatureMatrixImpl](
-            num_examples, num_features, &x_data[0], &x_row_indices[0], &x_col_indices[0])
+        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[CscFeatureMatrixImpl](num_examples,
+                                                                                                num_features,
+                                                                                                &x_data[0],
+                                                                                                &x_row_indices[0],
+                                                                                                &x_col_indices[0])
 
 
-cdef class NominalFeatureSet:
+cdef class NominalFeatureVector:
     """
-    A wrapper for the C++ class `AbstractNominalFeatureSet`.
+    A wrapper for the pure virtual C++ class `INominalFeatureVector`.
     """
     pass
 
 
-cdef class DokNominalFeatureSet(NominalFeatureSet):
+cdef class DokNominalFeatureVector(NominalFeatureVector):
     """
-    A wrapper for the C++ class `DokNominalFeatureSetImpl`.
+    A wrapper for the C++ class `DokNominalFeatureVectorImpl`.
     """
 
     """
@@ -126,12 +129,12 @@ cdef class DokNominalFeatureSet(NominalFeatureSet):
     """
     def __cinit__(self, list nominal_feature_indices):
         cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
-        cdef shared_ptr[BinaryDokVector] dok_vector_ptr = make_shared[BinaryDokVector](num_nominal_features)
+        cdef BinaryDokVector* vector = new BinaryDokVector(num_nominal_features)
         cdef uint32 i
 
         if num_nominal_features > 0:
             for i in nominal_feature_indices:
-                dok_vector_ptr.get().set(i)
+                vector.setValue(i)
 
-        self.nominal_feature_set_ptr = <shared_ptr[AbstractNominalFeatureSet]>make_shared[DokNominalFeatureSetImpl](
-            dok_vector_ptr)
+        self.nominal_feature_vector_ptr = <shared_ptr[INominalFeatureVector]>make_shared[DokNominalFeatureVectorImpl](
+            vector)

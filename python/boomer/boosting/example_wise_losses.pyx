@@ -8,7 +8,7 @@ from libcpp.memory cimport make_shared
 
 cdef class ExampleWiseLoss:
     """
-    A wrapper for the abstract C++ class `AbstractExampleWiseLoss`.
+    A wrapper for the pure virtual C++ class `IExampleWiseLoss`.
     """
     pass
 
@@ -19,4 +19,4 @@ cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function_ptr = <shared_ptr[AbstractExampleWiseLoss]>make_shared[ExampleWiseLogisticLossImpl]()
+        self.loss_function_ptr = <shared_ptr[IExampleWiseLoss]>make_shared[ExampleWiseLogisticLossImpl]()
