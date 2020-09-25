@@ -2,17 +2,6 @@
 #include <math.h>
 #include <memory>
 
-AbstractRuleRefinement::~AbstractRuleRefinement() {
-
-}
-
-Refinement AbstractRuleRefinement::findRefinement(AbstractHeadRefinement* headRefinement,
-                                                  PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                                  const uint32* labelIndices) {
-    Refinement refinement;
-    return refinement;
-}
-
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
                                                  IndexedFloat32ArrayWrapper* indexedArrayWrapper,
                                                  IndexedFloat32Array* indexedArray, const uint32* weights,
@@ -26,13 +15,8 @@ ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
     nominal_ = nominal;
 }
 
-ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
-
-}
-
-Refinement ExactRuleRefinementImpl::findRefinement(AbstractHeadRefinement* headRefinement,
-                                                   PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                                   const uint32* labelIndices) {
+Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                                   uint32 numLabelIndices, const uint32* labelIndices) {
     // The current refinement of the existing rule
     Refinement refinement;
     refinement.featureIndex = featureIndex_;
@@ -42,7 +26,7 @@ Refinement ExactRuleRefinementImpl::findRefinement(AbstractHeadRefinement* headR
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<AbstractStatisticsSubset> statisticsSubsetPtr;
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
     statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
     // The example indices and feature values to be iterated
     IndexedFloat32* indexedValues = indexedArray_->data;
