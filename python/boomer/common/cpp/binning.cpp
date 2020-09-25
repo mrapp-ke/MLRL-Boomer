@@ -64,19 +64,3 @@ void EqualWidthBinningImpl::createBins(uint32 numBins, IndexedFloat32Array* inde
         observer->onBinUpdate(binIndex, &indexedArray->data[i]);
     }
 }
-
-void DenseLabelWiseStatisticsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
-    indexedValue->index = binIndex;
-}
-
-void DenseExampleWiseStatisticsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
-    indexedValue->index = binIndex;
-}
-
-AbstractStatistics* DenseLabelWiseStatisticsImpl::build(){
-    return NULL;
-}
-
-AbstractStatistics* DenseExampleWiseStatisticsImpl::build(){
-    return NULL;
-}
