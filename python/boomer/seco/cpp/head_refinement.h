@@ -12,27 +12,25 @@
 
 namespace seco {
 
-    class PartialHeadRefinementImpl : public AbstractHeadRefinement {
+    class PartialHeadRefinementImpl : virtual public IHeadRefinement {
 
         private:
 
-            std::shared_ptr<AbstractLiftFunction> liftFunctionPtr_;
+            std::shared_ptr<ILiftFunction> liftFunctionPtr_;
 
         public:
 
             /**
-             * @param liftFunctionPtr A shared pointer to an object of type `AbstractLiftFunction` that should affect
-             *                        the quality scores of rules, depending on how many labels they predict
+             * @param liftFunctionPtr A shared pointer to an object of type `ILiftFunction` that should affect the
+             *                        quality scores of rules, depending on how many labels they predict
              */
-            PartialHeadRefinementImpl(std::shared_ptr<AbstractLiftFunction> liftFunctionPtr);
-
-            ~PartialHeadRefinementImpl();
+            PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
             PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
-                                          const uint32* labelIndices, AbstractStatisticsSubset* statisticsSubset,
+                                          const uint32* labelIndices, IStatisticsSubset* statisticsSubset,
                                           bool uncovered, bool accumulated) override;
 
-            PredictionCandidate* calculatePrediction(AbstractStatisticsSubset* statisticsSubset, bool uncovered,
+            PredictionCandidate* calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                      bool accumulated) override;
 
     };

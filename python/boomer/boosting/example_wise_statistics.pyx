@@ -4,7 +4,7 @@
 Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
 (non-decomposable) loss function that is applied example-wise.
 """
-from boomer.common.input_data cimport RandomAccessLabelMatrix, AbstractLabelMatrix
+from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
 from boomer.boosting._lapack cimport init_lapack
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
@@ -12,7 +12,7 @@ from libcpp.memory cimport make_shared, dynamic_pointer_cast
 
 cdef class ExampleWiseStatisticsFactory:
     """
-    A wrapper for the abstract C++ class `AbstractExampleWiseStatisticsFactory`.
+    A wrapper for the pure virtual C++ class `IExampleWiseStatisticsFactory`.
     """
 
     cdef AbstractExampleWiseStatistics* create(self):
@@ -38,9 +38,9 @@ cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
         :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
                                 examples
         """
-        self.statistics_factory_ptr = <shared_ptr[AbstractExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
+        self.statistics_factory_ptr = <shared_ptr[IExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
             loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, shared_ptr[Lapack](init_lapack()),
-            dynamic_pointer_cast[AbstractRandomAccessLabelMatrix, AbstractLabelMatrix](label_matrix.label_matrix_ptr))
+            dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
 cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
@@ -62,7 +62,7 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
 
     cdef void switch_rule_evaluation(self):
         cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
-        cdef shared_ptr[AbstractExampleWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
+        cdef shared_ptr[IExampleWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
         self.statistics_ptr.get().setRuleEvaluation(rule_evaluation_ptr)
 
 

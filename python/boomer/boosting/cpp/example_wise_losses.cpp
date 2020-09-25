@@ -4,28 +4,14 @@
 using namespace boosting;
 
 
-AbstractExampleWiseLoss::~AbstractExampleWiseLoss() {
-
-}
-
-void AbstractExampleWiseLoss::calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
-                                                            uint32 exampleIndex, const float64* predictedScores,
-                                                            float64* gradients, float64* hessians) {
-
-}
-
-ExampleWiseLogisticLossImpl::~ExampleWiseLogisticLossImpl() {
-
-}
-
-void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(AbstractRandomAccessLabelMatrix* labelMatrix,
+void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix,
                                                                 uint32 exampleIndex, const float64* predictedScores,
                                                                 float64* gradients, float64* hessians) {
     uint32 numLabels = labelMatrix->getNumCols();
     float64 sumOfExponentials = 1;
 
     for (uint32 c = 0; c < numLabels; c++) {
-        uint8 trueLabel = labelMatrix->get(exampleIndex, c);
+        uint8 trueLabel = labelMatrix->getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 predictedScore = predictedScores[c];
         float64 exponential = exp(-expectedScore * predictedScore);
@@ -37,7 +23,7 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(AbstractRandomAc
     uint32 i = 0;
 
     for (uint32 c = 0; c < numLabels; c++) {
-        uint8 trueLabel = labelMatrix->get(exampleIndex, c);
+        uint8 trueLabel = labelMatrix->getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 predictedScore = predictedScores[c];
         float64 exponential = gradients[c];
@@ -45,7 +31,7 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(AbstractRandomAc
         gradients[c] = tmp;
 
         for (uint32 c2 = 0; c2 < c; c2++) {
-            trueLabel = labelMatrix->get(exampleIndex, c2);
+            trueLabel = labelMatrix->getValue(exampleIndex, c2);
             float64 expectedScore2 = trueLabel ? 1 : -1;
             float64 predictedScore2 = predictedScores[c2];
             tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));

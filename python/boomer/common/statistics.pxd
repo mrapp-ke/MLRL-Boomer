@@ -1,4 +1,5 @@
 from boomer.common._arrays cimport uint32
+from boomer.common._data cimport IMatrix
 from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWisePredictionCandidate
 from boomer.common.input_data cimport LabelMatrix
 
@@ -8,7 +9,7 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/statistics.h" nogil:
 
-    cdef cppclass AbstractStatisticsSubset:
+    cdef cppclass IStatisticsSubset:
 
         # Functions:
 
@@ -21,17 +22,13 @@ cdef extern from "cpp/statistics.h" nogil:
         PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
-    cdef cppclass AbstractDecomposableStatisticsSubset(AbstractStatisticsSubset):
+    cdef cppclass AbstractDecomposableStatisticsSubset(IStatisticsSubset):
         pass
 
 
-    cdef cppclass AbstractStatistics:
+    cdef cppclass AbstractStatistics(IMatrix):
 
         # Functions:
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
 
         void resetSampledStatistics()
 
@@ -41,7 +38,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove)
 
-        AbstractStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices)
+        IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices)
 
         void applyPrediction(uint32 statisticIndex, Prediction* prediction)
 
