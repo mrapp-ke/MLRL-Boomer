@@ -188,21 +188,22 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
 };
 
 /**
- * Defines an interface for all sets that allow check whether individual features are nominal or not.
+ * Defines an interface for all vectors that provide access to the information whether the features at specific indices
+ * are nominal or not.
  */
-class INominalFeatureSet : virtual public IRandomAccessVector<uint8> {
+class INominalFeatureVector : virtual public IRandomAccessVector<uint8> {
 
     public:
 
-        virtual ~INominalFeatureSet() { };
+        virtual ~INominalFeatureVector() { };
 
 };
 
 /**
- * Allows to check whether individual features are nominal or not based on a sparse vector that stores the indices of
- * the nominal features in the dictionary of keys (DOK) format.
+ * Provides access to the information whether the features at specific indices are nominal or not, based on a
+ * `BinaryDokVector` that stores the indices of all nominal features.
  */
-class DokNominalFeatureSetImpl : virtual public INominalFeatureSet {
+class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
 
     private:
 
@@ -213,7 +214,7 @@ class DokNominalFeatureSetImpl : virtual public INominalFeatureSet {
         /**
          * @param dokVectorPtr A shared pointer to an object of type `BinaryDokVector`, storing the nominal attributes
          */
-        DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr);
+        DokNominalFeatureVectorImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr);
 
         uint32 getNumElements() override;
 
