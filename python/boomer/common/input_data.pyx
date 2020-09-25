@@ -48,7 +48,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
-        cdef shared_ptr[BinaryDokMatrix] dok_matrix_ptr = make_shared[BinaryDokMatrix](num_examples, num_labels)
+        cdef BinaryDokMatrix* matrix = new BinaryDokMatrix(num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
@@ -57,9 +57,9 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                dok_matrix_ptr.get().setValue(r, c)
+                matrix.setValue(r, c)
 
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](dok_matrix_ptr)
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](matrix)
 
 
 cdef class FeatureMatrix:
@@ -111,16 +111,16 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                                                                                 &x_col_indices[0])
 
 
-cdef class NominalFeatureSet:
+cdef class NominalFeatureVector:
     """
-    A wrapper for the pure virtual C++ class `INominalFeatureSet`.
+    A wrapper for the pure virtual C++ class `INominalFeatureVector`.
     """
     pass
 
 
-cdef class DokNominalFeatureSet(NominalFeatureSet):
+cdef class DokNominalFeatureVector(NominalFeatureVector):
     """
-    A wrapper for the C++ class `DokNominalFeatureSetImpl`.
+    A wrapper for the C++ class `DokNominalFeatureVectorImpl`.
     """
 
     """
@@ -129,12 +129,12 @@ cdef class DokNominalFeatureSet(NominalFeatureSet):
     """
     def __cinit__(self, list nominal_feature_indices):
         cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
-        cdef shared_ptr[BinaryDokVector] dok_vector_ptr = make_shared[BinaryDokVector](num_nominal_features)
+        cdef BinaryDokVector* vector = new BinaryDokVector(num_nominal_features)
         cdef uint32 i
 
         if num_nominal_features > 0:
             for i in nominal_feature_indices:
-                dok_vector_ptr.get().setValue(i)
+                vector.setValue(i)
 
-        self.nominal_feature_set_ptr = <shared_ptr[INominalFeatureSet]>make_shared[DokNominalFeatureSetImpl](
-            dok_vector_ptr)
+        self.nominal_feature_vector_ptr = <shared_ptr[INominalFeatureVector]>make_shared[DokNominalFeatureVectorImpl](
+            vector)
