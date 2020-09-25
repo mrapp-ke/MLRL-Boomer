@@ -117,14 +117,14 @@ void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Indexed
     indexedArray->data = sortedArray;
 }
 
-DokNominalFeatureSetImpl::DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr) {
+DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr) {
     dokVectorPtr_ = dokVectorPtr;
 }
 
-uint8 DokNominalFeatureSetImpl::getValue(uint32 pos) {
+uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
     return dokVectorPtr_.get()->getValue(pos);
 }
 
-uint32 DokNominalFeatureSetImpl::getNumElements() {
+uint32 DokNominalFeatureVectorImpl::getNumElements() {
     return dokVectorPtr_.get()->getNumElements();
 }
