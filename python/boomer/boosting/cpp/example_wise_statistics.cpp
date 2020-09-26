@@ -273,3 +273,15 @@ AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
     return new DenseExampleWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_, labelMatrixPtr_,
                                               gradients, hessians, currentScores);
 }
+
+void DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins){
+    numBins_ = numBins;
+}
+
+void DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
+    indexedValue->index = binIndex;
+}
+
+AbstractStatistics* DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::build(){
+    return statistics_;
+}
