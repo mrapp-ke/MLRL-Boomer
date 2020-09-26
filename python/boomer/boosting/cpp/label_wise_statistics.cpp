@@ -206,3 +206,15 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
     return new DenseLabelWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, labelMatrixPtr_, gradients, hessians,
                                             currentScores);
 }
+
+void DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
+    numBins_ = numBins;
+}
+
+void DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
+    indexedValue->index = binIndex;
+}
+
+AbstractStatistics* DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::build(){
+    return statistics_;
+}
