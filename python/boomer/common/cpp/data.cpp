@@ -24,12 +24,12 @@ uint32 DenseVector<T>::getNumElements() {
 }
 
 template<class T>
-T DenseVector<T>::get(uint32 pos) {
+T DenseVector<T>::getValue(uint32 pos) {
     return data_[pos];
 }
 
 template<class T>
-void DenseVector<T>::set(uint32 pos, T value) {
+void DenseVector<T>::setValue(uint32 pos, T value) {
     data_[pos] = value;
 }
 
