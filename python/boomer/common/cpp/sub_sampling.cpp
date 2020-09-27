@@ -271,6 +271,26 @@ uint32 EqualWeightVector::getSumOfWeights() {
     return numElements_;
 }
 
+BaggingImpl::BaggingImpl(float32 sampleSize) {
+    sampleSize_ = sampleSize;
+}
+
+IWeightVector* BaggingImpl::subSample(uint32 numExamples, RNG* rng) {
+    uint32 numSamples = (uint32) (sampleSize_ * numExamples);
+    DenseVector<uint32>* weights = new DenseVector<uint32>(numExamples);
+
+    for (uint32 i = 0; i < numSamples; i++) {
+        // Randomly select the index of an example...
+        uint32 randomIndex = rng->random(0, numExamples);
+
+        // Update weight at the selected index...
+        uint32 weight = weights->getValue(randomIndex);
+        weights->setValue(randomIndex, weight + 1);
+    }
+
+    return new DenseWeightVector(weights, numSamples);
+}
+
 IWeightVector* NoInstanceSubSamplingImpl::subSample(uint32 numExamples, RNG* rng) {
     return new EqualWeightVector(numExamples);
 }
