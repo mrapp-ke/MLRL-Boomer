@@ -33,6 +33,8 @@ void DenseVector<T>::setValue(uint32 pos, T value) {
     data_[pos] = value;
 }
 
+template class DenseVector<uint8>;
+
 RangeIndexVector::RangeIndexVector(uint32 numIndices) {
     numIndices_ = numIndices;
 }
