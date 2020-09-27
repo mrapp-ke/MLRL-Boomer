@@ -110,6 +110,30 @@ class ISparseRandomAccessVector : virtual public ISparseVector, virtual public I
 };
 
 /**
+ * An one-dimensional vector that provides random access to all indices within a continuous range [0, numIndices).
+ */
+class RangeIndexVector : virtual public IIndexVector {
+
+    private:
+
+        uint32 numIndices_;
+
+    public:
+
+        /**
+         * @param numIndices The number of indices, the vector provides access to. Must be at least 1
+         */
+        RangeIndexVector(uint32 numIndices);
+
+        uint32 getNumElements() override;
+
+        bool hasZeroElements() override;
+
+        uint32 getIndex(uint32 pos) override;
+
+};
+
+/**
  * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
