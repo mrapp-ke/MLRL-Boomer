@@ -1,12 +1,14 @@
 from boomer.common._arrays cimport uint32
 
 
-cdef class RNG:
+cdef extern from "cpp/random.h" nogil:
 
-    # Attributes:
+    cdef cppclass RNG:
 
-    cdef readonly uint32 random_state
+        # Constructors:
 
-    # Functions:
+        RNG(uint32 randomState) except +
 
-    cdef uint32 random(self, uint32 min, uint32 max)
+        # Functions:
+
+        uint32 random(uint32 min, uint32 max)
