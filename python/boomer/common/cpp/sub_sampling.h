@@ -188,6 +188,29 @@ class IFeatureSubSampling {
 };
 
 /**
+ * Implements random feature subset selection for selecting a random subset of the available features without
+ * replacement.
+ */
+class RandomFeatureSubsetSelectionImpl : virtual public IFeatureSubSampling {
+
+    private:
+
+        float32 sampleSize_;
+
+    public:
+
+        /**
+         * @param sampleSize The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
+         *                   60 % of the available features). Must be in (0, 1) or 0, if the default sample size
+         *                   `floor(log2(num_features - 1) + 1)` should be used
+         */
+        RandomFeatureSubsetSelectionImpl(float32 sampleSize);
+
+        IIndexVector* subSample(uint32 numFeatures, RNG* rng) override;
+
+};
+
+/**
  * An implementation of the class `IFeatureSubSampling` that does not perform any sampling, but includes all features.
  */
 class NoFeatureSubSamplingImpl : virtual public IFeatureSubSampling {

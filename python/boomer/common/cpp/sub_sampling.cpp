@@ -304,6 +304,22 @@ IWeightVector* NoInstanceSubSamplingImpl::subSample(uint32 numExamples, RNG* rng
     return new EqualWeightVector(numExamples);
 }
 
+RandomFeatureSubsetSelectionImpl::RandomFeatureSubsetSelectionImpl(float32 sampleSize) {
+    sampleSize_ = sampleSize;
+}
+
+IIndexVector* RandomFeatureSubsetSelectionImpl::subSample(uint32 numFeatures, RNG* rng) {
+    uint32 numSamples;
+
+    if (sampleSize_ > 0) {
+            numSamples = (uint32) (sampleSize_ * numFeatures);
+    } else {
+            numSamples = (uint32) (log2(numFeatures - 1) + 1);
+    }
+
+    return sampleIndicesWithoutReplacement(numFeatures, numSamples, rng);
+}
+
 IIndexVector* NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG* rng) {
     return new RangeIndexVector(numFeatures);
 }
