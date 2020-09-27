@@ -7,6 +7,8 @@
 
 #include "arrays.h"
 #include "data.h"
+#include "random.h"
+
 
 /**
  * Defines an interface for one-dimensional, potentially sparse, vectors that provide access to weights.
@@ -49,5 +51,71 @@ class EqualWeightVector : virtual public IWeightVector {
         uint32 getValue(uint32 pos) override;
 
         uint32 getSumOfWeights() override;
+
+};
+
+/**
+ * Defines an interface for all classes that implement a strategy for sub-sampling training examples.
+ */
+class IInstanceSubSampling {
+
+    public:
+
+        virtual ~IInstanceSubSampling() { };
+
+        /**
+         * Creates and returns a sub-sample of the available training examples.
+         *
+         * @param numExamples   The total number of available training examples
+         * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be
+         *                      used
+         * @return              A pointer to an object type `WeightVector`, shape `(numExamples)`, that provides access
+         *                      to the weights of the individual training examples, i.e., how many times each of the
+         *                      examples is contained in the sample, as well as the sum of the weights
+         */
+        virtual IWeightVector* subSample(uint32 numExamples, RNG* rng) = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that implement a strategy for sub-sampling features.
+ */
+class IFeatureSubSampling {
+
+    public:
+
+        virtual ~IFeatureSubSampling() { };
+
+        /**
+         * Creates and returns a sub-sample of the available features.
+         *
+         * @param numFeatures   The total number of available features
+         * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be
+         *                      used
+         * @return              A pointer to an object of type `IIndexVector`, shape `(numSamples)`, that provides
+         *                      access to the indices of the features that are contained in the sub-sample
+         */
+        virtual IIndexVector* subSample(uint32 numFeatures, RNG* rng) = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that implement a strategy for sub-sampling labels.
+ */
+class ILabelSubSampling {
+
+    public:
+
+        virtual ~ILabelSubSampling() { };
+
+        /**
+         * Creates and returns a sub-sample of the available labels.
+         *
+         * @param numLabels The total number of available labels
+         * @param rng       A pointer to an object of type `RNG`, implementing the random number generator to be used
+         * @return          A pointer to an object of type `IIndexVector`, shape `(numSamples)`, that provides access to
+         *                  the indices of the labels that are contained in the sub-sample
+         */
+        virtual IIndexVector* subSample(uint32 numLabels, RNG* rng) = 0;
 
 };
