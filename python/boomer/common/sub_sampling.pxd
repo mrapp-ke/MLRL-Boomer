@@ -1,7 +1,78 @@
 from boomer.common._arrays cimport uint32, float32
+from boomer.common._data cimport ISparseRandomAccessVector, IIndexVector
 from boomer.common._random cimport RNG
 
 from libcpp.pair cimport pair
+
+
+cdef extern from "cpp/sub_sampling.h" nogil:
+
+    cdef cppclass IWeightVector(ISparseRandomAccessVector[uint32]):
+
+        # Functions:
+
+        uint32 getSumOfWeights()
+
+
+    cdef cppclass IInstanceSubSampling:
+
+        # Functions:
+
+        IWeightVector* subSample(uint32 numExamples, RNG* rng)
+
+
+    cdef cppclass BaggingImpl(IInstanceSubSampling):
+
+        # Constructors:
+
+        BaggingImpl(float32 sampleSize) except +
+
+
+    cdef cppclass RandomInstanceSubsetSelectionImpl(IInstanceSubSampling):
+
+        # Constructors:
+
+        RandomInstanceSubsetSelectionImpl(float32 sampleSize)
+
+
+    cdef cppclass NoInstanceSubSamplingImpl(IInstanceSubSampling):
+        pass
+
+
+    cdef cppclass IFeatureSubSampling:
+
+        # Functions:
+
+        IIndexVector* subSample(uint32 numFeatures, RNG* rng)
+
+
+    cdef cppclass RandomFeatureSubsetSelectionImpl(IFeatureSubSampling):
+
+        # Constructors:
+
+        RandomFeatureSubsetSelectionImpl(float32 sampleSize) except +
+
+
+    cdef cppclass NoFeatureSubSamplingImpl(IFeatureSubSampling):
+        pass
+
+
+    cdef cppclass ILabelSubSampling:
+
+        # Functions:
+
+        IIndexVector* subSample(uint32 numLabels, RNG* rng)
+
+
+    cdef cppclass RandomLabelSubsetSelectionImpl(ILabelSubSampling):
+
+        # Constructors:
+
+        RandomLabelSubsetSelectionImpl(uint32 numSamples)
+
+
+    cdef cppclass NoLabelSubSamplingImpl(ILabelSubSampling):
+        pass
 
 
 cdef class InstanceSubSampling:
