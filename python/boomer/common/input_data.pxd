@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport IVector, BinaryDokVector, IMatrix, BinaryDokMatrix
+from boomer.common._data cimport ISparseRandomAccessVector, BinaryDokVector, IMatrix, BinaryDokMatrix
 from boomer.common._tuples cimport IndexedFloat32Array
 
 from libcpp.memory cimport shared_ptr
@@ -51,11 +51,8 @@ cdef extern from "cpp/input_data.h" nogil:
                              const uint32* xColIndices) except +
 
 
-    cdef cppclass INominalFeatureVector(IVector):
-
-        # Functions:
-
-        uint8 getValue(uint32 pos)
+    cdef cppclass INominalFeatureVector(ISparseRandomAccessVector[uint8]):
+        pass
 
 
     cdef cppclass DokNominalFeatureVectorImpl(INominalFeatureVector):
