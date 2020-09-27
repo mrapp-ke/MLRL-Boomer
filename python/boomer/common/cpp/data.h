@@ -91,9 +91,9 @@ class ISparseRandomAccessVector : virtual public ISparseVector, virtual public I
 };
 
 /**
- * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
+ * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
+class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
 
     private:
 
@@ -115,9 +115,11 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
          */
         void setValue(uint32 pos);
 
-        uint8 getValue(uint32 pos) override;
-
         uint32 getNumElements() override;
+
+        bool hasZeroElements() override;
+
+        uint8 getValue(uint32 pos) override;
 
 };
 
