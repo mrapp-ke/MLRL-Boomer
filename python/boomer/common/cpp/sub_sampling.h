@@ -29,6 +29,38 @@ class IWeightVector : virtual public ISparseRandomAccessVector<uint32> {
 };
 
 /**
+ * An one-dimensional vector that provides access to weights that are stored in a C-contiguous array.
+ */
+template<class T>
+class DenseWeightVector : virtual public IWeightVector {
+
+    private:
+
+        DenseVector<T>* weights_;
+
+        uint32 sumOfWeights_;
+
+    public:
+
+        /**
+         * @param weights       A pointer to an object of type `DenseVector<T>` that stores the weights
+         * @param sumOfWeights  The sum of the weights in the given vector
+         */
+        DenseWeightVector(DenseVector<T>* weights, uint32 sumOfWeights);
+
+        ~DenseWeightVector();
+
+        uint32 getNumElements() override;
+
+        bool hasZeroElements() override;
+
+        uint32 getValue(uint32 pos) override;
+
+        uint32 getSumOfWeights() override;
+
+};
+
+/**
  * An one-dimensional that provides access to equal weights.
  */
 class EqualWeightVector : virtual public IWeightVector {

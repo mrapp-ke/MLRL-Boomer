@@ -1,6 +1,37 @@
 #include "sub_sampling.h"
 
 
+template<class T>
+DenseWeightVector<T>::DenseWeightVector(DenseVector<T>* weights, uint32 sumOfWeights) {
+    weights_ = weights;
+    sumOfWeights = sumOfWeights;
+}
+
+template<class T>
+DenseWeightVector<T>::~DenseWeightVector() {
+    delete weights_;
+}
+
+template<class T>
+uint32 DenseWeightVector<T>::getNumElements() {
+    return weights_->getNumElements();
+}
+
+template<class T>
+bool DenseWeightVector<T>::hasZeroElements() {
+    return false;
+}
+
+template<class T>
+uint32 DenseWeightVector<T>::getValue(uint32 pos) {
+    return (uint32) weights_->getValue(pos);
+}
+
+template<class T>
+uint32 DenseWeightVector<T>::getSumOfWeights() {
+    return sumOfWeights_;
+}
+
 EqualWeightVector::EqualWeightVector(uint32 numElements) {
     numElements_ = numElements;
 }
