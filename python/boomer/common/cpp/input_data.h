@@ -24,7 +24,7 @@ class ILabelMatrix : virtual public IMatrix {
 /**
  * Defines an interface for all label matrices that provide random access to the labels of the training examples.
  */
-class IRandomAccessLabelMatrix : virtual public ILabelMatrix , virtual public IRandomAccessMatrix<uint8> {
+class IRandomAccessLabelMatrix : virtual public ILabelMatrix, virtual public IRandomAccessMatrix<uint8> {
 
     public:
 
