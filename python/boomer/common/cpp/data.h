@@ -170,6 +170,47 @@ class DenseIndexVector : virtual public IIndexVector {
 };
 
 /**
+ * An one-dimensional vector that stores numerical data in a C-contiguous array.
+ */
+template<class T>
+class DenseVector : virtual public IRandomAccessVector<T> {
+
+    private:
+
+        uint32 numElements_;
+
+        T* data_;
+
+    public:
+
+        /**
+         * @param numElements The number of elements in the vector. Must be at least 1
+         */
+        DenseVector(uint32 numElements);
+
+        /**
+         * @param numElements   The number of elements in the vector. Must be at least 1
+         * @param allZero       True, if all elements should be set to zero, false otherwise
+         */
+        DenseVector(uint32 numElements, bool allZero);
+
+        ~DenseVector();
+
+        /**
+         * Sets the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @param value The value to be set
+         */
+        void set(uint32 pos, T value);
+
+        uint32 getNumElements() override;
+
+        T get(uint32 pos) override;
+
+};
+
+/**
  * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
