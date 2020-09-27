@@ -3,7 +3,9 @@
 
 Provides Cython wrappers for classes that provide access to data that is stored in matrices or vectors.
 """
-from boomer.common._arrays cimport uint32
+from boomer.common._arrays cimport uint8, uint32
+
+from libcpp cimport bool
 
 
 cdef extern from "cpp/data.h" nogil:
@@ -39,10 +41,25 @@ cdef extern from "cpp/data.h" nogil:
         uint32 getNumElements()
 
 
-    cdef cppclass IRandomAccessVector(IVector):
+    cdef cppclass IRandomAccessVector[T](IVector):
+
+        # Functions:
+
+        T getValue(uint32 pos)
+
+
+    cdef cppclass ISparseVector(IVector):
+
+        # Functions:
+
+        bool hasZeroElements()
+
+
+    cdef cppclass ISparseRandomAccessVector[T](ISparseVector, IRandomAccessVector[T]):
         pass
 
-    cdef cppclass BinaryDokVector(IRandomAccessVector):
+
+    cdef cppclass BinaryDokVector(ISparseRandomAccessVector[uint8]):
 
         # Constructors:
 

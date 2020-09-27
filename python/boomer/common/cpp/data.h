@@ -60,9 +60,40 @@ class IRandomAccessVector : virtual public IVector {
 };
 
 /**
- * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
+ * Defines an interface for all one-dimensional, potentially sparse, vectors.
  */
-class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
+class ISparseVector : virtual public IVector {
+
+    public:
+
+        virtual ~ISparseVector() { };
+
+        /**
+         * Returns whether the vector contains any zero elements or not.
+         *
+         * @return True, if the vector contains any zero elements, false otherwise
+         */
+        virtual bool hasZeroElements() = 0;
+
+};
+
+/**
+ * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to all of their
+ * elements, including zero elements that are not explicitly stored in the vector.
+ */
+template<class T>
+class ISparseRandomAccessVector : virtual public ISparseVector, virtual public IRandomAccessVector<T> {
+
+    public:
+
+        virtual ~ISparseRandomAccessVector() { };
+
+};
+
+/**
+ * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
+ */
+class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
 
     private:
 
@@ -84,9 +115,11 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
          */
         void setValue(uint32 pos);
 
-        uint8 getValue(uint32 pos) override;
-
         uint32 getNumElements() override;
+
+        bool hasZeroElements() override;
+
+        uint8 getValue(uint32 pos) override;
 
 };
 
@@ -137,7 +170,7 @@ class IRandomAccessMatrix : virtual public IMatrix {
 };
 
 /**
- * A sparse matrix that stores binary values using the dictionary of keys (DOK) format.
+ * A sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
