@@ -20,3 +20,16 @@ uint32 EqualWeightVector::getValue(uint32 pos) {
 uint32 EqualWeightVector::getSumOfWeights() {
     return numElements_;
 }
+
+IWeightVector* NoInstanceSubSamplingImpl::subSample(uint32 numExamples, RNG* rng) {
+    return new EqualWeightVector(numExamples);
+}
+
+IIndexVector* NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG* rng) {
+    return new RangeIndexVector(numFeatures);
+}
+
+
+IIndexVector* NoLabelSubSamplingImpl::subSample(uint32 numLabels, RNG* rng) {
+    return new RangeIndexVector(numLabels);
+}

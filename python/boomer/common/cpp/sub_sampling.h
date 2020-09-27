@@ -78,6 +78,18 @@ class IInstanceSubSampling {
 };
 
 /**
+ * An implementation of the class `IInstanceSubSampling` that does not perform any sampling, but assigns equal weights
+ * to all examples.
+ */
+class NoInstanceSubSamplingImpl : virtual public IInstanceSubSampling {
+
+    public:
+
+        IWeightVector* subSample(uint32 numExamples, RNG* rng) override;
+
+};
+
+/**
  * Defines an interface for all classes that implement a strategy for sub-sampling features.
  */
 class IFeatureSubSampling {
@@ -100,6 +112,17 @@ class IFeatureSubSampling {
 };
 
 /**
+ * An implementation of the class `IFeatureSubSampling` that does not perform any sampling, but includes all features.
+ */
+class NoFeatureSubSamplingImpl : virtual public IFeatureSubSampling {
+
+    public:
+
+        IIndexVector* subSample(uint32 numFeatures, RNG* rng) override;
+
+};
+
+/**
  * Defines an interface for all classes that implement a strategy for sub-sampling labels.
  */
 class ILabelSubSampling {
@@ -117,5 +140,16 @@ class ILabelSubSampling {
          *                  the indices of the labels that are contained in the sub-sample
          */
         virtual IIndexVector* subSample(uint32 numLabels, RNG* rng) = 0;
+
+};
+
+/**
+ * An implementation of the class `ILabelSubSampling` that does not perform any sampling, but includes all labels.
+ */
+class NoLabelSubSamplingImpl : virtual public ILabelSubSampling {
+
+    public:
+
+        IIndexVector* subSample(uint32 numLabels, RNG* rng) override;
 
 };
