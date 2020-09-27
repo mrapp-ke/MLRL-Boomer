@@ -23,8 +23,8 @@ cdef class RuleInduction:
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
-                          ModelBuilder model_builder)
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
+                          RNG* rng, ModelBuilder model_builder)
 
 
 cdef class TopDownGreedyRuleInduction(RuleInduction):
@@ -42,5 +42,5 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
-                          ModelBuilder model_builder)
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
+                          RNG* rng, ModelBuilder model_builder)

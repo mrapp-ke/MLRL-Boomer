@@ -10,7 +10,7 @@ from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
 from boomer.common.head_refinement cimport IHeadRefinement
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport shared_ptr, unique_ptr, make_unique
 
 
 cdef class SequentialRuleInduction:
@@ -100,7 +100,7 @@ cdef class SequentialRuleInduction:
         cdef intp max_head_refinements = self.max_head_refinements
         cdef int num_threads = self.num_threads
         # The random number generator to be used
-        cdef RNG rng = RNG.__new__(RNG, random_state)
+        cdef unique_ptr[RNG] rng_ptr = make_unique[RNG](random_state)
         # The number of rules induced so far (starts at 1 to account for the default rule)
         cdef uint32 num_rules = 1
         # Temporary variables
@@ -125,7 +125,7 @@ cdef class SequentialRuleInduction:
                                                  feature_matrix_ptr.get(), head_refinement_ptr.get(),
                                                  label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                                  pruning, post_processor, min_coverage, max_conditions,
-                                                 max_head_refinements, num_threads, rng, model_builder)
+                                                 max_head_refinements, num_threads, rng_ptr.get(), model_builder)
 
             if not success:
                 break

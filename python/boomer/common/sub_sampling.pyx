@@ -15,12 +15,13 @@ cdef class InstanceSubSampling:
     A base class for all classes that implement a strategy for sub-sampling training examples.
     """
 
-    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG* rng):
         """
         Creates and returns a sub-sample of the available training examples.
 
         :param num_examples:    The total number of available training examples
-        :param rng:             The random number generator to be used
+        :param rng:             A pointer to an object of type `RNG`, implementing the random number generator to be
+                                used
         :return:                A pair that contains an array of type `uint32`, shape `(num_examples)`, representing the
                                 weights of the given training examples, i.e., how many times each of the examples is
                                 contained in the sample, as well as the sum of the weights
@@ -41,7 +42,7 @@ cdef class Bagging(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG* rng):
         cdef float32 sample_size = self.sample_size
         cdef uint32 num_samples = <uint32>(sample_size * num_examples)
         cdef uint32[::1] weights = array_uint32(num_examples)
@@ -75,7 +76,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng):
+    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG* rng):
         cdef float32 sample_size = self.sample_size
         cdef uint32 num_samples = <uint32>(sample_size * num_examples)
         cdef uint32[::1] weights = __sample_weights_without_replacement(num_examples, num_samples, rng)
@@ -90,12 +91,13 @@ cdef class FeatureSubSampling:
     A base class for all classes that implement a strategy for sub-sampling features.
     """
 
-    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG rng):
+    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG* rng):
         """
         Creates and returns a sub-sample of the available features.
 
         :param num_features:    The total number of available features
-        :param rng:             The random number generator to be used
+        :param rng:             A pointer to an object of type `RNG`, implementing the random number generator to be
+                                used
         :return:                An array of type `uint32`, shape `(num_samples)`, representing the indices of the
                                 features contained in the sub-sample
         """
@@ -115,7 +117,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
         """
         self.sample_size = sample_size
 
-    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG rng):
+    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG* rng):
          cdef float32 sample_size = self.sample_size
          cdef uint32 num_samples
 
@@ -132,12 +134,12 @@ cdef class LabelSubSampling:
     A base class for all classes that implement a strategy for sub-sampling labels.
     """
 
-    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG rng):
+    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG* rng):
         """
         Creates and returns a sub-sample of the available labels.
         
         :param num_labels:  The total number of available labels
-        :param rng:         The random number generator to be used
+        :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
         :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices of the labels
                             contained in the sub-sample
         """
@@ -152,12 +154,12 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
         """
         self.num_samples = num_samples
 
-    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG rng):
+    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG* rng):
         cdef uint32 num_samples = self.num_samples
         return __sample_indices_without_replacement(num_labels, num_samples, rng)
 
 
-cdef inline uint32[::1] __sample_weights_without_replacement(uint32 num_total, uint32 num_samples, RNG rng):
+cdef inline uint32[::1] __sample_weights_without_replacement(uint32 num_total, uint32 num_samples, RNG* rng):
     """
     Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
     are set to 0. The method that is used internally is chosen automatically, depending on the ratio
@@ -165,7 +167,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement(uint32 num_total, u
 
     :param num_total:   The total number of available elements
     :param num_samples: The number of weights to be set to 1
-    :param rng:         The random number generator to be used
+    :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
     :return:            An array of type `uint32`, shape `(num_total)`, representing the weights of the elements
     """
     cdef float64 ratio = (<float64>num_samples) / (<float64>num_total) if num_total != 0 else 1.0
@@ -179,7 +181,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement(uint32 num_total, u
 
 
 cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_selection(uint32 num_total,
-                                                                                    uint32 num_samples, RNG rng):
+                                                                                    uint32 num_samples, RNG* rng):
     """
     Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
     are set to 0, by using a set to keep track of the elements that have already been selected. This method is suitable
@@ -187,7 +189,7 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_select
 
     :param num_total:   The total number of available elements
     :param num_samples: The number of weights to be set to 1
-    :param rng:         The random number generator to be used
+    :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
     :return:            An array of type `uint32`, shape `(num_total)`, representing the weights of the elements
     """
     cdef uint32[::1] weights = array_uint32(num_total)
@@ -209,14 +211,14 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_tracking_select
     return weights
 
 
-cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(uint32 num_total, uint32 num_samples, RNG rng):
+cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(uint32 num_total, uint32 num_samples, RNG* rng):
     """
     Randomly selects `num_samples` out of `num_total` elements and sets their weights to 1, while the remaining weights
     are set to 0, by using a pool, i.e., an array, to keep track of the elements that have not been selected yet.
 
     :param num_total:   The total number of available elements
     :param num_samples: The number of weights to be set to 1
-    :param rng:         The random number generator to be used
+    :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
     :return:            An array of type `uint32`, shape `(num_total)`, representing the weights of the elements
     """
     cdef uint32[::1] weights = array_uint32(num_total)
@@ -242,14 +244,14 @@ cdef inline uint32[::1] __sample_weights_without_replacement_via_pool(uint32 num
     return weights
 
 
-cdef inline uint32[::1] __sample_indices_without_replacement(uint32 num_total, uint32 num_samples, RNG rng):
+cdef inline uint32[::1] __sample_indices_without_replacement(uint32 num_total, uint32 num_samples, RNG* rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement. The method that is used internally is
     chosen automatically, depending on the ratio `num_samples / num_total`.
 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
-    :param rng:         The random number generator to be used
+    :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
     :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
@@ -268,14 +270,14 @@ cdef inline uint32[::1] __sample_indices_without_replacement(uint32 num_total, u
 
 
 cdef inline uint32[::1] __sample_indices_without_replacement_via_tracking_selection(uint32 num_total,
-                                                                                    uint32 num_samples, RNG rng):
+                                                                                    uint32 num_samples, RNG* rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement by using a set to keep track of the
     indices that have already been selected. This method is suitable if `num_samples` is much smaller than `num_total`.
 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
-    :param rng:         The random number generator to be used
+    :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
     :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
@@ -297,14 +299,14 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_tracking_select
 
 
 cdef inline uint32[::1] __sample_indices_without_replacement_via_reservoir_sampling(uint32 num_total,
-                                                                                    uint32 num_samples, RNG rng):
+                                                                                    uint32 num_samples, RNG* rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement using a reservoir sampling algorithm.
     This method is suitable if `num_samples` is almost as large as `num_total`.
 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
-    :param rng:         The random number generator to be used
+    :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
     :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
@@ -324,7 +326,7 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_reservoir_sampl
 
 
 cdef inline uint32[::1] __sample_indices_without_replacement_via_random_permutation(uint32 num_total,
-                                                                                    uint32 num_samples, RNG rng):
+                                                                                    uint32 num_samples, RNG* rng):
     """
     Randomly selects `num_samples` out of `num_total` indices without replacement by first generating a random
     permutation of the available indices using the Fisher-Yates shuffle and then returning the first `num_samples`
@@ -332,7 +334,7 @@ cdef inline uint32[::1] __sample_indices_without_replacement_via_random_permutat
 
     :param num_total:   The total number of available indices
     :param num_samples: The number of indices to be sampled
-    :param rng:         The random number generator to be used
+    :param rng:         A pointer to an object of type `RNG`, implementing the random number generator to be used
     :return:            An array of type `uint32`, shape `(num_samples)`, representing the indices contained in the
                         sub-sample
     """
