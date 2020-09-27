@@ -191,7 +191,7 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
  * Defines an interface for all vectors that provide access to the information whether the features at specific indices
  * are nominal or not.
  */
-class INominalFeatureVector : virtual public IRandomAccessVector<uint8> {
+class INominalFeatureVector : virtual public ISparseRandomAccessVector<uint8> {
 
     public:
 
@@ -219,6 +219,8 @@ class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
         ~DokNominalFeatureVectorImpl();
 
         uint32 getNumElements() override;
+
+        bool hasZeroElements() override;
 
         uint8 getValue(uint32 pos) override;
 
