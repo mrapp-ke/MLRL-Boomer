@@ -202,11 +202,11 @@ class DenseVector : virtual public IRandomAccessVector<T> {
          * @param pos   The position of the element. Must be in [0, getNumElements())
          * @param value The value to be set
          */
-        void set(uint32 pos, T value);
+        void setValue(uint32 pos, T value);
 
         uint32 getNumElements() override;
 
-        T get(uint32 pos) override;
+        T getValue(uint32 pos) override;
 
 };
 
