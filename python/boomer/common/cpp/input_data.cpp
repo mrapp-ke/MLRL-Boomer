@@ -130,10 +130,14 @@ DokNominalFeatureVectorImpl::~DokNominalFeatureVectorImpl() {
     delete vector_;
 }
 
-uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
-    return vector_->getValue(pos);
-}
-
 uint32 DokNominalFeatureVectorImpl::getNumElements() {
     return vector_->getNumElements();
+}
+
+bool DokNominalFeatureVectorImpl::hasZeroElements() {
+    return vector_->hasZeroElements();
+}
+
+uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
+    return vector_->getValue(pos);
 }
