@@ -1,6 +1,38 @@
 #include "data.h"
 
 
+template<class T>
+DenseVector<T>::DenseVector(uint32 numElements)
+    : DenseVector(numElements, false) {
+
+}
+
+template<class T>
+DenseVector<T>::DenseVector(uint32 numElements, bool allZero) {
+    numElements_ = numElements;
+    data_ = allZero ? new T[numElements]{0} : new T[numElements];
+}
+
+template<class T>
+DenseVector<T>::~DenseVector() {
+    delete[] data_;
+}
+
+template<class T>
+uint32 DenseVector<T>::getNumElements() {
+    return numElements_;
+}
+
+template<class T>
+T DenseVector<T>::get(uint32 pos) {
+    return data_[pos];
+}
+
+template<class T>
+void DenseVector<T>::set(uint32 pos, T value) {
+    data_[pos] = value;
+}
+
 RangeIndexVector::RangeIndexVector(uint32 numIndices) {
     numIndices_ = numIndices;
 }
