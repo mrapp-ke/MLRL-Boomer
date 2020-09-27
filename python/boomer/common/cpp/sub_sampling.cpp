@@ -289,7 +289,7 @@ IWeightVector* BaggingImpl::subSample(uint32 numExamples, RNG* rng) {
         weights->setValue(randomIndex, weight + 1);
     }
 
-    return new DenseWeightVector(weights, numSamples);
+    return new DenseWeightVector<uint32>(weights, numSamples);
 }
 
 RandomInstanceSubsetSelectionImpl::RandomInstanceSubsetSelectionImpl(float32 sampleSize) {
