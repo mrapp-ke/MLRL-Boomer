@@ -110,6 +110,28 @@ class IInstanceSubSampling {
 };
 
 /**
+ * Implements bootstrap aggregating (bagging) for selecting a subset of the available training examples with
+ * replacement.
+ */
+class BaggingImpl : virtual public IInstanceSubSampling {
+
+    private:
+
+        float32 sampleSize_;
+
+    public:
+
+        /**
+         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
+         *                   60 % of the available examples). Must be in (0, 1]
+         */
+        BaggingImpl(float32 sampleSize);
+
+        IWeightVector* subSample(uint32 numExamples, RNG* rng) override;
+
+};
+
+/**
  * An implementation of the class `IInstanceSubSampling` that does not perform any sampling, but assigns equal weights
  * to all examples.
  */
