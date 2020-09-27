@@ -78,6 +78,19 @@ class ISparseVector : virtual public IVector {
 };
 
 /**
+ * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to all of their
+ * elements, including zero elements that are not explicitly stored in the vector.
+ */
+template<class T>
+class ISparseRandomAccessVector : virtual public ISparseVector, virtual public IRandomAccessVector<T> {
+
+    public:
+
+        virtual ~ISparseRandomAccessVector() { };
+
+};
+
+/**
  * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
  */
 class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
