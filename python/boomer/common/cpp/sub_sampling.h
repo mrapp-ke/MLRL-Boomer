@@ -243,6 +243,26 @@ class ILabelSubSampling {
 };
 
 /**
+ * Implements random label subset selection for selecting a random subset of the available features without replacement.
+ */
+class RandomLabelSubsetSelectionImpl : virtual public ILabelSubSampling {
+
+    private:
+
+        uint32 numSamples_;
+
+    public:
+
+        /**
+         * @param The number of labels to be included in the sample
+         */
+        RandomLabelSubsetSelectionImpl(uint32 numSamples);
+
+        IIndexVector* subSample(uint32 numLabels, RNG* rng) override;
+
+};
+
+/**
  * An implementation of the class `ILabelSubSampling` that does not perform any sampling, but includes all labels.
  */
 class NoLabelSubSamplingImpl : virtual public ILabelSubSampling {

@@ -324,6 +324,13 @@ IIndexVector* NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG* rng) 
     return new RangeIndexVector(numFeatures);
 }
 
+RandomLabelSubsetSelectionImpl::RandomLabelSubsetSelectionImpl(uint32 numSamples) {
+    numSamples_ = numSamples;
+}
+
+IIndexVector* RandomLabelSubsetSelectionImpl::subSample(uint32 numLabels, RNG* rng) {
+    return sampleIndicesWithoutReplacement(numLabels, numSamples_, rng);
+}
 
 IIndexVector* NoLabelSubSamplingImpl::subSample(uint32 numLabels, RNG* rng) {
     return new RangeIndexVector(numLabels);
