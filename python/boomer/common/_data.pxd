@@ -55,6 +55,13 @@ cdef extern from "cpp/data.h" nogil:
         bool hasZeroElements()
 
 
+    cdef cppclass IIndexVector(ISparseVector):
+
+        # Functions:
+
+        uint32 getIndex(uint32 pos)
+
+
     cdef cppclass ISparseRandomAccessVector[T](ISparseVector, IRandomAccessVector[T]):
         pass
 
