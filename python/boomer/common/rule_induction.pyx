@@ -43,8 +43,8 @@ cdef class RuleInduction:
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
-                          ModelBuilder model_builder):
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
+                          RNG* rng, ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
@@ -75,7 +75,8 @@ cdef class RuleInduction:
                                         refinements should not be restricted
         :param num_threads:             The number of threads to be used for evaluating the potential refinements of the
                                         rule in parallel. Must be at least 1
-        :param rng:                     The random number generator to be used
+        :param rng:                     A pointer to an object of type `RNG`, implementing the random number generator
+                                        to be used
         :param model_builder:           The builder, the rule should be added to
         :return:                        1, if a rule has been induced, 0 otherwise
         """
@@ -137,8 +138,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
                           FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
-                          ModelBuilder model_builder):
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
+                          RNG* rng, ModelBuilder model_builder):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
