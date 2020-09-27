@@ -60,6 +60,24 @@ class IRandomAccessVector : virtual public IVector {
 };
 
 /**
+ * Defines an interface for all one-dimensional, potentially sparse, vectors.
+ */
+class ISparseVector : virtual public IVector {
+
+    public:
+
+        virtual ~ISparseVector() { };
+
+        /**
+         * Returns whether the vector contains any zero elements or not.
+         *
+         * @return True, if the vector contains any zero elements, false otherwise
+         */
+        virtual bool hasZeroElements() = 0;
+
+};
+
+/**
  * A sparse vector that stores binary values using the dictionary of keys (DOK) format.
  */
 class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
@@ -137,7 +155,7 @@ class IRandomAccessMatrix : virtual public IMatrix {
 };
 
 /**
- * A sparse matrix that stores binary values using the dictionary of keys (DOK) format.
+ * A sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
