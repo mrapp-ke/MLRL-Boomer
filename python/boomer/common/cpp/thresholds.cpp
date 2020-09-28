@@ -44,8 +44,31 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
 IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex,
                                                                                  uint32 numConditions,
                                                                                  uint32 totalSumOfWeights) {
-    // TODO Implement
-    return NULL;
+    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
+
+    if (indexedArrayWrapper == NULL) {
+        indexedArrayWrapper = (IndexedFloat32ArrayWrapper*) malloc(sizeof(IndexedFloat32ArrayWrapper));
+        indexedArrayWrapper->array = NULL;
+        indexedArrayWrapper->numConditions = 0;
+        cacheFiltered_[featureIndex] = indexedArrayWrapper;
+    }
+
+    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
+
+    if (indexedArray == NULL) {
+        indexedArray = thresholds_->cache_[featureIndex];
+
+        if (indexedArray == NULL) {
+            indexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+            indexedArray->data = NULL;
+            indexedArray->numElements = 0;
+            thresholds_->cache_[featureIndex] = indexedArray;
+        }
+    }
+
+    bool nominal = thresholds_->nominalFeatureVectorPtr_.get()->getValue(featureIndex);
+    return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), indexedArray, weights_, totalSumOfWeights,
+                                       featureIndex, nominal);
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
