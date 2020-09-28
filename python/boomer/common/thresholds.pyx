@@ -24,3 +24,15 @@ cdef class ThresholdsFactory:
         :return:                        A pointer to an object of type `AbstractThresholds` that has been created
         """
         pass
+
+
+cdef class ExactThresholdsFactory(ThresholdsFactory):
+    """
+    A factory that allows to create instances of the class `ExactThresholdsImpl`.
+    """
+
+    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
+                                    StatisticsProvider statistics_provider):
+        return new ExactThresholdsImpl(feature_matrix.feature_matrix_ptr,
+                                       nominal_feature_vector.nominal_feature_vector_ptr,
+                                       statistics_provider.statistics_ptr)
