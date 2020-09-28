@@ -210,8 +210,8 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::DenseLabelWiseStatisticsBinsImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
     statistics_ = statistics;
     numBins_ = numBins;
-    float64* gradients_ = (float64*)malloc(numBins_ * sizeof(float64));
-    float64* hessians_ = (float64*)malloc(numBins_ * sizeof(float64));
+    float64* gradients_ = (float64*)calloc(numBins_, sizeof(float64));
+    float64* hessians_ = (float64*)calloc(numBins_, sizeof(float64));
     Bin* bins = (Bin*)malloc(numBins_ * sizeof(Bin));
 }
 
