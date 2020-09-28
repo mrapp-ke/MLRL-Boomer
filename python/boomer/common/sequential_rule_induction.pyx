@@ -8,6 +8,7 @@ from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureVector
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
+from boomer.common.sub_sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling
 from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp.memory cimport shared_ptr, unique_ptr, make_unique
@@ -119,13 +120,17 @@ cdef class SequentialRuleInduction:
         head_refinement_ptr = head_refinement.head_refinement_ptr
         cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
         cdef shared_ptr[INominalFeatureVector] nominal_feature_vector_ptr = nominal_feature_vector.nominal_feature_vector_ptr
+        cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr = label_sub_sampling.label_sub_sampling_ptr
+        cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr = feature_sub_sampling.feature_sub_sampling_ptr
+        cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             success = rule_induction.induce_rule(statistics_provider, nominal_feature_vector_ptr.get(),
                                                  feature_matrix_ptr.get(), head_refinement_ptr.get(),
-                                                 label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
-                                                 pruning, post_processor, min_coverage, max_conditions,
-                                                 max_head_refinements, num_threads, rng_ptr.get(), model_builder)
+                                                 label_sub_sampling_ptr.get(), instance_sub_sampling_ptr.get(),
+                                                 feature_sub_sampling_ptr.get(), pruning, post_processor, min_coverage,
+                                                 max_conditions, max_head_refinements, num_threads, rng_ptr.get(),
+                                                 model_builder)
 
             if not success:
                 break
