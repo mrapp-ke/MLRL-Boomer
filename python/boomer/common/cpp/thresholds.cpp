@@ -42,7 +42,8 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
 }
 
 IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex,
-                                                                                 uint32 numConditions) {
+                                                                                 uint32 numConditions,
+                                                                                 uint32 totalSumOfWeights) {
     // TODO Implement
     return NULL;
 }

@@ -31,12 +31,15 @@ class IThresholdsSubset {
          * an existing rule, which results from adding a new condition that corresponds to the feature at a specific
          * index.
          *
-         * @param featureIndex  The index of the feature, the new condition corresponds to
-         * @param numConditions The number of conditions of the existing rule. This is used to check if caches are still
-         *                      valid
-         * @return              A pointer to an object of type `IRuleRefinement` that has been created
+         * @param featureIndex      The index of the feature, the new condition corresponds to
+         * @param numConditions     The number of conditions of the existing rule. This is used to check if caches are
+         *                          still valid
+         * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
+         *                          existing rule
+         * @return                  A pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions) = 0;
+        virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions,
+                                                      uint32 totalSumOfWeights) = 0;
 
 };
 
@@ -147,7 +150,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ~ThresholdsSubsetImpl();
 
-                IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions) override;
+                IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions,
+                                                      uint32 totalSumOfWeights) override;
 
         };
 
