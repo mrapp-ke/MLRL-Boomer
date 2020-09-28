@@ -79,8 +79,28 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinemen
 }
 
 IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::getSortedFeatureValues() {
-    // TODO Implement
-    return NULL;
+    // Obtain array that contains the indices of the training examples sorted according to the current feature...
+    IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_->cacheFiltered_[featureIndex_];
+    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
+    IndexedFloat32* indexedValues;
+
+    if (indexedArray == NULL) {
+        indexedArray = thresholdsSubset_->thresholds_->cache_[featureIndex_];
+        indexedValues = indexedArray->data;
+
+        if (indexedValues == NULL) {
+            thresholdsSubset_->thresholds_->featureMatrixPtr_.get()->fetchFeatureValues(featureIndex_, indexedArray);
+            indexedValues = indexedArray->data;
+            qsort(indexedValues, indexedArray->numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
+        }
+    }
+
+    // Filter indices, if only a subset of the contained examples is covered...
+    if (numConditions_ > indexedArrayWrapper->numConditions) {
+       // TODO
+    }
+
+    return indexedArray;
 }
 
 ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
