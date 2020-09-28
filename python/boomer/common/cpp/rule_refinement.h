@@ -10,6 +10,7 @@
 #include "predictions.h"
 #include "rules.h"
 #include "statistics.h"
+#include "sub_sampling.h"
 #include "head_refinement.h"
 
 
@@ -71,7 +72,7 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
         IndexedFloat32Array* indexedArray_;
 
-        const uint32* weights_;
+        IWeightVector* weights_;
 
         uint32 totalSumOfWeights_;
 
@@ -91,16 +92,15 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
          * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array`, which stores the indices
          *                              and feature values of the training examples for the feature at index
          *                              `featureIndex`
-         * @param weights               A pointer to an array of type `uint32`, shape `num_examples`, representing the
-         *                              weights of the individual training examples or NULL, if all examples are weighed
-         *                              equally
-         * @param totalSumOfWeights     The total sum of the weights in `weights` or the number example if `weights` is
-         *                              NULL
+         * @param weights               A pointer to an object of type `IWeightVector` that provides access to the
+         *                              weights of the individual training examples
+         * @param totalSumOfWeights     The total sum of the weights of all training examples that are covered by the
+         *                              existing rule
          * @param featureIndex          The index of the feature, the new condition corresponds to
          * @param nominal               True, if the feature at index `featureIndex` is nominal, false otherwise
          */
         ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
+                                IndexedFloat32Array* indexedArray, IWeightVector* weights, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal);
 
         Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
