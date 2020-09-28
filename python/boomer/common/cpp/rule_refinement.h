@@ -28,7 +28,6 @@ struct Refinement {
     intp end;
     intp previous;
     IndexedFloat32Array* indexedArray;
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper;
 };
 
 /**
@@ -68,8 +67,6 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
         AbstractStatistics* statistics_;
 
-        IndexedFloat32ArrayWrapper* indexedArrayWrapper_;
-
         IndexedFloat32Array* indexedArray_;
 
         IWeightVector* weights_;
@@ -86,9 +83,6 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
          * @param statistics            A pointer to an object of type `AbstractStatistics` that provides access to the
          *                              statistics which serve as the basis for evaluating the potential refinements of
          *                              rules
-         * @param indexedArrayWrapper   A pointer to a struct of type `IndexedFloat32ArrayWrapper`, which should be used
-         *                              to store the feature values and training examples that are covered by the best
-         *                              refinement
          * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array`, which stores the indices
          *                              and feature values of the training examples for the feature at index
          *                              `featureIndex`
@@ -99,9 +93,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
          * @param featureIndex          The index of the feature, the new condition corresponds to
          * @param nominal               True, if the feature at index `featureIndex` is nominal, false otherwise
          */
-        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                IndexedFloat32Array* indexedArray, IWeightVector* weights, uint32 totalSumOfWeights,
-                                uint32 featureIndex, bool nominal);
+        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray,
+                                IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex, bool nominal);
 
         Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
