@@ -98,6 +98,38 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
             private:
 
+                /**
+                 * An implementation of the callback `ExactRuleRefinementImpl::ICallback` that retrieves the feature
+                 * values of the training examples from the cache, if available, or fetches them from an
+                 * `IFeatureMatrix`.
+                 */
+                class RuleRefinementCallback : virtual public ExactRuleRefinementImpl::ICallback {
+
+                    private:
+
+                        ThresholdsSubsetImpl* thresholdsSubset_;
+
+                        uint32 numConditions_;
+
+                        uint32 featureIndex_;
+
+                    public:
+
+                        /**
+                         * @param thresholdsSubset  A pointer to an object of type `ThresholdsSubsetImpl` that caches
+                         *                          the feature values and indices
+                         * @param numConditions     The number of conditions of the current rule. This is used to check
+                         *                          if caches are still valid
+                         * @param featureIndex      The index of the feature for which the feature values and training
+                         *                          examples should be retrieved
+                         */
+                        RuleRefinementCallback(ThresholdsSubsetImpl* thresholdsSubset, uint32 numConditions,
+                                               uint32 featureIndex);
+
+                        IndexedFloat32Array* getSortedFeatureValues() override;
+
+                };
+
                 ExactThresholdsImpl* thresholds_;
 
                 IWeightVector* weights_;
