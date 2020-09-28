@@ -47,6 +47,18 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
     return NULL;
 }
 
+ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
+        ThresholdsSubsetImpl* thresholdsSubset, uint32 numConditions, uint32 featureIndex) {
+    thresholdsSubset_ = thresholdsSubset;
+    numConditions_ = numConditions;
+    featureIndex_ = featureIndex;
+}
+
+IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::getSortedFeatureValues() {
+    // TODO Implement
+    return NULL;
+}
+
 ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                          std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                          std::shared_ptr<AbstractStatistics> statisticsPtr)
