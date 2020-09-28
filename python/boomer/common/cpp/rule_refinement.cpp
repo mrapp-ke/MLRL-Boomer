@@ -4,7 +4,7 @@
 
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
                                                  IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                                 IndexedFloat32Array* indexedArray, const uint32* weights,
+                                                 IndexedFloat32Array* indexedArray, IWeightVector* weights,
                                                  uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) {
     statistics_ = statistics;
     indexedArrayWrapper_ = indexedArrayWrapper;
@@ -50,7 +50,7 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
 
         lastNegativeR = r;
         uint32 i = indexedValues[r].index;
-        uint32 weight = weights_ == NULL ? 1 : weights_[i];
+        uint32 weight = weights_->getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -75,7 +75,7 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
 
             lastNegativeR = r;
             uint32 i = indexedValues[r].index;
-            uint32 weight = weights_ == NULL ? 1 : weights_[i];
+            uint32 weight = weights_->getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -205,7 +205,7 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = indexedValues[r].index;
-        uint32 weight = weights_ == NULL ? 1 : weights_[i];
+        uint32 weight = weights_->getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -223,7 +223,7 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
     if (sumOfWeights > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = indexedValues[r].index;
-            uint32 weight = weights_ == NULL ? 1 : weights_[i];
+            uint32 weight = weights_->getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -280,7 +280,7 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
                         }
                     }
 
-                    // Reset the subet in case of a nominal feature, as the previous examples will not be covered by
+                    // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
                     // the next condition...
                     if (nominal_) {
                         statisticsSubsetPtr.get()->resetSubset();

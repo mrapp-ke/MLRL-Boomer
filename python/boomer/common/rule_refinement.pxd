@@ -8,6 +8,7 @@ from boomer.common._tuples cimport IndexedFloat32Array, IndexedFloat32ArrayWrapp
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.sub_sampling cimport IWeightVector
 from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp cimport bool
@@ -42,5 +43,5 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         # Constructors:
 
         ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                IndexedFloat32Array* indexedArray, const uint32* weights, uint32 totalSumOfWeights,
+                                IndexedFloat32Array* indexedArray, IWeightVector* weights, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal) except +

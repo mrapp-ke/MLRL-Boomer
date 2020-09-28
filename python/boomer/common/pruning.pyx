@@ -24,7 +24,7 @@ cdef class Pruning:
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
-                                         uint32[::1] weights, AbstractStatistics* statistics,
+                                         IWeightVector* weights, AbstractStatistics* statistics,
                                          IHeadRefinement* head_refinement):
         """
         Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is pruned
@@ -42,9 +42,9 @@ cdef class Pruning:
                                             of the indices of the examples that are covered by the existing rule
         :param covered_examples_target:     The value that is used to mark those elements in `covered_examples_mask`
                                             that are covered by the existing rule
-        :param weights:                     An array of type `uint32`, shape `(num_examples)`, representing the weights
-                                            of all training examples, regardless of whether they are included in the
-                                            prune set or grow set
+        :param weights:                     A pointer to an object of type `IWeightVector` that provides access to the
+                                            weights of all training examples, regardless of whether they are included in
+                                            the prune set or grow set
         :param statistics:                  A pointer to an object of type `AbstractStatistics`, which served as the
                                             basis for learning the existing rule
         :param head_refinement:             A pointer to an object of type `IHeadRefinement` that was used to find the
@@ -65,7 +65,7 @@ cdef class IREP(Pruning):
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
                                          double_linked_list[Condition] conditions, Prediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
-                                         uint32[::1] weights, AbstractStatistics* statistics,
+                                         IWeightVector* weights, AbstractStatistics* statistics,
                                          IHeadRefinement* head_refinement):
         # The total number of training examples
         cdef uint32 num_examples = covered_examples_mask.shape[0]
@@ -93,7 +93,7 @@ cdef class IREP(Pruning):
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
-            if weights[i] == 0:
+            if weights.getValue(i) == 0:
                 statistics.addSampledStatistic(i, 1)
 
                 if covered_examples_mask[i] == covered_examples_target:
@@ -161,7 +161,7 @@ cdef class IREP(Pruning):
                 i = indexed_values[r].index
 
                 # We must only consider examples that are currently covered and contained in the prune set...
-                if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
+                if current_covered_examples_mask[i] == current_covered_examples_target and weights.getValue(i) == 0:
                     statistics_subset_ptr.get().addToSubset(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
@@ -185,7 +185,7 @@ cdef class IREP(Pruning):
                 for r in range(start, end):
                     i = indexed_values[r].index
 
-                    if current_covered_examples_mask[i] == current_covered_examples_target and weights[i] == 0:
+                    if current_covered_examples_mask[i] == current_covered_examples_target and weights.getValue(i) == 0:
                         statistics.updateCoveredStatistic(i, 1, uncovered)
                         current_covered_examples_mask[i] = n
 
