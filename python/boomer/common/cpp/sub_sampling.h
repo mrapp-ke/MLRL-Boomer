@@ -97,26 +97,19 @@ class DenseIndexVector : virtual public IIndexVector {
 
     private:
 
-        uint32 numElements_;
-
         uint32* indices_;
+
+        uint32 numElements_;
 
     public:
 
         /**
-         * @param numElements The number of elements in the vector. Must be at least 1
+         * @param indices       A pointer to an array of type `uint32`, shape `(numElements)`, that stores the indices
+         * @param numElements   The number of elements in the vector. Must be at least 1
          */
-        DenseIndexVector(uint32 numElements);
+        DenseIndexVector(uint32* indices, uint32 numElements);
 
         ~DenseIndexVector();
-
-        /**
-         * Sets the index at a specific position.
-         *
-         * @param pos   The position of the index. Must be in [0, getNumElements())
-         * @param index The index to be set. Must be at least 0
-         */
-        void setIndex(uint32 pos, uint32 index);
 
         uint32 getNumElements() override;
 

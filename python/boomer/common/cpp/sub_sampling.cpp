@@ -100,7 +100,7 @@ static inline IWeightVector* sampleWeightsWithoutReplacement(uint32 numTotal, ui
  */
 static inline IIndexVector* sampleIndicesWithoutReplacementViaTrackingSelection(uint32 numTotal, uint32 numSamples,
                                                                                 RNG* rng) {
-    DenseIndexVector* indices = new DenseIndexVector(numSamples);
+    uint32* indices = new uint32[numSamples];
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -112,10 +112,10 @@ static inline IIndexVector* sampleIndicesWithoutReplacementViaTrackingSelection(
             shouldContinue = !selectedIndices.insert(randomIndex).second;
         }
 
-        indices->setIndex(i, randomIndex);
+        indices[i] = randomIndex;
     }
 
-    return indices;
+    return new DenseIndexVector(indices, numSamples);
 }
 
 /**
@@ -130,21 +130,21 @@ static inline IIndexVector* sampleIndicesWithoutReplacementViaTrackingSelection(
  */
 static inline IIndexVector* sampleIndicesWithoutReplacementViaReservoirSampling(uint32 numTotal, uint32 numSamples,
                                                                                 RNG* rng) {
-    DenseIndexVector* indices = new DenseIndexVector(numSamples);
+    uint32* indices = new uint32[numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
-        indices->setIndex(i, i);
+        indices[i] = i;
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
         uint32 randomIndex = rng->random(0, i + 1);
 
         if (randomIndex < numSamples) {
-            indices->setIndex(randomIndex, i);
+            indices[randomIndex] = i;
         }
     }
 
-    return indices;
+    return new DenseIndexVector(indices, numSamples);
 }
 
 /**
@@ -159,40 +159,21 @@ static inline IIndexVector* sampleIndicesWithoutReplacementViaReservoirSampling(
  */
 static inline IIndexVector* sampleIndicesWithoutReplacementViaRandomPermutation(uint32 numTotal, uint32 numSamples,
                                                                                 RNG* rng) {
-    DenseIndexVector* indices = new DenseIndexVector(numSamples);
-    uint32* unusedIndices = new uint32[numTotal - numSamples];
+    uint32* indices = new uint32[numTotal];
 
-    for (uint32 i = 0; i < numSamples; i++) {
-        indices->setIndex(i, i);
-    }
-
-    for (uint32 i = numSamples; i < numTotal; i++) {
-        unusedIndices[i - numSamples] = i;
+    for (uint32 i = 0; i < numTotal; i++) {
+        indices[i] = i;
     }
 
     for (uint32 i = 0; i < numTotal - 2; i++) {
         // Swap elements at index i and at a randomly selected index...
         uint32 randomIndex = rng->random(i, numTotal);
-        uint32 tmp1 = i < numSamples ? indices->getIndex(i) : unusedIndices[i - numSamples];
-        uint32 tmp2;
-
-        if (randomIndex < numSamples) {
-            tmp2 = indices->getIndex(randomIndex);
-            indices->setIndex(randomIndex, tmp1);
-        } else {
-            tmp2 = unusedIndices[randomIndex - numSamples];
-            unusedIndices[randomIndex - numSamples] = tmp1;
-        }
-
-        if (i < numSamples) {
-            indices->setIndex(i, tmp2);
-        } else {
-            unusedIndices[i - numSamples] = tmp2;
-        }
+        uint32 tmp = indices[i];
+        indices[i] = indices[randomIndex];
+        indices[randomIndex] = tmp;
     }
 
-    delete[] unusedIndices;
-    return indices;
+    return new DenseIndexVector(indices, numSamples);
 }
 
 /**
@@ -273,9 +254,9 @@ uint32 EqualWeightVector::getSumOfWeights() {
     return numElements_;
 }
 
-DenseIndexVector::DenseIndexVector(uint32 numElements) {
+DenseIndexVector::DenseIndexVector(uint32* indices, uint32 numElements) {
+    indices_ = indices;
     numElements_ = numElements;
-    indices_ = new uint32[numElements];
 }
 
 DenseIndexVector::~DenseIndexVector() {
@@ -292,10 +273,6 @@ bool DenseIndexVector::hasZeroElements() {
 
 uint32 DenseIndexVector::getIndex(uint32 pos) {
     return indices_[pos];
-}
-
-void DenseIndexVector::setIndex(uint32 pos, uint32 index) {
-    indices_[pos] = index;
 }
 
 BaggingImpl::BaggingImpl(float32 sampleSize) {
