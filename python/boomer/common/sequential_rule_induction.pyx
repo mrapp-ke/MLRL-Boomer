@@ -7,6 +7,7 @@ from boomer.common._random cimport RNG
 from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureVector
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
+from boomer.common.thresholds cimport AbstractThresholds
 from boomer.common.stopping_criteria cimport StoppingCriterion
 from boomer.common.sub_sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling
 from boomer.common.head_refinement cimport IHeadRefinement
@@ -128,14 +129,16 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr = label_sub_sampling.label_sub_sampling_ptr
         cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr = feature_sub_sampling.feature_sub_sampling_ptr
         cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
+        cdef unique_ptr[AbstractThresholds] thresholds_ptr
+        thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_vector, statistics_provider))
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            success = rule_induction.induce_rule(statistics_provider, nominal_feature_vector_ptr.get(),
-                                                 feature_matrix_ptr.get(), head_refinement_ptr.get(),
-                                                 label_sub_sampling_ptr.get(), instance_sub_sampling_ptr.get(),
-                                                 feature_sub_sampling_ptr.get(), pruning, post_processor, min_coverage,
-                                                 max_conditions, max_head_refinements, num_threads, rng_ptr.get(),
-                                                 model_builder)
+            success = rule_induction.induce_rule(statistics_provider, thresholds_ptr.get(),
+                                                 nominal_feature_vector_ptr.get(), feature_matrix_ptr.get(),
+                                                 head_refinement_ptr.get(), label_sub_sampling_ptr.get(),
+                                                 instance_sub_sampling_ptr.get(), feature_sub_sampling_ptr.get(),
+                                                 pruning, post_processor, min_coverage, max_conditions,
+                                                 max_head_refinements, num_threads, rng_ptr.get(), model_builder)
 
             if not success:
                 break
