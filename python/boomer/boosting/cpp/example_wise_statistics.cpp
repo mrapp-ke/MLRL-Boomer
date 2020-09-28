@@ -274,12 +274,22 @@ AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
                                               gradients, hessians, currentScores);
 }
 
-void DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins){
+DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::DenseExampleWiseStatisticsBinsImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins){
+    statistics_ = statistics;
     numBins_ = numBins;
+    float64* gradients_ = (float64*)malloc(numBins_ * sizeof(float64));
+    float64* hessians_ = (float64*)malloc(numBins_ * sizeof(float64));
+    Bin* bins = (Bin*)malloc(numBins_ * sizeof(Bin));
 }
 
 void DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
     indexedValue->index = binIndex;
+    bins[binIndex].numExamples++;
+    if(bins[binIndex].maxValue < indexedValue->value){
+        bins[binIndex].maxValue = indexedValue->value;
+    }else if(indexedValue->value < bins[binIndex].minValue){
+        bins[binIndex].minValue = indexedValue->value;
+    }
 }
 
 AbstractStatistics* DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::build(){
