@@ -6,11 +6,14 @@
 #pragma once
 
 #include "arrays.h"
+#include "tuples.h"
 #include "data.h"
 #include "input_data.h"
 #include "sub_sampling.h"
 #include "rule_refinement.h"
 #include <memory>
+#include <unordered_map>
+
 
 /**
  * Defines an interface for all classes that provide access a subset of thresholds that may be used by the conditions of
@@ -77,5 +80,63 @@ class AbstractThresholds : virtual public IMatrix {
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
+
+};
+
+/**
+ * Provides access to all thresholds that result from the feature values of the training examples.
+ */
+class ExactThresholdsImpl : public AbstractThresholds {
+
+    private:
+
+        /**
+         * Provides access to a subset of the thresholds that are stored by an instance of the class
+         * `ExactThresholdsImpl`.
+         */
+        class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
+
+            private:
+
+                ExactThresholdsImpl* thresholds_;
+
+                IWeightVector* weights_;
+
+                std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
+
+            public:
+
+                /**
+                 * @param thresholds    A pointer to an object of type `ExactThresholdsImpl` that stores the thresholds
+                 * @param weights       A pointer to an object of type `IWeightVector` that provides access to the
+                 *                      weights of the individual training examples
+                 */
+                ThresholdsSubsetImpl(ExactThresholdsImpl* thresholds, IWeightVector* weights);
+
+                ~ThresholdsSubsetImpl();
+
+                IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions) override;
+
+        };
+
+        std::unordered_map<uint32, IndexedFloat32Array*> cache_;
+
+    public:
+
+        /**
+         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
+         *                                  to the feature values of the training examples
+         * @param nominalFeatureVectorPtr   A shared pointer to an object of type `INominalFeatureVector` that provides
+         *                                  access to the information whether individual features are nominal or not
+         * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
+         *                                  access to statistics about the labels of the training examples
+         */
+        ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                            std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                            std::shared_ptr<AbstractStatistics> statisticsPtr);
+
+        ~ExactThresholdsImpl();
+
+        IThresholdsSubset* createSubset(IWeightVector* weights) override;
 
 };
