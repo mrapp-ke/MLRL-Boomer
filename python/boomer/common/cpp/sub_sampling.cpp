@@ -15,7 +15,7 @@
  */
 static inline IWeightVector* sampleWeightsWithoutReplacementViaTrackingSelection(uint32 numTotal, uint32 numSamples,
                                                                                  RNG* rng) {
-    DenseVector<uint8>* weights = new DenseVector<uint8>(numTotal);
+    DenseVector<uint8>* weights = new DenseVector<uint8>(numTotal, true);
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -43,7 +43,7 @@ static inline IWeightVector* sampleWeightsWithoutReplacementViaTrackingSelection
  * @return              A pointer to an object of type `IWeightVector` that provides access to the weights
  */
 static inline IWeightVector* sampleWeightsWithoutReplacementViaPool(uint32 numTotal, uint32 numSamples, RNG* rng) {
-    DenseVector<uint8>* weights = new DenseVector<uint8>(numTotal);
+    DenseVector<uint8>* weights = new DenseVector<uint8>(numTotal, true);
     uint32 pool[numTotal];
 
     // Initialize pool...
@@ -278,7 +278,7 @@ BaggingImpl::BaggingImpl(float32 sampleSize) {
 
 IWeightVector* BaggingImpl::subSample(uint32 numExamples, RNG* rng) {
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
-    DenseVector<uint32>* weights = new DenseVector<uint32>(numExamples);
+    DenseVector<uint32>* weights = new DenseVector<uint32>(numExamples, true);
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select the index of an example...
