@@ -2,12 +2,10 @@
 #include <math.h>
 #include <memory>
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
-                                                 IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                                 IndexedFloat32Array* indexedArray, IWeightVector* weights,
-                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) {
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray,
+                                                 IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
+                                                 bool nominal) {
     statistics_ = statistics;
-    indexedArrayWrapper_ = indexedArrayWrapper;
     indexedArray_ = indexedArray;
     weights_ = weights;
     totalSumOfWeights_ = totalSumOfWeights;
@@ -22,7 +20,6 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
     refinement.featureIndex = featureIndex_;
     refinement.head = NULL;
     refinement.indexedArray = indexedArray_;
-    refinement.indexedArrayWrapper = indexedArrayWrapper_;
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...

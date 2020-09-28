@@ -4,7 +4,7 @@
 Provides wrappers for classes that allow to find the best refinement of rules.
 """
 from boomer.common._arrays cimport uint32, intp, float32
-from boomer.common._tuples cimport IndexedFloat32Array, IndexedFloat32ArrayWrapper
+from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractStatistics
@@ -27,7 +27,6 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         intp end
         intp previous
         IndexedFloat32Array* indexedArray
-        IndexedFloat32ArrayWrapper* indexedArrayWrapper
 
 
     cdef cppclass IRuleRefinement:
@@ -42,6 +41,6 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
         # Constructors:
 
-        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                IndexedFloat32Array* indexedArray, IWeightVector* weights, uint32 totalSumOfWeights,
-                                uint32 featureIndex, bool nominal) except +
+        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray,
+                                IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
+                                bool nominal) except +

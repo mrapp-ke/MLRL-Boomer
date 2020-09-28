@@ -274,8 +274,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                                                              best_refinement.previous, best_refinement.threshold)
 
                     # Identify the examples for which the rule predicts...
-                    covered_statistics_target = __filter_current_indices(best_refinement.indexedArray,
-                                                                         best_refinement.indexedArrayWrapper,
+                    covered_statistics_target = __filter_current_indices(cache_local, best_refinement.featureIndex,
+                                                                         best_refinement.indexedArray,
                                                                          best_refinement.start, best_refinement.end,
                                                                          best_refinement.comparator,
                                                                          best_refinement.covered, num_conditions,
@@ -441,8 +441,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
 
     # Find and return the best refinement...
     cdef unique_ptr[IRuleRefinement] rule_refinement_ptr
-    rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array_wrapper, indexed_array, weights,
-                                                          total_sum_of_weights, feature_index, nominal))
+    rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array, weights, total_sum_of_weights,
+                                                          feature_index, nominal))
     return rule_refinement_ptr.get().findRefinement(head_refinement, head, num_label_indices, label_indices)
 
 
@@ -497,10 +497,10 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
     return adjusted_position
 
 
-cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
-                                            IndexedFloat32ArrayWrapper* indexed_array_wrapper, intp condition_start,
-                                            intp condition_end, Comparator condition_comparator, bint covered,
-                                            uint32 num_conditions, uint32[::1] covered_statistics_mask,
+cdef inline uint32 __filter_current_indices(unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
+                                            uint32 feature_index,  IndexedFloat32Array* indexed_array,
+                                            intp condition_start, intp condition_end, Comparator condition_comparator,
+                                            bint covered, uint32 num_conditions, uint32[::1] covered_statistics_mask,
                                             uint32 covered_statistics_target, AbstractStatistics* statistics,
                                             IWeightVector* weights):
     """
@@ -510,10 +510,13 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     The filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper` and the given statistics are
     updated accordingly.
 
+    :param cache_local:                 A pointer to a map that maps feature indices to structs of type
+                                        `IndexedFloat32ArrayWrapper`, storing the indices of the training examples that
+                                        are covered by the existing rule, as well as their values for the respective
+                                        feature, sorted in ascending order by the feature values
+    :param feature_index:               The index of the feature
     :param indexed_array:               A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the
                                         C-array to be filtered, as well as the number of elements in said array
-    :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
-                                        to store the filtered array
     :param condition_start:             The element in `indexed_values` that corresponds to the first example
                                         (inclusive) included in the `IStatisticsSubset` that is covered by the new
                                         condition
@@ -621,6 +624,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
             filtered_array[i].value = indexed_values[r].value
             i += direction
 
+    cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
     cdef IndexedFloat32Array* filtered_indexed_array = indexed_array_wrapper.array
 
     if filtered_indexed_array == NULL:
