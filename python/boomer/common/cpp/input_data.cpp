@@ -76,6 +76,24 @@ void DenseFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Index
     indexedArray->data = sortedArray;
 }
 
+void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+    // The number of elements to be returned
+    uint32 numElements = this->getNumRows();
+    // The array that stores the indices
+    IndexedFloat32* array = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
+    // The first element in `x_` that corresponds to the given feature index
+    uint32 offset = featureIndex * numElements;
+
+    for (uint32 i = 0; i < numElements; i++) {
+        array[i].index = i;
+        array[i].value = x_[offset + i];
+    }
+
+    // Update the given struct...
+    indexedArray->numElements = numElements;
+    indexedArray->data = array;
+}
+
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
                                            const uint32* xRowIndices, const uint32* xColIndices)  {
     numExamples_ = numExamples;
@@ -120,6 +138,32 @@ void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Indexed
     // Update the given struct...
     indexedArray->numElements = numElements;
     indexedArray->data = sortedArray;
+}
+
+void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+    // The index of the first element in `xData_` and `xRowIndices_` that corresponds to the given feature index+
+    uint32 start = xColIndices_[featureIndex];
+    // The index of the last element in `xData_` and `xRowIndices_` that corresponds to the given feature index
+    uint32 end = xColIndices_[featureIndex + 1];
+    // The number of elements to be returned
+    uint32 numElements = end - start;
+    // The array that stores the indices
+    IndexedFloat32* array = NULL;
+
+    if (numElements > 0) {
+        array = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
+        uint32 i = 0;
+
+        for (uint32 j = start; j < end; j++) {
+            array[i].index = xRowIndices_[j];
+            array[i].value = xData_[j];
+            i++;
+        }
+    }
+
+    // Update the given struct...
+    indexedArray->numElements = numElements;
+    indexedArray->data = array;
 }
 
 DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(BinaryDokVector* vector) {
