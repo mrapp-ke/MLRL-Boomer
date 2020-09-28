@@ -282,6 +282,12 @@ DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::DenseExample
     Bin* bins = (Bin*)malloc(numBins_ * sizeof(Bin));
 }
 
+DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::~DenseExampleWiseStatisticsBinsImpl(){
+    free(gradients_);
+    free(hessians_);
+    free(bins);
+}
+
 void DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsBinsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
     indexedValue->index = binIndex;
     bins[binIndex].numExamples++;
