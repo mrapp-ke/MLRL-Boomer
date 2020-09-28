@@ -42,3 +42,11 @@ cdef class ThresholdsFactory:
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
                                     StatisticsProvider statistic_provider)
+
+
+cdef class ExactThresholdsFactory(ThresholdsFactory):
+
+    # Functions:
+
+    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
+                                    StatisticsProvider statistic_provider)
