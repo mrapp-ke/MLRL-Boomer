@@ -40,17 +40,19 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureVector* nominal_feature_vector,
-                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
-                          ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
-                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
-                          RNG* rng, ModelBuilder model_builder):
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractThresholds* thresholds,
+                          INominalFeatureVector* nominal_feature_vector, IFeatureMatrix* feature_matrix,
+                          IHeadRefinement* head_refinement, ILabelSubSampling* label_sub_sampling,
+                          IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
+                          Pruning pruning, PostProcessor post_processor, uint32 min_coverage, intp max_conditions,
+                          intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
+        :param thresholds:              A pointer to an object of type `AbstractThresholds` that provides access to the
+                                        thresholds that may be used by the conditions of rules
         :param nominal_feature_vector:  A pointer to an object of type `INominalFeatureVector` that provides access to
                                         the information whether individual features are nominal or not
         :param feature_matrix:          A pointer to an object of type `IFeatureMatrix` that provides column-wise access
@@ -135,12 +137,12 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureVector* nominal_feature_vector,
-                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
-                          ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
-                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
-                          RNG* rng, ModelBuilder model_builder):
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, AbstractThresholds* thresholds,
+                          INominalFeatureVector* nominal_feature_vector, IFeatureMatrix* feature_matrix,
+                          IHeadRefinement* head_refinement, ILabelSubSampling* label_sub_sampling,
+                          IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
+                          Pruning pruning, PostProcessor post_processor, uint32 min_coverage, intp max_conditions,
+                          intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
@@ -148,7 +150,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # The total number of labels
         cdef uint32 num_labels = statistics.getNumCols()
         # The total number of features
-        cdef uint32 num_features = feature_matrix.getNumCols()
+        cdef uint32 num_features = thresholds.getNumCols()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
         cdef double_linked_list[Condition] conditions
         # The total number of conditions
