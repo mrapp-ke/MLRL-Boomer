@@ -78,6 +78,25 @@ class ISparseVector : virtual public IVector {
 };
 
 /**
+ * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to indices.
+ */
+class IIndexVector : virtual public ISparseVector {
+
+    public:
+
+        virtual ~IIndexVector() { };
+
+        /**
+         * Returns the index at a specific position.
+         *
+         * @param pos   The position of the index. Must be in [0, getNumElements())
+         * @return      The index at the given position
+         */
+        virtual uint32 getIndex(uint32 pos) = 0;
+
+};
+
+/**
  * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to all of their
  * elements, including zero elements that are not explicitly stored in the vector.
  */
@@ -87,6 +106,30 @@ class ISparseRandomAccessVector : virtual public ISparseVector, virtual public I
     public:
 
         virtual ~ISparseRandomAccessVector() { };
+
+};
+
+/**
+ * An one-dimensional vector that provides random access to all indices within a continuous range [0, numIndices).
+ */
+class RangeIndexVector : virtual public IIndexVector {
+
+    private:
+
+        uint32 numIndices_;
+
+    public:
+
+        /**
+         * @param numIndices The number of indices, the vector provides access to. Must be at least 1
+         */
+        RangeIndexVector(uint32 numIndices);
+
+        uint32 getNumElements() override;
+
+        bool hasZeroElements() override;
+
+        uint32 getIndex(uint32 pos) override;
 
 };
 
