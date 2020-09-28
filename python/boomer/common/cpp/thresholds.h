@@ -46,7 +46,7 @@ class IThresholdsSubset {
  */
 class AbstractThresholds : virtual public IMatrix {
 
-    private:
+    protected:
 
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr_;
 
