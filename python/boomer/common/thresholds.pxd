@@ -13,7 +13,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         # Functions:
 
-        IRuleRefinement* createRuleRefinement(uint32 featureIndex)
+        IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions, uint32 totalSumOfWeights)
 
 
     cdef cppclass AbstractThresholds:
