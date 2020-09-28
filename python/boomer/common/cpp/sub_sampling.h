@@ -91,6 +91,42 @@ class EqualWeightVector : virtual public IWeightVector {
 };
 
 /**
+ * An one-dimensional vector that provides random access to a fixed number of indices stored in a C-contiguous array.
+ */
+class DenseIndexVector : virtual public IIndexVector {
+
+    private:
+
+        uint32 numElements_;
+
+        uint32* indices_;
+
+    public:
+
+        /**
+         * @param numElements The number of elements in the vector. Must be at least 1
+         */
+        DenseIndexVector(uint32 numElements);
+
+        ~DenseIndexVector();
+
+        /**
+         * Sets the index at a specific position.
+         *
+         * @param pos   The position of the index. Must be in [0, getNumElements())
+         * @param index The index to be set. Must be at least 0
+         */
+        void setIndex(uint32 pos, uint32 index);
+
+        uint32 getNumElements() override;
+
+        bool hasZeroElements() override;
+
+        uint32 getIndex(uint32 pos) override;
+
+};
+
+/**
  * Defines an interface for all classes that implement a strategy for sub-sampling training examples.
  */
 class IInstanceSubSampling {
