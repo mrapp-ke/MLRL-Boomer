@@ -15,7 +15,7 @@
  */
 static inline IWeightVector* sampleWeightsWithoutReplacementViaTrackingSelection(uint32 numTotal, uint32 numSamples,
                                                                                  RNG* rng) {
-    DenseVector<uint8>* weights = new DenseVector<uint8>(numTotal, true);
+    uint8* weights = new uint8[numTotal]{0};
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -27,10 +27,10 @@ static inline IWeightVector* sampleWeightsWithoutReplacementViaTrackingSelection
             shouldContinue = !selectedIndices.insert(randomIndex).second;
         }
 
-        weights->setValue(randomIndex, 1);
+        weights[randomIndex] = 1;
     }
 
-    return new DenseWeightVector<uint8>(weights, numSamples);
+    return new DenseWeightVector<uint8>(weights, numTotal, numSamples);
 }
 
 /**
@@ -43,7 +43,7 @@ static inline IWeightVector* sampleWeightsWithoutReplacementViaTrackingSelection
  * @return              A pointer to an object of type `IWeightVector` that provides access to the weights
  */
 static inline IWeightVector* sampleWeightsWithoutReplacementViaPool(uint32 numTotal, uint32 numSamples, RNG* rng) {
-    DenseVector<uint8>* weights = new DenseVector<uint8>(numTotal, true);
+    uint8* weights = new uint8[numTotal]{0};
     uint32 pool[numTotal];
 
     // Initialize pool...
@@ -57,13 +57,13 @@ static inline IWeightVector* sampleWeightsWithoutReplacementViaPool(uint32 numTo
         uint32 j = pool[randomIndex];
 
         // Set weight at the selected index to 1...
-        weights->setValue(j, 1);
+        weights[j] = 1;
 
         // Move the index at the border to the position of the recently drawn index...
         pool[randomIndex] = pool[numTotal - i - 1];
     }
 
-    return new DenseWeightVector<uint8>(weights, numSamples);
+    return new DenseWeightVector<uint8>(weights, numTotal, numSamples);
 }
 
 /**
@@ -222,9 +222,10 @@ static inline IIndexVector* sampleIndicesWithoutReplacement(uint32 numTotal, uin
 }
 
 template<class T>
-DenseWeightVector<T>::DenseWeightVector(DenseVector<T>* weights, uint32 sumOfWeights) {
+DenseWeightVector<T>::DenseWeightVector(T* weights, uint32 numElements, uint32 sumOfWeights) {
     weights_ = weights;
-    sumOfWeights = sumOfWeights;
+    numElements_ = numElements;
+    sumOfWeights_ = sumOfWeights;
 }
 
 template<class T>
@@ -234,7 +235,7 @@ DenseWeightVector<T>::~DenseWeightVector() {
 
 template<class T>
 uint32 DenseWeightVector<T>::getNumElements() {
-    return weights_->getNumElements();
+    return numElements_;
 }
 
 template<class T>
@@ -244,7 +245,7 @@ bool DenseWeightVector<T>::hasZeroElements() {
 
 template<class T>
 uint32 DenseWeightVector<T>::getValue(uint32 pos) {
-    return (uint32) weights_->getValue(pos);
+    return (uint32) weights_[pos];
 }
 
 template<class T>
@@ -278,18 +279,17 @@ BaggingImpl::BaggingImpl(float32 sampleSize) {
 
 IWeightVector* BaggingImpl::subSample(uint32 numExamples, RNG* rng) {
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
-    DenseVector<uint32>* weights = new DenseVector<uint32>(numExamples, true);
+    uint32* weights = new uint32[numExamples]{0};
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select the index of an example...
         uint32 randomIndex = rng->random(0, numExamples);
 
         // Update weight at the selected index...
-        uint32 weight = weights->getValue(randomIndex);
-        weights->setValue(randomIndex, weight + 1);
+        weights[randomIndex] += 1;
     }
 
-    return new DenseWeightVector<uint32>(weights, numSamples);
+    return new DenseWeightVector<uint32>(weights, numExamples, numSamples);
 }
 
 RandomInstanceSubsetSelectionImpl::RandomInstanceSubsetSelectionImpl(float32 sampleSize) {

@@ -36,17 +36,21 @@ class DenseWeightVector : virtual public IWeightVector {
 
     private:
 
-        DenseVector<T>* weights_;
+        T* weights_;
+
+        uint32 numElements_;
 
         uint32 sumOfWeights_;
 
     public:
 
         /**
-         * @param weights       A pointer to an object of type `DenseVector<T>` that stores the weights
-         * @param sumOfWeights  The sum of the weights in the given vector
+         * @param weights       A pointer to an array of template type `T`, shape `(numElements)`, that stores the
+         *                      weights
+         * @param numElements   The number of elements in the vector. Must be at least 1
+         * @param sumOfWeights  The sum of the weights in the vector
          */
-        DenseWeightVector(DenseVector<T>* weights, uint32 sumOfWeights);
+        DenseWeightVector(T* weights, uint32 numElements, uint32 sumOfWeights);
 
         ~DenseWeightVector();
 
