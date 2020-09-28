@@ -239,7 +239,7 @@ uint32 DenseWeightVector<T>::getNumElements() {
 
 template<class T>
 bool DenseWeightVector<T>::hasZeroElements() {
-    return false;
+    return true;
 }
 
 template<class T>
