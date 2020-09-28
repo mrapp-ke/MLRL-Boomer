@@ -1,6 +1,22 @@
 #include "data.h"
 
 
+RangeIndexVector::RangeIndexVector(uint32 numIndices) {
+    numIndices_ = numIndices;
+}
+
+uint32 RangeIndexVector::getNumElements() {
+    return numIndices_;
+}
+
+bool RangeIndexVector::hasZeroElements() {
+    return false;
+}
+
+uint32 RangeIndexVector::getIndex(uint32 pos) {
+    return pos;
+}
+
 BinaryDokVector::BinaryDokVector(uint32 numElements) {
     numElements_ = numElements;
 }
