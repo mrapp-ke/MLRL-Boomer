@@ -215,6 +215,12 @@ DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::DenseLabelWiseSt
     Bin* bins = (Bin*)malloc(numBins_ * sizeof(Bin));
 }
 
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::~DenseLabelWiseStatisticsBinsImpl(){
+    free(gradients_);
+    free(hessians_);
+    free(bins);
+}
+
 void DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
     indexedValue->index = binIndex;
     bins[binIndex].numExamples++;

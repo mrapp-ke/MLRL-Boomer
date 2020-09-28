@@ -122,6 +122,8 @@ namespace boosting {
 
                     DenseLabelWiseStatisticsBinsImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
 
+                    ~DenseLabelWiseStatisticsBinsImpl();
+
                     void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
 
                     AbstractStatistics* build();

@@ -140,6 +140,8 @@ namespace boosting {
 
                     DenseExampleWiseStatisticsBinsImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins);
 
+                    ~DenseExampleWiseStatisticsBinsImpl();
+
                     void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
 
                     AbstractStatistics* build();
