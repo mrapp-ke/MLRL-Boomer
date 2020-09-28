@@ -17,31 +17,6 @@ uint32 RangeIndexVector::getIndex(uint32 pos) {
     return pos;
 }
 
-DenseIndexVector::DenseIndexVector(uint32 numElements) {
-    numElements_ = numElements;
-    indices_ = new uint32[numElements];
-}
-
-DenseIndexVector::~DenseIndexVector() {
-    delete[] indices_;
-}
-
-uint32 DenseIndexVector::getNumElements() {
-    return numElements_;
-}
-
-bool DenseIndexVector::hasZeroElements() {
-    return true;
-}
-
-uint32 DenseIndexVector::getIndex(uint32 pos) {
-    return indices_[pos];
-}
-
-void DenseIndexVector::setIndex(uint32 pos, uint32 index) {
-    indices_[pos] = index;
-}
-
 BinaryDokVector::BinaryDokVector(uint32 numElements) {
     numElements_ = numElements;
 }
