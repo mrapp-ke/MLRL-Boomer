@@ -207,12 +207,22 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
                                             currentScores);
 }
 
-void DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::DenseLabelWiseStatisticsBinsImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
+    statistics_ = statistics;
     numBins_ = numBins;
+    float64* gradients_ = (float64*)malloc(numBins_ * sizeof(float64));
+    float64* hessians_ = (float64*)malloc(numBins_ * sizeof(float64));
+    Bin* bins = (Bin*)malloc(numBins_ * sizeof(Bin));
 }
 
 void DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
     indexedValue->index = binIndex;
+    bins[binIndex].numExamples++;
+    if(bins[binIndex].maxValue < indexedValue->value){
+        bins[binIndex].maxValue = indexedValue->value;
+    }else if(indexedValue->value < bins[binIndex].minValue){
+        bins[binIndex].minValue = indexedValue->value;
+    }
 }
 
 AbstractStatistics* DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::build(){

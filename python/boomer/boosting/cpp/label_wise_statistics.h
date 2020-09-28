@@ -116,9 +116,11 @@ namespace boosting {
 
                     float64* hessians_;
 
+                    Bin* bins;
+
                 public:
 
-                    void HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
+                    DenseLabelWiseStatisticsBinsImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
 
                     void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
 
