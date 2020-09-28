@@ -80,6 +80,27 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
     public:
 
         /**
+         * Defines an interface for all callbacks that may be invoked by the class `ExactRuleRefinementImpl` in order to
+         * retrieve the feature values of the training examples for a certain feature.
+         */
+        class ICallback {
+
+            public:
+
+                virtual ~ICallback() { };
+
+                /**
+                 * Returns an array that stores the indices and feature values of the training examples for a certain
+                 * feature, sorted by the feature values.
+                 *
+                 * @return A pointer to a struct of type `IndexedFloat32Array` that stores the indices and feature
+                 *         values
+                 */
+                virtual IndexedFloat32Array* getSortedFeatureValues() = 0;
+
+        };
+
+        /**
          * @param statistics            A pointer to an object of type `AbstractStatistics` that provides access to the
          *                              statistics which serve as the basis for evaluating the potential refinements of
          *                              rules
