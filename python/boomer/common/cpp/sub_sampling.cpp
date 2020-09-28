@@ -159,20 +159,39 @@ static inline IIndexVector* sampleIndicesWithoutReplacementViaReservoirSampling(
  */
 static inline IIndexVector* sampleIndicesWithoutReplacementViaRandomPermutation(uint32 numTotal, uint32 numSamples,
                                                                                 RNG* rng) {
-    uint32* indices = new uint32[numTotal];
+    uint32* indices = new uint32[numSamples];
+    uint32* unusedIndices = new uint32[numTotal - numSamples];
 
-    for (uint32 i = 0; i < numTotal; i++) {
+    for (uint32 i = 0; i < numSamples; i++) {
         indices[i] = i;
+    }
+
+    for (uint32 i = numSamples; i < numTotal; i++) {
+        unusedIndices[i - numSamples] = i;
     }
 
     for (uint32 i = 0; i < numTotal - 2; i++) {
         // Swap elements at index i and at a randomly selected index...
         uint32 randomIndex = rng->random(i, numTotal);
-        uint32 tmp = indices[i];
-        indices[i] = indices[randomIndex];
-        indices[randomIndex] = tmp;
+        uint32 tmp1 = i < numSamples ? indices[i] : unusedIndices[i - numSamples];
+        uint32 tmp2;
+
+        if (randomIndex < numSamples) {
+            tmp2 = indices[randomIndex];
+            indices[randomIndex] = tmp1;
+        } else {
+            tmp2 = unusedIndices[randomIndex - numSamples];
+            unusedIndices[randomIndex - numSamples] = tmp1;
+        }
+
+        if (i < numSamples) {
+            indices[i] = tmp2;
+        } else {
+            unusedIndices[i - numSamples] = tmp2;
+        }
     }
 
+    delete[] unusedIndices;
     return new DenseIndexVector(indices, numSamples);
 }
 
