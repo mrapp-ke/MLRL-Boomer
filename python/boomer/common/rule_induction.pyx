@@ -237,13 +237,14 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     current_rule_refinement = rule_refinements[f]
-                    del current_rule_refinement
+                    # TODO current_rule_refinement.findRefinement(head_refinement, best_refinement.head, num_predictions, label_indices)
                     nominal = nominal_feature_vector.getValue(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices,
                                                            weights_ptr.get(), total_sum_of_weights, cache_global,
                                                            cache_local, feature_matrix, covered_statistics_mask,
                                                            covered_statistics_target, num_conditions, statistics,
                                                            head_refinement, best_refinement.head)
+                    del current_rule_refinement
 
                     with gil:
                         refinements[f] = current_refinement
