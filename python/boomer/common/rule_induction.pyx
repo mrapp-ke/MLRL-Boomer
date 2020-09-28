@@ -159,6 +159,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # An array representing the number of conditions per type of operator
         cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
         num_conditions_per_comparator[:] = 0
+        # A map that stores a pointer to an object of type `IRuleRefinement` for each feature
+        cdef unordered_map[uint32, IRuleRefinement*] rule_refinements  # Stack-allocated map
         # A map that stores the best refinement for each feature
         cdef unordered_map[uint32, Refinement] refinements  # Stack-allocated map
         # The best refinement of the current rule
@@ -183,6 +185,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
         cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
+        cdef IRuleRefinement* current_rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_sampled_features, weight, f, r
@@ -223,14 +226,18 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 sampled_feature_indices_ptr.reset(feature_sub_sampling.subSample(num_features, rng))
                 num_sampled_features = sampled_feature_indices_ptr.get().getNumElements()
 
-                # For each feature, update the caches `cache_global` and 'cache_local`, if necessary...
+                # For each feature, create an object of type `IRuleRefinement` and put it into `rule_refinements`...
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
+                    rule_refinements[f] = thresholds_subset_ptr.get().createRuleRefinement(f, num_conditions,
+                                                                                           total_sum_of_weights)
                     __update_caches(f, cache_global, cache_local)
 
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
+                    current_rule_refinement = rule_refinements[f]
+                    del current_rule_refinement
                     nominal = nominal_feature_vector.getValue(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices,
                                                            weights_ptr.get(), total_sum_of_weights, cache_global,
