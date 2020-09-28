@@ -10,6 +10,7 @@ from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement, ExactRuleRefinementImpl
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
+from boomer.common.thresholds cimport IThresholdsSubset
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -199,6 +200,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         for r in range(num_statistics):
             weight = weights_ptr.get().getValue(r)
             statistics.addSampledStatistic(r, weight)
+
+        # Create a new subset of the given thresholds...
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr
+        thresholds_subset_ptr.reset(thresholds.createSubset(weights_ptr.get()))
 
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] sampled_label_indices_ptr
