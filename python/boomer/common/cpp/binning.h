@@ -58,7 +58,7 @@ class IHistogramBuilder : virtual public IBinningObserver {
 
     public:
 
-        virtual AbstractStatistics* buildHistogram() = 0;
+        virtual AbstractStatistics* build() = 0;
 
 };
 
