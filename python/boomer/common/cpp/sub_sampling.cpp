@@ -167,27 +167,27 @@ static inline IIndexVector* sampleIndicesWithoutReplacementViaRandomPermutation(
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
-        unusedIndices[i] = i;
+        unusedIndices[i - numSamples] = i;
     }
 
     for (uint32 i = 0; i < numTotal - 2; i++) {
         // Swap elements at index i and at a randomly selected index...
         uint32 randomIndex = rng->random(i, numTotal);
-        uint32 tmp1 = randomIndex < numSamples ? indices->getIndex(randomIndex) : unusedIndices[randomIndex];
+        uint32 tmp1 = i < numSamples ? indices->getIndex(i) : unusedIndices[i - numSamples];
         uint32 tmp2;
 
-        if (i < numSamples) {
-            tmp2 = indices->getIndex(i);
-            indices->setIndex(i, tmp1);
+        if (randomIndex < numSamples) {
+            tmp2 = indices->getIndex(randomIndex);
+            indices->setIndex(randomIndex, tmp1);
         } else {
-            tmp2 = unusedIndices[i];
-            unusedIndices[i] = tmp1;
+            tmp2 = unusedIndices[randomIndex - numSamples];
+            unusedIndices[randomIndex - numSamples] = tmp1;
         }
 
-        if (randomIndex < numSamples) {
-            indices->setIndex(randomIndex, tmp2);
+        if (i < numSamples) {
+            indices->setIndex(i, tmp2);
         } else {
-            unusedIndices[randomIndex] = tmp2;
+            unusedIndices[i - numSamples] = tmp2;
         }
     }
 
