@@ -290,8 +290,8 @@ void DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 bi
     uint32 numLabels = statistics_->getNumCols();
     uint32 index = indexedValue->index;
     for(int i = 0; i <= numLabels; i++){
-        float64 gradient = statistics_->gradients_[i];  //TODO: Offset
-        float64 hessian = statistics_->hessians_[i];    //TODO: Offset
+        float64 gradient = statistics_->gradients_[(((index - 1) * numLabels) + i)];
+        float64 hessian = statistics_->hessians_[(((index - 1) * numLabels) + i)];
         gradients_[((binIndex * numLabels) + i)] += gradient;
         hessians_[((binIndex * linalg::triangularNumber(numLabels)) + i)] += hessian;
     }
