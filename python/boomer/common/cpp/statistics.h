@@ -2,6 +2,7 @@
  * Implements classes that provide access to statistics about the labels of training examples.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
