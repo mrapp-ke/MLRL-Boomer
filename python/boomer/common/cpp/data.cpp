@@ -1,6 +1,42 @@
 #include "data.h"
 
 
+RangeIndexVector::RangeIndexVector(uint32 numIndices) {
+    numIndices_ = numIndices;
+}
+
+uint32 RangeIndexVector::getNumElements() {
+    return numIndices_;
+}
+
+bool RangeIndexVector::hasZeroElements() {
+    return false;
+}
+
+uint32 RangeIndexVector::getIndex(uint32 pos) {
+    return pos;
+}
+
+BinaryDokVector::BinaryDokVector(uint32 numElements) {
+    numElements_ = numElements;
+}
+
+uint32 BinaryDokVector::getNumElements() {
+    return numElements_;
+}
+
+bool BinaryDokVector::hasZeroElements() {
+    return data_.size() < numElements_;
+}
+
+uint8 BinaryDokVector::getValue(uint32 pos) {
+    return data_.find(pos) != data_.end();
+}
+
+void BinaryDokVector::setValue(uint32 pos) {
+    data_.insert(pos);
+}
+
 BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols) {
     numRows_ = numRows;
     numCols_ = numCols;
@@ -14,26 +50,10 @@ uint32 BinaryDokMatrix::getNumCols() {
     return numCols_;
 }
 
-void BinaryDokMatrix::set(uint32 row, uint32 column) {
-    data_.insert(std::make_pair(row, column));
-}
-
-uint8 BinaryDokMatrix::get(uint32 row, uint32 column) {
+uint8 BinaryDokMatrix::getValue(uint32 row, uint32 column) {
     return data_.find(std::make_pair(row, column)) != data_.end();
 }
 
-BinaryDokVector::BinaryDokVector(uint32 numElements) {
-    numElements_ = numElements;
-}
-
-uint32 BinaryDokVector::getNumElements() {
-    return numElements_;
-}
-
-void BinaryDokVector::set(uint32 pos) {
-    data_.insert(pos);
-}
-
-uint8 BinaryDokVector::get(uint32 pos) {
-    return data_.find(pos) != data_.end();
+void BinaryDokMatrix::setValue(uint32 row, uint32 column) {
+    data_.insert(std::make_pair(row, column));
 }

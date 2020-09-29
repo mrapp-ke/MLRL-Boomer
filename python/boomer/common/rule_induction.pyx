@@ -9,6 +9,7 @@ from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement, ExactRuleRefinementImpl
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
+from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -39,29 +40,29 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureSet* nominal_feature_set,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureVector* nominal_feature_vector,
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
-                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
-                          ModelBuilder model_builder):
+                          ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
+                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
+                          RNG* rng, ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
         :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
                                         as the basis for inducing the new rule
-        :param nominal_feature_set:     A pointer to an object of type `INominalFeatureSet` that allows to check whether
-                                        individual features are nominal or not
+        :param nominal_feature_vector:  A pointer to an object of type `INominalFeatureVector` that provides access to
+                                        the information whether individual features are nominal or not
         :param feature_matrix:          A pointer to an object of type `IFeatureMatrix` that provides column-wise access
                                         to the feature values of the training examples
         :param head_refinement:         A pointer to an object of type `IHeadRefinement` that should be used to find the
                                         head of the rule
-        :param label_sub_sampling:      The strategy that should be used to sub-sample the labels or None, if no label
-                                        sub-sampling should be used
-        :param instance_sub_sampling:   The strategy that should be used to sub-sample the training examples or None, if
-                                        no instance sub-sampling should be used
-        :param feature_sub_sampling:    The strategy that should be used to sub-sample the available features or None,
-                                        if no feature sub-sampling should be used
+        :param label_sub_sampling:      A pointer to an object of type `ILabelSubSampling`, implementing the strategy
+                                        that should be used to sub-sample the labels
+        :param instance_sub_sampling:   A pointer to an object of type `IInstanceSubSampling`, implementing the strategy
+                                        that should be used to sub-sample the training examples
+        :param feature_sub_sampling:    A pointer to an object of type `IFeatureSubSampling`, implementing the strategy
+                                        that should be used to sub-sample the available features
         :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
                                         used
         :param post_processor:          The post-processor that should be used to post-process the rule once it has been
@@ -75,7 +76,8 @@ cdef class RuleInduction:
                                         refinements should not be restricted
         :param num_threads:             The number of threads to be used for evaluating the potential refinements of the
                                         rule in parallel. Must be at least 1
-        :param rng:                     The random number generator to be used
+        :param rng:                     A pointer to an object of type `RNG`, implementing the random number generator
+                                        to be used
         :param model_builder:           The builder, the rule should be added to
         :return:                        1, if a rule has been induced, 0 otherwise
         """
@@ -133,12 +135,12 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureSet* nominal_feature_set,
+    cdef bint induce_rule(self, StatisticsProvider statistics_provider, INominalFeatureVector* nominal_feature_vector,
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
-                          LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
-                          FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads, RNG rng,
-                          ModelBuilder model_builder):
+                          ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
+                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
+                          RNG* rng, ModelBuilder model_builder):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
@@ -177,45 +179,32 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper
         cdef IndexedFloat32Array* indexed_array
         cdef IndexedFloat32* indexed_values
+        cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
         cdef Refinement current_refinement
-        cdef uint32[::1] sampled_feature_indices
+        cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_sampled_features, weight, f, r
         cdef bint nominal
         cdef intp c
 
-        # Sub-sample examples, if necessary...
-        cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
-        cdef uint32[::1] weights
-        cdef uint32 total_sum_of_weights
-
-        if instance_sub_sampling is None:
-            weights = None
-            total_sum_of_weights = num_statistics
-        else:
-            uint32_array_scalar_pair = instance_sub_sampling.sub_sample(num_statistics, rng)
-            weights = uint32_array_scalar_pair.first
-            total_sum_of_weights = uint32_array_scalar_pair.second
+        # Sub-sample examples...
+        cdef unique_ptr[IWeightVector] weights_ptr
+        weights_ptr.reset(instance_sub_sampling.subSample(num_statistics, rng))
+        cdef uint32 total_sum_of_weights = weights_ptr.get().getSumOfWeights()
 
         # Notify the statistics about the examples that are included in the sub-sample...
         statistics.resetSampledStatistics()
 
         for r in range(num_statistics):
-            weight = 1 if weights is None else weights[r]
+            weight = weights_ptr.get().getValue(r)
             statistics.addSampledStatistic(r, weight)
 
-        # Sub-sample labels, if necessary...
-        cdef uint32[::1] sampled_label_indices
-        cdef const uint32* label_indices
-        cdef uint32 num_predictions
-
-        if label_sub_sampling is None:
-            sampled_label_indices = None
-            label_indices = <const uint32*>NULL
-            num_predictions = 0
-        else:
-            sampled_label_indices = label_sub_sampling.sub_sample(num_labels, rng)
-            label_indices = &sampled_label_indices[0]
-            num_predictions = sampled_label_indices.shape[0]
+        # Sub-sample labels...
+        cdef unique_ptr[IIndexVector] sampled_label_indices_ptr
+        sampled_label_indices_ptr.reset(label_sub_sampling.subSample(num_labels, rng))
+        # TODO Reactivate label sampling
+        # cdef IIndexVector* label_indices = sampled_label_indices_ptr.get()
+        cdef const uint32* label_indices = <const uint32*>NULL
+        cdef uint32 num_predictions = 0
 
         try:
             # Search for the best refinement until no improvement in terms of the rule's quality score is possible
@@ -223,26 +212,22 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             while found_refinement and (max_conditions == -1 or num_conditions < max_conditions):
                 found_refinement = False
 
-                # Sub-sample features, if necessary...
-                if feature_sub_sampling is None:
-                    sampled_feature_indices = None
-                    num_sampled_features = num_features
-                else:
-                    sampled_feature_indices = feature_sub_sampling.sub_sample(num_features, rng)
-                    num_sampled_features = sampled_feature_indices.shape[0]
+                # Sub-sample features...
+                sampled_feature_indices_ptr.reset(feature_sub_sampling.subSample(num_features, rng))
+                num_sampled_features = sampled_feature_indices_ptr.get().getNumElements()
 
                 # For each feature, update the caches `cache_global` and 'cache_local`, if necessary...
                 for c in range(num_sampled_features):
-                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     __update_caches(f, cache_global, cache_local)
 
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
-                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
-                    nominal = nominal_feature_set.get(f)
-                    current_refinement = __find_refinement(f, nominal, num_predictions, label_indices, weights,
-                                                           total_sum_of_weights, cache_global, cache_local,
-                                                           feature_matrix, covered_statistics_mask,
+                    f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
+                    nominal = nominal_feature_vector.getValue(f)
+                    current_refinement = __find_refinement(f, nominal, num_predictions, label_indices,
+                                                           weights_ptr.get(), total_sum_of_weights, cache_global,
+                                                           cache_local, feature_matrix, covered_statistics_mask,
                                                            covered_statistics_target, num_conditions, statistics,
                                                            head_refinement, best_refinement.head)
 
@@ -251,7 +236,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
-                    f = <uint32>c if sampled_feature_indices is None else sampled_feature_indices[c]
+                    f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     current_refinement = refinements[f]
 
                     if current_refinement.head != NULL and (best_refinement.head == NULL
@@ -284,7 +269,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     # the covered from the uncovered examples. However, when taking into account the examples that are
                     # not contained in the sub-sample, this position may differ from the current value of
                     # `best_refinement.end` and therefore must be adjusted...
-                    if weights is not None and abs(best_refinement.previous - best_refinement.end) > 1:
+                    if weights_ptr.get().hasZeroElements() and abs(best_refinement.previous - best_refinement.end) > 1:
                         best_refinement.end = __adjust_split(best_refinement.indexedArray, best_refinement.end,
                                                              best_refinement.previous, best_refinement.threshold)
 
@@ -295,7 +280,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                                                                          best_refinement.comparator,
                                                                          best_refinement.covered, num_conditions,
                                                                          covered_statistics_mask,
-                                                                         covered_statistics_target, statistics, weights)
+                                                                         covered_statistics_target, statistics,
+                                                                         weights_ptr.get())
                     total_sum_of_weights = best_refinement.coveredWeights
 
                     if total_sum_of_weights <= min_coverage:
@@ -307,12 +293,12 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # all features are constant.
                 return False
             else:
-                if weights is not None:
+                if weights_ptr.get().hasZeroElements():
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                     if pruning is not None and num_conditions > 1:
                         uint32_array_scalar_pair = pruning.prune(cache_global, conditions, best_refinement.head,
                                                                  covered_statistics_mask, covered_statistics_target,
-                                                                 weights, statistics, head_refinement)
+                                                                 weights_ptr.get(), statistics, head_refinement)
                         covered_statistics_mask = uint32_array_scalar_pair.first
                         covered_statistics_target = uint32_array_scalar_pair.second
 
@@ -389,7 +375,7 @@ cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFlo
 
 
 cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num_label_indices,
-                                  const uint32* label_indices, uint32[::1] weights, uint32 total_sum_of_weights,
+                                  const uint32* label_indices, IWeightVector* weights, uint32 total_sum_of_weights,
                                   unordered_map[uint32, IndexedFloat32Array*]* cache_global,
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                   IFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
@@ -406,9 +392,9 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     :param num_label_indices:           The number of elements in the array `label_indices`
     :param label_indices:               A pointer to an array of type `uint32`, shape `(num_predictions)`, representing
                                         the indices of the labels for which the refined rule may predict
-    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
-                                        the training examples or None, if all training examples are weighed equally
-    :param total_sum_of_weights:        The sum of the weights of all training examples
+    :param weights:                     A pointer to an object of type `IWeightVector` that provides access to the
+                                        weights of the training examples
+    :param total_sum_of_weights:        The sum of the weights of all covered training examples
     :param cache_global:                A pointer to a map that maps feature indices to structs of type
                                         `IndexedFloat32Array`, storing the indices of all training examples, as well as
                                         their values for the respective feature, sorted in ascending order by the
@@ -454,9 +440,8 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
         indexed_array = indexed_array_wrapper.array
 
     # Find and return the best refinement...
-    cdef const uint32* weights_ptr = <const uint32*>NULL if weights is None else &weights[0]
     cdef unique_ptr[IRuleRefinement] rule_refinement_ptr
-    rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array_wrapper, indexed_array, weights_ptr,
+    rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array_wrapper, indexed_array, weights,
                                                           total_sum_of_weights, feature_index, nominal))
     return rule_refinement_ptr.get().findRefinement(head_refinement, head, num_label_indices, label_indices)
 
@@ -517,7 +502,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
                                             intp condition_end, Comparator condition_comparator, bint covered,
                                             uint32 num_conditions, uint32[::1] covered_statistics_mask,
                                             uint32 covered_statistics_target, AbstractStatistics* statistics,
-                                            uint32[::1] weights):
+                                            IWeightVector* weights):
     """
     Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
     values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
@@ -546,8 +531,8 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
     :param statistics:                  A pointer to an object of type `AbstractStatistics` to be notified about the
                                         examples that must be considered when searching for the next refinement, i.e.,
                                         the examples that are covered by the new rule
-    :param weights:                     An array of type `uint32`, shape `(num_statistics)`, representing the weights of
-                                        the training examples
+    :param weights:                     A pointer to an an object of type `IWeightVector` that provides access to the
+                                        weights of the training examples
     :return:                            The value that is used to mark those elements in the updated
                                         `covered_statistics_mask` that are covered by the new rule
     """
@@ -590,7 +575,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
             covered_statistics_mask[index] = num_conditions
             filtered_array[i].index = index
             filtered_array[i].value = indexed_values[r].value
-            weight = 1 if weights is None else weights[index]
+            weight = weights.getValue(index)
             statistics.updateCoveredStatistic(index, weight, False)
             i += direction
     else:
@@ -622,7 +607,7 @@ cdef inline uint32 __filter_current_indices(IndexedFloat32Array* indexed_array,
             r = condition_start + (j * direction)
             index = indexed_values[r].index
             covered_statistics_mask[index] = num_conditions
-            weight = 1 if weights is None else weights[index]
+            weight = weights.getValue(index)
             statistics.updateCoveredStatistic(index, weight, True)
 
         # Retain the indices at positions [condition_end, end), while leaving the corresponding values in

@@ -12,15 +12,18 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix, DenseFeatureMatrix, CscFeatureMatrix, \
-    DokNominalFeatureSet
+from boomer.common.input_data import DenseFeatureMatrix, CscFeatureMatrix
+from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
+from boomer.common.input_data import DokNominalFeatureVector
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
 from boomer.common.rules import ModelBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
-from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, InstanceSubSampling, Bagging, \
-    RandomInstanceSubsetSelection, LabelSubSampling, RandomLabelSubsetSelection
+from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
+from boomer.common.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
+    NoInstanceSubSampling
+from boomer.common.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
@@ -60,7 +63,7 @@ def create_sparse_policy(policy: str) -> SparsePolicy:
 
 def create_label_sub_sampling(label_sub_sampling: str, num_labels: int) -> LabelSubSampling:
     if label_sub_sampling is None:
-        return None
+        return NoLabelSubSampling()
     else:
         prefix, args = parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
 
@@ -72,7 +75,7 @@ def create_label_sub_sampling(label_sub_sampling: str, num_labels: int) -> Label
 
 def create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampling:
     if instance_sub_sampling is None:
-        return None
+        return NoInstanceSubSampling()
     else:
         prefix, args = parse_prefix_and_dict(instance_sub_sampling,
                                              [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
@@ -88,7 +91,7 @@ def create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampl
 
 def create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling:
     if feature_sub_sampling is None:
-        return None
+        return NoFeatureSubSampling()
     else:
         prefix, args = parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SUB_SAMPLING_RANDOM])
 
@@ -297,11 +300,11 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         self.num_labels_ = num_labels
 
         # Induce rules...
-        nominal_feature_set = DokNominalFeatureSet(self.nominal_attribute_indices)
+        nominal_features = DokNominalFeatureVector(self.nominal_attribute_indices)
         sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
         model_builder = self._create_model_builder()
-        return sequential_rule_induction.induce_rules(nominal_feature_set, feature_matrix, label_matrix,
-                                                      self.random_state, model_builder)
+        return sequential_rule_induction.induce_rules(nominal_features, feature_matrix, label_matrix, self.random_state,
+                                                      model_builder)
 
     def _predict(self, x):
         sparse_format = 'csr'

@@ -1,4 +1,5 @@
 #include "input_data.h"
+#include<stdlib.h>
 
 
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) {
@@ -15,25 +16,29 @@ uint32 DenseLabelMatrixImpl::getNumCols() {
     return numLabels_;
 }
 
-uint8 DenseLabelMatrixImpl::get(uint32 row, uint32 col) {
+uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) {
     uint32 i = (row * this->getNumCols()) + col;
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatrixPtr) {
-    dokMatrixPtr_ = dokMatrixPtr;
+DokLabelMatrixImpl::DokLabelMatrixImpl(BinaryDokMatrix* matrix) {
+    matrix_ = matrix;
+}
+
+DokLabelMatrixImpl::~DokLabelMatrixImpl() {
+    delete matrix_;
 }
 
 uint32 DokLabelMatrixImpl::getNumRows() {
-    return dokMatrixPtr_.get()->getNumRows();
+    return matrix_->getNumRows();
 }
 
 uint32 DokLabelMatrixImpl::getNumCols() {
-    return dokMatrixPtr_.get()->getNumCols();
+    return matrix_->getNumCols();
 }
 
-uint8 DokLabelMatrixImpl::get(uint32 row, uint32 col) {
-    return dokMatrixPtr_.get()->get(row, col);
+uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) {
+    return matrix_->getValue(row, col);
 }
 
 DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
@@ -117,14 +122,22 @@ void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Indexed
     indexedArray->data = sortedArray;
 }
 
-DokNominalFeatureSetImpl::DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr) {
-    dokVectorPtr_ = dokVectorPtr;
+DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(BinaryDokVector* vector) {
+    vector_ = vector;
 }
 
-uint8 DokNominalFeatureSetImpl::get(uint32 pos) {
-    return dokVectorPtr_.get()->get(pos);
+DokNominalFeatureVectorImpl::~DokNominalFeatureVectorImpl() {
+    delete vector_;
 }
 
-uint32 DokNominalFeatureSetImpl::getNumElements() {
-    return dokVectorPtr_.get()->getNumElements();
+uint32 DokNominalFeatureVectorImpl::getNumElements() {
+    return vector_->getNumElements();
+}
+
+bool DokNominalFeatureVectorImpl::hasZeroElements() {
+    return vector_->hasZeroElements();
+}
+
+uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
+    return vector_->getValue(pos);
 }
