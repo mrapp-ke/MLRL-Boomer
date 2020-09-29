@@ -221,7 +221,14 @@ DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::~HistogramBuilderImpl(){
 }
 
 void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
-
+    uint32 numLabels = statistics_->getNumCols();
+    uint32 index = indexedValue->index;
+    for(int i = 0; i <= numLabels; i++){
+        float64 gradient = statistics_->gradients_[i];  //TODO: Offset
+        float64 hessian = statistics_->hessians_[i];    //TODO: Offset
+        gradients_[((binIndex * numLabels) + i)] += gradient;
+        hessians_[((binIndex * numLabels) + i)] += hessian;
+    }
 }
 
 AbstractStatistics* DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build(){
