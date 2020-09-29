@@ -104,6 +104,10 @@ namespace boosting {
 
             };
 
+            /**
+             * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the
+             * class `DenseLabelWiseStatisticsImpl`.
+             */
             class HistogramBuilderImpl : virtual public AbstractStatistics::IHistogramBuilder {
 
                 private:
@@ -118,6 +122,11 @@ namespace boosting {
 
                 public:
 
+                    /**
+                     * @param statistics    A pointer to an object of type `DenseLabelWiseStatisticsImpl` that stores
+                     *                      the gradients and Hessians
+                     * @param numBins       The number of bins, the histogram should consist of
+                     */
                     HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
 
                     void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
