@@ -100,7 +100,42 @@ IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
 
     // Filter indices, if only a subset of the contained examples is covered...
     if (numConditions_ > indexedArrayWrapper->numConditions) {
-       // TODO
+        IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
+        IndexedFloat32* filteredArray = filteredIndexedArray == NULL ? NULL : filteredIndexedArray->data;
+        uint32 maxElements = indexedArray->numElements;
+        uint32 i = 0;
+
+        if (maxElements > 0) {
+            if (filteredArray == NULL) {
+                filteredArray = (IndexedFloat32*) malloc(maxElements * sizeof(IndexedFloat32));
+            }
+
+            for (uint32 r = 0; r < maxElements; r++) {
+                uint32 index = indexedValues[r].index;
+
+                if (coveredStatisticsMask_[index] == coveredStatisticsTarget_) {
+                    filteredArray[i].index = index;
+                    filteredArray[i].value = indexedValues[r].value;
+                    i++;
+                }
+            }
+        }
+
+        if (i == 0) {
+            free(filteredArray);
+            filteredArray = NULL;
+        } else if (i < maxElements) {
+            filteredArray = (IndexedFloat32*) realloc(filteredArray, i * sizeof(IndexedFloat32));
+        }
+
+        if (filteredIndexedArray == NULL) {
+            filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+        }
+
+        filteredIndexedArray->data = filteredArray;
+        filteredIndexedArray->numElements = i;
+        indexedArrayWrapper->array = filteredIndexedArray;
+        indexedArrayWrapper->numConditions = numConditions_;
     }
 
     return indexedArray;
