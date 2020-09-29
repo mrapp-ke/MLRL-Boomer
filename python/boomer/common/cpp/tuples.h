@@ -2,6 +2,7 @@
  * Provides type definitions of tuples, as well as corresponding utility functions.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
@@ -46,6 +47,14 @@ struct IndexedFloat64 {
     float64 value;
 };
 
+/**
+ *  A struct that stores all necessary information of a group of examples to calculate thresholds.
+ */
+struct Bin {
+    uint32 numExamples;
+    float32 minValue;
+    float32 maxValue;
+};
 
 namespace tuples {
 
