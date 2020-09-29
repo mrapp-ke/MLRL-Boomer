@@ -2,6 +2,7 @@
  * Provides type definitions of tuples, as well as corresponding utility functions.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
