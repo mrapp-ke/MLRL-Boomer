@@ -8,7 +8,6 @@
 
 #include "../../common/cpp/arrays.h"
 #include "../../common/cpp/statistics.h"
-#include "../../common/cpp/binning.h"
 #include "example_wise_rule_evaluation.h"
 #include "example_wise_losses.h"
 #include "statistics.h"
@@ -138,8 +137,6 @@ namespace boosting {
 
                     HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins);
 
-                    ~HistogramBuilderImpl();
-
                     void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
 
                     AbstractStatistics* build() override;
@@ -196,6 +193,8 @@ namespace boosting {
             IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
+
+            IHistogramBuilder* buildHistogram(uint32 numBins) override;
 
     };
 

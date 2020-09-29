@@ -155,6 +155,19 @@ class AbstractStatistics : virtual public IMatrix {
     public:
 
         /**
+        *  Defines an Interface for methods, which generate histograms, for bins.
+        */
+        class IHistogramBuilder : virtual public IBinningObserver {
+
+            public:
+
+                virtual ~IHistogramBuilder() { };
+
+                virtual AbstractStatistics* build() = 0;
+
+        };
+
+        /**
          * @param numStatistics The number of statistics
          */
         AbstractStatistics(uint32 numStatistics, uint32 numLabels);
@@ -253,22 +266,10 @@ class AbstractStatistics : virtual public IMatrix {
          */
         virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction) = 0;
 
+        virtual IHistogramBuilder* buildHistogram(uint32 numBins) = 0;
+
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
-
-};
-
-
-/**
- *  Defines an Interface for methods, which generate histograms, for bins.
- */
-class IHistogramBuilder : virtual public IBinningObserver {
-
-    public:
-
-        virtual ~IHistogramBuilder() { };
-
-        virtual AbstractStatistics* build() = 0;
 
 };

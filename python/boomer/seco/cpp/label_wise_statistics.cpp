@@ -205,6 +205,10 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
     }
 }
 
+AbstractStatistics::IHistogramBuilder* DenseLabelWiseStatisticsImpl::buildHistogram(uint32 numBins){
+    return NULL;    //TODO
+}
+
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
