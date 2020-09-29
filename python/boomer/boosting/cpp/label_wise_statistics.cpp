@@ -224,8 +224,8 @@ void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binI
     uint32 numLabels = statistics_->getNumCols();
     uint32 index = indexedValue->index;
     for(int i = 0; i <= numLabels; i++){
-        float64 gradient = statistics_->gradients_[(((index - 1) * numLabels) + i)];
-        float64 hessian = statistics_->hessians_[(((index - 1) * numLabels) + i)];
+        float64 gradient = statistics_->gradients_[((index * numLabels) + i)];
+        float64 hessian = statistics_->hessians_[((index * numLabels) + i)];
         gradients_[((binIndex * numLabels) + i)] += gradient;
         hessians_[((binIndex * numLabels) + i)] += hessian;
     }
