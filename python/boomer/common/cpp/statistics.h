@@ -156,14 +156,21 @@ class AbstractStatistics : virtual public IMatrix {
     public:
 
         /**
-        *  Defines an Interface for methods, which generate histograms, for bins.
-        */
+         * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
+         * correspond to the same bins.
+         */
         class IHistogramBuilder : virtual public IBinningObserver {
 
             public:
 
                 virtual ~IHistogramBuilder() { };
 
+                /**
+                 * Creates and returns a new instance of the class `AbstractStatistics` that stores the histogram that
+                 * has been built.
+                 *
+                 * @return A pointer to an object of type `AbstractStatistics` that has been created
+                 */
                 virtual AbstractStatistics* build() = 0;
 
         };
@@ -267,6 +274,12 @@ class AbstractStatistics : virtual public IMatrix {
          */
         virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction) = 0;
 
+        /**
+         * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on
+         * the statistics.
+         *
+         * @return A pointer to an object of type `IHistogramBuilder` that has been created
+         */
         virtual IHistogramBuilder* buildHistogram(uint32 numBins) = 0;
 
         uint32 getNumRows() override;
