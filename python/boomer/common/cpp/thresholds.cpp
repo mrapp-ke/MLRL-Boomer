@@ -72,8 +72,11 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
-        ThresholdsSubsetImpl* thresholdsSubset, uint32 numConditions, uint32 featureIndex) {
+        ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredStatisticsMask, uint32 coveredStatisticsTarget,
+        uint32 numConditions, uint32 featureIndex) {
     thresholdsSubset_ = thresholdsSubset;
+    coveredStatisticsMask_ = coveredStatisticsMask;
+    coveredStatisticsTarget_ = coveredStatisticsTarget;
     numConditions_ = numConditions;
     featureIndex_ = featureIndex;
 }
