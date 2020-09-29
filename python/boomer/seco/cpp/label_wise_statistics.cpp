@@ -205,7 +205,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
     }
 }
 
-AbstractStatistics::IHistogramBuilder* DenseLabelWiseStatisticsImpl::buildHistogram(uint32 numBins){
+AbstractStatistics::IHistogramBuilder* DenseLabelWiseStatisticsImpl::buildHistogram(uint32 numBins) {
     return NULL;    //TODO
 }
 
