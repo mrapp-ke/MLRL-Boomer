@@ -7,7 +7,6 @@
 #pragma once
 
 #include "arrays.h"
-#include "statistics.h"
 #include "tuples.h"
 
 
@@ -48,17 +47,6 @@ class IBinning {
          * @param observer      The `IBinningObserver` who is notified, when new results are available
          */
         virtual void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) = 0;
-
-};
-
-/**
- *  Defines an Interface for methods, which generate histograms, for bins.
- */
-class IHistogramBuilder : virtual public IBinningObserver {
-
-    public:
-
-        virtual AbstractStatistics* build() = 0;
 
 };
 

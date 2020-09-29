@@ -8,6 +8,7 @@
 #include "arrays.h"
 #include "predictions.h"
 #include "data.h"
+#include "binning.h"
 #include <memory>
 
 
@@ -255,5 +256,19 @@ class AbstractStatistics : virtual public IMatrix {
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
+
+};
+
+
+/**
+ *  Defines an Interface for methods, which generate histograms, for bins.
+ */
+class IHistogramBuilder : virtual public IBinningObserver {
+
+    public:
+
+        virtual ~IHistogramBuilder() { };
+
+        virtual AbstractStatistics* build() = 0;
 
 };
