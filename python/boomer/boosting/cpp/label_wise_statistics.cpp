@@ -207,30 +207,22 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
                                             currentScores);
 }
 
-DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::DenseLabelWiseStatisticsBinsImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
+DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
     statistics_ = statistics;
     numBins_ = numBins;
     float64* gradients_ = (float64*)calloc(numBins_, sizeof(float64));
     float64* hessians_ = (float64*)calloc(numBins_, sizeof(float64));
-    Bin* bins = (Bin*)malloc(numBins_ * sizeof(Bin));
 }
 
-DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::~DenseLabelWiseStatisticsBinsImpl(){
+DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::~HistogramBuilderImpl(){
     free(gradients_);
     free(hessians_);
-    free(bins);
 }
 
-void DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
-    indexedValue->index = binIndex;
-    bins[binIndex].numExamples++;
-    if(bins[binIndex].maxValue < indexedValue->value){
-        bins[binIndex].maxValue = indexedValue->value;
-    }else if(indexedValue->value < bins[binIndex].minValue){
-        bins[binIndex].minValue = indexedValue->value;
-    }
+void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
+
 }
 
-AbstractStatistics* DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsBinsImpl::build(){
+AbstractStatistics* DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build(){
     return statistics_;
 }

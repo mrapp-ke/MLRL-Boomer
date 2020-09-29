@@ -104,7 +104,7 @@ namespace boosting {
 
             };
 
-            class DenseLabelWiseStatisticsBinsImpl : virtual public IHistogramBuilder {
+            class HistogramBuilderImpl : virtual public IHistogramBuilder {
 
                 private:
 
@@ -116,17 +116,15 @@ namespace boosting {
 
                     float64* hessians_;
 
-                    Bin* bins;
-
                 public:
 
-                    DenseLabelWiseStatisticsBinsImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
+                    HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
 
-                    ~DenseLabelWiseStatisticsBinsImpl();
+                    ~HistogramBuilderImpl();
 
                     void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
 
-                    AbstractStatistics* build();
+                    AbstractStatistics* build() override;
 
             };
 
