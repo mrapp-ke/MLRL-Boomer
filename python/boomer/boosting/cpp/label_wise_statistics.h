@@ -3,6 +3,7 @@
  * function that is applied label-wise.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
@@ -103,6 +104,37 @@ namespace boosting {
 
             };
 
+            /**
+             * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the
+             * class `DenseLabelWiseStatisticsImpl`.
+             */
+            class HistogramBuilderImpl : virtual public AbstractStatistics::IHistogramBuilder {
+
+                private:
+
+                    DenseLabelWiseStatisticsImpl* statistics_;
+
+                    uint32 numBins_;
+
+                    float64* gradients_;
+
+                    float64* hessians_;
+
+                public:
+
+                    /**
+                     * @param statistics    A pointer to an object of type `DenseLabelWiseStatisticsImpl` that stores
+                     *                      the gradients and Hessians
+                     * @param numBins       The number of bins, the histogram should consist of
+                     */
+                    HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
+
+                    void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
+
+                    AbstractStatistics* build() override;
+
+            };
+
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
@@ -147,6 +179,8 @@ namespace boosting {
             IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
 
             void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
+
+            AbstractStatistics::IHistogramBuilder* buildHistogram(uint32 numBins) override;
 
     };
 
