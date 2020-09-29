@@ -8,8 +8,6 @@
 #include "arrays.h"
 #include "tuples.h"
 #include "data.h"
-#include<stdlib.h>
-#include <memory>
 
 
 /**
@@ -26,7 +24,7 @@ class ILabelMatrix : virtual public IMatrix {
 /**
  * Defines an interface for all label matrices that provide random access to the labels of the training examples.
  */
-class IRandomAccessLabelMatrix : virtual public ILabelMatrix , virtual public IRandomAccessMatrix<uint8> {
+class IRandomAccessLabelMatrix : virtual public ILabelMatrix, virtual public IRandomAccessMatrix<uint8> {
 
     public:
 
@@ -61,7 +59,7 @@ class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
         uint32 getNumCols() override;
 
-        uint8 get(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) override;
 
 };
 
@@ -73,21 +71,23 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
     private:
 
-        std::shared_ptr<BinaryDokMatrix> dokMatrixPtr_;
+        BinaryDokMatrix* matrix_;
 
     public:
 
         /**
-         * @param dokMatrixPtr A shared pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of
-         *                     the training examples
+         * @param matrix A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the training
+         *               examples
          */
-        DokLabelMatrixImpl(std::shared_ptr<BinaryDokMatrix> dokMatrixPtr);
+        DokLabelMatrixImpl(BinaryDokMatrix* matrix);
+
+        ~DokLabelMatrixImpl();
 
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;
 
-        uint8 get(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) override;
 
 };
 
@@ -188,35 +188,40 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
 };
 
 /**
- * Defines an interface for all sets that allow check whether individual features are nominal or not.
+ * Defines an interface for all vectors that provide access to the information whether the features at specific indices
+ * are nominal or not.
  */
-class INominalFeatureSet : virtual public IRandomAccessVector<uint8> {
+class INominalFeatureVector : virtual public ISparseRandomAccessVector<uint8> {
 
     public:
 
-        virtual ~INominalFeatureSet() { };
+        virtual ~INominalFeatureVector() { };
 
 };
 
 /**
- * Allows to check whether individual features are nominal or not based on a sparse vector that stores the indices of
- * the nominal features in the dictionary of keys (DOK) format.
+ * Provides access to the information whether the features at specific indices are nominal or not, based on a
+ * `BinaryDokVector` that stores the indices of all nominal features.
  */
-class DokNominalFeatureSetImpl : virtual public INominalFeatureSet {
+class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
 
     private:
 
-        std::shared_ptr<BinaryDokVector> dokVectorPtr_;
+        BinaryDokVector* vector_;
 
     public:
 
         /**
-         * @param dokVectorPtr A shared pointer to an object of type `BinaryDokVector`, storing the nominal attributes
+         * @param vector A pointer to an object of type `BinaryDokVector`, storing the nominal attributes
          */
-        DokNominalFeatureSetImpl(std::shared_ptr<BinaryDokVector> dokVectorPtr);
+        DokNominalFeatureVectorImpl(BinaryDokVector* vector);
+
+        ~DokNominalFeatureVectorImpl();
 
         uint32 getNumElements() override;
 
-        uint8 get(uint32 pos) override;
+        bool hasZeroElements() override;
+
+        uint8 getValue(uint32 pos) override;
 
 };

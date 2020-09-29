@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport IVector, BinaryDokVector, IMatrix, BinaryDokMatrix
+from boomer.common._data cimport ISparseRandomAccessVector, BinaryDokVector, IMatrix, BinaryDokMatrix
 from boomer.common._tuples cimport IndexedFloat32Array
 
 from libcpp.memory cimport shared_ptr
@@ -51,18 +51,15 @@ cdef extern from "cpp/input_data.h" nogil:
                              const uint32* xColIndices) except +
 
 
-    cdef cppclass INominalFeatureSet(IVector):
-
-        # Functions:
-
-        uint8 get(uint32 pos)
+    cdef cppclass INominalFeatureVector(ISparseRandomAccessVector[uint8]):
+        pass
 
 
-    cdef cppclass DokNominalFeatureSetImpl(INominalFeatureSet):
+    cdef cppclass DokNominalFeatureVectorImpl(INominalFeatureVector):
 
         # Constructors:
 
-        DokNominalFeatureSetImpl(shared_ptr[BinaryDokVector] dokVectorPtr) except +
+        DokNominalFeatureVectorImpl(shared_ptr[BinaryDokVector] dokVectorPtr) except +
 
 
 cdef class LabelMatrix:
@@ -99,12 +96,12 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     pass
 
 
-cdef class NominalFeatureSet:
+cdef class NominalFeatureVector:
 
     # Attributes:
 
-    cdef shared_ptr[INominalFeatureSet] nominal_feature_set_ptr
+    cdef shared_ptr[INominalFeatureVector] nominal_feature_vector_ptr
 
 
-cdef class DokNominalFeatureSet(NominalFeatureSet):
+cdef class DokNominalFeatureVector(NominalFeatureVector):
     pass

@@ -1,68 +1,124 @@
 from boomer.common._arrays cimport uint32, float32
+from boomer.common._data cimport ISparseRandomAccessVector, IIndexVector
 from boomer.common._random cimport RNG
 
-from libcpp.pair cimport pair
+from libcpp.memory cimport shared_ptr
+
+
+cdef extern from "cpp/sub_sampling.h" nogil:
+
+    cdef cppclass IWeightVector(ISparseRandomAccessVector[uint32]):
+
+        # Functions:
+
+        uint32 getSumOfWeights()
+
+
+    cdef cppclass IInstanceSubSampling:
+
+        # Functions:
+
+        IWeightVector* subSample(uint32 numExamples, RNG* rng)
+
+
+    cdef cppclass BaggingImpl(IInstanceSubSampling):
+
+        # Constructors:
+
+        BaggingImpl(float32 sampleSize) except +
+
+
+    cdef cppclass RandomInstanceSubsetSelectionImpl(IInstanceSubSampling):
+
+        # Constructors:
+
+        RandomInstanceSubsetSelectionImpl(float32 sampleSize)
+
+
+    cdef cppclass NoInstanceSubSamplingImpl(IInstanceSubSampling):
+        pass
+
+
+    cdef cppclass IFeatureSubSampling:
+
+        # Functions:
+
+        IIndexVector* subSample(uint32 numFeatures, RNG* rng)
+
+
+    cdef cppclass RandomFeatureSubsetSelectionImpl(IFeatureSubSampling):
+
+        # Constructors:
+
+        RandomFeatureSubsetSelectionImpl(float32 sampleSize) except +
+
+
+    cdef cppclass NoFeatureSubSamplingImpl(IFeatureSubSampling):
+        pass
+
+
+    cdef cppclass ILabelSubSampling:
+
+        # Functions:
+
+        IIndexVector* subSample(uint32 numLabels, RNG* rng)
+
+
+    cdef cppclass RandomLabelSubsetSelectionImpl(ILabelSubSampling):
+
+        # Constructors:
+
+        RandomLabelSubsetSelectionImpl(uint32 numSamples)
+
+
+    cdef cppclass NoLabelSubSamplingImpl(ILabelSubSampling):
+        pass
 
 
 cdef class InstanceSubSampling:
 
-    # Functions:
+    # Attributes:
 
-    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng)
+    cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr
 
 
 cdef class Bagging(InstanceSubSampling):
-
-    # Attributes:
-
-    cdef readonly float32 sample_size
-
-    # Functions:
-
-    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng)
+    pass
 
 
 cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
+    pass
 
-    # Attributes
-    cdef readonly float32 sample_size
 
-    # Functions:
-
-    cdef pair[uint32[::1], uint32] sub_sample(self, uint32 num_examples, RNG rng)
+cdef class NoInstanceSubSampling(InstanceSubSampling):
+    pass
 
 
 cdef class FeatureSubSampling:
 
-    # Functions:
+    # Attributes:
 
-    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG rng)
+    cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr
 
 
 cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
+    pass
 
-    # Attributes:
 
-    cdef readonly float32 sample_size
-
-    # Functions:
-
-    cdef uint32[::1] sub_sample(self, uint32 num_features, RNG rng)
+cdef class NoFeatureSubSampling(FeatureSubSampling):
+    pass
 
 
 cdef class LabelSubSampling:
 
-    # Functions:
+    # Attributes:
 
-    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG rng)
+    cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr
 
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
+    pass
 
-    # Attributes:
 
-    cdef readonly uint32 num_samples
-
-    # Functions:
-
-    cdef uint32[::1] sub_sample(self, uint32 num_labels, RNG rng)
+cdef class NoLabelSubSampling(LabelSubSampling):
+    pass
