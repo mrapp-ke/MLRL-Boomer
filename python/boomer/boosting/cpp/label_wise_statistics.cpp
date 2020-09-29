@@ -210,7 +210,7 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
 DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
     statistics_ = statistics;
     numBins_ = numBins;
-    arraySize = numBins_ * statistics->getNumCols();
+    uint32 arraySize = numBins_ * statistics->getNumCols();
     float64* gradients_ = (float64*)calloc(arraySize, sizeof(float64));
     float64* hessians_ = (float64*)calloc(arraySize, sizeof(float64));
 }
