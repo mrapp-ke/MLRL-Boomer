@@ -277,8 +277,8 @@ AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
 DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins){
     statistics_ = statistics;
     numBins_ = numBins;
-    float64* gradients_ = (float64*)calloc(numBins_, sizeof(float64));
-    float64* hessians_ = (float64*)calloc(numBins_, sizeof(float64));
+    float64* gradients_ = (float64*)calloc((numBins_ * statistics->getNumCols()), sizeof(float64));
+    float64* hessians_ = (float64*)calloc((numBins_ * triangularNumber(statistics->getNumCols())), sizeof(float64));
 }
 
 DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::~HistogramBuilderImpl(){
