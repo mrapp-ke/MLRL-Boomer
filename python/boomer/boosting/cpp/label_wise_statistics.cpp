@@ -164,6 +164,10 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
     }
 }
 
+AbstractStatistics::IHistogramBuilder* DenseLabelWiseStatisticsImpl::buildHistogram(uint32 numBins){
+    return new DenseLabelWiseStatisticsImpl::HistogramBuilderImpl(this, numBins);
+}
+
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<ILabelWiseLoss> lossFunctionPtr, std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
@@ -210,27 +214,26 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
 DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins){
     statistics_ = statistics;
     numBins_ = numBins;
-    uint32 arraySize = numBins_ * statistics->getNumCols();
-    float64* gradients_ = (float64*)calloc(arraySize, sizeof(float64));
-    float64* hessians_ = (float64*)calloc(arraySize, sizeof(float64));
-}
-
-DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::~HistogramBuilderImpl(){
-    free(gradients_);
-    free(hessians_);
+    uint32 numLabels = numBins_ * statistics->getNumCols();
+    gradients_ = (float64*)calloc(numLabels, sizeof(float64));
+    hessians_ = (float64*)calloc(numLabels, sizeof(float64));
 }
 
 void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
     uint32 numLabels = statistics_->getNumCols();
     uint32 index = indexedValue->index;
-    for(int i = 0; i <= numLabels; i++){
-        float64 gradient = statistics_->gradients_[((index * numLabels) + i)];
-        float64 hessian = statistics_->hessians_[((index * numLabels) + i)];
-        gradients_[((binIndex * numLabels) + i)] += gradient;
-        hessians_[((binIndex * numLabels) + i)] += hessian;
+    uint32 offset = index * numLabels;
+    uint32 binOffset = binIndex * numLabels;
+    for(uint32 c = 0; c < numLabels; c++){
+        float64 gradient = statistics_->gradients_[offset + c];
+        float64 hessian = statistics_->hessians_[offset + c];
+        gradients_[binOffset + c] += gradient;
+        hessians_[binOffset + c] += hessian;
     }
 }
 
 AbstractStatistics* DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build(){
-    return statistics_;
+    return new DenseLabelWiseStatisticsImpl(statistics_->lossFunctionPtr_, statistics_->ruleEvaluationPtr_,
+                                            statistics_->labelMatrixPtr_,  gradients_, hessians_,
+                                            statistics_->currentScores_);
 }

@@ -230,6 +230,10 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Pred
                                                 &gradients_[offset], &hessians_[statisticIndex * numHessians]);
 }
 
+AbstractStatistics::IHistogramBuilder* DenseExampleWiseStatisticsImpl::buildHistogram(uint32 numBins){
+    return new DenseExampleWiseStatisticsImpl::HistogramBuilderImpl(this, numBins);
+}
+
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
@@ -277,26 +281,28 @@ AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
 DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins){
     statistics_ = statistics;
     numBins_ = numBins;
-    float64* gradients_ = (float64*)calloc((numBins_ * statistics->getNumCols()), sizeof(float64));
-    float64* hessians_ = (float64*)calloc((numBins_ * linalg::triangularNumber(statistics->getNumCols())), sizeof(float64));
-}
-
-DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::~HistogramBuilderImpl(){
-    free(gradients_);
-    free(hessians_);
+    uint32 numGradients = statistics->getNumCols();
+    uint32 numHessians = linalg::triangularNumber(numGradients);
+    gradients_ = (float64*)calloc((numBins_ * numGradients), sizeof(float64));
+    hessians_ = (float64*)calloc((numBins_ * numHessians), sizeof(float64));
 }
 
 void DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue){
     uint32 numLabels = statistics_->getNumCols();
     uint32 index = indexedValue->index;
-    for(int i = 0; i <= numLabels; i++){
-        float64 gradient = statistics_->gradients_[((index * numLabels) + i)];
-        float64 hessian = statistics_->hessians_[((index * numLabels) + i)];
-        gradients_[((binIndex * numLabels) + i)] += gradient;
-        hessians_[((binIndex * linalg::triangularNumber(numLabels)) + i)] += hessian;
+    uint32 offset = index * numLabels;
+    uint32 gradientOffset = binIndex * numLabels;
+    uint32 hessianOffset = binIndex * linalg::triangularNumber(numLabels);
+    for(uint32 c = 0; c < numLabels; c++){
+        float64 gradient = statistics_->gradients_[offset + c];
+        float64 hessian = statistics_->hessians_[offset + c];
+        gradients_[gradientOffset + c] += gradient;
+        hessians_[hessianOffset + c] += hessian;
     }
 }
 
 AbstractStatistics* DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::build(){
-    return statistics_;
+    return new DenseExampleWiseStatisticsImpl(statistics_->lossFunctionPtr_, statistics_->ruleEvaluationPtr_,
+                                              statistics_->lapackPtr_, statistics_->labelMatrixPtr_,
+                                              gradients_, hessians_, statistics_->currentScores_);
 }
