@@ -23,6 +23,9 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsI
                                                                 IWeightVector* weights) {
     thresholds_ = thresholds;
     weights_ = weights;
+    uint32 numExamples = thresholds->getNumRows();
+    coveredExamplesMask_ = new uint32[numExamples]{0};
+    coveredExamplesTarget_ = 0;
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
