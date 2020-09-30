@@ -79,7 +79,13 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
-    // TODO
+    uint32 numExamples = thresholds_->getNumRows();
+
+    for (uint32 r = 0; r < numExamples; r++) {
+        if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
+            thresholds_->statisticsPtr_.get()->applyPrediction(r, prediction);
+        }
+    }
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
