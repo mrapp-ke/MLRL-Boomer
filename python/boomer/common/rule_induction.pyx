@@ -744,8 +744,9 @@ cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint3
     for r in range(num_statistics):
         if covered_statistics_mask[r] == covered_statistics_target:
             statistics_subset_ptr.get().addToSubset(r, 1)
-            prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
-            updated_scores = prediction.predictedScores_
 
-            for c in range(num_predictions):
-                predicted_scores[c] = updated_scores[c]
+    prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
+    updated_scores = prediction.predictedScores_
+
+    for c in range(num_predictions):
+        predicted_scores[c] = updated_scores[c]
