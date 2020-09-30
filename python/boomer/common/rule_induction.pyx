@@ -329,7 +329,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 if post_processor is not None:
                     post_processor.post_process(best_refinement.head)
 
-                # Update the statistics based on the predictions of the new rule...
+                # Update the statistics by applying the predictions of the new rule...
+                thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
+
                 for r in range(num_statistics):
                     if covered_statistics_mask[r] == covered_statistics_target:
                         statistics.applyPrediction(r, best_refinement.head)
