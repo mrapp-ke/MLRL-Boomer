@@ -17,8 +17,8 @@
 
 /**
  * Defines an interface for all classes that provide access a subset of thresholds that may be used by the conditions of
- * a rule with arbitrary body. The thresholds may include on those that correspond to the subspace of the instance space
- * that is covered by the rule.
+ * a rule with arbitrary body. The thresholds may include only those that correspond to the subspace of the instance
+ * space that is covered by the rule.
  */
 class IThresholdsSubset {
 
