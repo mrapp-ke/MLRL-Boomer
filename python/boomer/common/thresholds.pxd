@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureVector, INominalFeatureVector
-from boomer.common.rule_refinement cimport IRuleRefinement
+from boomer.common.rule_refinement cimport IRuleRefinement, Refinement
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.sub_sampling cimport IWeightVector
 
@@ -14,6 +14,8 @@ cdef extern from "cpp/thresholds.h" nogil:
         # Functions:
 
         IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions, uint32 totalSumOfWeights)
+
+        void applyRefinement(Refinement& refinement)
 
 
     cdef cppclass AbstractThresholds:
