@@ -78,6 +78,10 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     // TODO
 }
 
+void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
+    // TODO
+}
+
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
         ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
         uint32 numConditions, uint32 featureIndex) {
