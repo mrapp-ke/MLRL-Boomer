@@ -112,9 +112,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                         ThresholdsSubsetImpl* thresholdsSubset_;
 
-                        const uint32* coveredStatisticsMask_;
+                        const uint32* coveredExamplesMask_;
 
-                        uint32 coveredStatisticsTarget_;
+                        uint32 coveredExamplesTarget_;
 
                         uint32 numConditions_;
 
@@ -125,19 +125,19 @@ class ExactThresholdsImpl : public AbstractThresholds {
                         /**
                          * @param thresholdsSubset          A pointer to an object of type `ThresholdsSubsetImpl` that
                          *                                  caches the feature values and indices
-                         * @param coveredStatisticsMask     A pointer to an array of type `uint32`, shape
+                         * @param coveredExamplesMask       A pointer to an array of type `uint32`, shape
                          *                                  `(num_statistics)`, that is used to keep track of the
                          *                                  indices of the statistics that are covered by the current
                          *                                  rule
-                         * @param coveredStatisticsTarget   The value that is used to mark those elements in
-                         *                                  `coveredStatisticsMask` that are covered by the current rule
+                         * @param coveredExamplesTarget     The value that is used to mark those elements in
+                         *                                  `coveredExamplesMask` that are covered by the current rule
                          * @param numConditions             The number of conditions of the current rule. This is used
                          *                                  to check if caches are still valid
                          * @param featureIndex              The index of the feature for which the feature values and
                          *                                  training examples should be retrieved
                          */
                         RuleRefinementCallback(ThresholdsSubsetImpl* thresholdsSubset,
-                                               const uint32* coveredStatisticsMask, uint32 coveredStatisticsTarget,
+                                               const uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
                                                uint32 numConditions, uint32 featureIndex);
 
                         IndexedFloat32Array* getSortedFeatureValues() override;

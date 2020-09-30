@@ -72,11 +72,11 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
-        ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredStatisticsMask, uint32 coveredStatisticsTarget,
+        ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
         uint32 numConditions, uint32 featureIndex) {
     thresholdsSubset_ = thresholdsSubset;
-    coveredStatisticsMask_ = coveredStatisticsMask;
-    coveredStatisticsTarget_ = coveredStatisticsTarget;
+    coveredExamplesMask_ = coveredExamplesMask;
+    coveredExamplesTarget_ = coveredExamplesTarget;
     numConditions_ = numConditions;
     featureIndex_ = featureIndex;
 }
@@ -113,7 +113,7 @@ IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
             for (uint32 r = 0; r < maxElements; r++) {
                 uint32 index = indexedValues[r].index;
 
-                if (coveredStatisticsMask_[index] == coveredStatisticsTarget_) {
+                if (coveredExamplesMask_[index] == coveredExamplesTarget_) {
                     filteredArray[i].index = index;
                     filteredArray[i].value = indexedValues[r].value;
                     i++;
