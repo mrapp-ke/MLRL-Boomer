@@ -148,6 +148,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 IWeightVector* weights_;
 
+                uint32* coveredExamplesMask_;
+
+                uint32 coveredExamplesTarget_;
+
                 std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
 
             public:
