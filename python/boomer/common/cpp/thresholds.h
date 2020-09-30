@@ -41,6 +41,18 @@ class IThresholdsSubset {
         virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions,
                                                       uint32 totalSumOfWeights) = 0;
 
+        /**
+         * Applies a refinement that has been found by an instance of the type `IRuleRefinement` previously created via
+         * the function `createRuleRefinement`.
+         *
+         * This causes the thresholds that will be available for further refinements to be filtered such that only those
+         * thresholds that correspond to the subspace of the instance space that is covered by the refined rule are
+         * included.
+         *
+         * @param refinement An object of type `Refinement`, representing the refinement to be applied
+         */
+        virtual void applyRefinement(Refinement& refinement) = 0;
+
 };
 
 /**
@@ -167,6 +179,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions,
                                                       uint32 totalSumOfWeights) override;
+
+                void applyRefinement(Refinement& refinement) override;
 
         };
 
