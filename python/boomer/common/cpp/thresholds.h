@@ -6,6 +6,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "predictions.h"
 #include "tuples.h"
 #include "data.h"
 #include "input_data.h"
@@ -52,6 +53,13 @@ class IThresholdsSubset {
          * @param refinement An object of type `Refinement`, representing the refinement to be applied
          */
         virtual void applyRefinement(Refinement& refinement) = 0;
+
+        /**
+         * Applies the predictions of a rule to the statistics that correspond to the current subset.
+         *
+         * @param prediction A pointer to an object of type `Prediction`, representing the predictions to be applied
+         */
+        virtual void applyPrediction(Prediction* prediction) = 0;
 
 };
 
@@ -181,6 +189,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
                                                       uint32 totalSumOfWeights) override;
 
                 void applyRefinement(Refinement& refinement) override;
+
+                void applyPrediction(Prediction* prediction) override;
 
         };
 
