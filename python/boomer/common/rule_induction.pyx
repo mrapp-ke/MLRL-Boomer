@@ -314,13 +314,14 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 return False
             else:
                 if weights_ptr.get().hasZeroElements():
+                    # TODO Reactivate pruning
                     # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-                    if pruning is not None and num_conditions > 1:
-                        uint32_array_scalar_pair = pruning.prune(cache_global, conditions, best_refinement.head,
-                                                                 covered_statistics_mask, covered_statistics_target,
-                                                                 weights_ptr.get(), statistics, head_refinement)
-                        covered_statistics_mask = uint32_array_scalar_pair.first
-                        covered_statistics_target = uint32_array_scalar_pair.second
+                    # if pruning is not None and num_conditions > 1:
+                    #     uint32_array_scalar_pair = pruning.prune(cache_global, conditions, best_refinement.head,
+                    #                                              covered_statistics_mask, covered_statistics_target,
+                    #                                              weights_ptr.get(), statistics, head_refinement)
+                    #     covered_statistics_mask = uint32_array_scalar_pair.first
+                    #     covered_statistics_target = uint32_array_scalar_pair.second
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
