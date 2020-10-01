@@ -351,6 +351,11 @@ uint32 ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &re
     return sumOfWeights_;
 }
 
+PredictionCandidate* ExactThresholdsImpl::ThresholdsSubsetImpl::findOverallHead(IHeadRefinement* headRefinement) {
+    // TODO
+    return NULL;
+}
+
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
     uint32 numExamples = thresholds_->getNumRows();
 
