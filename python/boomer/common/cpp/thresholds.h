@@ -52,15 +52,18 @@ class IThresholdsSubset {
         virtual uint32 applyRefinement(Refinement &refinement) = 0;
 
         /**
-         * Finds and returns the best head for a rule that covers the current subset, ignoring the weights of the
+         * Calculates the scores to be predicted by a rule that covers the current subset, ignoring the weights of the
          * individual training examples and assuming equally distributed weights instead.
          *
-         * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to find the
-         *                          head of the rule
-         * @return                  A pointer to an object of type `PredictionCandidate` that stores information about
-         *                          the head that has been found
+         * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to calculate
+         *                          the scores to be predicted
+         * @param numLabelIndices   The number of elements in the array `labelIndices`
+         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
+         *                          indices of the labels for which the refined rule may predict
+         * @return                  A pointer to an object of type `Prediction` that stores the scores to be predicted
          */
-        virtual PredictionCandidate* findOverallHead(IHeadRefinement* headRefinement) = 0;
+        virtual Prediction* calculateOverallPrediction(IHeadRefinement* headRefinement, uint32 numLabelIndices,
+                                                       const uint32* labelIndices) = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
@@ -197,7 +200,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 applyRefinement(Refinement &refinement) override;
 
-                PredictionCandidate* findOverallHead(IHeadRefinement* headRefinement) override;
+                Prediction* calculateOverallPrediction(IHeadRefinement* headRefinement, uint32 numLabelIndices,
+                                                       const uint32* labelIndices) override;
 
                 void applyPrediction(Prediction* prediction) override;
 

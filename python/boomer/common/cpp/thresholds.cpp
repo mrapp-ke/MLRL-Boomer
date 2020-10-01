@@ -351,9 +351,20 @@ uint32 ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &re
     return sumOfWeights_;
 }
 
-PredictionCandidate* ExactThresholdsImpl::ThresholdsSubsetImpl::findOverallHead(IHeadRefinement* headRefinement) {
-    // TODO
-    return NULL;
+Prediction* ExactThresholdsImpl::ThresholdsSubsetImpl::calculateOverallPrediction(IHeadRefinement* headRefinement,
+                                                                                  uint32 numLabelIndices,
+                                                                                  const uint32* labelIndices) {
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
+    statisticsSubsetPtr.reset(thresholds_->statisticsPtr_.get()->createSubset(numLabelIndices, labelIndices));
+    uint32 numExamples = thresholds_->getNumRows();
+
+    for (uint32 r = 0; r < numExamples; r++) {
+        if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
+            statisticsSubsetPtr.get()->addToSubset(r, 1);
+        }
+    }
+
+    return headRefinement->calculatePrediction(statisticsSubsetPtr.get(), false, false);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
