@@ -110,4 +110,19 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
 class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
 
+    private:
+
+        AbstractStatistics* statistics_;
+
+        BinArray* binArray_;
+
+        uint32 featureIndex_;
+
+    public:
+
+        ApproximateRuleRefinementImpl(AbstractStatistics* statistics, BinArray* binArray, uint32 featureIndex);
+
+        Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                  uint32 numLabelIndices, const uint32* labelIndices) override;
+
 };
