@@ -60,6 +60,10 @@ cdef extern from "cpp/thresholds.h" namespace "ExactThresholdsImpl" nogil:
 
         unordered_map[uint32, IndexedFloat32ArrayWrapper*] cacheFiltered_
 
+        uint32* coveredExamplesMask_;
+
+        uint32 coveredExamplesTarget_;
+
 
 cdef class ThresholdsFactory:
 
