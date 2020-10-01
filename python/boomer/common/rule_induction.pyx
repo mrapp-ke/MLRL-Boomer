@@ -249,20 +249,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                         label_indices = best_refinement.head.labelIndices_
 
                     # Filter the current subset of thresholds by applying the best refinement that has been found...
-                    # TODO num_covered_examples = thresholds_subset_ptr.get().applyRefinement(best_refinement)
-
-                    # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
-                    # not considered for finding the new condition. In the next step, we need to identify the examples
-                    # that are covered by the refined rule, including those that are not contained in the sub-sample,
-                    # via the function `__filter_current_indices`. Said function calculates the number of covered
-                    # examples based on the variable `best_refinement.end`, which represents the position that separates
-                    # the covered from the uncovered examples. However, when taking into account the examples that are
-                    # not contained in the sub-sample, this position may differ from the current value of
-                    # `best_refinement.end` and therefore must be adjusted...
-                    # TODO Remove
-                    if weights_ptr.get().hasZeroElements() and abs(best_refinement.previous - best_refinement.end) > 1:
-                        best_refinement.end = __adjust_split(best_refinement.indexedArray, best_refinement.end,
-                                                             best_refinement.previous, best_refinement.threshold)
+                    # TODO num_covered_examples =
+                    thresholds_subset_ptr.get().applyRefinement(best_refinement)
 
                     # Identify the examples for which the rule predicts...
                     # TODO Remove
@@ -385,58 +373,6 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array, weights, total_sum_of_weights,
                                                           feature_index, nominal))
     return rule_refinement_ptr.get().findRefinement(head_refinement, head, num_label_indices, label_indices)
-
-
-# TODO Remove function
-cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp condition_end, intp condition_previous,
-                                float32 threshold):
-    """
-    Adjusts the position that separates the covered from the uncovered examples with respect to those examples that are
-    not contained in the current sub-sample. This requires to look back a certain number of examples, i.e., to traverse
-    the examples in ascending or descending order, depending on whether `condition_end` is smaller than
-    `condition_previous` or vice versa, until the next example that is contained in the current sub-sample is
-    encountered, to see if they satisfy the new condition or not.
-
-    :param indexed_array:       A pointer to a struct of type `IndexedArray` that stores a pointer to a C-array
-                                containing the indices of the training examples and the corresponding feature values, as
-                                well as the number of elements in said array
-    :param condition_end:       The position that separates the covered from the uncovered examples (when only taking
-                                into account the examples that are contained in the sample). This is the position to
-                                start at
-    :param condition_previous:  The position to stop at (exclusive)
-    :param threshold:           The threshold of the condition
-    :return:                    The adjusted position that separates the covered from the uncovered examples with
-                                respect to the examples that are not contained in the sample
-    """
-    cdef IndexedFloat32* indexed_values = indexed_array.data
-    cdef intp adjusted_position = condition_end
-    cdef bint ascending = condition_end < condition_previous
-    cdef intp direction = 1 if ascending else -1
-    cdef intp start = condition_end + direction
-    cdef uint32 num_steps = abs(start - condition_previous)
-    cdef float32 feature_value
-    cdef bint adjust
-    cdef uint32 i, r
-
-    # Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
-    # current sub-sample...
-    for i in range(num_steps):
-        # Check if the current position should be adjusted, or not. This is the case, if the feature value of the
-        # current example is smaller than or equal to the given `threshold` (or greater than the `threshold`, if we
-        # traverse in descending direction).
-        r = start + (i * direction)
-        feature_value = indexed_values[r].value
-        adjust = (feature_value <= threshold if ascending else feature_value > threshold)
-
-        if adjust:
-            # Update the adjusted position and continue...
-            adjusted_position = r
-        else:
-            # If we have found the first example that is separated from the example at the position we started at, we
-            # are done...
-            break
-
-    return adjusted_position
 
 
 # TODO Remove function
