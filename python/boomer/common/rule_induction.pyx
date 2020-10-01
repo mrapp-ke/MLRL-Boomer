@@ -161,7 +161,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IRuleRefinement* current_rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
-        cdef uint32 num_covered_examples, num_sampled_features, weight, f, r
+        cdef uint32 num_sampled_features, weight, f, r
         cdef bint nominal
         cdef intp c
 
@@ -249,7 +249,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                         label_indices = best_refinement.head.labelIndices_
 
                     # Filter the current subset of thresholds by applying the best refinement that has been found...
-                    # TODO num_covered_examples =
                     thresholds_subset_ptr.get().applyRefinement(best_refinement)
 
                     # Identify the examples for which the rule predicts...
