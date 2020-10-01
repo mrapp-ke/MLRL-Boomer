@@ -276,7 +276,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                         label_indices = best_refinement.head.labelIndices_
 
                     # Filter the current subset of thresholds by applying the best refinement that has been found...
-                    num_covered_examples = thresholds_subset_ptr.get().applyRefinement(best_refinement)
+                    # TODO num_covered_examples = thresholds_subset_ptr.get().applyRefinement(best_refinement)
 
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
@@ -334,7 +334,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     post_processor.post_process(best_refinement.head)
 
                 # Update the statistics by applying the predictions of the new rule...
-                thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
+                # TODO thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
 
                 # TODO Remove
                 for r in range(num_statistics):
