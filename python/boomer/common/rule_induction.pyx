@@ -308,12 +308,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     post_processor.post_process(best_refinement.head)
 
                 # Update the statistics by applying the predictions of the new rule...
-                # TODO thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
-
-                # TODO Remove
-                for r in range(num_statistics):
-                    if inner_thresholds.coveredExamplesMask_[r] == inner_thresholds.coveredExamplesTarget_:
-                        statistics.applyPrediction(r, best_refinement.head)
+                thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
 
                 # Add the induced rule to the model...
                 model_builder.add_rule(best_refinement.head, conditions, num_conditions_per_comparator)
