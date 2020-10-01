@@ -53,6 +53,153 @@ static inline intp adjustSplit(IndexedFloat32Array* indexedArray, intp condition
 }
 
 /**
+ * Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
+ * values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
+ * filtered array does only contain the indices and feature values of the examples that are covered by the new rule. The
+ * filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper` and the given statistics are updated
+ * accordingly.
+ *
+ * @param cacheFiltered         A map that maps feature indices to structs of type `IndexedFloat32ArrayWrapper`, storing
+ *                              the indices of the training examples that are covered by the existing rule, as well as
+ *                              their values for the respective feature, sorted in ascending order by the feature values
+ * @param featureIndex          The index of the feature
+ * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the array
+ *                              to be filtered, as well as the number of elements in the array
+ * @param conditionStart        The element in `indexedValues` that corresponds to the first example (inclusive)
+ *                              included in the `IStatisticsSubset` that is covered by the new condition
+ * @param conditionEnd          The element in `indexedValues` that corresponds to the last example (exclusive)
+ * @param conditionComparator   The type of the operator that is used by the new condition
+ * @param covered               True, if the examples in range [conditionStart, conditionEnd) are covered by the new
+ *                              condition and the remaining ones are not, false, if the examples in said range are not
+ *                              covered and the remaining ones are
+ * @param numConditions         The total number of conditions in the rule's body (including the new one)
+ * @param coveredExamplesMask   An array of type `uint32`, shape `(num_examples)` that is used to keep track of the
+ *                              indices of the examples that are covered by the previous rule. It will be updated by
+ *                              this function
+ * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
+ *                              by the previous rule
+ * @param statistics            A pointer to an object of type `AbstractStatistics` to be notified about the examples
+ *                              that must be considered when searching for the next refinement, i.e., the examples that
+ *                              are covered by the new rule
+ * @param weights               A pointer to an an object of type `IWeightVector` that provides access to the weights of
+ *                              the training examples
+ * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
+ *                              are covered by the new rule
+ */
+static inline uint32 filterCurrentIndices(std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> &cacheFiltered,
+                                          uint32 featureIndex, IndexedFloat32Array* indexedArray, intp conditionStart,
+                                          intp conditionEnd, Comparator conditionComparator, bool covered,
+                                          uint32 numConditions, uint32* coveredExamplesMask,
+                                          uint32 coveredExamplesTarget, AbstractStatistics* statistics,
+                                          IWeightVector* weights) {
+    IndexedFloat32* indexedValues = indexedArray->data;
+    uint32 numIndexedValues = indexedArray->numElements;
+    bool descending = conditionEnd < conditionStart;
+    uint32 updatedTarget;
+
+    // Determine the number of elements in the filtered array...
+    uint32 numConditionSteps = abs(conditionStart - conditionEnd);
+    uint32 numElements = covered ? numConditionSteps :
+        (numIndexedValues > numConditionSteps ? numIndexedValues - numConditionSteps : 0);
+
+    // Allocate filtered array...
+    IndexedFloat32* filteredArray = numElements > 0 ?
+        (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32)) : NULL;
+    intp direction;
+    uint32 i;
+
+    if (descending) {
+        direction = -1;
+        i = numElements - 1;
+    } else {
+        direction = 1;
+        i = 0;
+    }
+
+    if (covered) {
+        updatedTarget = numConditions;
+        statistics->resetCoveredStatistics();
+
+        // Retain the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
+        // `coveredExamplesMasK` to `numConditions`, which marks them as covered (because
+        // `updatedTarget == numConditions`)...
+        for (uint32 j = 0; j < numConditionSteps; j++) {
+            uint32 r = conditionStart + (j * direction);
+            uint32 index = indexedValues[r].index;
+            coveredExamplesMask[index] = numConditions;
+            filteredArray[i].index = index;
+            filteredArray[i].value = indexedValues[r].value;
+            uint32 weight = weights->getValue(index);
+            statistics->updateCoveredStatistic(index, weight, false);
+            i += direction;
+        }
+    } else {
+        updatedTarget = coveredExamplesTarget;
+        intp start, end;
+
+        if (descending) {
+            start = numIndexedValues - 1;
+            end = -1;
+        } else {
+            start = 0;
+            end = numIndexedValues;
+        }
+
+        if (conditionComparator == NEQ) {
+            // Retain the indices at positions [start, conditionStart), while leaving the corresponding values in
+            // `coveredExamplesMask` untouched, such that all previously covered examples in said range are still marked
+            // as covered, while previously uncovered examples are still marked as uncovered...
+            uint32 numSteps = abs(start - conditionStart);
+
+            for (uint32 j = 0; j < numSteps; j++) {
+                uint32 r = start + (j * direction);
+                filteredArray[i].index = indexedValues[r].index;
+                filteredArray[i].value = indexedValues[r].value;
+                i += direction;
+            }
+        }
+
+        // Discard the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
+        // `coveredExamplesMask` to `numConditions`, which marks them as uncovered (because
+        // `updatedTarget != numConditions`)...
+        for (uint32 j = 0; j < numConditionSteps; j++) {
+            uint32 r = conditionStart + (j * direction);
+            uint32 index = indexedValues[r].index;
+            coveredExamplesMask[index] = numConditions;
+            uint32 weight = weights->getValue(index);
+            statistics->updateCoveredStatistic(index, weight, true);
+        }
+
+        // Retain the indices at positions [conditionEnd, end), while leaving the corresponding values in
+        // `coveredExamplesMask` untouched, such that all previously covered examples in said range are still marked as
+        // covered, while previously uncovered examples are still marked as uncovered...
+        uint32 numSteps = abs(conditionEnd - end);
+
+        for (uint32 j = 0; j < numSteps; j++) {
+            uint32 r = conditionEnd + (j * direction);
+            filteredArray[i].index = indexedValues[r].index;
+            filteredArray[i].value = indexedValues[r].value;
+            i += direction;
+        }
+    }
+
+    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered[featureIndex];
+    IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
+
+    if (filteredIndexedArray == NULL) {
+        filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+        indexedArrayWrapper->array = filteredIndexedArray;
+    } else {
+        free(filteredIndexedArray->data);
+    }
+
+    filteredIndexedArray->data = filteredArray;
+    filteredIndexedArray->numElements = numElements;
+    indexedArrayWrapper->numConditions = numConditions;
+    return updatedTarget;
+}
+
+/**
  * Filters an array that contains the indices of training examples, as well as their values for a certain feature, such
  * that the filtered array does only contain the indices and feature values of those examples that are covered by the
  * current rule. The filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper`.
