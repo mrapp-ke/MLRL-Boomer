@@ -8,7 +8,6 @@ from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractStatistics
-from boomer.common.sub_sampling cimport IWeightVector
 from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp cimport bool
@@ -35,12 +34,3 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
         Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices)
-
-
-    cdef cppclass ExactRuleRefinementImpl(IRuleRefinement):
-
-        # Constructors:
-
-        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray,
-                                IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
-                                bool nominal) except +
