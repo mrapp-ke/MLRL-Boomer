@@ -161,7 +161,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IRuleRefinement* current_rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
-        cdef uint32 num_sampled_features, weight, f, r
+        cdef uint32 num_sampled_features, weight, f
         cdef bint nominal
         cdef intp c
 
