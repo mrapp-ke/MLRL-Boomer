@@ -378,26 +378,25 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* pred
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
-        ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-        uint32 featureIndex) {
+        ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
     thresholdsSubset_ = thresholdsSubset;
     coveredExamplesMask_ = coveredExamplesMask;
     coveredExamplesTarget_ = coveredExamplesTarget;
-    featureIndex_ = featureIndex;
 }
 
-IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::getSortedFeatureValues() {
+IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::getSortedFeatureValues(
+        uint32 featureIndex) {
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_->cacheFiltered_[featureIndex_];
+    IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_->cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
     IndexedFloat32* indexedValues;
 
     if (indexedArray == NULL) {
-        indexedArray = thresholdsSubset_->thresholds_->cache_[featureIndex_];
+        indexedArray = thresholdsSubset_->thresholds_->cache_[featureIndex];
         indexedValues = indexedArray->data;
 
         if (indexedValues == NULL) {
-            thresholdsSubset_->thresholds_->featureMatrixPtr_.get()->fetchFeatureValues(featureIndex_, indexedArray);
+            thresholdsSubset_->thresholds_->featureMatrixPtr_.get()->fetchFeatureValues(featureIndex, indexedArray);
             indexedValues = indexedArray->data;
             qsort(indexedValues, indexedArray->numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
         }

@@ -93,10 +93,11 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
                  * Returns an array that stores the indices and feature values of the training examples for a certain
                  * feature, sorted by the feature values.
                  *
-                 * @return A pointer to a struct of type `IndexedFloat32Array` that stores the indices and feature
-                 *         values
+                 * @param featureIndex  The index of the feature
+                 * @return              A pointer to a struct of type `IndexedFloat32Array` that stores the indices and
+                 *                      feature values
                  */
-                virtual IndexedFloat32Array* getSortedFeatureValues() = 0;
+                virtual IndexedFloat32Array* getSortedFeatureValues(uint32 featureIndex) = 0;
 
         };
 
