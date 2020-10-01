@@ -280,6 +280,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsI
     uint32 numExamples = thresholds->getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
     coveredExamplesTarget_ = 0;
+    numRefinements_ = 0;
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
@@ -299,7 +300,6 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
 }
 
 IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex,
-                                                                                 uint32 numConditions,
                                                                                  uint32 totalSumOfWeights) {
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
 
@@ -329,6 +329,8 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
+    numRefinements_++;
+
     // If there are examples with zero weights, those examples have not been considered considered when searching for
     // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
     // including those that have previously been ignored, via the function `filterCurrentIndices`. Said function
@@ -355,11 +357,10 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* pred
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
         ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-        uint32 numConditions, uint32 featureIndex) {
+        uint32 featureIndex) {
     thresholdsSubset_ = thresholdsSubset;
     coveredExamplesMask_ = coveredExamplesMask;
     coveredExamplesTarget_ = coveredExamplesTarget;
-    numConditions_ = numConditions;
     featureIndex_ = featureIndex;
 }
 
@@ -381,8 +382,10 @@ IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
     }
 
     // Filter indices, if only a subset of the contained examples is covered...
-    if (numConditions_ > indexedArrayWrapper->numConditions) {
-        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions_, coveredExamplesMask_,
+    uint32 numConditions = thresholdsSubset_->numRefinements_;
+
+    if (numConditions > indexedArrayWrapper->numConditions) {
+        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions, coveredExamplesMask_,
                          coveredExamplesTarget_);
         indexedArray = indexedArrayWrapper->array;
     }

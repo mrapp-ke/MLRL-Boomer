@@ -33,14 +33,11 @@ class IThresholdsSubset {
          * index.
          *
          * @param featureIndex      The index of the feature, the new condition corresponds to
-         * @param numConditions     The number of conditions of the existing rule. This is used to check if caches are
-         *                          still valid
          * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
          *                          existing rule
          * @return                  A pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions,
-                                                      uint32 totalSumOfWeights) = 0;
+        virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 totalSumOfWeights) = 0;
 
         /**
          * Applies a refinement that has been found by an instance of the type `IRuleRefinement` previously created via
@@ -136,8 +133,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                         uint32 coveredExamplesTarget_;
 
-                        uint32 numConditions_;
-
                         uint32 featureIndex_;
 
                     public:
@@ -151,14 +146,12 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          *                                  rule
                          * @param coveredExamplesTarget     The value that is used to mark those elements in
                          *                                  `coveredExamplesMask` that are covered by the current rule
-                         * @param numConditions             The number of conditions of the current rule. This is used
-                         *                                  to check if caches are still valid
                          * @param featureIndex              The index of the feature for which the feature values and
                          *                                  training examples should be retrieved
                          */
                         RuleRefinementCallback(ThresholdsSubsetImpl* thresholdsSubset,
                                                const uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-                                               uint32 numConditions, uint32 featureIndex);
+                                               uint32 featureIndex);
 
                         IndexedFloat32Array* getSortedFeatureValues() override;
 
@@ -171,6 +164,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
                 uint32* coveredExamplesMask_;
 
                 uint32 coveredExamplesTarget_;
+
+                uint32 numRefinements_;
 
                 std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
 
@@ -185,8 +180,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ~ThresholdsSubsetImpl();
 
-                IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 numConditions,
-                                                      uint32 totalSumOfWeights) override;
+                IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 totalSumOfWeights) override;
 
                 void applyRefinement(Refinement &refinement) override;
 
