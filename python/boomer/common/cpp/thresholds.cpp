@@ -435,10 +435,10 @@ ExactThresholdsImpl::~ExactThresholdsImpl() {
 
 IThresholdsSubset* ExactThresholdsImpl::createSubset(IWeightVector* weights) {
     // Notify the statistics about the examples that are included in the sub-sample...
-    uint32 numStatistics = statisticsPtr_.get()->getNumRows();
+    uint32 numExamples = statisticsPtr_.get()->getNumRows();
     statisticsPtr_.get()->resetSampledStatistics();
 
-    for (uint32 r = 0; r < numStatistics; r++) {
+    for (uint32 r = 0; r < numExamples; r++) {
         uint32 weight = weights->getValue(r);
         statisticsPtr_.get()->addSampledStatistic(r, weight);
     }
