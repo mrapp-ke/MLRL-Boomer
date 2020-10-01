@@ -299,9 +299,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
                     # training data...
-                    # TODO thresholds_subset_ptr.get().recalculatePrediction(head_refinement, best_refinement)
-                    __recalculate_predictions_old(statistics, num_statistics, head_refinement, inner_thresholds.coveredExamplesMask_,
-                                                  inner_thresholds.coveredExamplesTarget_, best_refinement.head)
+                    thresholds_subset_ptr.get().recalculatePrediction(head_refinement, best_refinement)
 
                 # Apply post-processor, if necessary...
                 if post_processor is not None:
@@ -657,47 +655,3 @@ cdef inline Condition __make_condition(uint32 feature_index, Comparator comparat
     condition.comparator = comparator
     condition.threshold = threshold
     return condition
-
-
-# TODO Remove function
-cdef inline void __recalculate_predictions_old(AbstractStatistics* statistics, uint32 num_statistics,
-                                               IHeadRefinement* head_refinement, uint32* covered_statistics_mask,
-                                               uint32 covered_statistics_target, PredictionCandidate* head):
-    """
-    Updates the scores that are predicted by the head of a rule, based on all available training examples.
-
-    :param statistics:                  A pointer to an object of type `AbstractStatistics` that stores the available
-                                        statistics
-    :param num_statistics:              The number of available statistics
-    :param head_refinement:             A pointer to an object of type `IHeadRefinement` that was used to find the head
-                                        of the rule
-    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
-                                        of the indices of the statistics that are covered by the rule
-    :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
-                                        are covered by the rule
-    :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
-                                        the rule
-    """
-    # The number labels for which the head predicts
-    cdef uint32 num_predictions = head.numPredictions_
-    # An array that stores the labels for which the head predicts
-    cdef uint32* label_indices = head.labelIndices_
-    # An array that stores the scores that are predicted by the head
-    cdef float64* predicted_scores = head.predictedScores_
-    # Create a new, empty subset of the statistics
-    cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
-    statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
-    # Temporary variables
-    cdef Prediction* prediction
-    cdef float64* updated_scores
-    cdef uint32 r, c
-
-    for r in range(num_statistics):
-        if covered_statistics_mask[r] == covered_statistics_target:
-            statistics_subset_ptr.get().addToSubset(r, 1)
-
-    prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
-    updated_scores = prediction.predictedScores_
-
-    for c in range(num_predictions):
-        predicted_scores[c] = updated_scores[c]
