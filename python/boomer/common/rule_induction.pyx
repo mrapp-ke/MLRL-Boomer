@@ -156,12 +156,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         best_refinement.head = NULL
         # Whether a refinement of the current rule has been found
         cdef bint found_refinement = True
-        # An array that is used to keep track of the indices of the statistics are covered by the current rule. Each
-        # element in the array corresponds to the statistic at the corresponding index. If the value for an element
-        # is equal to `covered_statistics_target`, it is covered by the current rule, otherwise it is not.
-        cdef uint32[::1] covered_statistics_mask = array_uint32(num_statistics)
-        covered_statistics_mask[:] = 0
-        cdef uint32 covered_statistics_target = 0
 
         # Temporary variables
         cdef IRuleRefinement* current_rule_refinement
@@ -219,8 +213,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                                                            weights_ptr.get(), total_sum_of_weights,
                                                            outer_thresholds.cache_,
                                                            inner_thresholds.cacheFiltered_,
-                                                           feature_matrix, &covered_statistics_mask[0],
-                                                           covered_statistics_target, num_conditions, statistics,
+                                                           feature_matrix, inner_thresholds.coveredExamplesMask_,
+                                                           inner_thresholds.coveredExamplesTarget_, num_conditions, statistics,
                                                            head_refinement, best_refinement.head)
                     del current_rule_refinement
 
@@ -272,14 +266,14 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                     # Identify the examples for which the rule predicts...
                     # TODO Remove
-                    covered_statistics_target = __filter_current_indices(inner_thresholds.cacheFiltered_,
+                    inner_thresholds.coveredExamplesTarget_ = __filter_current_indices(inner_thresholds.cacheFiltered_,
                                                                          best_refinement.featureIndex,
                                                                          best_refinement.indexedArray,
                                                                          best_refinement.start, best_refinement.end,
                                                                          best_refinement.comparator,
                                                                          best_refinement.covered, num_conditions,
-                                                                         &covered_statistics_mask[0],
-                                                                         covered_statistics_target, statistics,
+                                                                         inner_thresholds.coveredExamplesMask_,
+                                                                         inner_thresholds.coveredExamplesTarget_, statistics,
                                                                          weights_ptr.get())
                     total_sum_of_weights = best_refinement.coveredWeights
 
@@ -306,8 +300,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
                     # TODO __recalculate_predictions(thresholds_subset_ptr.get(), head_refinement, best_refinement.head)
-                    __recalculate_predictions_old(statistics, num_statistics, head_refinement, &covered_statistics_mask[0],
-                                                  covered_statistics_target, best_refinement.head)
+                    __recalculate_predictions_old(statistics, num_statistics, head_refinement, inner_thresholds.coveredExamplesMask_,
+                                                  inner_thresholds.coveredExamplesTarget_, best_refinement.head)
 
                 # Apply post-processor, if necessary...
                 if post_processor is not None:
@@ -318,7 +312,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 # TODO Remove
                 for r in range(num_statistics):
-                    if covered_statistics_mask[r] == covered_statistics_target:
+                    if inner_thresholds.coveredExamplesMask_[r] == inner_thresholds.coveredExamplesTarget_:
                         statistics.applyPrediction(r, best_refinement.head)
 
                 # Add the induced rule to the model...
