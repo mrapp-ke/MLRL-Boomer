@@ -14,7 +14,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         # Functions:
 
-        IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 totalSumOfWeights)
+        IRuleRefinement* createRuleRefinement(uint32 featureIndex)
 
         void applyRefinement(Refinement& refinement)
 

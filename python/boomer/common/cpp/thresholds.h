@@ -32,12 +32,10 @@ class IThresholdsSubset {
          * an existing rule, which results from adding a new condition that corresponds to the feature at a specific
          * index.
          *
-         * @param featureIndex      The index of the feature, the new condition corresponds to
-         * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
-         *                          existing rule
-         * @return                  A pointer to an object of type `IRuleRefinement` that has been created
+         * @param featureIndex  The index of the feature, the new condition corresponds to
+         * @return              A pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 totalSumOfWeights) = 0;
+        virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex) = 0;
 
         /**
          * Applies a refinement that has been found by an instance of the type `IRuleRefinement` previously created via
@@ -161,6 +159,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 IWeightVector* weights_;
 
+                uint32 sumOfWeights_;
+
                 uint32* coveredExamplesMask_;
 
                 uint32 coveredExamplesTarget_;
@@ -180,7 +180,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ~ThresholdsSubsetImpl();
 
-                IRuleRefinement* createRuleRefinement(uint32 featureIndex, uint32 totalSumOfWeights) override;
+                IRuleRefinement* createRuleRefinement(uint32 featureIndex) override;
 
                 void applyRefinement(Refinement &refinement) override;
 
