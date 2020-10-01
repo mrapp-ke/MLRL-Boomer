@@ -19,7 +19,6 @@ from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
 from libcpp.memory cimport unique_ptr
-from libcpp.cast cimport dynamic_cast
 
 from cython.operator cimport dereference, postincrement
 from cython.parallel cimport prange
