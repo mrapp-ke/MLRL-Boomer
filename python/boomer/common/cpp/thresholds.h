@@ -111,6 +111,13 @@ class AbstractThresholds : virtual public IMatrix {
          */
         virtual IThresholdsSubset* createSubset(IWeightVector* weights) = 0;
 
+        /**
+         * Returns the total number of available labels.
+         *
+         * @return The total number of available labels
+         */
+        uint32 getNumLabels();
+
         uint32 getNumRows() override;
 
         uint32 getNumCols() override;

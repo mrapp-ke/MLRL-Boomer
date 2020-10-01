@@ -273,6 +273,10 @@ uint32 AbstractThresholds::getNumCols() {
     return featureMatrixPtr_.get()->getNumCols();
 }
 
+uint32 AbstractThresholds::getNumLabels() {
+    return statisticsPtr_.get()->getNumCols();
+}
+
 ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl* thresholds,
                                                                 IWeightVector* weights) {
     thresholds_ = thresholds;
