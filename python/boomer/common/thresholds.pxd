@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint32
-from boomer.common._predictions cimport Prediction, PredictionCandidate
+from boomer.common._predictions cimport Prediction
 from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureVector, INominalFeatureVector
 from boomer.common.rule_refinement cimport IRuleRefinement, Refinement
@@ -19,7 +19,8 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         uint32 applyRefinement(Refinement &refinement)
 
-        PredictionCandidate* findOverallHead(IHeadRefinement* headRefinement)
+        Prediction* calculateOverallPrediction(IHeadRefinement* headRefinement, uint32 numLabelIndices,
+                                               const uint32* labelIndices)
 
         void applyPrediction(Prediction* prediction)
 
