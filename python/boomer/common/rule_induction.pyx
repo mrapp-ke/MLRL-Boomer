@@ -163,9 +163,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
         cdef intp c
 
-        cdef ExactThresholdsImpl* outer_thresholds
-        cdef ThresholdsSubsetImpl* inner_thresholds
-
         # Sub-sample examples...
         cdef unique_ptr[IWeightVector] weights_ptr
         weights_ptr.reset(instance_sub_sampling.subSample(num_examples, rng))
@@ -173,9 +170,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # Create a new subset of the given thresholds...
         cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr
         thresholds_subset_ptr.reset(thresholds.createSubset(weights_ptr.get()))
-
-        outer_thresholds = <ExactThresholdsImpl*>thresholds
-        inner_thresholds = dynamic_cast[ThresholdsSubsetImplPtr](thresholds_subset_ptr.get())
 
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] sampled_label_indices_ptr
