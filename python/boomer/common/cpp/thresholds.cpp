@@ -277,6 +277,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsI
                                                                 IWeightVector* weights) {
     thresholds_ = thresholds;
     weights_ = weights;
+    sumOfWeights_ = weights->getSumOfWeights();
     uint32 numExamples = thresholds->getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
     coveredExamplesTarget_ = 0;
@@ -299,8 +300,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
     }
 }
 
-IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex,
-                                                                                 uint32 totalSumOfWeights) {
+IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex) {
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
 
     if (indexedArrayWrapper == NULL) {
@@ -324,12 +324,13 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
     }
 
     bool nominal = thresholds_->nominalFeatureVectorPtr_.get()->getValue(featureIndex);
-    return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), indexedArray, weights_, totalSumOfWeights,
+    return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), indexedArray, weights_, sumOfWeights_,
                                        featureIndex, nominal);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
     numRefinements_++;
+    sumOfWeights_ = refinement.coveredWeights;
 
     // If there are examples with zero weights, those examples have not been considered considered when searching for
     // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
