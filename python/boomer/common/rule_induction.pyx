@@ -325,8 +325,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
-                    __recalculate_predictions(statistics, num_statistics, head_refinement, covered_statistics_mask,
-                                              covered_statistics_target, best_refinement.head)
+                    # TODO __recalculate_predictions(thresholds_subset_ptr.get(), head_refinement, best_refinement.head)
+                    __recalculate_predictions_old(statistics, num_statistics, head_refinement, covered_statistics_mask,
+                                                  covered_statistics_target, best_refinement.head)
 
                 # Apply post-processor, if necessary...
                 if post_processor is not None:
@@ -737,11 +738,35 @@ cdef inline Condition __make_condition(uint32 feature_index, Comparator comparat
     return condition
 
 
-cdef inline void __recalculate_predictions(AbstractStatistics* statistics, uint32 num_statistics,
-                                           IHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
-                                           uint32 covered_statistics_target, PredictionCandidate* head):
+cdef inline void __recalculate_predictions(IThresholdsSubset* thresholds_subset, IHeadRefinement* head_refinement,
+                                           PredictionCandidate* head):
     """
-    Updates the scores that a predicted by the head of a rule, based on all available statistics.
+    Updates the scores that are predicted by the head of a rule, based on all available training examples.
+
+    :param thresholds_subset:   A pointer to an object of type `IThresholdsSubset` that should be used to calculate the
+                                updated scores
+    :param head_refinement:     A pointer to an object of type `IHeadRefinement` that was used to find the head of the
+                                rule
+    :param head:                A pointer to an object of type `PredictionCandidate`, representing the head of the rule
+    """
+    cdef uint32 num_predictions = head.numPredictions_
+    cdef uint32* label_indices = head.labelIndices_
+    cdef float64* predicted_scores = head.predictedScores_
+    cdef Prediction* prediction = thresholds_subset.calculateOverallPrediction(head_refinement, num_predictions,
+                                                                               label_indices)
+    cdef float64* updated_scores = prediction.predictedScores_
+    cdef uint32 c
+
+    for c in range(num_predictions):
+        predicted_scores[c] = updated_scores[c]
+
+
+# TODO Remove function
+cdef inline void __recalculate_predictions_old(AbstractStatistics* statistics, uint32 num_statistics,
+                                               IHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
+                                               uint32 covered_statistics_target, PredictionCandidate* head):
+    """
+    Updates the scores that are predicted by the head of a rule, based on all available training examples.
 
     :param statistics:                  A pointer to an object of type `AbstractStatistics` that stores the available
                                         statistics
