@@ -102,8 +102,8 @@ cdef class SequentialRuleInduction:
         cdef int num_threads = self.num_threads
         # The random number generator to be used
         cdef unique_ptr[RNG] rng_ptr = make_unique[RNG](random_state)
-        # The number of rules induced so far (starts at 1 to account for the default rule)
-        cdef uint32 num_rules = 1
+        # The number of rules induced so far
+        cdef uint32 num_rules = 0
         # Temporary variables
         cdef bint success
 
@@ -112,6 +112,7 @@ cdef class SequentialRuleInduction:
 
         if default_rule_head_refinement is not None:
             head_refinement_ptr = default_rule_head_refinement.head_refinement_ptr
+            num_rules += 1;
 
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
         rule_induction.induce_default_rule(statistics_provider, head_refinement_ptr.get(), model_builder)
