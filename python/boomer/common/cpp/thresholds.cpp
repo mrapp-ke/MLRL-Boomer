@@ -382,10 +382,8 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* pred
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
-        ThresholdsSubsetImpl* thresholdsSubset, const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
+        ThresholdsSubsetImpl* thresholdsSubset) {
     thresholdsSubset_ = thresholdsSubset;
-    coveredExamplesMask_ = coveredExamplesMask;
-    coveredExamplesTarget_ = coveredExamplesTarget;
 }
 
 IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::getSortedFeatureValues(
@@ -410,8 +408,8 @@ IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
     uint32 numConditions = thresholdsSubset_->numRefinements_;
 
     if (numConditions > indexedArrayWrapper->numConditions) {
-        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions, coveredExamplesMask_,
-                         coveredExamplesTarget_);
+        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions, thresholdsSubset_->coveredExamplesMask_,
+                         thresholdsSubset_->coveredExamplesTarget_);
         indexedArray = indexedArrayWrapper->array;
     }
 

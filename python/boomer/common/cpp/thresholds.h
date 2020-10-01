@@ -150,24 +150,13 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                         ThresholdsSubsetImpl* thresholdsSubset_;
 
-                        const uint32* coveredExamplesMask_;
-
-                        uint32 coveredExamplesTarget_;
-
                     public:
 
                         /**
-                         * @param thresholdsSubset          A pointer to an object of type `ThresholdsSubsetImpl` that
-                         *                                  caches the feature values and indices
-                         * @param coveredExamplesMask       A pointer to an array of type `uint32`, shape
-                         *                                  `(num_statistics)`, that is used to keep track of the
-                         *                                  indices of the statistics that are covered by the current
-                         *                                  rule
-                         * @param coveredExamplesTarget     The value that is used to mark those elements in
-                         *                                  `coveredExamplesMask` that are covered by the current rule
+                         * @param thresholdsSubset  A pointer to an object of type `ThresholdsSubsetImpl` that caches
+                         *                          the feature values and indices
                          */
-                        RuleRefinementCallback(ThresholdsSubsetImpl* thresholdsSubset,
-                                               const uint32* coveredExamplesMask, uint32 coveredExamplesTarget);
+                        RuleRefinementCallback(ThresholdsSubsetImpl* thresholdsSubset);
 
                         IndexedFloat32Array* getSortedFeatureValues(uint32 featureIndex) override;
 
