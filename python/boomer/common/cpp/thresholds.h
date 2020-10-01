@@ -168,13 +168,13 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 sumOfWeights_;
 
+            public:
+
                 uint32* coveredExamplesMask_;
 
                 uint32 coveredExamplesTarget_;
 
                 uint32 numRefinements_;
-
-            public:
 
                 std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
 
