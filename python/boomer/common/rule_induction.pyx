@@ -188,7 +188,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IRuleRefinement* current_rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
-        cdef uint32 num_sampled_features, weight, f, r
+        cdef uint32 num_covered_examples, num_sampled_features, weight, f, r
         cdef bint nominal
         cdef intp c
 
@@ -276,8 +276,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                         label_indices = best_refinement.head.labelIndices_
 
                     # Filter the current subset of thresholds by applying the best refinement that has been found...
-                    # TODO Deal with return value
-                    thresholds_subset_ptr.get().applyRefinement(best_refinement)
+                    num_covered_examples = thresholds_subset_ptr.get().applyRefinement(best_refinement)
 
                     # If instance sub-sampling is used, examples that are not contained in the current sub-sample were
                     # not considered for finding the new condition. In the next step, we need to identify the examples
@@ -304,6 +303,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                                                                          weights_ptr.get())
                     total_sum_of_weights = best_refinement.coveredWeights
 
+                    # TODO if num_covered_examples <= min_coverage:
                     if total_sum_of_weights <= min_coverage:
                         # Abort refinement process if the rule is not allowed to cover less examples...
                         break
