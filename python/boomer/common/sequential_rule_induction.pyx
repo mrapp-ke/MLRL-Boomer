@@ -134,12 +134,12 @@ cdef class SequentialRuleInduction:
         thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_vector, statistics_provider))
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            success = rule_induction.induce_rule(statistics_provider, thresholds_ptr.get(),
-                                                 nominal_feature_vector_ptr.get(), feature_matrix_ptr.get(),
-                                                 head_refinement_ptr.get(), label_sub_sampling_ptr.get(),
-                                                 instance_sub_sampling_ptr.get(), feature_sub_sampling_ptr.get(),
-                                                 pruning, post_processor, min_coverage, max_conditions,
-                                                 max_head_refinements, num_threads, rng_ptr.get(), model_builder)
+            success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_vector_ptr.get(),
+                                                 feature_matrix_ptr.get(), head_refinement_ptr.get(),
+                                                 label_sub_sampling_ptr.get(), instance_sub_sampling_ptr.get(),
+                                                 feature_sub_sampling_ptr.get(), pruning, post_processor, min_coverage,
+                                                 max_conditions, max_head_refinements, num_threads, rng_ptr.get(),
+                                                 model_builder)
 
             if not success:
                 break
