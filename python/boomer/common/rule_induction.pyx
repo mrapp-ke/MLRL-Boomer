@@ -197,13 +197,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         weights_ptr.reset(instance_sub_sampling.subSample(num_statistics, rng))
         cdef uint32 total_sum_of_weights = weights_ptr.get().getSumOfWeights()
 
-        # Notify the statistics about the examples that are included in the sub-sample...
-        statistics.resetSampledStatistics()
-
-        for r in range(num_statistics):
-            weight = weights_ptr.get().getValue(r)
-            statistics.addSampledStatistic(r, weight)
-
         # Create a new subset of the given thresholds...
         cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr
         thresholds_subset_ptr.reset(thresholds.createSubset(weights_ptr.get()))
