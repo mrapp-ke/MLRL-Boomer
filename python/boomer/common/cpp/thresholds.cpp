@@ -328,7 +328,7 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
                                        featureIndex, nominal);
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
+uint32 ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
     numRefinements_++;
     sumOfWeights_ = refinement.coveredWeights;
 
@@ -348,7 +348,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refi
                                                   refinement.start, refinement.end, refinement.comparator,
                                                   refinement.covered, numRefinements_, coveredExamplesMask_,
                                                   coveredExamplesTarget_, thresholds_->statisticsPtr_.get(), weights_);
-    // TODO return the number of covered examples
+    return sumOfWeights_;
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
