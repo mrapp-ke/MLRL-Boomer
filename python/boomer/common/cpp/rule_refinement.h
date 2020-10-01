@@ -107,3 +107,7 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };
+
+class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
+
+};
