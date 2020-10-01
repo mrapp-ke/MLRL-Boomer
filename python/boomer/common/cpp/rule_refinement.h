@@ -63,20 +63,6 @@ class IRuleRefinement {
  */
 class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
-    private:
-
-        AbstractStatistics* statistics_;
-
-        IndexedFloat32Array* indexedArray_;
-
-        IWeightVector* weights_;
-
-        uint32 totalSumOfWeights_;
-
-        uint32 featureIndex_;
-
-        bool nominal_;
-
     public:
 
         /**
@@ -100,6 +86,22 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
                 virtual IndexedFloat32Array* getSortedFeatureValues(uint32 featureIndex) = 0;
 
         };
+
+    private:
+
+        AbstractStatistics* statistics_;
+
+        IndexedFloat32Array* indexedArray_;
+
+        IWeightVector* weights_;
+
+        uint32 totalSumOfWeights_;
+
+        uint32 featureIndex_;
+
+        bool nominal_;
+
+    public:
 
         /**
          * @param statistics            A pointer to an object of type `AbstractStatistics` that provides access to the
