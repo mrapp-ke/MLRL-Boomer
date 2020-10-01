@@ -471,6 +471,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     return rule_refinement_ptr.get().findRefinement(head_refinement, head, num_label_indices, label_indices)
 
 
+# TODO Remove function
 cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp condition_end, intp condition_previous,
                                 float32 threshold):
     """
@@ -522,6 +523,7 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
     return adjusted_position
 
 
+# TODO Remove function
 cdef inline uint32 __filter_current_indices(unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                             uint32 feature_index,  IndexedFloat32Array* indexed_array,
                                             intp condition_start, intp condition_end, Comparator condition_comparator,
@@ -664,6 +666,7 @@ cdef inline uint32 __filter_current_indices(unordered_map[uint32, IndexedFloat32
     return updated_target
 
 
+# TODO Remove function
 cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
                                       IndexedFloat32ArrayWrapper* indexed_array_wrapper, uint32 num_conditions,
                                       uint32[::1] covered_statistics_mask, uint32 covered_statistics_target) nogil:
