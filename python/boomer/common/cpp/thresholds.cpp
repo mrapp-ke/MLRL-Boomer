@@ -181,7 +181,7 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
                                        featureIndex, nominal);
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
+void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
     // TODO
 }
 
