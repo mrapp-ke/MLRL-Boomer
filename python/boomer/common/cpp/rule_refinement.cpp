@@ -471,3 +471,17 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
 
     return refinement;
 }
+
+ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(AbstractStatistics* statistics, BinArray* binArray,
+                                                             uint32 featureIndex) {
+    statistics_ = statistics;
+    binArray_ = binArray;
+    featureIndex_ = featureIndex;
+}
+
+Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement,
+                                                         PredictionCandidate* currentHead,
+                                                         uint32 numLabelIndices, const uint32* labelIndices) {
+    Refinement refinement;
+    return refinement;
+}
