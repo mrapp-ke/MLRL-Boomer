@@ -3,28 +3,20 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport float64, array_uint32
-from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
-from boomer.common._predictions cimport Prediction, PredictionCandidate
+from boomer.common._arrays cimport float32, array_uint32
+from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
-from boomer.common.thresholds cimport IThresholdsSubset, ExactThresholdsImpl, ThresholdsSubsetImpl
-
-from libc.math cimport fabs
-from libc.stdlib cimport abs, malloc, realloc, free
+from boomer.common.thresholds cimport IThresholdsSubset
 
 from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
-from libcpp.pair cimport pair
 from libcpp.memory cimport unique_ptr
 
-from cython.operator cimport dereference, postincrement
 from cython.parallel cimport prange
 
-
-ctypedef ThresholdsSubsetImpl* ThresholdsSubsetImplPtr
 
 cdef class RuleInduction:
     """
