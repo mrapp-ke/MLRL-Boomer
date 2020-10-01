@@ -147,8 +147,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                         uint32 coveredExamplesTarget_;
 
-                        uint32 featureIndex_;
-
                     public:
 
                         /**
@@ -160,14 +158,11 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          *                                  rule
                          * @param coveredExamplesTarget     The value that is used to mark those elements in
                          *                                  `coveredExamplesMask` that are covered by the current rule
-                         * @param featureIndex              The index of the feature for which the feature values and
-                         *                                  training examples should be retrieved
                          */
                         RuleRefinementCallback(ThresholdsSubsetImpl* thresholdsSubset,
-                                               const uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-                                               uint32 featureIndex);
+                                               const uint32* coveredExamplesMask, uint32 coveredExamplesTarget);
 
-                        IndexedFloat32Array* getSortedFeatureValues() override;
+                        IndexedFloat32Array* getSortedFeatureValues(uint32 featureIndex) override;
 
                 };
 
