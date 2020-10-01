@@ -135,7 +135,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # The statistics
         cdef AbstractStatistics* statistics = statistics_provider.get()
         # The total number of statistics
-        cdef uint32 num_statistics = thresholds.getNumRows()
+        cdef uint32 num_examples = thresholds.getNumRows()
         # The total number of features
         cdef uint32 num_features = thresholds.getNumCols()
         # The total number of labels
@@ -170,7 +170,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         # Sub-sample examples...
         cdef unique_ptr[IWeightVector] weights_ptr
-        weights_ptr.reset(instance_sub_sampling.subSample(num_statistics, rng))
+        weights_ptr.reset(instance_sub_sampling.subSample(num_examples, rng))
         cdef uint32 total_sum_of_weights = weights_ptr.get().getSumOfWeights()
 
         # Create a new subset of the given thresholds...
