@@ -10,7 +10,7 @@ from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement, ExactRuleRefinementImpl
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
-from boomer.common.thresholds cimport IThresholdsSubset
+from boomer.common.thresholds cimport IThresholdsSubset, ExactThresholdsImpl, ThresholdsSubsetImpl
 
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
@@ -18,10 +18,13 @@ from libc.stdlib cimport abs, malloc, realloc, free
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
 from libcpp.memory cimport unique_ptr
+from libcpp.cast cimport dynamic_cast
 
 from cython.operator cimport dereference, postincrement
 from cython.parallel cimport prange
 
+
+ctypedef ThresholdsSubsetImpl* ThresholdsSubsetImplPtr
 
 cdef class RuleInduction:
     """
@@ -192,6 +195,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef bint nominal
         cdef intp c
 
+        cdef ExactThresholdsImpl* outer_thresholds
+        cdef ThresholdsSubsetImpl* inner_thresholds
+
         # Sub-sample examples...
         cdef unique_ptr[IWeightVector] weights_ptr
         weights_ptr.reset(instance_sub_sampling.subSample(num_statistics, rng))
@@ -200,6 +206,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # Create a new subset of the given thresholds...
         cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr
         thresholds_subset_ptr.reset(thresholds.createSubset(weights_ptr.get()))
+
+        outer_thresholds = <ExactThresholdsImpl*>thresholds
+        inner_thresholds = dynamic_cast[ThresholdsSubsetImplPtr](thresholds_subset_ptr.get())
 
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] sampled_label_indices_ptr
