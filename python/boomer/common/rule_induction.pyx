@@ -328,42 +328,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             del best_refinement.head
 
 
-cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFloat32Array*]* cache_global,
-                          unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local):
-    """
-    Updates the caches `cache_global` and `cache_local`, which store arrays that contain the indices of examples, as
-    well as their values for certain features, if necessary.
-
-    :param feature_index:               The index of the feature, the new condition should correspond to
-    :param cache_global:                A pointer to a map that maps feature indices to structs of type
-                                        `IndexedFloat32Array`, storing the indices of all training examples, as well
-                                        as their values for the respective feature, sorted in ascending order by the
-                                        feature values
-    :param cache_local:                 A pointer to a map that maps feature indices to structs of type
-                                        `IndexedFloat32ArrayWrapper`, storing the indices of the training examples that
-                                        are covered by the existing rule, as well as their values for the respective
-                                        feature, sorted in ascending order by the feature values
-    """
-    cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
-
-    if indexed_array_wrapper == NULL:
-        indexed_array_wrapper = <IndexedFloat32ArrayWrapper*>malloc(sizeof(IndexedFloat32ArrayWrapper))
-        indexed_array_wrapper.array = NULL
-        indexed_array_wrapper.numConditions = 0
-        cache_local[feature_index] = indexed_array_wrapper
-
-    cdef IndexedFloat32Array* indexed_array = indexed_array_wrapper.array
-
-    if indexed_array == NULL:
-        indexed_array = dereference(cache_global)[feature_index]
-
-        if indexed_array == NULL:
-            indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
-            indexed_array.data = NULL
-            indexed_array.numElements = 0
-            dereference(cache_global)[feature_index] = indexed_array
-
-
 cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num_label_indices,
                                   const uint32* label_indices, IWeightVector* weights, uint32 total_sum_of_weights,
                                   unordered_map[uint32, IndexedFloat32Array*] &cache_global,
