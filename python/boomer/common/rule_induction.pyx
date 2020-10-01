@@ -219,7 +219,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                                                            weights_ptr.get(), total_sum_of_weights,
                                                            outer_thresholds.cache_,
                                                            inner_thresholds.cacheFiltered_,
-                                                           feature_matrix, covered_statistics_mask,
+                                                           feature_matrix, &covered_statistics_mask[0],
                                                            covered_statistics_target, num_conditions, statistics,
                                                            head_refinement, best_refinement.head)
                     del current_rule_refinement
@@ -278,7 +278,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                                                                          best_refinement.start, best_refinement.end,
                                                                          best_refinement.comparator,
                                                                          best_refinement.covered, num_conditions,
-                                                                         covered_statistics_mask,
+                                                                         &covered_statistics_mask[0],
                                                                          covered_statistics_target, statistics,
                                                                          weights_ptr.get())
                     total_sum_of_weights = best_refinement.coveredWeights
@@ -306,7 +306,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
                     # entire training data...
                     # TODO __recalculate_predictions(thresholds_subset_ptr.get(), head_refinement, best_refinement.head)
-                    __recalculate_predictions_old(statistics, num_statistics, head_refinement, covered_statistics_mask,
+                    __recalculate_predictions_old(statistics, num_statistics, head_refinement, &covered_statistics_mask[0],
                                                   covered_statistics_target, best_refinement.head)
 
                 # Apply post-processor, if necessary...
@@ -332,7 +332,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
                                   const uint32* label_indices, IWeightVector* weights, uint32 total_sum_of_weights,
                                   unordered_map[uint32, IndexedFloat32Array*] &cache_global,
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
-                                  IFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
+                                  IFeatureMatrix* feature_matrix, uint32* covered_statistics_mask,
                                   uint32 covered_statistics_target, uint32 num_conditions,
                                   AbstractStatistics* statistics, IHeadRefinement* head_refinement,
                                   PredictionCandidate* head) nogil:
@@ -456,7 +456,7 @@ cdef inline intp __adjust_split(IndexedFloat32Array* indexed_array, intp conditi
 cdef inline uint32 __filter_current_indices(unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                             uint32 feature_index,  IndexedFloat32Array* indexed_array,
                                             intp condition_start, intp condition_end, Comparator condition_comparator,
-                                            bint covered, uint32 num_conditions, uint32[::1] covered_statistics_mask,
+                                            bint covered, uint32 num_conditions, uint32* covered_statistics_mask,
                                             uint32 covered_statistics_target, AbstractStatistics* statistics,
                                             IWeightVector* weights):
     """
@@ -598,7 +598,7 @@ cdef inline uint32 __filter_current_indices(unordered_map[uint32, IndexedFloat32
 # TODO Remove function
 cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
                                       IndexedFloat32ArrayWrapper* indexed_array_wrapper, uint32 num_conditions,
-                                      uint32[::1] covered_statistics_mask, uint32 covered_statistics_target) nogil:
+                                      uint32* covered_statistics_mask, uint32 covered_statistics_target) nogil:
     """
     Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
     filtered array does only contain the indices and feature values of the examples that are covered by the current
@@ -695,7 +695,7 @@ cdef inline void __recalculate_predictions(IThresholdsSubset* thresholds_subset,
 
 # TODO Remove function
 cdef inline void __recalculate_predictions_old(AbstractStatistics* statistics, uint32 num_statistics,
-                                               IHeadRefinement* head_refinement, uint32[::1] covered_statistics_mask,
+                                               IHeadRefinement* head_refinement, uint32* covered_statistics_mask,
                                                uint32 covered_statistics_target, PredictionCandidate* head):
     """
     Updates the scores that are predicted by the head of a rule, based on all available training examples.
