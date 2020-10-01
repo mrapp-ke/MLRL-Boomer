@@ -264,7 +264,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                                                                          weights_ptr.get())
                     total_sum_of_weights = best_refinement.coveredWeights
 
-                    # TODO if num_covered_examples <= min_coverage:
                     if total_sum_of_weights <= min_coverage:
                         # Abort refinement process if the rule is not allowed to cover less examples...
                         break
