@@ -174,9 +174,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 numRefinements_;
 
-                std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
-
             public:
+
+                std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
 
                 /**
                  * @param thresholds    A pointer to an object of type `ExactThresholdsImpl` that stores the thresholds
@@ -198,9 +198,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         };
 
-        std::unordered_map<uint32, IndexedFloat32Array*> cache_;
-
     public:
+
+        std::unordered_map<uint32, IndexedFloat32Array*> cache_;
 
         /**
          * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
