@@ -52,18 +52,18 @@ class IThresholdsSubset {
         virtual uint32 applyRefinement(Refinement &refinement) = 0;
 
         /**
-         * Calculates the scores to be predicted by a rule that covers the current subset, ignoring the weights of the
-         * individual training examples and assuming equally distributed weights instead.
+         * Recalculates the scores to be predicted by a refinement that has been found by an instance of the type
+         * `IRuleRefinement`, which was previously created via the function `createRuleRefinement`, and updates the head
+         * of the refinement accordingly.
+         *
+         * When calculating the updated scores the weights of the individual training examples are ignored and equally
+         * distributed weights are assumed instead.
          *
          * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to calculate
-         *                          the scores to be predicted
-         * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
-         *                          indices of the labels for which the refined rule may predict
-         * @return                  A pointer to an object of type `Prediction` that stores the scores to be predicted
+         *                          the updated scores
+         * @param refinement        An object of type `Refinement`, whose head should be updated
          */
-        virtual Prediction* calculateOverallPrediction(IHeadRefinement* headRefinement, uint32 numLabelIndices,
-                                                       const uint32* labelIndices) = 0;
+        virtual void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement) = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
@@ -191,8 +191,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 applyRefinement(Refinement &refinement) override;
 
-                Prediction* calculateOverallPrediction(IHeadRefinement* headRefinement, uint32 numLabelIndices,
-                                                       const uint32* labelIndices) override;
+                void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement) override;
 
                 void applyPrediction(Prediction* prediction) override;
 

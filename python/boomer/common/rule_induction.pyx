@@ -297,9 +297,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     #     covered_statistics_mask = uint32_array_scalar_pair.first
                     #     covered_statistics_target = uint32_array_scalar_pair.second
 
-                    # If instance sub-sampling is used, we need to re-calculate the scores in the head based on the
-                    # entire training data...
-                    # TODO __recalculate_predictions(thresholds_subset_ptr.get(), head_refinement, best_refinement.head)
+                    # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
+                    # training data...
+                    # TODO thresholds_subset_ptr.get().recalculatePrediction(head_refinement, best_refinement)
                     __recalculate_predictions_old(statistics, num_statistics, head_refinement, inner_thresholds.coveredExamplesMask_,
                                                   inner_thresholds.coveredExamplesTarget_, best_refinement.head)
 
@@ -657,29 +657,6 @@ cdef inline Condition __make_condition(uint32 feature_index, Comparator comparat
     condition.comparator = comparator
     condition.threshold = threshold
     return condition
-
-
-cdef inline void __recalculate_predictions(IThresholdsSubset* thresholds_subset, IHeadRefinement* head_refinement,
-                                           PredictionCandidate* head):
-    """
-    Updates the scores that are predicted by the head of a rule, based on all available training examples.
-
-    :param thresholds_subset:   A pointer to an object of type `IThresholdsSubset` that should be used to calculate the
-                                updated scores
-    :param head_refinement:     A pointer to an object of type `IHeadRefinement` that was used to find the head of the
-                                rule
-    :param head:                A pointer to an object of type `PredictionCandidate`, representing the head of the rule
-    """
-    cdef uint32 num_predictions = head.numPredictions_
-    cdef uint32* label_indices = head.labelIndices_
-    cdef float64* predicted_scores = head.predictedScores_
-    cdef Prediction* prediction = thresholds_subset.calculateOverallPrediction(head_refinement, num_predictions,
-                                                                               label_indices)
-    cdef float64* updated_scores = prediction.predictedScores_
-    cdef uint32 c
-
-    for c in range(num_predictions):
-        predicted_scores[c] = updated_scores[c]
 
 
 # TODO Remove function

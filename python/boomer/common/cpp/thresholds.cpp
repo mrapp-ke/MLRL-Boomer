@@ -355,9 +355,12 @@ uint32 ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &re
     return sumOfWeights_;
 }
 
-Prediction* ExactThresholdsImpl::ThresholdsSubsetImpl::calculateOverallPrediction(IHeadRefinement* headRefinement,
-                                                                                  uint32 numLabelIndices,
-                                                                                  const uint32* labelIndices) {
+void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement* headRefinement,
+                                                                      Refinement &refinement) {
+    PredictionCandidate* head = refinement.head;
+    uint32 numLabelIndices = head->numPredictions_;
+    const uint32* labelIndices = head->labelIndices_;
+    float64* predictedScores = head->predictedScores_;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
     statisticsSubsetPtr.reset(thresholds_->statisticsPtr_.get()->createSubset(numLabelIndices, labelIndices));
     uint32 numExamples = thresholds_->getNumRows();
@@ -368,7 +371,12 @@ Prediction* ExactThresholdsImpl::ThresholdsSubsetImpl::calculateOverallPredictio
         }
     }
 
-    return headRefinement->calculatePrediction(statisticsSubsetPtr.get(), false, false);
+    Prediction* prediction = headRefinement->calculatePrediction(statisticsSubsetPtr.get(), false, false);
+    const float64* updatedScores = prediction->predictedScores_;
+
+    for (uint32 c = 0; c < numLabelIndices; c++) {
+        predictedScores[c] = updatedScores[c];
+    }
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
