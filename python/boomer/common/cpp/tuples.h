@@ -56,6 +56,11 @@ struct Bin {
     float32 maxValue;
 };
 
+struct BinArray {
+    uint32 numBins;
+    Bin* bins;
+};
+
 namespace tuples {
 
     /**
