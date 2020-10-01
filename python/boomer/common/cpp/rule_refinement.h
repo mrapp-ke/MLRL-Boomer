@@ -47,7 +47,7 @@ class IRuleRefinement {
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
          *                          existing rule
          * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(num_predictions)`, representing the
+         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict
          * @return                  A struct of type `Refinement`, representing the best refinement that has been found
          */
