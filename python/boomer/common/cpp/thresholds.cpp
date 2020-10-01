@@ -343,7 +343,12 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refi
                                      refinement.threshold);
     }
 
-    // TODO
+    // Identify the examples that are covered by the refined rule...
+    coveredExamplesTarget_ = filterCurrentIndices(cacheFiltered_, refinement.featureIndex, refinement.indexedArray,
+                                                  refinement.start, refinement.end, refinement.comparator,
+                                                  refinement.covered, numRefinements_, coveredExamplesMask_,
+                                                  coveredExamplesTarget_, thresholds_->statisticsPtr_.get(), weights_);
+    // TODO return the number of covered examples
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
