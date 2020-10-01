@@ -307,7 +307,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
             if best_refinement.head == NULL:
                 # No rule could be induced, because no useful condition could be found. This might be the case, if all
-                # examples have the same values for the considerd features.
+                # examples have the same values for the considered features.
                 return False
             else:
                 if weights_ptr.get().hasZeroElements():
