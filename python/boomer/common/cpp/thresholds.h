@@ -47,9 +47,8 @@ class IThresholdsSubset {
          * included.
          *
          * @param refinement An object of type `Refinement`, representing the refinement to be applied
-         * @return           The sum of the weights of all examples that are covered by the refinement
          */
-        virtual uint32 applyRefinement(Refinement &refinement) = 0;
+        virtual void applyRefinement(Refinement &refinement) = 0;
 
         /**
          * Recalculates the scores to be predicted by a refinement that has been found by an instance of the type
@@ -189,7 +188,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 IRuleRefinement* createRuleRefinement(uint32 featureIndex) override;
 
-                uint32 applyRefinement(Refinement &refinement) override;
+                void applyRefinement(Refinement &refinement) override;
 
                 void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement) override;
 

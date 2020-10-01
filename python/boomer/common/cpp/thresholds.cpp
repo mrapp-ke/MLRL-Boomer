@@ -332,7 +332,7 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
                                        featureIndex, nominal);
 }
 
-uint32 ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
+void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
     numRefinements_++;
     sumOfWeights_ = refinement.coveredWeights;
 
@@ -355,7 +355,6 @@ uint32 ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &re
                                                   refinement.covered, numRefinements_, coveredExamplesMask_,
                                                   coveredExamplesTarget_, thresholds_->statisticsPtr_.get(), weights_);
     */
-    return sumOfWeights_;
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement* headRefinement,

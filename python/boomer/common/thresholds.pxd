@@ -19,7 +19,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         IRuleRefinement* createRuleRefinement(uint32 featureIndex)
 
-        uint32 applyRefinement(Refinement &refinement)
+        void applyRefinement(Refinement &refinement)
 
         void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement)
 
