@@ -15,6 +15,7 @@ from boomer.common.thresholds cimport IThresholdsSubset, ExactThresholdsImpl, Th
 from libc.math cimport fabs
 from libc.stdlib cimport abs, malloc, realloc, free
 
+from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
 from libcpp.pair cimport pair
 from libcpp.memory cimport unique_ptr
@@ -97,22 +98,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     rule the most is chosen. The search stops if no refinement results in an improvement.
     """
 
-    def __cinit__(self):
-        self.cache_global = new unordered_map[uint32, IndexedFloat32Array*]()
-
-    def __dealloc__(self):
-        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
-        cdef unordered_map[uint32, IndexedFloat32Array*].iterator cache_global_iterator = cache_global.begin()
-        cdef IndexedFloat32Array* indexed_array
-
-        while cache_global_iterator != cache_global.end():
-            indexed_array = dereference(cache_global_iterator).second
-            free(indexed_array.data)
-            free(indexed_array)
-            postincrement(cache_global_iterator)
-
-        del self.cache_global
-
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
                                   ModelBuilder model_builder):
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
@@ -177,17 +162,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef uint32[::1] covered_statistics_mask = array_uint32(num_statistics)
         covered_statistics_mask[:] = 0
         cdef uint32 covered_statistics_target = 0
-        # A map that stores potential thresholds that result from all available statistics
-        cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global = self.cache_global
-        # A map that stores potential thresholds that result from the statistics that are covered by the current rule
-        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*] cache_local  # Stack-allocated map
 
         # Temporary variables
-        cdef unordered_map[uint32, IndexedFloat32ArrayWrapper*].iterator cache_local_iterator
-        cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper
-        cdef IndexedFloat32Array* indexed_array
-        cdef IndexedFloat32* indexed_values
-        cdef pair[uint32[::1], uint32] uint32_array_scalar_pair
         cdef IRuleRefinement* current_rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
@@ -232,7 +208,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     rule_refinements[f] = thresholds_subset_ptr.get().createRuleRefinement(f)
-                    __update_caches(f, cache_global, cache_local)
 
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
@@ -241,8 +216,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     # TODO current_refinement = current_rule_refinement.findRefinement(head_refinement, best_refinement.head, num_predictions, label_indices)
                     nominal = nominal_feature_vector.getValue(f)
                     current_refinement = __find_refinement(f, nominal, num_predictions, label_indices,
-                                                           weights_ptr.get(), total_sum_of_weights, cache_global,
-                                                           cache_local, feature_matrix, covered_statistics_mask,
+                                                           weights_ptr.get(), total_sum_of_weights,
+                                                           outer_thresholds.cache_,
+                                                           inner_thresholds.cacheFiltered_,
+                                                           feature_matrix, covered_statistics_mask,
                                                            covered_statistics_target, num_conditions, statistics,
                                                            head_refinement, best_refinement.head)
                     del current_rule_refinement
@@ -295,7 +272,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                     # Identify the examples for which the rule predicts...
                     # TODO Remove
-                    covered_statistics_target = __filter_current_indices(cache_local, best_refinement.featureIndex,
+                    covered_statistics_target = __filter_current_indices(inner_thresholds.cacheFiltered_,
+                                                                         best_refinement.featureIndex,
                                                                          best_refinement.indexedArray,
                                                                          best_refinement.start, best_refinement.end,
                                                                          best_refinement.comparator,
@@ -349,21 +327,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         finally:
             del best_refinement.head
 
-            # Free memory occupied by the arrays stored in `cache_local`...
-            cache_local_iterator = cache_local.begin()
-
-            while cache_local_iterator != cache_local.end():
-                indexed_array_wrapper = dereference(cache_local_iterator).second
-                indexed_array = indexed_array_wrapper.array
-
-                if indexed_array != NULL:
-                    indexed_values = indexed_array.data
-                    free(indexed_values)
-
-                free(indexed_array)
-                free(indexed_array_wrapper)
-                postincrement(cache_local_iterator)
-
 
 cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFloat32Array*]* cache_global,
                           unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local):
@@ -403,7 +366,7 @@ cdef void __update_caches(uint32 feature_index, unordered_map[uint32, IndexedFlo
 
 cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num_label_indices,
                                   const uint32* label_indices, IWeightVector* weights, uint32 total_sum_of_weights,
-                                  unordered_map[uint32, IndexedFloat32Array*]* cache_global,
+                                  unordered_map[uint32, IndexedFloat32Array*] &cache_global,
                                   unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
                                   IFeatureMatrix* feature_matrix, uint32[::1] covered_statistics_mask,
                                   uint32 covered_statistics_target, uint32 num_conditions,
@@ -453,7 +416,7 @@ cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num
     cdef IndexedFloat32* indexed_values
 
     if indexed_array == NULL:
-        indexed_array = dereference(cache_global)[feature_index]
+        indexed_array = cache_global[feature_index]
         indexed_values = indexed_array.data
 
         if indexed_values == NULL:

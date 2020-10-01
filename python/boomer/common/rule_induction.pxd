@@ -10,8 +10,6 @@ from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.head_refinement cimport IHeadRefinement
 
-from libcpp.unordered_map cimport unordered_map
-
 
 cdef class RuleInduction:
 
@@ -29,10 +27,6 @@ cdef class RuleInduction:
 
 
 cdef class TopDownGreedyRuleInduction(RuleInduction):
-
-    # Attributes:
-
-    cdef unordered_map[uint32, IndexedFloat32Array*]* cache_global
 
     # Functions:
 
