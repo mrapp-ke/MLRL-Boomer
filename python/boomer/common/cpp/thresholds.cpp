@@ -3,6 +3,64 @@
 #include <stdlib.h>
 
 
+/**
+ * Filters an array that contains the indices of training examples, as well as their values for a certain feature, such
+ * that the filtered array does only contain the indices and feature values of those examples that are covered by the
+ * current rule. The filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper`.
+ *
+ * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the array
+ *                              which should be filtered, as well as the number of elements in the array
+ * @param indexedArrayWrapper   A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used to store
+ *                              the filtered array
+ * @param numConditions         The total number of conditions in the current rule's body
+ * @param coveredExamplesMask   An array of type `uint32`, shape `(num_examples)`, that is used to keep track of the
+ *                              indices of the examples that are covered by the current rule
+ * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
+ *                              by the current rule
+ */
+static inline void filterAnyIndices(IndexedFloat32Array* indexedArray, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                                    uint32 numConditions, const uint32* coveredExamplesMask,
+                                    uint32 coveredExamplesTarget) {
+    IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
+    IndexedFloat32* filteredArray = filteredIndexedArray == NULL ? NULL : filteredIndexedArray->data;
+    uint32 maxElements = indexedArray->numElements;
+    uint32 i = 0;
+
+    if (maxElements > 0) {
+        IndexedFloat32* indexedValues = indexedArray->data;
+
+        if (filteredArray == NULL) {
+            filteredArray = (IndexedFloat32*) malloc(maxElements * sizeof(IndexedFloat32));
+        }
+
+        for (uint32 r = 0; r < maxElements; r++) {
+            uint32 index = indexedValues[r].index;
+
+            if (coveredExamplesMask[index] == coveredExamplesTarget) {
+                filteredArray[i].index = index;
+                filteredArray[i].value = indexedValues[r].value;
+                i++;
+            }
+        }
+    }
+
+    if (i == 0) {
+        free(filteredArray);
+        filteredArray = NULL;
+    } else if (i < maxElements) {
+        filteredArray = (IndexedFloat32*) realloc(filteredArray, i * sizeof(IndexedFloat32));
+    }
+
+    if (filteredIndexedArray == NULL) {
+        filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+    }
+
+    filteredIndexedArray->data = filteredArray;
+    filteredIndexedArray->numElements = i;
+    indexedArrayWrapper->array = filteredIndexedArray;
+    indexedArrayWrapper->numConditions = numConditions;
+}
+
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                        std::shared_ptr<AbstractStatistics> statisticsPtr) {
@@ -117,42 +175,9 @@ IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
 
     // Filter indices, if only a subset of the contained examples is covered...
     if (numConditions_ > indexedArrayWrapper->numConditions) {
-        IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
-        IndexedFloat32* filteredArray = filteredIndexedArray == NULL ? NULL : filteredIndexedArray->data;
-        uint32 maxElements = indexedArray->numElements;
-        uint32 i = 0;
-
-        if (maxElements > 0) {
-            if (filteredArray == NULL) {
-                filteredArray = (IndexedFloat32*) malloc(maxElements * sizeof(IndexedFloat32));
-            }
-
-            for (uint32 r = 0; r < maxElements; r++) {
-                uint32 index = indexedValues[r].index;
-
-                if (coveredExamplesMask_[index] == coveredExamplesTarget_) {
-                    filteredArray[i].index = index;
-                    filteredArray[i].value = indexedValues[r].value;
-                    i++;
-                }
-            }
-        }
-
-        if (i == 0) {
-            free(filteredArray);
-            filteredArray = NULL;
-        } else if (i < maxElements) {
-            filteredArray = (IndexedFloat32*) realloc(filteredArray, i * sizeof(IndexedFloat32));
-        }
-
-        if (filteredIndexedArray == NULL) {
-            filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
-        }
-
-        filteredIndexedArray->data = filteredArray;
-        filteredIndexedArray->numElements = i;
-        indexedArrayWrapper->array = filteredIndexedArray;
-        indexedArrayWrapper->numConditions = numConditions_;
+        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions_, coveredExamplesMask_,
+                         coveredExamplesTarget_);
+        indexedArray = indexedArrayWrapper->array;
     }
 
     return indexedArray;
