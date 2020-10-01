@@ -128,7 +128,7 @@ class AbstractThresholds : virtual public IMatrix {
  */
 class ExactThresholdsImpl : public AbstractThresholds {
 
-    public:
+    private:
 
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class
@@ -167,8 +167,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 sumOfWeights_;
 
-            public:
-
                 uint32* coveredExamplesMask_;
 
                 uint32 coveredExamplesTarget_;
@@ -176,6 +174,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
                 uint32 numRefinements_;
 
                 std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
+
+            public:
 
                 /**
                  * @param thresholds    A pointer to an object of type `ExactThresholdsImpl` that stores the thresholds
@@ -196,9 +196,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         };
 
-    public:
-
         std::unordered_map<uint32, IndexedFloat32Array*> cache_;
+
+    public:
 
         /**
          * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
