@@ -222,8 +222,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
-                    conditions.push_back(__make_condition(best_refinement.featureIndex, best_refinement.comparator,
-                                                          best_refinement.threshold))
+                    conditions.push_back(__create_condition(best_refinement.featureIndex, best_refinement.comparator,
+                                                            best_refinement.threshold))
                     num_conditions += 1
                     num_conditions_per_comparator[<uint32>best_refinement.comparator] += 1
 
@@ -273,7 +273,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             del best_refinement.head
 
 
-cdef inline Condition __make_condition(uint32 feature_index, Comparator comparator, float32 threshold):
+cdef inline Condition __create_condition(uint32 feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
 
