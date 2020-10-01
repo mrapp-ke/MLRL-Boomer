@@ -12,6 +12,7 @@
 #include "input_data.h"
 #include "sub_sampling.h"
 #include "rule_refinement.h"
+#include "head_refinement.h"
 #include <memory>
 #include <unordered_map>
 
@@ -49,6 +50,17 @@ class IThresholdsSubset {
          * @return           The sum of the weights of all examples that are covered by the refinement
          */
         virtual uint32 applyRefinement(Refinement &refinement) = 0;
+
+        /**
+         * Finds and returns the best head for a rule that covers the current subset, ignoring the weights of the
+         * individual training examples and assuming equally distributed weights instead.
+         *
+         * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to find the
+         *                          head of the rule
+         * @return                  A pointer to an object of type `PredictionCandidate` that stores information about
+         *                          the head that has been found
+         */
+        virtual PredictionCandidate* findOverallHead(IHeadRefinement* headRefinement) = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
@@ -184,6 +196,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
                 IRuleRefinement* createRuleRefinement(uint32 featureIndex) override;
 
                 uint32 applyRefinement(Refinement &refinement) override;
+
+                PredictionCandidate* findOverallHead(IHeadRefinement* headRefinement) override;
 
                 void applyPrediction(Prediction* prediction) override;
 
