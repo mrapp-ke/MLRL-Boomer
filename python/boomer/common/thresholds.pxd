@@ -33,6 +33,8 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         uint32 getNumCols()
 
+        uint32 getNumLabels()
+
         IThresholdsSubset* createSubset(IWeightVector* weights)
 
 
