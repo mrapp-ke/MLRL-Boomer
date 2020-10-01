@@ -21,8 +21,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         uint32 applyRefinement(Refinement &refinement)
 
-        Prediction* calculateOverallPrediction(IHeadRefinement* headRefinement, uint32 numLabelIndices,
-                                               const uint32* labelIndices)
+        void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement)
 
         void applyPrediction(Prediction* prediction)
 
