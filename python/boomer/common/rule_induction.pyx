@@ -229,8 +229,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # For each feature, create an object of type `IRuleRefinement` and put it into `rule_refinements`...
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    rule_refinements[f] = thresholds_subset_ptr.get().createRuleRefinement(f, num_conditions,
-                                                                                           total_sum_of_weights)
+                    rule_refinements[f] = thresholds_subset_ptr.get().createRuleRefinement(f, total_sum_of_weights)
                     __update_caches(f, cache_global, cache_local)
 
                 # Search for the best condition among all available features to be added to the current rule...
