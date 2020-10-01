@@ -334,6 +334,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # Update the statistics by applying the predictions of the new rule...
                 thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
 
+                # TODO Remove
                 for r in range(num_statistics):
                     if covered_statistics_mask[r] == covered_statistics_target:
                         statistics.applyPrediction(r, best_refinement.head)
