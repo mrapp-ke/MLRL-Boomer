@@ -129,7 +129,7 @@ class AbstractThresholds : virtual public IMatrix {
  */
 class ExactThresholdsImpl : public AbstractThresholds {
 
-    private:
+    public:
 
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class
