@@ -273,66 +273,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             del best_refinement.head
 
 
-# TODO Remove function
-cdef inline void __filter_any_indices(IndexedFloat32Array* indexed_array,
-                                      IndexedFloat32ArrayWrapper* indexed_array_wrapper, uint32 num_conditions,
-                                      uint32* covered_statistics_mask, uint32 covered_statistics_target) nogil:
-    """
-    Filters an array that contains the indices of examples, as well as their values for a certain feature, such that the
-    filtered array does only contain the indices and feature values of the examples that are covered by the current
-    rule. The filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper`.
-
-    :param indexed_array:               A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the
-                                        C-array to be filtered, as well as the number of elements in said array
-    :param indexed_array_wrapper:       A pointer to a struct of type `IndexedFloat32ArrayWrapper` that should be used
-                                        to store the filtered array
-    :param num_conditions:              The total number of conditions in the current rule's body
-    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
-                                        of the indices of the statistics that are covered by the previous rule. It will
-                                        be updated by this function
-    :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
-                                        are covered by the previous rule
-    """
-    cdef IndexedFloat32Array* filtered_indexed_array = indexed_array_wrapper.array
-    cdef IndexedFloat32* filtered_array = NULL
-
-    if filtered_indexed_array != NULL:
-        filtered_array = filtered_indexed_array.data
-
-    cdef uint32 max_elements = indexed_array.numElements
-    cdef uint32 i = 0
-    cdef IndexedFloat32* indexed_values
-    cdef uint32 index, r
-
-    if max_elements > 0:
-        indexed_values = indexed_array.data
-
-        if filtered_array == NULL:
-            filtered_array = <IndexedFloat32*>malloc(max_elements * sizeof(IndexedFloat32))
-
-        for r in range(max_elements):
-            index = indexed_values[r].index
-
-            if covered_statistics_mask[index] == covered_statistics_target:
-                filtered_array[i].index = index
-                filtered_array[i].value = indexed_values[r].value
-                i += 1
-
-    if i == 0:
-        free(filtered_array)
-        filtered_array = NULL
-    elif i < max_elements:
-        filtered_array = <IndexedFloat32*>realloc(filtered_array, i * sizeof(IndexedFloat32))
-
-    if filtered_indexed_array == NULL:
-        filtered_indexed_array = <IndexedFloat32Array*>malloc(sizeof(IndexedFloat32Array))
-
-    filtered_indexed_array.data = filtered_array
-    filtered_indexed_array.numElements = i
-    indexed_array_wrapper.array = filtered_indexed_array
-    indexed_array_wrapper.numConditions = num_conditions
-
-
 cdef inline Condition __make_condition(uint32 feature_index, Comparator comparator, float32 threshold):
     """
     Creates and returns a new condition.
