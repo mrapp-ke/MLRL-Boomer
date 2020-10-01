@@ -2,32 +2,38 @@
 #include <math.h>
 #include <memory>
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray,
-                                                 IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
-                                                 bool nominal) {
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights,
+                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                                                 ICallback* callback) {
     statistics_ = statistics;
-    indexedArray_ = indexedArray;
     weights_ = weights;
     totalSumOfWeights_ = totalSumOfWeights;
     featureIndex_ = featureIndex;
     nominal_ = nominal;
+    callback_ = callback;
+}
+
+ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
+    delete callback_;
 }
 
 Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                                    uint32 numLabelIndices, const uint32* labelIndices) {
+    // An array that stores the indices and feature values of the training examples
+    IndexedFloat32Array* indexedArray = callback_->getSortedFeatureValues(featureIndex_);
     // The current refinement of the existing rule
     Refinement refinement;
     refinement.featureIndex = featureIndex_;
     refinement.head = NULL;
-    refinement.indexedArray = indexedArray_;
+    refinement.indexedArray = indexedArray;
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
     statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
     // The example indices and feature values to be iterated
-    IndexedFloat32* indexedValues = indexedArray_->data;
-    uint32 numIndexedValues = indexedArray_->numElements;
+    IndexedFloat32* indexedValues = indexedArray->data;
+    uint32 numIndexedValues = indexedArray->numElements;
 
     // In the following, we start by processing all examples with feature values < 0...
     uint32 sumOfWeights = 0;

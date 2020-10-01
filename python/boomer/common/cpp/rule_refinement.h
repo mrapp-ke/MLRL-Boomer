@@ -91,8 +91,6 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
         AbstractStatistics* statistics_;
 
-        IndexedFloat32Array* indexedArray_;
-
         IWeightVector* weights_;
 
         uint32 totalSumOfWeights_;
@@ -100,6 +98,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
         uint32 featureIndex_;
 
         bool nominal_;
+
+        ICallback* callback_;
 
     public:
 
@@ -117,8 +117,10 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
          * @param featureIndex          The index of the feature, the new condition corresponds to
          * @param nominal               True, if the feature at index `featureIndex` is nominal, false otherwise
          */
-        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32Array* indexedArray,
-                                IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex, bool nominal);
+        ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights, uint32 totalSumOfWeights,
+                                uint32 featureIndex, bool nominal, ICallback* callback);
+
+        ~ExactRuleRefinementImpl();
 
         Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;

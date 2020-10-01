@@ -7,7 +7,7 @@ from boomer.common._arrays cimport float64, array_uint32
 from boomer.common._tuples cimport IndexedFloat32, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport Prediction, PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.rule_refinement cimport Refinement, IRuleRefinement, ExactRuleRefinementImpl
+from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
 from boomer.common.thresholds cimport IThresholdsSubset, ExactThresholdsImpl, ThresholdsSubsetImpl
@@ -162,7 +162,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_sampled_features, weight, f
-        cdef bint nominal
         cdef intp c
 
         cdef ExactThresholdsImpl* outer_thresholds
@@ -207,15 +206,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     current_rule_refinement = rule_refinements[f]
-                    # TODO current_refinement = current_rule_refinement.findRefinement(head_refinement, best_refinement.head, num_predictions, label_indices)
-                    nominal = nominal_feature_vector.getValue(f)
-                    current_refinement = __find_refinement(f, nominal, num_predictions, label_indices,
-                                                           weights_ptr.get(), total_sum_of_weights,
-                                                           outer_thresholds.cache_,
-                                                           inner_thresholds.cacheFiltered_,
-                                                           feature_matrix, inner_thresholds.coveredExamplesMask_,
-                                                           inner_thresholds.coveredExamplesTarget_, num_conditions, statistics,
-                                                           head_refinement, best_refinement.head)
+                    current_refinement = current_rule_refinement.findRefinement(head_refinement, best_refinement.head,
+                                                                                num_predictions, label_indices)
                     del current_rule_refinement
 
                     with gil:
@@ -287,78 +279,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 return True
         finally:
             del best_refinement.head
-
-
-cdef Refinement __find_refinement(uint32 feature_index, bint nominal, uint32 num_label_indices,
-                                  const uint32* label_indices, IWeightVector* weights, uint32 total_sum_of_weights,
-                                  unordered_map[uint32, IndexedFloat32Array*] &cache_global,
-                                  unordered_map[uint32, IndexedFloat32ArrayWrapper*] &cache_local,
-                                  IFeatureMatrix* feature_matrix, uint32* covered_statistics_mask,
-                                  uint32 covered_statistics_target, uint32 num_conditions,
-                                  AbstractStatistics* statistics, IHeadRefinement* head_refinement,
-                                  PredictionCandidate* head) nogil:
-    """
-    Finds and returns the best refinement of an existing rule, which results from adding a new condition that
-    corresponds to a certain feature.
-
-    :param feature_index:               The index of the feature, the new condition should correspond to
-    :param nominal                      1, if the feature, the new condition should correspond to, is nominal, 0
-                                        otherwise
-    :param num_label_indices:           The number of elements in the array `label_indices`
-    :param label_indices:               A pointer to an array of type `uint32`, shape `(num_predictions)`, representing
-                                        the indices of the labels for which the refined rule may predict
-    :param weights:                     A pointer to an object of type `IWeightVector` that provides access to the
-                                        weights of the training examples
-    :param total_sum_of_weights:        The sum of the weights of all covered training examples
-    :param cache_global:                A pointer to a map that maps feature indices to structs of type
-                                        `IndexedFloat32Array`, storing the indices of all training examples, as well as
-                                        their values for the respective feature, sorted in ascending order by the
-                                        feature values
-    :param cache_local:                 A pointer to a map that maps feature indices to structs of type
-                                        `IndexedFloat32ArrayWrapper`, storing the indices of the training examples that
-                                        are covered by the existing rule, as well as their values for the respective
-                                        feature, sorted in ascending order by the feature values
-    :param feature_matrix:              A pointer to an object of type `IFeatureMatrix` that provides column-wise access
-                                        to the feature values of the training examples
-    :param covered_statistics_mask:     An array of type `uint32`, shape `(num_statistics)` that is used to keep track
-                                        of the indices of the statistics that are covered by the existing rule. It will
-                                        be updated by this function
-    :param covered_statistics_target:   The value that is used to mark those elements in `covered_statistics_mask` that
-                                        are covered by the existing rule
-    :param num_conditions:              The number of conditions in the body of the existing rule
-    :param statistics:                  A pointer to an object of type `AbstractStatistics` to be used for finding the
-                                        best refinement
-    :param head_refinement:             A pointer to an object of type `IHeadRefinement` that should be used to find the
-                                        head of the refined rule
-    :param head:                        A pointer to an object of type `PredictionCandidate`, representing the head of
-                                        the existing rule
-    :return:                            A struct of type `Refinement`, representing the best refinement that has been
-                                        found
-    """
-    # Obtain array that contains the indices of the training examples sorted according to the current feature...
-    cdef IndexedFloat32ArrayWrapper* indexed_array_wrapper = cache_local[feature_index]
-    cdef IndexedFloat32Array* indexed_array = indexed_array_wrapper.array
-    cdef IndexedFloat32* indexed_values
-
-    if indexed_array == NULL:
-        indexed_array = cache_global[feature_index]
-        indexed_values = indexed_array.data
-
-        if indexed_values == NULL:
-            feature_matrix.fetchSortedFeatureValues(feature_index, indexed_array)
-            indexed_values = indexed_array.data
-
-    # Filter indices, if only a subset of the contained examples is covered...
-    if num_conditions > indexed_array_wrapper.numConditions:
-        __filter_any_indices(indexed_array, indexed_array_wrapper, num_conditions, covered_statistics_mask,
-                             covered_statistics_target)
-        indexed_array = indexed_array_wrapper.array
-
-    # Find and return the best refinement...
-    cdef unique_ptr[IRuleRefinement] rule_refinement_ptr
-    rule_refinement_ptr.reset(new ExactRuleRefinementImpl(statistics, indexed_array, weights, total_sum_of_weights,
-                                                          feature_index, nominal))
-    return rule_refinement_ptr.get().findRefinement(head_refinement, head, num_label_indices, label_indices)
 
 
 # TODO Remove function

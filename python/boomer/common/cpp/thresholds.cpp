@@ -328,8 +328,9 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
     }
 
     bool nominal = thresholds_->nominalFeatureVectorPtr_.get()->getValue(featureIndex);
-    return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), indexedArray, weights_, sumOfWeights_,
-                                       featureIndex, nominal);
+    ExactRuleRefinementImpl::ICallback* callback = new RuleRefinementCallback(this);
+    return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), weights_, sumOfWeights_, featureIndex,
+                                       nominal, callback);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
