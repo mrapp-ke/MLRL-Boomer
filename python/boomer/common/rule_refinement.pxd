@@ -28,9 +28,13 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         IndexedFloat32Array* indexedArray
 
 
-    cdef cppclass IRuleRefinement:
+    cdef cppclass AbstractRuleRefinement:
+
+        # Attributes:
+
+        Refinement bestRefinement_
 
         # Functions:
 
-        Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                  uint32 numLabelIndices, const uint32* labelIndices)
+        void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
+                            const uint32* labelIndices)
