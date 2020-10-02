@@ -127,7 +127,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
 };
 
-class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
+class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
@@ -137,11 +137,14 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
 
         uint32 featureIndex_;
 
+        IRuleRefinementCallback<IndexedFloat32Array>* callback_;
+
     public:
 
-        ApproximateRuleRefinementImpl(AbstractStatistics* statistics, BinArray* binArray, uint32 featureIndex);
+        ApproximateRuleRefinementImpl(AbstractStatistics* statistics, BinArray* binArray, uint32 featureIndex,
+                                      IRuleRefinementCallback<IndexedFloat32Array>* callback);
 
-        Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+        void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };
