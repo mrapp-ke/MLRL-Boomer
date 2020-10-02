@@ -31,6 +31,27 @@ struct Refinement {
 };
 
 /**
+ * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in order to
+ * retrieve information that is required to identify potential refinements for a certain feature.
+ */
+template<class T>
+class IRuleRefinementCallback {
+
+    public:
+
+        virtual ~IRuleRefinementCallback() { };
+
+        /**
+         * Returns the information that is required to identify potential refinements for a specific feature.
+         *
+         * @param featureIndex  The index of the feature
+         * @return              A pointer to an object of template type `T` that stores the information
+         */
+        virtual T* get(uint32 featureIndex) = 0;
+
+};
+
+/**
  * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
 class IRuleRefinement {
@@ -63,30 +84,6 @@ class IRuleRefinement {
  */
 class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
-    public:
-
-        /**
-         * Defines an interface for all callbacks that may be invoked by the class `ExactRuleRefinementImpl` in order to
-         * retrieve the feature values of the training examples for a certain feature.
-         */
-        class ICallback {
-
-            public:
-
-                virtual ~ICallback() { };
-
-                /**
-                 * Returns an array that stores the indices and feature values of the training examples for a certain
-                 * feature, sorted by the feature values.
-                 *
-                 * @param featureIndex  The index of the feature
-                 * @return              A pointer to a struct of type `IndexedFloat32Array` that stores the indices and
-                 *                      feature values
-                 */
-                virtual IndexedFloat32Array* getSortedFeatureValues(uint32 featureIndex) = 0;
-
-        };
-
     private:
 
         AbstractStatistics* statistics_;
@@ -99,26 +96,26 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
         bool nominal_;
 
-        ICallback* callback_;
+        IRuleRefinementCallback<IndexedFloat32Array>* callback_;
 
     public:
 
         /**
-         * @param statistics            A pointer to an object of type `AbstractStatistics` that provides access to the
-         *                              statistics which serve as the basis for evaluating the potential refinements of
-         *                              rules
-         * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array`, which stores the indices
-         *                              and feature values of the training examples for the feature at index
-         *                              `featureIndex`
-         * @param weights               A pointer to an object of type `IWeightVector` that provides access to the
-         *                              weights of the individual training examples
-         * @param totalSumOfWeights     The total sum of the weights of all training examples that are covered by the
-         *                              existing rule
-         * @param featureIndex          The index of the feature, the new condition corresponds to
-         * @param nominal               True, if the feature at index `featureIndex` is nominal, false otherwise
+         * @param statistics        A pointer to an object of type `AbstractStatistics` that provides access to the
+         *                          statistics which serve as the basis for evaluating the potential refinements of
+         *                          rules
+         * @param weights           A pointer to an object of type `IWeightVector` that provides access to the weights
+         *                          of the individual training examples
+         * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
+         *                          existing rule
+         * @param featureIndex      The index of the feature, the new condition corresponds to
+         * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
+         * @param callback          A pointer to an object of type `IRuleRefinementCallback<IndexedFloat32Array>` that
+         *                          allows to retrieve the information that is required to identify potential refinements
          */
         ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights, uint32 totalSumOfWeights,
-                                uint32 featureIndex, bool nominal, ICallback* callback);
+                                uint32 featureIndex, bool nominal,
+                                IRuleRefinementCallback<IndexedFloat32Array>* callback);
 
         ~ExactRuleRefinementImpl();
 

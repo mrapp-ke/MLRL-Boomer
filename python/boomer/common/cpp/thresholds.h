@@ -139,11 +139,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
             private:
 
                 /**
-                 * An implementation of the callback `ExactRuleRefinementImpl::ICallback` that retrieves the feature
-                 * values of the training examples from the cache, if available, or fetches them from an
-                 * `IFeatureMatrix`.
+                 * A callback that allows to retrieves the indices and feature values of the training examples from the
+                 * cache, if available, or fetches them from an `IFeatureMatrix`.
                  */
-                class RuleRefinementCallback : virtual public ExactRuleRefinementImpl::ICallback {
+                class RuleRefinementCallbackImpl : virtual public IRuleRefinementCallback<IndexedFloat32Array> {
 
                     private:
 
@@ -155,9 +154,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          * @param thresholdsSubset  A pointer to an object of type `ThresholdsSubsetImpl` that caches
                          *                          the feature values and indices
                          */
-                        RuleRefinementCallback(ThresholdsSubsetImpl* thresholdsSubset);
+                        RuleRefinementCallbackImpl(ThresholdsSubsetImpl* thresholdsSubset);
 
-                        IndexedFloat32Array* getSortedFeatureValues(uint32 featureIndex) override;
+                        IndexedFloat32Array* get(uint32 featureIndex) override;
 
                 };
 
