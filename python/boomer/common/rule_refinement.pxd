@@ -4,11 +4,9 @@
 Provides wrappers for classes that allow to find the best refinement of rules.
 """
 from boomer.common._arrays cimport uint32, intp, float32
-from boomer.common._tuples cimport IndexedFloat32Array, IndexedFloat32ArrayWrapper
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractStatistics
-from boomer.common.sub_sampling cimport IWeightVector
 from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp cimport bool
@@ -26,22 +24,15 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         intp start
         intp end
         intp previous
-        IndexedFloat32Array* indexedArray
-        IndexedFloat32ArrayWrapper* indexedArrayWrapper
 
 
-    cdef cppclass IRuleRefinement:
+    cdef cppclass AbstractRuleRefinement:
+
+        # Attributes:
+
+        Refinement bestRefinement_
 
         # Functions:
 
-        Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                  uint32 numLabelIndices, const uint32* labelIndices)
-
-
-    cdef cppclass ExactRuleRefinementImpl(IRuleRefinement):
-
-        # Constructors:
-
-        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                IndexedFloat32Array* indexedArray, IWeightVector* weights, uint32 totalSumOfWeights,
-                                uint32 featureIndex, bool nominal) except +
+        void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
+                            const uint32* labelIndices)
