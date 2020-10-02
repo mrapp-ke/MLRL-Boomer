@@ -506,7 +506,7 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
     uint32 numCoveredExamples = binArray_->bins[r].numExamples;
 
     r += 1;
-    for(r; r < numBins; r++){
+    for(; r < numBins; r++){
         uint32 numExamples = binArray_->bins[r].numExamples;
 
         if(numExamples > 0){
