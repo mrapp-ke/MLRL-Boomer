@@ -102,15 +102,14 @@ class IFeatureMatrix : virtual public IMatrix {
         virtual ~IFeatureMatrix() { };
 
         /**
-         * Fetches the indices of the training examples, as well as their feature values, for a specific feature, sorts
-         * them in ascending order by the feature values and stores them in a given struct of type
-         * `IndexedFloat32Array`.
+         * Fetches the indices of the training examples, as well as their feature values, for a specific feature and
+         * stores them in a given struct of type `IndexedFloat32Array`.
          *
          * @param featureIndex  The index of the feature
          * @param indexedArray  A pointer to a struct of type `IndexedFloat32Array`, which should be used to store the
          *                      indices and feature values
          */
-        virtual void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) = 0;
+        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) = 0;
 
 };
 
@@ -141,7 +140,7 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
 
         uint32 getNumCols() override;
 
-        void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
 
 };
 
@@ -183,7 +182,7 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
 
         uint32 getNumCols() override;
 
-        void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
 
 };
 
