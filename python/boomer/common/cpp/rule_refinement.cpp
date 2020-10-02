@@ -21,15 +21,14 @@ ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
 
 void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                              uint32 numLabelIndices, const uint32* labelIndices) {
-    // An array that stores the indices and feature values of the training examples
-    IndexedFloat32Array* indexedArray = callback_->get(featureIndex_);
-    bestRefinement_.indexedArray = indexedArray;
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
     statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
-    // The example indices and feature values to be iterated
+
+    // Retrieve the array to be iterated...
+    IndexedFloat32Array* indexedArray = callback_->get(featureIndex_);
     IndexedFloat32* indexedValues = indexedArray->data;
     uint32 numIndexedValues = indexedArray->numElements;
 

@@ -27,7 +27,6 @@ struct Refinement {
     intp start;
     intp end;
     intp previous;
-    IndexedFloat32Array* indexedArray;
 };
 
 /**
@@ -57,6 +56,8 @@ class IRuleRefinementCallback {
 class AbstractRuleRefinement {
 
     public:
+
+        virtual ~AbstractRuleRefinement() { };
 
         /**
          * Finds the best refinement of an existing rule and updates the class attribute `bestRefinement_` accordingly.
