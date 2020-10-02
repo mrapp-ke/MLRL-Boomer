@@ -6,7 +6,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 from boomer.common._arrays cimport float32, array_uint32
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
+from boomer.common.rule_refinement cimport Refinement, AbstractRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
 from boomer.common.thresholds cimport IThresholdsSubset
@@ -134,10 +134,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # An array representing the number of conditions per type of operator
         cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
         num_conditions_per_comparator[:] = 0
-        # A map that stores a pointer to an object of type `IRuleRefinement` for each feature
-        cdef unordered_map[uint32, IRuleRefinement*] rule_refinements  # Stack-allocated map
-        # A map that stores the best refinement for each feature
-        cdef unordered_map[uint32, Refinement] refinements  # Stack-allocated map
+        # A map that stores a pointer to an object of type `AbstractRuleRefinement` for each feature
+        cdef unordered_map[uint32, AbstractRuleRefinement*] rule_refinements  # Stack-allocated map
         # The best refinement of the current rule
         cdef Refinement best_refinement  # Stack-allocated struct
         best_refinement.head = NULL
@@ -145,7 +143,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef bint found_refinement = True
 
         # Temporary variables
-        cdef IRuleRefinement* current_rule_refinement
+        cdef AbstractRuleRefinement* current_rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
@@ -177,7 +175,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 sampled_feature_indices_ptr.reset(feature_sub_sampling.subSample(num_features, rng))
                 num_sampled_features = sampled_feature_indices_ptr.get().getNumElements()
 
-                # For each feature, create an object of type `IRuleRefinement` and put it into `rule_refinements`...
+                # For each feature, create an object of type `AbstractRuleRefinement`...
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     rule_refinements[f] = thresholds_subset_ptr.get().createRuleRefinement(f)
@@ -186,17 +184,14 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     current_rule_refinement = rule_refinements[f]
-                    current_refinement = current_rule_refinement.findRefinement(head_refinement, best_refinement.head,
-                                                                                num_predictions, label_indices)
-                    del current_rule_refinement
-
-                    with gil:
-                        refinements[f] = current_refinement
+                    current_rule_refinement.findRefinement(head_refinement, best_refinement.head, num_predictions,
+                                                           label_indices)
 
                 # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    current_refinement = refinements[f]
+                    current_rule_refinement = rule_refinements[f]
+                    current_refinement = current_rule_refinement.bestRefinement_
 
                     if current_refinement.head != NULL and (best_refinement.head == NULL
                                                             or current_refinement.head.overallQualityScore_ < best_refinement.head.overallQualityScore_):
@@ -206,7 +201,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     else:
                         del current_refinement.head
 
-                refinements.clear()
+                    del current_rule_refinement
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...

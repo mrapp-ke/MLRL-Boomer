@@ -29,18 +29,18 @@ class IThresholdsSubset {
         virtual ~IThresholdsSubset() { };
 
         /**
-         * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
-         * an existing rule, which results from adding a new condition that corresponds to the feature at a specific
-         * index.
+         * Creates and returns a new instance of the type `AbstractRuleRefinement` that allows to find the best
+         * refinement of an existing rule, which results from adding a new condition that corresponds to the feature at
+         * a specific index.
          *
          * @param featureIndex  The index of the feature, the new condition corresponds to
-         * @return              A pointer to an object of type `IRuleRefinement` that has been created
+         * @return              A pointer to an object of type `AbstractRuleRefinement` that has been created
          */
-        virtual IRuleRefinement* createRuleRefinement(uint32 featureIndex) = 0;
+        virtual AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex) = 0;
 
         /**
-         * Applies a refinement that has been found by an instance of the type `IRuleRefinement`, which was previously
-         * created via the function `createRuleRefinement`.
+         * Applies a refinement that has been found by an instance of the type `AbstractRuleRefinement`, which was
+         * previously created via the function `createRuleRefinement`.
          *
          * This causes the thresholds that will be available for further refinements to be filtered such that only those
          * thresholds that correspond to the subspace of the instance space that is covered by the refined rule are
@@ -52,8 +52,8 @@ class IThresholdsSubset {
 
         /**
          * Recalculates the scores to be predicted by a refinement that has been found by an instance of the type
-         * `IRuleRefinement`, which was previously created via the function `createRuleRefinement`, and updates the head
-         * of the refinement accordingly.
+         * `AbstractRuleRefinement`, which was previously created via the function `createRuleRefinement`, and updates
+         * the head of the refinement accordingly.
          *
          * When calculating the updated scores the weights of the individual training examples are ignored and equally
          * distributed weights are assumed instead.
@@ -185,7 +185,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ~ThresholdsSubsetImpl();
 
-                IRuleRefinement* createRuleRefinement(uint32 featureIndex) override;
+                AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex) override;
 
                 void applyRefinement(Refinement &refinement) override;
 
