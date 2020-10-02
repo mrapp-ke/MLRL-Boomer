@@ -27,33 +27,56 @@ struct Refinement {
     intp start;
     intp end;
     intp previous;
-    IndexedFloat32Array* indexedArray;
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper;
+};
+
+/**
+ * Defines an interface for callbacks that may be invoked by subclasses of the the class `AbstractRuleRefinement` in
+ * order to retrieve information that is required to identify potential refinements for a certain feature.
+ */
+template<class T>
+class IRuleRefinementCallback {
+
+    public:
+
+        virtual ~IRuleRefinementCallback() { };
+
+        /**
+         * Returns the information that is required to identify potential refinements for a specific feature.
+         *
+         * @param featureIndex  The index of the feature
+         * @return              A pointer to an object of template type `T` that stores the information
+         */
+        virtual T* get(uint32 featureIndex) = 0;
+
 };
 
 /**
  * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
-class IRuleRefinement {
+class AbstractRuleRefinement {
 
     public:
 
-        virtual ~IRuleRefinement() { };
+        virtual ~AbstractRuleRefinement() { };
 
         /**
-         * Finds and returns the best refinement of an existing rule.
+         * Finds the best refinement of an existing rule and updates the class attribute `bestRefinement_` accordingly.
          *
          * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to find the
          *                          head of the refined rule
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
          *                          existing rule
          * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(num_predictions)`, representing the
+         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict
-         * @return                  A struct of type `Refinement`, representing the best refinement that has been found
          */
-        virtual Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                          uint32 numLabelIndices, const uint32* labelIndices) = 0;
+        virtual void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                    uint32 numLabelIndices, const uint32* labelIndices) = 0;
+
+        /**
+         * The best refinement that has been found so far.
+         */
+        Refinement bestRefinement_;
 
 };
 
@@ -62,15 +85,11 @@ class IRuleRefinement {
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  */
-class ExactRuleRefinementImpl : virtual public IRuleRefinement {
+class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
         AbstractStatistics* statistics_;
-
-        IndexedFloat32ArrayWrapper* indexedArrayWrapper_;
-
-        IndexedFloat32Array* indexedArray_;
 
         IWeightVector* weights_;
 
@@ -80,30 +99,30 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
         bool nominal_;
 
+        IRuleRefinementCallback<IndexedFloat32Array>* callback_;
+
     public:
 
         /**
-         * @param statistics            A pointer to an object of type `AbstractStatistics` that provides access to the
-         *                              statistics which serve as the basis for evaluating the potential refinements of
-         *                              rules
-         * @param indexedArrayWrapper   A pointer to a struct of type `IndexedFloat32ArrayWrapper`, which should be used
-         *                              to store the feature values and training examples that are covered by the best
-         *                              refinement
-         * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array`, which stores the indices
-         *                              and feature values of the training examples for the feature at index
-         *                              `featureIndex`
-         * @param weights               A pointer to an object of type `IWeightVector` that provides access to the
-         *                              weights of the individual training examples
-         * @param totalSumOfWeights     The total sum of the weights of all training examples that are covered by the
-         *                              existing rule
-         * @param featureIndex          The index of the feature, the new condition corresponds to
-         * @param nominal               True, if the feature at index `featureIndex` is nominal, false otherwise
+         * @param statistics        A pointer to an object of type `AbstractStatistics` that provides access to the
+         *                          statistics which serve as the basis for evaluating the potential refinements of
+         *                          rules
+         * @param weights           A pointer to an object of type `IWeightVector` that provides access to the weights
+         *                          of the individual training examples
+         * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
+         *                          existing rule
+         * @param featureIndex      The index of the feature, the new condition corresponds to
+         * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
+         * @param callback          A pointer to an object of type `IRuleRefinementCallback<IndexedFloat32Array>` that
+         *                          allows to retrieve the information that is required to identify potential refinements
          */
-        ExactRuleRefinementImpl(AbstractStatistics* statistics, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                IndexedFloat32Array* indexedArray, IWeightVector* weights, uint32 totalSumOfWeights,
-                                uint32 featureIndex, bool nominal);
+        ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights, uint32 totalSumOfWeights,
+                                uint32 featureIndex, bool nominal,
+                                IRuleRefinementCallback<IndexedFloat32Array>* callback);
 
-        Refinement findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                  uint32 numLabelIndices, const uint32* labelIndices) override;
+        ~ExactRuleRefinementImpl();
+
+        void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
+                            const uint32* labelIndices) override;
 
 };

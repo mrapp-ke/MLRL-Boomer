@@ -65,8 +65,6 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
 
     # Attributes:
 
-    cdef shared_ptr[AbstractExampleWiseStatistics] statistics_ptr
-
     cdef ExampleWiseRuleEvaluation rule_evaluation
 
     # Functions:
