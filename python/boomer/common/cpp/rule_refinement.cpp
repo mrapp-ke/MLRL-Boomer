@@ -497,6 +497,7 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
     statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
 
     uint32 r = 0;
+    //Search for the first not empty bin
     while(binArray_->bins[r].numExamples == 0 && r < numBins){
         r++;
     }
@@ -512,6 +513,7 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
         if(numExamples > 0){
             numCoveredExamples += numExamples; //Das sollten wir, anders wie im Pseudo Code, besser schon hier machen, oder?
             float32 currentValue = binArray_->bins[r].minValue;
+
             dynamicCurrentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
                                                           statisticsSubsetPtr.get(), false, false);
 
@@ -539,15 +541,10 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
                 refinement.coveredWeights = numCoveredExamples;
                 refinement.covered = false;
             }
-
             previousValue = binArray_->bins[r].maxValue;
             previousR = r;
             statisticsSubsetPtr.get()->addToSubset(r, 1);
-
         }
-
     }
-
-
     return refinement;
 }
