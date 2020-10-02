@@ -59,10 +59,8 @@ static inline intp adjustSplit(IndexedFloat32Array* indexedArray, intp condition
  * filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper` and the given statistics are updated
  * accordingly.
  *
- * @param cacheFiltered         A map that maps feature indices to structs of type `IndexedFloat32ArrayWrapper`, storing
- *                              the indices of the training examples that are covered by the existing rule, as well as
- *                              their values for the respective feature, sorted in ascending order by the feature values
- * @param featureIndex          The index of the feature
+ * @param indexedArrayWrapper   A pointer to a struct of type `IndexedFloat32Array` that should be used to store the
+ *                              filtered array
  * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the array
  *                              to be filtered, as well as the number of elements in the array
  * @param conditionStart        The element in `indexedValues` that corresponds to the first example (inclusive)
@@ -86,12 +84,11 @@ static inline intp adjustSplit(IndexedFloat32Array* indexedArray, intp condition
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
-static inline uint32 filterCurrentIndices(std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> &cacheFiltered,
-                                          uint32 featureIndex, IndexedFloat32Array* indexedArray, intp conditionStart,
-                                          intp conditionEnd, Comparator conditionComparator, bool covered,
-                                          uint32 numConditions, uint32* coveredExamplesMask,
-                                          uint32 coveredExamplesTarget, AbstractStatistics* statistics,
-                                          IWeightVector* weights) {
+static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                                          IndexedFloat32Array* indexedArray, intp conditionStart, intp conditionEnd,
+                                          Comparator conditionComparator, bool covered, uint32 numConditions,
+                                          uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
+                                          AbstractStatistics* statistics, IWeightVector* weights) {
     IndexedFloat32* indexedValues = indexedArray->data;
     uint32 numIndexedValues = indexedArray->numElements;
     bool descending = conditionEnd < conditionStart;
@@ -183,7 +180,6 @@ static inline uint32 filterCurrentIndices(std::unordered_map<uint32, IndexedFloa
         }
     }
 
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered[featureIndex];
     IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
 
     if (filteredIndexedArray == NULL) {
@@ -337,6 +333,14 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refi
     numRefinements_++;
     sumOfWeights_ = refinement.coveredWeights;
 
+    uint32 featureIndex = refinement.featureIndex;
+    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
+    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
+
+    if (indexedArray == NULL) {
+        indexedArray = thresholds_->cache_[featureIndex];
+    }
+
     // If there are examples with zero weights, those examples have not been considered considered when searching for
     // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
     // including those that have previously been ignored, via the function `filterCurrentIndices`. Said function
@@ -344,15 +348,14 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refi
     // that separates the covered from the uncovered examples. However, when taking into account the examples with zero
     // weights, this position may differ from the current value of `refinement.end` and therefore must be adjusted...
     if (weights_->hasZeroElements() && abs(refinement.previous - refinement.end) > 1) {
-        refinement.end = adjustSplit(refinement.indexedArray, refinement.end, refinement.previous,
-                                     refinement.threshold);
+        refinement.end = adjustSplit(indexedArray, refinement.end, refinement.previous, refinement.threshold);
     }
 
     // Identify the examples that are covered by the refined rule...
-    coveredExamplesTarget_ = filterCurrentIndices(cacheFiltered_, refinement.featureIndex, refinement.indexedArray,
-                                                  refinement.start, refinement.end, refinement.comparator,
-                                                  refinement.covered, numRefinements_, coveredExamplesMask_,
-                                                  coveredExamplesTarget_, thresholds_->statisticsPtr_.get(), weights_);
+    coveredExamplesTarget_ = filterCurrentIndices(indexedArrayWrapper, indexedArray, refinement.start, refinement.end,
+                                                  refinement.comparator, refinement.covered, numRefinements_,
+                                                  coveredExamplesMask_, coveredExamplesTarget_,
+                                                  thresholds_->statisticsPtr_.get(), weights_);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement* headRefinement,

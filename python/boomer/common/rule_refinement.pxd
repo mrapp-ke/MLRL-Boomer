@@ -4,7 +4,6 @@
 Provides wrappers for classes that allow to find the best refinement of rules.
 """
 from boomer.common._arrays cimport uint32, intp, float32
-from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractStatistics
@@ -25,7 +24,6 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         intp start
         intp end
         intp previous
-        IndexedFloat32Array* indexedArray
 
 
     cdef cppclass AbstractRuleRefinement:
