@@ -4,7 +4,7 @@
 
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights,
                                                  uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-                                                 ICallback* callback) {
+                                                 IRuleRefinementCallback<IndexedFloat32Array>* callback) {
     statistics_ = statistics;
     weights_ = weights;
     totalSumOfWeights_ = totalSumOfWeights;
@@ -20,7 +20,7 @@ ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
 Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                                    uint32 numLabelIndices, const uint32* labelIndices) {
     // An array that stores the indices and feature values of the training examples
-    IndexedFloat32Array* indexedArray = callback_->getSortedFeatureValues(featureIndex_);
+    IndexedFloat32Array* indexedArray = callback_->get(featureIndex_);
     // The current refinement of the existing rule
     Refinement refinement;
     refinement.featureIndex = featureIndex_;

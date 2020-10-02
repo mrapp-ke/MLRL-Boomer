@@ -328,7 +328,7 @@ IRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement
     }
 
     bool nominal = thresholds_->nominalFeatureVectorPtr_.get()->getValue(featureIndex);
-    ExactRuleRefinementImpl::ICallback* callback = new RuleRefinementCallback(this);
+    IRuleRefinementCallback<IndexedFloat32Array>* callback = new RuleRefinementCallbackImpl(this);
     return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), weights_, sumOfWeights_, featureIndex,
                                        nominal, callback);
 }
@@ -389,13 +389,12 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* pred
     }
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::RuleRefinementCallback(
+ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::RuleRefinementCallbackImpl(
         ThresholdsSubsetImpl* thresholdsSubset) {
     thresholdsSubset_ = thresholdsSubset;
 }
 
-IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallback::getSortedFeatureValues(
-        uint32 featureIndex) {
+IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::get(uint32 featureIndex) {
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_->cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
