@@ -2,35 +2,35 @@
 #include <math.h>
 #include <memory>
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics,
-                                                 IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                                 IndexedFloat32Array* indexedArray, IWeightVector* weights,
-                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal) {
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights,
+                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                                                 IRuleRefinementCallback<IndexedFloat32Array>* callback) {
     statistics_ = statistics;
-    indexedArrayWrapper_ = indexedArrayWrapper;
-    indexedArray_ = indexedArray;
     weights_ = weights;
     totalSumOfWeights_ = totalSumOfWeights;
     featureIndex_ = featureIndex;
     nominal_ = nominal;
+    callback_ = callback;
+    bestRefinement_.featureIndex = featureIndex;
+    bestRefinement_.head = NULL;
 }
 
-Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                                   uint32 numLabelIndices, const uint32* labelIndices) {
-    // The current refinement of the existing rule
-    Refinement refinement;
-    refinement.featureIndex = featureIndex_;
-    refinement.head = NULL;
-    refinement.indexedArray = indexedArray_;
-    refinement.indexedArrayWrapper = indexedArrayWrapper_;
+ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
+    delete callback_;
+}
+
+void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                             uint32 numLabelIndices, const uint32* labelIndices) {
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
     statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
-    // The example indices and feature values to be iterated
-    IndexedFloat32* indexedValues = indexedArray_->data;
-    uint32 numIndexedValues = indexedArray_->numElements;
+
+    // Retrieve the array to be iterated...
+    IndexedFloat32Array* indexedArray = callback_->get(featureIndex_);
+    IndexedFloat32* indexedValues = indexedArray->data;
+    uint32 numIndexedValues = indexedArray->numElements;
 
     // In the following, we start by processing all examples with feature values < 0...
     uint32 sumOfWeights = 0;
@@ -83,50 +83,50 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the == operator in case of a nominal feature) is used...
-                    PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                                statisticsSubsetPtr.get(), false,
-                                                                                false);
+                    PredictionCandidate* currentHead = headRefinement->findHead(bestHead, bestRefinement_.head,
+                                                                                labelIndices, statisticsSubsetPtr.get(),
+                                                                                false, false);
 
                     // If the refinement is better than the current rule...
                     if (currentHead != NULL) {
                         bestHead = currentHead;
-                        refinement.head = currentHead;
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.coveredWeights = sumOfWeights;
-                        refinement.covered = true;
+                        bestRefinement_.head = currentHead;
+                        bestRefinement_.start = firstR;
+                        bestRefinement_.end = r;
+                        bestRefinement_.previous = previousR;
+                        bestRefinement_.coveredWeights = sumOfWeights;
+                        bestRefinement_.covered = true;
 
                         if (nominal_) {
-                            refinement.comparator = EQ;
-                            refinement.threshold = previousThreshold;
+                            bestRefinement_.comparator = EQ;
+                            bestRefinement_.threshold = previousThreshold;
                         } else {
-                            refinement.comparator = LEQ;
-                            refinement.threshold = (previousThreshold + currentThreshold) / 2.0;
+                            bestRefinement_.comparator = LEQ;
+                            bestRefinement_.threshold = (previousThreshold + currentThreshold) / 2.0;
                         }
                     }
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the != operator in case of a nominal feature) is used...
-                    currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+                    currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices,
                                                            statisticsSubsetPtr.get(), true, false);
 
                     // If the refinement is better than the current rule...
                     if (currentHead != NULL) {
                         bestHead = currentHead;
-                        refinement.head = currentHead;
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
-                        refinement.covered = false;
+                        bestRefinement_.head = currentHead;
+                        bestRefinement_.start = firstR;
+                        bestRefinement_.end = r;
+                        bestRefinement_.previous = previousR;
+                        bestRefinement_.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+                        bestRefinement_.covered = false;
 
                         if (nominal_) {
-                            refinement.comparator = NEQ;
-                            refinement.threshold = previousThreshold;
+                            bestRefinement_.comparator = NEQ;
+                            bestRefinement_.threshold = previousThreshold;
                         } else {
-                            refinement.comparator = GR;
-                            refinement.threshold = (previousThreshold + currentThreshold) / 2.0;
+                            bestRefinement_.comparator = GR;
+                            bestRefinement_.threshold = (previousThreshold + currentThreshold) / 2.0;
                         }
                     }
 
@@ -156,36 +156,36 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
                                              || accumulatedSumOfWeights < totalSumOfWeights_)) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
-            PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+            PredictionCandidate* currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices,
                                                                         statisticsSubsetPtr.get(), false, false);
 
             if (currentHead != NULL) {
                 bestHead = currentHead;
-                refinement.head = currentHead;
-                refinement.start = firstR;
-                refinement.end = (lastNegativeR + 1);
-                refinement.previous = previousR;
-                refinement.coveredWeights = sumOfWeights;
-                refinement.covered = true;
-                refinement.comparator = EQ;
-                refinement.threshold = previousThreshold;
+                bestRefinement_.head = currentHead;
+                bestRefinement_.start = firstR;
+                bestRefinement_.end = (lastNegativeR + 1);
+                bestRefinement_.previous = previousR;
+                bestRefinement_.coveredWeights = sumOfWeights;
+                bestRefinement_.covered = true;
+                bestRefinement_.comparator = EQ;
+                bestRefinement_.threshold = previousThreshold;
             }
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             // used...
-            currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(),
-                                                   true, false);
+            currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices,
+                                                   statisticsSubsetPtr.get(), true, false);
 
             if (currentHead != NULL) {
                 bestHead = currentHead;
-                refinement.head = currentHead;
-                refinement.start = firstR;
-                refinement.end = (lastNegativeR + 1);
-                refinement.previous = previousR;
-                refinement.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
-                refinement.covered = false;
-                refinement.comparator = NEQ;
-                refinement.threshold = previousThreshold;
+                bestRefinement_.head = currentHead;
+                bestRefinement_.start = firstR;
+                bestRefinement_.end = (lastNegativeR + 1);
+                bestRefinement_.previous = previousR;
+                bestRefinement_.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+                bestRefinement_.covered = false;
+                bestRefinement_.comparator = NEQ;
+                bestRefinement_.threshold = previousThreshold;
             }
         }
 
@@ -233,50 +233,50 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the == operator in case of a nominal feature) is used...
-                    PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                                                statisticsSubsetPtr.get(), false,
-                                                                                false);
+                    PredictionCandidate* currentHead = headRefinement->findHead(bestHead, bestRefinement_.head,
+                                                                                labelIndices, statisticsSubsetPtr.get(),
+                                                                                false, false);
 
                     // If the refinement is better than the current rule...
                     if (currentHead != NULL) {
                         bestHead = currentHead;
-                        refinement.head = currentHead;
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.coveredWeights = sumOfWeights;
-                        refinement.covered = true;
+                        bestRefinement_.head = currentHead;
+                        bestRefinement_.start = firstR;
+                        bestRefinement_.end = r;
+                        bestRefinement_.previous = previousR;
+                        bestRefinement_.coveredWeights = sumOfWeights;
+                        bestRefinement_.covered = true;
 
                         if (nominal_) {
-                            refinement.comparator = EQ;
-                            refinement.threshold = previousThreshold;
+                            bestRefinement_.comparator = EQ;
+                            bestRefinement_.threshold = previousThreshold;
                         } else {
-                            refinement.comparator = GR;
-                            refinement.threshold = (previousThreshold + currentThreshold) / 2.0;
+                            bestRefinement_.comparator = GR;
+                            bestRefinement_.threshold = (previousThreshold + currentThreshold) / 2.0;
                         }
                     }
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the != operator in case of a nominal feature) is used...
-                    currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+                    currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices,
                                                            statisticsSubsetPtr.get(), true, false);
 
                     // If the refinement is better than the current rule...
                     if (currentHead != NULL) {
                         bestHead = currentHead;
-                        refinement.head = currentHead;
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
-                        refinement.covered = false;
+                        bestRefinement_.head = currentHead;
+                        bestRefinement_.start = firstR;
+                        bestRefinement_.end = r;
+                        bestRefinement_.previous = previousR;
+                        bestRefinement_.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+                        bestRefinement_.covered = false;
 
                         if (nominal_) {
-                            refinement.comparator = NEQ;
-                            refinement.threshold = previousThreshold;
+                            bestRefinement_.comparator = NEQ;
+                            bestRefinement_.threshold = previousThreshold;
                         } else {
-                            refinement.comparator = LEQ;
-                            refinement.threshold = (previousThreshold + currentThreshold) / 2.0;
+                            bestRefinement_.comparator = LEQ;
+                            bestRefinement_.threshold = (previousThreshold + currentThreshold) / 2.0;
                         }
                     }
 
@@ -306,38 +306,38 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
     if (nominal_ && sumOfWeights > 0 && sumOfWeights < accumulatedSumOfWeights) {
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
-        PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+        PredictionCandidate* currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices,
                                                                     statisticsSubsetPtr.get(), false, false);
 
         // If the refinement is better than the current rule...
         if (currentHead != NULL) {
             bestHead = currentHead;
-            refinement.head = currentHead;
-            refinement.start = firstR;
-            refinement.end = lastNegativeR;
-            refinement.previous = previousR;
-            refinement.coveredWeights = sumOfWeights;
-            refinement.covered = true;
-            refinement.comparator = EQ;
-            refinement.threshold = previousThreshold;
+            bestRefinement_.head = currentHead;
+            bestRefinement_.start = firstR;
+            bestRefinement_.end = lastNegativeR;
+            bestRefinement_.previous = previousR;
+            bestRefinement_.coveredWeights = sumOfWeights;
+            bestRefinement_.covered = true;
+            bestRefinement_.comparator = EQ;
+            bestRefinement_.threshold = previousThreshold;
         }
 
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         // used...
-        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(), true,
-                                               false);
+        currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices, statisticsSubsetPtr.get(),
+                                               true, false);
 
         // If the refinement is better than the current rule...
         if (currentHead != NULL) {
             bestHead = currentHead;
-            refinement.head = currentHead;
-            refinement.start = firstR;
-            refinement.end = lastNegativeR;
-            refinement.previous = previousR;
-            refinement.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
-            refinement.covered = false;
-            refinement.comparator = NEQ;
-            refinement.threshold = previousThreshold;
+            bestRefinement_.head = currentHead;
+            bestRefinement_.start = firstR;
+            bestRefinement_.end = lastNegativeR;
+            bestRefinement_.previous = previousR;
+            bestRefinement_.coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+            bestRefinement_.covered = false;
+            bestRefinement_.comparator = NEQ;
+            bestRefinement_.threshold = previousThreshold;
         }
     }
 
@@ -357,55 +357,55 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
 
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
-        PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+        PredictionCandidate* currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices,
                                                                     statisticsSubsetPtr.get(), false, nominal_);
 
         // If the refinement is better than the current rule...
         if (currentHead != NULL) {
             bestHead = currentHead;
-            refinement.head = currentHead;
-            refinement.start = firstR;
-            refinement.covered = true;
+            bestRefinement_.head = currentHead;
+            bestRefinement_.start = firstR;
+            bestRefinement_.covered = true;
 
             if (nominal_) {
-                refinement.end = -1;
-                refinement.previous = -1;
-                refinement.coveredWeights = totalAccumulatedSumOfWeights;
-                refinement.comparator = NEQ;
-                refinement.threshold = 0.0;
+                bestRefinement_.end = -1;
+                bestRefinement_.previous = -1;
+                bestRefinement_.coveredWeights = totalAccumulatedSumOfWeights;
+                bestRefinement_.comparator = NEQ;
+                bestRefinement_.threshold = 0.0;
             } else {
-                refinement.end = lastNegativeR;
-                refinement.previous = previousR;
-                refinement.coveredWeights = accumulatedSumOfWeights;
-                refinement.comparator = GR;
-                refinement.threshold = previousThreshold / 2.0;
+                bestRefinement_.end = lastNegativeR;
+                bestRefinement_.previous = previousR;
+                bestRefinement_.coveredWeights = accumulatedSumOfWeights;
+                bestRefinement_.comparator = GR;
+                bestRefinement_.threshold = previousThreshold / 2.0;
             }
         }
 
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
-        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(), true,
-                                               nominal_);
+        currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices, statisticsSubsetPtr.get(),
+                                               true, nominal_);
 
         // If the refinement is better than the current rule...
         if (currentHead != NULL) {
             bestHead = currentHead;
-            refinement.head = currentHead;
-            refinement.start = firstR;
-            refinement.covered = false;
+            bestRefinement_.head = currentHead;
+            bestRefinement_.start = firstR;
+            bestRefinement_.covered = false;
 
             if (nominal_) {
-                refinement.end = -1;
-                refinement.previous = -1;
-                refinement.coveredWeights = (totalSumOfWeights_ - totalAccumulatedSumOfWeights);
-                refinement.comparator = EQ;
-                refinement.threshold = 0.0;
+                bestRefinement_.end = -1;
+                bestRefinement_.previous = -1;
+                bestRefinement_.coveredWeights = (totalSumOfWeights_ - totalAccumulatedSumOfWeights);
+                bestRefinement_.comparator = EQ;
+                bestRefinement_.threshold = 0.0;
             } else {
-                refinement.end = lastNegativeR;
-                refinement.previous = previousR;
-                refinement.coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeights);
-                refinement.comparator = LEQ;
-                refinement.threshold = previousThreshold / 2.0;
+                bestRefinement_.end = lastNegativeR;
+                bestRefinement_.previous = previousR;
+                bestRefinement_.coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeights);
+                bestRefinement_.comparator = LEQ;
+                bestRefinement_.threshold = previousThreshold / 2.0;
             }
         }
     }
@@ -418,58 +418,56 @@ Refinement ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
     if (!nominal_ && accumulatedSumOfWeightsNegative > 0 && accumulatedSumOfWeightsNegative < totalSumOfWeights_) {
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
-        PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+        PredictionCandidate* currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices,
                                                                     statisticsSubsetPtr.get(), false, true);
 
         if (currentHead != NULL) {
             bestHead = currentHead;
-            refinement.head = currentHead;
-            refinement.start = 0;
-            refinement.end = (lastNegativeR + 1);
-            refinement.previous = previousRNegative;
-            refinement.coveredWeights = accumulatedSumOfWeightsNegative;
-            refinement.covered = true;
-            refinement.comparator = LEQ;
+            bestRefinement_.head = currentHead;
+            bestRefinement_.start = 0;
+            bestRefinement_.end = (lastNegativeR + 1);
+            bestRefinement_.previous = previousRNegative;
+            bestRefinement_.coveredWeights = accumulatedSumOfWeightsNegative;
+            bestRefinement_.covered = true;
+            bestRefinement_.comparator = LEQ;
 
             if (totalAccumulatedSumOfWeights < totalSumOfWeights_) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
-                refinement.threshold = previousThresholdNegative / 2.0;
+                bestRefinement_.threshold = previousThresholdNegative / 2.0;
             } else {
                 // If the condition separates an examples with feature value < 0 from an example with feature value > 0
-                refinement.threshold = previousThresholdNegative
-                                       + (fabs(previousThreshold - previousThresholdNegative) / 2.0);
+                bestRefinement_.threshold = previousThresholdNegative
+                                            + (fabs(previousThreshold - previousThresholdNegative) / 2.0);
             }
         }
 
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         // used...
-        currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(), true,
-                                               true);
+        currentHead = headRefinement->findHead(bestHead, bestRefinement_.head, labelIndices, statisticsSubsetPtr.get(),
+                                               true, true);
 
         if (currentHead != NULL) {
             bestHead = currentHead;
-            refinement.head = currentHead;
-            refinement.start = 0;
-            refinement.end = (lastNegativeR + 1);
-            refinement.previous = previousRNegative;
-            refinement.coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeightsNegative);
-            refinement.covered = false;
-            refinement.comparator = GR;
+            bestRefinement_.head = currentHead;
+            bestRefinement_.start = 0;
+            bestRefinement_.end = (lastNegativeR + 1);
+            bestRefinement_.previous = previousRNegative;
+            bestRefinement_.coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeightsNegative);
+            bestRefinement_.covered = false;
+            bestRefinement_.comparator = GR;
 
             if (totalAccumulatedSumOfWeights < totalSumOfWeights_) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
-                refinement.threshold = previousThresholdNegative / 2.0;
+                bestRefinement_.threshold = previousThresholdNegative / 2.0;
             } else {
                 // If the condition separates an examples with feature value < 0 from an example with feature value > 0
-                refinement.threshold = previousThresholdNegative
-                                       + (fabs(previousThreshold - previousThresholdNegative) / 2.0);
+                bestRefinement_.threshold = previousThresholdNegative
+                                            + (fabs(previousThreshold - previousThresholdNegative) / 2.0);
             }
         }
     }
-
-    return refinement;
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(AbstractStatistics* statistics, BinArray* binArray,

@@ -45,6 +45,10 @@ cdef extern from "cpp/statistics.h" nogil:
 
 cdef class StatisticsProvider:
 
+    # Attributes:
+
+    cdef shared_ptr[AbstractStatistics] statistics_ptr
+
     # Functions:
 
     cdef AbstractStatistics* get(self)
