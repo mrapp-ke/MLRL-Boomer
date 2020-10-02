@@ -471,21 +471,21 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(AbstractStatistics* statistics, BinArray* binArray,
-                                                             uint32 featureIndex) {
+                                                             uint32 featureIndex,
+                                                             IRuleRefinementCallback<IndexedFloat32Array>* callback) {
     statistics_ = statistics;
     binArray_ = binArray;
     featureIndex_ = featureIndex;
+    callback_ = callback;
 }
 
-Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement,
+void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement,
                                                          PredictionCandidate* currentHead,
                                                          uint32 numLabelIndices, const uint32* labelIndices) {
     uint32 numBins = binArray_->numBins;
     Refinement refinement;
     refinement.featureIndex = featureIndex_;
     refinement.head = NULL;
-    refinement.indexedArray = NULL;
-    refinement.indexedArrayWrapper = NULL;
     refinement.start = 0;
 
     PredictionCandidate* bestHead = currentHead;
@@ -543,5 +543,5 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
             statisticsSubsetPtr.get()->addToSubset(r, 1);
         }
     }
-    return refinement;
+    bestRefinement_ = refinement;
 }
