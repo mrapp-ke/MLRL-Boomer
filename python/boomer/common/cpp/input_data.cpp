@@ -55,25 +55,22 @@ uint32 DenseFeatureMatrixImpl::getNumCols() {
     return numFeatures_;
 }
 
-void DenseFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
     // The number of elements to be returned
     uint32 numElements = this->getNumRows();
     // The array that stores the indices
-    IndexedFloat32* sortedArray = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
+    IndexedFloat32* array = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
     // The first element in `x_` that corresponds to the given feature index
     uint32 offset = featureIndex * numElements;
 
     for (uint32 i = 0; i < numElements; i++) {
-        sortedArray[i].index = i;
-        sortedArray[i].value = x_[offset + i];
+        array[i].index = i;
+        array[i].value = x_[offset + i];
     }
-
-    // Sort the array...
-    qsort(sortedArray, numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
 
     // Update the given struct...
     indexedArray->numElements = numElements;
-    indexedArray->data = sortedArray;
+    indexedArray->data = array;
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
@@ -93,7 +90,7 @@ uint32 CscFeatureMatrixImpl::getNumCols() {
     return numFeatures_;
 }
 
-void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
     // The index of the first element in `xData_` and `xRowIndices_` that corresponds to the given feature index+
     uint32 start = xColIndices_[featureIndex];
     // The index of the last element in `xData_` and `xRowIndices_` that corresponds to the given feature index
@@ -101,25 +98,22 @@ void CscFeatureMatrixImpl::fetchSortedFeatureValues(uint32 featureIndex, Indexed
     // The number of elements to be returned
     uint32 numElements = end - start;
     // The array that stores the indices
-    IndexedFloat32* sortedArray = NULL;
+    IndexedFloat32* array = NULL;
 
     if (numElements > 0) {
-        sortedArray = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
+        array = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
         uint32 i = 0;
 
         for (uint32 j = start; j < end; j++) {
-            sortedArray[i].index = xRowIndices_[j];
-            sortedArray[i].value = xData_[j];
+            array[i].index = xRowIndices_[j];
+            array[i].value = xData_[j];
             i++;
         }
-
-        // Sort the array...
-        qsort(sortedArray, numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
     }
 
     // Update the given struct...
     indexedArray->numElements = numElements;
-    indexedArray->data = sortedArray;
+    indexedArray->data = array;
 }
 
 DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(BinaryDokVector* vector) {

@@ -62,8 +62,6 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     # Attributes:
 
-    cdef shared_ptr[AbstractLabelWiseStatistics] statistics_ptr
-
     cdef LabelWiseRuleEvaluation rule_evaluation
 
     # Functions:

@@ -6,6 +6,7 @@ from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
+from boomer.common.thresholds import ExactThresholdsFactory
 from boomer.seco.head_refinement import PartialHeadRefinement
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.label_wise_rule_evaluation import HeuristicLabelWiseRuleEvaluation
@@ -151,6 +152,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         heuristic = self.__create_heuristic()
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
+        thresholds_factory = ExactThresholdsFactory()
         rule_induction = TopDownGreedyRuleInduction()
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement = FullHeadRefinement()
@@ -165,10 +167,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(UncoveredLabelsCriterion(0))
         num_threads = create_num_threads(self.num_threads)
-        return SequentialRuleInduction(statistics_provider_factory, rule_induction, default_rule_head_refinement,
-                                       head_refinement, stopping_criteria, label_sub_sampling, instance_sub_sampling,
-                                       feature_sub_sampling, pruning, None, min_coverage, max_conditions,
-                                       max_head_refinements, num_threads)
+        return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
+                                       default_rule_head_refinement, head_refinement, stopping_criteria,
+                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, None,
+                                       min_coverage, max_conditions, max_head_refinements, num_threads)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
