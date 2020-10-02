@@ -1,6 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, float32
 from boomer.common._data cimport ISparseRandomAccessVector, BinaryDokVector, IMatrix, BinaryDokMatrix
-from boomer.common._tuples cimport IndexedFloat32Array
 
 from libcpp.memory cimport shared_ptr
 
@@ -30,10 +29,7 @@ cdef extern from "cpp/input_data.h" nogil:
 
 
     cdef cppclass IFeatureMatrix(IMatrix):
-
-        # Functions:
-
-        void fetchSortedFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray)
+        pass
 
 
     cdef cppclass DenseFeatureMatrixImpl(IFeatureMatrix):

@@ -54,7 +54,7 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
         :param rule_evaluation:     The `ExampleWiseRuleEvaluation` to switch to when invoking the function
                                     `switch_rule_evaluation`
         """
-        self.statistics_ptr = shared_ptr[AbstractExampleWiseStatistics](statistics_factory.create())
+        self.statistics_ptr = shared_ptr[AbstractStatistics](statistics_factory.create())
         self.rule_evaluation = rule_evaluation
 
     cdef AbstractStatistics* get(self):
@@ -63,7 +63,8 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
     cdef void switch_rule_evaluation(self):
         cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
         cdef shared_ptr[IExampleWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
-        self.statistics_ptr.get().setRuleEvaluation(rule_evaluation_ptr)
+        dynamic_pointer_cast[AbstractExampleWiseStatistics, AbstractStatistics](self.statistics_ptr).get().setRuleEvaluation(
+            rule_evaluation_ptr)
 
 
 cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
