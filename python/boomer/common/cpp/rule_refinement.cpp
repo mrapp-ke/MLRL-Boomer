@@ -488,8 +488,7 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
     refinement.head = NULL;
     refinement.indexedArray = NULL;
     refinement.indexedArrayWrapper = NULL;
-
-    PredictionCandidate* dynamicCurrentHead = currentHead;
+    refinement.start = 0;
 
     PredictionCandidate* bestHead = currentHead;
 
@@ -511,31 +510,30 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
         uint32 numExamples = binArray_->bins[r].numExamples;
 
         if(numExamples > 0){
-            numCoveredExamples += numExamples; //Das sollten wir, anders wie im Pseudo Code, besser schon hier machen, oder?
             float32 currentValue = binArray_->bins[r].minValue;
 
-            dynamicCurrentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+            PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
                                                           statisticsSubsetPtr.get(), false, false);
 
-            if(dynamicCurrentHead != NULL){
-                bestHead = dynamicCurrentHead;
+            if(currentHead != NULL){
+                bestHead = currentHead;
+                refinement.head = currentHead;
                 refinement.comparator = LEQ;
                 refinement.threshold = (previousValue + currentValue)/2.0;
-                refinement.start = 0;
                 refinement.end = r;
                 refinement.previous = previousR;
                 refinement.coveredWeights = numCoveredExamples;
                 refinement.covered = true;
             }
 
-            dynamicCurrentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                          statisticsSubsetPtr.get(), false, false);
+            currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
+                                                          statisticsSubsetPtr.get(), true, false);
 
-            if(dynamicCurrentHead != NULL){
-                bestHead = dynamicCurrentHead;
+            if(currentHead != NULL){
+                bestHead = currentHead;
+                refinement.head = currentHead;
                 refinement.comparator = GR;
                 refinement.threshold = (previousValue + currentValue)/2.0;
-                refinement.start = 0;
                 refinement.end = r;
                 refinement.previous = previousR;
                 refinement.coveredWeights = numCoveredExamples;
@@ -543,6 +541,7 @@ Refinement ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRe
             }
             previousValue = binArray_->bins[r].maxValue;
             previousR = r;
+            numCoveredExamples += numExamples;
             statisticsSubsetPtr.get()->addToSubset(r, 1);
         }
     }
