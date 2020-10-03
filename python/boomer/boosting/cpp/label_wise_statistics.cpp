@@ -155,7 +155,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
         currentScores_[i] = updatedScore;
 
         // Update the gradient and Hessian for the current example and label...
-        std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(labelMatrixPtr_.get(),
+        std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_,
                                                                                          statisticIndex, l,
                                                                                          updatedScore);
         gradients_[i] = pair.first;
@@ -190,8 +190,7 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
             uint32 i = offset + c;
 
             // Calculate the initial gradient and Hessian for the current example and label...
-            std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(labelMatrixPtr_.get(), r,
-                                                                                             c, 0);
+            std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_, r, c, 0);
             gradients[i] = pair.first;
             hessians[i] = pair.second;
 
