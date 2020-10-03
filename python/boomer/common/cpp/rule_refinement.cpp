@@ -471,7 +471,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(AbstractStatistics* statistics, uint32 featureIndex,
-                                                             IRuleRefinementCallback<IndexedFloat32Array>* callback) {
+                                                             IRuleRefinementCallback<BinArray>* callback) {
     statistics_ = statistics;
     featureIndex_ = featureIndex;
     callback_ = callback;
