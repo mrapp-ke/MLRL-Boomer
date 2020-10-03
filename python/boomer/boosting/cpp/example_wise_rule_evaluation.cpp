@@ -21,8 +21,6 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(cons
                                                                             const float64* totalSumsOfHessians,
                                                                             float64* sumsOfHessians, bool uncovered,
                                                                             LabelWisePredictionCandidate* prediction) {
-    // Class members
-    float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores` and `qualityScores`
     uint32 numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
@@ -53,19 +51,19 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(cons
         }
 
         // Calculate the score to be predicted for the current label...
-        float64 score = sumOfHessians + l2RegularizationWeight;
+        float64 score = sumOfHessians + l2RegularizationWeight_;
         score = score != 0 ? -sumOfGradients / score : 0;
         predictedScores[c] = score;
 
         // Calculate the quality score for the current label...
         float64 scorePow = pow(score, 2);
         score = (sumOfGradients * score) + (0.5 * scorePow * sumOfHessians);
-        qualityScores[c] = score + (0.5 * l2RegularizationWeight * scorePow);
+        qualityScores[c] = score + (0.5 * l2RegularizationWeight_ * scorePow);
         overallQualityScore += score;
     }
 
     // Add the L2 regularization term to the overall quality score...
-    overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);
+    overallQualityScore += 0.5 * l2RegularizationWeight_ * linalg::l2NormPow(predictedScores, numPredictions);
     prediction->overallQualityScore_ = overallQualityScore;
 }
 
@@ -82,8 +80,6 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(co
                                                                               float64* dspmvTmpArray,
                                                                               bool uncovered,
                                                                               PredictionCandidate* prediction) {
-    // Class members
-    float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of elements in the arrays `predictedScores`
     uint32 numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
@@ -114,15 +110,15 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(co
     }
 
     // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-    lapackPtr_.get()->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, predictedScores,
-                            numPredictions, dsysvLwork, l2RegularizationWeight);
+    lapackPtr_->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, predictedScores,
+                      numPredictions, dsysvLwork, l2RegularizationWeight_);
 
     // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-    float64 overallQualityScore = blasPtr_.get()->ddot(predictedScores, gradients, numPredictions);
-    blasPtr_.get()->dspmv(hessians, predictedScores, dspmvTmpArray, numPredictions);
-    overallQualityScore += 0.5 * blasPtr_.get()->ddot(predictedScores, dspmvTmpArray, numPredictions);
+    float64 overallQualityScore = blasPtr_->ddot(predictedScores, gradients, numPredictions);
+    blasPtr_->dspmv(hessians, predictedScores, dspmvTmpArray, numPredictions);
+    overallQualityScore += 0.5 * blasPtr_->ddot(predictedScores, dspmvTmpArray, numPredictions);
 
     // Add the L2 regularization term to the overall quality score...
-    overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);
+    overallQualityScore += 0.5 * l2RegularizationWeight_ * linalg::l2NormPow(predictedScores, numPredictions);
     prediction->overallQualityScore_ = overallQualityScore;
 }

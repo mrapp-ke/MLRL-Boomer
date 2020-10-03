@@ -34,7 +34,6 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
                                                          IStatisticsSubset* statisticsSubset, bool uncovered,
                                                          bool accumulated) {
     PredictionCandidate* result = NULL;
-    ILiftFunction* liftFunction = liftFunctionPtr_.get();
     LabelWisePredictionCandidate& prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction.numPredictions_;
     float64* predictedScores = prediction.predictedScores_;
@@ -46,11 +45,11 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
 
     if (labelIndices == NULL) {
         sortedIndices = argsort(qualityScores, numPredictions);
-        float64 maximumLift = liftFunction->getMaxLift();
+        float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
         for (uint32 c = 0; c < numPredictions; c++) {
             sumOfQualityScores += 1 - qualityScores[sortedIndices[c]];
-            float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunction->calculateLift(c + 1);
+            float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunctionPtr_->calculateLift(c + 1);
 
             if (c == 0 || qualityScore < bestQualityScore) {
                 bestNumPredictions = c + 1;
@@ -67,7 +66,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
             sumOfQualityScores += 1 - qualityScores[c];
         }
 
-        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunction->calculateLift(numPredictions);
+        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
         bestNumPredictions = numPredictions;
     }
 

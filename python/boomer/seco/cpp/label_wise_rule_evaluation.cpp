@@ -18,9 +18,6 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
                                                                         const float64* confusionMatricesCovered,
                                                                         bool uncovered,
                                                                         LabelWisePredictionCandidate* prediction) {
-    // Class members
-    IHeuristic* heuristic = heuristicPtr_.get();
-    bool predictMajority = predictMajority_;
     // The number of labels to predict for
     uint32 numPredictions = prediction->numPredictions_;
     // The array that should be used to store the predicted scores
@@ -35,7 +32,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
 
         // Set the score to be predicted for the current label...
         uint8 minorityLabel = minorityLabels[l];
-        float64 score = (float64) (predictMajority ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
+        float64 score = (float64) (predictMajority_ ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
         predictedScores[c] = score;
 
         // Calculate the quality score for the current label...
@@ -64,7 +61,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
             urp = confusionMatricesTotal[offsetL + RP] - crp;
         }
 
-        score = heuristic->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+        score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
         qualityScores[c] = score;
         overallQualityScore += score;
     }
