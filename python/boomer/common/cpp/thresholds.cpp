@@ -273,12 +273,11 @@ uint32 AbstractThresholds::getNumLabels() {
     return statisticsPtr_->getNumCols();
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl* thresholds,
-                                                                IWeightVector* weights) {
-    thresholds_ = thresholds;
-    weights_ = weights;
+ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
+                                                                IWeightVector* weights)
+    : thresholds_{thresholds}, weights_{weights} {
     sumOfWeights_ = weights->getSumOfWeights();
-    uint32 numExamples = thresholds->getNumRows();
+    uint32 numExamples = thresholds.getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
     coveredExamplesTarget_ = 0;
     numRefinements_ = 0;
@@ -313,21 +312,21 @@ AbstractRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRef
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
 
     if (indexedArray == NULL) {
-        indexedArray = thresholds_->cache_[featureIndex];
+        indexedArray = thresholds_.cache_[featureIndex];
 
         if (indexedArray == NULL) {
             indexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
             indexedArray->data = NULL;
             indexedArray->numElements = 0;
-            thresholds_->cache_[featureIndex] = indexedArray;
+            thresholds_.cache_[featureIndex] = indexedArray;
         }
     }
 
-    bool nominal = thresholds_->nominalFeatureVectorPtr_->getValue(featureIndex);
+    bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr
         = std::make_unique<RuleRefinementCallbackImpl>(this);
-    return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), weights_, sumOfWeights_, featureIndex,
-                                       nominal, std::move(callbackPtr));
+    return new ExactRuleRefinementImpl(thresholds_.statisticsPtr_.get(), weights_, sumOfWeights_, featureIndex, nominal,
+                                       std::move(callbackPtr));
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
@@ -339,7 +338,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
 
     if (indexedArray == NULL) {
-        indexedArray = thresholds_->cache_[featureIndex];
+        indexedArray = thresholds_.cache_[featureIndex];
     }
 
     // If there are examples with zero weights, those examples have not been considered considered when searching for
@@ -356,7 +355,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     coveredExamplesTarget_ = filterCurrentIndices(indexedArrayWrapper, indexedArray, refinement.start, refinement.end,
                                                   refinement.comparator, refinement.covered, numRefinements_,
                                                   coveredExamplesMask_, coveredExamplesTarget_,
-                                                  thresholds_->statisticsPtr_.get(), weights_);
+                                                  thresholds_.statisticsPtr_.get(), weights_);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
@@ -365,9 +364,9 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefin
     uint32 numLabelIndices = head->numPredictions_;
     const uint32* labelIndices = head->labelIndices_;
     float64* predictedScores = head->predictedScores_;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = thresholds_->statisticsPtr_->createSubset(numLabelIndices,
-                                                                                                       labelIndices);
-    uint32 numExamples = thresholds_->getNumRows();
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = thresholds_.statisticsPtr_->createSubset(numLabelIndices,
+                                                                                                      labelIndices);
+    uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
         if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
@@ -384,11 +383,11 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefin
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& prediction) {
-    uint32 numExamples = thresholds_->getNumRows();
+    uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
         if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
-            thresholds_->statisticsPtr_->applyPrediction(r, prediction);
+            thresholds_.statisticsPtr_->applyPrediction(r, prediction);
         }
     }
 }
@@ -405,11 +404,11 @@ IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
     IndexedFloat32* indexedValues;
 
     if (indexedArray == NULL) {
-        indexedArray = thresholdsSubset_->thresholds_->cache_[featureIndex];
+        indexedArray = thresholdsSubset_->thresholds_.cache_[featureIndex];
         indexedValues = indexedArray->data;
 
         if (indexedValues == NULL) {
-            thresholdsSubset_->thresholds_->featureMatrixPtr_->fetchFeatureValues(featureIndex, indexedArray);
+            thresholdsSubset_->thresholds_.featureMatrixPtr_->fetchFeatureValues(featureIndex, indexedArray);
             indexedValues = indexedArray->data;
             qsort(indexedValues, indexedArray->numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
         }
@@ -454,5 +453,5 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(IWeightVect
         statisticsPtr_->addSampledStatistic(r, weight);
     }
 
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(this, weights);
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weights);
 }

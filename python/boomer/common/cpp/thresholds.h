@@ -160,7 +160,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 };
 
-                ExactThresholdsImpl* thresholds_;
+                ExactThresholdsImpl& thresholds_;
 
                 IWeightVector* weights_;
 
@@ -177,11 +177,12 @@ class ExactThresholdsImpl : public AbstractThresholds {
             public:
 
                 /**
-                 * @param thresholds    A pointer to an object of type `ExactThresholdsImpl` that stores the thresholds
+                 * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the
+                 *                      thresholds
                  * @param weights       A pointer to an object of type `IWeightVector` that provides access to the
                  *                      weights of the individual training examples
                  */
-                ThresholdsSubsetImpl(ExactThresholdsImpl* thresholds, IWeightVector* weights);
+                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, IWeightVector* weights);
 
                 ~ThresholdsSubsetImpl();
 
