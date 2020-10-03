@@ -137,12 +137,12 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
         uint32 featureIndex_;
 
-        IRuleRefinementCallback<IndexedFloat32Array>* callback_;
+        IRuleRefinementCallback<BinArray>* callback_;
 
     public:
 
-        ApproximateRuleRefinementImpl(AbstractStatistics* statistics, BinArray* binArray, uint32 featureIndex,
-                                      IRuleRefinementCallback<IndexedFloat32Array>* callback);
+        ApproximateRuleRefinementImpl(AbstractStatistics* statistics, uint32 featureIndex,
+                                      IRuleRefinementCallback<BinArray>* callback);
 
         void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
                                   uint32 numLabelIndices, const uint32* labelIndices) override;
