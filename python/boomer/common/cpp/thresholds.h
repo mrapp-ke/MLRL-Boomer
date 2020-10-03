@@ -106,9 +106,9 @@ class AbstractThresholds : virtual public IMatrix {
          *
          * @param weights   A pointer to an object of type `IWeightVector` that provides access to the weights of the
          *                  individual training examples
-         * @return          A pointer to an object of type `IThresholdsSubset` that has been created
+         * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual IThresholdsSubset* createSubset(IWeightVector* weights) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector* weights) = 0;
 
         /**
          * Returns the total number of available labels.
@@ -213,6 +213,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         ~ExactThresholdsImpl();
 
-        IThresholdsSubset* createSubset(IWeightVector* weights) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector* weights) override;
 
 };
