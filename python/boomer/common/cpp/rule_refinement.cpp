@@ -1,22 +1,18 @@
 #include "rule_refinement.h"
 #include <math.h>
-#include <memory>
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights,
-                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-                                                 IRuleRefinementCallback<IndexedFloat32Array>* callback) {
+
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(
+        AbstractStatistics* statistics, IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
+        bool nominal, std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr) {
     statistics_ = statistics;
     weights_ = weights;
     totalSumOfWeights_ = totalSumOfWeights;
     featureIndex_ = featureIndex;
     nominal_ = nominal;
-    callback_ = callback;
+    callbackPtr_ = std::move(callbackPtr);
     bestRefinement_.featureIndex = featureIndex;
     bestRefinement_.head = NULL;
-}
-
-ExactRuleRefinementImpl::~ExactRuleRefinementImpl() {
-    delete callback_;
 }
 
 void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
@@ -27,7 +23,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_->createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
-    IndexedFloat32Array* indexedArray = callback_->get(featureIndex_);
+    IndexedFloat32Array* indexedArray = callbackPtr_->get(featureIndex_);
     IndexedFloat32* indexedValues = indexedArray->data;
     uint32 numIndexedValues = indexedArray->numElements;
 
