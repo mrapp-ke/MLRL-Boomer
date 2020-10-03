@@ -20,7 +20,9 @@ void AbstractExampleWiseStatistics::setRuleEvaluation(
 DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl& statistics,
                                                                            uint32 numPredictions,
                                                                            const uint32* labelIndices)
-    : statistics_{statistics}, numPredictions_{numPredictions}, labelIndices_{labelIndices} {
+    : statistics_(statistics) {
+    numPredictions_ = numPredictions;
+    labelIndices_ = labelIndices;
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = NULL;

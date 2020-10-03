@@ -19,7 +19,9 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRu
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices)
-    : statistics_{statistics}, numPredictions_{numPredictions}, labelIndices_{labelIndices} {
+    : statistics_(statistics) {
+    numPredictions_ = numPredictions;
+    labelIndices_ = labelIndices;
     confusionMatricesCovered_ = (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
     accumulatedConfusionMatricesCovered_ = NULL;
