@@ -8,11 +8,11 @@ using namespace boosting;
 
 
 RegularizedExampleWiseRuleEvaluationImpl::RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
-                                                                                   std::shared_ptr<Blas> blasPtr,
-                                                                                   std::shared_ptr<Lapack> lapackPtr) {
+                                                                                   std::unique_ptr<Blas> blasPtr,
+                                                                                   std::unique_ptr<Lapack> lapackPtr) {
     l2RegularizationWeight_ = l2RegularizationWeight;
-    blasPtr_ = blasPtr;
-    lapackPtr_ = lapackPtr;
+    blasPtr_ = std::move(blasPtr);
+    lapackPtr_ = std::move(lapackPtr);
 }
 
 void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,

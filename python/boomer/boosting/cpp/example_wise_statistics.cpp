@@ -229,11 +229,11 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Pred
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
+        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::unique_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
     ruleEvaluationPtr_ = ruleEvaluationPtr;
-    lapackPtr_ = lapackPtr;
+    lapackPtr_ = std::move(lapackPtr);
     labelMatrixPtr_ = labelMatrixPtr;
 }
 

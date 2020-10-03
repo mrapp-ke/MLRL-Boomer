@@ -8,6 +8,7 @@ from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
 from boomer.boosting._lapack cimport init_lapack
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
+from libcpp.utility cimport move
 
 
 cdef class ExampleWiseStatisticsFactory:
@@ -38,8 +39,9 @@ cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
         :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
                                 examples
         """
+        cdef unique_ptr[Lapack] lapack_ptr = init_lapack()
         self.statistics_factory_ptr = <shared_ptr[IExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
-            loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, shared_ptr[Lapack](init_lapack()),
+            loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, move(lapack_ptr),
             dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
