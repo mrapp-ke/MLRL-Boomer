@@ -46,9 +46,9 @@ class IThresholdsSubset {
          * thresholds that correspond to the subspace of the instance space that is covered by the refined rule are
          * included.
          *
-         * @param refinement An object of type `Refinement`, representing the refinement to be applied
+         * @param refinement A reference to an object of type `Refinement`, representing the refinement to be applied
          */
-        virtual void applyRefinement(Refinement &refinement) = 0;
+        virtual void applyRefinement(Refinement& refinement) = 0;
 
         /**
          * Recalculates the scores to be predicted by a refinement that has been found by an instance of the type
@@ -60,9 +60,9 @@ class IThresholdsSubset {
          *
          * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to calculate
          *                          the updated scores
-         * @param refinement        An object of type `Refinement`, whose head should be updated
+         * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement) = 0;
+        virtual void recalculatePrediction(IHeadRefinement* headRefinement, Refinement& refinement) = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
@@ -187,9 +187,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex) override;
 
-                void applyRefinement(Refinement &refinement) override;
+                void applyRefinement(Refinement& refinement) override;
 
-                void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement) override;
+                void recalculatePrediction(IHeadRefinement* headRefinement, Refinement& refinement) override;
 
                 void applyPrediction(Prediction& prediction) override;
 

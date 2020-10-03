@@ -330,7 +330,7 @@ AbstractRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRef
                                        nominal, std::move(callbackPtr));
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
+void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
     numRefinements_++;
     sumOfWeights_ = refinement.coveredWeights;
 
@@ -360,7 +360,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refi
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement* headRefinement,
-                                                                      Refinement &refinement) {
+                                                                      Refinement& refinement) {
     PredictionCandidate* head = refinement.head;
     uint32 numLabelIndices = head->numPredictions_;
     const uint32* labelIndices = head->labelIndices_;
