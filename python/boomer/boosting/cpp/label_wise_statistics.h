@@ -77,7 +77,7 @@ namespace boosting {
 
                     float64* accumulatedSumsOfHessians_;
 
-                    LabelWisePredictionCandidate* prediction_;
+                    std::unique_ptr<LabelWisePredictionCandidate> predictionPtr_;
 
                 public:
 

@@ -27,9 +27,11 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLa
     sumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfHessians_, numPredictions);
     accumulatedSumsOfHessians_ = NULL;
+    uint32* predictionLabelIndices = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
-    prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
+    predictionPtr_ = std::make_unique<LabelWisePredictionCandidate>(numPredictions, predictionLabelIndices,
+                                                                    predictedScores, qualityScores, 0);
 }
 
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
@@ -37,7 +39,6 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
-    delete prediction_;
 }
 
 void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
@@ -80,8 +81,9 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
                                                                         statistics_->totalSumsOfGradients_,
                                                                         sumsOfGradients,
                                                                         statistics_->totalSumsOfHessians_,
-                                                                        sumsOfHessians, uncovered, prediction_);
-    return prediction_;
+                                                                        sumsOfHessians, uncovered,
+                                                                        predictionPtr_.get());
+    return predictionPtr_.get();
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
