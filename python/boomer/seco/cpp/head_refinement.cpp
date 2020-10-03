@@ -124,7 +124,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
     return result;
 }
 
-PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                                     bool accumulated) {
-    return &statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }

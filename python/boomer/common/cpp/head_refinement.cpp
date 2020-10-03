@@ -46,9 +46,9 @@ PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate
     return NULL;
 }
 
-PredictionCandidate* SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset,
+PredictionCandidate& SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset,
                                                                         bool uncovered, bool accumulated) {
-    return &statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
 PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
@@ -97,7 +97,7 @@ PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestH
     return NULL;
 }
 
-PredictionCandidate* FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+PredictionCandidate& FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                                  bool accumulated) {
-    return &statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
+    return statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
 }

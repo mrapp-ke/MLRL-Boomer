@@ -30,7 +30,7 @@ namespace seco {
                                           const uint32* labelIndices, IStatisticsSubset* statisticsSubset,
                                           bool uncovered, bool accumulated) override;
 
-            PredictionCandidate* calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+            PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                      bool accumulated) override;
 
     };
