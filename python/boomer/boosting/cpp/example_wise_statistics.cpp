@@ -101,7 +101,7 @@ void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-LabelWisePredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -111,10 +111,10 @@ LabelWisePredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetIm
                                                                         statistics_->totalSumsOfHessians_,
                                                                         sumsOfHessians, uncovered,
                                                                         predictionPtr_.get());
-    return predictionPtr_.get();
+    return *predictionPtr_;
 }
 
-PredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
+PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -144,7 +144,7 @@ PredictionCandidate* DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
                                                                           dsysvLwork_, dsysvTmpArray1_, dsysvTmpArray2_,
                                                                           dsysvTmpArray3_, dspmvTmpArray_, uncovered,
                                                                           predictionPtr_.get());
-    return predictionPtr_.get();
+    return *predictionPtr_;
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(

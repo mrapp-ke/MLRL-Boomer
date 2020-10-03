@@ -17,9 +17,9 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void resetSubset()
 
-        LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
+        LabelWisePredictionCandidate*& calculateLabelWisePrediction(bool uncovered, bool accumulated) except +
 
-        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
+        PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) except +
 
 
     cdef cppclass AbstractDecomposableStatisticsSubset(IStatisticsSubset):

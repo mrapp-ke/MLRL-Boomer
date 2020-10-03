@@ -7,9 +7,9 @@ PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate
                                                              const uint32* labelIndices,
                                                              IStatisticsSubset* statisticsSubset, bool uncovered,
                                                              bool accumulated) {
-    LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
-    uint32 numPredictions = prediction->numPredictions_;
-    float64* qualityScores = prediction->qualityScores_;
+    LabelWisePredictionCandidate& prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    uint32 numPredictions = prediction.numPredictions_;
+    float64* qualityScores = prediction.qualityScores_;
     uint32 bestC = 0;
     float64 bestQualityScore = qualityScores[bestC];
 
@@ -24,7 +24,7 @@ PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate
 
     // The quality score must be better than that of `bestHead`...
     if (bestHead == NULL || bestQualityScore < bestHead->overallQualityScore_) {
-        float64* predictedScores = prediction->predictedScores_;
+        float64* predictedScores = prediction.predictedScores_;
 
         if (recyclableHead == NULL) {
             // Create a new `PredictionCandidate` and return it...
@@ -48,20 +48,20 @@ PredictionCandidate* SingleLabelHeadRefinementImpl::findHead(PredictionCandidate
 
 PredictionCandidate* SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset,
                                                                         bool uncovered, bool accumulated) {
-    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    return &statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
 PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                       PredictionCandidate* recyclableHead, const uint32* labelIndices,
                                                       IStatisticsSubset* statisticsSubset, bool uncovered,
                                                       bool accumulated) {
-    PredictionCandidate* prediction = statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
-    float64 overallQualityScore = prediction->overallQualityScore_;
+    PredictionCandidate& prediction = statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
+    float64 overallQualityScore = prediction.overallQualityScore_;
 
     // The quality score must be better than that of `bestHead`...
     if (bestHead == NULL || overallQualityScore < bestHead->overallQualityScore_) {
-        uint32 numPredictions = prediction->numPredictions_;
-        float64* predictedScores = prediction->predictedScores_;
+        uint32 numPredictions = prediction.numPredictions_;
+        float64* predictedScores = prediction.predictedScores_;
 
         if (recyclableHead == NULL) {
             // Create a new `PredictionCandidate` and return it...
@@ -99,5 +99,5 @@ PredictionCandidate* FullHeadRefinementImpl::findHead(PredictionCandidate* bestH
 
 PredictionCandidate* FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                                  bool accumulated) {
-    return statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
+    return &statisticsSubset->calculateExampleWisePrediction(uncovered, accumulated);
 }

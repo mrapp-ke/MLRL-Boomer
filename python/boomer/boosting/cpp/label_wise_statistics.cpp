@@ -73,7 +73,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -83,7 +83,7 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
                                                                         statistics_->totalSumsOfHessians_,
                                                                         sumsOfHessians, uncovered,
                                                                         predictionPtr_.get());
-    return predictionPtr_.get();
+    return *predictionPtr_;
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,

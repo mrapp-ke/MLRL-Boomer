@@ -35,10 +35,10 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
                                                          bool accumulated) {
     PredictionCandidate* result = NULL;
     ILiftFunction* liftFunction = liftFunctionPtr_.get();
-    LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
-    uint32 numPredictions = prediction->numPredictions_;
-    float64* predictedScores = prediction->predictedScores_;
-    float64* qualityScores = prediction->qualityScores_;
+    LabelWisePredictionCandidate& prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    uint32 numPredictions = prediction.numPredictions_;
+    float64* predictedScores = prediction.predictedScores_;
+    float64* qualityScores = prediction.qualityScores_;
     uint32* sortedIndices = NULL;
     float64 sumOfQualityScores = 0;
     uint32 bestNumPredictions = 0;
@@ -126,5 +126,5 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
 
 PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                                     bool accumulated) {
-    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    return &statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
 }
