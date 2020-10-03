@@ -247,10 +247,10 @@ class AbstractStatistics : virtual public IMatrix {
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param prediction        A pointer to an object of type `Prediction`, representing the predictions of the
+         * @param prediction        A reference to an object of type `Prediction`, representing the predictions of the
          *                          newly induced rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction) = 0;
+        virtual void applyPrediction(uint32 statisticIndex, Prediction& prediction) = 0;
 
         uint32 getNumRows() override;
 

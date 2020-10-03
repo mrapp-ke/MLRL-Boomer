@@ -40,7 +40,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         unique_ptr[IStatisticsSubset] createSubset(uint32 numLabelIndices, const uint32* labelIndices)
 
-        void applyPrediction(uint32 statisticIndex, Prediction* prediction)
+        void applyPrediction(uint32 statisticIndex, Prediction& prediction)
 
 
 cdef class StatisticsProvider:

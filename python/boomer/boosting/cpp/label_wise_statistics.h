@@ -147,7 +147,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
                                                             const uint32* labelIndices) override;
 
-            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction& prediction) override;
 
     };
 

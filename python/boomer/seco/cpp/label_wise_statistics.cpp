@@ -170,11 +170,11 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(ui
     return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(this, numPredictions, labelIndices);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction& prediction) {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = prediction->numPredictions_;
-    const uint32* labelIndices = prediction->labelIndices_;
-    const float64* predictedScores = prediction->predictedScores_;
+    uint32 numPredictions = prediction.numPredictions_;
+    const uint32* labelIndices = prediction.labelIndices_;
+    const float64* predictedScores = prediction.predictedScores_;
     uint32 offset = statisticIndex * numLabels;
 
     // Only the labels that are predicted by the new rule must be considered...

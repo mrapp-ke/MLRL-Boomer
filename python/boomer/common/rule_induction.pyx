@@ -15,6 +15,7 @@ from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
 from libcpp.memory cimport unique_ptr
 
+from cython.operator cimport dereference
 from cython.parallel cimport prange
 
 
@@ -109,7 +110,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
             for i in range(num_statistics):
-                statistics.applyPrediction(i, default_prediction_ptr.get())
+                statistics.applyPrediction(i, dereference(default_prediction_ptr.get()))
 
             model_builder.set_default_rule(default_prediction_ptr.get())
         else:
@@ -244,7 +245,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     post_processor.post_process(best_refinement.head)
 
                 # Update the statistics by applying the predictions of the new rule...
-                thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
+                thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement.head))
 
                 # Add the induced rule to the model...
                 model_builder.add_rule(best_refinement.head, conditions, num_conditions_per_comparator)
