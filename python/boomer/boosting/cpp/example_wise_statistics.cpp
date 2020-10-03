@@ -223,7 +223,7 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Pred
     }
 
     // Update the gradients and Hessians for the example at the given index...
-    lossFunctionPtr_->calculateGradientsAndHessians(labelMatrixPtr_.get(), statisticIndex, &currentScores_[offset],
+    lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
                                                     &gradients_[offset], &hessians_[statisticIndex * numHessians]);
 }
 
@@ -260,8 +260,8 @@ AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
         }
 
         // Calculate the initial gradients and Hessians for the current example...
-        lossFunctionPtr_->calculateGradientsAndHessians(labelMatrixPtr_.get(), r, &currentScores[offset],
-                                                        &gradients[offset], &hessians[r * numHessians]);
+        lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, r, &currentScores[offset], &gradients[offset],
+                                                        &hessians[r * numHessians]);
     }
 
     return new DenseExampleWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_, labelMatrixPtr_,
