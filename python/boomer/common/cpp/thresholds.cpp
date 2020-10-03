@@ -443,7 +443,7 @@ ExactThresholdsImpl::~ExactThresholdsImpl() {
     }
 }
 
-IThresholdsSubset* ExactThresholdsImpl::createSubset(IWeightVector* weights) {
+std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(IWeightVector* weights) {
     // Notify the statistics about the examples that are included in the sub-sample...
     uint32 numExamples = statisticsPtr_.get()->getNumRows();
     statisticsPtr_.get()->resetSampledStatistics();
@@ -453,5 +453,5 @@ IThresholdsSubset* ExactThresholdsImpl::createSubset(IWeightVector* weights) {
         statisticsPtr_.get()->addSampledStatistic(r, weight);
     }
 
-    return new ExactThresholdsImpl::ThresholdsSubsetImpl(this, weights);
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(this, weights);
 }
