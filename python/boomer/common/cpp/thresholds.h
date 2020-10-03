@@ -156,7 +156,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         RuleRefinementCallbackImpl(ThresholdsSubsetImpl& thresholdsSubset);
 
-                        IndexedFloat32Array* get(uint32 featureIndex) override;
+                        IndexedFloat32Array& get(uint32 featureIndex) override;
 
                 };
 

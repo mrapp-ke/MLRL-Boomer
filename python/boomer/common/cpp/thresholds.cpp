@@ -399,7 +399,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::RuleRefin
 
 }
 
-IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::get(uint32 featureIndex) {
+IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::get(uint32 featureIndex) {
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
@@ -425,7 +425,7 @@ IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
         indexedArray = indexedArrayWrapper->array;
     }
 
-    return indexedArray;
+    return *indexedArray;
 }
 
 ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
