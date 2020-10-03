@@ -21,24 +21,20 @@ uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) {
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(BinaryDokMatrix* matrix) {
-    matrix_ = matrix;
-}
-
-DokLabelMatrixImpl::~DokLabelMatrixImpl() {
-    delete matrix_;
+DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr) {
+    matrixPtr_ = std::move(matrixPtr);
 }
 
 uint32 DokLabelMatrixImpl::getNumRows() {
-    return matrix_->getNumRows();
+    return matrixPtr_->getNumRows();
 }
 
 uint32 DokLabelMatrixImpl::getNumCols() {
-    return matrix_->getNumCols();
+    return matrixPtr_->getNumCols();
 }
 
 uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) {
-    return matrix_->getValue(row, col);
+    return matrixPtr_->getValue(row, col);
 }
 
 DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
@@ -116,22 +112,18 @@ void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat3
     indexedArray->data = array;
 }
 
-DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(BinaryDokVector* vector) {
-    vector_ = vector;
-}
-
-DokNominalFeatureVectorImpl::~DokNominalFeatureVectorImpl() {
-    delete vector_;
+DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr) {
+    vectorPtr_ = std::move(vectorPtr);
 }
 
 uint32 DokNominalFeatureVectorImpl::getNumElements() {
-    return vector_->getNumElements();
+    return vectorPtr_->getNumElements();
 }
 
 bool DokNominalFeatureVectorImpl::hasZeroElements() {
-    return vector_->hasZeroElements();
+    return vectorPtr_->hasZeroElements();
 }
 
 uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
-    return vector_->getValue(pos);
+    return vectorPtr_->getValue(pos);
 }

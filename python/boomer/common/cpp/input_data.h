@@ -8,6 +8,7 @@
 #include "arrays.h"
 #include "tuples.h"
 #include "data.h"
+#include <memory>
 
 
 /**
@@ -71,17 +72,15 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
     private:
 
-        BinaryDokMatrix* matrix_;
+        std::unique_ptr<BinaryDokMatrix> matrixPtr_;
 
     public:
 
         /**
-         * @param matrix A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the training
-         *               examples
+         * @param matrix An unique pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
+         *               training examples
          */
-        DokLabelMatrixImpl(BinaryDokMatrix* matrix);
-
-        ~DokLabelMatrixImpl();
+        DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr);
 
         uint32 getNumRows() override;
 
@@ -206,16 +205,14 @@ class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
 
     private:
 
-        BinaryDokVector* vector_;
+        std::unique_ptr<BinaryDokVector> vectorPtr_;
 
     public:
 
         /**
          * @param vector A pointer to an object of type `BinaryDokVector`, storing the nominal attributes
          */
-        DokNominalFeatureVectorImpl(BinaryDokVector* vector);
-
-        ~DokNominalFeatureVectorImpl();
+        DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
 
         uint32 getNumElements() override;
 
