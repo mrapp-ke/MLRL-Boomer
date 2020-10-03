@@ -5,7 +5,7 @@ from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.example_wise_losses cimport ExampleWiseLoss, IExampleWiseLoss
 from boomer.boosting.example_wise_rule_evaluation cimport ExampleWiseRuleEvaluation, IExampleWiseRuleEvaluation
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
@@ -39,7 +39,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         DenseExampleWiseStatisticsFactoryImpl(shared_ptr[IExampleWiseLoss] lossFunctionPtr,
                                               shared_ptr[IExampleWiseRuleEvaluation] ruleEvaluationPtr,
-                                              shared_ptr[Lapack] lapackPtr,
+                                              unique_ptr[Lapack] lapackPtr,
                                               shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 

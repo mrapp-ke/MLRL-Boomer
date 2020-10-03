@@ -135,22 +135,22 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            std::shared_ptr<Lapack> lapackPtr_;
+            std::unique_ptr<Lapack> lapackPtr_;
 
-            std::shared_ptr<Blas> blasPtr_;
+            std::unique_ptr<Blas> blasPtr_;
 
         public:
 
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
              *                                  different BLAS routines
-             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
-                                                     std::shared_ptr<Lapack> lapackPtr);
+            RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::unique_ptr<Blas> blasPtr,
+                                                     std::unique_ptr<Lapack> lapackPtr);
 
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,

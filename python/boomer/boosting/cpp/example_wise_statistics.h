@@ -217,14 +217,14 @@ namespace boosting {
              * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
              *                          for calculating the predictions, as well as corresponding quality scores, of
              *                          rules
-             * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
+             * @param lapackPtr         An unique pointer to an object of type `Lapack` that allows to execute different
              *                          Lapack routines
              * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
              *                          random access to the labels of the training examples
              */
             DenseExampleWiseStatisticsFactoryImpl(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                                   std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                                  std::shared_ptr<Lapack> lapackPtr,
+                                                  std::unique_ptr<Lapack> lapackPtr,
                                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
             AbstractExampleWiseStatistics* create() override;
