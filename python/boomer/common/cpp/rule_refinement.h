@@ -12,6 +12,7 @@
 #include "statistics.h"
 #include "sub_sampling.h"
 #include "head_refinement.h"
+#include <memory>
 
 
 /**
@@ -99,7 +100,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
         bool nominal_;
 
-        IRuleRefinementCallback<IndexedFloat32Array>* callback_;
+        std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr_;
 
     public:
 
@@ -113,14 +114,13 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
-         * @param callback          A pointer to an object of type `IRuleRefinementCallback<IndexedFloat32Array>` that
-         *                          allows to retrieve the information that is required to identify potential refinements
+         * @param callback          An unique pointer to an object of type
+         *                          `IRuleRefinementCallback<IndexedFloat32Array>` that allows to retrieve the
+         *                          information that is required to identify potential refinements
          */
         ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal,
-                                IRuleRefinementCallback<IndexedFloat32Array>* callback);
-
-        ~ExactRuleRefinementImpl();
+                                std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr);
 
         void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
                             const uint32* labelIndices) override;

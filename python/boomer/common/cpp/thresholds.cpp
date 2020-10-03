@@ -324,9 +324,10 @@ AbstractRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRef
     }
 
     bool nominal = thresholds_->nominalFeatureVectorPtr_.get()->getValue(featureIndex);
-    IRuleRefinementCallback<IndexedFloat32Array>* callback = new RuleRefinementCallbackImpl(this);
+    std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr
+        = std::make_unique<RuleRefinementCallbackImpl>(this);
     return new ExactRuleRefinementImpl(thresholds_->statisticsPtr_.get(), weights_, sumOfWeights_, featureIndex,
-                                       nominal, callback);
+                                       nominal, std::move(callbackPtr));
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement &refinement) {
