@@ -275,7 +275,8 @@ uint32 AbstractThresholds::getNumLabels() {
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
                                                                 IWeightVector* weights)
-    : thresholds_{thresholds}, weights_{weights} {
+    : thresholds_(thresholds) {
+    weights_ = weights;
     sumOfWeights_ = weights->getSumOfWeights();
     uint32 numExamples = thresholds.getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
@@ -394,7 +395,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& pred
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::RuleRefinementCallbackImpl(
         ThresholdsSubsetImpl& thresholdsSubset)
-    : thresholdsSubset_{thresholdsSubset} {
+    : thresholdsSubset_(thresholdsSubset) {
 
 }
 
