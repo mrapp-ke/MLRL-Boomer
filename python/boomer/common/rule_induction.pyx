@@ -238,7 +238,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
                     # training data...
-                    thresholds_subset_ptr.get().recalculatePrediction(head_refinement, best_refinement)
+                    thresholds_subset_ptr.get().recalculatePrediction(dereference(head_refinement), best_refinement)
 
                 # Apply post-processor, if necessary...
                 if post_processor is not None:

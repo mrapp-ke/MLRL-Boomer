@@ -359,7 +359,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
                                                   thresholds_->statisticsPtr_.get(), weights_);
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement* headRefinement,
+void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
                                                                       Refinement& refinement) {
     PredictionCandidate* head = refinement.head;
     uint32 numLabelIndices = head->numPredictions_;
@@ -375,7 +375,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefin
         }
     }
 
-    Prediction& prediction = headRefinement->calculatePrediction(*statisticsSubsetPtr, false, false);
+    Prediction& prediction = headRefinement.calculatePrediction(*statisticsSubsetPtr, false, false);
     const float64* updatedScores = prediction.predictedScores_;
 
     for (uint32 c = 0; c < numLabelIndices; c++) {

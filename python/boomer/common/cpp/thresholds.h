@@ -58,11 +58,11 @@ class IThresholdsSubset {
          * When calculating the updated scores the weights of the individual training examples are ignored and equally
          * distributed weights are assumed instead.
          *
-         * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to calculate
+         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to calculate
          *                          the updated scores
          * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(IHeadRefinement* headRefinement, Refinement& refinement) = 0;
+        virtual void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
@@ -189,7 +189,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 void applyRefinement(Refinement& refinement) override;
 
-                void recalculatePrediction(IHeadRefinement* headRefinement, Refinement& refinement) override;
+                void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) override;
 
                 void applyPrediction(Prediction& prediction) override;
 
