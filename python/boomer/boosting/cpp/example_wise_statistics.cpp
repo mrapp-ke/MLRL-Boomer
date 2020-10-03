@@ -237,7 +237,7 @@ DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
+std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::create() {
     // The number of examples
     uint32 numExamples = labelMatrixPtr_->getNumRows();
     // The number of labels
@@ -264,6 +264,6 @@ AbstractExampleWiseStatistics* DenseExampleWiseStatisticsFactoryImpl::create() {
                                                         &hessians[r * numHessians]);
     }
 
-    return new DenseExampleWiseStatisticsImpl(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_, labelMatrixPtr_,
-                                              gradients, hessians, currentScores);
+    return std::make_unique<DenseExampleWiseStatisticsImpl>(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_,
+                                                            labelMatrixPtr_, gradients, hessians, currentScores);
 }

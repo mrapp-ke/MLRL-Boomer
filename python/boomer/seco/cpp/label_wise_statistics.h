@@ -158,9 +158,9 @@ namespace seco {
             /**
              * Creates a new instance of the class `AbstractLabelWiseStatistics`.
              *
-             * @return A pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+             * @return An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
              */
-            virtual AbstractLabelWiseStatistics* create() = 0;
+            virtual std::unique_ptr<AbstractLabelWiseStatistics> create() = 0;
 
     };
 
@@ -186,7 +186,7 @@ namespace seco {
             DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            AbstractLabelWiseStatistics* create() override;
+            std::unique_ptr<AbstractLabelWiseStatistics> create() override;
 
     };
 

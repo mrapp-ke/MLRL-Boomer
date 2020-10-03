@@ -30,7 +30,7 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        AbstractExampleWiseStatistics* create()
+        unique_ptr[AbstractExampleWiseStatistics] create()
 
 
     cdef cppclass DenseExampleWiseStatisticsFactoryImpl(IExampleWiseStatisticsFactory):
@@ -51,14 +51,14 @@ cdef class ExampleWiseStatisticsFactory:
 
     # Functions:
 
-    cdef AbstractExampleWiseStatistics* create(self)
+    cdef unique_ptr[AbstractExampleWiseStatistics] create(self)
 
 
 cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
 
     # Functions:
 
-    cdef AbstractExampleWiseStatistics* create(self)
+    cdef unique_ptr[AbstractExampleWiseStatistics] create(self)
 
 
 cdef class ExampleWiseStatisticsProvider(StatisticsProvider):

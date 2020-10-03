@@ -211,7 +211,7 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
+std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() {
     // The number of examples
     uint32 numExamples = labelMatrixPtr_->getNumRows();
     // The number of labels
@@ -245,6 +245,6 @@ AbstractLabelWiseStatistics* DenseLabelWiseStatisticsFactoryImpl::create() {
         }
     }
 
-    return new DenseLabelWiseStatisticsImpl(ruleEvaluationPtr_, labelMatrixPtr_, uncoveredLabels, sumUncoveredLabels,
-                                            minorityLabels);
+    return std::make_unique<DenseLabelWiseStatisticsImpl>(ruleEvaluationPtr_, labelMatrixPtr_, uncoveredLabels,
+                                                          sumUncoveredLabels, minorityLabels);
 }
