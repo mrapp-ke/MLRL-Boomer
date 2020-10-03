@@ -383,7 +383,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefin
     }
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction* prediction) {
+void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& prediction) {
     uint32 numExamples = thresholds_->getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {

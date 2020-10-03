@@ -21,7 +21,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement)
 
-        void applyPrediction(Prediction* prediction)
+        void applyPrediction(Prediction& prediction)
 
 
     cdef cppclass AbstractThresholds:
