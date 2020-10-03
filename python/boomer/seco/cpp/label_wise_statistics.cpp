@@ -25,15 +25,16 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLa
     confusionMatricesCovered_ = (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
     accumulatedConfusionMatricesCovered_ = NULL;
+    uint32* predictionLabelIndices = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
-    prediction_ = new LabelWisePredictionCandidate(numPredictions, NULL, predictedScores, qualityScores, 0);
+    predictionPtr_ = std::make_unique<LabelWisePredictionCandidate>(numPredictions, predictionLabelIndices,
+                                                                    predictedScores, qualityScores, 0);
 }
 
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(confusionMatricesCovered_);
     free(accumulatedConfusionMatricesCovered_);
-    delete prediction_;
 }
 
 void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
@@ -82,8 +83,8 @@ LabelWisePredictionCandidate* DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
                                                                         statistics_->confusionMatricesTotal_,
                                                                         statistics_->confusionMatricesSubset_,
                                                                         confusionMatricesCovered, uncovered,
-                                                                        prediction_);
-    return prediction_;
+                                                                        predictionPtr_.get());
+    return predictionPtr_.get();
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
