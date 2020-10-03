@@ -7,6 +7,7 @@ each label.
 from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
+from libcpp.utility cimport move
 
 
 cdef class LabelWiseStatisticsFactory:
@@ -14,11 +15,11 @@ cdef class LabelWiseStatisticsFactory:
     A wrapper for the pure virtual C++ class `ILabelWiseStatisticsFactory`.
     """
 
-    cdef AbstractLabelWiseStatistics* create(self):
+    cdef unique_ptr[AbstractLabelWiseStatistics] create(self):
         """
         Creates a new instance of the class `AbstractLabelWiseStatistics`.
 
-        :return: A pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+        :return: An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
         """
         return self.statistics_factory_ptr.get().create()
 
@@ -51,7 +52,8 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
         :param rule_evaluation:     The `LabelWiseRuleEvaluation` to switch to when invoking the function
                                     `switch_rule_evaluation`
         """
-        self.statistics_ptr = shared_ptr[AbstractStatistics](statistics_factory.create())
+        cdef unique_ptr[AbstractStatistics] statistics_ptr = <unique_ptr[AbstractStatistics]>statistics_factory.create()
+        self.statistics_ptr = <shared_ptr[AbstractStatistics]>move(statistics_ptr)
         self.rule_evaluation = rule_evaluation
 
     cdef AbstractStatistics* get(self):

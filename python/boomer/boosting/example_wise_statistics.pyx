@@ -16,11 +16,11 @@ cdef class ExampleWiseStatisticsFactory:
     A wrapper for the pure virtual C++ class `IExampleWiseStatisticsFactory`.
     """
 
-    cdef AbstractExampleWiseStatistics* create(self):
+    cdef unique_ptr[AbstractExampleWiseStatistics] create(self):
         """
         Creates a new instance of the class `AbstractExampleWiseStatistics`.
 
-        :return: A pointer to an object of type `AbstractExampleWiseStatistics` that has been created
+        :return: An unique pointer to an object of type `AbstractExampleWiseStatistics` that has been created
         """
         return self.statistics_factory_ptr.get().create()
 
@@ -56,7 +56,8 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
         :param rule_evaluation:     The `ExampleWiseRuleEvaluation` to switch to when invoking the function
                                     `switch_rule_evaluation`
         """
-        self.statistics_ptr = shared_ptr[AbstractStatistics](statistics_factory.create())
+        cdef unique_ptr[AbstractStatistics] statistics_ptr = <unique_ptr[AbstractStatistics]>statistics_factory.create()
+        self.statistics_ptr = <shared_ptr[AbstractStatistics]>move(statistics_ptr)
         self.rule_evaluation = rule_evaluation
 
     cdef AbstractStatistics* get(self):
