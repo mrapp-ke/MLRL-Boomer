@@ -236,9 +236,9 @@ class AbstractStatistics : virtual public IMatrix {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be included in the subset or None, if all labels
          *                          should be included
-         * @return                  A pointer to an object of type `IStatisticsSubset` that has been created
+         * @return                  An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.

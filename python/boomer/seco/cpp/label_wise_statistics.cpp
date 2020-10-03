@@ -165,10 +165,11 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
     }
 }
 
-IStatisticsSubset* DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
+std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
+                                                                              const uint32* labelIndices) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl(this, numPredictions, labelIndices);
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(this, numPredictions, labelIndices);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {

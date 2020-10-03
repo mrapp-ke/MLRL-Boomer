@@ -203,10 +203,11 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticInde
     }
 }
 
-IStatisticsSubset* DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices, const uint32* labelIndices) {
+std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
+                                                                                const uint32* labelIndices) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
-    return new DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl(this, numPredictions, labelIndices);
+    return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(this, numPredictions, labelIndices);
 }
 
 void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction* prediction) {
