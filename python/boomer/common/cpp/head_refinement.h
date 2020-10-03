@@ -35,7 +35,7 @@ class IHeadRefinement {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(num_predictions)`, representing the
          *                          indices of the labels for which the head may predict or NULL, if the head may
          *                          predict for all labels
-         * @param statisticsSubset  A pointer to an object of type `IStatisticsSubset` to be used for calculating
+         * @param statisticsSubset  A reference to an object of type `IStatisticsSubset` to be used for calculating
          *                          predictions and corresponding quality scores
          * @param uncovered         False, if the rule for which the head should be found covers all statistics that
          *                          have been added to the `IStatisticsSubset` so far, True, if the rule covers all
@@ -47,7 +47,7 @@ class IHeadRefinement {
          *                          the head that has been found, if the head is better than `bestHead`, NULL otherwise
          */
         virtual PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
-                                              const uint32* labelIndices, IStatisticsSubset* statisticsSubset,
+                                              const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
                                               bool uncovered, bool accumulated) = 0;
 
         /**
@@ -57,7 +57,7 @@ class IHeadRefinement {
          * The given object of type `IStatisticsSubset` must have been prepared properly via calls to the function
          * `IStatisticsSubset#addToSubset`.
          *
-         * @param statisticsSubset  A pointer to an object of type `IStatisticsSubset` to be used for calculating
+         * @param statisticsSubset  A reference to an object of type `IStatisticsSubset` to be used for calculating
          *                          predictions and corresponding quality scores
          * @param uncovered         False, if the rule for which the optimal scores should be calculated covers all
          *                          statistics that have been added to the `IStatisticsSubset` so far, True, if the rule
@@ -68,7 +68,7 @@ class IHeadRefinement {
          * @return                  A reference to an object of type `PredictionCandidate` that stores the optimal
          *                          scores to be predicted by the rule, as well as its overall quality score
          */
-        virtual PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+        virtual PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                          bool accumulated) = 0;
 
 };
@@ -81,10 +81,10 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
     public:
 
         PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
-                                      const uint32* labelIndices, IStatisticsSubset* statisticsSubset, bool uncovered,
+                                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                                       bool accumulated) override;
 
-        PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+        PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                  bool accumulated) override;
 
 };
@@ -97,10 +97,10 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
     public:
 
         PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
-                                      const uint32* labelIndices, IStatisticsSubset* statisticsSubset, bool uncovered,
+                                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                                       bool accumulated) override;
 
-        PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+        PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                  bool accumulated) override;
 
 };

@@ -31,10 +31,10 @@ PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFuncti
 PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
                                                          PredictionCandidate* recyclableHead,
                                                          const uint32* labelIndices,
-                                                         IStatisticsSubset* statisticsSubset, bool uncovered,
+                                                         IStatisticsSubset& statisticsSubset, bool uncovered,
                                                          bool accumulated) {
     PredictionCandidate* result = NULL;
-    LabelWisePredictionCandidate& prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction.numPredictions_;
     float64* predictedScores = prediction.predictedScores_;
     float64* qualityScores = prediction.qualityScores_;
@@ -123,7 +123,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
     return result;
 }
 
-PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                     bool accumulated) {
-    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }

@@ -11,10 +11,10 @@ cdef extern from "cpp/head_refinement.h" nogil:
     cdef cppclass IHeadRefinement:
 
         PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
-                                      const uint32* labelIndices, IStatisticsSubset* statisticsSubset, bool uncovered,
+                                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                                       bool accumulated)
 
-        PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered, bool accumulated)
+        PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
 
     cdef cppclass SingleLabelHeadRefinementImpl(IHeadRefinement):

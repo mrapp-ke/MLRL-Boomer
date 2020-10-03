@@ -104,9 +104,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 statistics.addSampledStatistic(i, 1)
 
             statistics_subset_ptr = statistics.createSubset(0, NULL)
-            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL, statistics_subset_ptr.get(), True,
+            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL,
+                                                                  dereference(statistics_subset_ptr.get()), True,
                                                                   False))
-
             statistics_provider.switch_rule_evaluation()
 
             for i in range(num_statistics):
