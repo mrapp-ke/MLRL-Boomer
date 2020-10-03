@@ -65,7 +65,7 @@ namespace boosting {
 
                 private:
 
-                    DenseExampleWiseStatisticsImpl* statistics_;
+                    DenseExampleWiseStatisticsImpl& statistics_;
 
                     uint32 numPredictions_;
 
@@ -98,14 +98,14 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A pointer to an object of type `DenseExampleWiseStatisticsImpl` that
+                     * @param statistics        A reference to an object of type `DenseExampleWiseStatisticsImpl` that
                      *                          stores the gradients and Hessians
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
                      *                          subset or NULL, if all labels should be considered
                      */
-                    StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
