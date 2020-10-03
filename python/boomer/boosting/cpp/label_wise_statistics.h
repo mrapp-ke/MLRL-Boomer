@@ -107,13 +107,13 @@ namespace boosting {
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-            float64* currentScores_;
-
             float64* gradients_;
 
-            float64* totalSumsOfGradients_;
-
             float64* hessians_;
+
+            float64* currentScores_;
+
+            float64* totalSumsOfGradients_;
 
             float64* totalSumsOfHessians_;
 
