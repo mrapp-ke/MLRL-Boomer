@@ -14,7 +14,7 @@ cdef extern from "cpp/head_refinement.h" nogil:
                                       const uint32* labelIndices, IStatisticsSubset* statisticsSubset, bool uncovered,
                                       bool accumulated)
 
-        PredictionCandidate* calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered, bool accumulated)
+        PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered, bool accumulated)
 
 
     cdef cppclass SingleLabelHeadRefinementImpl(IHeadRefinement):

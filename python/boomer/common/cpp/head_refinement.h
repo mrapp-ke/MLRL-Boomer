@@ -65,10 +65,10 @@ class IHeadRefinement {
          * @param accumulated       False, if the rule covers all examples that have been added since the
          *                          `IStatisticsSubset` has been reset for the last time, True, if the rule covers all
          *                          examples that have been added so far
-         * @return                  A pointer to an object of type `PredictionCandidate` that stores the optimal scores
-         *                          to be predicted by the rule, as well as its overall quality score
+         * @return                  A reference to an object of type `PredictionCandidate` that stores the optimal
+         *                          scores to be predicted by the rule, as well as its overall quality score
          */
-        virtual PredictionCandidate* calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+        virtual PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                          bool accumulated) = 0;
 
 };
@@ -84,7 +84,7 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
                                       const uint32* labelIndices, IStatisticsSubset* statisticsSubset, bool uncovered,
                                       bool accumulated) override;
 
-        PredictionCandidate* calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+        PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                  bool accumulated) override;
 
 };
@@ -100,7 +100,7 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
                                       const uint32* labelIndices, IStatisticsSubset* statisticsSubset, bool uncovered,
                                       bool accumulated) override;
 
-        PredictionCandidate* calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+        PredictionCandidate& calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
                                                  bool accumulated) override;
 
 };
