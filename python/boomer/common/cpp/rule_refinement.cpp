@@ -3,9 +3,9 @@
 
 
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(
-        AbstractStatistics* statistics, IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
+        std::shared_ptr<AbstractStatistics> statisticsPtr, IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
         bool nominal, std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr) {
-    statistics_ = statistics;
+    statisticsPtr_ = statisticsPtr;
     weights_ = weights;
     totalSumOfWeights_ = totalSumOfWeights;
     featureIndex_ = featureIndex;
@@ -20,7 +20,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_->createSubset(numLabelIndices, labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
     IndexedFloat32Array* indexedArray = callbackPtr_->get(featureIndex_);
