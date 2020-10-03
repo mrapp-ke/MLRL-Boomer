@@ -94,7 +94,7 @@ namespace seco {
 
                     void resetSubset() override;
 
-                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                    LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;
 
             };
