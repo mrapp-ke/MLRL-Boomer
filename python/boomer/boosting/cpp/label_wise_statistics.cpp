@@ -79,7 +79,7 @@ LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     statistics_->ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_->totalSumsOfGradients_,
                                                                   sumsOfGradients, statistics_->totalSumsOfHessians_,
-                                                                  sumsOfHessians, uncovered, predictionPtr_.get());
+                                                                  sumsOfHessians, uncovered, *predictionPtr_);
     return *predictionPtr_;
 }
 

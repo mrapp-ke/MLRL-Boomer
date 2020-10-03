@@ -81,8 +81,7 @@ LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
     statistics_->ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_->minorityLabels_,
                                                                   statistics_->confusionMatricesTotal_,
                                                                   statistics_->confusionMatricesSubset_,
-                                                                  confusionMatricesCovered, uncovered,
-                                                                  predictionPtr_.get());
+                                                                  confusionMatricesCovered, uncovered, *predictionPtr_);
     return *predictionPtr_;
 }
 
