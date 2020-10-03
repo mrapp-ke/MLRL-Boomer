@@ -55,13 +55,13 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A pointer to an object of type `LabelWisePredictionCandidate` that should be
-             *                              used to store the predicted scores and quality scores
+             * @param prediction            A reference to an object of type `LabelWisePredictionCandidate` that should
+             *                              be used to store the predicted scores and quality scores
              */
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate* prediction) = 0;
+                                                      LabelWisePredictionCandidate& prediction) = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
@@ -111,8 +111,8 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A pointer to an object of type `PredictionCandidate` that should be used to
-             *                              store the predicted scores and quality score
+             * @param prediction            A reference to an object of type `PredictionCandidate` that should be used
+             *                              to store the predicted scores and quality score
              */
             virtual void calculateExampleWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                         float64* sumsOfGradients, const float64* totalSumsOfHessians,
@@ -120,7 +120,7 @@ namespace boosting {
                                                         float64* tmpHessians, int dsysvLwork, float64* dsysvTmpArray1,
                                                         int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                         float64* dspmvTmpArray, bool uncovered,
-                                                        PredictionCandidate* prediction) = 0;
+                                                        PredictionCandidate& prediction) = 0;
 
     };
 
@@ -155,14 +155,14 @@ namespace boosting {
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePredictionCandidate* prediction) override;
+                                              LabelWisePredictionCandidate& prediction) override;
 
             void calculateExampleWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                 float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                 float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
                                                 int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                 double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
-                                                PredictionCandidate* prediction) override;
+                                                PredictionCandidate& prediction) override;
 
     };
 

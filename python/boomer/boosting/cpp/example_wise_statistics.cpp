@@ -107,7 +107,7 @@ LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetIm
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     statistics_->ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_->totalSumsOfGradients_,
                                                                   sumsOfGradients, statistics_->totalSumsOfHessians_,
-                                                                  sumsOfHessians, uncovered, predictionPtr_.get());
+                                                                  sumsOfHessians, uncovered, *predictionPtr_);
     return *predictionPtr_;
 }
 
@@ -138,7 +138,7 @@ PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
                                                                     sumsOfHessians, tmpGradients_, tmpHessians_,
                                                                     dsysvLwork_, dsysvTmpArray1_, dsysvTmpArray2_,
                                                                     dsysvTmpArray3_, dspmvTmpArray_, uncovered,
-                                                                    predictionPtr_.get());
+                                                                    *predictionPtr_);
     return *predictionPtr_;
 }
 
