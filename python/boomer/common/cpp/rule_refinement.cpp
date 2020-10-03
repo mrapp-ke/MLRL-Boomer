@@ -23,9 +23,9 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
-    IndexedFloat32Array* indexedArray = callbackPtr_->get(featureIndex_);
-    IndexedFloat32* indexedValues = indexedArray->data;
-    uint32 numIndexedValues = indexedArray->numElements;
+    IndexedFloat32Array& indexedArray = callbackPtr_->get(featureIndex_);
+    IndexedFloat32* indexedValues = indexedArray.data;
+    uint32 numIndexedValues = indexedArray.numElements;
 
     // In the following, we start by processing all examples with feature values < 0...
     uint32 sumOfWeights = 0;
