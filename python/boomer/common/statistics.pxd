@@ -4,7 +4,7 @@ from boomer.common._predictions cimport Prediction, PredictionCandidate, LabelWi
 from boomer.common.input_data cimport LabelMatrix
 
 from libcpp cimport bool
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/statistics.h" nogil:
@@ -38,7 +38,7 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove)
 
-        IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices)
+        unique_ptr[IStatisticsSubset] createSubset(uint32 numLabelIndices, const uint32* labelIndices)
 
         void applyPrediction(uint32 statisticIndex, Prediction* prediction)
 

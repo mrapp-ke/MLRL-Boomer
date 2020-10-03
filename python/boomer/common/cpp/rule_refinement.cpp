@@ -24,8 +24,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
-    statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_->createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
     IndexedFloat32Array* indexedArray = callback_->get(featureIndex_);
@@ -54,7 +53,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr.get()->addToSubset(i, weight);
+            statisticsSubsetPtr->addToSubset(i, weight);
             sumOfWeights += weight;
             previousThreshold = currentThreshold;
             previousR = r;
@@ -133,7 +132,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
                     // the next condition...
                     if (nominal_) {
-                        statisticsSubsetPtr.get()->resetSubset();
+                        statisticsSubsetPtr->resetSubset();
                         sumOfWeights = 0;
                         firstR = r;
                     }
@@ -143,7 +142,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
                 previousR = r;
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr.get()->addToSubset(i, weight);
+                statisticsSubsetPtr->addToSubset(i, weight);
                 sumOfWeights += weight;
                 accumulatedSumOfWeights += weight;
             }
@@ -190,7 +189,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
         }
 
         // Reset the subset, if any examples with feature value < 0 have been processed...
-        statisticsSubsetPtr.get()->resetSubset();
+        statisticsSubsetPtr->resetSubset();
     }
 
     float32 previousThresholdNegative = previousThreshold;
@@ -209,7 +208,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr.get()->addToSubset(i, weight);
+            statisticsSubsetPtr->addToSubset(i, weight);
             sumOfWeights += weight;
             previousThreshold = indexedValues[r].value;
             previousR = r;
@@ -283,7 +282,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
                     // the next condition...
                     if (nominal_) {
-                        statisticsSubsetPtr.get()->resetSubset();
+                        statisticsSubsetPtr->resetSubset();
                         sumOfWeights = 0;
                         firstR = r;
                     }
@@ -293,7 +292,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
                 previousR = r;
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr.get()->addToSubset(i, weight);
+                statisticsSubsetPtr->addToSubset(i, weight);
                 sumOfWeights += weight;
                 accumulatedSumOfWeights += weight;
             }
@@ -351,7 +350,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
         // If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
         // all examples that have been processed so far...
         if (nominal_) {
-            statisticsSubsetPtr.get()->resetSubset();
+            statisticsSubsetPtr->resetSubset();
             firstR = ((intp) numIndexedValues) - 1;
         }
 

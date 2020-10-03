@@ -364,13 +364,13 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefin
     uint32 numLabelIndices = head->numPredictions_;
     const uint32* labelIndices = head->labelIndices_;
     float64* predictedScores = head->predictedScores_;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
-    statisticsSubsetPtr.reset(thresholds_->statisticsPtr_.get()->createSubset(numLabelIndices, labelIndices));
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+        thresholds_->statisticsPtr_.get()->createSubset(numLabelIndices, labelIndices);
     uint32 numExamples = thresholds_->getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
         if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
-            statisticsSubsetPtr.get()->addToSubset(r, 1);
+            statisticsSubsetPtr->addToSubset(r, 1);
         }
     }
 
