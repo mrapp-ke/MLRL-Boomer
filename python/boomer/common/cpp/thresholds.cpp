@@ -324,7 +324,7 @@ AbstractRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRef
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr
-        = std::make_unique<RuleRefinementCallbackImpl>(this);
+        = std::make_unique<RuleRefinementCallbackImpl>(*this);
     return new ExactRuleRefinementImpl(thresholds_.statisticsPtr_.get(), weights_, sumOfWeights_, featureIndex, nominal,
                                        std::move(callbackPtr));
 }
@@ -393,33 +393,34 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& pred
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::RuleRefinementCallbackImpl(
-        ThresholdsSubsetImpl* thresholdsSubset) {
-    thresholdsSubset_ = thresholdsSubset;
+        ThresholdsSubsetImpl& thresholdsSubset)
+    : thresholdsSubset_{thresholdsSubset} {
+
 }
 
 IndexedFloat32Array* ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::get(uint32 featureIndex) {
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_->cacheFiltered_[featureIndex];
+    IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
     IndexedFloat32* indexedValues;
 
     if (indexedArray == NULL) {
-        indexedArray = thresholdsSubset_->thresholds_.cache_[featureIndex];
+        indexedArray = thresholdsSubset_.thresholds_.cache_[featureIndex];
         indexedValues = indexedArray->data;
 
         if (indexedValues == NULL) {
-            thresholdsSubset_->thresholds_.featureMatrixPtr_->fetchFeatureValues(featureIndex, indexedArray);
+            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureValues(featureIndex, indexedArray);
             indexedValues = indexedArray->data;
             qsort(indexedValues, indexedArray->numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
         }
     }
 
     // Filter indices, if only a subset of the contained examples is covered...
-    uint32 numConditions = thresholdsSubset_->numRefinements_;
+    uint32 numConditions = thresholdsSubset_.numRefinements_;
 
     if (numConditions > indexedArrayWrapper->numConditions) {
-        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions, thresholdsSubset_->coveredExamplesMask_,
-                         thresholdsSubset_->coveredExamplesTarget_);
+        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions, thresholdsSubset_.coveredExamplesMask_,
+                         thresholdsSubset_.coveredExamplesTarget_);
         indexedArray = indexedArrayWrapper->array;
     }
 

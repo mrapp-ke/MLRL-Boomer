@@ -146,15 +146,15 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                     private:
 
-                        ThresholdsSubsetImpl* thresholdsSubset_;
+                        ThresholdsSubsetImpl& thresholdsSubset_;
 
                     public:
 
                         /**
-                         * @param thresholdsSubset  A pointer to an object of type `ThresholdsSubsetImpl` that caches
+                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubsetImpl` that caches
                          *                          the feature values and indices
                          */
-                        RuleRefinementCallbackImpl(ThresholdsSubsetImpl* thresholdsSubset);
+                        RuleRefinementCallbackImpl(ThresholdsSubsetImpl& thresholdsSubset);
 
                         IndexedFloat32Array* get(uint32 featureIndex) override;
 
