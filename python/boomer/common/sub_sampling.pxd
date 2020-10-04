@@ -18,7 +18,7 @@ cdef extern from "cpp/sub_sampling.h" nogil:
 
         # Functions:
 
-        unique_ptr[IWeightVector] subSample(uint32 numExamples, RNG* rng)
+        unique_ptr[IWeightVector] subSample(uint32 numExamples, RNG& rng)
 
 
     cdef cppclass BaggingImpl(IInstanceSubSampling):
@@ -43,7 +43,7 @@ cdef extern from "cpp/sub_sampling.h" nogil:
 
         # Functions:
 
-        unique_ptr[IIndexVector] subSample(uint32 numFeatures, RNG* rng)
+        unique_ptr[IIndexVector] subSample(uint32 numFeatures, RNG& rng)
 
 
     cdef cppclass RandomFeatureSubsetSelectionImpl(IFeatureSubSampling):
@@ -61,7 +61,7 @@ cdef extern from "cpp/sub_sampling.h" nogil:
 
         # Functions:
 
-        unique_ptr[IIndexVector] subSample(uint32 numLabels, RNG* rng)
+        unique_ptr[IIndexVector] subSample(uint32 numLabels, RNG& rng)
 
 
     cdef cppclass RandomLabelSubsetSelectionImpl(ILabelSubSampling):

@@ -10,12 +10,12 @@
  *
  * @param numTotal      The total number of available elements
  * @param numSamples    The number of weights to be set to 1
- * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be used
+ * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  */
 static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaTrackingSelection(uint32 numTotal,
                                                                                                  uint32 numSamples,
-                                                                                                 RNG* rng) {
+                                                                                                 RNG& rng) {
     uint8* weights = new uint8[numTotal]{0};
     std::unordered_set<uint32> selectedIndices;
 
@@ -24,7 +24,7 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaT
         uint32 randomIndex;
 
         while (shouldContinue) {
-            randomIndex = rng->random(0, numTotal);
+            randomIndex = rng.random(0, numTotal);
             shouldContinue = !selectedIndices.insert(randomIndex).second;
         }
 
@@ -40,11 +40,11 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaT
  *
  * @param numTotal      The total number of available elements
  * @param numSamples    The number of weights to be set to 1
- * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be used
+ * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  */
 static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaPool(uint32 numTotal, uint32 numSamples,
-                                                                                    RNG* rng) {
+                                                                                    RNG& rng) {
     uint8* weights = new uint8[numTotal]{0};
     uint32 pool[numTotal];
 
@@ -55,7 +55,7 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaP
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select an index that has not been drawn yet...
-        uint32 randomIndex = rng->random(0, numTotal - i);
+        uint32 randomIndex = rng.random(0, numTotal - i);
         uint32 j = pool[randomIndex];
 
         // Set weight at the selected index to 1...
@@ -74,12 +74,12 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaP
  *
  * @param numTotal      The total number of available elements
  * @param numSamples    The number of weights to be set to 1
- * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be used
+ * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  *
  */
 static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacement(uint32 numTotal, uint32 numSamples,
-                                                                             RNG* rng) {
+                                                                             RNG& rng) {
     float64 ratio = numTotal > 0 ? ((float64) numSamples) / ((float64) numTotal) : 1;
 
     if (ratio < 0.06) {
@@ -97,13 +97,13 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacement(uin
  *
  * @param numTotal      The total number of available indices
  * @param numSamples    The number of indices to be sampled
- * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be used
+ * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IIndexVector` that provides access to the indices that
  *                      are contained in the sub-sample
  */
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTrackingSelection(uint32 numTotal,
                                                                                                 uint32 numSamples,
-                                                                                                RNG* rng) {
+                                                                                                RNG& rng) {
     uint32* indices = new uint32[numSamples];
     std::unordered_set<uint32> selectedIndices;
 
@@ -112,7 +112,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
         uint32 randomIndex;
 
         while (shouldContinue) {
-            randomIndex = rng->random(0, numTotal);
+            randomIndex = rng.random(0, numTotal);
             shouldContinue = !selectedIndices.insert(randomIndex).second;
         }
 
@@ -128,13 +128,13 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
  *
  * @param numTotal      The total number of available indices
  * @param numSamples    The number of indices to be sampled
- * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be used
+ * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              A pointer to an object of type `IIndexVector` that provides access to the indices that are
  *                      contained in the sub-sample
  */
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaReservoirSampling(uint32 numTotal,
                                                                                                 uint32 numSamples,
-                                                                                                RNG* rng) {
+                                                                                                RNG& rng) {
     uint32* indices = new uint32[numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -142,7 +142,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
-        uint32 randomIndex = rng->random(0, i + 1);
+        uint32 randomIndex = rng.random(0, i + 1);
 
         if (randomIndex < numSamples) {
             indices[randomIndex] = i;
@@ -158,13 +158,13 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
  *
  * @param numTotal      The total number of available indices
  * @param numSamples    The number of indices to be sampled
- * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be used
+ * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IIndexVector` that provides access to the indices that
  *                      are contained in the sub-sample
  */
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRandomPermutation(uint32 numTotal,
                                                                                                 uint32 numSamples,
-                                                                                                RNG* rng) {
+                                                                                                RNG& rng) {
     uint32* indices = new uint32[numSamples];
     uint32* unusedIndices = new uint32[numTotal - numSamples];
 
@@ -178,7 +178,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
 
     for (uint32 i = 0; i < numTotal - 2; i++) {
         // Swap elements at index i and at a randomly selected index...
-        uint32 randomIndex = rng->random(i, numTotal);
+        uint32 randomIndex = rng.random(i, numTotal);
         uint32 tmp1 = i < numSamples ? indices[i] : unusedIndices[i - numSamples];
         uint32 tmp2;
 
@@ -207,12 +207,12 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
  *
  * @param numTotal      The total number of available indices
  * @param numSamples    The number of indices to be sampled
- * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be used
+ * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IIndexVector` that provides access to the indices that
  *                      are contained in the sub-sample
  */
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacement(uint32 numTotal, uint32 numSamples,
-                                                                            RNG* rng) {
+                                                                            RNG& rng) {
     float64 ratio = numTotal > 0 ? ((float64) numSamples) / ((float64) numTotal) : 1;
 
     // The thresholds for choosing a suitable method are based on empirical experiments
@@ -305,13 +305,13 @@ BaggingImpl::BaggingImpl(float32 sampleSize) {
     sampleSize_ = sampleSize;
 }
 
-std::unique_ptr<IWeightVector> BaggingImpl::subSample(uint32 numExamples, RNG* rng) {
+std::unique_ptr<IWeightVector> BaggingImpl::subSample(uint32 numExamples, RNG& rng) {
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     uint32* weights = new uint32[numExamples]{0};
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select the index of an example...
-        uint32 randomIndex = rng->random(0, numExamples);
+        uint32 randomIndex = rng.random(0, numExamples);
 
         // Update weight at the selected index...
         weights[randomIndex] += 1;
@@ -324,12 +324,12 @@ RandomInstanceSubsetSelectionImpl::RandomInstanceSubsetSelectionImpl(float32 sam
     sampleSize_ = sampleSize;
 }
 
-std::unique_ptr<IWeightVector> RandomInstanceSubsetSelectionImpl::subSample(uint32 numExamples, RNG* rng) {
+std::unique_ptr<IWeightVector> RandomInstanceSubsetSelectionImpl::subSample(uint32 numExamples, RNG& rng) {
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     return sampleWeightsWithoutReplacement(numExamples, numSamples, rng);
 }
 
-std::unique_ptr<IWeightVector> NoInstanceSubSamplingImpl::subSample(uint32 numExamples, RNG* rng) {
+std::unique_ptr<IWeightVector> NoInstanceSubSamplingImpl::subSample(uint32 numExamples, RNG& rng) {
     return std::make_unique<EqualWeightVector>(numExamples);
 }
 
@@ -337,7 +337,7 @@ RandomFeatureSubsetSelectionImpl::RandomFeatureSubsetSelectionImpl(float32 sampl
     sampleSize_ = sampleSize;
 }
 
-std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32 numFeatures, RNG* rng) {
+std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32 numFeatures, RNG& rng) {
     uint32 numSamples;
 
     if (sampleSize_ > 0) {
@@ -349,7 +349,7 @@ std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32
     return sampleIndicesWithoutReplacement(numFeatures, numSamples, rng);
 }
 
-std::unique_ptr<IIndexVector> NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG* rng) {
+std::unique_ptr<IIndexVector> NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG& rng) {
     return std::make_unique<RangeIndexVector>(numFeatures);
 }
 
@@ -357,10 +357,10 @@ RandomLabelSubsetSelectionImpl::RandomLabelSubsetSelectionImpl(uint32 numSamples
     numSamples_ = numSamples;
 }
 
-std::unique_ptr<IIndexVector> RandomLabelSubsetSelectionImpl::subSample(uint32 numLabels, RNG* rng) {
+std::unique_ptr<IIndexVector> RandomLabelSubsetSelectionImpl::subSample(uint32 numLabels, RNG& rng) {
     return sampleIndicesWithoutReplacement(numLabels, numSamples_, rng);
 }
 
-std::unique_ptr<IIndexVector> NoLabelSubSamplingImpl::subSample(uint32 numLabels, RNG* rng) {
+std::unique_ptr<IIndexVector> NoLabelSubSamplingImpl::subSample(uint32 numLabels, RNG& rng) {
     return std::make_unique<RangeIndexVector>(numLabels);
 }
