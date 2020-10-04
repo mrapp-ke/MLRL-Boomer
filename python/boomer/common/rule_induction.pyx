@@ -145,7 +145,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef bint found_refinement = True
 
         # Temporary variables
-        cdef AbstractRuleRefinement* current_rule_refinement
+        cdef AbstractRuleRefinement* rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
@@ -184,15 +184,15 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    current_rule_refinement = rule_refinements[f]
-                    current_rule_refinement.findRefinement(dereference(head_refinement), best_refinement.head,
+                    rule_refinement = rule_refinements[f]
+                    rule_refinement.findRefinement(dereference(head_refinement), best_refinement.head,
                                                            num_predictions, label_indices)
 
                 # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    current_rule_refinement = rule_refinements[f]
-                    current_refinement = current_rule_refinement.bestRefinement_
+                    rule_refinement = rule_refinements[f]
+                    current_refinement = rule_refinement.bestRefinement_
 
                     if current_refinement.head != NULL and (best_refinement.head == NULL
                                                             or current_refinement.head.overallQualityScore_ < best_refinement.head.overallQualityScore_):
@@ -202,7 +202,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     else:
                         del current_refinement.head
 
-                    del current_rule_refinement
+                    del rule_refinement
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
