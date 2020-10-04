@@ -63,7 +63,7 @@ class AbstractRuleRefinement {
         /**
          * Finds the best refinement of an existing rule and updates the class attribute `bestRefinement_` accordingly.
          *
-         * @param headRefinement    A pointer to an object of type `IHeadRefinement` that should be used to find the
+         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
          *                          head of the refined rule
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
          *                          existing rule
@@ -71,7 +71,7 @@ class AbstractRuleRefinement {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict
          */
-        virtual void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+        virtual void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead,
                                     uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
@@ -123,7 +123,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
                                 uint32 featureIndex, bool nominal,
                                 std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr);
 
-        void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
+        void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
                             const uint32* labelIndices) override;
 
 };
