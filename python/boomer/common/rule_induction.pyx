@@ -153,13 +153,14 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         # Sub-sample examples...
         cdef shared_ptr[IWeightVector] weights_ptr = <shared_ptr[IWeightVector]>move(instance_sub_sampling.subSample(
-            num_examples, rng))
+            num_examples, dereference(rng)))
 
         # Create a new subset of the given thresholds...
         cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(weights_ptr)
 
         # Sub-sample labels...
-        cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels, rng)
+        cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels,
+                                                                                               dereference(rng))
         # TODO Reactivate label sampling
         # cdef IIndexVector* label_indices = sampled_label_indices_ptr.get()
         cdef const uint32* label_indices = <const uint32*>NULL
@@ -172,7 +173,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 found_refinement = False
 
                 # Sub-sample features...
-                sampled_feature_indices_ptr = feature_sub_sampling.subSample(num_features, rng)
+                sampled_feature_indices_ptr = feature_sub_sampling.subSample(num_features, dereference(rng))
                 num_sampled_features = sampled_feature_indices_ptr.get().getNumElements()
 
                 # For each feature, create an object of type `AbstractRuleRefinement`...
