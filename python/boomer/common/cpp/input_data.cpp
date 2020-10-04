@@ -51,7 +51,7 @@ uint32 DenseFeatureMatrixImpl::getNumCols() {
     return numFeatures_;
 }
 
-void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) {
     // The number of elements to be returned
     uint32 numElements = this->getNumRows();
     // The array that stores the indices
@@ -65,8 +65,8 @@ void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloa
     }
 
     // Update the given struct...
-    indexedArray->numElements = numElements;
-    indexedArray->data = array;
+    indexedArray.numElements = numElements;
+    indexedArray.data = array;
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
@@ -86,7 +86,7 @@ uint32 CscFeatureMatrixImpl::getNumCols() {
     return numFeatures_;
 }
 
-void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) {
     // The index of the first element in `xData_` and `xRowIndices_` that corresponds to the given feature index+
     uint32 start = xColIndices_[featureIndex];
     // The index of the last element in `xData_` and `xRowIndices_` that corresponds to the given feature index
@@ -108,8 +108,8 @@ void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat3
     }
 
     // Update the given struct...
-    indexedArray->numElements = numElements;
-    indexedArray->data = array;
+    indexedArray.numElements = numElements;
+    indexedArray.data = array;
 }
 
 DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr) {
