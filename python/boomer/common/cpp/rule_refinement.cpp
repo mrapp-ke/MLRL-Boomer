@@ -79,14 +79,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the == operator in case of a nominal feature) is used...
-                    PredictionCandidate* currentHead = headRefinement.findHead(bestHead, bestRefinement_.head,
-                                                                               labelIndices, *statisticsSubsetPtr,
-                                                                               false, false);
+                    PredictionCandidate* head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
+                                                                        *statisticsSubsetPtr, false, false);
 
                     // If the refinement is better than the current rule...
-                    if (currentHead != NULL) {
-                        bestHead = currentHead;
-                        bestRefinement_.head = currentHead;
+                    if (head != NULL) {
+                        bestHead = head;
+                        bestRefinement_.head = head;
                         bestRefinement_.start = firstR;
                         bestRefinement_.end = r;
                         bestRefinement_.previous = previousR;
@@ -104,13 +103,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the != operator in case of a nominal feature) is used...
-                    currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
-                                                          *statisticsSubsetPtr, true, false);
+                    head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr,
+                                                   true, false);
 
                     // If the refinement is better than the current rule...
-                    if (currentHead != NULL) {
-                        bestHead = currentHead;
-                        bestRefinement_.head = currentHead;
+                    if (head != NULL) {
+                        bestHead = head;
+                        bestRefinement_.head = head;
                         bestRefinement_.start = firstR;
                         bestRefinement_.end = r;
                         bestRefinement_.previous = previousR;
@@ -152,12 +151,12 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
                                              || accumulatedSumOfWeights < totalSumOfWeights_)) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
-            PredictionCandidate* currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
-                                                                       *statisticsSubsetPtr, false, false);
+            PredictionCandidate* head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
+                                                                *statisticsSubsetPtr, false, false);
 
-            if (currentHead != NULL) {
-                bestHead = currentHead;
-                bestRefinement_.head = currentHead;
+            if (head != NULL) {
+                bestHead = head;
+                bestRefinement_.head = head;
                 bestRefinement_.start = firstR;
                 bestRefinement_.end = (lastNegativeR + 1);
                 bestRefinement_.previous = previousR;
@@ -169,12 +168,12 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             // used...
-            currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr,
-                                                  true, false);
+            head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr, true,
+                                           false);
 
-            if (currentHead != NULL) {
-                bestHead = currentHead;
-                bestRefinement_.head = currentHead;
+            if (head != NULL) {
+                bestHead = head;
+                bestRefinement_.head = head;
                 bestRefinement_.start = firstR;
                 bestRefinement_.end = (lastNegativeR + 1);
                 bestRefinement_.previous = previousR;
@@ -229,14 +228,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the == operator in case of a nominal feature) is used...
-                    PredictionCandidate* currentHead = headRefinement.findHead(bestHead, bestRefinement_.head,
-                                                                               labelIndices, *statisticsSubsetPtr,
-                                                                               false, false);
+                    PredictionCandidate* head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
+                                                                        *statisticsSubsetPtr, false, false);
 
                     // If the refinement is better than the current rule...
-                    if (currentHead != NULL) {
-                        bestHead = currentHead;
-                        bestRefinement_.head = currentHead;
+                    if (head != NULL) {
+                        bestHead = head;
+                        bestRefinement_.head = head;
                         bestRefinement_.start = firstR;
                         bestRefinement_.end = r;
                         bestRefinement_.previous = previousR;
@@ -254,13 +252,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the != operator in case of a nominal feature) is used...
-                    currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
-                                                          *statisticsSubsetPtr, true, false);
+                    head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr,
+                                                   true, false);
 
                     // If the refinement is better than the current rule...
-                    if (currentHead != NULL) {
-                        bestHead = currentHead;
-                        bestRefinement_.head = currentHead;
+                    if (head != NULL) {
+                        bestHead = head;
+                        bestRefinement_.head = head;
                         bestRefinement_.start = firstR;
                         bestRefinement_.end = r;
                         bestRefinement_.previous = previousR;
@@ -302,13 +300,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
     if (nominal_ && sumOfWeights > 0 && sumOfWeights < accumulatedSumOfWeights) {
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
-        PredictionCandidate* currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
-                                                                   *statisticsSubsetPtr, false, false);
+        PredictionCandidate* head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
+                                                            *statisticsSubsetPtr, false, false);
 
         // If the refinement is better than the current rule...
-        if (currentHead != NULL) {
-            bestHead = currentHead;
-            bestRefinement_.head = currentHead;
+        if (head != NULL) {
+            bestHead = head;
+            bestRefinement_.head = head;
             bestRefinement_.start = firstR;
             bestRefinement_.end = lastNegativeR;
             bestRefinement_.previous = previousR;
@@ -320,13 +318,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         // used...
-        currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr, true,
-                                              false);
+        head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr, true,
+                                       false);
 
         // If the refinement is better than the current rule...
-        if (currentHead != NULL) {
-            bestHead = currentHead;
-            bestRefinement_.head = currentHead;
+        if (head != NULL) {
+            bestHead = head;
+            bestRefinement_.head = head;
             bestRefinement_.start = firstR;
             bestRefinement_.end = lastNegativeR;
             bestRefinement_.previous = previousR;
@@ -353,13 +351,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
-        PredictionCandidate* currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
-                                                                   *statisticsSubsetPtr, false, nominal_);
+        PredictionCandidate* head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
+                                                            *statisticsSubsetPtr, false, nominal_);
 
         // If the refinement is better than the current rule...
-        if (currentHead != NULL) {
-            bestHead = currentHead;
-            bestRefinement_.head = currentHead;
+        if (head != NULL) {
+            bestHead = head;
+            bestRefinement_.head = head;
             bestRefinement_.start = firstR;
             bestRefinement_.covered = true;
 
@@ -380,13 +378,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
-        currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr, true,
-                                              nominal_);
+        head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr, true,
+                                       nominal_);
 
         // If the refinement is better than the current rule...
-        if (currentHead != NULL) {
-            bestHead = currentHead;
-            bestRefinement_.head = currentHead;
+        if (head != NULL) {
+            bestHead = head;
+            bestRefinement_.head = head;
             bestRefinement_.start = firstR;
             bestRefinement_.covered = false;
 
@@ -414,12 +412,12 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
     if (!nominal_ && accumulatedSumOfWeightsNegative > 0 && accumulatedSumOfWeightsNegative < totalSumOfWeights_) {
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
-        PredictionCandidate* currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
-                                                                   *statisticsSubsetPtr, false, true);
+        PredictionCandidate* head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices,
+                                                            *statisticsSubsetPtr, false, true);
 
-        if (currentHead != NULL) {
-            bestHead = currentHead;
-            bestRefinement_.head = currentHead;
+        if (head != NULL) {
+            bestHead = head;
+            bestRefinement_.head = head;
             bestRefinement_.start = 0;
             bestRefinement_.end = (lastNegativeR + 1);
             bestRefinement_.previous = previousRNegative;
@@ -440,12 +438,11 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         // used...
-        currentHead = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr, true,
-                                              true);
+        head = headRefinement.findHead(bestHead, bestRefinement_.head, labelIndices, *statisticsSubsetPtr, true, true);
 
-        if (currentHead != NULL) {
-            bestHead = currentHead;
-            bestRefinement_.head = currentHead;
+        if (head != NULL) {
+            bestHead = head;
+            bestRefinement_.head = head;
             bestRefinement_.start = 0;
             bestRefinement_.end = (lastNegativeR + 1);
             bestRefinement_.previous = previousRNegative;
