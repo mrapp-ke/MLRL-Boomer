@@ -411,7 +411,7 @@ IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCa
         indexedValues = indexedArray->data;
 
         if (indexedValues == NULL) {
-            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureValues(featureIndex, indexedArray);
+            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureValues(featureIndex, *indexedArray);
             indexedValues = indexedArray->data;
             qsort(indexedValues, indexedArray->numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
         }
