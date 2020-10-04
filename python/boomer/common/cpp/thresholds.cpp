@@ -300,7 +300,8 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
     }
 }
 
-AbstractRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex) {
+std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
+        uint32 featureIndex) {
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
 
     if (indexedArrayWrapper == NULL) {
@@ -326,8 +327,8 @@ AbstractRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRef
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr
         = std::make_unique<RuleRefinementCallbackImpl>(*this);
-    return new ExactRuleRefinementImpl(thresholds_.statisticsPtr_, weightsPtr_, sumOfWeights_, featureIndex, nominal,
-                                       std::move(callbackPtr));
+    return std::make_unique<ExactRuleRefinementImpl>(thresholds_.statisticsPtr_, weightsPtr_, sumOfWeights_,
+                                                     featureIndex, nominal, std::move(callbackPtr));
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {

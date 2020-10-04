@@ -34,9 +34,9 @@ class IThresholdsSubset {
          * a specific index.
          *
          * @param featureIndex  The index of the feature, the new condition corresponds to
-         * @return              A pointer to an object of type `AbstractRuleRefinement` that has been created
+         * @return              An unique pointer to an object of type `AbstractRuleRefinement` that has been created
          */
-        virtual AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex) = 0;
+        virtual std::unique_ptr<AbstractRuleRefinement> createRuleRefinement(uint32 featureIndex) = 0;
 
         /**
          * Applies a refinement that has been found by an instance of the type `AbstractRuleRefinement`, which was
@@ -186,7 +186,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ~ThresholdsSubsetImpl();
 
-                AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex) override;
+                std::unique_ptr<AbstractRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;
 

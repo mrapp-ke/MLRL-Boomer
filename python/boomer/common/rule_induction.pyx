@@ -145,6 +145,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef bint found_refinement = True
 
         # Temporary variables
+        cdef unique_ptr[AbstractRuleRefinement] rule_refinement_ptr
         cdef AbstractRuleRefinement* rule_refinement
         cdef Refinement current_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
@@ -179,7 +180,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 # For each feature, create an object of type `AbstractRuleRefinement`...
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    rule_refinements[f] = thresholds_subset_ptr.get().createRuleRefinement(f)
+                    rule_refinement_ptr = thresholds_subset_ptr.get().createRuleRefinement(f)
+                    rule_refinements[f] = rule_refinement_ptr.release()
 
                 # Search for the best condition among all available features to be added to the current rule...
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
