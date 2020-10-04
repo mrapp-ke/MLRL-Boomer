@@ -15,7 +15,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         # Functions:
 
-        AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex)
+        unique_ptr[AbstractRuleRefinement] createRuleRefinement(uint32 featureIndex)
 
         void applyRefinement(Refinement &refinement)
 
