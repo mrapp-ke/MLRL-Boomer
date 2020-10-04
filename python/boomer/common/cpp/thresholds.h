@@ -104,11 +104,11 @@ class AbstractThresholds : virtual public IMatrix {
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
          *
-         * @param weights   A pointer to an object of type `IWeightVector` that provides access to the weights of the
-         *                  individual training examples
-         * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
+         * @param weightsPtr    A shared pointer to an object of type `IWeightVector` that provides access to the
+         *                      weights of the individual training examples
+         * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector* weights) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) = 0;
 
         /**
          * Returns the total number of available labels.
@@ -162,7 +162,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ExactThresholdsImpl& thresholds_;
 
-                IWeightVector* weights_;
+                std::shared_ptr<IWeightVector> weightsPtr_;
 
                 uint32 sumOfWeights_;
 
@@ -179,10 +179,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
                 /**
                  * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the
                  *                      thresholds
-                 * @param weights       A pointer to an object of type `IWeightVector` that provides access to the
-                 *                      weights of the individual training examples
+                 * @param weightsPtr    A shared pointer to an object of type `IWeightVector` that provides access to
+                 *                      the weights of the individual training examples
                  */
-                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, IWeightVector* weights);
+                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, std::shared_ptr<IWeightVector> weightsPtr);
 
                 ~ThresholdsSubsetImpl();
 
@@ -214,6 +214,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         ~ExactThresholdsImpl();
 
-        std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector* weights) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) override;
 
 };

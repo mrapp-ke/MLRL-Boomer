@@ -79,8 +79,8 @@ static inline intp adjustSplit(IndexedFloat32Array* indexedArray, intp condition
  * @param statistics            A pointer to an object of type `AbstractStatistics` to be notified about the examples
  *                              that must be considered when searching for the next refinement, i.e., the examples that
  *                              are covered by the new rule
- * @param weights               A pointer to an an object of type `IWeightVector` that provides access to the weights of
- *                              the training examples
+ * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
+ *                              of the training examples
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
@@ -88,7 +88,7 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
                                           IndexedFloat32Array* indexedArray, intp conditionStart, intp conditionEnd,
                                           Comparator conditionComparator, bool covered, uint32 numConditions,
                                           uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-                                          AbstractStatistics* statistics, IWeightVector* weights) {
+                                          AbstractStatistics* statistics, IWeightVector& weights) {
     IndexedFloat32* indexedValues = indexedArray->data;
     uint32 numIndexedValues = indexedArray->numElements;
     bool descending = conditionEnd < conditionStart;
@@ -126,7 +126,7 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
             coveredExamplesMask[index] = numConditions;
             filteredArray[i].index = index;
             filteredArray[i].value = indexedValues[r].value;
-            uint32 weight = weights->getValue(index);
+            uint32 weight = weights.getValue(index);
             statistics->updateCoveredStatistic(index, weight, false);
             i += direction;
         }
@@ -163,7 +163,7 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
             uint32 r = conditionStart + (j * direction);
             uint32 index = indexedValues[r].index;
             coveredExamplesMask[index] = numConditions;
-            uint32 weight = weights->getValue(index);
+            uint32 weight = weights.getValue(index);
             statistics->updateCoveredStatistic(index, weight, true);
         }
 
@@ -274,10 +274,10 @@ uint32 AbstractThresholds::getNumLabels() {
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
-                                                                IWeightVector* weights)
+                                                                std::shared_ptr<IWeightVector> weightsPtr)
     : thresholds_(thresholds) {
-    weights_ = weights;
-    sumOfWeights_ = weights->getSumOfWeights();
+    weightsPtr_ = weightsPtr;
+    sumOfWeights_ = weightsPtr->getSumOfWeights();
     uint32 numExamples = thresholds.getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
     coveredExamplesTarget_ = 0;
@@ -326,7 +326,7 @@ AbstractRuleRefinement* ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRef
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr
         = std::make_unique<RuleRefinementCallbackImpl>(*this);
-    return new ExactRuleRefinementImpl(thresholds_.statisticsPtr_, weights_, sumOfWeights_, featureIndex, nominal,
+    return new ExactRuleRefinementImpl(thresholds_.statisticsPtr_, weightsPtr_, sumOfWeights_, featureIndex, nominal,
                                        std::move(callbackPtr));
 }
 
@@ -348,7 +348,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     // calculates the number of covered examples based on the variable `refinement.end`, which represents the position
     // that separates the covered from the uncovered examples. However, when taking into account the examples with zero
     // weights, this position may differ from the current value of `refinement.end` and therefore must be adjusted...
-    if (weights_->hasZeroElements() && abs(refinement.previous - refinement.end) > 1) {
+    if (weightsPtr_->hasZeroElements() && abs(refinement.previous - refinement.end) > 1) {
         refinement.end = adjustSplit(indexedArray, refinement.end, refinement.previous, refinement.threshold);
     }
 
@@ -356,7 +356,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     coveredExamplesTarget_ = filterCurrentIndices(indexedArrayWrapper, indexedArray, refinement.start, refinement.end,
                                                   refinement.comparator, refinement.covered, numRefinements_,
                                                   coveredExamplesMask_, coveredExamplesTarget_,
-                                                  thresholds_.statisticsPtr_.get(), weights_);
+                                                  thresholds_.statisticsPtr_.get(), *weightsPtr_);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
@@ -445,15 +445,15 @@ ExactThresholdsImpl::~ExactThresholdsImpl() {
     }
 }
 
-std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(IWeightVector* weights) {
+std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::shared_ptr<IWeightVector> weightsPtr) {
     // Notify the statistics about the examples that are included in the sub-sample...
     uint32 numExamples = statisticsPtr_->getNumRows();
     statisticsPtr_->resetSampledStatistics();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        uint32 weight = weights->getValue(r);
+        uint32 weight = weightsPtr->getValue(r);
         statisticsPtr_->addSampledStatistic(r, weight);
     }
 
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weights);
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weightsPtr);
 }

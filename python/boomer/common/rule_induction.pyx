@@ -13,7 +13,8 @@ from boomer.common.thresholds cimport IThresholdsSubset
 
 from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.utility cimport move
 
 from cython.operator cimport dereference
 from cython.parallel cimport prange
@@ -151,10 +152,11 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef intp c
 
         # Sub-sample examples...
-        cdef unique_ptr[IWeightVector] weights_ptr = instance_sub_sampling.subSample(num_examples, rng)
+        cdef shared_ptr[IWeightVector] weights_ptr = <shared_ptr[IWeightVector]>move(instance_sub_sampling.subSample(
+            num_examples, rng))
 
         # Create a new subset of the given thresholds...
-        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(weights_ptr.get())
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(weights_ptr)
 
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels, rng)
