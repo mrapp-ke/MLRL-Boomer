@@ -92,7 +92,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
         std::shared_ptr<AbstractStatistics> statisticsPtr_;
 
-        IWeightVector* weights_;
+        std::shared_ptr<IWeightVector> weightsPtr_;
 
         uint32 totalSumOfWeights_;
 
@@ -108,8 +108,8 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          * @param statistics        A shared pointer to an object of type `AbstractStatistics` that provides access to
          *                          the statistics which serve as the basis for evaluating the potential refinements of
          *                          rules
-         * @param weights           A pointer to an object of type `IWeightVector` that provides access to the weights
-         *                          of the individual training examples
+         * @param weights           A shared pointer to an object of type `IWeightVector` that provides access to the
+         *                          weights of the individual training examples
          * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
@@ -118,8 +118,9 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          *                          `IRuleRefinementCallback<IndexedFloat32Array>` that allows to retrieve the
          *                          information that is required to identify potential refinements
          */
-        ExactRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, IWeightVector* weights,
-                                uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+        ExactRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                std::shared_ptr<IWeightVector> weightsPtr, uint32 totalSumOfWeights,
+                                uint32 featureIndex, bool nominal,
                                 std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr);
 
         void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,

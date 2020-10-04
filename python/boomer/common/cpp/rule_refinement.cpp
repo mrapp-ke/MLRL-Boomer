@@ -3,10 +3,11 @@
 
 
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(
-        std::shared_ptr<AbstractStatistics> statisticsPtr, IWeightVector* weights, uint32 totalSumOfWeights, uint32 featureIndex,
-        bool nominal, std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr) {
+        std::shared_ptr<AbstractStatistics> statisticsPtr, std::shared_ptr<IWeightVector> weightsPtr,
+        uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+        std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr) {
     statisticsPtr_ = statisticsPtr;
-    weights_ = weights;
+    weightsPtr_ = weightsPtr;
     totalSumOfWeights_ = totalSumOfWeights;
     featureIndex_ = featureIndex;
     nominal_ = nominal;
@@ -45,7 +46,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
 
         lastNegativeR = r;
         uint32 i = indexedValues[r].index;
-        uint32 weight = weights_->getValue(i);
+        uint32 weight = weightsPtr_->getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -70,7 +71,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
 
             lastNegativeR = r;
             uint32 i = indexedValues[r].index;
-            uint32 weight = weights_->getValue(i);
+            uint32 weight = weightsPtr_->getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -200,7 +201,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = indexedValues[r].index;
-        uint32 weight = weights_->getValue(i);
+        uint32 weight = weightsPtr_->getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -218,7 +219,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, Pr
     if (sumOfWeights > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = indexedValues[r].index;
-            uint32 weight = weights_->getValue(i);
+            uint32 weight = weightsPtr_->getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
