@@ -22,6 +22,14 @@ class Refinement {
 
     public:
 
+        /**
+         * Returns whether this refinement is better than another one.
+         *
+         * @param   A reference to an object of type `Refinement` to be compared to
+         * @return  True, if this refinement is better than the given one, false otherwise
+         */
+        bool isBetterThan(Refinement& another);
+
         std::unique_ptr<PredictionCandidate> headPtr;
 
         uint32 featureIndex;
