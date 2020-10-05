@@ -17,16 +17,13 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
                                                                         const float64* confusionMatricesSubset,
                                                                         const float64* confusionMatricesCovered,
                                                                         bool uncovered,
-                                                                        LabelWisePredictionCandidate* prediction) {
-    // Class members
-    IHeuristic* heuristic = heuristicPtr_.get();
-    bool predictMajority = predictMajority_;
+                                                                        LabelWisePredictionCandidate& prediction) {
     // The number of labels to predict for
-    uint32 numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction.numPredictions_;
     // The array that should be used to store the predicted scores
-    float64* predictedScores = prediction->predictedScores_;
+    float64* predictedScores = prediction.predictedScores_;
     // The array that should be used to store the quality scores
-    float64* qualityScores = prediction->qualityScores_;
+    float64* qualityScores = prediction.qualityScores_;
     // The overall quality score, i.e., the average of the quality scores for each label
     float64 overallQualityScore = 0;
 
@@ -35,7 +32,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
 
         // Set the score to be predicted for the current label...
         uint8 minorityLabel = minorityLabels[l];
-        float64 score = (float64) (predictMajority ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
+        float64 score = (float64) (predictMajority_ ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
         predictedScores[c] = score;
 
         // Calculate the quality score for the current label...
@@ -64,11 +61,11 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const ui
             urp = confusionMatricesTotal[offsetL + RP] - crp;
         }
 
-        score = heuristic->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+        score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
         qualityScores[c] = score;
         overallQualityScore += score;
     }
 
     overallQualityScore /= numPredictions;
-    prediction->overallQualityScore_ = overallQualityScore;
+    prediction.overallQualityScore_ = overallQualityScore;
 }

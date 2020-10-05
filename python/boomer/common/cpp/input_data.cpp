@@ -21,24 +21,20 @@ uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) {
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(BinaryDokMatrix* matrix) {
-    matrix_ = matrix;
-}
-
-DokLabelMatrixImpl::~DokLabelMatrixImpl() {
-    delete matrix_;
+DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr) {
+    matrixPtr_ = std::move(matrixPtr);
 }
 
 uint32 DokLabelMatrixImpl::getNumRows() {
-    return matrix_->getNumRows();
+    return matrixPtr_->getNumRows();
 }
 
 uint32 DokLabelMatrixImpl::getNumCols() {
-    return matrix_->getNumCols();
+    return matrixPtr_->getNumCols();
 }
 
 uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) {
-    return matrix_->getValue(row, col);
+    return matrixPtr_->getValue(row, col);
 }
 
 DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
@@ -55,7 +51,7 @@ uint32 DenseFeatureMatrixImpl::getNumCols() {
     return numFeatures_;
 }
 
-void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) {
     // The number of elements to be returned
     uint32 numElements = this->getNumRows();
     // The array that stores the indices
@@ -69,8 +65,8 @@ void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloa
     }
 
     // Update the given struct...
-    indexedArray->numElements = numElements;
-    indexedArray->data = array;
+    indexedArray.numElements = numElements;
+    indexedArray.data = array;
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
@@ -90,7 +86,7 @@ uint32 CscFeatureMatrixImpl::getNumCols() {
     return numFeatures_;
 }
 
-void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) {
     // The index of the first element in `xData_` and `xRowIndices_` that corresponds to the given feature index+
     uint32 start = xColIndices_[featureIndex];
     // The index of the last element in `xData_` and `xRowIndices_` that corresponds to the given feature index
@@ -112,26 +108,22 @@ void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat3
     }
 
     // Update the given struct...
-    indexedArray->numElements = numElements;
-    indexedArray->data = array;
+    indexedArray.numElements = numElements;
+    indexedArray.data = array;
 }
 
-DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(BinaryDokVector* vector) {
-    vector_ = vector;
-}
-
-DokNominalFeatureVectorImpl::~DokNominalFeatureVectorImpl() {
-    delete vector_;
+DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr) {
+    vectorPtr_ = std::move(vectorPtr);
 }
 
 uint32 DokNominalFeatureVectorImpl::getNumElements() {
-    return vector_->getNumElements();
+    return vectorPtr_->getNumElements();
 }
 
 bool DokNominalFeatureVectorImpl::hasZeroElements() {
-    return vector_->hasZeroElements();
+    return vectorPtr_->hasZeroElements();
 }
 
 uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
-    return vector_->getValue(pos);
+    return vectorPtr_->getValue(pos);
 }

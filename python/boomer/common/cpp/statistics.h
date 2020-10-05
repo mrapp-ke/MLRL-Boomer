@@ -86,11 +86,11 @@ class IStatisticsSubset {
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
-         * @return              A pointer to an object of type `LabelWisePredictionCandidate` that stores the scores to
-         *                      be predicted by the rule for each considered label, as well as the corresponding quality
-         *                      scores
+         * @return              A reference to an object of type `LabelWisePredictionCandidate` that stores the scores
+         *                      to be predicted by the rule for each considered label, as well as the corresponding
+         *                      quality scores
          */
-        virtual LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -121,10 +121,10 @@ class IStatisticsSubset {
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
-         * @return              A pointer to an object of type `PredictionCandidate` that stores the scores to be
+         * @return              A reference to an object of type `PredictionCandidate` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
 
 };
 
@@ -137,7 +137,7 @@ class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
 
     public:
 
-        PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+        PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
 };
 
@@ -258,9 +258,9 @@ class AbstractStatistics : virtual public IMatrix {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
          *                          indices of the labels that should be included in the subset or None, if all labels
          *                          should be included
-         * @return                  A pointer to an object of type `IStatisticsSubset` that has been created
+         * @return                  An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.
@@ -269,10 +269,10 @@ class AbstractStatistics : virtual public IMatrix {
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param prediction        A pointer to an object of type `Prediction`, representing the predictions of the
+         * @param prediction        A reference to an object of type `Prediction`, representing the predictions of the
          *                          newly induced rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, Prediction* prediction) = 0;
+        virtual void applyPrediction(uint32 statisticIndex, Prediction& prediction) = 0;
 
         /**
          * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on
