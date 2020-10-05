@@ -2,6 +2,17 @@
 #include <math.h>
 
 
+bool Refinement::isBetterThan(Refinement& another) {
+    PredictionCandidate* head = headPtr.get();
+
+    if (head != NULL) {
+        PredictionCandidate* anotherHead = another.headPtr.get();
+        return anotherHead == NULL || head->overallQualityScore_ < anotherHead->overallQualityScore_;
+    }
+
+    return false;
+}
+
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(
         std::shared_ptr<AbstractStatistics> statisticsPtr, std::shared_ptr<IWeightVector> weightsPtr,
         uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
