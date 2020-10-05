@@ -56,6 +56,10 @@ struct Bin {
     float32 maxValue;
 };
 
+/**
+ * A structs that contains a pointer to an array of type `Bin`. The attribute `numBins` specifies how many elements the
+ * array contains.
+ */
 struct BinArray {
     uint32 numBins;
     Bin* bins;
