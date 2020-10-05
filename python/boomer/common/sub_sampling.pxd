@@ -2,7 +2,7 @@ from boomer.common._arrays cimport uint32, float32
 from boomer.common._data cimport ISparseRandomAccessVector, IIndexVector
 from boomer.common._random cimport RNG
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/sub_sampling.h" nogil:
@@ -18,7 +18,7 @@ cdef extern from "cpp/sub_sampling.h" nogil:
 
         # Functions:
 
-        IWeightVector* subSample(uint32 numExamples, RNG* rng)
+        unique_ptr[IWeightVector] subSample(uint32 numExamples, RNG& rng)
 
 
     cdef cppclass BaggingImpl(IInstanceSubSampling):
@@ -43,7 +43,7 @@ cdef extern from "cpp/sub_sampling.h" nogil:
 
         # Functions:
 
-        IIndexVector* subSample(uint32 numFeatures, RNG* rng)
+        unique_ptr[IIndexVector] subSample(uint32 numFeatures, RNG& rng)
 
 
     cdef cppclass RandomFeatureSubsetSelectionImpl(IFeatureSubSampling):
@@ -61,7 +61,7 @@ cdef extern from "cpp/sub_sampling.h" nogil:
 
         # Functions:
 
-        IIndexVector* subSample(uint32 numLabels, RNG* rng)
+        unique_ptr[IIndexVector] subSample(uint32 numLabels, RNG& rng)
 
 
     cdef cppclass RandomLabelSubsetSelectionImpl(ILabelSubSampling):

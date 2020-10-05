@@ -76,8 +76,6 @@ cdef class IREP(Pruning):
         # An array that stores the indices of the labels for which the existing rule predicts
         cdef uint32* label_indices = head.labelIndices_
         # Temporary variables
-        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
-        cdef PredictionCandidate* prediction
         cdef Condition condition
         cdef Comparator comparator
         cdef float32 threshold
@@ -89,7 +87,8 @@ cdef class IREP(Pruning):
 
         # Reset the statistics and create a new, empty subset...
         statistics.resetSampledStatistics()
-        statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
+        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr = statistics.createSubset(num_predictions,
+                                                                                           label_indices)
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -101,7 +100,8 @@ cdef class IREP(Pruning):
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), False, False)
+        cdef PredictionCandidate* prediction = &head_refinement.calculatePrediction(
+                dereference(statistics_subset_ptr.get()), False, False)
 
         # Initialize variables that are used to keep track of the best rule...
         cdef float64 best_quality_score = prediction.overallQualityScore_
@@ -133,7 +133,7 @@ cdef class IREP(Pruning):
             num_indexed_values = dereference(indexed_array).numElements
 
             # Create a new, empty subset of the statistics when processing a new condition...
-            statistics_subset_ptr.reset(statistics.createSubset(num_predictions, label_indices))
+            statistics_subset_ptr = statistics.createSubset(num_predictions, label_indices)
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)
@@ -166,7 +166,8 @@ cdef class IREP(Pruning):
 
             # Check if the quality score of the current rule is better than the best quality score known so far
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
-            prediction = head_refinement.calculatePrediction(statistics_subset_ptr.get(), uncovered, False)
+            prediction = &head_refinement.calculatePrediction(dereference(statistics_subset_ptr.get()), uncovered,
+                                                              False)
             current_quality_score = prediction.overallQualityScore_
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
