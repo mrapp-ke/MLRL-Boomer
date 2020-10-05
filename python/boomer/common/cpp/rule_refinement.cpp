@@ -477,9 +477,12 @@ ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(AbstractStatistics*
     callback_ = callback;
 }
 
-void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement,
-                                                         PredictionCandidate* currentHead,
-                                                         uint32 numLabelIndices, const uint32* labelIndices) {
+~ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl() {
+    delete callback_;
+}
+
+void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                                   uint32 numLabelIndices, const uint32* labelIndices) {
     BinArray* binArray = callback_->get(0);
     uint32 numBins = binArray->numBins;
     Refinement refinement;
