@@ -26,12 +26,12 @@ namespace seco {
              */
             PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
-            bool findHead(PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
+            bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                           const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                          bool accumulated) override;
+                          bool accumulated) const override;
 
             PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                     bool accumulated) override;
+                                                     bool accumulated) const override;
 
     };
 

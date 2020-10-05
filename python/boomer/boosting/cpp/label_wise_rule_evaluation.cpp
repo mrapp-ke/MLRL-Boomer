@@ -10,12 +10,10 @@ RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(f
     l2RegularizationWeight_ = l2RegularizationWeight;
 }
 
-void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
-                                                                          const float64* totalSumsOfGradients,
-                                                                          float64* sumsOfGradients,
-                                                                          const float64* totalSumsOfHessians,
-                                                                          float64* sumsOfHessians, bool uncovered,
-                                                                          LabelWisePredictionCandidate& prediction) {
+void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
+        const uint32* labelIndices, const float64* totalSumsOfGradients, float64* sumsOfGradients,
+        const float64* totalSumsOfHessians, float64* sumsOfHessians, bool uncovered,
+        LabelWisePredictionCandidate& prediction) const {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of labels to predict for
