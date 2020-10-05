@@ -477,7 +477,7 @@ ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(AbstractStatistics*
     callback_ = callback;
 }
 
-~ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl() {
+ApproximateRuleRefinementImpl::~ApproximateRuleRefinementImpl() {
     delete callback_;
 }
 
