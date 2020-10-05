@@ -3,16 +3,15 @@ from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.statistics cimport IStatisticsSubset
 
 from libcpp cimport bool
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/head_refinement.h" nogil:
 
     cdef cppclass IHeadRefinement:
 
-        PredictionCandidate* findHead(PredictionCandidate* bestHead, PredictionCandidate* recyclableHead,
-                                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                                      bool accumulated)
+        bool findHead(PredictionCandidate* bestHead, unique_ptr[PredictionCandidate]& headPtr,
+                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
         PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 

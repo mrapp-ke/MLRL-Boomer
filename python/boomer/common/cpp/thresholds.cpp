@@ -362,10 +362,10 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
                                                                       Refinement& refinement) {
-    PredictionCandidate* head = refinement.head;
-    uint32 numLabelIndices = head->numPredictions_;
-    const uint32* labelIndices = head->labelIndices_;
-    float64* predictedScores = head->predictedScores_;
+    PredictionCandidate& head = *refinement.headPtr;
+    uint32 numLabelIndices = head.numPredictions_;
+    const uint32* labelIndices = head.labelIndices_;
+    float64* predictedScores = head.predictedScores_;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = thresholds_.statisticsPtr_->createSubset(numLabelIndices,
                                                                                                       labelIndices);
     uint32 numExamples = thresholds_.getNumRows();

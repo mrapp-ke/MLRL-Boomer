@@ -10,19 +10,31 @@ from boomer.common.statistics cimport AbstractStatistics
 from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp cimport bool
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "cpp/rule_refinement.h" nogil:
 
-    cdef struct Refinement:
-        PredictionCandidate* head
+    cdef cppclass Refinement:
+
+        # Attributes:
+
+        unique_ptr[PredictionCandidate] headPtr
+
         uint32 featureIndex
+
         float32 threshold
+
         Comparator comparator
+
         bool covered
+
         uint32 coveredWeights
+
         intp start
+
         intp end
+
         intp previous
 
 
@@ -30,7 +42,7 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
         # Attributes:
 
-        Refinement bestRefinement_
+        unique_ptr[Refinement] bestRefinementPtr_
 
         # Functions:
 
