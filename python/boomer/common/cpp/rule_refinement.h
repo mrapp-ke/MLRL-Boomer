@@ -126,7 +126,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
     public:
 
         /**
-         * @param statistics        A shared pointer to an object of type `AbstractStatistics` that provides access to
+         * @param statisticsPtr     A shared pointer to an object of type `AbstractStatistics` that provides access to
          *                          the statistics which serve as the basis for evaluating the potential refinements of
          *                          rules
          * @param weights           A shared pointer to an object of type `IWeightVector` that provides access to the
@@ -135,7 +135,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
-         * @param callback          An unique pointer to an object of type
+         * @param callbackPtr       An unique pointer to an object of type
          *                          `IRuleRefinementCallback<IndexedFloat32Array>` that allows to retrieve the
          *                          information that is required to identify potential refinements
          */
@@ -158,29 +158,25 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
-        AbstractStatistics* statistics_;
-
-        BinArray* binArray_;
+        std::shared_ptr<AbstractStatistics> statisticsPtr_;
 
         uint32 featureIndex_;
 
-        IRuleRefinementCallback<BinArray>* callback_;
+        std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr_;
 
     public:
 
         /**
-         * @param statistics    A pointer to an object of type `AbstractStatistics` that provides access to the
+         * @param statisticsPtr A shared pointer to an object of type `AbstractStatistics` that provides access to the
          *                      statistics which serve as the basis for evaluating the potential refinements of rules
          * @param featureIndex  The index of the feature, the new condition corresponds to
-         * @param callback      A pointer to an object of type `IRuleRefinementCallback<BinArray>` that allows to
-         *                      retrieve the information that is required to identify potential refinements
+         * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinArray>` that allows
+         *                      to retrieve the information that is required to identify potential refinements
          */
-        ApproximateRuleRefinementImpl(AbstractStatistics* statistics, uint32 featureIndex,
-                                      IRuleRefinementCallback<BinArray>* callback);
+        ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
+                                      std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr);
 
-        ~ApproximateRuleRefinementImpl();
-
-        void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
-                                  uint32 numLabelIndices, const uint32* labelIndices) override;
+        void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
+                            const uint32* labelIndices) override;
 
 };
