@@ -211,7 +211,7 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() {
+std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
     // The number of examples
     uint32 numExamples = labelMatrixPtr_->getNumRows();
     // The number of labels

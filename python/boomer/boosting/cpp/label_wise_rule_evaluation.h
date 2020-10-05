@@ -58,7 +58,7 @@ namespace boosting {
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate& prediction) = 0;
+                                                      LabelWisePredictionCandidate& prediction) const = 0;
 
     };
 
@@ -84,7 +84,7 @@ namespace boosting {
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePredictionCandidate& prediction) override;
+                                              LabelWisePredictionCandidate& prediction) const override;
 
     };
 

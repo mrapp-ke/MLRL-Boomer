@@ -20,9 +20,9 @@
  * @return                  The adjusted position that separates the covered from the uncovered examples with respect to
  *                          the examples that are not contained in the current sub-sample
  */
-static inline intp adjustSplit(IndexedFloat32Array* indexedArray, intp conditionEnd, intp conditionPrevious,
+static inline intp adjustSplit(const IndexedFloat32Array* indexedArray, intp conditionEnd, intp conditionPrevious,
                                float32 threshold) {
-    IndexedFloat32* indexedValues = indexedArray->data;
+    const IndexedFloat32* indexedValues = indexedArray->data;
     intp adjustedPosition = conditionEnd;
     bool ascending = conditionEnd < conditionPrevious;
     intp direction = ascending ? 1 : -1;
@@ -76,7 +76,7 @@ static inline intp adjustSplit(IndexedFloat32Array* indexedArray, intp condition
  *                              this function
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the previous rule
- * @param statistics            A pointer to an object of type `AbstractStatistics` to be notified about the examples
+ * @param statistics            A reference to an object of type `AbstractStatistics` to be notified about the examples
  *                              that must be considered when searching for the next refinement, i.e., the examples that
  *                              are covered by the new rule
  * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
@@ -85,10 +85,11 @@ static inline intp adjustSplit(IndexedFloat32Array* indexedArray, intp condition
  *                              are covered by the new rule
  */
 static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                          IndexedFloat32Array* indexedArray, intp conditionStart, intp conditionEnd,
-                                          Comparator conditionComparator, bool covered, uint32 numConditions,
-                                          uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-                                          AbstractStatistics* statistics, IWeightVector& weights) {
+                                          const IndexedFloat32Array* indexedArray, intp conditionStart,
+                                          intp conditionEnd, Comparator conditionComparator, bool covered,
+                                          uint32 numConditions, uint32* coveredExamplesMask,
+                                          uint32 coveredExamplesTarget, AbstractStatistics& statistics,
+                                          IWeightVector& weights) {
     IndexedFloat32* indexedValues = indexedArray->data;
     uint32 numIndexedValues = indexedArray->numElements;
     bool descending = conditionEnd < conditionStart;
@@ -115,7 +116,7 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
 
     if (covered) {
         updatedTarget = numConditions;
-        statistics->resetCoveredStatistics();
+        statistics.resetCoveredStatistics();
 
         // Retain the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
         // `coveredExamplesMasK` to `numConditions`, which marks them as covered (because
@@ -127,7 +128,7 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
             filteredArray[i].index = index;
             filteredArray[i].value = indexedValues[r].value;
             uint32 weight = weights.getValue(index);
-            statistics->updateCoveredStatistic(index, weight, false);
+            statistics.updateCoveredStatistic(index, weight, false);
             i += direction;
         }
     } else {
@@ -164,7 +165,7 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
             uint32 index = indexedValues[r].index;
             coveredExamplesMask[index] = numConditions;
             uint32 weight = weights.getValue(index);
-            statistics->updateCoveredStatistic(index, weight, true);
+            statistics.updateCoveredStatistic(index, weight, true);
         }
 
         // Retain the indices at positions [conditionEnd, end), while leaving the corresponding values in
@@ -210,9 +211,9 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the current rule
  */
-static inline void filterAnyIndices(IndexedFloat32Array* indexedArray, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                    uint32 numConditions, const uint32* coveredExamplesMask,
-                                    uint32 coveredExamplesTarget) {
+static inline void filterAnyIndices(const IndexedFloat32Array* indexedArray,
+                                    IndexedFloat32ArrayWrapper* indexedArrayWrapper, uint32 numConditions,
+                                    const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
     IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
     IndexedFloat32* filteredArray = filteredIndexedArray == NULL ? NULL : filteredIndexedArray->data;
     uint32 maxElements = indexedArray->numElements;
@@ -261,15 +262,15 @@ AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMa
     statisticsPtr_ = statisticsPtr;
 }
 
-uint32 AbstractThresholds::getNumRows() {
+uint32 AbstractThresholds::getNumRows() const {
     return featureMatrixPtr_->getNumRows();
 }
 
-uint32 AbstractThresholds::getNumCols() {
+uint32 AbstractThresholds::getNumCols() const {
     return featureMatrixPtr_->getNumCols();
 }
 
-uint32 AbstractThresholds::getNumLabels() {
+uint32 AbstractThresholds::getNumLabels() const {
     return statisticsPtr_->getNumCols();
 }
 
@@ -357,11 +358,11 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     coveredExamplesTarget_ = filterCurrentIndices(indexedArrayWrapper, indexedArray, refinement.start, refinement.end,
                                                   refinement.comparator, refinement.covered, numRefinements_,
                                                   coveredExamplesMask_, coveredExamplesTarget_,
-                                                  thresholds_.statisticsPtr_.get(), *weightsPtr_);
+                                                  *thresholds_.statisticsPtr_, *weightsPtr_);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
-                                                                      Refinement& refinement) {
+                                                                      Refinement& refinement) const {
     PredictionCandidate& head = *refinement.headPtr;
     uint32 numLabelIndices = head.numPredictions_;
     const uint32* labelIndices = head.labelIndices_;
@@ -400,7 +401,8 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::RuleRefin
 
 }
 
-IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::get(uint32 featureIndex) {
+IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::get(
+        uint32 featureIndex) const {
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;

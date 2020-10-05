@@ -61,7 +61,7 @@ namespace boosting {
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate& prediction) = 0;
+                                                      LabelWisePredictionCandidate& prediction) const = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
@@ -120,7 +120,7 @@ namespace boosting {
                                                         float64* tmpHessians, int dsysvLwork, float64* dsysvTmpArray1,
                                                         int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                         float64* dspmvTmpArray, bool uncovered,
-                                                        PredictionCandidate& prediction) = 0;
+                                                        PredictionCandidate& prediction) const = 0;
 
     };
 
@@ -155,14 +155,14 @@ namespace boosting {
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePredictionCandidate& prediction) override;
+                                              LabelWisePredictionCandidate& prediction) const override;
 
             void calculateExampleWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                 float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                 float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
                                                 int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                 double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
-                                                PredictionCandidate& prediction) override;
+                                                PredictionCandidate& prediction) const override;
 
     };
 
