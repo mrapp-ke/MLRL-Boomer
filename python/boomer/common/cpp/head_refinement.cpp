@@ -31,8 +31,8 @@ bool SingleLabelHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
             candidateLabelIndices[0] = labelIndices == NULL ? bestC : labelIndices[bestC];
             float64* candidatePredictedScores = (float64*) malloc(sizeof(float64));
             candidatePredictedScores[0] = predictedScores[bestC];
-            headPtr.reset(new PredictionCandidate(1, candidateLabelIndices, candidatePredictedScores,
-                                                  bestQualityScore));
+            headPtr = std::make_unique<PredictionCandidate>(1, candidateLabelIndices, candidatePredictedScores,
+                                                            bestQualityScore);
         } else {
             // Modify the `recyclableHead`...
             recyclableHead->labelIndices_[0] = labelIndices == NULL ? bestC : labelIndices[bestC];
@@ -80,8 +80,8 @@ bool FullHeadRefinementImpl::findHead(PredictionCandidate* bestHead, std::unique
                 }
             }
 
-            headPtr.reset(new PredictionCandidate(numPredictions, candidateLabelIndices, candidatePredictedScores,
-                                                  overallQualityScore));
+            headPtr = std::make_unique<PredictionCandidate>(numPredictions, candidateLabelIndices,
+                                                            candidatePredictedScores, overallQualityScore);
         } else {
             // Modify the `recyclableHead`...
             for (uint32 c = 0; c < numPredictions; c++) {
