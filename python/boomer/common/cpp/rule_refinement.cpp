@@ -21,7 +21,8 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
     // The best head seen so far
     PredictionCandidate* bestHead = currentHead;
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices, labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices,
+                                                                                          labelIndices);
 
     // Retrieve the array to be iterated...
     IndexedFloat32Array& indexedArray = callbackPtr_->get(featureIndex_);
