@@ -114,7 +114,8 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
          * @param callback          A pointer to an object of type `IRuleRefinementCallback<IndexedFloat32Array>` that
-         *                          allows to retrieve the information that is required to identify potential refinements
+         *                          allows to retrieve the information that is required to identify potential
+         *                          refinements
          */
         ExactRuleRefinementImpl(AbstractStatistics* statistics, IWeightVector* weights, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal,
