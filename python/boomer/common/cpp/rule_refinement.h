@@ -2,6 +2,7 @@
  * Implements classes that allow to find the best refinement of rules.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
@@ -124,5 +125,41 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
         void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
                             const uint32* labelIndices) override;
+
+};
+
+/**
+ * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
+ * certain feature. The thresholds that may be used by the new condition result from the bins that have been created
+ * using a binning method.
+ */
+class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
+
+    private:
+
+        AbstractStatistics* statistics_;
+
+        BinArray* binArray_;
+
+        uint32 featureIndex_;
+
+        IRuleRefinementCallback<BinArray>* callback_;
+
+    public:
+
+        /**
+         * @param statistics    A pointer to an object of type `AbstractStatistics` that provides access to the
+         *                      statistics which serve as the basis for evaluating the potential refinements of rules
+         * @param featureIndex  The index of the feature, the new condition corresponds to
+         * @param callback      A pointer to an object of type `IRuleRefinementCallback<BinArray>` that allows to
+         *                      retrieve the information that is required to identify potential refinements
+         */
+        ApproximateRuleRefinementImpl(AbstractStatistics* statistics, uint32 featureIndex,
+                                      IRuleRefinementCallback<BinArray>* callback);
+
+        ~ApproximateRuleRefinementImpl();
+
+        void findRefinement(IHeadRefinement* headRefinement, PredictionCandidate* currentHead,
+                                  uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };
