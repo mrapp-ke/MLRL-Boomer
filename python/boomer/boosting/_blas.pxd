@@ -8,6 +8,8 @@ scipy.
 """
 from scipy.linalg.cython_blas cimport ddot, dspmv
 
+from libcpp.memory cimport unique_ptr, make_unique
+
 
 cdef extern from "cpp/blas.h" nogil:
 
@@ -22,10 +24,10 @@ cdef extern from "cpp/blas.h" nogil:
         Blas(ddot_t ddotFunction, dspmv_t dspmvFunction) except +
 
 
-cdef inline Blas* init_blas():
+cdef inline unique_ptr[Blas] init_blas():
     """
     Creates a new wrapper for executing different BLAS routines.
 
-    :return: A pointer to an object of type `Blas` that allows to execute different BLAS routines
+    :return: An unique pointer to an object of type `Blas` that allows to execute different BLAS routines
     """
-    return new Blas(ddot, dspmv)
+    return make_unique[Blas](ddot, dspmv)

@@ -28,17 +28,14 @@ PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFuncti
     liftFunctionPtr_ = liftFunctionPtr;
 }
 
-PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead,
-                                                         PredictionCandidate* recyclableHead,
-                                                         const uint32* labelIndices,
-                                                         IStatisticsSubset* statisticsSubset, bool uncovered,
-                                                         bool accumulated) {
-    PredictionCandidate* result = NULL;
-    ILiftFunction* liftFunction = liftFunctionPtr_.get();
-    LabelWisePredictionCandidate* prediction = statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
-    uint32 numPredictions = prediction->numPredictions_;
-    float64* predictedScores = prediction->predictedScores_;
-    float64* qualityScores = prediction->qualityScores_;
+bool PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
+                                         const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
+                                         bool uncovered, bool accumulated) {
+    bool result = false;
+    LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
+    uint32 numPredictions = prediction.numPredictions_;
+    float64* predictedScores = prediction.predictedScores_;
+    float64* qualityScores = prediction.qualityScores_;
     uint32* sortedIndices = NULL;
     float64 sumOfQualityScores = 0;
     uint32 bestNumPredictions = 0;
@@ -46,11 +43,11 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
 
     if (labelIndices == NULL) {
         sortedIndices = argsort(qualityScores, numPredictions);
-        float64 maximumLift = liftFunction->getMaxLift();
+        float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
         for (uint32 c = 0; c < numPredictions; c++) {
             sumOfQualityScores += 1 - qualityScores[sortedIndices[c]];
-            float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunction->calculateLift(c + 1);
+            float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunctionPtr_->calculateLift(c + 1);
 
             if (c == 0 || qualityScore < bestQualityScore) {
                 bestNumPredictions = c + 1;
@@ -67,13 +64,16 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
             sumOfQualityScores += 1 - qualityScores[c];
         }
 
-        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunction->calculateLift(numPredictions);
+        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
         bestNumPredictions = numPredictions;
     }
 
     if (bestHead == NULL || bestQualityScore < bestHead->overallQualityScore_) {
+        result = true;
+        PredictionCandidate* recyclableHead = headPtr.get();
+
         if (recyclableHead == NULL) {
-            // Create a new `PredictionCandidate` and return it...
+            // Create a new `PredictionCandidate`...
             uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
             float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
 
@@ -90,10 +90,10 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
                 }
             }
 
-            result = new PredictionCandidate(bestNumPredictions, candidateLabelIndices, candidatePredictedScores,
-                                             bestQualityScore);
+            headPtr = std::make_unique<PredictionCandidate>(bestNumPredictions, candidateLabelIndices,
+                                                            candidatePredictedScores, bestQualityScore);
         } else {
-            // Modify the `recyclableHead` and return it...
+            // Modify the `recyclableHead`...
             if (recyclableHead->numPredictions_ != bestNumPredictions) {
                 recyclableHead->numPredictions_ = bestNumPredictions;
                 recyclableHead->labelIndices_ = (uint32*) realloc(recyclableHead->labelIndices_,
@@ -116,7 +116,6 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
             }
 
             recyclableHead->overallQualityScore_ = bestQualityScore;
-            result = recyclableHead;
         }
     }
 
@@ -124,7 +123,7 @@ PredictionCandidate* PartialHeadRefinementImpl::findHead(PredictionCandidate* be
     return result;
 }
 
-PredictionCandidate* PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset* statisticsSubset, bool uncovered,
+PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                     bool accumulated) {
-    return statisticsSubset->calculateLabelWisePrediction(uncovered, accumulated);
+    return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }

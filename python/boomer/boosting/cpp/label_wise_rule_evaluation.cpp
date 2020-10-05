@@ -15,15 +15,15 @@ void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const 
                                                                           float64* sumsOfGradients,
                                                                           const float64* totalSumsOfHessians,
                                                                           float64* sumsOfHessians, bool uncovered,
-                                                                          LabelWisePredictionCandidate* prediction) {
+                                                                          LabelWisePredictionCandidate& prediction) {
     // Class members
     float64 l2RegularizationWeight = l2RegularizationWeight_;
     // The number of labels to predict for
-    uint32 numPredictions = prediction->numPredictions_;
+    uint32 numPredictions = prediction.numPredictions_;
     // The array that should be used to store the predicted scores
-    float64* predictedScores = prediction->predictedScores_;
+    float64* predictedScores = prediction.predictedScores_;
     // The array that should be used to store the quality scores
-    float64* qualityScores = prediction->qualityScores_;
+    float64* qualityScores = prediction.qualityScores_;
     // The overall quality score, i.e., the sum of the quality scores for each label plus the L2 regularization term
     float64 overallQualityScore = 0;
 
@@ -52,5 +52,5 @@ void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const 
 
     // Add the L2 regularization term to the overall quality score...
     overallQualityScore += 0.5 * l2RegularizationWeight * linalg::l2NormPow(predictedScores, numPredictions);
-    prediction->overallQualityScore_ = overallQualityScore;
+    prediction.overallQualityScore_ = overallQualityScore;
 }

@@ -8,6 +8,7 @@
 #include "arrays.h"
 #include "data.h"
 #include "random.h"
+#include <memory>
 
 
 /**
@@ -132,13 +133,12 @@ class IInstanceSubSampling {
          * Creates and returns a sub-sample of the available training examples.
          *
          * @param numExamples   The total number of available training examples
-         * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be
+         * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
          *                      used
-         * @return              A pointer to an object type `WeightVector`, shape `(numExamples)`, that provides access
-         *                      to the weights of the individual training examples, i.e., how many times each of the
-         *                      examples is contained in the sample, as well as the sum of the weights
+         * @return              An unique pointer to an object type `WeightVector` that provides access to the weights
+         *                      of the individual training examples
          */
-        virtual IWeightVector* subSample(uint32 numExamples, RNG* rng) = 0;
+        virtual std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) = 0;
 
 };
 
@@ -160,7 +160,7 @@ class BaggingImpl : virtual public IInstanceSubSampling {
          */
         BaggingImpl(float32 sampleSize);
 
-        IWeightVector* subSample(uint32 numExamples, RNG* rng) override;
+        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) override;
 
 };
 
@@ -182,7 +182,7 @@ class RandomInstanceSubsetSelectionImpl : virtual public IInstanceSubSampling {
          */
         RandomInstanceSubsetSelectionImpl(float32 sampleSize);
 
-        IWeightVector* subSample(uint32 numExamples, RNG* rng) override;
+        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) override;
 
 };
 
@@ -194,7 +194,7 @@ class NoInstanceSubSamplingImpl : virtual public IInstanceSubSampling {
 
     public:
 
-        IWeightVector* subSample(uint32 numExamples, RNG* rng) override;
+        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) override;
 
 };
 
@@ -211,12 +211,12 @@ class IFeatureSubSampling {
          * Creates and returns a sub-sample of the available features.
          *
          * @param numFeatures   The total number of available features
-         * @param rng           A pointer to an object of type `RNG`, implementing the random number generator to be
+         * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
          *                      used
-         * @return              A pointer to an object of type `IIndexVector`, shape `(numSamples)`, that provides
-         *                      access to the indices of the features that are contained in the sub-sample
+         * @return              An unique pointer to an object of type `IIndexVector` that provides access to the
+         *                      indices of the features that are contained in the sub-sample
          */
-        virtual IIndexVector* subSample(uint32 numFeatures, RNG* rng) = 0;
+        virtual std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) = 0;
 
 };
 
@@ -239,7 +239,7 @@ class RandomFeatureSubsetSelectionImpl : virtual public IFeatureSubSampling {
          */
         RandomFeatureSubsetSelectionImpl(float32 sampleSize);
 
-        IIndexVector* subSample(uint32 numFeatures, RNG* rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) override;
 
 };
 
@@ -250,7 +250,7 @@ class NoFeatureSubSamplingImpl : virtual public IFeatureSubSampling {
 
     public:
 
-        IIndexVector* subSample(uint32 numFeatures, RNG* rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) override;
 
 };
 
@@ -267,11 +267,11 @@ class ILabelSubSampling {
          * Creates and returns a sub-sample of the available labels.
          *
          * @param numLabels The total number of available labels
-         * @param rng       A pointer to an object of type `RNG`, implementing the random number generator to be used
-         * @return          A pointer to an object of type `IIndexVector`, shape `(numSamples)`, that provides access to
-         *                  the indices of the labels that are contained in the sub-sample
+         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
+         * @return          An unique pointer to an object of type `IIndexVector` that provides access to the indices of
+         *                  the labels that are contained in the sub-sample
          */
-        virtual IIndexVector* subSample(uint32 numLabels, RNG* rng) = 0;
+        virtual std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) = 0;
 
 };
 
@@ -291,7 +291,7 @@ class RandomLabelSubsetSelectionImpl : virtual public ILabelSubSampling {
          */
         RandomLabelSubsetSelectionImpl(uint32 numSamples);
 
-        IIndexVector* subSample(uint32 numLabels, RNG* rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) override;
 
 };
 
@@ -302,6 +302,6 @@ class NoLabelSubSamplingImpl : virtual public ILabelSubSampling {
 
     public:
 
-        IIndexVector* subSample(uint32 numLabels, RNG* rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) override;
 
 };
