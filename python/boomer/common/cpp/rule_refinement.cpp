@@ -495,55 +495,58 @@ void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement* headRefineme
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr;
     statisticsSubsetPtr.reset(statistics_->createSubset(numLabelIndices, labelIndices));
 
-    uint32 r = 0;
     //Search for the first not empty bin
-    while(binArray->bins[r].numExamples == 0 && r < numBins){
+    uint32 r = 0;
+
+    while (binArray->bins[r].numExamples == 0 && r < numBins) {
         r++;
     }
+
     statisticsSubsetPtr.get()->addToSubset(r, 1);
     uint32 previousR = r;
     float32 previousValue = binArray->bins[r].maxValue;
     uint32 numCoveredExamples = binArray->bins[r].numExamples;
 
-    r += 1;
-    for(; r < numBins; r++){
+    for (r = r + 1; r < numBins; r++) {
         uint32 numExamples = binArray->bins[r].numExamples;
 
-        if(numExamples > 0){
+        if (numExamples > 0) {
             float32 currentValue = binArray->bins[r].minValue;
 
             PredictionCandidate* currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                          statisticsSubsetPtr.get(), false, false);
+                                                                        statisticsSubsetPtr.get(), false, false);
 
-            if(currentHead != NULL){
+            if (currentHead != NULL) {
                 bestHead = currentHead;
                 refinement.head = currentHead;
                 refinement.comparator = LEQ;
-                refinement.threshold = (previousValue + currentValue)/2.0;
+                refinement.threshold = (previousValue + currentValue) / 2.0;
                 refinement.end = r;
                 refinement.previous = previousR;
                 refinement.coveredWeights = numCoveredExamples;
                 refinement.covered = true;
             }
 
-            currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices,
-                                                          statisticsSubsetPtr.get(), true, false);
+            currentHead = headRefinement->findHead(bestHead, refinement.head, labelIndices, statisticsSubsetPtr.get(),
+                                                   true, false);
 
-            if(currentHead != NULL){
+            if (currentHead != NULL) {
                 bestHead = currentHead;
                 refinement.head = currentHead;
                 refinement.comparator = GR;
-                refinement.threshold = (previousValue + currentValue)/2.0;
+                refinement.threshold = (previousValue + currentValue) / 2.0;
                 refinement.end = r;
                 refinement.previous = previousR;
                 refinement.coveredWeights = numCoveredExamples;
                 refinement.covered = false;
             }
+
             previousValue = binArray->bins[r].maxValue;
             previousR = r;
             numCoveredExamples += numExamples;
             statisticsSubsetPtr.get()->addToSubset(r, 1);
         }
     }
+
     bestRefinement_ = refinement;
 }
