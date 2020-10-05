@@ -24,8 +24,8 @@ std::pair<float64, float64> LabelWiseSquaredErrorLossImpl::calculateGradientAndH
 }
 
 std::pair<float64, float64> LabelWiseSquaredHingeLossImpl::calculateGradientAndHessian(
-        IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex, uint32 labelIndex, float64 predictedScore) {
-    uint8 trueLabel = labelMatrix->getValue(exampleIndex, labelIndex);
+        IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex, float64 predictedScore) {
+    uint8 trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
     float64 gradient;
     float64 hessian;
 
