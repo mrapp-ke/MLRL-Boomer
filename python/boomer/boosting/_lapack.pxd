@@ -8,6 +8,8 @@ scipy.
 """
 from scipy.linalg.cython_lapack cimport dsysv
 
+from libcpp.memory cimport unique_ptr, make_unique
+
 
 cdef extern from "cpp/lapack.h" nogil:
 
@@ -20,10 +22,10 @@ cdef extern from "cpp/lapack.h" nogil:
         Lapack(dsysv_t dsysvFunction) except +
 
 
-cdef inline Lapack* init_lapack():
+cdef inline unique_ptr[Lapack] init_lapack():
     """
     Creates a new wrapper for executing different LAPACK routines.
 
-    :return: A pointer to an object of type `Lapack` that allows to execute different LAPACK routines
+    :return: An unique pointer to an object of type `Lapack` that allows to execute different LAPACK routines
     """
-    return new Lapack(dsysv)
+    return make_unique[Lapack](dsysv)

@@ -8,6 +8,7 @@
 #include "arrays.h"
 #include "tuples.h"
 #include "data.h"
+#include <memory>
 
 
 /**
@@ -71,17 +72,15 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
     private:
 
-        BinaryDokMatrix* matrix_;
+        std::unique_ptr<BinaryDokMatrix> matrixPtr_;
 
     public:
 
         /**
-         * @param matrix A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the training
-         *               examples
+         * @param matrix An unique pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
+         *               training examples
          */
-        DokLabelMatrixImpl(BinaryDokMatrix* matrix);
-
-        ~DokLabelMatrixImpl();
+        DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr);
 
         uint32 getNumRows() override;
 
@@ -106,10 +105,10 @@ class IFeatureMatrix : virtual public IMatrix {
          * stores them in a given struct of type `IndexedFloat32Array`.
          *
          * @param featureIndex  The index of the feature
-         * @param indexedArray  A pointer to a struct of type `IndexedFloat32Array`, which should be used to store the
+         * @param indexedArray  A reference to a struct of type `IndexedFloat32Array`, which should be used to store the
          *                      indices and feature values
          */
-        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) = 0;
+        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) = 0;
 
 };
 
@@ -140,7 +139,7 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
 
         uint32 getNumCols() override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) override;
 
 };
 
@@ -182,7 +181,7 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
 
         uint32 getNumCols() override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) override;
 
 };
 
@@ -206,16 +205,14 @@ class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
 
     private:
 
-        BinaryDokVector* vector_;
+        std::unique_ptr<BinaryDokVector> vectorPtr_;
 
     public:
 
         /**
          * @param vector A pointer to an object of type `BinaryDokVector`, storing the nominal attributes
          */
-        DokNominalFeatureVectorImpl(BinaryDokVector* vector);
-
-        ~DokNominalFeatureVectorImpl();
+        DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
 
         uint32 getNumElements() override;
 

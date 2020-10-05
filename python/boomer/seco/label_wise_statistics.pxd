@@ -3,7 +3,7 @@ from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFact
 from boomer.seco.statistics cimport AbstractCoverageStatistics
 from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, ILabelWiseRuleEvaluation
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
@@ -26,7 +26,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Functions:
 
-        AbstractLabelWiseStatistics* create()
+        unique_ptr[AbstractLabelWiseStatistics] create()
 
 
     cdef cppclass DenseLabelWiseStatisticsFactoryImpl(ILabelWiseStatisticsFactory):
@@ -45,14 +45,14 @@ cdef class LabelWiseStatisticsFactory:
 
     # Functions:
 
-    cdef AbstractLabelWiseStatistics* create(self)
+    cdef unique_ptr[AbstractLabelWiseStatistics] create(self)
 
 
 cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
 
     # Functions:
 
-    cdef AbstractLabelWiseStatistics* create(self)
+    cdef unique_ptr[AbstractLabelWiseStatistics] create(self)
 
 
 cdef class LabelWiseStatisticsProvider(StatisticsProvider):
