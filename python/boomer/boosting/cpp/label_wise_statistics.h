@@ -63,7 +63,7 @@ namespace boosting {
 
                 private:
 
-                    DenseLabelWiseStatisticsImpl* statistics_;
+                    DenseLabelWiseStatisticsImpl& statistics_;
 
                     uint32 numPredictions_;
 
@@ -77,19 +77,19 @@ namespace boosting {
 
                     float64* accumulatedSumsOfHessians_;
 
-                    LabelWisePredictionCandidate* prediction_;
+                    std::unique_ptr<LabelWisePredictionCandidate> predictionPtr_;
 
                 public:
 
                     /**
-                     * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
+                     * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the gradients and Hessians
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
                      *                          subset or NULL, if all labels should be included
                      */
-                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
@@ -98,7 +98,7 @@ namespace boosting {
 
                     void resetSubset() override;
 
-                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                    LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;
 
             };
@@ -107,13 +107,13 @@ namespace boosting {
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-            float64* currentScores_;
-
             float64* gradients_;
 
-            float64* totalSumsOfGradients_;
-
             float64* hessians_;
+
+            float64* currentScores_;
+
+            float64* totalSumsOfGradients_;
 
             float64* totalSumsOfHessians_;
 
@@ -144,9 +144,10 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
+            std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
+                                                            const uint32* labelIndices) override;
 
-            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction& prediction) override;
 
     };
 
@@ -163,9 +164,9 @@ namespace boosting {
             /**
              * Creates a new instance of the class `AbstractLabelWiseStatistics`.
              *
-             * @return A pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+             * @return An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
              */
-            virtual AbstractLabelWiseStatistics* create() = 0;
+            virtual std::unique_ptr<AbstractLabelWiseStatistics> create() = 0;
 
     };
 
@@ -196,7 +197,7 @@ namespace boosting {
                                                 std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            AbstractLabelWiseStatistics* create() override;
+            std::unique_ptr<AbstractLabelWiseStatistics> create() override;
 
     };
 

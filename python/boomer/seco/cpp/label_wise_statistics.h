@@ -63,7 +63,7 @@ namespace seco {
 
                 private:
 
-                    DenseLabelWiseStatisticsImpl* statistics_;
+                    DenseLabelWiseStatisticsImpl& statistics_;
 
                     uint32 numPredictions_;
 
@@ -73,19 +73,19 @@ namespace seco {
 
                     float64* accumulatedConfusionMatricesCovered_;
 
-                    LabelWisePredictionCandidate* prediction_;
+                    std::unique_ptr<LabelWisePredictionCandidate> predictionPtr_;
 
                 public:
 
                     /**
-                     * @param statistics        A pointer to an object of type `DenseLabelWiseStatisticsImpl` that
+                     * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the confusion matrices
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      An array of type `uint32`, shape `(numPredictions)`, representing the
                      *                          indices of the labels that should be included in the subset or NULL,
                      *                          if all labels should be considered
                      */
-                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
@@ -94,7 +94,7 @@ namespace seco {
 
                     void resetSubset() override;
 
-                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                    LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;
 
             };
@@ -138,9 +138,10 @@ namespace seco {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
+            std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
+                                                            const uint32* labelIndices) override;
 
-            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction& prediction) override;
 
     };
 
@@ -157,9 +158,9 @@ namespace seco {
             /**
              * Creates a new instance of the class `AbstractLabelWiseStatistics`.
              *
-             * @return A pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+             * @return An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
              */
-            virtual AbstractLabelWiseStatistics* create() = 0;
+            virtual std::unique_ptr<AbstractLabelWiseStatistics> create() = 0;
 
     };
 
@@ -185,7 +186,7 @@ namespace seco {
             DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            AbstractLabelWiseStatistics* create() override;
+            std::unique_ptr<AbstractLabelWiseStatistics> create() override;
 
     };
 

@@ -55,13 +55,13 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A pointer to an object of type `LabelWisePredictionCandidate` that should be
-             *                              used to store the predicted scores and quality scores
+             * @param prediction            A reference to an object of type `LabelWisePredictionCandidate` that should
+             *                              be used to store the predicted scores and quality scores
              */
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate* prediction) = 0;
+                                                      LabelWisePredictionCandidate& prediction) = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
@@ -111,8 +111,8 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A pointer to an object of type `PredictionCandidate` that should be used to
-             *                              store the predicted scores and quality score
+             * @param prediction            A reference to an object of type `PredictionCandidate` that should be used
+             *                              to store the predicted scores and quality score
              */
             virtual void calculateExampleWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                         float64* sumsOfGradients, const float64* totalSumsOfHessians,
@@ -120,7 +120,7 @@ namespace boosting {
                                                         float64* tmpHessians, int dsysvLwork, float64* dsysvTmpArray1,
                                                         int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                         float64* dspmvTmpArray, bool uncovered,
-                                                        PredictionCandidate* prediction) = 0;
+                                                        PredictionCandidate& prediction) = 0;
 
     };
 
@@ -135,34 +135,34 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            std::shared_ptr<Lapack> lapackPtr_;
+            std::unique_ptr<Lapack> lapackPtr_;
 
-            std::shared_ptr<Blas> blasPtr_;
+            std::unique_ptr<Blas> blasPtr_;
 
         public:
 
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
              *                                  different BLAS routines
-             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
-                                                     std::shared_ptr<Lapack> lapackPtr);
+            RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, std::unique_ptr<Blas> blasPtr,
+                                                     std::unique_ptr<Lapack> lapackPtr);
 
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePredictionCandidate* prediction) override;
+                                              LabelWisePredictionCandidate& prediction) override;
 
             void calculateExampleWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                 float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                 float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
                                                 int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                 double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
-                                                PredictionCandidate* prediction) override;
+                                                PredictionCandidate& prediction) override;
 
     };
 

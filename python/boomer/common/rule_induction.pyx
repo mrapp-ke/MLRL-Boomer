@@ -13,8 +13,10 @@ from boomer.common.thresholds cimport IThresholdsSubset
 
 from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr, make_unique
+from libcpp.utility cimport move
 
+from cython.operator cimport dereference
 from cython.parallel cimport prange
 
 
@@ -102,14 +104,13 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for i in range(num_statistics):
                 statistics.addSampledStatistic(i, 1)
 
-            statistics_subset_ptr.reset(statistics.createSubset(0, NULL))
-            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL, statistics_subset_ptr.get(), True,
-                                                                  False))
-
+            statistics_subset_ptr = statistics.createSubset(0, NULL)
+            head_refinement.findHead(NULL, default_prediction_ptr, NULL, dereference(statistics_subset_ptr.get()), True,
+                                     False)
             statistics_provider.switch_rule_evaluation()
 
             for i in range(num_statistics):
-                statistics.applyPrediction(i, default_prediction_ptr.get())
+                statistics.applyPrediction(i, dereference(default_prediction_ptr.get()))
 
             model_builder.set_default_rule(default_prediction_ptr.get())
         else:
@@ -136,136 +137,125 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         num_conditions_per_comparator[:] = 0
         # A map that stores a pointer to an object of type `AbstractRuleRefinement` for each feature
         cdef unordered_map[uint32, AbstractRuleRefinement*] rule_refinements  # Stack-allocated map
-        # The best refinement of the current rule
-        cdef Refinement best_refinement  # Stack-allocated struct
-        best_refinement.head = NULL
+        # An unique pointer to the best refinement of the current rule
+        cdef unique_ptr[Refinement] best_refinement_ptr = make_unique[Refinement]()
         # Whether a refinement of the current rule has been found
         cdef bint found_refinement = True
 
         # Temporary variables
-        cdef AbstractRuleRefinement* current_rule_refinement
-        cdef Refinement current_refinement
+        cdef unique_ptr[AbstractRuleRefinement] rule_refinement_ptr
+        cdef AbstractRuleRefinement* rule_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
         cdef intp c
 
         # Sub-sample examples...
-        cdef unique_ptr[IWeightVector] weights_ptr
-        weights_ptr.reset(instance_sub_sampling.subSample(num_examples, rng))
+        cdef shared_ptr[IWeightVector] weights_ptr = <shared_ptr[IWeightVector]>move(instance_sub_sampling.subSample(
+            num_examples, dereference(rng)))
 
         # Create a new subset of the given thresholds...
-        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr
-        thresholds_subset_ptr.reset(thresholds.createSubset(weights_ptr.get()))
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(weights_ptr)
 
         # Sub-sample labels...
-        cdef unique_ptr[IIndexVector] sampled_label_indices_ptr
-        sampled_label_indices_ptr.reset(label_sub_sampling.subSample(num_labels, rng))
+        cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels,
+                                                                                               dereference(rng))
         # TODO Reactivate label sampling
         # cdef IIndexVector* label_indices = sampled_label_indices_ptr.get()
         cdef const uint32* label_indices = <const uint32*>NULL
         cdef uint32 num_predictions = 0
 
-        try:
-            # Search for the best refinement until no improvement in terms of the rule's quality score is possible
-            # anymore or the maximum number of conditions has been reached...
-            while found_refinement and (max_conditions == -1 or num_conditions < max_conditions):
-                found_refinement = False
+        # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore
+        # or the maximum number of conditions has been reached...
+        while found_refinement and (max_conditions == -1 or num_conditions < max_conditions):
+            found_refinement = False
 
-                # Sub-sample features...
-                sampled_feature_indices_ptr.reset(feature_sub_sampling.subSample(num_features, rng))
-                num_sampled_features = sampled_feature_indices_ptr.get().getNumElements()
+            # Sub-sample features...
+            sampled_feature_indices_ptr = feature_sub_sampling.subSample(num_features, dereference(rng))
+            num_sampled_features = sampled_feature_indices_ptr.get().getNumElements()
 
-                # For each feature, create an object of type `AbstractRuleRefinement`...
-                for c in range(num_sampled_features):
-                    f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    rule_refinements[f] = thresholds_subset_ptr.get().createRuleRefinement(f)
+            # For each feature, create an object of type `AbstractRuleRefinement`...
+            for c in range(num_sampled_features):
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
+                rule_refinement_ptr = thresholds_subset_ptr.get().createRuleRefinement(f)
+                rule_refinements[f] = rule_refinement_ptr.release()
 
-                # Search for the best condition among all available features to be added to the current rule...
-                for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
-                    f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    current_rule_refinement = rule_refinements[f]
-                    current_rule_refinement.findRefinement(head_refinement, best_refinement.head, num_predictions,
-                                                           label_indices)
+            # Search for the best condition among all available features to be added to the current rule...
+            for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
+                rule_refinement = rule_refinements[f]
+                rule_refinement.findRefinement(dereference(head_refinement), best_refinement_ptr.get().headPtr.get(),
+                                               num_predictions, label_indices)
 
-                # Pick the best refinement among the refinements that have been found for the different features...
-                for c in range(num_sampled_features):
-                    f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                    current_rule_refinement = rule_refinements[f]
-                    current_refinement = current_rule_refinement.bestRefinement_
+            # Pick the best refinement among the refinements that have been found for the different features...
+            for c in range(num_sampled_features):
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
+                rule_refinement = rule_refinements[f]
 
-                    if current_refinement.head != NULL and (best_refinement.head == NULL
-                                                            or current_refinement.head.overallQualityScore_ < best_refinement.head.overallQualityScore_):
-                        del best_refinement.head
-                        best_refinement = current_refinement
-                        found_refinement = True
-                    else:
-                        del current_refinement.head
+                if rule_refinement.bestRefinementPtr_.get().isBetterThan(dereference(best_refinement_ptr.get())):
+                    best_refinement_ptr = move(rule_refinement.bestRefinementPtr_)
+                    found_refinement = True
 
-                    del current_rule_refinement
+                del rule_refinement
 
-                if found_refinement:
-                    # If a refinement has been found, add the new condition...
-                    conditions.push_back(__create_condition(best_refinement.featureIndex, best_refinement.comparator,
-                                                            best_refinement.threshold))
-                    num_conditions += 1
-                    num_conditions_per_comparator[<uint32>best_refinement.comparator] += 1
+            if found_refinement:
+                # If a refinement has been found, add the new condition...
+                conditions.push_back(__create_condition(best_refinement_ptr.get()))
+                num_conditions += 1
+                num_conditions_per_comparator[<uint32>best_refinement_ptr.get().comparator] += 1
 
-                    if max_head_refinements > 0 and num_conditions >= max_head_refinements:
-                        # Keep the labels for which the rule predicts, if the head should not be further refined...
-                        num_predictions = best_refinement.head.numPredictions_
-                        label_indices = best_refinement.head.labelIndices_
+                if max_head_refinements > 0 and num_conditions >= max_head_refinements:
+                    # Keep the labels for which the rule predicts, if the head should not be further refined...
+                    num_predictions = best_refinement_ptr.get().headPtr.get().numPredictions_
+                    label_indices = best_refinement_ptr.get().headPtr.get().labelIndices_
 
-                    # Filter the current subset of thresholds by applying the best refinement that has been found...
-                    thresholds_subset_ptr.get().applyRefinement(best_refinement)
-                    num_covered_examples = best_refinement.coveredWeights
+                # Filter the current subset of thresholds by applying the best refinement that has been found...
+                thresholds_subset_ptr.get().applyRefinement(dereference(best_refinement_ptr.get()))
+                num_covered_examples = best_refinement_ptr.get().coveredWeights
 
-                    if num_covered_examples <= min_coverage:
-                        # Abort refinement process if the rule is not allowed to cover less examples...
-                        break
+                if num_covered_examples <= min_coverage:
+                    # Abort refinement process if the rule is not allowed to cover less examples...
+                    break
 
-            if best_refinement.head == NULL:
-                # No rule could be induced, because no useful condition could be found. This might be the case, if all
-                # examples have the same values for the considered features.
-                return False
-            else:
-                if weights_ptr.get().hasZeroElements():
-                    # TODO Reactivate pruning
-                    # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-                    # if pruning is not None and num_conditions > 1:
-                    #     uint32_array_scalar_pair = pruning.prune(cache_global, conditions, best_refinement.head,
-                    #                                              covered_statistics_mask, covered_statistics_target,
-                    #                                              weights_ptr.get(), statistics, head_refinement)
-                    #     covered_statistics_mask = uint32_array_scalar_pair.first
-                    #     covered_statistics_target = uint32_array_scalar_pair.second
+        if best_refinement_ptr.get().headPtr.get() == NULL:
+            # No rule could be induced, because no useful condition could be found. This might be the case, if all
+            # examples have the same values for the considered features.
+            return False
+        else:
+            if weights_ptr.get().hasZeroElements():
+                # TODO Reactivate pruning
+                # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
+                # if pruning is not None and num_conditions > 1:
+                #     uint32_array_scalar_pair = pruning.prune(cache_global, conditions, best_refinement.head,
+                #                                              covered_statistics_mask, covered_statistics_target,
+                #                                              weights_ptr.get(), statistics, head_refinement)
+                #     covered_statistics_mask = uint32_array_scalar_pair.first
+                #     covered_statistics_target = uint32_array_scalar_pair.second
 
-                    # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
-                    # training data...
-                    thresholds_subset_ptr.get().recalculatePrediction(head_refinement, best_refinement)
+                # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
+                # training data...
+                thresholds_subset_ptr.get().recalculatePrediction(dereference(head_refinement),
+                                                                  dereference(best_refinement_ptr.get()))
 
-                # Apply post-processor, if necessary...
-                if post_processor is not None:
-                    post_processor.post_process(best_refinement.head)
+            # Apply post-processor, if necessary...
+            if post_processor is not None:
+                post_processor.post_process(best_refinement_ptr.get().headPtr.get())
 
-                # Update the statistics by applying the predictions of the new rule...
-                thresholds_subset_ptr.get().applyPrediction(best_refinement.head)
+            # Update the statistics by applying the predictions of the new rule...
+            thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement_ptr.get().headPtr.get()))
 
-                # Add the induced rule to the model...
-                model_builder.add_rule(best_refinement.head, conditions, num_conditions_per_comparator)
-                return True
-        finally:
-            del best_refinement.head
+            # Add the induced rule to the model...
+            model_builder.add_rule(best_refinement_ptr.get().headPtr.get(), conditions, num_conditions_per_comparator)
+            return True
 
 
-cdef inline Condition __create_condition(uint32 feature_index, Comparator comparator, float32 threshold):
+cdef inline Condition __create_condition(Refinement* refinement):
     """
-    Creates and returns a new condition.
+    Creates and returns a new condition from a specific refinement.
 
-    :param feature_index:   The index of the feature that is used by the condition
-    :param comparator:      The type of the operator used by the condition
-    :param threshold:       The threshold that is used by the condition
+    :param refinement: A pointer to an object of type `Refinement`
     """
     cdef Condition condition
-    condition.feature_index = feature_index
-    condition.comparator = comparator
-    condition.threshold = threshold
+    condition.feature_index = refinement.featureIndex
+    condition.comparator = refinement.comparator
+    condition.threshold = refinement.threshold
     return condition
