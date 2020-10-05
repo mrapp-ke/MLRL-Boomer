@@ -112,7 +112,7 @@ namespace boosting {
 
                 private:
 
-                    DenseLabelWiseStatisticsImpl* statistics_;
+                    DenseLabelWiseStatisticsImpl& statistics_;
 
                     uint32 numBins_;
 
@@ -123,15 +123,15 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics    A pointer to an object of type `DenseLabelWiseStatisticsImpl` that stores
+                     * @param statistics    A reference to an object of type `DenseLabelWiseStatisticsImpl` that stores
                      *                      the gradients and Hessians
                      * @param numBins       The number of bins, the histogram should consist of
                      */
-                    HistogramBuilderImpl(DenseLabelWiseStatisticsImpl* statistics, uint32 numBins);
+                    HistogramBuilderImpl(DenseLabelWiseStatisticsImpl& statistics, uint32 numBins);
 
-                    void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
+                    void onBinUpdate(uint32 binIndex, IndexedFloat32& indexedValue) override;
 
-                    AbstractStatistics* build() override;
+                    std::unique_ptr<AbstractStatistics> build() override;
 
             };
 
@@ -181,7 +181,7 @@ namespace boosting {
 
             void applyPrediction(uint32 statisticIndex, Prediction& prediction) override;
 
-            AbstractStatistics::IHistogramBuilder* buildHistogram(uint32 numBins) override;
+            std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) override;
 
     };
 

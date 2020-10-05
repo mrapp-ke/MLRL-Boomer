@@ -169,9 +169,9 @@ class AbstractStatistics : virtual public IMatrix {
                  * Creates and returns a new instance of the class `AbstractStatistics` that stores the histogram that
                  * has been built.
                  *
-                 * @return A pointer to an object of type `AbstractStatistics` that has been created
+                 * @return An unique pointer to an object of type `AbstractStatistics` that has been created
                  */
-                virtual AbstractStatistics* build() = 0;
+                virtual std::unique_ptr<AbstractStatistics> build() = 0;
 
         };
 
@@ -278,9 +278,9 @@ class AbstractStatistics : virtual public IMatrix {
          * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on
          * the statistics.
          *
-         * @return A pointer to an object of type `IHistogramBuilder` that has been created
+         * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
          */
-        virtual IHistogramBuilder* buildHistogram(uint32 numBins) = 0;
+        virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) = 0;
 
         uint32 getNumRows() override;
 
