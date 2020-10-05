@@ -90,8 +90,8 @@ bool PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead, std::uni
                 }
             }
 
-            headPtr.reset(new PredictionCandidate(bestNumPredictions, candidateLabelIndices, candidatePredictedScores,
-                                                  bestQualityScore));
+            headPtr = std::make_unique<PredictionCandidate>(bestNumPredictions, candidateLabelIndices,
+                                                            candidatePredictedScores, bestQualityScore);
         } else {
             // Modify the `recyclableHead`...
             if (recyclableHead->numPredictions_ != bestNumPredictions) {
