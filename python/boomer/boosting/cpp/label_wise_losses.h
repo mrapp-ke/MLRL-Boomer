@@ -73,7 +73,7 @@ namespace boosting {
 
         public:
 
-            std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix* labelMatrix,
+            std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix& labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) override;
 
