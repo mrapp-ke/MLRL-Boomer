@@ -16,18 +16,30 @@
 
 
 /**
- * A struct that stores information about a potential refinement of a rule.
+ * Stores information about a potential refinement of a rule.
  */
-struct Refinement {
-    PredictionCandidate* head;
-    uint32 featureIndex;
-    float32 threshold;
-    Comparator comparator;
-    bool covered;
-    uint32 coveredWeights;
-    intp start;
-    intp end;
-    intp previous;
+class Refinement {
+
+    public:
+
+        std::unique_ptr<PredictionCandidate> headPtr;
+
+        uint32 featureIndex;
+
+        float32 threshold;
+
+        Comparator comparator;
+
+        bool covered;
+
+        uint32 coveredWeights;
+
+        intp start;
+
+        intp end;
+
+        intp previous;
+
 };
 
 /**
@@ -75,9 +87,9 @@ class AbstractRuleRefinement {
                                     uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
-         * The best refinement that has been found so far.
+         * An unique pointer to the best refinement that has been found so far.
          */
-        Refinement bestRefinement_;
+        std::unique_ptr<Refinement> bestRefinementPtr_;
 
 };
 

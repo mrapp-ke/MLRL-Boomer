@@ -13,7 +13,7 @@ from boomer.common.thresholds cimport IThresholdsSubset
 
 from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr, make_unique
 from libcpp.utility cimport move
 
 from cython.operator cimport dereference
@@ -105,9 +105,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 statistics.addSampledStatistic(i, 1)
 
             statistics_subset_ptr = statistics.createSubset(0, NULL)
-            default_prediction_ptr.reset(head_refinement.findHead(NULL, NULL, NULL,
-                                                                  dereference(statistics_subset_ptr.get()), True,
-                                                                  False))
+            head_refinement.findHead(NULL, default_prediction_ptr, NULL, dereference(statistics_subset_ptr.get()), True,
+                                     False)
             statistics_provider.switch_rule_evaluation()
 
             for i in range(num_statistics):
@@ -138,16 +137,15 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         num_conditions_per_comparator[:] = 0
         # A map that stores a pointer to an object of type `AbstractRuleRefinement` for each feature
         cdef unordered_map[uint32, AbstractRuleRefinement*] rule_refinements  # Stack-allocated map
-        # The best refinement of the current rule
-        cdef Refinement best_refinement  # Stack-allocated struct
-        best_refinement.head = NULL
+        # An unique pointer to the best refinement of the current rule
+        cdef unique_ptr[Refinement] best_refinement_ptr = make_unique[Refinement]()
         # Whether a refinement of the current rule has been found
         cdef bint found_refinement = True
 
         # Temporary variables
         cdef unique_ptr[AbstractRuleRefinement] rule_refinement_ptr
         cdef AbstractRuleRefinement* rule_refinement
-        cdef Refinement refinement
+        cdef Refinement* refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
         cdef intp c
@@ -187,46 +185,43 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     rule_refinement = rule_refinements[f]
-                    rule_refinement.findRefinement(dereference(head_refinement), best_refinement.head,
-                                                           num_predictions, label_indices)
+                    rule_refinement.findRefinement(dereference(head_refinement),
+                                                   best_refinement_ptr.get().headPtr.get(), num_predictions,
+                                                   label_indices)
 
                 # Pick the best refinement among the refinements that have been found for the different features...
                 for c in range(num_sampled_features):
                     f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                     rule_refinement = rule_refinements[f]
-                    refinement = rule_refinement.bestRefinement_
+                    refinement = rule_refinement.bestRefinementPtr_.get()
 
-                    if refinement.head != NULL and (best_refinement.head == NULL
-                                                    or refinement.head.overallQualityScore_ < best_refinement.head.overallQualityScore_):
-                        del best_refinement.head
-                        best_refinement = refinement
+                    if refinement.headPtr.get() != NULL and (best_refinement_ptr.get().headPtr.get() == NULL
+                            or refinement.headPtr.get().overallQualityScore_ < best_refinement_ptr.get().headPtr.get().overallQualityScore_):
+                        best_refinement_ptr = move(rule_refinement.bestRefinementPtr_)
                         found_refinement = True
-                    else:
-                        del refinement.head
 
                     del rule_refinement
 
                 if found_refinement:
                     # If a refinement has been found, add the new condition...
-                    conditions.push_back(__create_condition(best_refinement.featureIndex, best_refinement.comparator,
-                                                            best_refinement.threshold))
+                    conditions.push_back(__create_condition(best_refinement_ptr.get()))
                     num_conditions += 1
-                    num_conditions_per_comparator[<uint32>best_refinement.comparator] += 1
+                    num_conditions_per_comparator[<uint32>best_refinement_ptr.get().comparator] += 1
 
                     if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                         # Keep the labels for which the rule predicts, if the head should not be further refined...
-                        num_predictions = best_refinement.head.numPredictions_
-                        label_indices = best_refinement.head.labelIndices_
+                        num_predictions = best_refinement_ptr.get().headPtr.get().numPredictions_
+                        label_indices = best_refinement_ptr.get().headPtr.get().labelIndices_
 
                     # Filter the current subset of thresholds by applying the best refinement that has been found...
-                    thresholds_subset_ptr.get().applyRefinement(best_refinement)
-                    num_covered_examples = best_refinement.coveredWeights
+                    thresholds_subset_ptr.get().applyRefinement(dereference(best_refinement_ptr.get()))
+                    num_covered_examples = best_refinement_ptr.get().coveredWeights
 
                     if num_covered_examples <= min_coverage:
                         # Abort refinement process if the rule is not allowed to cover less examples...
                         break
 
-            if best_refinement.head == NULL:
+            if best_refinement_ptr.get().headPtr.get() == NULL:
                 # No rule could be induced, because no useful condition could be found. This might be the case, if all
                 # examples have the same values for the considered features.
                 return False
@@ -243,32 +238,32 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                     # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
                     # training data...
-                    thresholds_subset_ptr.get().recalculatePrediction(dereference(head_refinement), best_refinement)
+                    thresholds_subset_ptr.get().recalculatePrediction(dereference(head_refinement),
+                                                                      dereference(best_refinement_ptr.get()))
 
                 # Apply post-processor, if necessary...
                 if post_processor is not None:
-                    post_processor.post_process(best_refinement.head)
+                    post_processor.post_process(best_refinement_ptr.get().headPtr.get())
 
                 # Update the statistics by applying the predictions of the new rule...
-                thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement.head))
+                thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement_ptr.get().headPtr.get()))
 
                 # Add the induced rule to the model...
-                model_builder.add_rule(best_refinement.head, conditions, num_conditions_per_comparator)
+                model_builder.add_rule(best_refinement_ptr.get().headPtr.get(), conditions,
+                                       num_conditions_per_comparator)
                 return True
         finally:
-            del best_refinement.head
+            pass
 
 
-cdef inline Condition __create_condition(uint32 feature_index, Comparator comparator, float32 threshold):
+cdef inline Condition __create_condition(Refinement* refinement):
     """
-    Creates and returns a new condition.
+    Creates and returns a new condition from a specific refinement.
 
-    :param feature_index:   The index of the feature that is used by the condition
-    :param comparator:      The type of the operator used by the condition
-    :param threshold:       The threshold that is used by the condition
+    :param refinement: A pointer to an object of type `Refinement`
     """
     cdef Condition condition
-    condition.feature_index = feature_index
-    condition.comparator = comparator
-    condition.threshold = threshold
+    condition.feature_index = refinement.featureIndex
+    condition.comparator = refinement.comparator
+    condition.threshold = refinement.threshold
     return condition
