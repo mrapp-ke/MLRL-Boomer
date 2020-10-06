@@ -5,15 +5,15 @@ RangeIndexVector::RangeIndexVector(uint32 numIndices) {
     numIndices_ = numIndices;
 }
 
-uint32 RangeIndexVector::getNumElements() {
+uint32 RangeIndexVector::getNumElements() const {
     return numIndices_;
 }
 
-bool RangeIndexVector::hasZeroElements() {
+bool RangeIndexVector::hasZeroElements() const {
     return false;
 }
 
-uint32 RangeIndexVector::getIndex(uint32 pos) {
+uint32 RangeIndexVector::getIndex(uint32 pos) const {
     return pos;
 }
 
@@ -21,15 +21,15 @@ BinaryDokVector::BinaryDokVector(uint32 numElements) {
     numElements_ = numElements;
 }
 
-uint32 BinaryDokVector::getNumElements() {
+uint32 BinaryDokVector::getNumElements() const {
     return numElements_;
 }
 
-bool BinaryDokVector::hasZeroElements() {
+bool BinaryDokVector::hasZeroElements() const {
     return data_.size() < numElements_;
 }
 
-uint8 BinaryDokVector::getValue(uint32 pos) {
+uint8 BinaryDokVector::getValue(uint32 pos) const {
     return data_.find(pos) != data_.end();
 }
 
@@ -42,15 +42,15 @@ BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols) {
     numCols_ = numCols;
 }
 
-uint32 BinaryDokMatrix::getNumRows() {
+uint32 BinaryDokMatrix::getNumRows() const {
     return numRows_;
 }
 
-uint32 BinaryDokMatrix::getNumCols() {
+uint32 BinaryDokMatrix::getNumCols() const {
     return numCols_;
 }
 
-uint8 BinaryDokMatrix::getValue(uint32 row, uint32 column) {
+uint8 BinaryDokMatrix::getValue(uint32 row, uint32 column) const {
     return data_.find(std::make_pair(row, column)) != data_.end();
 }
 

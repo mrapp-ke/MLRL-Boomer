@@ -56,11 +56,11 @@ class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
          */
         DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y);
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
-        uint8 getValue(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) const override;
 
 };
 
@@ -82,11 +82,11 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
          */
         DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr);
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
-        uint8 getValue(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) const override;
 
 };
 
@@ -108,7 +108,7 @@ class IFeatureMatrix : virtual public IMatrix {
          * @param indexedArray  A reference to a struct of type `IndexedFloat32Array`, which should be used to store the
          *                      indices and feature values
          */
-        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) = 0;
+        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const = 0;
 
 };
 
@@ -135,11 +135,11 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
          */
         DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x);
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
 
 };
 
@@ -177,11 +177,11 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
         CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
                              const uint32* xColIndices);
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
 
 };
 
@@ -214,10 +214,10 @@ class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
          */
         DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
 
-        uint32 getNumElements() override;
+        uint32 getNumElements() const override;
 
-        bool hasZeroElements() override;
+        bool hasZeroElements() const override;
 
-        uint8 getValue(uint32 pos) override;
+        uint8 getValue(uint32 pos) const override;
 
 };

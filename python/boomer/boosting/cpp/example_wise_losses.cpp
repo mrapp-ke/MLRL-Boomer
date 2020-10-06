@@ -6,7 +6,7 @@ using namespace boosting;
 
 void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(IRandomAccessLabelMatrix& labelMatrix,
                                                                 uint32 exampleIndex, const float64* predictedScores,
-                                                                float64* gradients, float64* hessians) {
+                                                                float64* gradients, float64* hessians) const {
     uint32 numLabels = labelMatrix.getNumCols();
     float64 sumOfExponentials = 1;
 

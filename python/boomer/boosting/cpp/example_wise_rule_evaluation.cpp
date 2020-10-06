@@ -15,12 +15,10 @@ RegularizedExampleWiseRuleEvaluationImpl::RegularizedExampleWiseRuleEvaluationIm
     lapackPtr_ = std::move(lapackPtr);
 }
 
-void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
-                                                                            const float64* totalSumsOfGradients,
-                                                                            float64* sumsOfGradients,
-                                                                            const float64* totalSumsOfHessians,
-                                                                            float64* sumsOfHessians, bool uncovered,
-                                                                            LabelWisePredictionCandidate& prediction) {
+void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(
+        const uint32* labelIndices, const float64* totalSumsOfGradients, float64* sumsOfGradients,
+        const float64* totalSumsOfHessians, float64* sumsOfHessians, bool uncovered,
+        LabelWisePredictionCandidate& prediction) const {
     // The number of elements in the arrays `predictedScores` and `qualityScores`
     uint32 numPredictions = prediction.numPredictions_;
     // The array that should be used to store the predicted scores
@@ -67,19 +65,11 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(cons
     prediction.overallQualityScore_ = overallQualityScore;
 }
 
-void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(const uint32* labelIndices,
-                                                                              const float64* totalSumsOfGradients,
-                                                                              float64* sumsOfGradients,
-                                                                              const float64* totalSumsOfHessians,
-                                                                              float64* sumsOfHessians,
-                                                                              float64* tmpGradients,
-                                                                              float64* tmpHessians, int dsysvLwork,
-                                                                              float64* dsysvTmpArray1,
-                                                                              int* dsysvTmpArray2,
-                                                                              double* dsysvTmpArray3,
-                                                                              float64* dspmvTmpArray,
-                                                                              bool uncovered,
-                                                                              PredictionCandidate& prediction) {
+void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(
+        const uint32* labelIndices, const float64* totalSumsOfGradients, float64* sumsOfGradients,
+        const float64* totalSumsOfHessians, float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
+        int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray,
+        bool uncovered, PredictionCandidate& prediction) const {
     // The number of elements in the arrays `predictedScores`
     uint32 numPredictions = prediction.numPredictions_;
     // The array that should be used to store the predicted scores

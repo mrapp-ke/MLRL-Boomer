@@ -229,7 +229,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacement(uint
 }
 
 template<class T>
-DenseWeightVector<T>::DenseWeightVector(T* weights, uint32 numElements, uint32 sumOfWeights) {
+DenseWeightVector<T>::DenseWeightVector(const T* weights, uint32 numElements, uint32 sumOfWeights) {
     weights_ = weights;
     numElements_ = numElements;
     sumOfWeights_ = sumOfWeights;
@@ -241,22 +241,22 @@ DenseWeightVector<T>::~DenseWeightVector() {
 }
 
 template<class T>
-uint32 DenseWeightVector<T>::getNumElements() {
+uint32 DenseWeightVector<T>::getNumElements() const {
     return numElements_;
 }
 
 template<class T>
-bool DenseWeightVector<T>::hasZeroElements() {
+bool DenseWeightVector<T>::hasZeroElements() const {
     return true;
 }
 
 template<class T>
-uint32 DenseWeightVector<T>::getValue(uint32 pos) {
+uint32 DenseWeightVector<T>::getValue(uint32 pos) const {
     return (uint32) weights_[pos];
 }
 
 template<class T>
-uint32 DenseWeightVector<T>::getSumOfWeights() {
+uint32 DenseWeightVector<T>::getSumOfWeights() const {
     return sumOfWeights_;
 }
 
@@ -264,23 +264,23 @@ EqualWeightVector::EqualWeightVector(uint32 numElements) {
     numElements_ = numElements;
 }
 
-uint32 EqualWeightVector::getNumElements() {
+uint32 EqualWeightVector::getNumElements() const {
     return numElements_;
 }
 
-bool EqualWeightVector::hasZeroElements() {
+bool EqualWeightVector::hasZeroElements() const {
     return false;
 }
 
-uint32 EqualWeightVector::getValue(uint32 pos) {
+uint32 EqualWeightVector::getValue(uint32 pos) const {
     return 1;
 }
 
-uint32 EqualWeightVector::getSumOfWeights() {
+uint32 EqualWeightVector::getSumOfWeights() const {
     return numElements_;
 }
 
-DenseIndexVector::DenseIndexVector(uint32* indices, uint32 numElements) {
+DenseIndexVector::DenseIndexVector(const uint32* indices, uint32 numElements) {
     indices_ = indices;
     numElements_ = numElements;
 }
@@ -289,15 +289,15 @@ DenseIndexVector::~DenseIndexVector() {
     delete[] indices_;
 }
 
-uint32 DenseIndexVector::getNumElements() {
+uint32 DenseIndexVector::getNumElements() const {
     return numElements_;
 }
 
-bool DenseIndexVector::hasZeroElements() {
+bool DenseIndexVector::hasZeroElements() const {
     return true;
 }
 
-uint32 DenseIndexVector::getIndex(uint32 pos) {
+uint32 DenseIndexVector::getIndex(uint32 pos) const {
     return indices_[pos];
 }
 
@@ -305,7 +305,7 @@ BaggingImpl::BaggingImpl(float32 sampleSize) {
     sampleSize_ = sampleSize;
 }
 
-std::unique_ptr<IWeightVector> BaggingImpl::subSample(uint32 numExamples, RNG& rng) {
+std::unique_ptr<IWeightVector> BaggingImpl::subSample(uint32 numExamples, RNG& rng) const {
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     uint32* weights = new uint32[numExamples]{0};
 
@@ -324,12 +324,12 @@ RandomInstanceSubsetSelectionImpl::RandomInstanceSubsetSelectionImpl(float32 sam
     sampleSize_ = sampleSize;
 }
 
-std::unique_ptr<IWeightVector> RandomInstanceSubsetSelectionImpl::subSample(uint32 numExamples, RNG& rng) {
+std::unique_ptr<IWeightVector> RandomInstanceSubsetSelectionImpl::subSample(uint32 numExamples, RNG& rng) const {
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     return sampleWeightsWithoutReplacement(numExamples, numSamples, rng);
 }
 
-std::unique_ptr<IWeightVector> NoInstanceSubSamplingImpl::subSample(uint32 numExamples, RNG& rng) {
+std::unique_ptr<IWeightVector> NoInstanceSubSamplingImpl::subSample(uint32 numExamples, RNG& rng) const {
     return std::make_unique<EqualWeightVector>(numExamples);
 }
 
@@ -337,7 +337,7 @@ RandomFeatureSubsetSelectionImpl::RandomFeatureSubsetSelectionImpl(float32 sampl
     sampleSize_ = sampleSize;
 }
 
-std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32 numFeatures, RNG& rng) {
+std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32 numFeatures, RNG& rng) const {
     uint32 numSamples;
 
     if (sampleSize_ > 0) {
@@ -349,7 +349,7 @@ std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32
     return sampleIndicesWithoutReplacement(numFeatures, numSamples, rng);
 }
 
-std::unique_ptr<IIndexVector> NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG& rng) {
+std::unique_ptr<IIndexVector> NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG& rng) const {
     return std::make_unique<RangeIndexVector>(numFeatures);
 }
 
@@ -357,10 +357,10 @@ RandomLabelSubsetSelectionImpl::RandomLabelSubsetSelectionImpl(uint32 numSamples
     numSamples_ = numSamples;
 }
 
-std::unique_ptr<IIndexVector> RandomLabelSubsetSelectionImpl::subSample(uint32 numLabels, RNG& rng) {
+std::unique_ptr<IIndexVector> RandomLabelSubsetSelectionImpl::subSample(uint32 numLabels, RNG& rng) const {
     return sampleIndicesWithoutReplacement(numLabels, numSamples_, rng);
 }
 
-std::unique_ptr<IIndexVector> NoLabelSubSamplingImpl::subSample(uint32 numLabels, RNG& rng) {
+std::unique_ptr<IIndexVector> NoLabelSubSamplingImpl::subSample(uint32 numLabels, RNG& rng) const {
     return std::make_unique<RangeIndexVector>(numLabels);
 }

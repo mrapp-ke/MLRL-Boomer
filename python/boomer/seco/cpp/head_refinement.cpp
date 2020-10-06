@@ -28,9 +28,9 @@ PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFuncti
     liftFunctionPtr_ = liftFunctionPtr;
 }
 
-bool PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                                         const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
-                                         bool uncovered, bool accumulated) {
+bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
+                                         std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
+                                         IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
     bool result = false;
     LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
     uint32 numPredictions = prediction.numPredictions_;
@@ -124,6 +124,6 @@ bool PartialHeadRefinementImpl::findHead(PredictionCandidate* bestHead, std::uni
 }
 
 PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                                    bool accumulated) {
+                                                                    bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
