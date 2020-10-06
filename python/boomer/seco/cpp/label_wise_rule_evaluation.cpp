@@ -11,13 +11,10 @@ HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(std::
     predictMajority_ = predictMajority;
 }
 
-void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(const uint32* labelIndices,
-                                                                        const uint8* minorityLabels,
-                                                                        const float64* confusionMatricesTotal,
-                                                                        const float64* confusionMatricesSubset,
-                                                                        const float64* confusionMatricesCovered,
-                                                                        bool uncovered,
-                                                                        LabelWisePredictionCandidate& prediction) {
+void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
+        const uint32* labelIndices, const uint8* minorityLabels, const float64* confusionMatricesTotal,
+        const float64* confusionMatricesSubset, const float64* confusionMatricesCovered, bool uncovered,
+        LabelWisePredictionCandidate& prediction) const {
     // The number of labels to predict for
     uint32 numPredictions = prediction.numPredictions_;
     // The array that should be used to store the predicted scores

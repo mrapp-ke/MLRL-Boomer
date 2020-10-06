@@ -190,7 +190,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `AbstractExampleWiseStatistics` that has been created
              */
-            virtual std::unique_ptr<AbstractExampleWiseStatistics> create() = 0;
+            virtual std::unique_ptr<AbstractExampleWiseStatistics> create() const = 0;
 
     };
 
@@ -227,7 +227,7 @@ namespace boosting {
                                                   std::unique_ptr<Lapack> lapackPtr,
                                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            std::unique_ptr<AbstractExampleWiseStatistics> create() override;
+            std::unique_ptr<AbstractExampleWiseStatistics> create() const override;
 
     };
 

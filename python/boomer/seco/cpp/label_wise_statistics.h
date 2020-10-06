@@ -160,7 +160,7 @@ namespace seco {
              *
              * @return An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
              */
-            virtual std::unique_ptr<AbstractLabelWiseStatistics> create() = 0;
+            virtual std::unique_ptr<AbstractLabelWiseStatistics> create() const = 0;
 
     };
 
@@ -186,7 +186,7 @@ namespace seco {
             DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
                                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            std::unique_ptr<AbstractLabelWiseStatistics> create() override;
+            std::unique_ptr<AbstractLabelWiseStatistics> create() const override;
 
     };
 
