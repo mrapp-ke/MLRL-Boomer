@@ -108,7 +108,7 @@ namespace seco {
              * @return      The quality score that has been calculated
              */
             virtual float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                    float64 uip, float64 urn, float64 urp) = 0;
+                                                    float64 uip, float64 urn, float64 urp) const = 0;
 
     };
 
@@ -120,7 +120,7 @@ namespace seco {
         public:
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) override;
+                                            float64 uip, float64 urn, float64 urp) const override;
 
     };
 
@@ -133,7 +133,7 @@ namespace seco {
         public:
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) override;
+                                            float64 uip, float64 urn, float64 urp) const override;
 
     };
 
@@ -145,7 +145,7 @@ namespace seco {
         public:
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) override;
+                                            float64 uip, float64 urn, float64 urp) const override;
 
     };
 
@@ -157,7 +157,7 @@ namespace seco {
         public:
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) override;
+                                            float64 uip, float64 urn, float64 urp) const override;
 
     };
 
@@ -187,7 +187,7 @@ namespace seco {
             FMeasureImpl(float64 beta);
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) override;
+                                            float64 uip, float64 urn, float64 urp) const override;
 
     };
 
@@ -217,7 +217,7 @@ namespace seco {
             MEstimateImpl(float64 beta);
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) override;
+                                            float64 uip, float64 urn, float64 urp) const override;
 
     };
 

@@ -12,10 +12,10 @@ AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels) {
     numLabels_ = numLabels;
 }
 
-uint32 AbstractStatistics::getNumRows() {
+uint32 AbstractStatistics::getNumRows() const {
     return numStatistics_;
 }
 
-uint32 AbstractStatistics::getNumCols() {
+uint32 AbstractStatistics::getNumCols() const {
     return numLabels_;
 }

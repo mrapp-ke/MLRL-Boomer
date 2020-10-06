@@ -25,7 +25,7 @@ class IWeightVector : virtual public ISparseRandomAccessVector<uint32> {
          *
          * @return The sum of the weights
          */
-        virtual uint32 getSumOfWeights() = 0;
+        virtual uint32 getSumOfWeights() const = 0;
 
 };
 
@@ -37,7 +37,7 @@ class DenseWeightVector : virtual public IWeightVector {
 
     private:
 
-        T* weights_;
+        const T* weights_;
 
         uint32 numElements_;
 
@@ -51,17 +51,17 @@ class DenseWeightVector : virtual public IWeightVector {
          * @param numElements   The number of elements in the vector. Must be at least 1
          * @param sumOfWeights  The sum of the weights in the vector
          */
-        DenseWeightVector(T* weights, uint32 numElements, uint32 sumOfWeights);
+        DenseWeightVector(const T* weights, uint32 numElements, uint32 sumOfWeights);
 
         ~DenseWeightVector();
 
-        uint32 getNumElements() override;
+        uint32 getNumElements() const override;
 
-        bool hasZeroElements() override;
+        bool hasZeroElements() const override;
 
-        uint32 getValue(uint32 pos) override;
+        uint32 getValue(uint32 pos) const override;
 
-        uint32 getSumOfWeights() override;
+        uint32 getSumOfWeights() const override;
 
 };
 
@@ -81,13 +81,13 @@ class EqualWeightVector : virtual public IWeightVector {
          */
         EqualWeightVector(uint32 numElements);
 
-        uint32 getNumElements() override;
+        uint32 getNumElements() const override;
 
-        bool hasZeroElements();
+        bool hasZeroElements() const override;
 
-        uint32 getValue(uint32 pos) override;
+        uint32 getValue(uint32 pos) const override;
 
-        uint32 getSumOfWeights() override;
+        uint32 getSumOfWeights() const override;
 
 };
 
@@ -98,7 +98,7 @@ class DenseIndexVector : virtual public IIndexVector {
 
     private:
 
-        uint32* indices_;
+        const uint32* indices_;
 
         uint32 numElements_;
 
@@ -108,15 +108,15 @@ class DenseIndexVector : virtual public IIndexVector {
          * @param indices       A pointer to an array of type `uint32`, shape `(numElements)`, that stores the indices
          * @param numElements   The number of elements in the vector. Must be at least 1
          */
-        DenseIndexVector(uint32* indices, uint32 numElements);
+        DenseIndexVector(const uint32* indices, uint32 numElements);
 
         ~DenseIndexVector();
 
-        uint32 getNumElements() override;
+        uint32 getNumElements() const override;
 
-        bool hasZeroElements() override;
+        bool hasZeroElements() const override;
 
-        uint32 getIndex(uint32 pos) override;
+        uint32 getIndex(uint32 pos) const override;
 
 };
 
@@ -138,7 +138,7 @@ class IInstanceSubSampling {
          * @return              An unique pointer to an object type `WeightVector` that provides access to the weights
          *                      of the individual training examples
          */
-        virtual std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) = 0;
+        virtual std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) const = 0;
 
 };
 
@@ -160,7 +160,7 @@ class BaggingImpl : virtual public IInstanceSubSampling {
          */
         BaggingImpl(float32 sampleSize);
 
-        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) override;
+        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) const override;
 
 };
 
@@ -182,7 +182,7 @@ class RandomInstanceSubsetSelectionImpl : virtual public IInstanceSubSampling {
          */
         RandomInstanceSubsetSelectionImpl(float32 sampleSize);
 
-        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) override;
+        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) const override;
 
 };
 
@@ -194,7 +194,7 @@ class NoInstanceSubSamplingImpl : virtual public IInstanceSubSampling {
 
     public:
 
-        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) override;
+        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) const override;
 
 };
 
@@ -216,7 +216,7 @@ class IFeatureSubSampling {
          * @return              An unique pointer to an object of type `IIndexVector` that provides access to the
          *                      indices of the features that are contained in the sub-sample
          */
-        virtual std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) = 0;
+        virtual std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) const = 0;
 
 };
 
@@ -239,7 +239,7 @@ class RandomFeatureSubsetSelectionImpl : virtual public IFeatureSubSampling {
          */
         RandomFeatureSubsetSelectionImpl(float32 sampleSize);
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) const override;
 
 };
 
@@ -250,7 +250,7 @@ class NoFeatureSubSamplingImpl : virtual public IFeatureSubSampling {
 
     public:
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) const override;
 
 };
 
@@ -271,7 +271,7 @@ class ILabelSubSampling {
          * @return          An unique pointer to an object of type `IIndexVector` that provides access to the indices of
          *                  the labels that are contained in the sub-sample
          */
-        virtual std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) = 0;
+        virtual std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) const = 0;
 
 };
 
@@ -291,7 +291,7 @@ class RandomLabelSubsetSelectionImpl : virtual public ILabelSubSampling {
          */
         RandomLabelSubsetSelectionImpl(uint32 numSamples);
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) const override;
 
 };
 
@@ -302,6 +302,6 @@ class NoLabelSubSamplingImpl : virtual public ILabelSubSampling {
 
     public:
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) override;
+        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) const override;
 
 };

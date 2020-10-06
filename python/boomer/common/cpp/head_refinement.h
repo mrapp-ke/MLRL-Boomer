@@ -46,9 +46,9 @@ class IHeadRefinement {
          *                          statistics that have been added so far
          * @return                  True, if the head that has been found is better than `bestHead`, false otherwise
          */
-        virtual bool findHead(PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
+        virtual bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                               const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                              bool accumulated) = 0;
+                              bool accumulated) const = 0;
 
         /**
          * Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score,
@@ -69,7 +69,7 @@ class IHeadRefinement {
          *                          scores to be predicted by the rule, as well as its overall quality score
          */
         virtual PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                         bool accumulated) = 0;
+                                                         bool accumulated) const = 0;
 
 };
 
@@ -80,12 +80,12 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
 
     public:
 
-        bool findHead(PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
+        bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                      bool accumulated) override;
+                      bool accumulated) const override;
 
         PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                 bool accumulated) override;
+                                                 bool accumulated) const override;
 
 };
 
@@ -96,11 +96,11 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
     public:
 
-        bool findHead(PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
+        bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                      bool accumulated) override;
+                      bool accumulated) const override;
 
         PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                 bool accumulated) override;
+                                                 bool accumulated) const override;
 
 };

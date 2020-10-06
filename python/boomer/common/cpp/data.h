@@ -35,7 +35,7 @@ class IVector {
          *
          * @return The number of elements
          */
-        virtual uint32 getNumElements() = 0;
+        virtual uint32 getNumElements() const = 0;
 
 };
 
@@ -55,7 +55,7 @@ class IRandomAccessVector : virtual public IVector {
          * @param pos   The position of the element. Must be in [0, getNumElements())
          * @return      The value of the given element
          */
-        virtual T getValue(uint32 pos) = 0;
+        virtual T getValue(uint32 pos) const = 0;
 
 };
 
@@ -73,7 +73,7 @@ class ISparseVector : virtual public IVector {
          *
          * @return True, if the vector contains any zero elements, false otherwise
          */
-        virtual bool hasZeroElements() = 0;
+        virtual bool hasZeroElements() const = 0;
 
 };
 
@@ -92,7 +92,7 @@ class IIndexVector : virtual public ISparseVector {
          * @param pos   The position of the index. Must be in [0, getNumElements())
          * @return      The index at the given position
          */
-        virtual uint32 getIndex(uint32 pos) = 0;
+        virtual uint32 getIndex(uint32 pos) const = 0;
 
 };
 
@@ -125,11 +125,11 @@ class RangeIndexVector : virtual public IIndexVector {
          */
         RangeIndexVector(uint32 numIndices);
 
-        uint32 getNumElements() override;
+        uint32 getNumElements() const override;
 
-        bool hasZeroElements() override;
+        bool hasZeroElements() const override;
 
-        uint32 getIndex(uint32 pos) override;
+        uint32 getIndex(uint32 pos) const override;
 
 };
 
@@ -158,11 +158,11 @@ class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
          */
         void setValue(uint32 pos);
 
-        uint32 getNumElements() override;
+        uint32 getNumElements() const override;
 
-        bool hasZeroElements() override;
+        bool hasZeroElements() const override;
 
-        uint8 getValue(uint32 pos) override;
+        uint8 getValue(uint32 pos) const override;
 
 };
 
@@ -180,14 +180,14 @@ class IMatrix {
          *
          * @return The number of rows
          */
-        virtual uint32 getNumRows() = 0;
+        virtual uint32 getNumRows() const = 0;
 
         /**
          * Returns the number of columns in the matrix.
          *
          * @return The number of columns
          */
-        virtual uint32 getNumCols() = 0;
+        virtual uint32 getNumCols() const = 0;
 
 };
 
@@ -208,7 +208,7 @@ class IRandomAccessMatrix : virtual public IMatrix {
          * @param col   The column of the element. Must be in [0, getNumCols())
          * @return      The value of the given element
          */
-        virtual T getValue(uint32 row, uint32 col) = 0;
+        virtual T getValue(uint32 row, uint32 col) const = 0;
 
 };
 
@@ -241,10 +241,10 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
          */
         void setValue(uint32 row, uint32 column);
 
-        uint8 getValue(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) const override;
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
 };

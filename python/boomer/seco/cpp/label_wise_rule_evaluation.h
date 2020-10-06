@@ -57,7 +57,7 @@ namespace seco {
                                                       const float64* confusionMatricesTotal,
                                                       const float64* confusionMatricesSubset,
                                                       const float64* confusionMatricesCovered, bool uncovered,
-                                                      LabelWisePredictionCandidate& prediction) = 0;
+                                                      LabelWisePredictionCandidate& prediction) const = 0;
 
     };
 
@@ -87,7 +87,7 @@ namespace seco {
                                               const float64* confusionMatricesTotal,
                                               const float64* confusionMatricesSubset,
                                               const float64* confusionMatricesCovered, bool uncovered,
-                                              LabelWisePredictionCandidate& prediction) override;
+                                              LabelWisePredictionCandidate& prediction) const override;
 
     };
 
