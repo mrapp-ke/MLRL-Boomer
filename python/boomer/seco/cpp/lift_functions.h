@@ -26,14 +26,14 @@ namespace seco {
              * @param numLabels The number of labels for which the lift should be calculated
              * @return          The lift that has been calculated
              */
-            virtual float64 calculateLift(uint32 numLabels) = 0;
+            virtual float64 calculateLift(uint32 numLabels) const = 0;
 
             /**
              * Returns the maximum lift possible.
              *
              * @return The maximum lift possible
              */
-            virtual float64 getMaxLift() = 0;
+            virtual float64 getMaxLift() const = 0;
 
     };
 
@@ -64,9 +64,9 @@ namespace seco {
              */
             PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature);
 
-            float64 calculateLift(uint32 numLabels) override;
+            float64 calculateLift(uint32 numLabels) const override;
 
-            float64 getMaxLift() override;
+            float64 getMaxLift() const override;
 
     };
 

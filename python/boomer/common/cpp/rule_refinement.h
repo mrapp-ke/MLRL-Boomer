@@ -28,7 +28,7 @@ class Refinement {
          * @param   A reference to an object of type `Refinement` to be compared to
          * @return  True, if this refinement is better than the given one, false otherwise
          */
-        bool isBetterThan(Refinement& another);
+        bool isBetterThan(Refinement& another) const;
 
         std::unique_ptr<PredictionCandidate> headPtr;
 
@@ -67,7 +67,7 @@ class IRuleRefinementCallback {
          * @param featureIndex  The index of the feature
          * @return              A reference to an object of template type `T` that stores the information
          */
-        virtual T& get(uint32 featureIndex) = 0;
+        virtual T& get(uint32 featureIndex) const = 0;
 
 };
 
@@ -91,7 +91,7 @@ class AbstractRuleRefinement {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict
          */
-        virtual void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead,
+        virtual void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                                     uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
@@ -143,7 +143,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
                                 uint32 featureIndex, bool nominal,
                                 std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr);
 
-        void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
-                            const uint32* labelIndices) override;
+        void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
+                            uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };

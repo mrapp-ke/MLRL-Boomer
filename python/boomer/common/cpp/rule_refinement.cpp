@@ -2,11 +2,11 @@
 #include <math.h>
 
 
-bool Refinement::isBetterThan(Refinement& another) {
-    PredictionCandidate* head = headPtr.get();
+bool Refinement::isBetterThan(Refinement& another) const {
+    const PredictionCandidate* head = headPtr.get();
 
     if (head != NULL) {
-        PredictionCandidate* anotherHead = another.headPtr.get();
+        const PredictionCandidate* anotherHead = another.headPtr.get();
         return anotherHead == NULL || head->overallQualityScore_ < anotherHead->overallQualityScore_;
     }
 
@@ -25,11 +25,11 @@ ExactRuleRefinementImpl::ExactRuleRefinementImpl(
     callbackPtr_ = std::move(callbackPtr);
 }
 
-void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead,
+void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                                              uint32 numLabelIndices, const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
-    PredictionCandidate* bestHead = currentHead;
+    const PredictionCandidate* bestHead = currentHead;
 
     // Create a new, empty subset of the current statistics when processing a new feature...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices,
@@ -37,7 +37,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, Pr
 
     // Retrieve the array to be iterated...
     IndexedFloat32Array& indexedArray = callbackPtr_->get(featureIndex_);
-    IndexedFloat32* indexedValues = indexedArray.data;
+    const IndexedFloat32* indexedValues = indexedArray.data;
     uint32 numIndexedValues = indexedArray.numElements;
 
     // In the following, we start by processing all examples with feature values < 0...
