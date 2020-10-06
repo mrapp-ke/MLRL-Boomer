@@ -252,8 +252,8 @@ class AbstractStatistics : virtual public IMatrix {
          */
         virtual void applyPrediction(uint32 statisticIndex, Prediction& prediction) = 0;
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
 };

@@ -11,7 +11,7 @@ PeakLiftFunctionImpl::PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, f
     exponent_ = 1.0 / curvature;
 }
 
-float64 PeakLiftFunctionImpl::calculateLift(uint32 numLabels) {
+float64 PeakLiftFunctionImpl::calculateLift(uint32 numLabels) const {
     float64 normalization;
 
     if (numLabels < peakLabel_) {
@@ -25,6 +25,6 @@ float64 PeakLiftFunctionImpl::calculateLift(uint32 numLabels) {
     return 1 + pow(normalization, exponent_) * (maxLift_ - 1);
 }
 
-float64 PeakLiftFunctionImpl::getMaxLift() {
+float64 PeakLiftFunctionImpl::getMaxLift() const {
     return maxLift_;
 }

@@ -36,7 +36,7 @@ namespace boosting {
              */
             virtual std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix& labelMatrix,
                                                                             uint32 exampleIndex, uint32 labelIndex,
-                                                                            float64 predictedScore) = 0;
+                                                                            float64 predictedScore) const = 0;
 
     };
 
@@ -49,7 +49,7 @@ namespace boosting {
 
             std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix& labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
-                                                                    float64 predictedScore) override;
+                                                                    float64 predictedScore) const override;
 
     };
 
@@ -62,7 +62,7 @@ namespace boosting {
 
             std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix& labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
-                                                                    float64 predictedScore) override;
+                                                                    float64 predictedScore) const override;
 
     };
 

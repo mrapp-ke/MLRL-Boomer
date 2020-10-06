@@ -38,7 +38,7 @@ namespace boosting {
              */
             virtual void calculateGradientsAndHessians(IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                                        const float64* predictedScores, float64* gradients,
-                                                       float64* hessians) = 0;
+                                                       float64* hessians) const = 0;
 
     };
 
@@ -51,7 +51,7 @@ namespace boosting {
 
             void calculateGradientsAndHessians(IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                                const float64* predictedScores, float64* gradients,
-                                               float64* hessians) override;
+                                               float64* hessians) const override;
 
     };
 
