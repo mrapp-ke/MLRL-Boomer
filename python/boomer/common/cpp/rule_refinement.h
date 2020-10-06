@@ -176,7 +176,7 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
         ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr);
 
-        void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
-                            const uint32* labelIndices) override;
+        void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
+                            uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };
