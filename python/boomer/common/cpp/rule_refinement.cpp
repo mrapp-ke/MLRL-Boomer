@@ -474,12 +474,13 @@ ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
     callbackPtr_ = std::move(callbackPtr);
 }
 
-void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead,
-                                                   uint32 numLabelIndices, const uint32* labelIndices) {
+void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement,
+                                                   const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                                   const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     refinementPtr->start = 0;
-    PredictionCandidate* bestHead = currentHead;
+    const PredictionCandidate* bestHead = currentHead;
 
     // Create a new, empty subset of the current statistics when processing a new feature...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices,
@@ -487,8 +488,8 @@ void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefineme
 
     // Retrieve the array to be iterated...
     BinArray& binArray = callbackPtr_->get(featureIndex_);
+    const Bin* bins = binArray.bins;
     uint32 numBins = binArray.numBins;
-    Bin* bins = binArray.bins;
 
     // Search for the first non-empty bin...
     uint32 r = 0;
