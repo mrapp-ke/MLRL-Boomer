@@ -282,8 +282,8 @@ class AbstractStatistics : virtual public IMatrix {
          */
         virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) = 0;
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
 };
