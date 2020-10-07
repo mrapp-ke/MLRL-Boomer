@@ -280,23 +280,6 @@ uint32 EqualWeightVector::getSumOfWeights() const {
     return numElements_;
 }
 
-DenseIndexVector::DenseIndexVector(const uint32* indices, uint32 numElements) {
-    indices_ = indices;
-    numElements_ = numElements;
-}
-
-DenseIndexVector::~DenseIndexVector() {
-    delete[] indices_;
-}
-
-uint32 DenseIndexVector::getNumElements() const {
-    return numElements_;
-}
-
-uint32 DenseIndexVector::getIndex(uint32 pos) const {
-    return indices_[pos];
-}
-
 BaggingImpl::BaggingImpl(float32 sampleSize) {
     sampleSize_ = sampleSize;
 }
