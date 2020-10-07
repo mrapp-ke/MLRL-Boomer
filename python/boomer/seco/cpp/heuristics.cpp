@@ -72,8 +72,9 @@ float64 HammingLossImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float
     return numIncorrect / numTotal;
 }
 
-FMeasureImpl::FMeasureImpl(float64 beta) {
-    beta_ = beta;
+FMeasureImpl::FMeasureImpl(float64 beta)
+    : beta_(beta) {
+
 }
 
 float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -99,8 +100,9 @@ float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 
     }
 }
 
-MEstimateImpl::MEstimateImpl(float64 m) {
-    m_ = m;
+MEstimateImpl::MEstimateImpl(float64 m)
+    : m_(m) {
+
 }
 
 float64 MEstimateImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,

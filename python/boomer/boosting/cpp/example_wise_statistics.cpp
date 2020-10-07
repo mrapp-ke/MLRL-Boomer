@@ -8,8 +8,8 @@ using namespace boosting;
 
 AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
         uint32 numStatistics, uint32 numLabels, std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
+    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
+
 }
 
 void AbstractExampleWiseStatistics::setRuleEvaluation(
@@ -20,9 +20,7 @@ void AbstractExampleWiseStatistics::setRuleEvaluation(
 DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl& statistics,
                                                                            uint32 numPredictions,
                                                                            const uint32* labelIndices)
-    : statistics_(statistics) {
-    numPredictions_ = numPredictions;
-    labelIndices_ = labelIndices;
+    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = NULL;
@@ -33,8 +31,8 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(Dense
     uint32* predictionLabelIndices = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = NULL;
-    predictionPtr_ = std::make_unique<LabelWisePredictionCandidate>(numPredictions, predictionLabelIndices,
-                                                                    predictedScores, qualityScores, 0);
+    prediction_ = new LabelWisePredictionCandidate(numPredictions, predictionLabelIndices, predictedScores,
+                                                   qualityScores, 0);
     tmpGradients_ = NULL;
     tmpHessians_ = NULL;
     dsysvTmpArray1_ = NULL;
@@ -48,6 +46,7 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
+    delete prediction_;
     free(tmpGradients_);
     free(tmpHessians_);
     free(dsysvTmpArray1_);
@@ -107,8 +106,8 @@ LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetIm
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     statistics_.ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
                                                                   sumsOfGradients, statistics_.totalSumsOfHessians_,
-                                                                  sumsOfHessians, uncovered, *predictionPtr_);
-    return *predictionPtr_;
+                                                                  sumsOfHessians, uncovered, *prediction_);
+    return *prediction_;
 }
 
 PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
@@ -127,8 +126,7 @@ PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
         dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
 
         // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_,
-                                                                       predictionPtr_->predictedScores_,
+        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, prediction_->predictedScores_,
                                                                        numPredictions_);
         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
     }
@@ -138,8 +136,8 @@ PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
                                                                    sumsOfHessians, tmpGradients_, tmpHessians_,
                                                                    dsysvLwork_, dsysvTmpArray1_, dsysvTmpArray2_,
                                                                    dsysvTmpArray3_, dspmvTmpArray_, uncovered,
-                                                                   *predictionPtr_);
-    return *predictionPtr_;
+                                                                   *prediction_);
+    return *prediction_;
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
@@ -147,13 +145,9 @@ DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
-    : AbstractExampleWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    lapackPtr_ = lapackPtr;
-    labelMatrixPtr_ = labelMatrixPtr;
-    gradients_ = gradients;
-    hessians_ = hessians;
-    currentScores_ = currentScores;
+    : AbstractExampleWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr),
+      lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr), gradients_(gradients),
+      hessians_(hessians), currentScores_(currentScores) {
     // The number of labels
     uint32 numLabels = this->getNumCols();
     // The number of hessians
