@@ -62,27 +62,9 @@ class IRandomAccessVector : virtual public IVector {
 };
 
 /**
- * Defines an interface for all one-dimensional, potentially sparse, vectors.
+ * Defines an interface for all one-dimensional vectors that provide random access to indices.
  */
-class ISparseVector : virtual public IVector {
-
-    public:
-
-        virtual ~ISparseVector() { };
-
-        /**
-         * Returns whether the vector contains any zero elements or not.
-         *
-         * @return True, if the vector contains any zero elements, false otherwise
-         */
-        virtual bool hasZeroElements() const = 0;
-
-};
-
-/**
- * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to indices.
- */
-class IIndexVector : virtual public ISparseVector {
+class IIndexVector : virtual public IVector {
 
     public:
 
@@ -95,21 +77,6 @@ class IIndexVector : virtual public ISparseVector {
          * @return      The index at the given position
          */
         virtual uint32 getIndex(uint32 pos) const = 0;
-
-};
-
-/**
- * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to all of their
- * elements, including zero elements that are not explicitly stored in the vector.
- *
- * @tparam T The type of the data that is stored in the vector
- */
-template<class T>
-class ISparseRandomAccessVector : virtual public ISparseVector, virtual public IRandomAccessVector<T> {
-
-    public:
-
-        virtual ~ISparseRandomAccessVector() { };
 
 };
 
@@ -131,8 +98,6 @@ class RangeIndexVector : virtual public IIndexVector {
 
         uint32 getNumElements() const override;
 
-        bool hasZeroElements() const override;
-
         uint32 getIndex(uint32 pos) const override;
 
 };
@@ -140,7 +105,7 @@ class RangeIndexVector : virtual public IIndexVector {
 /**
  * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
+class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
 
     private:
 
@@ -163,8 +128,6 @@ class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
         void setValue(uint32 pos);
 
         uint32 getNumElements() const override;
-
-        bool hasZeroElements() const override;
 
         uint8 getValue(uint32 pos) const override;
 

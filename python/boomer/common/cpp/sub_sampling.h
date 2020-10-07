@@ -12,13 +12,20 @@
 
 
 /**
- * Defines an interface for one-dimensional, potentially sparse, vectors that provide access to weights.
+ * Defines an interface for one-dimensional vectors that provide access to weights.
  */
-class IWeightVector : virtual public ISparseRandomAccessVector<uint32> {
+class IWeightVector : virtual public IRandomAccessVector<uint32> {
 
     public:
 
         virtual ~IWeightVector() { };
+
+        /**
+         * Returns whether the vector contains any zero weights or not.
+         *
+         * @return True, if the vector contains any zero weights, false otherwise
+         */
+        virtual bool hasZeroWeights() const = 0;
 
         /**
          * Returns the sum of the weights in the vector.
@@ -59,7 +66,7 @@ class DenseWeightVector : virtual public IWeightVector {
 
         uint32 getNumElements() const override;
 
-        bool hasZeroElements() const override;
+        bool hasZeroWeights() const override;
 
         uint32 getValue(uint32 pos) const override;
 
@@ -85,7 +92,7 @@ class EqualWeightVector : virtual public IWeightVector {
 
         uint32 getNumElements() const override;
 
-        bool hasZeroElements() const override;
+        bool hasZeroWeights() const override;
 
         uint32 getValue(uint32 pos) const override;
 
@@ -115,8 +122,6 @@ class DenseIndexVector : virtual public IIndexVector {
         ~DenseIndexVector();
 
         uint32 getNumElements() const override;
-
-        bool hasZeroElements() const override;
 
         uint32 getIndex(uint32 pos) const override;
 

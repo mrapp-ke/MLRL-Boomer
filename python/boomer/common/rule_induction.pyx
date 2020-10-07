@@ -221,7 +221,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             # examples have the same values for the considered features.
             return False
         else:
-            if weights_ptr.get().hasZeroElements():
+            if weights_ptr.get().hasZeroWeights():
                 # TODO Reactivate pruning
                 # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                 # if pruning is not None and num_conditions > 1:

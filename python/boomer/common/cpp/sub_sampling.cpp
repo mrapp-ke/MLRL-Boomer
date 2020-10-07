@@ -246,7 +246,7 @@ uint32 DenseWeightVector<T>::getNumElements() const {
 }
 
 template<class T>
-bool DenseWeightVector<T>::hasZeroElements() const {
+bool DenseWeightVector<T>::hasZeroWeights() const {
     return true;
 }
 
@@ -268,7 +268,7 @@ uint32 EqualWeightVector::getNumElements() const {
     return numElements_;
 }
 
-bool EqualWeightVector::hasZeroElements() const {
+bool EqualWeightVector::hasZeroWeights() const {
     return false;
 }
 
@@ -291,10 +291,6 @@ DenseIndexVector::~DenseIndexVector() {
 
 uint32 DenseIndexVector::getNumElements() const {
     return numElements_;
-}
-
-bool DenseIndexVector::hasZeroElements() const {
-    return true;
 }
 
 uint32 DenseIndexVector::getIndex(uint32 pos) const {

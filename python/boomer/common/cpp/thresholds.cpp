@@ -350,7 +350,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     // calculates the number of covered examples based on the variable `refinement.end`, which represents the position
     // that separates the covered from the uncovered examples. However, when taking into account the examples with zero
     // weights, this position may differ from the current value of `refinement.end` and therefore must be adjusted...
-    if (weightsPtr_->hasZeroElements() && abs(refinement.previous - refinement.end) > 1) {
+    if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
         refinement.end = adjustSplit(indexedArray, refinement.end, refinement.previous, refinement.threshold);
     }
 
