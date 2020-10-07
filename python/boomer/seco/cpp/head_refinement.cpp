@@ -24,8 +24,9 @@ static inline uint32* argsort(float64* a, uint32 numElements) {
     return sortedArray;
 }
 
-PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr) {
-    liftFunctionPtr_ = liftFunctionPtr;
+PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr)
+    : liftFunctionPtr_(liftFunctionPtr) {
+
 }
 
 bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,

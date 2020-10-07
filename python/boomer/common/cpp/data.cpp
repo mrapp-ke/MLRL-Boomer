@@ -1,6 +1,60 @@
 #include "data.h"
 
 
+template<class T>
+DenseVector<T>::DenseVector(uint32 numElements)
+    : DenseVector<T>(numElements, false) {
+
+}
+
+template<class T>
+DenseVector<T>::DenseVector(uint32 numElements, bool init)
+    : array_(init ? new T[numElements]() : new T[numElements]), numElements_(numElements) {
+
+}
+
+template<class T>
+DenseVector<T>::~DenseVector() {
+    delete[] array_;
+}
+
+template<class T>
+uint32 DenseVector<T>::getNumElements() const {
+    return numElements_;
+}
+
+template<class T>
+T DenseVector<T>::getValue(uint32 pos) const {
+    return array_[pos];
+}
+
+template<class T>
+typename DenseVector<T>::iterator DenseVector<T>::begin() {
+    return &array_[0];
+}
+
+template<class T>
+typename DenseVector<T>::iterator DenseVector<T>::end() {
+    return &array_[numElements_];
+}
+
+template<class T>
+typename DenseVector<T>::const_iterator DenseVector<T>::cbegin() const {
+    return &array_[0];
+}
+
+template<class T>
+typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
+    return &array_[numElements_];
+}
+
+template class DenseVector<uint32>;
+
+DenseIndexVector::DenseIndexVector(uint32 numElements)
+    : DenseVector<uint32>(numElements) {
+
+}
+
 RangeIndexVector::RangeIndexVector(uint32 numIndices) {
     numIndices_ = numIndices;
 }
@@ -9,24 +63,17 @@ uint32 RangeIndexVector::getNumElements() const {
     return numIndices_;
 }
 
-bool RangeIndexVector::hasZeroElements() const {
-    return false;
-}
-
-uint32 RangeIndexVector::getIndex(uint32 pos) const {
+uint32 RangeIndexVector::getValue(uint32 pos) const {
     return pos;
 }
 
-BinaryDokVector::BinaryDokVector(uint32 numElements) {
-    numElements_ = numElements;
+BinaryDokVector::BinaryDokVector(uint32 numElements)
+    : numElements_(numElements) {
+
 }
 
 uint32 BinaryDokVector::getNumElements() const {
     return numElements_;
-}
-
-bool BinaryDokVector::hasZeroElements() const {
-    return data_.size() < numElements_;
 }
 
 uint8 BinaryDokVector::getValue(uint32 pos) const {
@@ -37,9 +84,9 @@ void BinaryDokVector::setValue(uint32 pos) {
     data_.insert(pos);
 }
 
-BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols) {
-    numRows_ = numRows;
-    numCols_ = numCols;
+BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols)
+    : numRows_(numRows), numCols_(numCols) {
+
 }
 
 uint32 BinaryDokMatrix::getNumRows() const {

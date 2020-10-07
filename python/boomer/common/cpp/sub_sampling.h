@@ -12,13 +12,20 @@
 
 
 /**
- * Defines an interface for one-dimensional, potentially sparse, vectors that provide access to weights.
+ * Defines an interface for one-dimensional vectors that provide access to weights.
  */
-class IWeightVector : virtual public ISparseRandomAccessVector<uint32> {
+class IWeightVector : virtual public IRandomAccessVector<uint32> {
 
     public:
 
         virtual ~IWeightVector() { };
+
+        /**
+         * Returns whether the vector contains any zero weights or not.
+         *
+         * @return True, if the vector contains any zero weights, false otherwise
+         */
+        virtual bool hasZeroWeights() const = 0;
 
         /**
          * Returns the sum of the weights in the vector.
@@ -30,43 +37,30 @@ class IWeightVector : virtual public ISparseRandomAccessVector<uint32> {
 };
 
 /**
- * An one-dimensional vector that provides access to weights that are stored in a C-contiguous array.
+ * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  */
-template<class T>
-class DenseWeightVector : virtual public IWeightVector {
+class DenseWeightVector : public DenseVector<uint32>, virtual public IWeightVector {
 
     private:
-
-        const T* weights_;
-
-        uint32 numElements_;
 
         uint32 sumOfWeights_;
 
     public:
 
         /**
-         * @param weights       A pointer to an array of template type `T`, shape `(numElements)`, that stores the
-         *                      weights
          * @param numElements   The number of elements in the vector. Must be at least 1
          * @param sumOfWeights  The sum of the weights in the vector
          */
-        DenseWeightVector(const T* weights, uint32 numElements, uint32 sumOfWeights);
+        DenseWeightVector(uint32 numElements, uint32 sumOfWeights);
 
-        ~DenseWeightVector();
-
-        uint32 getNumElements() const override;
-
-        bool hasZeroElements() const override;
-
-        uint32 getValue(uint32 pos) const override;
+        bool hasZeroWeights() const override;
 
         uint32 getSumOfWeights() const override;
 
 };
 
 /**
- * An one-dimensional that provides access to equal weights.
+ * An one-dimensional that provides random access to a fixed number of equal weights.
  */
 class EqualWeightVector : virtual public IWeightVector {
 
@@ -83,40 +77,11 @@ class EqualWeightVector : virtual public IWeightVector {
 
         uint32 getNumElements() const override;
 
-        bool hasZeroElements() const override;
+        bool hasZeroWeights() const override;
 
         uint32 getValue(uint32 pos) const override;
 
         uint32 getSumOfWeights() const override;
-
-};
-
-/**
- * An one-dimensional vector that provides random access to a fixed number of indices stored in a C-contiguous array.
- */
-class DenseIndexVector : virtual public IIndexVector {
-
-    private:
-
-        const uint32* indices_;
-
-        uint32 numElements_;
-
-    public:
-
-        /**
-         * @param indices       A pointer to an array of type `uint32`, shape `(numElements)`, that stores the indices
-         * @param numElements   The number of elements in the vector. Must be at least 1
-         */
-        DenseIndexVector(const uint32* indices, uint32 numElements);
-
-        ~DenseIndexVector();
-
-        uint32 getNumElements() const override;
-
-        bool hasZeroElements() const override;
-
-        uint32 getIndex(uint32 pos) const override;
 
 };
 
