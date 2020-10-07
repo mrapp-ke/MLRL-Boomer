@@ -64,19 +64,11 @@ class IRandomAccessVector : virtual public IVector {
 /**
  * Defines an interface for all one-dimensional vectors that provide random access to indices.
  */
-class IIndexVector : virtual public IVector {
+class IIndexVector : virtual public IRandomAccessVector<uint32> {
 
     public:
 
         virtual ~IIndexVector() { };
-
-        /**
-         * Returns the index at a specific position.
-         *
-         * @param pos   The position of the index. Must be in [0, getNumElements())
-         * @return      The index at the given position
-         */
-        virtual uint32 getIndex(uint32 pos) const = 0;
 
 };
 
@@ -170,7 +162,7 @@ class DenseIndexVector : virtual public IIndexVector {
 
         uint32 getNumElements() const override;
 
-        uint32 getIndex(uint32 pos) const override;
+        uint32 getValue(uint32 pos) const override;
 
 };
 
@@ -192,7 +184,7 @@ class RangeIndexVector : virtual public IIndexVector {
 
         uint32 getNumElements() const override;
 
-        uint32 getIndex(uint32 pos) const override;
+        uint32 getValue(uint32 pos) const override;
 
 };
 
