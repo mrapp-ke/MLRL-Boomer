@@ -41,6 +41,8 @@ class IVector {
 
 /**
  * Defines an interface for all one-dimensional vectors that provide random access to their elements.
+ *
+ * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
 class IRandomAccessVector : virtual public IVector {
@@ -99,6 +101,8 @@ class IIndexVector : virtual public ISparseVector {
 /**
  * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to all of their
  * elements, including zero elements that are not explicitly stored in the vector.
+ *
+ * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
 class ISparseRandomAccessVector : virtual public ISparseVector, virtual public IRandomAccessVector<T> {
@@ -193,6 +197,8 @@ class IMatrix {
 
 /**
  * Defines an interface for all two-dimensional matrices that provide random access to their elements.
+ *
+ * @tparam The type of the data that is stored in the matrix
  */
 template<class T>
 class IRandomAccessMatrix : virtual public IMatrix {

@@ -31,6 +31,8 @@ class IWeightVector : virtual public ISparseRandomAccessVector<uint32> {
 
 /**
  * An one-dimensional vector that provides access to weights that are stored in a C-contiguous array.
+ *
+ * @tparam T The type of the weights that are stored in the vector
  */
 template<class T>
 class DenseWeightVector : virtual public IWeightVector {

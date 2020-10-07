@@ -21,6 +21,7 @@ namespace arrays {
     /**
      * Sets all elements in an one- or two-dimensional array to zero.
      *
+     * @tparam T            The type of the array
      * @param a             A pointer to an array of template type `T`
      * @param numElements   The number of elements in the array
      */
