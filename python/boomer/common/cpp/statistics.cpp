@@ -7,9 +7,9 @@ PredictionCandidate& AbstractDecomposableStatisticsSubset::calculateExampleWiseP
     return this->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels) {
-    numStatistics_ = numStatistics;
-    numLabels_ = numLabels;
+AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels)
+    : numStatistics_(numStatistics), numLabels_(numLabels) {
+
 }
 
 uint32 AbstractStatistics::getNumRows() const {

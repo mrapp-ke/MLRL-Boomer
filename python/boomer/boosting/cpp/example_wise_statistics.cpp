@@ -8,8 +8,8 @@ using namespace boosting;
 
 AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
         uint32 numStatistics, uint32 numLabels, std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
+    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
+
 }
 
 void AbstractExampleWiseStatistics::setRuleEvaluation(
@@ -20,9 +20,7 @@ void AbstractExampleWiseStatistics::setRuleEvaluation(
 DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl& statistics,
                                                                            uint32 numPredictions,
                                                                            const uint32* labelIndices)
-    : statistics_(statistics) {
-    numPredictions_ = numPredictions;
-    labelIndices_ = labelIndices;
+    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = NULL;
@@ -147,13 +145,9 @@ DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
-    : AbstractExampleWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    lapackPtr_ = lapackPtr;
-    labelMatrixPtr_ = labelMatrixPtr;
-    gradients_ = gradients;
-    hessians_ = hessians;
-    currentScores_ = currentScores;
+    : AbstractExampleWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr),
+      lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr), gradients_(gradients),
+      hessians_(hessians), currentScores_(currentScores) {
     // The number of labels
     uint32 numLabels = this->getNumCols();
     // The number of hessians

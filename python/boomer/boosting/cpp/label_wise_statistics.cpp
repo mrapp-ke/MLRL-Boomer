@@ -7,8 +7,8 @@ using namespace boosting;
 
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
         uint32 numStatistics, uint32 numLabels, std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
+    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
+
 }
 
 void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr) {
@@ -18,9 +18,7 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRu
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices)
-    : statistics_(statistics) {
-    numPredictions_ = numPredictions;
-    labelIndices_ = labelIndices;
+    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = NULL;
@@ -89,12 +87,9 @@ DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabe
                                                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                                                            float64* gradients, float64* hessians,
                                                            float64* currentScores)
-    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    labelMatrixPtr_ = labelMatrixPtr;
-    gradients_ = gradients;
-    hessians_ = hessians;
-    currentScores_ = currentScores;
+    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr),
+      lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), gradients_(gradients), hessians_(hessians),
+      currentScores_(currentScores) {
     // The number of labels
     uint32 numLabels = this->getNumCols();
     // An array that stores the column-wise sums of the matrix of gradients

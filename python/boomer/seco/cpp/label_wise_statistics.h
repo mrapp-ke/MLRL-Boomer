@@ -103,6 +103,8 @@ namespace seco {
 
             float64* uncoveredLabels_;
 
+            float64 sumUncoveredLabels_;
+
             uint8* minorityLabels_;
 
             float64* confusionMatricesTotal_;

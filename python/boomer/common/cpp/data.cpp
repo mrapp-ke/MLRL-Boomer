@@ -50,9 +50,9 @@ typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
 
 template class DenseVector<uint32>;
 
-DenseIndexVector::DenseIndexVector(const uint32* indices, uint32 numElements) {
-    indices_ = indices;
-    numElements_ = numElements;
+DenseIndexVector::DenseIndexVector(const uint32* indices, uint32 numElements)
+    : indices_(indices), numElements_(numElements) {
+
 }
 
 DenseIndexVector::~DenseIndexVector() {
@@ -79,8 +79,9 @@ uint32 RangeIndexVector::getIndex(uint32 pos) const {
     return pos;
 }
 
-BinaryDokVector::BinaryDokVector(uint32 numElements) {
-    numElements_ = numElements;
+BinaryDokVector::BinaryDokVector(uint32 numElements)
+    : numElements_(numElements) {
+
 }
 
 uint32 BinaryDokVector::getNumElements() const {
@@ -95,9 +96,9 @@ void BinaryDokVector::setValue(uint32 pos) {
     data_.insert(pos);
 }
 
-BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols) {
-    numRows_ = numRows;
-    numCols_ = numCols;
+BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols)
+    : numRows_(numRows), numCols_(numCols) {
+
 }
 
 uint32 BinaryDokMatrix::getNumRows() const {

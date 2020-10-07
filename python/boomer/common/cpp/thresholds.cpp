@@ -256,10 +256,10 @@ static inline void filterAnyIndices(const IndexedFloat32Array* indexedArray,
 
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                       std::shared_ptr<AbstractStatistics> statisticsPtr) {
-    featureMatrixPtr_ = featureMatrixPtr;
-    nominalFeatureVectorPtr_ = nominalFeatureVectorPtr;
-    statisticsPtr_ = statisticsPtr;
+                                       std::shared_ptr<AbstractStatistics> statisticsPtr)
+    : featureMatrixPtr_(featureMatrixPtr), nominalFeatureVectorPtr_(nominalFeatureVectorPtr),
+      statisticsPtr_(statisticsPtr) {
+
 }
 
 uint32 AbstractThresholds::getNumRows() const {
@@ -276,8 +276,7 @@ uint32 AbstractThresholds::getNumLabels() const {
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
                                                                 std::shared_ptr<IWeightVector> weightsPtr)
-    : thresholds_(thresholds) {
-    weightsPtr_ = weightsPtr;
+    : thresholds_(thresholds), weightsPtr_(weightsPtr) {
     sumOfWeights_ = weightsPtr->getSumOfWeights();
     uint32 numExamples = thresholds.getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};

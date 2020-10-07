@@ -9,10 +9,9 @@ using namespace boosting;
 
 RegularizedExampleWiseRuleEvaluationImpl::RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight,
                                                                                    std::unique_ptr<Blas> blasPtr,
-                                                                                   std::unique_ptr<Lapack> lapackPtr) {
-    l2RegularizationWeight_ = l2RegularizationWeight;
-    blasPtr_ = std::move(blasPtr);
-    lapackPtr_ = std::move(lapackPtr);
+                                                                                   std::unique_ptr<Lapack> lapackPtr)
+    : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)) {
+
 }
 
 void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(
