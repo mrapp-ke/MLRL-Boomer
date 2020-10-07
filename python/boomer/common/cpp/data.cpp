@@ -3,7 +3,13 @@
 
 template<class T>
 DenseVector<T>::DenseVector(uint32 numElements)
-    : array_(new T[numElements]), numElements_(numElements) {
+    : DenseVector<T>(numElements, false) {
+
+}
+
+template<class T>
+DenseVector<T>::DenseVector(uint32 numElements, bool init)
+    : array_(init ? new T[numElements]() : new T[numElements]), numElements_(numElements) {
 
 }
 

@@ -101,6 +101,12 @@ class DenseVector : virtual public IRandomAccessVector<T> {
          */
         DenseVector(uint32 numElements);
 
+        /**
+         * @param numElements   The number of elements in the vector. Must be at least 1
+         * @param allZero       True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        DenseVector(uint32 numElements, bool init);
+
         ~DenseVector();
 
         typedef T* iterator;
