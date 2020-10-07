@@ -63,7 +63,7 @@ uint32 DenseIndexVector::getNumElements() const {
     return numElements_;
 }
 
-uint32 DenseIndexVector::getIndex(uint32 pos) const {
+uint32 DenseIndexVector::getValue(uint32 pos) const {
     return indices_[pos];
 }
 
@@ -75,7 +75,7 @@ uint32 RangeIndexVector::getNumElements() const {
     return numIndices_;
 }
 
-uint32 RangeIndexVector::getIndex(uint32 pos) const {
+uint32 RangeIndexVector::getValue(uint32 pos) const {
     return pos;
 }
 
