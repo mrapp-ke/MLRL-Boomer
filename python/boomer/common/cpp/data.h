@@ -142,27 +142,14 @@ class DenseVector : virtual public IRandomAccessVector<T> {
 /**
  * An one-dimensional vector that provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class DenseIndexVector : virtual public IIndexVector {
-
-    private:
-
-        const uint32* indices_;
-
-        uint32 numElements_;
+class DenseIndexVector : public DenseVector<uint32>, virtual public IIndexVector {
 
     public:
 
         /**
-         * @param indices       A pointer to an array of type `uint32`, shape `(numElements)`, that stores the indices
-         * @param numElements   The number of elements in the vector. Must be at least 1
+         * @param numElements The number of elements in the vector. Must be at least 1
          */
-        DenseIndexVector(const uint32* indices, uint32 numElements);
-
-        ~DenseIndexVector();
-
-        uint32 getNumElements() const override;
-
-        uint32 getValue(uint32 pos) const override;
+        DenseIndexVector(uint32 numElements);
 
 };
 

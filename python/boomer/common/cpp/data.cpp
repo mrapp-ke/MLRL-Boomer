@@ -50,21 +50,9 @@ typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
 
 template class DenseVector<uint32>;
 
-DenseIndexVector::DenseIndexVector(const uint32* indices, uint32 numElements)
-    : indices_(indices), numElements_(numElements) {
+DenseIndexVector::DenseIndexVector(uint32 numElements)
+    : DenseVector<uint32>(numElements) {
 
-}
-
-DenseIndexVector::~DenseIndexVector() {
-    delete[] indices_;
-}
-
-uint32 DenseIndexVector::getNumElements() const {
-    return numElements_;
-}
-
-uint32 DenseIndexVector::getValue(uint32 pos) const {
-    return indices_[pos];
 }
 
 RangeIndexVector::RangeIndexVector(uint32 numIndices) {
