@@ -120,10 +120,6 @@ uint32 DokNominalFeatureVectorImpl::getNumElements() const {
     return vectorPtr_->getNumElements();
 }
 
-bool DokNominalFeatureVectorImpl::hasZeroElements() const {
-    return vectorPtr_->hasZeroElements();
-}
-
 uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) const {
     return vectorPtr_->getValue(pos);
 }

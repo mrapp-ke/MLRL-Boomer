@@ -9,10 +9,6 @@ uint32 RangeIndexVector::getNumElements() const {
     return numIndices_;
 }
 
-bool RangeIndexVector::hasZeroElements() const {
-    return false;
-}
-
 uint32 RangeIndexVector::getIndex(uint32 pos) const {
     return pos;
 }
@@ -23,10 +19,6 @@ BinaryDokVector::BinaryDokVector(uint32 numElements) {
 
 uint32 BinaryDokVector::getNumElements() const {
     return numElements_;
-}
-
-bool BinaryDokVector::hasZeroElements() const {
-    return data_.size() < numElements_;
 }
 
 uint8 BinaryDokVector::getValue(uint32 pos) const {
