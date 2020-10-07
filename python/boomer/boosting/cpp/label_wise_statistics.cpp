@@ -84,8 +84,7 @@ LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
 
 DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numBins)
-    : statistics_(statistics) {
-    numBins_ = numBins;
+    : statistics_(statistics), numBins_(numBins) {
     uint32 numLabels = numBins_ * statistics.getNumCols();
     gradients_ = (float64*) calloc(numLabels, sizeof(float64));
     hessians_ = (float64*) calloc(numLabels, sizeof(float64));

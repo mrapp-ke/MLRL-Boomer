@@ -465,10 +465,9 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
         std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
-        std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr) {
-    statisticsPtr_ = statisticsPtr;
-    featureIndex_ = featureIndex;
-    callbackPtr_ = std::move(callbackPtr);
+        std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr)
+    : statisticsPtr_(statisticsPtr), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
+
 }
 
 void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement,

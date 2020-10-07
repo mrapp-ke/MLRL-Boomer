@@ -142,8 +142,7 @@ PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
 
 DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseExampleWiseStatisticsImpl& statistics,
                                                                            uint32 numBins)
-    : statistics_(statistics) {
-    numBins_ = numBins;
+    : statistics_(statistics), numBins_(numBins) {
     uint32 numGradients = statistics.getNumCols();
     uint32 numHessians = linalg::triangularNumber(numGradients);
     gradients_ = (float64*) calloc((numBins_ * numGradients), sizeof(float64));
