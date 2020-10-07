@@ -8,8 +8,8 @@ using namespace seco;
 
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
                                                          std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractCoverageStatistics(numStatistics, numLabels) {
-    this->setRuleEvaluation(ruleEvaluationPtr);
+    : AbstractCoverageStatistics(numStatistics, numLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
+
 }
 
 void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr) {
@@ -19,9 +19,7 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRu
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices)
-    : statistics_(statistics) {
-    numPredictions_ = numPredictions;
-    labelIndices_ = labelIndices;
+    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     confusionMatricesCovered_ = (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
     accumulatedConfusionMatricesCovered_ = NULL;
@@ -90,11 +88,9 @@ DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabe
                                                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                                                            float64* uncoveredLabels, float64 sumUncoveredLabels,
                                                            uint8* minorityLabels)
-    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr) {
-    labelMatrixPtr_ = labelMatrixPtr;
-    uncoveredLabels_ = uncoveredLabels;
-    sumUncoveredLabels_ = sumUncoveredLabels;
-    minorityLabels_ = minorityLabels;
+    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr),
+      labelMatrixPtr_(labelMatrixPtr), uncoveredLabels_(uncoveredLabels), sumUncoveredLabels_(sumUncoveredLabels),
+      minorityLabels_(minorityLabels) {
     // The number of labels
     uint32 numLabels = this->getNumCols();
     // A matrix that stores a confusion matrix, which takes into account all examples, for each label
@@ -207,9 +203,9 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
-    labelMatrixPtr_ = labelMatrixPtr;
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
+    : ruleEvaluationPtr_(ruleEvaluationPtr), labelMatrixPtr_(labelMatrixPtr) {
+
 }
 
 std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {

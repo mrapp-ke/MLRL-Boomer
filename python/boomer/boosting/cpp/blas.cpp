@@ -1,9 +1,9 @@
 #include "blas.h"
 
 
-Blas::Blas(ddot_t ddotFunction, dspmv_t dspmvFunction) {
-    ddotFunction_ = ddotFunction;
-    dspmvFunction_ = dspmvFunction;
+Blas::Blas(ddot_t ddotFunction, dspmv_t dspmvFunction)
+    : ddotFunction_(ddotFunction), dspmvFunction_(dspmvFunction) {
+
 }
 
 float64 Blas::ddot(float64* x, float64* y, int n) {

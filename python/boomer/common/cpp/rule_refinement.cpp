@@ -16,13 +16,10 @@ bool Refinement::isBetterThan(Refinement& another) const {
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(
         std::shared_ptr<AbstractStatistics> statisticsPtr, std::shared_ptr<IWeightVector> weightsPtr,
         uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr) {
-    statisticsPtr_ = statisticsPtr;
-    weightsPtr_ = weightsPtr;
-    totalSumOfWeights_ = totalSumOfWeights;
-    featureIndex_ = featureIndex;
-    nominal_ = nominal;
-    callbackPtr_ = std::move(callbackPtr);
+        std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr)
+    : statisticsPtr_(statisticsPtr), weightsPtr_(weightsPtr), totalSumOfWeights_(totalSumOfWeights),
+      featureIndex_(featureIndex), nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+
 }
 
 void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,

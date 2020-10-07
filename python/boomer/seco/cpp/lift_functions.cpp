@@ -4,11 +4,9 @@
 using namespace seco;
 
 
-PeakLiftFunctionImpl::PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature) {
-    numLabels_ = numLabels;
-    peakLabel_ = peakLabel;
-    maxLift_ = maxLift;
-    exponent_ = 1.0 / curvature;
+PeakLiftFunctionImpl::PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
+    : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature) {
+
 }
 
 float64 PeakLiftFunctionImpl::calculateLift(uint32 numLabels) const {

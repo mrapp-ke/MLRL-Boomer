@@ -6,8 +6,9 @@
 using namespace boosting;
 
 
-RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight) {
-    l2RegularizationWeight_ = l2RegularizationWeight;
+RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight)
+    : l2RegularizationWeight_(l2RegularizationWeight) {
+
 }
 
 void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(

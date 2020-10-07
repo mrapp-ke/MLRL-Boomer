@@ -242,8 +242,9 @@ uint32 DenseWeightVector::getSumOfWeights() const {
     return sumOfWeights_;
 }
 
-EqualWeightVector::EqualWeightVector(uint32 numElements) {
-    numElements_ = numElements;
+EqualWeightVector::EqualWeightVector(uint32 numElements)
+    : numElements_(numElements) {
+
 }
 
 uint32 EqualWeightVector::getNumElements() const {
@@ -262,8 +263,9 @@ uint32 EqualWeightVector::getSumOfWeights() const {
     return numElements_;
 }
 
-BaggingImpl::BaggingImpl(float32 sampleSize) {
-    sampleSize_ = sampleSize;
+BaggingImpl::BaggingImpl(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
 }
 
 std::unique_ptr<IWeightVector> BaggingImpl::subSample(uint32 numExamples, RNG& rng) const {
@@ -282,8 +284,9 @@ std::unique_ptr<IWeightVector> BaggingImpl::subSample(uint32 numExamples, RNG& r
     return weightVectorPtr;
 }
 
-RandomInstanceSubsetSelectionImpl::RandomInstanceSubsetSelectionImpl(float32 sampleSize) {
-    sampleSize_ = sampleSize;
+RandomInstanceSubsetSelectionImpl::RandomInstanceSubsetSelectionImpl(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
 }
 
 std::unique_ptr<IWeightVector> RandomInstanceSubsetSelectionImpl::subSample(uint32 numExamples, RNG& rng) const {
@@ -295,8 +298,9 @@ std::unique_ptr<IWeightVector> NoInstanceSubSamplingImpl::subSample(uint32 numEx
     return std::make_unique<EqualWeightVector>(numExamples);
 }
 
-RandomFeatureSubsetSelectionImpl::RandomFeatureSubsetSelectionImpl(float32 sampleSize) {
-    sampleSize_ = sampleSize;
+RandomFeatureSubsetSelectionImpl::RandomFeatureSubsetSelectionImpl(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
 }
 
 std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32 numFeatures, RNG& rng) const {
@@ -315,8 +319,9 @@ std::unique_ptr<IIndexVector> NoFeatureSubSamplingImpl::subSample(uint32 numFeat
     return std::make_unique<RangeIndexVector>(numFeatures);
 }
 
-RandomLabelSubsetSelectionImpl::RandomLabelSubsetSelectionImpl(uint32 numSamples) {
-    numSamples_ = numSamples;
+RandomLabelSubsetSelectionImpl::RandomLabelSubsetSelectionImpl(uint32 numSamples)
+    : numSamples_(numSamples) {
+
 }
 
 std::unique_ptr<IIndexVector> RandomLabelSubsetSelectionImpl::subSample(uint32 numLabels, RNG& rng) const {
