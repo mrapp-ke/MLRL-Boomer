@@ -106,7 +106,8 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacement(uin
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTrackingSelection(uint32 numTotal,
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
-    uint32* indices = new uint32[numSamples];
+    std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
+    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -118,10 +119,10 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
             shouldContinue = !selectedIndices.insert(randomIndex).second;
         }
 
-        indices[i] = randomIndex;
+        iterator[i] = randomIndex;
     }
 
-    return std::make_unique<DenseIndexVector>(indices, numSamples);
+    return indexVectorPtr;;
 }
 
 /**
@@ -137,21 +138,22 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaReservoirSampling(uint32 numTotal,
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
-    uint32* indices = new uint32[numSamples];
+    std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
+    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
 
     for (uint32 i = 0; i < numSamples; i++) {
-        indices[i] = i;
+        iterator[i] = i;
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
         uint32 randomIndex = rng.random(0, i + 1);
 
         if (randomIndex < numSamples) {
-            indices[randomIndex] = i;
+            iterator[randomIndex] = i;
         }
     }
 
-    return std::make_unique<DenseIndexVector>(indices, numSamples);
+    return indexVectorPtr;
 }
 
 /**
@@ -167,11 +169,12 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRandomPermutation(uint32 numTotal,
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
-    uint32* indices = new uint32[numSamples];
+    std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
+    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
     uint32 unusedIndices[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
-        indices[i] = i;
+        iterator[i] = i;
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
@@ -181,25 +184,25 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
     for (uint32 i = 0; i < numTotal - 2; i++) {
         // Swap elements at index i and at a randomly selected index...
         uint32 randomIndex = rng.random(i, numTotal);
-        uint32 tmp1 = i < numSamples ? indices[i] : unusedIndices[i - numSamples];
+        uint32 tmp1 = i < numSamples ? iterator[i] : unusedIndices[i - numSamples];
         uint32 tmp2;
 
         if (randomIndex < numSamples) {
-            tmp2 = indices[randomIndex];
-            indices[randomIndex] = tmp1;
+            tmp2 = iterator[randomIndex];
+            iterator[randomIndex] = tmp1;
         } else {
             tmp2 = unusedIndices[randomIndex - numSamples];
             unusedIndices[randomIndex - numSamples] = tmp1;
         }
 
         if (i < numSamples) {
-            indices[i] = tmp2;
+            iterator[i] = tmp2;
         } else {
             unusedIndices[i - numSamples] = tmp2;
         }
     }
 
-    return std::make_unique<DenseIndexVector>(indices, numSamples);
+    return indexVectorPtr;
 }
 
 /**
