@@ -3,8 +3,9 @@
 
 const uint32 MAX_RANDOM = 0x7FFFFFFF;
 
-RNG::RNG(uint32 randomState) {
-    randomState_ = randomState;
+RNG::RNG(uint32 randomState)
+    : randomState_(randomState) {
+
 }
 
 uint32 RNG::random(uint32 min, uint32 max) {
