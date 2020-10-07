@@ -37,9 +37,7 @@ class IWeightVector : virtual public IRandomAccessVector<uint32> {
 };
 
 /**
- * An one-dimensional vector that provides access to weights that are stored in a C-contiguous array.
- *
- * @tparam T The type of the weights that are stored in the vector
+ * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  */
 template<class T>
 class DenseWeightVector : virtual public IWeightVector {
@@ -75,7 +73,7 @@ class DenseWeightVector : virtual public IWeightVector {
 };
 
 /**
- * An one-dimensional that provides access to equal weights.
+ * An one-dimensional that provides random access to a fixed number of equal weights.
  */
 class EqualWeightVector : virtual public IWeightVector {
 
