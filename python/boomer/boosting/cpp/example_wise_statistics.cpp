@@ -33,8 +33,8 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(Dense
     uint32* predictionLabelIndices = NULL;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = NULL;
-    predictionPtr_ = std::make_unique<LabelWisePredictionCandidate>(numPredictions, predictionLabelIndices,
-                                                                    predictedScores, qualityScores, 0);
+    prediction_ = new LabelWisePredictionCandidate(numPredictions, predictionLabelIndices, predictedScores,
+                                                   qualityScores, 0);
     tmpGradients_ = NULL;
     tmpHessians_ = NULL;
     dsysvTmpArray1_ = NULL;
@@ -48,6 +48,7 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
+    delete prediction_;
     free(tmpGradients_);
     free(tmpHessians_);
     free(dsysvTmpArray1_);
@@ -107,8 +108,8 @@ LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetIm
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
     statistics_.ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
                                                                   sumsOfGradients, statistics_.totalSumsOfHessians_,
-                                                                  sumsOfHessians, uncovered, *predictionPtr_);
-    return *predictionPtr_;
+                                                                  sumsOfHessians, uncovered, *prediction_);
+    return *prediction_;
 }
 
 PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
@@ -127,8 +128,7 @@ PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
         dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
 
         // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_,
-                                                                       predictionPtr_->predictedScores_,
+        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, prediction_->predictedScores_,
                                                                        numPredictions_);
         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
     }
@@ -138,8 +138,8 @@ PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calcu
                                                                    sumsOfHessians, tmpGradients_, tmpHessians_,
                                                                    dsysvLwork_, dsysvTmpArray1_, dsysvTmpArray2_,
                                                                    dsysvTmpArray3_, dspmvTmpArray_, uncovered,
-                                                                   *predictionPtr_);
-    return *predictionPtr_;
+                                                                   *prediction_);
+    return *prediction_;
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
