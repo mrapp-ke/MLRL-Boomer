@@ -81,6 +81,67 @@ class IIndexVector : virtual public IVector {
 };
 
 /**
+ * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
+ *
+ * @tparam The type of the data that is stored in the vector
+ */
+template<class T>
+class DenseVector : virtual public IRandomAccessVector<T> {
+
+    private:
+
+        T* array_;
+
+        uint32 numElements_;
+
+    public:
+
+        /**
+         * @param numElements The number of elements in the vector. Must be at least 1
+         */
+        DenseVector(uint32 numElements);
+
+        ~DenseVector();
+
+        typedef T* iterator;
+
+        typedef const T* const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the vector.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        uint32 getNumElements() const override;
+
+        T getValue(uint32 pos) const override;
+
+};
+
+/**
  * An one-dimensional vector that provides random access to a fixed number of indices stored in a C-contiguous array.
  */
 class DenseIndexVector : virtual public IIndexVector {

@@ -1,6 +1,49 @@
 #include "data.h"
 
 
+template<class T>
+DenseVector<T>::DenseVector(uint32 numElements)
+    : array_(new T[numElements]), numElements_(numElements) {
+
+}
+
+template<class T>
+DenseVector<T>::~DenseVector() {
+    delete[] array_;
+}
+
+template<class T>
+uint32 DenseVector<T>::getNumElements() const {
+    return numElements_;
+}
+
+template<class T>
+T DenseVector<T>::getValue(uint32 pos) const {
+    return array_[pos];
+}
+
+template<class T>
+typename DenseVector<T>::iterator DenseVector<T>::begin() {
+    return &array_[0];
+}
+
+template<class T>
+typename DenseVector<T>::iterator DenseVector<T>::end() {
+    return &array_[numElements_];
+}
+
+template<class T>
+typename DenseVector<T>::const_iterator DenseVector<T>::cbegin() const {
+    return &array_[0];
+}
+
+template<class T>
+typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
+    return &array_[numElements_];
+}
+
+template class DenseVector<uint32>;
+
 DenseIndexVector::DenseIndexVector(const uint32* indices, uint32 numElements) {
     indices_ = indices;
     numElements_ = numElements;
