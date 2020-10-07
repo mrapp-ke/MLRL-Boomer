@@ -53,6 +53,8 @@ class Refinement {
 /**
  * Defines an interface for callbacks that may be invoked by subclasses of the the class `AbstractRuleRefinement` in
  * order to retrieve information that is required to identify potential refinements for a certain feature.
+ *
+ * @tparam T The type of the information that is retrieved by the callback
  */
 template<class T>
 class IRuleRefinementCallback {

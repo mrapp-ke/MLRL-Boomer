@@ -2,10 +2,9 @@
 #include<stdlib.h>
 
 
-DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) {
-    numExamples_ = numExamples;
-    numLabels_ = numLabels;
-    y_ = y;
+DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y)
+    : numExamples_(numExamples), numLabels_(numLabels), y_(y) {
+
 }
 
 uint32 DenseLabelMatrixImpl::getNumRows() const {
@@ -21,8 +20,9 @@ uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr) {
-    matrixPtr_ = std::move(matrixPtr);
+DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr)
+    : matrixPtr_(std::move(matrixPtr)) {
+
 }
 
 uint32 DokLabelMatrixImpl::getNumRows() const {
@@ -37,10 +37,9 @@ uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
     return matrixPtr_->getValue(row, col);
 }
 
-DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
-    numExamples_ = numExamples;
-    numFeatures_ = numFeatures;
-    x_ = x;
+DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x)
+    : numExamples_(numExamples), numFeatures_(numFeatures), x_(x) {
+
 }
 
 uint32 DenseFeatureMatrixImpl::getNumRows() const {
@@ -70,12 +69,10 @@ void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloa
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
-                                           const uint32* xRowIndices, const uint32* xColIndices)  {
-    numExamples_ = numExamples;
-    numFeatures_ = numFeatures;
-    xData_ = xData;
-    xRowIndices_ = xRowIndices;
-    xColIndices_ = xColIndices;
+                                           const uint32* xRowIndices, const uint32* xColIndices)
+    : numExamples_(numExamples), numFeatures_(numFeatures), xData_(xData), xRowIndices_(xRowIndices),
+      xColIndices_(xColIndices) {
+
 }
 
 uint32 CscFeatureMatrixImpl::getNumRows() const {
@@ -112,16 +109,13 @@ void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat3
     indexedArray.data = array;
 }
 
-DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr) {
-    vectorPtr_ = std::move(vectorPtr);
+DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr)
+    : vectorPtr_(std::move(vectorPtr)) {
+
 }
 
 uint32 DokNominalFeatureVectorImpl::getNumElements() const {
     return vectorPtr_->getNumElements();
-}
-
-bool DokNominalFeatureVectorImpl::hasZeroElements() const {
-    return vectorPtr_->hasZeroElements();
 }
 
 uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) const {
