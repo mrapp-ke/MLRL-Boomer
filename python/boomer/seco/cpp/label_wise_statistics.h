@@ -73,7 +73,7 @@ namespace seco {
 
                     float64* accumulatedConfusionMatricesCovered_;
 
-                    std::unique_ptr<LabelWisePredictionCandidate> predictionPtr_;
+                    LabelWisePredictionCandidate* prediction_;
 
                 public:
 
@@ -102,6 +102,8 @@ namespace seco {
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
             float64* uncoveredLabels_;
+
+            float64 sumUncoveredLabels_;
 
             uint8* minorityLabels_;
 
