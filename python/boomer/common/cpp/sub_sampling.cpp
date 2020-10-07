@@ -166,7 +166,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
     uint32* indices = new uint32[numSamples];
-    uint32* unusedIndices = new uint32[numTotal - numSamples];
+    uint32 unusedIndices[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
         indices[i] = i;
@@ -197,7 +197,6 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
         }
     }
 
-    delete[] unusedIndices;
     return std::make_unique<DenseIndexVector>(indices, numSamples);
 }
 
