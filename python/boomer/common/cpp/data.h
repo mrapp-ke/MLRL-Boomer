@@ -41,6 +41,8 @@ class IVector {
 
 /**
  * Defines an interface for all one-dimensional vectors that provide random access to their elements.
+ *
+ * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
 class IRandomAccessVector : virtual public IVector {
@@ -60,52 +62,94 @@ class IRandomAccessVector : virtual public IVector {
 };
 
 /**
- * Defines an interface for all one-dimensional, potentially sparse, vectors.
+ * Defines an interface for all one-dimensional vectors that provide random access to indices.
  */
-class ISparseVector : virtual public IVector {
-
-    public:
-
-        virtual ~ISparseVector() { };
-
-        /**
-         * Returns whether the vector contains any zero elements or not.
-         *
-         * @return True, if the vector contains any zero elements, false otherwise
-         */
-        virtual bool hasZeroElements() const = 0;
-
-};
-
-/**
- * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to indices.
- */
-class IIndexVector : virtual public ISparseVector {
+class IIndexVector : virtual public IRandomAccessVector<uint32> {
 
     public:
 
         virtual ~IIndexVector() { };
 
+};
+
+/**
+ * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
+ *
+ * @tparam The type of the data that is stored in the vector
+ */
+template<class T>
+class DenseVector : virtual public IRandomAccessVector<T> {
+
+    private:
+
+        T* array_;
+
+        uint32 numElements_;
+
+    public:
+
         /**
-         * Returns the index at a specific position.
-         *
-         * @param pos   The position of the index. Must be in [0, getNumElements())
-         * @return      The index at the given position
+         * @param numElements The number of elements in the vector. Must be at least 1
          */
-        virtual uint32 getIndex(uint32 pos) const = 0;
+        DenseVector(uint32 numElements);
+
+        /**
+         * @param numElements   The number of elements in the vector. Must be at least 1
+         * @param allZero       True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        DenseVector(uint32 numElements, bool init);
+
+        ~DenseVector();
+
+        typedef T* iterator;
+
+        typedef const T* const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the vector.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        uint32 getNumElements() const override;
+
+        T getValue(uint32 pos) const override;
 
 };
 
 /**
- * Defines an interface for all one-dimensional, potentially sparse, vectors that provide random access to all of their
- * elements, including zero elements that are not explicitly stored in the vector.
+ * An one-dimensional vector that provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-template<class T>
-class ISparseRandomAccessVector : virtual public ISparseVector, virtual public IRandomAccessVector<T> {
+class DenseIndexVector : public DenseVector<uint32>, virtual public IIndexVector {
 
     public:
 
-        virtual ~ISparseRandomAccessVector() { };
+        /**
+         * @param numElements The number of elements in the vector. Must be at least 1
+         */
+        DenseIndexVector(uint32 numElements);
 
 };
 
@@ -127,16 +171,14 @@ class RangeIndexVector : virtual public IIndexVector {
 
         uint32 getNumElements() const override;
 
-        bool hasZeroElements() const override;
-
-        uint32 getIndex(uint32 pos) const override;
+        uint32 getValue(uint32 pos) const override;
 
 };
 
 /**
  * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
+class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
 
     private:
 
@@ -159,8 +201,6 @@ class BinaryDokVector : virtual public ISparseRandomAccessVector<uint8> {
         void setValue(uint32 pos);
 
         uint32 getNumElements() const override;
-
-        bool hasZeroElements() const override;
 
         uint8 getValue(uint32 pos) const override;
 
@@ -193,6 +233,8 @@ class IMatrix {
 
 /**
  * Defines an interface for all two-dimensional matrices that provide random access to their elements.
+ *
+ * @tparam The type of the data that is stored in the matrix
  */
 template<class T>
 class IRandomAccessMatrix : virtual public IMatrix {

@@ -6,9 +6,9 @@ using namespace seco;
 
 
 HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<IHeuristic> heuristicPtr,
-                                                                           bool predictMajority) {
-    heuristicPtr_ = heuristicPtr;
-    predictMajority_ = predictMajority;
+                                                                           bool predictMajority)
+    : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
+
 }
 
 void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(

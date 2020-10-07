@@ -1,15 +1,18 @@
 from boomer.common._arrays cimport uint32, float32
-from boomer.common._data cimport ISparseRandomAccessVector, IIndexVector
+from boomer.common._data cimport IRandomAccessVector, IIndexVector
 from boomer.common._random cimport RNG
 
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/sub_sampling.h" nogil:
 
-    cdef cppclass IWeightVector(ISparseRandomAccessVector[uint32]):
+    cdef cppclass IWeightVector(IRandomAccessVector[uint32]):
 
         # Functions:
+
+        bool hasZeroWeights()
 
         uint32 getSumOfWeights()
 
