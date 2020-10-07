@@ -39,34 +39,21 @@ class IWeightVector : virtual public IRandomAccessVector<uint32> {
 /**
  * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  */
-template<class T>
-class DenseWeightVector : virtual public IWeightVector {
+class DenseWeightVector : public DenseVector<uint32>, virtual public IWeightVector {
 
     private:
-
-        const T* weights_;
-
-        uint32 numElements_;
 
         uint32 sumOfWeights_;
 
     public:
 
         /**
-         * @param weights       A pointer to an array of template type `T`, shape `(numElements)`, that stores the
-         *                      weights
          * @param numElements   The number of elements in the vector. Must be at least 1
          * @param sumOfWeights  The sum of the weights in the vector
          */
-        DenseWeightVector(const T* weights, uint32 numElements, uint32 sumOfWeights);
-
-        ~DenseWeightVector();
-
-        uint32 getNumElements() const override;
+        DenseWeightVector(uint32 numElements, uint32 sumOfWeights);
 
         bool hasZeroWeights() const override;
-
-        uint32 getValue(uint32 pos) const override;
 
         uint32 getSumOfWeights() const override;
 

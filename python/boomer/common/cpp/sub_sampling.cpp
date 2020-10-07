@@ -16,7 +16,8 @@
 static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaTrackingSelection(uint32 numTotal,
                                                                                                  uint32 numSamples,
                                                                                                  RNG& rng) {
-    uint8* weights = new uint8[numTotal]{0};
+    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numTotal, numSamples);
+    DenseWeightVector::iterator iterator = weightVectorPtr->begin();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -28,10 +29,10 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaT
             shouldContinue = !selectedIndices.insert(randomIndex).second;
         }
 
-        weights[randomIndex] = 1;
+        iterator[randomIndex] = 1;
     }
 
-    return std::make_unique<DenseWeightVector<uint8>>(weights, numTotal, numSamples);
+    return weightVectorPtr;
 }
 
 /**
@@ -45,7 +46,8 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaT
  */
 static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaPool(uint32 numTotal, uint32 numSamples,
                                                                                     RNG& rng) {
-    uint8* weights = new uint8[numTotal]{0};
+    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numTotal, numSamples);
+    DenseWeightVector::iterator iterator = weightVectorPtr->begin();
     uint32 pool[numTotal];
 
     // Initialize pool...
@@ -59,13 +61,13 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaP
         uint32 j = pool[randomIndex];
 
         // Set weight at the selected index to 1...
-        weights[j] = 1;
+        iterator[j] = 1;
 
         // Move the index at the border to the position of the recently drawn index...
         pool[randomIndex] = pool[numTotal - i - 1];
     }
 
-    return std::make_unique<DenseWeightVector<uint8>>(weights, numTotal, numSamples);
+    return weightVectorPtr;
 }
 
 /**
@@ -227,35 +229,16 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacement(uint
     }
 }
 
-template<class T>
-DenseWeightVector<T>::DenseWeightVector(const T* weights, uint32 numElements, uint32 sumOfWeights) {
-    weights_ = weights;
-    numElements_ = numElements;
-    sumOfWeights_ = sumOfWeights;
+DenseWeightVector::DenseWeightVector(uint32 numElements, uint32 sumOfWeights)
+    : DenseVector<uint32>(numElements, true), sumOfWeights_(sumOfWeights) {
+
 }
 
-template<class T>
-DenseWeightVector<T>::~DenseWeightVector() {
-    delete weights_;
-}
-
-template<class T>
-uint32 DenseWeightVector<T>::getNumElements() const {
-    return numElements_;
-}
-
-template<class T>
-bool DenseWeightVector<T>::hasZeroWeights() const {
+bool DenseWeightVector::hasZeroWeights() const {
     return true;
 }
 
-template<class T>
-uint32 DenseWeightVector<T>::getValue(uint32 pos) const {
-    return (uint32) weights_[pos];
-}
-
-template<class T>
-uint32 DenseWeightVector<T>::getSumOfWeights() const {
+uint32 DenseWeightVector::getSumOfWeights() const {
     return sumOfWeights_;
 }
 
@@ -285,17 +268,18 @@ BaggingImpl::BaggingImpl(float32 sampleSize) {
 
 std::unique_ptr<IWeightVector> BaggingImpl::subSample(uint32 numExamples, RNG& rng) const {
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
-    uint32* weights = new uint32[numExamples]{0};
+    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples, numSamples);
+    DenseWeightVector::iterator iterator = weightVectorPtr->begin();
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select the index of an example...
         uint32 randomIndex = rng.random(0, numExamples);
 
         // Update weight at the selected index...
-        weights[randomIndex] += 1;
+        iterator[randomIndex] += 1;
     }
 
-    return std::make_unique<DenseWeightVector<uint32>>(weights, numExamples, numSamples);
+    return weightVectorPtr;
 }
 
 RandomInstanceSubsetSelectionImpl::RandomInstanceSubsetSelectionImpl(float32 sampleSize) {
