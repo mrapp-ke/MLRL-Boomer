@@ -16,17 +16,6 @@ cdef extern from "cpp/tuples.h" nogil:
         IndexedFloat32* data
         uint32 numElements
 
-    cdef struct IndexedFloat32ArrayWrapper:
-        IndexedFloat32Array* array
-        uint32 numConditions
-
     cdef struct IndexedFloat64:
         uint32 index
         float64 value
-
-
-cdef extern from "cpp/tuples.h" namespace "tuples" nogil:
-
-    int compareIndexedFloat32(const void* a, const void* b)
-
-    int compareIndexedFloat64(const void* a, const void* b)
