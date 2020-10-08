@@ -11,17 +11,6 @@
 
 
 /**
- * Implements a hash function for pairs that store two integers of type `uint32`.
- */
-struct PairHash {
-
-    inline std::size_t operator()(const std::pair<uint32, uint32> &v) const {
-        return (((uint64) v.first) << 32) | ((uint64) v.second);
-    }
-
-};
-
-/**
  * Defines an interface for all one-dimensional vectors.
  */
 class IVector {
@@ -89,12 +78,12 @@ class DenseVector : virtual public IRandomAccessVector<T> {
     public:
 
         /**
-         * @param numElements The number of elements in the vector. Must be at least 1
+         * @param numElements The number of elements in the vector
          */
         DenseVector(uint32 numElements);
 
         /**
-         * @param numElements   The number of elements in the vector. Must be at least 1
+         * @param numElements   The number of elements in the vector
          * @param allZero       True, if all elements in the vector should be value-initialized, false otherwise
          */
         DenseVector(uint32 numElements, bool init);
@@ -147,7 +136,7 @@ class DenseIndexVector : public DenseVector<uint32>, virtual public IIndexVector
     public:
 
         /**
-         * @param numElements The number of elements in the vector. Must be at least 1
+         * @param numElements The number of elements in the vector
          */
         DenseIndexVector(uint32 numElements);
 
@@ -165,7 +154,7 @@ class RangeIndexVector : virtual public IIndexVector {
     public:
 
         /**
-         * @param numIndices The number of indices, the vector provides access to. Must be at least 1
+         * @param numIndices The number of indices, the vector provides access to
          */
         RangeIndexVector(uint32 numIndices);
 
@@ -189,7 +178,7 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
     public:
 
         /**
-         * @param numElements The number of elements in the vector. Must be at least 1
+         * @param numElements The number of elements in the vector
          */
         BinaryDokVector(uint32 numElements);
 
@@ -261,17 +250,30 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
     private:
 
+        typedef std::pair<uint32, uint32> Entry;
+
+        /**
+         * Implements a hash function for elements of type `Entry`..
+         */
+        struct HashFunction {
+
+            inline std::size_t operator()(const Entry &v) const {
+                return (((uint64) v.first) << 32) | ((uint64) v.second);
+            }
+
+        };
+
         uint32 numRows_;
 
         uint32 numCols_;
 
-        std::unordered_set<std::pair<uint32, uint32>, PairHash> data_;
+        std::unordered_set<Entry, HashFunction> data_;
 
     public:
 
         /**
-         * @param numRows   The number of rows in the matrix. Must be at least 1
-         * @param numCols   The number of columns in the matrix. Must be at least 1
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
          */
         BinaryDokMatrix(uint32 numRows, uint32 numCols);
 
