@@ -11,17 +11,6 @@
 
 
 /**
- * Implements a hash function for pairs that store two integers of type `uint32`.
- */
-struct PairHash {
-
-    inline std::size_t operator()(const std::pair<uint32, uint32> &v) const {
-        return (((uint64) v.first) << 32) | ((uint64) v.second);
-    }
-
-};
-
-/**
  * Defines an interface for all one-dimensional vectors.
  */
 class IVector {
@@ -261,11 +250,24 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
     private:
 
+        typedef std::pair<uint32, uint32> Entry;
+
+        /**
+         * Implements a hash function for elements of type `Entry`..
+         */
+        struct HashFunction {
+
+            inline std::size_t operator()(const Entry &v) const {
+                return (((uint64) v.first) << 32) | ((uint64) v.second);
+            }
+
+        };
+
         uint32 numRows_;
 
         uint32 numCols_;
 
-        std::unordered_set<std::pair<uint32, uint32>, PairHash> data_;
+        std::unordered_set<Entry, HashFunction> data_;
 
     public:
 
