@@ -298,6 +298,8 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
 
         free(indexedArrayWrapper);
     }
+
+    delete[] coveredExamplesMask_;
 }
 
 std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
