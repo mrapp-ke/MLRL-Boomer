@@ -135,9 +135,9 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            std::unique_ptr<Lapack> lapackPtr_;
-
             std::unique_ptr<Blas> blasPtr_;
+
+            std::unique_ptr<Lapack> lapackPtr_;
 
         public:
 
