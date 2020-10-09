@@ -316,6 +316,8 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
 
     if (indexedArray == NULL) {
+        thresholds_.cacheNew_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
+
         indexedArray = thresholds_.cache_[featureIndex];
 
         if (indexedArray == NULL) {
@@ -415,22 +417,27 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
         indexedValues = indexedArray->data;
 
         if (indexedValues == NULL) {
-            std::unique_ptr<FeatureVector> featureVectorPtr;
-            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, featureVectorPtr);
-            featureVectorPtr->sortByValues();
+            auto itFiltered = thresholdsSubset_.thresholds_.cacheNew_.find(featureIndex);
+            FeatureVector* featureVector = itFiltered->second.get();
 
-            if (featureVectorPtr->getNumElements() > 0) {
-                indexedValues = (IndexedFloat32*) malloc(featureVectorPtr->getNumElements() * sizeof(IndexedFloat32));
-                FeatureVector::const_iterator iterator = featureVectorPtr->cbegin();
+            if (featureVector == NULL) {
+                thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, itFiltered->second);
+                itFiltered->second->sortByValues();
+                featureVector = itFiltered->second.get();
+            }
 
-                for (uint32 i = 0; i < featureVectorPtr->getNumElements(); i++) {
+            if (featureVector->getNumElements() > 0) {
+                indexedValues = (IndexedFloat32*) malloc(featureVector->getNumElements() * sizeof(IndexedFloat32));
+                FeatureVector::const_iterator iterator = featureVector->cbegin();
+
+                for (uint32 i = 0; i < featureVector->getNumElements(); i++) {
                     indexedValues[i].index = iterator[i].index;
                     indexedValues[i].value = iterator[i].value;
                 }
             }
 
             indexedArray->data = indexedValues;
-            indexedArray->numElements = featureVectorPtr->getNumElements();
+            indexedArray->numElements = featureVector->getNumElements();
         }
     }
 

@@ -215,6 +215,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         std::unordered_map<uint32, IndexedFloat32Array*> cache_;
 
+        std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cacheNew_;
+
     public:
 
         /**
