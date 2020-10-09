@@ -317,15 +317,6 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
 
     if (indexedArray == NULL) {
         thresholds_.cacheNew_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
-
-        indexedArray = thresholds_.cache_[featureIndex];
-
-        if (indexedArray == NULL) {
-            indexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
-            indexedArray->data = NULL;
-            indexedArray->numElements = 0;
-            thresholds_.cache_[featureIndex] = indexedArray;
-        }
     }
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
@@ -503,16 +494,6 @@ ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> feature
                                          std::shared_ptr<AbstractStatistics> statisticsPtr)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr) {
 
-}
-
-ExactThresholdsImpl::~ExactThresholdsImpl() {
-    std::unordered_map<uint32, IndexedFloat32Array*>::iterator iterator;
-
-    for (iterator = cache_.begin(); iterator != cache_.end(); iterator++) {
-        IndexedFloat32Array* indexedArray = iterator->second;
-        free(indexedArray->data);
-        free(indexedArray);
-    }
 }
 
 std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::shared_ptr<IWeightVector> weightsPtr) {
