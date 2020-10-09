@@ -68,6 +68,22 @@ void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloa
     indexedArray.data = array;
 }
 
+void DenseFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
+                                                std::unique_ptr<FeatureVector>& featureVectorPtr) const {
+    // The number of elements to be returned
+    uint32 numElements = this->getNumRows();
+    // The first element in `x_` that corresponds to the given feature index
+    uint32 offset = featureIndex * numElements;
+
+    featureVectorPtr = std::make_unique<FeatureVector>(numElements);
+    FeatureVector::iterator iterator = featureVectorPtr->begin();
+
+    for (uint32 i = 0; i < numElements; i++) {
+        iterator[i].index = i;
+        iterator[i].value = x_[offset + i];
+    }
+}
+
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
                                            const uint32* xRowIndices, const uint32* xColIndices)
     : numExamples_(numExamples), numFeatures_(numFeatures), xData_(xData), xRowIndices_(xRowIndices),
@@ -107,6 +123,25 @@ void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat3
     // Update the given struct...
     indexedArray.numElements = numElements;
     indexedArray.data = array;
+}
+
+void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
+                                              std::unique_ptr<FeatureVector>& featureVectorPtr) const {
+    // The index of the first element in `xData_` and `xRowIndices_` that corresponds to the given feature index
+    uint32 start = xColIndices_[featureIndex];
+    // The index of the last element in `xData_` and `xRowIndices_` that corresponds to the given feature index
+    uint32 end = xColIndices_[featureIndex + 1];
+    // The number of elements to be returned
+    uint32 numElements = end - start;
+
+    featureVectorPtr = std::make_unique<FeatureVector>(numElements);
+    FeatureVector::iterator iterator = featureVectorPtr->begin();
+
+    for (uint32 j = start; j < end; j++) {
+        iterator->index = xRowIndices_[j];
+        iterator->value = xData_[j];
+        iterator++;
+    }
 }
 
 DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr)
