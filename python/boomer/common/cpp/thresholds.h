@@ -153,11 +153,14 @@ class ExactThresholdsImpl : public AbstractThresholds {
                  * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved
                  * from the cache. Otherwise, they are fetched from the feature matrix.
                  */
-                class Callback : virtual public IRuleRefinementCallback<IndexedFloat32Array> {
+                class Callback : virtual public IRuleRefinementCallback<FeatureVector> {
 
                     private:
 
                         ThresholdsSubsetImpl& thresholdsSubset_;
+
+                        // TODO Remove
+                        FeatureVector* featureVector_;
 
                     public:
 
@@ -167,7 +170,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset);
 
-                        IndexedFloat32Array& get(uint32 featureIndex) const override;
+                        // TODO Remove
+                        ~Callback();
+
+                        FeatureVector& get(uint32 featureIndex) override;
 
                 };
 
