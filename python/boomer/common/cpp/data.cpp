@@ -113,16 +113,15 @@ typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cend() const
     return &array_[numElements_];
 }
 
+static inline int compareIndexedFloat32(const void* a, const void* b) {
+    float32 v1 = ((SparseArrayVector<float32>::Entry*) a)->value;
+    float32 v2 = ((SparseArrayVector<float32>::Entry*) b)->value;
+    return v1 < v2 ? -1 : (v1 == v2 ? 0 : 1);
+}
+
 template<class T>
 void SparseArrayVector<T>::sortByValues() {
-    struct {
-
-        bool operator()(SparseArrayVector<T>::Entry a, SparseArrayVector<T>::Entry b) const {
-            return a.value < b.value;
-        }
-
-    } comparator;
-    std::sort(this->begin(), this->end(), comparator);
+    qsort(array_, numElements_, sizeof(Entry), &compareIndexedFloat32);
 }
 
 template class SparseArrayVector<float32>;
