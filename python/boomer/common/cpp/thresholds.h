@@ -124,6 +124,17 @@ class AbstractThresholds : virtual public IMatrix {
 };
 
 /**
+ * A wrapper for a (filtered) feature vector that is stored in the cache. The field `numConditions` specifies how many
+ * conditions the rule contained when the array was updated for the last time. It may be used to check if the array is
+ * still valid or must be updated.
+ */
+struct CacheEntry {
+    CacheEntry() : numConditions(0) { };
+    std::unique_ptr<FeatureVector> featureVectorPtr;
+    uint32 numConditions;
+};
+
+/**
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
 class ExactThresholdsImpl : public AbstractThresholds {
