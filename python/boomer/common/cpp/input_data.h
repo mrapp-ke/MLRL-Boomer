@@ -12,6 +12,11 @@
 
 
 /**
+ * Typedef for a vector that stores the indices of training examples, as well as their values for a certain feature.
+ */
+typedef SparseArrayVector<float32> FeatureVector;
+
+/**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
 class ILabelMatrix : virtual public IMatrix {
