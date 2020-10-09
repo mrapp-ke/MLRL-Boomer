@@ -35,7 +35,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     // Retrieve the array to be iterated...
     IndexedFloat32Array& indexedArray = callbackPtr_->get(featureIndex_);
     const IndexedFloat32* indexedValues = indexedArray.data;
-    uint32 numIndexedValues = indexedArray.numElements;
+    uint32 numElements = indexedArray.numElements;
 
     // In the following, we start by processing all examples with feature values < 0...
     uint32 sumOfWeights = 0;
@@ -46,7 +46,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
     // Traverse examples with feature values < 0 in ascending order until the first example with weight > 0 is
     // encountered...
-    for (r = 0; r < numIndexedValues; r++) {
+    for (r = 0; r < numElements; r++) {
         float32 currentThreshold = indexedValues[r].value;
 
         if (currentThreshold >= 0) {
@@ -71,7 +71,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
     // Traverse the remaining examples with feature values < 0 in ascending order...
     if (sumOfWeights > 0) {
-        for (r = r + 1; r < numIndexedValues; r++) {
+        for (r = r + 1; r < numElements; r++) {
             float32 currentThreshold = indexedValues[r].value;
 
             if (currentThreshold >= 0) {
@@ -199,7 +199,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
     // We continue by processing all examples with feature values >= 0...
     sumOfWeights = 0;
-    firstR = ((intp) numIndexedValues) - 1;
+    firstR = ((intp) numElements) - 1;
 
     // Traverse examples with feature values >= 0 in descending order until the first example with weight > 0 is
     // encountered...
@@ -347,7 +347,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
         // all examples that have been processed so far...
         if (nominal_) {
             statisticsSubsetPtr->resetSubset();
-            firstR = ((intp) numIndexedValues) - 1;
+            firstR = ((intp) numElements) - 1;
         }
 
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
