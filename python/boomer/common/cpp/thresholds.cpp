@@ -438,35 +438,37 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
-    IndexedFloat32* indexedValues;
+
+    // TODO Remove
+    IndexedFloat32Array* tmpIndexedArray = NULL;
 
     if (indexedArray == NULL) {
-        indexedArray = thresholdsSubset_.thresholds_.cache_[featureIndex];
-        indexedValues = indexedArray->data;
+        auto itFiltered = thresholdsSubset_.thresholds_.cacheNew_.find(featureIndex);
+        FeatureVector* featureVector = itFiltered->second.get();
 
-        if (indexedValues == NULL) {
-            auto itFiltered = thresholdsSubset_.thresholds_.cacheNew_.find(featureIndex);
-            FeatureVector* featureVector = itFiltered->second.get();
-
-            if (featureVector == NULL) {
-                thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, itFiltered->second);
-                itFiltered->second->sortByValues();
-                featureVector = itFiltered->second.get();
-            }
-
-            if (featureVector->getNumElements() > 0) {
-                indexedValues = (IndexedFloat32*) malloc(featureVector->getNumElements() * sizeof(IndexedFloat32));
-                FeatureVector::const_iterator iterator = featureVector->cbegin();
-
-                for (uint32 i = 0; i < featureVector->getNumElements(); i++) {
-                    indexedValues[i].index = iterator[i].index;
-                    indexedValues[i].value = iterator[i].value;
-                }
-            }
-
-            indexedArray->data = indexedValues;
-            indexedArray->numElements = featureVector->getNumElements();
+        if (featureVector == NULL) {
+            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, itFiltered->second);
+            itFiltered->second->sortByValues();
+            featureVector = itFiltered->second.get();
         }
+
+        // TODO Remove
+        tmpIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+        IndexedFloat32* indexedValues = NULL;
+
+        if (featureVector->getNumElements() > 0) {
+            indexedValues = (IndexedFloat32*) malloc(featureVector->getNumElements() * sizeof(IndexedFloat32));
+            FeatureVector::const_iterator iterator = featureVector->cbegin();
+
+            for (uint32 i = 0; i < featureVector->getNumElements(); i++) {
+                indexedValues[i].index = iterator[i].index;
+                indexedValues[i].value = iterator[i].value;
+            }
+        }
+
+        tmpIndexedArray->data = indexedValues;
+        tmpIndexedArray->numElements = featureVector->getNumElements();
+        indexedArray = tmpIndexedArray;
     }
 
     // Filter indices, if only a subset of the contained examples is covered...
@@ -486,6 +488,12 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
         iterator[i].index = indexedArray->data[i].index;
         iterator[i].value = indexedArray->data[i].value;
     }
+
+    // TODO Remove
+    if (tmpIndexedArray != NULL) {
+        free(tmpIndexedArray->data);
+    }
+    free(tmpIndexedArray);
 
     return *featureVector_;
 }
