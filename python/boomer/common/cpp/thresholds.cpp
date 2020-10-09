@@ -245,6 +245,63 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
 }
 
 /**
+ * Filters a feature vector that contains the indices of training examples, as well as their values for a certain
+ * feature, such that the filtered vector does only contain the indices and feature values of those examples that are
+ * covered by the current rule. The filtered vector is stored in a given struct of type `CacheEntry`.
+ *
+ * @param indexedArray          A reference to an object of type `FeatureVector` that should be filtered
+ * @param cacheEntry            A reference to a struct of type `CacheEntry` that should be used to store the filtered
+ *                              vector
+ * @param numConditions         The total number of conditions in the current rule's body
+ * @param coveredExamplesMask   An array of type `uint32`, shape `(num_examples)`, that is used to keep track of the
+ *                              indices of the examples that are covered by the current rule
+ * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
+ *                              by the current rule
+ */
+static inline void filterAnyFeatureVector(FeatureVector& featureVector, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                                          uint32 numConditions, const uint32* coveredExamplesMask,
+                                          uint32 coveredExamplesTarget) {
+    uint32 maxElements = featureVector.getNumElements();
+    IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
+    IndexedFloat32* filteredArray = filteredIndexedArray == NULL ? NULL : filteredIndexedArray->data;
+
+    FeatureVector::const_iterator iterator = featureVector.cbegin();
+    uint32 i = 0;
+
+    if (maxElements > 0) {
+        if (filteredArray == NULL) {
+            filteredArray = (IndexedFloat32*) malloc(maxElements * sizeof(IndexedFloat32));
+        }
+
+        for (uint32 r = 0; r < maxElements; r++) {
+            uint32 index = iterator[r].index;
+
+            if (coveredExamplesMask[index] == coveredExamplesTarget) {
+                filteredArray[i].index = index;
+                filteredArray[i].value = iterator[r].value;
+                i++;
+            }
+        }
+    }
+
+    if (i == 0) {
+        free(filteredArray);
+        filteredArray = NULL;
+    } else if (i < maxElements) {
+        filteredArray = (IndexedFloat32*) realloc(filteredArray, i * sizeof(IndexedFloat32));
+    }
+
+    if (filteredIndexedArray == NULL) {
+        filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+    }
+
+    filteredIndexedArray->data = filteredArray;
+    filteredIndexedArray->numElements = i;
+    indexedArrayWrapper->array = filteredIndexedArray;
+    indexedArrayWrapper->numConditions = numConditions;
+}
+
+/**
  * Filters an array that contains the indices of training examples, as well as their values for a certain feature, such
  * that the filtered array does only contain the indices and feature values of those examples that are covered by the
  * current rule. The filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper`.
@@ -513,15 +570,24 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
         tmpIndexedArray->data = indexedValues;
         tmpIndexedArray->numElements = featureVector->getNumElements();
         indexedArray = tmpIndexedArray;
-    }
 
-    // Filter indices, if only a subset of the contained examples is covered...
-    uint32 numConditions = thresholdsSubset_.numRefinements_;
+        // Filter indices, if only a subset of the contained examples is covered...
+        uint32 numConditions = thresholdsSubset_.numRefinements_;
 
-    if (numConditions > indexedArrayWrapper->numConditions) {
-        filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions, thresholdsSubset_.coveredExamplesMask_,
-                         thresholdsSubset_.coveredExamplesTarget_);
-        indexedArray = indexedArrayWrapper->array;
+        if (numConditions > indexedArrayWrapper->numConditions) {
+            filterAnyFeatureVector(*featureVector, indexedArrayWrapper, numConditions,
+                                   thresholdsSubset_.coveredExamplesMask_, thresholdsSubset_.coveredExamplesTarget_);
+            indexedArray = indexedArrayWrapper->array;
+        }
+    } else {
+        // Filter indices, if only a subset of the contained examples is covered...
+        uint32 numConditions = thresholdsSubset_.numRefinements_;
+
+        if (numConditions > indexedArrayWrapper->numConditions) {
+            filterAnyIndices(indexedArray, indexedArrayWrapper, numConditions, thresholdsSubset_.coveredExamplesMask_,
+                             thresholdsSubset_.coveredExamplesTarget_);
+            indexedArray = indexedArrayWrapper->array;
+        }
     }
 
     // TODO Remove
