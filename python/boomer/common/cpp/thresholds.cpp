@@ -342,8 +342,30 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
 
+    // TODO Remove
+    bool dealloc = false;
+
     if (indexedArray == NULL) {
-        indexedArray = thresholds_.cache_[featureIndex];
+        auto it = thresholds_.cacheNew_.find(featureIndex);
+        FeatureVector* featureVector = it->second.get();
+
+        // TODO Remove
+        dealloc = true;
+        indexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+        IndexedFloat32* indexedValues = NULL;
+
+        if (featureVector->getNumElements() > 0) {
+            indexedValues = (IndexedFloat32*) malloc(featureVector->getNumElements() * sizeof(IndexedFloat32));
+            FeatureVector::const_iterator iterator = featureVector->cbegin();
+
+            for (uint32 i = 0; i < featureVector->getNumElements(); i++) {
+                indexedValues[i].index = iterator[i].index;
+                indexedValues[i].value = iterator[i].value;
+            }
+        }
+
+        indexedArray->data = indexedValues;
+        indexedArray->numElements = featureVector->getNumElements();
     }
 
     // If there are examples with zero weights, those examples have not been considered considered when searching for
@@ -361,6 +383,12 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
                                                   refinement.comparator, refinement.covered, numRefinements_,
                                                   coveredExamplesMask_, coveredExamplesTarget_,
                                                   *thresholds_.statisticsPtr_, *weightsPtr_);
+
+    // TODO Remove
+    if (dealloc) {
+        free(indexedArray->data);
+        free(indexedArray);
+    }
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
