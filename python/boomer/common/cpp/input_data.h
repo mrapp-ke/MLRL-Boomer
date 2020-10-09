@@ -6,7 +6,6 @@
 #pragma once
 
 #include "arrays.h"
-#include "tuples.h"
 #include "data.h"
 #include <memory>
 
@@ -106,16 +105,6 @@ class IFeatureMatrix : virtual public IMatrix {
         virtual ~IFeatureMatrix() { };
 
         /**
-         * Fetches the indices of the training examples, as well as their feature values, for a specific feature and
-         * stores them in a given struct of type `IndexedFloat32Array`.
-         *
-         * @param featureIndex  The index of the feature
-         * @param indexedArray  A reference to a struct of type `IndexedFloat32Array`, which should be used to store the
-         *                      indices and feature values
-         */
-        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const = 0;
-
-        /**
          * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,
          * for a specific feature and stores it in a given unique pointer.
          *
@@ -154,8 +143,6 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;
-
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
@@ -198,8 +185,6 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;
-
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
