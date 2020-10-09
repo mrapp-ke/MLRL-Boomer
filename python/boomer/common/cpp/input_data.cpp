@@ -50,24 +50,6 @@ uint32 DenseFeatureMatrixImpl::getNumCols() const {
     return numFeatures_;
 }
 
-void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const {
-    // The number of elements to be returned
-    uint32 numElements = this->getNumRows();
-    // The array that stores the indices
-    IndexedFloat32* array = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
-    // The first element in `x_` that corresponds to the given feature index
-    uint32 offset = featureIndex * numElements;
-
-    for (uint32 i = 0; i < numElements; i++) {
-        array[i].index = i;
-        array[i].value = x_[offset + i];
-    }
-
-    // Update the given struct...
-    indexedArray.numElements = numElements;
-    indexedArray.data = array;
-}
-
 void DenseFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
                                                 std::unique_ptr<FeatureVector>& featureVectorPtr) const {
     // The number of elements to be returned
@@ -97,32 +79,6 @@ uint32 CscFeatureMatrixImpl::getNumRows() const {
 
 uint32 CscFeatureMatrixImpl::getNumCols() const {
     return numFeatures_;
-}
-
-void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const {
-    // The index of the first element in `xData_` and `xRowIndices_` that corresponds to the given feature index+
-    uint32 start = xColIndices_[featureIndex];
-    // The index of the last element in `xData_` and `xRowIndices_` that corresponds to the given feature index
-    uint32 end = xColIndices_[featureIndex + 1];
-    // The number of elements to be returned
-    uint32 numElements = end - start;
-    // The array that stores the indices
-    IndexedFloat32* array = NULL;
-
-    if (numElements > 0) {
-        array = (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32));
-        uint32 i = 0;
-
-        for (uint32 j = start; j < end; j++) {
-            array[i].index = xRowIndices_[j];
-            array[i].value = xData_[j];
-            i++;
-        }
-    }
-
-    // Update the given struct...
-    indexedArray.numElements = numElements;
-    indexedArray.data = array;
 }
 
 void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
