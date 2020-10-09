@@ -101,19 +101,18 @@ static inline intp adjustSplitOld(const IndexedFloat32Array* indexedArray, intp 
 }
 
 /**
- * Filters an array that contains the indices of the examples that are covered by the previous rule, as well as their
- * values for a certain feature, after a new condition that corresponds to said feature has been added, such that the
- * filtered array does only contain the indices and feature values of the examples that are covered by the new rule. The
- * filtered array is stored in a given struct of type `IndexedFloat32ArrayWrapper` and the given statistics are updated
+ * Filters a feature vector that contains the indices of the examples that are covered by the previous rule, as well as
+ * their values for a certain feature, after a new condition that corresponds to said feature has been added, such that
+ * the filtered vector does only contain the indices and feature values of the examples that are covered by the new
+ * rule. The filtered vector is stored in a given struct of type `CacheEntry` and the given statistics are updated
  * accordingly.
  *
- * @param indexedArrayWrapper   A pointer to a struct of type `IndexedFloat32Array` that should be used to store the
- *                              filtered array
- * @param indexedArray          A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to the array
- *                              to be filtered, as well as the number of elements in the array
- * @param conditionStart        The element in `indexedValues` that corresponds to the first example (inclusive)
+ * @param cacheEntry            A reference to a struct of type `CacheEntry` that should be used to store the filtered
+ *                              feature vector
+ * @param featureVector         A reference to an object of type `FeatureVector` that should be filtered
+ * @param conditionStart        The element in `featureVector` that corresponds to the first example (inclusive)
  *                              included in the `IStatisticsSubset` that is covered by the new condition
- * @param conditionEnd          The element in `indexedValues` that corresponds to the last example (exclusive)
+ * @param conditionEnd          The element in `featureVector` that corresponds to the last example (exclusive)
  * @param conditionComparator   The type of the operator that is used by the new condition
  * @param covered               True, if the examples in range [conditionStart, conditionEnd) are covered by the new
  *                              condition and the remaining ones are not, false, if the examples in said range are not
@@ -132,6 +131,118 @@ static inline intp adjustSplitOld(const IndexedFloat32Array* indexedArray, intp 
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
+static inline uint32 filterCurrentFeatureVector(IndexedFloat32ArrayWrapper* indexedArrayWrapper,
+                                                FeatureVector& featureVector, intp conditionStart, intp conditionEnd,
+                                                Comparator conditionComparator, bool covered, uint32 numConditions,
+                                                uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
+                                                AbstractStatistics& statistics, IWeightVector& weights) {
+    uint32 numTotalElements = featureVector.getNumElements();
+    FeatureVector::const_iterator iterator = featureVector.cbegin();
+    bool descending = conditionEnd < conditionStart;
+    uint32 updatedTarget;
+
+    // Determine the number of elements in the filtered vector...
+    uint32 numConditionSteps = abs(conditionStart - conditionEnd);
+    uint32 numElements = covered ? numConditionSteps :
+        (numTotalElements > numConditionSteps ? numTotalElements - numConditionSteps : 0);
+
+    // Allocate filtered array...
+    IndexedFloat32* filteredArray = numElements > 0 ?
+        (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32)) : NULL;
+
+    intp direction;
+    uint32 i;
+
+    if (descending) {
+        direction = -1;
+        i = numElements - 1;
+    } else {
+        direction = 1;
+        i = 0;
+    }
+
+    if (covered) {
+        updatedTarget = numConditions;
+        statistics.resetCoveredStatistics();
+
+        // Retain the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
+        // `coveredExamplesMasK` to `numConditions`, which marks them as covered (because
+        // `updatedTarget == numConditions`)...
+        for (uint32 j = 0; j < numConditionSteps; j++) {
+            uint32 r = conditionStart + (j * direction);
+            uint32 index = iterator[r].index;
+            coveredExamplesMask[index] = numConditions;
+            filteredArray[i].index = index;
+            filteredArray[i].value = iterator[r].value;
+            uint32 weight = weights.getValue(index);
+            statistics.updateCoveredStatistic(index, weight, false);
+            i += direction;
+        }
+    } else {
+        updatedTarget = coveredExamplesTarget;
+        intp start, end;
+
+        if (descending) {
+            start = numTotalElements - 1;
+            end = -1;
+        } else {
+            start = 0;
+            end = numTotalElements;
+        }
+
+        if (conditionComparator == NEQ) {
+            // Retain the indices at positions [start, conditionStart), while leaving the corresponding values in
+            // `coveredExamplesMask` untouched, such that all previously covered examples in said range are still marked
+            // as covered, while previously uncovered examples are still marked as uncovered...
+            uint32 numSteps = abs(start - conditionStart);
+
+            for (uint32 j = 0; j < numSteps; j++) {
+                uint32 r = start + (j * direction);
+                filteredArray[i].index = iterator[r].index;
+                filteredArray[i].value = iterator[r].value;
+                i += direction;
+            }
+        }
+
+        // Discard the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
+        // `coveredExamplesMask` to `numConditions`, which marks them as uncovered (because
+        // `updatedTarget != numConditions`)...
+        for (uint32 j = 0; j < numConditionSteps; j++) {
+            uint32 r = conditionStart + (j * direction);
+            uint32 index = iterator[r].index;
+            coveredExamplesMask[index] = numConditions;
+            uint32 weight = weights.getValue(index);
+            statistics.updateCoveredStatistic(index, weight, true);
+        }
+
+        // Retain the indices at positions [conditionEnd, end), while leaving the corresponding values in
+        // `coveredExamplesMask` untouched, such that all previously covered examples in said range are still marked as
+        // covered, while previously uncovered examples are still marked as uncovered...
+        uint32 numSteps = abs(conditionEnd - end);
+
+        for (uint32 j = 0; j < numSteps; j++) {
+            uint32 r = conditionEnd + (j * direction);
+            filteredArray[i].index = iterator[r].index;
+            filteredArray[i].value = iterator[r].value;
+            i += direction;
+        }
+    }
+
+    IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
+
+    if (filteredIndexedArray == NULL) {
+        filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
+        indexedArrayWrapper->array = filteredIndexedArray;
+    } else {
+        free(filteredIndexedArray->data);
+    }
+
+    filteredIndexedArray->data = filteredArray;
+    filteredIndexedArray->numElements = numElements;
+    indexedArrayWrapper->numConditions = numConditions;
+    return updatedTarget;
+}
+
 static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArrayWrapper,
                                           const IndexedFloat32Array* indexedArray, intp conditionStart,
                                           intp conditionEnd, Comparator conditionComparator, bool covered,
@@ -438,15 +549,11 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
 
-    // TODO Remove
-    bool dealloc = false;
-
     if (indexedArray == NULL) {
         auto it = thresholds_.cacheNew_.find(featureIndex);
         FeatureVector* featureVector = it->second.get();
 
         // TODO Remove
-        dealloc = true;
         indexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
         IndexedFloat32* indexedValues = NULL;
 
@@ -466,6 +573,16 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
         if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
             refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
         }
+
+        coveredExamplesTarget_ = filterCurrentFeatureVector(indexedArrayWrapper, *featureVector, refinement.start,
+                                                            refinement.end, refinement.comparator, refinement.covered,
+                                                            numRefinements_, coveredExamplesMask_,
+                                                            coveredExamplesTarget_, *thresholds_.statisticsPtr_,
+                                                            *weightsPtr_);
+
+        // TODO Remove
+        free(indexedArray->data);
+        free(indexedArray);
     } else {
         // If there are examples with zero weights, those examples have not been considered considered when searching for
         // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
@@ -477,18 +594,13 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
         if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
             refinement.end = adjustSplitOld(indexedArray, refinement.end, refinement.previous, refinement.threshold);
         }
-    }
 
-    // Identify the examples that are covered by the refined rule...
-    coveredExamplesTarget_ = filterCurrentIndices(indexedArrayWrapper, indexedArray, refinement.start, refinement.end,
-                                                  refinement.comparator, refinement.covered, numRefinements_,
-                                                  coveredExamplesMask_, coveredExamplesTarget_,
-                                                  *thresholds_.statisticsPtr_, *weightsPtr_);
-
-    // TODO Remove
-    if (dealloc) {
-        free(indexedArray->data);
-        free(indexedArray);
+        // Identify the examples that are covered by the refined rule...
+        // Todo Replace with filterCurrentFeatureVector function
+        coveredExamplesTarget_ = filterCurrentIndices(indexedArrayWrapper, indexedArray, refinement.start,
+                                                      refinement.end, refinement.comparator, refinement.covered,
+                                                      numRefinements_, coveredExamplesMask_, coveredExamplesTarget_,
+                                                      *thresholds_.statisticsPtr_, *weightsPtr_);
     }
 }
 
