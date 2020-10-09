@@ -411,9 +411,22 @@ IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(ui
         indexedValues = indexedArray->data;
 
         if (indexedValues == NULL) {
-            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureValues(featureIndex, *indexedArray);
-            indexedValues = indexedArray->data;
-            qsort(indexedValues, indexedArray->numElements, sizeof(IndexedFloat32), &tuples::compareIndexedFloat32);
+            std::unique_ptr<FeatureVector> featureVectorPtr;
+            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, featureVectorPtr);
+            featureVectorPtr->sortByValues();
+
+            if (featureVectorPtr->getNumElements() > 0) {
+                indexedValues = (IndexedFloat32*) malloc(featureVectorPtr->getNumElements() * sizeof(IndexedFloat32));
+                FeatureVector::const_iterator iterator = featureVectorPtr->cbegin();
+
+                for (uint32 i = 0; i < featureVectorPtr->getNumElements(); i++) {
+                    indexedValues[i].index = iterator[i].index;
+                    indexedValues[i].value = iterator[i].value;
+                }
+            }
+
+            indexedArray->data = indexedValues;
+            indexedArray->numElements = featureVectorPtr->getNumElements();
         }
     }
 
