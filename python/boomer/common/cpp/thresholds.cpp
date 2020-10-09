@@ -396,14 +396,12 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& pred
     }
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::RuleRefinementCallbackImpl(
-        ThresholdsSubsetImpl& thresholdsSubset)
+ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetImpl& thresholdsSubset)
     : thresholdsSubset_(thresholdsSubset) {
 
 }
 
-IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::RuleRefinementCallbackImpl::get(
-        uint32 featureIndex) const {
+IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) const {
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
