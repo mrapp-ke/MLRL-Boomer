@@ -6,6 +6,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "tuples.h"
 #include <unordered_set>
 #include <utility>
 
