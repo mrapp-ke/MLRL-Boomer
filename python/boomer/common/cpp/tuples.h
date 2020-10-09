@@ -9,6 +9,15 @@
 
 
 /**
+ * A tuple that consists of an index and a value.
+ */
+template<class T>
+struct IndexedValue {
+    uint32 index;
+    T value;
+};
+
+/**
  * A struct that stores a value of type float32 and a corresponding index that refers to the (original) position of the
  * value in an array.
  */
