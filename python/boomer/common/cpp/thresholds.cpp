@@ -327,7 +327,7 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
     }
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
-    std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr = std::make_unique<Callback>(*this);
+    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this);
     return std::make_unique<ExactRuleRefinementImpl>(thresholds_.statisticsPtr_, weightsPtr_, sumOfWeights_,
                                                      featureIndex, nominal, std::move(callbackPtr));
 }
@@ -400,7 +400,11 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 
 }
 
-IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) const {
+ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::~Callback() {
+    delete featureVector_;
+}
+
+FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) {
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
@@ -439,7 +443,16 @@ IndexedFloat32Array& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(ui
         indexedArray = indexedArrayWrapper->array;
     }
 
-    return *indexedArray;
+    // TODO Remove
+    featureVector_ = new FeatureVector(indexedArray->numElements);
+    FeatureVector::iterator iterator = featureVector_->begin();
+
+    for (uint32 i = 0; i < indexedArray->numElements; i++) {
+        iterator[i].index = indexedArray->data[i].index;
+        iterator[i].value = indexedArray->data[i].value;
+    }
+
+    return *featureVector_;
 }
 
 ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,

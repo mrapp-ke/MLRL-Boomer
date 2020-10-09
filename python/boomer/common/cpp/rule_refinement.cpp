@@ -16,7 +16,7 @@ bool Refinement::isBetterThan(Refinement& another) const {
 ExactRuleRefinementImpl::ExactRuleRefinementImpl(
         std::shared_ptr<AbstractStatistics> statisticsPtr, std::shared_ptr<IWeightVector> weightsPtr,
         uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr)
+        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
     : statisticsPtr_(statisticsPtr), weightsPtr_(weightsPtr), totalSumOfWeights_(totalSumOfWeights),
       featureIndex_(featureIndex), nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
 
@@ -33,9 +33,9 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
                                                                                           labelIndices);
 
     // Retrieve the array to be iterated...
-    IndexedFloat32Array& indexedArray = callbackPtr_->get(featureIndex_);
-    const IndexedFloat32* indexedValues = indexedArray.data;
-    uint32 numElements = indexedArray.numElements;
+    FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
+    FeatureVector::const_iterator iterator = featureVector.cbegin();
+    uint32 numElements = featureVector.getNumElements();
 
     // In the following, we start by processing all examples with feature values < 0...
     uint32 sumOfWeights = 0;
@@ -47,14 +47,14 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     // Traverse examples with feature values < 0 in ascending order until the first example with weight > 0 is
     // encountered...
     for (r = 0; r < numElements; r++) {
-        float32 currentThreshold = indexedValues[r].value;
+        float32 currentThreshold = iterator[r].value;
 
         if (currentThreshold >= 0) {
             break;
         }
 
         lastNegativeR = r;
-        uint32 i = indexedValues[r].index;
+        uint32 i = iterator[r].index;
         uint32 weight = weightsPtr_->getValue(i);
 
         if (weight > 0) {
@@ -72,14 +72,14 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     // Traverse the remaining examples with feature values < 0 in ascending order...
     if (sumOfWeights > 0) {
         for (r = r + 1; r < numElements; r++) {
-            float32 currentThreshold = indexedValues[r].value;
+            float32 currentThreshold = iterator[r].value;
 
             if (currentThreshold >= 0) {
                 break;
             }
 
             lastNegativeR = r;
-            uint32 i = indexedValues[r].index;
+            uint32 i = iterator[r].index;
             uint32 weight = weightsPtr_->getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
@@ -204,14 +204,14 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     // Traverse examples with feature values >= 0 in descending order until the first example with weight > 0 is
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
-        uint32 i = indexedValues[r].index;
+        uint32 i = iterator[r].index;
         uint32 weight = weightsPtr_->getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
             statisticsSubsetPtr->addToSubset(i, weight);
             sumOfWeights += weight;
-            previousThreshold = indexedValues[r].value;
+            previousThreshold = iterator[r].value;
             previousR = r;
             break;
         }
@@ -222,12 +222,12 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     // Traverse the remaining examples with feature values >= 0 in descending order...
     if (sumOfWeights > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
-            uint32 i = indexedValues[r].index;
+            uint32 i = iterator[r].index;
             uint32 weight = weightsPtr_->getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
-                float32 currentThreshold = indexedValues[r].value;
+                float32 currentThreshold = iterator[r].value;
 
                 // Split points between examples with the same feature value must not be considered...
                 if (previousThreshold != currentThreshold) {
