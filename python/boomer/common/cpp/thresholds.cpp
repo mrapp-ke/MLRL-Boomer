@@ -91,14 +91,14 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
                                           uint32 coveredExamplesTarget, AbstractStatistics& statistics,
                                           IWeightVector& weights) {
     IndexedFloat32* indexedValues = indexedArray->data;
-    uint32 numIndexedValues = indexedArray->numElements;
+    uint32 numTotalElements = indexedArray->numElements;
     bool descending = conditionEnd < conditionStart;
     uint32 updatedTarget;
 
     // Determine the number of elements in the filtered array...
     uint32 numConditionSteps = abs(conditionStart - conditionEnd);
     uint32 numElements = covered ? numConditionSteps :
-        (numIndexedValues > numConditionSteps ? numIndexedValues - numConditionSteps : 0);
+        (numTotalElements > numConditionSteps ? numTotalElements - numConditionSteps : 0);
 
     // Allocate filtered array...
     IndexedFloat32* filteredArray = numElements > 0 ?
@@ -136,11 +136,11 @@ static inline uint32 filterCurrentIndices(IndexedFloat32ArrayWrapper* indexedArr
         intp start, end;
 
         if (descending) {
-            start = numIndexedValues - 1;
+            start = numTotalElements - 1;
             end = -1;
         } else {
             start = 0;
-            end = numIndexedValues;
+            end = numTotalElements;
         }
 
         if (conditionComparator == NEQ) {
