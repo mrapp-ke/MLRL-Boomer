@@ -213,8 +213,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         };
 
-        std::unordered_map<uint32, IndexedFloat32Array*> cache_;
-
         std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cacheNew_;
 
     public:
@@ -230,8 +228,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
         ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                             std::shared_ptr<AbstractStatistics> statisticsPtr);
-
-        ~ExactThresholdsImpl();
 
         std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) override;
 
