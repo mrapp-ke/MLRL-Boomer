@@ -593,13 +593,15 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
     // Obtain array that contains the indices of the training examples sorted according to the current feature...
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
+    FeatureVector* featureVector;
 
     // TODO Remove
     IndexedFloat32Array* tmpIndexedArray = NULL;
+    bool dealloc = false;
 
     if (indexedArray == NULL) {
         auto itFiltered = thresholdsSubset_.thresholds_.cacheNew_.find(featureIndex);
-        FeatureVector* featureVector = itFiltered->second.get();
+        featureVector = itFiltered->second.get();
 
         if (featureVector == NULL) {
             thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, itFiltered->second);
@@ -624,35 +626,25 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
         tmpIndexedArray->data = indexedValues;
         tmpIndexedArray->numElements = featureVector->getNumElements();
         indexedArray = tmpIndexedArray;
-
-        // Filter indices, if only a subset of the contained examples is covered...
-        uint32 numConditions = thresholdsSubset_.numRefinements_;
-
-        if (numConditions > indexedArrayWrapper->numConditions) {
-            filterAnyFeatureVector(*featureVector, indexedArrayWrapper, numConditions,
-                                   thresholdsSubset_.coveredExamplesMask_, thresholdsSubset_.coveredExamplesTarget_);
-            indexedArray = indexedArrayWrapper->array;
-        }
     } else {
         // TODO Remove
-        FeatureVector* featureVector = new FeatureVector(indexedArray->numElements);
+        dealloc = true;
+        featureVector = new FeatureVector(indexedArray->numElements);
         FeatureVector::iterator iterator = featureVector->begin();
 
         for (uint32 i = 0; i < indexedArray->numElements; i++) {
             iterator[i].index = indexedArray->data[i].index;
             iterator[i].value = indexedArray->data[i].value;
         }
+    }
 
-        // Filter indices, if only a subset of the contained examples is covered...
-        uint32 numConditions = thresholdsSubset_.numRefinements_;
+    // Filter feature vector, if only a subset of its elements are covered by the current rule...
+    uint32 numConditions = thresholdsSubset_.numRefinements_;
 
-        if (numConditions > indexedArrayWrapper->numConditions) {
-            filterAnyFeatureVector(*featureVector, indexedArrayWrapper, numConditions,
-                                   thresholdsSubset_.coveredExamplesMask_, thresholdsSubset_.coveredExamplesTarget_);
-            indexedArray = indexedArrayWrapper->array;
-        }
-
-        delete featureVector;
+    if (numConditions > indexedArrayWrapper->numConditions) {
+        filterAnyFeatureVector(*featureVector, indexedArrayWrapper, numConditions,
+                               thresholdsSubset_.coveredExamplesMask_, thresholdsSubset_.coveredExamplesTarget_);
+        indexedArray = indexedArrayWrapper->array;
     }
 
     // TODO Remove
@@ -669,6 +661,9 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
         free(tmpIndexedArray->data);
     }
     free(tmpIndexedArray);
+    if (dealloc) {
+        delete featureVector;
+    }
 
     return *featureVector_;
 }
