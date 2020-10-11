@@ -182,7 +182,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 numRefinements_;
 
-                std::unordered_map<uint32, CacheEntry> cacheFilteredNew_;
+                std::unordered_map<uint32, CacheEntry> cacheFiltered_;
 
             public:
 
@@ -206,7 +206,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         };
 
-        std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cacheNew_;
+        std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cache_;
 
     public:
 
