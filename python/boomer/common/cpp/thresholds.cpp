@@ -52,55 +52,6 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
 }
 
 /**
- * Adjusts the position that separates the examples that are covered by a condition from the ones that are not covered,
- * with respect to those examples that are not contained in the current sub-sample. This requires to look back a certain
- * number of examples to see if they satisfy the new condition or not. I.e., to traverse the examples in ascending or
- * descending order, depending on whether `conditionEnd` is smaller than `conditionPrevious` or vice versa, until the
- * next example that is contained in the current sub-sampling is encountered.
- *
- * @param indexedArray      A pointer to a struct of type `IndexedFloat32Array` that stores a pointer to an array which
- *                          contains the indices of the training examples and the corresponding feature values, as well
- *                          as the number of elements in the array
- * @param conditionEnd      The position that separates the covered from the uncovered examples when only taking into
- *                          account the examples that are contained in the current sub-sample
- * @param conditionPrevious The position to stop at (exclusive)
- * @param threshold         The threshold of the condition
- * @return                  The adjusted position that separates the covered from the uncovered examples with respect to
- *                          the examples that are not contained in the current sub-sample
- */
-static inline intp adjustSplitOld(const IndexedFloat32Array* indexedArray, intp conditionEnd, intp conditionPrevious,
-                                  float32 threshold) {
-    const IndexedFloat32* indexedValues = indexedArray->data;
-    intp adjustedPosition = conditionEnd;
-    bool ascending = conditionEnd < conditionPrevious;
-    intp direction = ascending ? 1 : -1;
-    intp start = conditionEnd + direction;
-    uint32 numSteps = abs(start - conditionPrevious);
-
-    // Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
-    // current sub-sample...
-    for (uint32 i = 0; i < numSteps; i++) {
-        // Check if the current position should be adjusted, or not. This is the case, if the feature value of the
-        // current example is smaller than or equal to the given `threshold` (or greater than the `threshold`, if we
-        // traverse in descending direction)
-        uint32 r = start + (i * direction);
-        float32 featureValue = indexedValues[r].value;
-        bool adjust = ascending ? featureValue <= threshold : featureValue > threshold;
-
-        if (adjust) {
-            // Update the adjusted position and continue...
-            adjustedPosition = r;
-        } else {
-            // If we have found the first example that is separated from the example at the position we started at, we
-            // are done...
-            break;
-        }
-    }
-
-    return adjustedPosition;
-}
-
-/**
  * Filters a feature vector that contains the indices of the examples that are covered by the previous rule, as well as
  * their values for a certain feature, after a new condition that corresponds to said feature has been added, such that
  * the filtered vector does only contain the indices and feature values of the examples that are covered by the new
@@ -408,9 +359,8 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
         // calculates the number of covered examples based on the variable `refinement.end`, which represents the position
         // that separates the covered from the uncovered examples. However, when taking into account the examples with zero
         // weights, this position may differ from the current value of `refinement.end` and therefore must be adjusted...
-        // TODO Replace with adjustSplit function
         if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
-            refinement.end = adjustSplitOld(indexedArray, refinement.end, refinement.previous, refinement.threshold);
+            refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
         }
 
         // Identify the examples that are covered by the refined rule...
