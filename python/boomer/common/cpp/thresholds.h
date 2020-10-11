@@ -6,9 +6,8 @@
 #pragma once
 
 #include "arrays.h"
-#include "predictions.h"
-#include "tuples.h"
 #include "data.h"
+#include "predictions.h"
 #include "input_data.h"
 #include "sub_sampling.h"
 #include "rule_refinement.h"
