@@ -198,47 +198,32 @@ static inline uint32 filterCurrentFeatureVector(FeatureVector& featureVector, in
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the current rule
  */
-static inline void filterAnyFeatureVector(FeatureVector& featureVector, IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                          uint32 numConditions, const uint32* coveredExamplesMask,
-                                          uint32 coveredExamplesTarget) {
+static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEntry& cacheEntry, uint32 numConditions,
+                                          const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
     uint32 maxElements = featureVector.getNumElements();
-    IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
-    IndexedFloat32* filteredArray = filteredIndexedArray == NULL ? NULL : filteredIndexedArray->data;
+    FeatureVector* filteredVector = cacheEntry.featureVectorPtr.get();
+
+    if (filteredVector == NULL) {
+        cacheEntry.featureVectorPtr = std::move(std::make_unique<FeatureVector>(maxElements));
+        filteredVector = cacheEntry.featureVectorPtr.get();
+    }
 
     FeatureVector::const_iterator iterator = featureVector.cbegin();
+    FeatureVector::iterator filteredIterator = filteredVector->begin();
     uint32 i = 0;
 
-    if (maxElements > 0) {
-        if (filteredArray == NULL) {
-            filteredArray = (IndexedFloat32*) malloc(maxElements * sizeof(IndexedFloat32));
-        }
+    for (uint32 r = 0; r < maxElements; r++) {
+        uint32 index = iterator[r].index;
 
-        for (uint32 r = 0; r < maxElements; r++) {
-            uint32 index = iterator[r].index;
-
-            if (coveredExamplesMask[index] == coveredExamplesTarget) {
-                filteredArray[i].index = index;
-                filteredArray[i].value = iterator[r].value;
-                i++;
-            }
+        if (coveredExamplesMask[index] == coveredExamplesTarget) {
+            filteredIterator[i].index = index;
+            filteredIterator[i].value = iterator[r].value;
+            i++;
         }
     }
 
-    if (i == 0) {
-        free(filteredArray);
-        filteredArray = NULL;
-    } else if (i < maxElements) {
-        filteredArray = (IndexedFloat32*) realloc(filteredArray, i * sizeof(IndexedFloat32));
-    }
-
-    if (filteredIndexedArray == NULL) {
-        filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
-    }
-
-    filteredIndexedArray->data = filteredArray;
-    filteredIndexedArray->numElements = i;
-    indexedArrayWrapper->array = filteredIndexedArray;
-    indexedArrayWrapper->numConditions = numConditions;
+    filteredVector->setNumElements(i);
+    cacheEntry.numConditions = numConditions;
 }
 
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
@@ -328,20 +313,10 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     // TODO Remove
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
-    bool dealloc = false;
 
-    if (indexedArray == NULL) {
+    if (featureVector == NULL) {
         auto it = thresholds_.cacheNew_.find(featureIndex);
         featureVector = it->second.get();
-    } else {
-        // TODO Remove
-        featureVector = new FeatureVector(indexedArray->numElements);
-        FeatureVector::iterator iterator = featureVector->begin();
-
-        for (uint32 i = 0; i < indexedArray->numElements; i++) {
-            iterator[i].index = indexedArray->data[i].index;
-            iterator[i].value = indexedArray->data[i].value;
-        }
     }
 
     // If there are examples with zero weights, those examples have not been considered considered when searching for
@@ -359,11 +334,6 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
                                                         refinement.end, refinement.comparator, refinement.covered,
                                                         numRefinements_, coveredExamplesMask_, coveredExamplesTarget_,
                                                         *thresholds_.statisticsPtr_, *weightsPtr_);
-
-    // TODO Remove
-    if (dealloc) {
-        delete featureVector;
-    }
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
@@ -410,10 +380,6 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::~Callback() {
 }
 
 FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) {
-    // TODO Remove
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
-    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
-
     auto it = thresholdsSubset_.cacheFilteredNew_.find(featureIndex);
     CacheEntry& cacheEntry = it->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
@@ -433,23 +399,13 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
     uint32 numConditions = thresholdsSubset_.numRefinements_;
 
     if (numConditions > cacheEntry.numConditions) {
-        filterAnyFeatureVector(*featureVector, indexedArrayWrapper, numConditions,
-                               thresholdsSubset_.coveredExamplesMask_, thresholdsSubset_.coveredExamplesTarget_);
-        indexedArray = indexedArrayWrapper->array;
-
-        // TODO Remove
-        featureVector = new FeatureVector(indexedArray->numElements);
-        FeatureVector::iterator iterator = featureVector->begin();
-
-        for (uint32 i = 0; i < indexedArray->numElements; i++) {
-            iterator[i].index = indexedArray->data[i].index;
-            iterator[i].value = indexedArray->data[i].value;
-        }
-
-        featureVector_ = featureVector;
-    } else {
-        featureVector_ = NULL;
+        filterAnyFeatureVector(*featureVector, cacheEntry, numConditions, thresholdsSubset_.coveredExamplesMask_,
+                               thresholdsSubset_.coveredExamplesTarget_);
+        featureVector = cacheEntry.featureVectorPtr.get();
     }
+
+    // TODO Remove
+    featureVector_ = NULL;
 
     return *featureVector;
 }
