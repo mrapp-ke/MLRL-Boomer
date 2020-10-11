@@ -413,8 +413,6 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
     // TODO Remove
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
-    IndexedFloat32Array* tmpIndexedArray = NULL;
-    bool dealloc = false;
 
     auto it = thresholdsSubset_.cacheFilteredNew_.find(featureIndex);
     CacheEntry& cacheEntry = it->second;
@@ -429,34 +427,6 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
             itFiltered->second->sortByValues();
             featureVector = itFiltered->second.get();
         }
-
-        // TODO Remove
-        tmpIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
-        IndexedFloat32* indexedValues = NULL;
-
-        if (featureVector->getNumElements() > 0) {
-            indexedValues = (IndexedFloat32*) malloc(featureVector->getNumElements() * sizeof(IndexedFloat32));
-            FeatureVector::const_iterator iterator = featureVector->cbegin();
-
-            for (uint32 i = 0; i < featureVector->getNumElements(); i++) {
-                indexedValues[i].index = iterator[i].index;
-                indexedValues[i].value = iterator[i].value;
-            }
-        }
-
-        tmpIndexedArray->data = indexedValues;
-        tmpIndexedArray->numElements = featureVector->getNumElements();
-        indexedArray = tmpIndexedArray;
-    } else {
-        // TODO Remove
-        dealloc = true;
-        featureVector = new FeatureVector(indexedArray->numElements);
-        FeatureVector::iterator iterator = featureVector->begin();
-
-        for (uint32 i = 0; i < indexedArray->numElements; i++) {
-            iterator[i].index = indexedArray->data[i].index;
-            iterator[i].value = indexedArray->data[i].value;
-        }
     }
 
     // Filter feature vector, if only a subset of its elements are covered by the current rule...
@@ -466,27 +436,22 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
         filterAnyFeatureVector(*featureVector, indexedArrayWrapper, numConditions,
                                thresholdsSubset_.coveredExamplesMask_, thresholdsSubset_.coveredExamplesTarget_);
         indexedArray = indexedArrayWrapper->array;
+
+        // TODO Remove
+        featureVector = new FeatureVector(indexedArray->numElements);
+        FeatureVector::iterator iterator = featureVector->begin();
+
+        for (uint32 i = 0; i < indexedArray->numElements; i++) {
+            iterator[i].index = indexedArray->data[i].index;
+            iterator[i].value = indexedArray->data[i].value;
+        }
+
+        featureVector_ = featureVector;
+    } else {
+        featureVector_ = NULL;
     }
 
-    // TODO Remove
-    featureVector_ = new FeatureVector(indexedArray->numElements);
-    FeatureVector::iterator iterator = featureVector_->begin();
-
-    for (uint32 i = 0; i < indexedArray->numElements; i++) {
-        iterator[i].index = indexedArray->data[i].index;
-        iterator[i].value = indexedArray->data[i].value;
-    }
-
-    // TODO Remove
-    if (tmpIndexedArray != NULL) {
-        free(tmpIndexedArray->data);
-    }
-    free(tmpIndexedArray);
-    if (dealloc) {
-        delete featureVector;
-    }
-
-    return *featureVector_;
+    return *featureVector;
 }
 
 ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
