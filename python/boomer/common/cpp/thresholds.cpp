@@ -263,12 +263,12 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
 std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         uint32 featureIndex) {
     // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
-    auto it = cacheFilteredNew_.emplace(featureIndex, CacheEntry()).first;
+    auto it = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
     FeatureVector* featureVector = it->second.featureVectorPtr.get();
 
     // If the `CacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to the cache...
     if (featureVector == NULL) {
-        thresholds_.cacheNew_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
+        thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
     }
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
@@ -282,12 +282,12 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     sumOfWeights_ = refinement.coveredWeights;
 
     uint32 featureIndex = refinement.featureIndex;
-    auto itFiltered = cacheFilteredNew_.find(featureIndex);
+    auto itFiltered = cacheFiltered_.find(featureIndex);
     CacheEntry& cacheEntry = itFiltered->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
     if (featureVector == NULL) {
-        auto it = thresholds_.cacheNew_.find(featureIndex);
+        auto it = thresholds_.cache_.find(featureIndex);
         featureVector = it->second.get();
     }
 
@@ -348,12 +348,12 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 }
 
 FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) {
-    auto it = thresholdsSubset_.cacheFilteredNew_.find(featureIndex);
+    auto it = thresholdsSubset_.cacheFiltered_.find(featureIndex);
     CacheEntry& cacheEntry = it->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
     if (featureVector == NULL) {
-        auto itFiltered = thresholdsSubset_.thresholds_.cacheNew_.find(featureIndex);
+        auto itFiltered = thresholdsSubset_.thresholds_.cache_.find(featureIndex);
         featureVector = itFiltered->second.get();
 
         if (featureVector == NULL) {
