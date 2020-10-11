@@ -159,9 +159,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                         ThresholdsSubsetImpl& thresholdsSubset_;
 
-                        // TODO Remove
-                        FeatureVector* featureVector_;
-
                     public:
 
                         /**
@@ -169,9 +166,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          *                         the feature vectors
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset);
-
-                        // TODO Remove
-                        ~Callback();
 
                         FeatureVector& get(uint32 featureIndex) override;
 

@@ -375,10 +375,6 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::~Callback() {
-    delete featureVector_;
-}
-
 FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) {
     auto it = thresholdsSubset_.cacheFilteredNew_.find(featureIndex);
     CacheEntry& cacheEntry = it->second;
@@ -403,9 +399,6 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
                                thresholdsSubset_.coveredExamplesTarget_);
         featureVector = cacheEntry.featureVectorPtr.get();
     }
-
-    // TODO Remove
-    featureVector_ = NULL;
 
     return *featureVector;
 }
