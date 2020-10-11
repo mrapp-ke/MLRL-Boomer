@@ -331,11 +331,13 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     sumOfWeights_ = refinement.coveredWeights;
 
     uint32 featureIndex = refinement.featureIndex;
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
-    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
-    FeatureVector* featureVector;
+    auto itFiltered = cacheFilteredNew_.find(featureIndex);
+    CacheEntry& cacheEntry = itFiltered->second;
+    FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
     // TODO Remove
+    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
+    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
     bool dealloc = false;
 
     if (indexedArray == NULL) {
@@ -351,7 +353,6 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
             iterator[i].value = indexedArray->data[i].value;
         }
     }
-
 
     // If there are examples with zero weights, those examples have not been considered considered when searching for
     // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
