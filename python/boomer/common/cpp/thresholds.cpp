@@ -329,46 +329,44 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     uint32 featureIndex = refinement.featureIndex;
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
+    FeatureVector* featureVector;
+
+    // TODO Remove
+    bool dealloc = false;
 
     if (indexedArray == NULL) {
         auto it = thresholds_.cacheNew_.find(featureIndex);
-        FeatureVector* featureVector = it->second.get();
-
-        if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
-            refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
-        }
-
-        coveredExamplesTarget_ = filterCurrentFeatureVector(indexedArrayWrapper, *featureVector, refinement.start,
-                                                            refinement.end, refinement.comparator, refinement.covered,
-                                                            numRefinements_, coveredExamplesMask_,
-                                                            coveredExamplesTarget_, *thresholds_.statisticsPtr_,
-                                                            *weightsPtr_);
+        featureVector = it->second.get();
     } else {
         // TODO Remove
-        FeatureVector* featureVector = new FeatureVector(indexedArray->numElements);
+        featureVector = new FeatureVector(indexedArray->numElements);
         FeatureVector::iterator iterator = featureVector->begin();
 
         for (uint32 i = 0; i < indexedArray->numElements; i++) {
             iterator[i].index = indexedArray->data[i].index;
             iterator[i].value = indexedArray->data[i].value;
         }
+    }
 
-        // If there are examples with zero weights, those examples have not been considered considered when searching for
-        // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
-        // including those that have previously been ignored, via the function `filterCurrentFeatureValues`. Said function
-        // calculates the number of covered examples based on the variable `refinement.end`, which represents the position
-        // that separates the covered from the uncovered examples. However, when taking into account the examples with zero
-        // weights, this position may differ from the current value of `refinement.end` and therefore must be adjusted...
-        if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
-            refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
-        }
 
-        // Identify the examples that are covered by the refined rule...
-        coveredExamplesTarget_ = filterCurrentFeatureVector(indexedArrayWrapper, *featureVector, refinement.start,
-                                                      refinement.end, refinement.comparator, refinement.covered,
-                                                      numRefinements_, coveredExamplesMask_, coveredExamplesTarget_,
-                                                      *thresholds_.statisticsPtr_, *weightsPtr_);
+    // If there are examples with zero weights, those examples have not been considered considered when searching for
+    // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
+    // including those that have previously been ignored, via the function `filterCurrentFeatureValues`. Said function
+    // calculates the number of covered examples based on the variable `refinement.end`, which represents the position
+    // that separates the covered from the uncovered examples. However, when taking into account the examples with zero
+    // weights, this position may differ from the current value of `refinement.end` and therefore must be adjusted...
+    if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
+        refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
+    }
 
+    // Identify the examples that are covered by the refined rule...
+    coveredExamplesTarget_ = filterCurrentFeatureVector(indexedArrayWrapper, *featureVector, refinement.start,
+                                                        refinement.end, refinement.comparator, refinement.covered,
+                                                        numRefinements_, coveredExamplesMask_, coveredExamplesTarget_,
+                                                        *thresholds_.statisticsPtr_, *weightsPtr_);
+
+    // TODO Remove
+    if (dealloc) {
         delete featureVector;
     }
 }
