@@ -414,7 +414,6 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
         }
 
         // Identify the examples that are covered by the refined rule...
-        // Todo Replace with filterCurrentFeatureVector function
         coveredExamplesTarget_ = filterCurrentFeatureVector(indexedArrayWrapper, *featureVector, refinement.start,
                                                       refinement.end, refinement.comparator, refinement.covered,
                                                       numRefinements_, coveredExamplesMask_, coveredExamplesTarget_,
