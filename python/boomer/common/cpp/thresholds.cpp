@@ -355,7 +355,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
 
     // If there are examples with zero weights, those examples have not been considered considered when searching for
     // the refinement. In the next step, we need to identify the examples that are covered by the refined rule,
-    // including those that have previously been ignored, via the function `filterCurrentFeatureValues`. Said function
+    // including those that have previously been ignored, via the function `filterCurrentFeatureVector`. Said function
     // calculates the number of covered examples based on the variable `refinement.end`, which represents the position
     // that separates the covered from the uncovered examples. However, when taking into account the examples with zero
     // weights, this position may differ from the current value of `refinement.end` and therefore must be adjusted...
