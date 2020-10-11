@@ -301,6 +301,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
 
 std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         uint32 featureIndex) {
+    // TODO Remove
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
 
     if (indexedArrayWrapper == NULL) {
@@ -310,9 +311,12 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
         cacheFiltered_[featureIndex] = indexedArrayWrapper;
     }
 
-    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
+    // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
+    auto it = cacheFilteredNew_.emplace(featureIndex, CacheEntry()).first;
+    FeatureVector* featureVector = it->second.featureVectorPtr.get();
 
-    if (indexedArray == NULL) {
+    // If the `CacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to the cache...
+    if (featureVector == NULL) {
         thresholds_.cacheNew_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
     }
 
