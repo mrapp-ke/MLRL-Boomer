@@ -183,8 +183,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 numRefinements_;
 
-                std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
-
                 std::unordered_map<uint32, CacheEntry> cacheFilteredNew_;
 
             public:

@@ -257,35 +257,11 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsI
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
-    std::unordered_map<uint32, IndexedFloat32ArrayWrapper*>::iterator iterator;
-
-    for (iterator = cacheFiltered_.begin(); iterator != cacheFiltered_.end(); iterator++) {
-        IndexedFloat32ArrayWrapper* indexedArrayWrapper = iterator->second;
-        IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
-
-        if (indexedArray != NULL) {
-            free(indexedArray->data);
-            free(indexedArray);
-        }
-
-        free(indexedArrayWrapper);
-    }
-
     delete[] coveredExamplesMask_;
 }
 
 std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         uint32 featureIndex) {
-    // TODO Remove
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
-
-    if (indexedArrayWrapper == NULL) {
-        indexedArrayWrapper = (IndexedFloat32ArrayWrapper*) malloc(sizeof(IndexedFloat32ArrayWrapper));
-        indexedArrayWrapper->array = NULL;
-        indexedArrayWrapper->numConditions = 0;
-        cacheFiltered_[featureIndex] = indexedArrayWrapper;
-    }
-
     // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
     auto it = cacheFilteredNew_.emplace(featureIndex, CacheEntry()).first;
     FeatureVector* featureVector = it->second.featureVectorPtr.get();
@@ -309,10 +285,6 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     auto itFiltered = cacheFilteredNew_.find(featureIndex);
     CacheEntry& cacheEntry = itFiltered->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
-
-    // TODO Remove
-    IndexedFloat32ArrayWrapper* indexedArrayWrapper = cacheFiltered_[featureIndex];
-    IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
 
     if (featureVector == NULL) {
         auto it = thresholds_.cacheNew_.find(featureIndex);
