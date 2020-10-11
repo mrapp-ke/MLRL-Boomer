@@ -82,8 +82,7 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
-static inline uint32 filterCurrentFeatureVector(IndexedFloat32ArrayWrapper* indexedArrayWrapper,
-                                                FeatureVector& featureVector, intp conditionStart, intp conditionEnd,
+static inline uint32 filterCurrentFeatureVector(FeatureVector& featureVector, intp conditionStart, intp conditionEnd,
                                                 Comparator conditionComparator, bool covered, uint32 numConditions,
                                                 uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
                                                 AbstractStatistics& statistics, IWeightVector& weights) {
@@ -179,18 +178,9 @@ static inline uint32 filterCurrentFeatureVector(IndexedFloat32ArrayWrapper* inde
         }
     }
 
-    IndexedFloat32Array* filteredIndexedArray = indexedArrayWrapper->array;
+    // TODO Remove
+    free(filteredArray);
 
-    if (filteredIndexedArray == NULL) {
-        filteredIndexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
-        indexedArrayWrapper->array = filteredIndexedArray;
-    } else {
-        free(filteredIndexedArray->data);
-    }
-
-    filteredIndexedArray->data = filteredArray;
-    filteredIndexedArray->numElements = numElements;
-    indexedArrayWrapper->numConditions = numConditions;
     return updatedTarget;
 }
 
@@ -365,7 +355,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     }
 
     // Identify the examples that are covered by the refined rule...
-    coveredExamplesTarget_ = filterCurrentFeatureVector(indexedArrayWrapper, *featureVector, refinement.start,
+    coveredExamplesTarget_ = filterCurrentFeatureVector(*featureVector, refinement.start,
                                                         refinement.end, refinement.comparator, refinement.covered,
                                                         numRefinements_, coveredExamplesMask_, coveredExamplesTarget_,
                                                         *thresholds_.statisticsPtr_, *weightsPtr_);
