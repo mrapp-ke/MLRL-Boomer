@@ -383,23 +383,6 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
         auto it = thresholds_.cacheNew_.find(featureIndex);
         FeatureVector* featureVector = it->second.get();
 
-        // TODO Remove
-        indexedArray = (IndexedFloat32Array*) malloc(sizeof(IndexedFloat32Array));
-        IndexedFloat32* indexedValues = NULL;
-
-        if (featureVector->getNumElements() > 0) {
-            indexedValues = (IndexedFloat32*) malloc(featureVector->getNumElements() * sizeof(IndexedFloat32));
-            FeatureVector::const_iterator iterator = featureVector->cbegin();
-
-            for (uint32 i = 0; i < featureVector->getNumElements(); i++) {
-                indexedValues[i].index = iterator[i].index;
-                indexedValues[i].value = iterator[i].value;
-            }
-        }
-
-        indexedArray->data = indexedValues;
-        indexedArray->numElements = featureVector->getNumElements();
-
         if (weightsPtr_->hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
             refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
         }
@@ -409,10 +392,6 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
                                                             numRefinements_, coveredExamplesMask_,
                                                             coveredExamplesTarget_, *thresholds_.statisticsPtr_,
                                                             *weightsPtr_);
-
-        // TODO Remove
-        free(indexedArray->data);
-        free(indexedArray);
     } else {
         // TODO Remove
         FeatureVector* featureVector = new FeatureVector(indexedArray->numElements);
