@@ -419,16 +419,17 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::~Callback() {
 }
 
 FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) {
-    // Obtain array that contains the indices of the training examples sorted according to the current feature...
+    // TODO Remove
     IndexedFloat32ArrayWrapper* indexedArrayWrapper = thresholdsSubset_.cacheFiltered_[featureIndex];
     IndexedFloat32Array* indexedArray = indexedArrayWrapper->array;
-    FeatureVector* featureVector;
-
-    // TODO Remove
     IndexedFloat32Array* tmpIndexedArray = NULL;
     bool dealloc = false;
 
-    if (indexedArray == NULL) {
+    auto it = thresholdsSubset_.cacheFilteredNew_.find(featureIndex);
+    CacheEntry& cacheEntry = it->second;
+    FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
+
+    if (featureVector == NULL) {
         auto itFiltered = thresholdsSubset_.thresholds_.cacheNew_.find(featureIndex);
         featureVector = itFiltered->second.get();
 
@@ -470,7 +471,7 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
     // Filter feature vector, if only a subset of its elements are covered by the current rule...
     uint32 numConditions = thresholdsSubset_.numRefinements_;
 
-    if (numConditions > indexedArrayWrapper->numConditions) {
+    if (numConditions > cacheEntry.numConditions) {
         filterAnyFeatureVector(*featureVector, indexedArrayWrapper, numConditions,
                                thresholdsSubset_.coveredExamplesMask_, thresholdsSubset_.coveredExamplesTarget_);
         indexedArray = indexedArrayWrapper->array;
