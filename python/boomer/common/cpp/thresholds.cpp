@@ -82,10 +82,11 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
-static inline uint32 filterCurrentFeatureVector(FeatureVector& featureVector, intp conditionStart, intp conditionEnd,
-                                                Comparator conditionComparator, bool covered, uint32 numConditions,
-                                                uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-                                                AbstractStatistics& statistics, IWeightVector& weights) {
+static inline uint32 filterCurrentFeatureVector(CacheEntry& cacheEntry, FeatureVector& featureVector,
+                                                intp conditionStart, intp conditionEnd, Comparator conditionComparator,
+                                                bool covered, uint32 numConditions, uint32* coveredExamplesMask,
+                                                uint32 coveredExamplesTarget, AbstractStatistics& statistics,
+                                                IWeightVector& weights) {
     uint32 numTotalElements = featureVector.getNumElements();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     bool descending = conditionEnd < conditionStart;
@@ -96,9 +97,9 @@ static inline uint32 filterCurrentFeatureVector(FeatureVector& featureVector, in
     uint32 numElements = covered ? numConditionSteps :
         (numTotalElements > numConditionSteps ? numTotalElements - numConditionSteps : 0);
 
-    // Allocate filtered array...
-    IndexedFloat32* filteredArray = numElements > 0 ?
-        (IndexedFloat32*) malloc(numElements * sizeof(IndexedFloat32)) : NULL;
+    // Create a new vector that will contain the filtered elements...
+    std::unique_ptr<FeatureVector> filteredVectorPtr = std::make_unique<FeatureVector>(numElements);
+    FeatureVector::iterator filteredIterator = filteredVectorPtr->begin();
 
     intp direction;
     uint32 i;
@@ -122,8 +123,8 @@ static inline uint32 filterCurrentFeatureVector(FeatureVector& featureVector, in
             uint32 r = conditionStart + (j * direction);
             uint32 index = iterator[r].index;
             coveredExamplesMask[index] = numConditions;
-            filteredArray[i].index = index;
-            filteredArray[i].value = iterator[r].value;
+            filteredIterator[i].index = index;
+            filteredIterator[i].value = iterator[r].value;
             uint32 weight = weights.getValue(index);
             statistics.updateCoveredStatistic(index, weight, false);
             i += direction;
@@ -148,8 +149,8 @@ static inline uint32 filterCurrentFeatureVector(FeatureVector& featureVector, in
 
             for (uint32 j = 0; j < numSteps; j++) {
                 uint32 r = start + (j * direction);
-                filteredArray[i].index = iterator[r].index;
-                filteredArray[i].value = iterator[r].value;
+                filteredIterator[i].index = iterator[r].index;
+                filteredIterator[i].value = iterator[r].value;
                 i += direction;
             }
         }
@@ -172,15 +173,14 @@ static inline uint32 filterCurrentFeatureVector(FeatureVector& featureVector, in
 
         for (uint32 j = 0; j < numSteps; j++) {
             uint32 r = conditionEnd + (j * direction);
-            filteredArray[i].index = iterator[r].index;
-            filteredArray[i].value = iterator[r].value;
+            filteredIterator[i].index = iterator[r].index;
+            filteredIterator[i].value = iterator[r].value;
             i += direction;
         }
     }
 
-    // TODO Remove
-    free(filteredArray);
-
+    cacheEntry.featureVectorPtr = std::move(filteredVectorPtr);
+    cacheEntry.numConditions = numConditions;
     return updatedTarget;
 }
 
@@ -302,9 +302,9 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     }
 
     // Identify the examples that are covered by the refined rule...
-    coveredExamplesTarget_ = filterCurrentFeatureVector(*featureVector, refinement.start,
-                                                        refinement.end, refinement.comparator, refinement.covered,
-                                                        numRefinements_, coveredExamplesMask_, coveredExamplesTarget_,
+    coveredExamplesTarget_ = filterCurrentFeatureVector(cacheEntry, *featureVector, refinement.start, refinement.end,
+                                                        refinement.comparator, refinement.covered, numRefinements_,
+                                                        coveredExamplesMask_, coveredExamplesTarget_,
                                                         *thresholds_.statisticsPtr_, *weightsPtr_);
 }
 
