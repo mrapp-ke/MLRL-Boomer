@@ -90,9 +90,10 @@ DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseLa
     hessians_ = (float64*) calloc(numLabels, sizeof(float64));
 }
 
-void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex, IndexedFloat32& indexedValue) {
+void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex,
+                                                                     const FeatureVector::Entry& entry) {
     uint32 numLabels = statistics_.getNumCols();
-    uint32 index = indexedValue.index;
+    uint32 index = entry.index;
     uint32 offset = index * numLabels;
     uint32 binOffset = binIndex * numLabels;
 

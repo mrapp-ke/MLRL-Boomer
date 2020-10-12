@@ -149,9 +149,10 @@ DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(Dense
     hessians_ = (float64*) calloc((numBins_ * numHessians), sizeof(float64));
 }
 
-void DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex, IndexedFloat32& indexedValue) {
+void DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex,
+                                                                       const FeatureVector::Entry& entry) {
     uint32 numLabels = statistics_.getNumCols();
-    uint32 index = indexedValue.index;
+    uint32 index = entry.index;
     uint32 offset = index * numLabels;
     uint32 gradientOffset = binIndex * numLabels;
     uint32 hessianOffset = binIndex * linalg::triangularNumber(numLabels);
