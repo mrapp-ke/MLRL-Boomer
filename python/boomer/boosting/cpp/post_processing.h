@@ -1,5 +1,5 @@
 /**
- * Provides classes that allow to post-process the predictions of rules once they have been learned by the boosting
+ * Provides classes that allow to post-process the predictions of rules once they have been learned by a boosting
  * algorithm.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
