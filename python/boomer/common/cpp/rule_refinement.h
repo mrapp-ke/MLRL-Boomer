@@ -6,7 +6,7 @@
 #pragma once
 
 #include "arrays.h"
-#include "tuples.h"
+#include "input_data.h"
 #include "predictions.h"
 #include "rules.h"
 #include "statistics.h"
@@ -122,7 +122,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
         bool nominal_;
 
-        std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
 
     public:
 
@@ -136,14 +136,13 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
-         * @param callback          An unique pointer to an object of type
-         *                          `IRuleRefinementCallback<IndexedFloat32Array>` that allows to retrieve the
-         *                          information that is required to identify potential refinements
+         * @param callback          An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
+         *                          allows to retrieve a feature vector for the given feature
          */
         ExactRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr,
                                 std::shared_ptr<IWeightVector> weightsPtr, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal,
-                                std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr);
+                                std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
         void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
