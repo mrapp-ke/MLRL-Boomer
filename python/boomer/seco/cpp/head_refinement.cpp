@@ -1,26 +1,25 @@
 #include "head_refinement.h"
 #include "../../common/cpp/tuples.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace seco;
 
 
 static inline uint32* argsort(float64* a, uint32 numElements) {
-    IndexedFloat64* tmpArray = (IndexedFloat64*) malloc(numElements * sizeof(IndexedFloat64));
+    IndexedValue<float64> tmpArray[numElements];
 
     for (uint32 i = 0; i < numElements; i++) {
         tmpArray[i].index = i;
         tmpArray[i].value = a[i];
     }
 
-    qsort(tmpArray, numElements, sizeof(IndexedFloat64), &tuples::compareIndexedFloat64);
-    uint32* sortedArray = (uint32*) malloc(numElements * sizeof(uint32));
+    qsort(&tmpArray, numElements, sizeof(IndexedValue<float64>), &tuples::compareIndexedValue<float64>);
+    uint32* sortedArray = new uint32[numElements];
 
     for (uint32 i = 0; i < numElements; i++) {
         sortedArray[i] = tmpArray[i].index;
     }
 
-    free(tmpArray);
     return sortedArray;
 }
 
@@ -120,7 +119,7 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
         }
     }
 
-    free(sortedIndices);
+    delete[] sortedIndices;
     return result;
 }
 
