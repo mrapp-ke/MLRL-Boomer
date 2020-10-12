@@ -21,10 +21,11 @@ namespace seco {
         public:
 
             /**
-             * @param numStatistics The number of statistics
-             * @param numLabels     The number of labels
+             * @param numStatistics         The number of statistics
+             * @param numLabels             The number of labels
+             * @param sumUncoveredLabels    The sum of weights of all labels that remain to be covered, initially
              */
-            AbstractCoverageStatistics(uint32 numStatistics, uint32 numLabels);
+            AbstractCoverageStatistics(uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels);
 
             /**
              * The sum of weights of all labels that remain to be covered.

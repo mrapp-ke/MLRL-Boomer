@@ -7,8 +7,9 @@ using namespace seco;
 
 
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
+                                                         float64 sumUncoveredLabels,
                                                          std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractCoverageStatistics(numStatistics, numLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
+    : AbstractCoverageStatistics(numStatistics, numLabels, sumUncoveredLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
 
 }
 
@@ -88,9 +89,9 @@ DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabe
                                                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                                                            float64* uncoveredLabels, float64 sumUncoveredLabels,
                                                            uint8* minorityLabels)
-    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr),
-      labelMatrixPtr_(labelMatrixPtr), uncoveredLabels_(uncoveredLabels), sumUncoveredLabels_(sumUncoveredLabels),
-      minorityLabels_(minorityLabels) {
+    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), sumUncoveredLabels,
+                                  ruleEvaluationPtr),
+      labelMatrixPtr_(labelMatrixPtr), uncoveredLabels_(uncoveredLabels), minorityLabels_(minorityLabels) {
     // The number of labels
     uint32 numLabels = this->getNumCols();
     // A matrix that stores a confusion matrix, which takes into account all examples, for each label
