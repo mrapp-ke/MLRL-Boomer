@@ -7,7 +7,7 @@
 #pragma once
 
 #include "arrays.h"
-#include "tuples.h"
+#include "input_data.h"
 
 
 /**
@@ -22,11 +22,11 @@ class IBinningObserver {
         /**
          * Notifies the observer that a value has been assigned to a certain bin.
          *
-         * @param binIndex      The index of the bin, the value is assigned to
-         * @param indexedValue  A reference to a struct of type `IndexedFloat32` that contains the value and its index
-         *                      in the original array
+         * @param binIndex  The index of the bin, the value is assigned to
+         * @param entry     A reference to a struct of type `FeatureVector::Entry` that contains the value and its index
+         *                  in the original array
          */
-        virtual void onBinUpdate(uint32 binIndex, IndexedFloat32& indexedValue) = 0;
+        virtual void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) = 0;
 
 };
 
@@ -43,13 +43,12 @@ class IBinning {
          * Assigns the values in an array to bins.
          *
          * @param numBins       The number of bins to be used
-         * @param indexedArray  A reference to a struct of type `IndexedFloat32Array` that stores a pointer to an array
-         *                      whose values should be assigned to the bins, as well as the number of elements in the
-         *                      array
+         * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to the
+         *                      bins
          * @param observer      A reference to an object of type `IBinningObserver`, which should be notified when a
          *                      value is assigned to a bin
          */
-        virtual void createBins(uint32 numBins, IndexedFloat32Array& indexedArray, IBinningObserver& observer) = 0;
+        virtual void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) = 0;
 
 };
 
@@ -60,7 +59,7 @@ class EqualFrequencyBinningImpl : virtual public IBinning {
 
     public:
 
-        void createBins(uint32 numBins, IndexedFloat32Array& indexedArray, IBinningObserver& observer) override;
+        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
 
 };
 
@@ -71,6 +70,6 @@ class EqualWidthBinningImpl : virtual public IBinning {
 
     public:
 
-        void createBins(uint32 numBins, IndexedFloat32Array& indexedArray, IBinningObserver& observer) override;
+        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
 
 };
