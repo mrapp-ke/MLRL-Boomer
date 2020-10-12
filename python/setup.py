@@ -11,8 +11,6 @@ ANNOTATE = True
 DEBUG = False
 
 # The compiler/linker argument to enable OpenMP support
-COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
-
 sources = [
     '**/*.pyx',
     'boomer/common/cpp/random.cpp',
@@ -27,6 +25,7 @@ sources = [
     'boomer/common/cpp/rule_refinement.cpp',
     'boomer/boosting/cpp/blas.cpp',
     'boomer/boosting/cpp/lapack.cpp',
+    'boomer/boosting/cpp/post_processing.cpp',
     'boomer/boosting/cpp/label_wise_losses.cpp',
     'boomer/boosting/cpp/example_wise_losses.cpp',
     'boomer/boosting/cpp/statistics.cpp',
@@ -41,6 +40,8 @@ sources = [
     'boomer/seco/cpp/label_wise_statistics.cpp',
     'boomer/seco/cpp/label_wise_rule_evaluation.cpp'
 ]
+COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
+
 
 extensions = [
     Extension(name='*', sources=sources, language='c++', extra_compile_args=[COMPILE_FLAG_OPEN_MP],
