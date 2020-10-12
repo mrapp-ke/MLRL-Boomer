@@ -152,8 +152,8 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
- * certain feature. The thresholds that may be used by the new condition result from the bins that have been created
- * using a binning method.
+ * certain feature. The thresholds that may be used by the new condition result from the boundaries between the bins
+ * that have been created using a binning method.
  */
 class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
