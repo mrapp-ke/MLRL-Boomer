@@ -1,12 +1,12 @@
 #include "post_processing.h"
 
 
-ConstantShrinkage::ConstantShrinkage(float64 shrinkage)
+ConstantShrinkageImpl::ConstantShrinkageImpl(float64 shrinkage)
     : shrinkage_(shrinkage) {
 
 }
 
-void ConstantShrinkage::postProcess(Prediction& prediction) const {
+void ConstantShrinkageImpl::postProcess(Prediction& prediction) const {
     uint32 numPredictions = prediction.numPredictions_;
     float64* predictedScores = prediction.predictedScores_;
 

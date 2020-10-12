@@ -1,6 +1,6 @@
 #include "post_processing.h"
 
 
-void NoPostProcessor::postProcess(Prediction& prediction) const {
+void NoPostProcessorImpl::postProcess(Prediction& prediction) const {
     return;
 }
