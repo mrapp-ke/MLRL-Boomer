@@ -7,6 +7,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "data.h"
 #include "input_data.h"
 #include "predictions.h"
 #include "rules.h"
@@ -15,6 +16,11 @@
 #include "head_refinement.h"
 #include <memory>
 
+
+/**
+ * Typedef for a vector that stores bins.
+ */
+typedef DenseVector<Bin> BinVector;
 
 /**
  * Stores information about a potential refinement of a rule.
