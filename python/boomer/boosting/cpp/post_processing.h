@@ -13,7 +13,7 @@
 /**
  * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
  */
-class ConstantShrinkage : virtual public IPostProcessor {
+class ConstantShrinkageImpl : virtual public IPostProcessor {
 
     private:
 
@@ -24,7 +24,7 @@ class ConstantShrinkage : virtual public IPostProcessor {
         /**
          * @param shrinkage The shrinkage parameter. Must be in (0, 1).
          */
-        ConstantShrinkage(float64 shrinkage);
+        ConstantShrinkageImpl(float64 shrinkage);
 
         void postProcess(Prediction& prediction) const override;
 
