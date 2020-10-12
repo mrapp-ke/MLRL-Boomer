@@ -7,6 +7,7 @@
 #pragma once
 
 #include "arrays.h"
+#include "tuples.h"
 #include "data.h"
 #include "input_data.h"
 #include "predictions.h"
@@ -169,7 +170,7 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
         uint32 featureIndex_;
 
-        std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr_;
 
     public:
 
@@ -177,11 +178,11 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
          * @param statisticsPtr A shared pointer to an object of type `AbstractStatistics` that provides access to the
          *                      statistics which serve as the basis for evaluating the potential refinements of rules
          * @param featureIndex  The index of the feature, the new condition corresponds to
-         * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinArray>` that allows
-         *                      to retrieve the information that is required to identify potential refinements
+         * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that allows
+         *                      to retrieve the bins for a certain feature
          */
         ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
-                                      std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr);
+                                      std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
         void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;

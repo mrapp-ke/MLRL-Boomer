@@ -465,7 +465,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
         std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
-        std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr)
+        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
     : statisticsPtr_(statisticsPtr), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
 
 }
@@ -483,27 +483,27 @@ void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefineme
                                                                                           labelIndices);
 
     // Retrieve the array to be iterated...
-    BinArray& binArray = callbackPtr_->get(featureIndex_);
-    const Bin* bins = binArray.bins;
-    uint32 numBins = binArray.numBins;
+    BinVector& binVector = callbackPtr_->get(featureIndex_);
+    BinVector::const_iterator iterator = binVector.cbegin();
+    uint32 numBins = binVector.getNumElements();
 
     // Search for the first non-empty bin...
     uint32 r = 0;
 
-    while (bins[r].numExamples == 0 && r < numBins) {
+    while (iterator[r].numExamples == 0 && r < numBins) {
         r++;
     }
 
     statisticsSubsetPtr->addToSubset(r, 1);
     uint32 previousR = r;
-    float32 previousValue = bins[r].maxValue;
-    uint32 numCoveredExamples = bins[r].numExamples;
+    float32 previousValue = iterator[r].maxValue;
+    uint32 numCoveredExamples = iterator[r].numExamples;
 
     for (r = r + 1; r < numBins; r++) {
-        uint32 numExamples = bins[r].numExamples;
+        uint32 numExamples = iterator[r].numExamples;
 
         if (numExamples > 0) {
-            float32 currentValue = bins[r].minValue;
+            float32 currentValue = iterator[r].minValue;
 
             bool foundBetterHead = headRefinement.findHead(bestHead, refinementPtr->headPtr, labelIndices,
                                                            *statisticsSubsetPtr, false, false);
@@ -531,7 +531,7 @@ void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefineme
                 refinementPtr->covered = false;
             }
 
-            previousValue = bins[r].maxValue;
+            previousValue = iterator[r].maxValue;
             previousR = r;
             numCoveredExamples += numExamples;
             statisticsSubsetPtr->addToSubset(r, 1);
