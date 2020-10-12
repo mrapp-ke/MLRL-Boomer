@@ -263,8 +263,8 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
 std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         uint32 featureIndex) {
     // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
-    auto it = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
-    FeatureVector* featureVector = it->second.featureVectorPtr.get();
+    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
+    FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
 
     // If the `CacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to the cache...
     if (featureVector == NULL) {
@@ -282,13 +282,13 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     sumOfWeights_ = refinement.coveredWeights;
 
     uint32 featureIndex = refinement.featureIndex;
-    auto itFiltered = cacheFiltered_.find(featureIndex);
-    CacheEntry& cacheEntry = itFiltered->second;
+    auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
+    CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
     if (featureVector == NULL) {
-        auto it = thresholds_.cache_.find(featureIndex);
-        featureVector = it->second.get();
+        auto cacheIterator = thresholds_.cache_.find(featureIndex);
+        featureVector = cacheIterator->second.get();
     }
 
     // If there are examples with zero weights, those examples have not been considered considered when searching for
@@ -348,18 +348,18 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 }
 
 FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) {
-    auto it = thresholdsSubset_.cacheFiltered_.find(featureIndex);
-    CacheEntry& cacheEntry = it->second;
+    auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex);
+    CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
     if (featureVector == NULL) {
-        auto itFiltered = thresholdsSubset_.thresholds_.cache_.find(featureIndex);
-        featureVector = itFiltered->second.get();
+        auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex);
+        featureVector = cacheIterator->second.get();
 
         if (featureVector == NULL) {
-            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, itFiltered->second);
-            itFiltered->second->sortByValues();
-            featureVector = itFiltered->second.get();
+            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, cacheIterator->second);
+            cacheIterator->second->sortByValues();
+            featureVector = cacheIterator->second.get();
         }
     }
 
