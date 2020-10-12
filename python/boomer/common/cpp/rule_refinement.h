@@ -69,7 +69,7 @@ class IRuleRefinementCallback {
          * @param featureIndex  The index of the feature
          * @return              A reference to an object of template type `T` that stores the information
          */
-        virtual T& get(uint32 featureIndex) = 0;
+        virtual T& get(uint32 featureIndex) const = 0;
 
 };
 
