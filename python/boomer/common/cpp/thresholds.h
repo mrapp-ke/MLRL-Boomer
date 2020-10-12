@@ -166,7 +166,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset);
 
-                        FeatureVector& get(uint32 featureIndex) override;
+                        FeatureVector& get(uint32 featureIndex) const override;
 
                 };
 

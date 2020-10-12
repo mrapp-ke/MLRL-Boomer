@@ -347,7 +347,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 
 }
 
-FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) {
+FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) const {
     auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex);
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
