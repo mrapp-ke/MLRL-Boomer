@@ -6,6 +6,7 @@ Provides classes that allow to sequentially induce models that consist of severa
 from boomer.common._random cimport RNG
 from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureVector
 from boomer.common.rules cimport Rule, RuleList
+from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.thresholds cimport AbstractThresholds
 from boomer.common.stopping_criteria cimport StoppingCriterion
@@ -49,7 +50,7 @@ cdef class SequentialRuleInduction:
         :param pruning:                         The strategy that should be used for pruning rules or None, if no
                                                 pruning should be used
         :param post_processor:                  The post-processor that should be used to post-process the rule once it
-                                                has been learned or None, if no post-processing should be used
+                                                has been learned
         :param min_coverage:                    The minimum number of training examples that must be covered by a rule.
                                                 Must be at least 1
         :param max_conditions:                  The maximum number of conditions to be included in a rule's body. Must
@@ -130,6 +131,7 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr = label_sub_sampling.label_sub_sampling_ptr
         cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr = feature_sub_sampling.feature_sub_sampling_ptr
         cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
+        cdef shared_ptr[IPostProcessor] post_processor_ptr = post_processor.post_processor_ptr
         cdef unique_ptr[AbstractThresholds] thresholds_ptr
         thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_vector, statistics_provider))
 
@@ -137,9 +139,9 @@ cdef class SequentialRuleInduction:
             success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_vector_ptr.get(),
                                                  feature_matrix_ptr.get(), head_refinement_ptr.get(),
                                                  label_sub_sampling_ptr.get(), instance_sub_sampling_ptr.get(),
-                                                 feature_sub_sampling_ptr.get(), pruning, post_processor, min_coverage,
-                                                 max_conditions, max_head_refinements, num_threads, rng_ptr.get(),
-                                                 model_builder)
+                                                 feature_sub_sampling_ptr.get(), pruning, post_processor_ptr.get(),
+                                                 min_coverage, max_conditions, max_head_refinements, num_threads,
+                                                 rng_ptr.get(), model_builder)
 
             if not success:
                 break
