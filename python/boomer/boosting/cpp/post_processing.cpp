@@ -1,5 +1,7 @@
 #include "post_processing.h"
 
+using namespace boosting;
+
 
 ConstantShrinkageImpl::ConstantShrinkageImpl(float64 shrinkage)
     : shrinkage_(shrinkage) {
