@@ -6,9 +6,8 @@
 #pragma once
 
 #include "arrays.h"
-#include "predictions.h"
-#include "tuples.h"
 #include "data.h"
+#include "predictions.h"
 #include "input_data.h"
 #include "sub_sampling.h"
 #include "rule_refinement.h"
@@ -124,6 +123,17 @@ class AbstractThresholds : virtual public IMatrix {
 };
 
 /**
+ * A wrapper for a (filtered) feature vector that is stored in the cache. The field `numConditions` specifies how many
+ * conditions the rule contained when the array was updated for the last time. It may be used to check if the array is
+ * still valid or must be updated.
+ */
+struct CacheEntry {
+    CacheEntry() : numConditions(0) { };
+    std::unique_ptr<FeatureVector> featureVectorPtr;
+    uint32 numConditions;
+};
+
+/**
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
 class ExactThresholdsImpl : public AbstractThresholds {
@@ -139,10 +149,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
             private:
 
                 /**
-                 * A callback that allows to retrieves the indices and feature values of the training examples from the
-                 * cache, if available, or fetches them from an `IFeatureMatrix`.
+                 * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved
+                 * from the cache. Otherwise, they are fetched from the feature matrix.
                  */
-                class RuleRefinementCallbackImpl : virtual public IRuleRefinementCallback<IndexedFloat32Array> {
+                class Callback : virtual public IRuleRefinementCallback<FeatureVector> {
 
                     private:
 
@@ -151,12 +161,12 @@ class ExactThresholdsImpl : public AbstractThresholds {
                     public:
 
                         /**
-                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubsetImpl` that caches
-                         *                          the feature values and indices
+                         * @param thresholdsSubset A reference to an object of type `ThresholdsSubsetImpl` that caches
+                         *                         the feature vectors
                          */
-                        RuleRefinementCallbackImpl(ThresholdsSubsetImpl& thresholdsSubset);
+                        Callback(ThresholdsSubsetImpl& thresholdsSubset);
 
-                        IndexedFloat32Array& get(uint32 featureIndex) const override;
+                        FeatureVector& get(uint32 featureIndex) const override;
 
                 };
 
@@ -172,7 +182,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 uint32 numRefinements_;
 
-                std::unordered_map<uint32, IndexedFloat32ArrayWrapper*> cacheFiltered_;
+                std::unordered_map<uint32, CacheEntry> cacheFiltered_;
 
             public:
 
@@ -196,7 +206,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
         };
 
-        std::unordered_map<uint32, IndexedFloat32Array*> cache_;
+        std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cache_;
 
     public:
 
@@ -211,8 +221,6 @@ class ExactThresholdsImpl : public AbstractThresholds {
         ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                             std::shared_ptr<AbstractStatistics> statisticsPtr);
-
-        ~ExactThresholdsImpl();
 
         std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) override;
 

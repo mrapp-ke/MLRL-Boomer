@@ -6,10 +6,14 @@
 #pragma once
 
 #include "arrays.h"
-#include "tuples.h"
 #include "data.h"
 #include <memory>
 
+
+/**
+ * Typedef for a vector that stores the indices of training examples, as well as their values for a certain feature.
+ */
+typedef SparseArrayVector<float32> FeatureVector;
 
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
@@ -101,14 +105,15 @@ class IFeatureMatrix : virtual public IMatrix {
         virtual ~IFeatureMatrix() { };
 
         /**
-         * Fetches the indices of the training examples, as well as their feature values, for a specific feature and
-         * stores them in a given struct of type `IndexedFloat32Array`.
+         * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,
+         * for a specific feature and stores it in a given unique pointer.
          *
-         * @param featureIndex  The index of the feature
-         * @param indexedArray  A reference to a struct of type `IndexedFloat32Array`, which should be used to store the
-         *                      indices and feature values
+         * @param featureIndex      The index of the feature
+         * @param featureVectorPtr  An unique pointer to an object of type `FeatureVector` that should be used to store
+         *                          the feature vector
          */
-        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const = 0;
+        virtual void fetchFeatureVector(uint32 featureIndex,
+                                        std::unique_ptr<FeatureVector>& featureVectorPtr) const = 0;
 
 };
 
@@ -139,7 +144,7 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
 
         uint32 getNumCols() const override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
+        void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
 };
 
@@ -181,7 +186,7 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
 
         uint32 getNumCols() const override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
+        void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
 };
 

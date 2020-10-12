@@ -29,12 +29,14 @@ namespace seco {
         public:
 
             /**
-             * @param numStatistics     The number of statistics
-             * @param numLabels         The number of labels
-             * @param ruleEvaluationPtr A shared pointer to an object of type `ILabelWiseRuleEvaluation`, to be used for
-             *                          calculating the predictions, as well as corresponding quality scores, of rules
+             * @param numStatistics         The number of statistics
+             * @param numLabels             The number of labels
+             * @param sumUncoveredLabels    The sum of weights of all labels that remain to be covered, initially
+             * @param ruleEvaluationPtr     A shared pointer to an object of type `ILabelWiseRuleEvaluation`, to be used
+             *                              for calculating the predictions, as well as corresponding quality scores, of
+             *                              rules
              */
-            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
+            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels,
                                         std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr);
 
             /**
@@ -102,8 +104,6 @@ namespace seco {
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
             float64* uncoveredLabels_;
-
-            float64 sumUncoveredLabels_;
 
             uint8* minorityLabels_;
 
