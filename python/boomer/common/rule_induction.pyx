@@ -41,7 +41,7 @@ cdef class RuleInduction:
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
-                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, IPostProcessor* post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
                           RNG* rng, ModelBuilder model_builder):
         """
@@ -63,8 +63,8 @@ cdef class RuleInduction:
                                         that should be used to sub-sample the available features
         :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
                                         used
-        :param post_processor:          The post-processor that should be used to post-process the rule once it has been
-                                        learned or None, if no post-processing should be used
+        :param post_processor:          A pointer to an object of type `IPostProcessor`, implementing the post-processor
+                                        that should be used to post-process the rules once they have been learned
         :param min_coverage:            The minimum number of training examples that must be covered by the rule. Must
                                         be at least 1
         :param max_conditions:          The maximum number of conditions to be included in the rule's body. Must be at
@@ -119,7 +119,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
                           IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
                           ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
-                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, IPostProcessor* post_processor,
                           uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
                           RNG* rng, ModelBuilder model_builder):
         # The total number of statistics
@@ -236,9 +236,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 thresholds_subset_ptr.get().recalculatePrediction(dereference(head_refinement),
                                                                   dereference(best_refinement_ptr.get()))
 
-            # Apply post-processor, if necessary...
-            if post_processor is not None:
-                post_processor.post_process(best_refinement_ptr.get().headPtr.get())
+            # Apply post-processor...
+            post_processor.postProcess(dereference(best_refinement_ptr.get().headPtr.get()))
 
             # Update the statistics by applying the predictions of the new rule...
             thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement_ptr.get().headPtr.get()))
