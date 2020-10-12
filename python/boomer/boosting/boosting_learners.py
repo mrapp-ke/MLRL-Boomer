@@ -12,8 +12,9 @@ from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLo
     LabelWiseSquaredHingeLoss
 from boomer.boosting.label_wise_rule_evaluation import RegularizedLabelWiseRuleEvaluation
 from boomer.boosting.label_wise_statistics import LabelWiseStatisticsProviderFactory
-from boomer.boosting.shrinkage import ConstantShrinkage, Shrinkage
+from boomer.boosting.post_processing import ConstantShrinkage
 from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.common.post_processing import PostProcessor, NoPostProcessor
 from boomer.common.prediction import Predictor, DensePredictor, ThresholdFunction
 from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
@@ -152,7 +153,7 @@ class Boomer(MLRuleLearner):
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = create_pruning(self.pruning)
-        shrinkage = self.__create_shrinkage()
+        shrinkage = self.__create_post_processor()
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
@@ -218,11 +219,11 @@ class Boomer(MLRuleLearner):
             return FullHeadRefinement()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
-    def __create_shrinkage(self) -> Shrinkage:
+    def __create_post_processor(self) -> PostProcessor:
         shrinkage = float(self.shrinkage)
 
         if 0.0 < shrinkage < 1.0:
             return ConstantShrinkage(shrinkage)
         if shrinkage == 1.0:
-            return None
+            return NoPostProcessor()
         raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))

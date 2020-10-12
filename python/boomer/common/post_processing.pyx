@@ -3,17 +3,20 @@
 
 Provides classes that allow to post-process the predictions of rules once they have been learned.
 """
+from libcpp.memory cimport make_shared
 
 
 cdef class PostProcessor:
     """
-    A base class for all classes that allow to post-process the predictions rules once they have been learned.
+    A wrapper for the pure virtual C++ class `IPostProcessor`.
+    """
+    pass
+
+
+cdef class NoPostProcessor(PostProcessor):
+    """
+    A wrapper for the C++ class `NoPostProcessorImpl`.
     """
 
-    cdef void post_process(self, Prediction* prediction):
-        """
-        Post-processes the predictions of a rule.
-
-        :param prediction: A pointer to an object of type `Prediction`, representing the predictions of the rule
-        """
-        pass
+    def __cinit__(self):
+        self.post_processor_ptr = <shared_ptr[IPostProcessor]>make_shared[NoPostProcessorImpl]()

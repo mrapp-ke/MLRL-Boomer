@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.common.post_processing import NoPostProcessor
 from boomer.common.prediction import Predictor, DensePredictor, ThresholdFunction
 from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
@@ -161,6 +162,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         pruning = create_pruning(self.pruning)
+        post_processor = NoPostProcessor()
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
@@ -169,8 +171,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         num_threads = create_num_threads(self.num_threads)
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                        default_rule_head_refinement, head_refinement, stopping_criteria,
-                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning, None,
-                                       min_coverage, max_conditions, max_head_refinements, num_threads)
+                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                       post_processor, min_coverage, max_conditions, max_head_refinements, num_threads)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
