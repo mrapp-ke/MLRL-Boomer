@@ -10,22 +10,26 @@
 #include "../../common/cpp/post_processing.h"
 
 
-/**
- * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
- */
-class ConstantShrinkageImpl : virtual public IPostProcessor {
+namespace boosting {
 
-    private:
+    /**
+     * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
+     */
+    class ConstantShrinkageImpl : virtual public IPostProcessor {
 
-        float64 shrinkage_;
+        private:
 
-    public:
+            float64 shrinkage_;
 
-        /**
-         * @param shrinkage The shrinkage parameter. Must be in (0, 1).
-         */
-        ConstantShrinkageImpl(float64 shrinkage);
+        public:
 
-        void postProcess(Prediction& prediction) const override;
+            /**
+             * @param shrinkage The shrinkage parameter. Must be in (0, 1).
+             */
+            ConstantShrinkageImpl(float64 shrinkage);
 
-};
+            void postProcess(Prediction& prediction) const override;
+
+    };
+
+}
