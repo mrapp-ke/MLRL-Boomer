@@ -122,7 +122,7 @@ cdef class IREP(Pruning):
         for n in range(1, num_conditions):
             # Obtain properties of the current condition...
             condition = dereference(iterator)
-            feature_index = condition.feature_index
+            feature_index = condition.featureIndex
             threshold = condition.threshold
             comparator = condition.comparator
 
