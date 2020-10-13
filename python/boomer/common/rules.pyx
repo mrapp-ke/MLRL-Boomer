@@ -667,19 +667,19 @@ cdef class RuleListBuilder(ModelBuilder):
             comparator = condition.comparator
 
             if comparator == Comparator.LEQ:
-               leq_feature_indices[leq_i] = condition.feature_index
+               leq_feature_indices[leq_i] = condition.featureIndex
                leq_thresholds[leq_i] = condition.threshold
                leq_i += 1
             elif comparator == Comparator.GR:
-               gr_feature_indices[gr_i] = condition.feature_index
+               gr_feature_indices[gr_i] = condition.featureIndex
                gr_thresholds[gr_i] = condition.threshold
                gr_i += 1
             elif comparator == Comparator.EQ:
-               eq_feature_indices[eq_i] = condition.feature_index
+               eq_feature_indices[eq_i] = condition.featureIndex
                eq_thresholds[eq_i] = condition.threshold
                eq_i += 1
             else:
-               neq_feature_indices[neq_i] = condition.feature_index
+               neq_feature_indices[neq_i] = condition.featureIndex
                neq_thresholds[neq_i] = condition.threshold
                neq_i += 1
 
