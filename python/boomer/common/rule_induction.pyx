@@ -254,7 +254,7 @@ cdef inline Condition __create_condition(Refinement* refinement):
     :param refinement: A pointer to an object of type `Refinement`
     """
     cdef Condition condition
-    condition.feature_index = refinement.featureIndex
+    condition.featureIndex = refinement.featureIndex
     condition.comparator = refinement.comparator
     condition.threshold = refinement.threshold
     return condition

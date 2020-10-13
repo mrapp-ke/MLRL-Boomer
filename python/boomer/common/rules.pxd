@@ -13,14 +13,10 @@ cdef extern from "cpp/rules.h" nogil:
         NEQ
 
 
-"""
-A struct that represents a condition of a rule. It consists of the index of the feature the condition corresponds to,
-the type of the operator that is used by the condition, as well as a threshold.
-"""
-cdef struct Condition:
-    uint32 feature_index
-    Comparator comparator
-    float32 threshold
+    cdef struct Condition:
+        uint32 featureIndex
+        Comparator comparator
+        float32 threshold
 
 
 cdef class Body:
