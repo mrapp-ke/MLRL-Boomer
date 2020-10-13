@@ -147,7 +147,7 @@ namespace boosting {
                      */
                     HistogramBuilderImpl(DenseExampleWiseStatisticsImpl& statistics, uint32 numBins);
 
-                    void onBinUpdate(uint32 binIndex, IndexedFloat32& indexedValue) override;
+                    void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
 
                     std::unique_ptr<AbstractStatistics> build() override;
 
