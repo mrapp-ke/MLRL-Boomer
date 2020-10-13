@@ -3,8 +3,9 @@
 #include <stdexcept>
 
 
-Lapack::Lapack(dsysv_t dsysvFunction) {
-    dsysvFunction_ = dsysvFunction;
+Lapack::Lapack(dsysv_t dsysvFunction)
+    : dsysvFunction_(dsysvFunction) {
+
 }
 
 int Lapack::queryDsysvLworkParameter(float64* tmpArray1, float64* output, int n) {

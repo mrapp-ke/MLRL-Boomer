@@ -8,6 +8,7 @@ from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
 from boomer.boosting._lapack cimport init_lapack
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
+from libcpp.utility cimport move
 
 
 cdef class ExampleWiseStatisticsFactory:
@@ -15,11 +16,11 @@ cdef class ExampleWiseStatisticsFactory:
     A wrapper for the pure virtual C++ class `IExampleWiseStatisticsFactory`.
     """
 
-    cdef AbstractExampleWiseStatistics* create(self):
+    cdef unique_ptr[AbstractExampleWiseStatistics] create(self):
         """
         Creates a new instance of the class `AbstractExampleWiseStatistics`.
 
-        :return: A pointer to an object of type `AbstractExampleWiseStatistics` that has been created
+        :return: An unique pointer to an object of type `AbstractExampleWiseStatistics` that has been created
         """
         return self.statistics_factory_ptr.get().create()
 
@@ -38,8 +39,9 @@ cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
         :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
                                 examples
         """
+        cdef unique_ptr[Lapack] lapack_ptr = init_lapack()
         self.statistics_factory_ptr = <shared_ptr[IExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
-            loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, shared_ptr[Lapack](init_lapack()),
+            loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, move(lapack_ptr),
             dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
@@ -54,7 +56,8 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
         :param rule_evaluation:     The `ExampleWiseRuleEvaluation` to switch to when invoking the function
                                     `switch_rule_evaluation`
         """
-        self.statistics_ptr = shared_ptr[AbstractStatistics](statistics_factory.create())
+        cdef unique_ptr[AbstractStatistics] statistics_ptr = <unique_ptr[AbstractStatistics]>statistics_factory.create()
+        self.statistics_ptr = <shared_ptr[AbstractStatistics]>move(statistics_ptr)
         self.rule_evaluation = rule_evaluation
 
     cdef AbstractStatistics* get(self):

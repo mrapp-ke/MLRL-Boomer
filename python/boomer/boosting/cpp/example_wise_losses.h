@@ -24,7 +24,7 @@ namespace boosting {
              * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
              * derivatives) of the loss function for each label of a certain example.
              *
-             * @param labelMatrix       A pointer to an object of type `IRandomAccessLabelMatrix` that provides random
+             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be
              *                          calculated
@@ -36,9 +36,9 @@ namespace boosting {
              *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
              *                          should be written to. May contain arbitrary values
              */
-            virtual void calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
+            virtual void calculateGradientsAndHessians(IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                                        const float64* predictedScores, float64* gradients,
-                                                       float64* hessians) = 0;
+                                                       float64* hessians) const = 0;
 
     };
 
@@ -49,9 +49,9 @@ namespace boosting {
 
         public:
 
-            void calculateGradientsAndHessians(IRandomAccessLabelMatrix* labelMatrix, uint32 exampleIndex,
+            void calculateGradientsAndHessians(IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                                const float64* predictedScores, float64* gradients,
-                                               float64* hessians) override;
+                                               float64* hessians) const override;
 
     };
 

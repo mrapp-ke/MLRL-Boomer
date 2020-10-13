@@ -66,7 +66,7 @@ namespace boosting {
 
                 private:
 
-                    DenseExampleWiseStatisticsImpl* statistics_;
+                    DenseExampleWiseStatisticsImpl& statistics_;
 
                     uint32 numPredictions_;
 
@@ -99,14 +99,14 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A pointer to an object of type `DenseExampleWiseStatisticsImpl` that
+                     * @param statistics        A reference to an object of type `DenseExampleWiseStatisticsImpl` that
                      *                          stores the gradients and Hessians
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
                      *                          subset or NULL, if all labels should be considered
                      */
-                    StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
@@ -115,10 +115,10 @@ namespace boosting {
 
                     void resetSubset() override;
 
-                    LabelWisePredictionCandidate* calculateLabelWisePrediction(bool uncovered,
+                    LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
                                                                                bool accumulated) override;
 
-                    PredictionCandidate* calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+                    PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
             };
 
@@ -130,7 +130,7 @@ namespace boosting {
 
                 private:
 
-                    DenseExampleWiseStatisticsImpl* statistics_;
+                    DenseExampleWiseStatisticsImpl& statistics_;
 
                     uint32 numBins_;
 
@@ -141,15 +141,15 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics    A pointer to an object of type `DenseExampleWiseStatisticsImpl` that stores
-                     *                      the gradients and Hessians
+                     * @param statistics    A reference to an object of type `DenseExampleWiseStatisticsImpl` that
+                     *                      stores the gradients and Hessians
                      * @param numBins       The number of bins, the histogram should consist of
                      */
-                    HistogramBuilderImpl(DenseExampleWiseStatisticsImpl* statistics, uint32 numBins);
+                    HistogramBuilderImpl(DenseExampleWiseStatisticsImpl& statistics, uint32 numBins);
 
-                    void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) override;
+                    void onBinUpdate(uint32 binIndex, IndexedFloat32& indexedValue) override;
 
-                    AbstractStatistics* build() override;
+                    std::unique_ptr<AbstractStatistics> build() override;
 
             };
 
@@ -159,13 +159,13 @@ namespace boosting {
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-            float64* currentScores_;
-
             float64* gradients_;
 
-            float64* totalSumsOfGradients_;
-
             float64* hessians_;
+
+            float64* currentScores_;
+
+            float64* totalSumsOfGradients_;
 
             float64* totalSumsOfHessians_;
 
@@ -200,11 +200,12 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            IStatisticsSubset* createSubset(uint32 numLabelIndices, const uint32* labelIndices) override;
+            std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
+                                                            const uint32* labelIndices) override;
 
-            void applyPrediction(uint32 statisticIndex, Prediction* prediction) override;
+            void applyPrediction(uint32 statisticIndex, Prediction& prediction) override;
 
-            IHistogramBuilder* buildHistogram(uint32 numBins) override;
+            std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) override;
 
     };
 
@@ -221,9 +222,9 @@ namespace boosting {
             /**
              * Creates a new instance of the class `AbstractExampleWiseStatistics`.
              *
-             * @return A pointer to an object of type `AbstractExampleWiseStatistics` that has been created
+             * @return An unique pointer to an object of type `AbstractExampleWiseStatistics` that has been created
              */
-            virtual AbstractExampleWiseStatistics* create() = 0;
+            virtual std::unique_ptr<AbstractExampleWiseStatistics> create() const = 0;
 
     };
 
@@ -250,17 +251,17 @@ namespace boosting {
              * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
              *                          for calculating the predictions, as well as corresponding quality scores, of
              *                          rules
-             * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
+             * @param lapackPtr         An unique pointer to an object of type `Lapack` that allows to execute different
              *                          Lapack routines
              * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
              *                          random access to the labels of the training examples
              */
             DenseExampleWiseStatisticsFactoryImpl(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                                   std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                                  std::shared_ptr<Lapack> lapackPtr,
+                                                  std::unique_ptr<Lapack> lapackPtr,
                                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            AbstractExampleWiseStatistics* create() override;
+            std::unique_ptr<AbstractExampleWiseStatistics> create() const override;
 
     };
 

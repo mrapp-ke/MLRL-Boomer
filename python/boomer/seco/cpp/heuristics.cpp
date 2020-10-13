@@ -43,22 +43,22 @@ static inline float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, fl
 }
 
 float64 PrecisionImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                               float64 uip, float64 urn, float64 urp) {
+                                               float64 uip, float64 urn, float64 urp) const {
     return precision(cin, cip, crn, crp);
 }
 
 float64 RecallImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) {
+                                            float64 uip, float64 urn, float64 urp) const {
     return recall(cin, crp, uin, urp);
 }
 
 float64 WRAImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
-                                         float64 urn, float64 urp) {
+                                         float64 urn, float64 urp) const {
     return wra(cin, cip, crn, crp, uin, uip, urn, urp);
 }
 
 float64 HammingLossImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                 float64 uip, float64 urn, float64 urp) {
+                                                 float64 uip, float64 urn, float64 urp) const {
     float64 numCoveredIncorrect = cip + crn;
     float64 numCoveredCorrect = cin + crp;
     float64 numCovered = numCoveredIncorrect + numCoveredCorrect;
@@ -72,12 +72,13 @@ float64 HammingLossImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float
     return numIncorrect / numTotal;
 }
 
-FMeasureImpl::FMeasureImpl(float64 beta) {
-    beta_ = beta;
+FMeasureImpl::FMeasureImpl(float64 beta)
+    : beta_(beta) {
+
 }
 
 float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                              float64 uip, float64 urn, float64 urp) {
+                                              float64 uip, float64 urn, float64 urp) const {
     if (isinf(beta_)) {
         // Equivalent to recall
         return recall(cin, crp, uin, urp);
@@ -99,12 +100,13 @@ float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 
     }
 }
 
-MEstimateImpl::MEstimateImpl(float64 m) {
-    m_ = m;
+MEstimateImpl::MEstimateImpl(float64 m)
+    : m_(m) {
+
 }
 
 float64 MEstimateImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                               float64 uip, float64 urn, float64 urp) {
+                                               float64 uip, float64 urn, float64 urp) const {
     if (isinf(m_)) {
         // Equivalent to weighted relative accuracy
         return wra(cin, cip, crn, crp, uin, uip, urn, urp);

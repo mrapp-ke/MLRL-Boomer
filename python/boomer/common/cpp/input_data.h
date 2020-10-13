@@ -8,6 +8,7 @@
 #include "arrays.h"
 #include "tuples.h"
 #include "data.h"
+#include <memory>
 
 
 /**
@@ -55,11 +56,11 @@ class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
          */
         DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y);
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
-        uint8 getValue(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) const override;
 
 };
 
@@ -71,23 +72,21 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
 
     private:
 
-        BinaryDokMatrix* matrix_;
+        std::unique_ptr<BinaryDokMatrix> matrixPtr_;
 
     public:
 
         /**
-         * @param matrix A pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the training
-         *               examples
+         * @param matrix An unique pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
+         *               training examples
          */
-        DokLabelMatrixImpl(BinaryDokMatrix* matrix);
+        DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr);
 
-        ~DokLabelMatrixImpl();
+        uint32 getNumRows() const override;
 
-        uint32 getNumRows() override;
+        uint32 getNumCols() const override;
 
-        uint32 getNumCols() override;
-
-        uint8 getValue(uint32 row, uint32 col) override;
+        uint8 getValue(uint32 row, uint32 col) const override;
 
 };
 
@@ -106,10 +105,10 @@ class IFeatureMatrix : virtual public IMatrix {
          * stores them in a given struct of type `IndexedFloat32Array`.
          *
          * @param featureIndex  The index of the feature
-         * @param indexedArray  A pointer to a struct of type `IndexedFloat32Array`, which should be used to store the
+         * @param indexedArray  A reference to a struct of type `IndexedFloat32Array`, which should be used to store the
          *                      indices and feature values
          */
-        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) = 0;
+        virtual void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const = 0;
 
 };
 
@@ -136,11 +135,11 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
          */
         DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x);
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
 
 };
 
@@ -178,11 +177,11 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
         CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
                              const uint32* xColIndices);
 
-        uint32 getNumRows() override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumCols() override;
+        uint32 getNumCols() const override;
 
-        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) override;
+        void fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const override;
 
 };
 
@@ -190,7 +189,7 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
  * Defines an interface for all vectors that provide access to the information whether the features at specific indices
  * are nominal or not.
  */
-class INominalFeatureVector : virtual public ISparseRandomAccessVector<uint8> {
+class INominalFeatureVector : virtual public IRandomAccessVector<uint8> {
 
     public:
 
@@ -206,21 +205,17 @@ class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
 
     private:
 
-        BinaryDokVector* vector_;
+        std::unique_ptr<BinaryDokVector> vectorPtr_;
 
     public:
 
         /**
          * @param vector A pointer to an object of type `BinaryDokVector`, storing the nominal attributes
          */
-        DokNominalFeatureVectorImpl(BinaryDokVector* vector);
+        DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
 
-        ~DokNominalFeatureVectorImpl();
+        uint32 getNumElements() const override;
 
-        uint32 getNumElements() override;
-
-        bool hasZeroElements() override;
-
-        uint8 getValue(uint32 pos) override;
+        uint8 getValue(uint32 pos) const override;
 
 };
