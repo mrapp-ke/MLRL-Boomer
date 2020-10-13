@@ -1,21 +1,21 @@
 #include "statistics.h"
 
 
-PredictionCandidate* AbstractDecomposableStatisticsSubset::calculateExampleWisePrediction(bool uncovered,
+PredictionCandidate& AbstractDecomposableStatisticsSubset::calculateExampleWisePrediction(bool uncovered,
                                                                                           bool accumulated) {
     // In the decomposable case, the example-wise predictions are the same as the label-wise predictions...
-    return (PredictionCandidate*) this->calculateLabelWisePrediction(uncovered, accumulated);
+    return this->calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels) {
-    numStatistics_ = numStatistics;
-    numLabels_ = numLabels;
+AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels)
+    : numStatistics_(numStatistics), numLabels_(numLabels) {
+
 }
 
-uint32 AbstractStatistics::getNumRows() {
+uint32 AbstractStatistics::getNumRows() const {
     return numStatistics_;
 }
 
-uint32 AbstractStatistics::getNumCols() {
+uint32 AbstractStatistics::getNumCols() const {
     return numLabels_;
 }

@@ -52,13 +52,13 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A pointer to an object of type `LabelWisePredictionCandidate` that should be
-             *                              used to store the predicted scores and quality scores
+             * @param prediction            A reference to an object of type `LabelWisePredictionCandidate` that should
+             *                              be used to store the predicted scores and quality scores
              */
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate* prediction) = 0;
+                                                      LabelWisePredictionCandidate& prediction) const = 0;
 
     };
 
@@ -84,7 +84,7 @@ namespace boosting {
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePredictionCandidate* prediction) override;
+                                              LabelWisePredictionCandidate& prediction) const override;
 
     };
 

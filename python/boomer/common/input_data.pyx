@@ -3,7 +3,8 @@
 
 Provides classes that provide access to the data that is provided for training.
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique, make_shared
+from libcpp.utility cimport move
 
 
 cdef class LabelMatrix:
@@ -48,7 +49,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
-        cdef BinaryDokMatrix* matrix = new BinaryDokMatrix(num_examples, num_labels)
+        cdef unique_ptr[BinaryDokMatrix] matrix_ptr = make_unique[BinaryDokMatrix](num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
@@ -57,9 +58,9 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                matrix.setValue(r, c)
+                matrix_ptr.get().setValue(r, c)
 
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](matrix)
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](move(matrix_ptr))
 
 
 cdef class FeatureMatrix:
@@ -129,12 +130,12 @@ cdef class DokNominalFeatureVector(NominalFeatureVector):
     """
     def __cinit__(self, list nominal_feature_indices):
         cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
-        cdef BinaryDokVector* vector = new BinaryDokVector(num_nominal_features)
+        cdef unique_ptr[BinaryDokVector] vector_ptr = make_unique[BinaryDokVector](num_nominal_features)
         cdef uint32 i
 
         if num_nominal_features > 0:
             for i in nominal_feature_indices:
-                vector.setValue(i)
+                vector_ptr.get().setValue(i)
 
         self.nominal_feature_vector_ptr = <shared_ptr[INominalFeatureVector]>make_shared[DokNominalFeatureVectorImpl](
-            vector)
+            move(vector_ptr))

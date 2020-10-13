@@ -20,12 +20,13 @@ class IBinningObserver {
         virtual ~IBinningObserver() { };
 
         /**
-         * Will be called everytime a value is assigned to a bin.
+         * Notifies the observer that a value has been assigned to a certain bin.
          *
-         * @param binIndex      Index of the bin the value is assigned to
-         * @param indexedValue  The value and corresponding index which is assigned
+         * @param binIndex      The index of the bin, the value is assigned to
+         * @param indexedValue  A reference to a struct of type `IndexedFloat32` that contains the value and its index
+         *                      in the original array
          */
-        virtual void onBinUpdate(uint32 binIndex, IndexedFloat32* indexedValue) = 0;
+        virtual void onBinUpdate(uint32 binIndex, IndexedFloat32& indexedValue) = 0;
 
 };
 
@@ -39,14 +40,16 @@ class IBinning {
         virtual ~IBinning() { };
 
         /**
-         * Must be implemented by subclasses. Create a number of bags and assigns values to those bags. The results will
-         * be passed to an observer which handles the bag management.
+         * Assigns the values in an array to bins.
          *
-         * @param numBins       The number of bins which should be considered
-         * @param indexedArray  An array of examples, which should be put in the bins
-         * @param observer      The `IBinningObserver` who is notified, when new results are available
+         * @param numBins       The number of bins to be used
+         * @param indexedArray  A reference to a struct of type `IndexedFloat32Array` that stores a pointer to an array
+         *                      whose values should be assigned to the bins, as well as the number of elements in the
+         *                      array
+         * @param observer      A reference to an object of type `IBinningObserver`, which should be notified when a
+         *                      value is assigned to a bin
          */
-        virtual void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) = 0;
+        virtual void createBins(uint32 numBins, IndexedFloat32Array& indexedArray, IBinningObserver& observer) = 0;
 
 };
 
@@ -57,7 +60,7 @@ class EqualFrequencyBinningImpl : virtual public IBinning {
 
     public:
 
-        void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) override;
+        void createBins(uint32 numBins, IndexedFloat32Array& indexedArray, IBinningObserver& observer) override;
 
 };
 
@@ -68,6 +71,6 @@ class EqualWidthBinningImpl : virtual public IBinning {
 
     public:
 
-        void createBins(uint32 numBins, IndexedFloat32Array* indexedArray, IBinningObserver* observer) override;
+        void createBins(uint32 numBins, IndexedFloat32Array& indexedArray, IBinningObserver& observer) override;
 
 };

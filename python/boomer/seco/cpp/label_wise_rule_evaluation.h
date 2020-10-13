@@ -50,14 +50,14 @@ namespace seco {
              * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
              *                                  correspond to the examples that are covered by rule, True, if they
              *                                  correspond to the examples that are not covered by the rule
-             * @param prediction                A pointer to an object of type `LabelWisePredictionCandidate` that
+             * @param prediction                A reference to an object of type `LabelWisePredictionCandidate` that
              *                                  should be used to store the predicted scores and quality scores
              */
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
                                                       const float64* confusionMatricesTotal,
                                                       const float64* confusionMatricesSubset,
                                                       const float64* confusionMatricesCovered, bool uncovered,
-                                                      LabelWisePredictionCandidate* prediction) = 0;
+                                                      LabelWisePredictionCandidate& prediction) const = 0;
 
     };
 
@@ -87,7 +87,7 @@ namespace seco {
                                               const float64* confusionMatricesTotal,
                                               const float64* confusionMatricesSubset,
                                               const float64* confusionMatricesCovered, bool uncovered,
-                                              LabelWisePredictionCandidate* prediction) override;
+                                              LabelWisePredictionCandidate& prediction) const override;
 
     };
 

@@ -2,60 +2,55 @@
 #include<stdlib.h>
 
 
-DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) {
-    numExamples_ = numExamples;
-    numLabels_ = numLabels;
-    y_ = y;
+DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y)
+    : numExamples_(numExamples), numLabels_(numLabels), y_(y) {
+
 }
 
-uint32 DenseLabelMatrixImpl::getNumRows() {
+uint32 DenseLabelMatrixImpl::getNumRows() const {
     return numExamples_;
 }
 
-uint32 DenseLabelMatrixImpl::getNumCols() {
+uint32 DenseLabelMatrixImpl::getNumCols() const {
     return numLabels_;
 }
 
-uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) {
+uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
     uint32 i = (row * this->getNumCols()) + col;
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(BinaryDokMatrix* matrix) {
-    matrix_ = matrix;
+DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr)
+    : matrixPtr_(std::move(matrixPtr)) {
+
 }
 
-DokLabelMatrixImpl::~DokLabelMatrixImpl() {
-    delete matrix_;
+uint32 DokLabelMatrixImpl::getNumRows() const {
+    return matrixPtr_->getNumRows();
 }
 
-uint32 DokLabelMatrixImpl::getNumRows() {
-    return matrix_->getNumRows();
+uint32 DokLabelMatrixImpl::getNumCols() const {
+    return matrixPtr_->getNumCols();
 }
 
-uint32 DokLabelMatrixImpl::getNumCols() {
-    return matrix_->getNumCols();
+uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
+    return matrixPtr_->getValue(row, col);
 }
 
-uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) {
-    return matrix_->getValue(row, col);
+DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x)
+    : numExamples_(numExamples), numFeatures_(numFeatures), x_(x) {
+
 }
 
-DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) {
-    numExamples_ = numExamples;
-    numFeatures_ = numFeatures;
-    x_ = x;
-}
-
-uint32 DenseFeatureMatrixImpl::getNumRows() {
+uint32 DenseFeatureMatrixImpl::getNumRows() const {
     return numExamples_;
 }
 
-uint32 DenseFeatureMatrixImpl::getNumCols() {
+uint32 DenseFeatureMatrixImpl::getNumCols() const {
     return numFeatures_;
 }
 
-void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const {
     // The number of elements to be returned
     uint32 numElements = this->getNumRows();
     // The array that stores the indices
@@ -69,28 +64,26 @@ void DenseFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloa
     }
 
     // Update the given struct...
-    indexedArray->numElements = numElements;
-    indexedArray->data = array;
+    indexedArray.numElements = numElements;
+    indexedArray.data = array;
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
-                                           const uint32* xRowIndices, const uint32* xColIndices)  {
-    numExamples_ = numExamples;
-    numFeatures_ = numFeatures;
-    xData_ = xData;
-    xRowIndices_ = xRowIndices;
-    xColIndices_ = xColIndices;
+                                           const uint32* xRowIndices, const uint32* xColIndices)
+    : numExamples_(numExamples), numFeatures_(numFeatures), xData_(xData), xRowIndices_(xRowIndices),
+      xColIndices_(xColIndices) {
+
 }
 
-uint32 CscFeatureMatrixImpl::getNumRows() {
+uint32 CscFeatureMatrixImpl::getNumRows() const {
     return numExamples_;
 }
 
-uint32 CscFeatureMatrixImpl::getNumCols() {
+uint32 CscFeatureMatrixImpl::getNumCols() const {
     return numFeatures_;
 }
 
-void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array* indexedArray) {
+void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat32Array& indexedArray) const {
     // The index of the first element in `xData_` and `xRowIndices_` that corresponds to the given feature index+
     uint32 start = xColIndices_[featureIndex];
     // The index of the last element in `xData_` and `xRowIndices_` that corresponds to the given feature index
@@ -112,26 +105,19 @@ void CscFeatureMatrixImpl::fetchFeatureValues(uint32 featureIndex, IndexedFloat3
     }
 
     // Update the given struct...
-    indexedArray->numElements = numElements;
-    indexedArray->data = array;
+    indexedArray.numElements = numElements;
+    indexedArray.data = array;
 }
 
-DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(BinaryDokVector* vector) {
-    vector_ = vector;
+DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr)
+    : vectorPtr_(std::move(vectorPtr)) {
+
 }
 
-DokNominalFeatureVectorImpl::~DokNominalFeatureVectorImpl() {
-    delete vector_;
+uint32 DokNominalFeatureVectorImpl::getNumElements() const {
+    return vectorPtr_->getNumElements();
 }
 
-uint32 DokNominalFeatureVectorImpl::getNumElements() {
-    return vector_->getNumElements();
-}
-
-bool DokNominalFeatureVectorImpl::hasZeroElements() {
-    return vector_->hasZeroElements();
-}
-
-uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) {
-    return vector_->getValue(pos);
+uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) const {
+    return vectorPtr_->getValue(pos);
 }
