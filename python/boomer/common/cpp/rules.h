@@ -17,3 +17,13 @@ enum Comparator : uint32 {
     EQ = 2,
     NEQ = 3
 };
+
+/**
+ * A struct that represents a condition of a rule. It consists of the index of the feature, the condition corresponds
+ * to, the type of the operator that is used by the condition, as well as a threshold.
+ */
+struct Condition {
+    uint32 featureIndex;
+    Comparator comparator;
+    float32 threshold;
+};
