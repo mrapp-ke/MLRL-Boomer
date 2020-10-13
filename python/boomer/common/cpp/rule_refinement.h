@@ -8,6 +8,8 @@
 
 #include "arrays.h"
 #include "tuples.h"
+#include "data.h"
+#include "input_data.h"
 #include "predictions.h"
 #include "rules.h"
 #include "statistics.h"
@@ -15,6 +17,11 @@
 #include "head_refinement.h"
 #include <memory>
 
+
+/**
+ * Typedef for a vector that stores bins.
+ */
+typedef DenseVector<Bin> BinVector;
 
 /**
  * Stores information about a potential refinement of a rule.
@@ -123,7 +130,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
         bool nominal_;
 
-        std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
 
     public:
 
@@ -137,14 +144,13 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
-         * @param callbackPtr       An unique pointer to an object of type
-         *                          `IRuleRefinementCallback<IndexedFloat32Array>` that allows to retrieve the
-         *                          information that is required to identify potential refinements
+         * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
+         *                          allows to retrieve a feature vector for the given feature
          */
         ExactRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr,
                                 std::shared_ptr<IWeightVector> weightsPtr, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal,
-                                std::unique_ptr<IRuleRefinementCallback<IndexedFloat32Array>> callbackPtr);
+                                std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
         void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
@@ -153,8 +159,8 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
- * certain feature. The thresholds that may be used by the new condition result from the bins that have been created
- * using a binning method.
+ * certain feature. The thresholds that may be used by the new condition result from the boundaries between the bins
+ * that have been created using a binning method.
  */
 class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
@@ -164,7 +170,7 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
         uint32 featureIndex_;
 
-        std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr_;
 
     public:
 
@@ -172,11 +178,11 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
          * @param statisticsPtr A shared pointer to an object of type `AbstractStatistics` that provides access to the
          *                      statistics which serve as the basis for evaluating the potential refinements of rules
          * @param featureIndex  The index of the feature, the new condition corresponds to
-         * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinArray>` that allows
-         *                      to retrieve the information that is required to identify potential refinements
+         * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that allows
+         *                      to retrieve the bins for a certain feature
          */
         ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
-                                      std::unique_ptr<IRuleRefinementCallback<BinArray>> callbackPtr);
+                                      std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
         void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
