@@ -57,12 +57,12 @@ DenseIndexVector::DenseIndexVector(uint32 numElements)
 
 }
 
-RangeIndexVector::RangeIndexVector(uint32 numIndices) {
-    numIndices_ = numIndices;
+RangeIndexVector::RangeIndexVector(uint32 numElements) {
+    numElements_ = numElements;
 }
 
 uint32 RangeIndexVector::getNumElements() const {
-    return numIndices_;
+    return numElements_;
 }
 
 uint32 RangeIndexVector::getValue(uint32 pos) const {
