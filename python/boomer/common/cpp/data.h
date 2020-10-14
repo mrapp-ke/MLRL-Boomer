@@ -233,7 +233,7 @@ class SparseArrayVector : virtual public IVector {
         /**
          * Sets the number of elements in the vector.
          *
-         * @param The number of elements to be set
+         * @param numElements The number of elements to be set
          */
         void setNumElements(uint32 numElements);
 
