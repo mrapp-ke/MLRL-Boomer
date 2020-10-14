@@ -150,14 +150,14 @@ class RangeIndexVector : virtual public IIndexVector {
 
     private:
 
-        uint32 numIndices_;
+        uint32 numElements_;
 
     public:
 
         /**
-         * @param numIndices The number of indices, the vector provides access to
+         * @param numElements The number of indices, the vector provides access to
          */
-        RangeIndexVector(uint32 numIndices);
+        RangeIndexVector(uint32 numElements);
 
         uint32 getNumElements() const override;
 
@@ -233,7 +233,7 @@ class SparseArrayVector : virtual public IVector {
         /**
          * Sets the number of elements in the vector.
          *
-         * @param The number of elements to be set
+         * @param numElements The number of elements to be set
          */
         void setNumElements(uint32 numElements);
 
