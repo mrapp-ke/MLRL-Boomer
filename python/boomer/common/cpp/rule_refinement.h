@@ -127,7 +127,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
     public:
 
         /**
-         * @param statistics        A shared pointer to an object of type `AbstractStatistics` that provides access to
+         * @param statisticsPtr     A shared pointer to an object of type `AbstractStatistics` that provides access to
          *                          the statistics which serve as the basis for evaluating the potential refinements of
          *                          rules
          * @param weights           A shared pointer to an object of type `IWeightVector` that provides access to the
@@ -136,7 +136,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
-         * @param callback          An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
+         * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
          *                          allows to retrieve a feature vector for the given feature
          */
         ExactRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr,
