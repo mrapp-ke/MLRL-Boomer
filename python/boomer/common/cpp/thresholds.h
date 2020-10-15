@@ -88,6 +88,44 @@ class AbstractThresholds : virtual public IMatrix {
 
     public:
 
+        class ApproximateThresholdImpl {
+
+            private:
+
+            public:
+
+                ApproximateThresholdImpl(IRuleRefinementCallback<BinVector>* callback);
+
+                IThresholdsSubset* createSubset(IWeightVector* weights);
+
+                class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
+
+                    public:
+
+                    //    AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex);
+
+                        void applyRefinement(Refinement &refinement);
+
+                        void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement);
+
+                        void applyPrediction(Prediction* prediction);
+
+                };
+
+                class BinCallback : public virtual IRuleRefinementCallback<BinVector> {
+
+                    private:
+
+                    public:
+
+                        BinCallback();
+
+                        BinVector* get(uint32 featureIndex);
+
+                };
+
+        };
+
         /**
          * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
          *                                  to the feature values of the training examples

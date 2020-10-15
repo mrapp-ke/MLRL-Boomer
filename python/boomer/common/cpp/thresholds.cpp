@@ -226,6 +226,28 @@ static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEnt
     cacheEntry.numConditions = numConditions;
 }
 
+AbstractThresholds::ApproximateThresholdImpl::ApproximateThresholdImpl(IRuleRefinementCallback<BinVector>* callback){
+
+}
+
+AbstractThresholds::ApproximateThresholdImpl::BinCallback::BinCallback(){
+
+}
+
+BinVector* AbstractThresholds::ApproximateThresholdImpl::BinCallback::get(uint32 featureIndex){
+
+    //IndexedFloat32Array indexedArray;
+    //featureMatrixPtr_.get()->fetchFeatureValues(featureIndex, &indexedArray);
+    return NULL;
+
+}
+
+//AbstractRuleRefinement* AbstractThresholds::ApproximateThresholdImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex){
+//
+//    return NULL;
+//
+//}
+
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                        std::shared_ptr<AbstractStatistics> statisticsPtr)
