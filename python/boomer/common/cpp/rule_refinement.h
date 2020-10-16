@@ -165,7 +165,7 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
-        std::shared_ptr<AbstractStatistics> statisticsPtr_;
+        AbstractStatistics& statistics_;
 
         uint32 featureIndex_;
 
@@ -174,13 +174,13 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
     public:
 
         /**
-         * @param statisticsPtr A shared pointer to an object of type `AbstractStatistics` that provides access to the
+         * @param statisticsPtr A reference to an object of type `AbstractStatistics` that provides access to the
          *                      statistics which serve as the basis for evaluating the potential refinements of rules
          * @param featureIndex  The index of the feature, the new condition corresponds to
          * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that allows
          *                      to retrieve the bins for a certain feature
          */
-        ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
+        ApproximateRuleRefinementImpl(AbstractStatistics& statistics, uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
         void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
