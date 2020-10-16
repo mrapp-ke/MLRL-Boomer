@@ -13,12 +13,11 @@ bool Refinement::isBetterThan(Refinement& another) const {
     return false;
 }
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(
-        std::shared_ptr<AbstractStatistics> statisticsPtr, std::shared_ptr<IWeightVector> weightsPtr,
-        uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
-    : statisticsPtr_(statisticsPtr), weightsPtr_(weightsPtr), totalSumOfWeights_(totalSumOfWeights),
-      featureIndex_(featureIndex), nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics& statistics, IWeightVector& weights,
+                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
+    : statistics_(statistics), weights_(weights), totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex),
+      nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -29,8 +28,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     const PredictionCandidate* bestHead = currentHead;
 
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices,
-                                                                                          labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
     FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
@@ -55,7 +53,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
         lastNegativeR = r;
         uint32 i = iterator[r].index;
-        uint32 weight = weightsPtr_->getValue(i);
+        uint32 weight = weights_.getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -80,7 +78,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
             lastNegativeR = r;
             uint32 i = iterator[r].index;
-            uint32 weight = weightsPtr_->getValue(i);
+            uint32 weight = weights_.getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -205,7 +203,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = iterator[r].index;
-        uint32 weight = weightsPtr_->getValue(i);
+        uint32 weight = weights_.getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -223,7 +221,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     if (sumOfWeights > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = iterator[r].index;
-            uint32 weight = weightsPtr_->getValue(i);
+            uint32 weight = weights_.getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {

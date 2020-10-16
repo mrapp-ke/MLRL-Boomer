@@ -247,9 +247,9 @@ uint32 AbstractThresholds::getNumLabels() const {
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
-                                                                std::shared_ptr<IWeightVector> weightsPtr)
-    : thresholds_(thresholds), weightsPtr_(weightsPtr) {
-    sumOfWeights_ = weightsPtr->getSumOfWeights();
+                                                                std::unique_ptr<IWeightVector> weightsPtr)
+    : thresholds_(thresholds), weightsPtr_(std::move(weightsPtr)) {
+    sumOfWeights_ = weightsPtr_->getSumOfWeights();
     uint32 numExamples = thresholds.getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
     coveredExamplesTarget_ = 0;
@@ -273,7 +273,7 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this);
-    return std::make_unique<ExactRuleRefinementImpl>(thresholds_.statisticsPtr_, weightsPtr_, sumOfWeights_,
+    return std::make_unique<ExactRuleRefinementImpl>(*(thresholds_.statisticsPtr_), *weightsPtr_, sumOfWeights_,
                                                      featureIndex, nominal, std::move(callbackPtr));
 }
 
@@ -382,7 +382,7 @@ ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> feature
 
 }
 
-std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::shared_ptr<IWeightVector> weightsPtr) {
+std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::unique_ptr<IWeightVector> weightsPtr) {
     // Notify the statistics about the examples that are included in the sub-sample...
     uint32 numExamples = statisticsPtr_->getNumRows();
     statisticsPtr_->resetSampledStatistics();
@@ -392,5 +392,5 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::shared
         statisticsPtr_->addSampledStatistic(r, weight);
     }
 
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weightsPtr);
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(weightsPtr));
 }
