@@ -13,7 +13,7 @@ from boomer.common.thresholds cimport IThresholdsSubset
 
 from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
-from libcpp.memory cimport unique_ptr, shared_ptr, make_unique
+from libcpp.memory cimport unique_ptr, make_unique
 from libcpp.utility cimport move
 
 from cython.operator cimport dereference
@@ -150,11 +150,11 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef intp c
 
         # Sub-sample examples...
-        cdef shared_ptr[IWeightVector] weights_ptr = <shared_ptr[IWeightVector]>move(instance_sub_sampling.subSample(
-            num_examples, dereference(rng)))
+        cdef unique_ptr[IWeightVector] weights_ptr = instance_sub_sampling.subSample(num_examples, dereference(rng))
+        cdef bint instance_sub_sampling_used = weights_ptr.get().hasZeroWeights()
 
         # Create a new subset of the given thresholds...
-        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(weights_ptr)
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(move(weights_ptr))
 
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels,
@@ -221,7 +221,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             # examples have the same values for the considered features.
             return False
         else:
-            if weights_ptr.get().hasZeroWeights():
+            if instance_sub_sampling_used:
                 # TODO Reactivate pruning
                 # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                 # if pruning is not None and num_conditions > 1:
