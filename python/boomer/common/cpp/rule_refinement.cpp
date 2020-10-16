@@ -13,11 +13,11 @@ bool Refinement::isBetterThan(Refinement& another) const {
     return false;
 }
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(
-        std::shared_ptr<AbstractStatistics> statisticsPtr, IWeightVector& weights, uint32 totalSumOfWeights,
-        uint32 featureIndex, bool nominal, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
-    : statisticsPtr_(statisticsPtr), weights_(weights), totalSumOfWeights_(totalSumOfWeights),
-      featureIndex_(featureIndex), nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics& statistics, IWeightVector& weights,
+                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
+    : statistics_(statistics), weights_(weights), totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex),
+      nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -28,8 +28,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     const PredictionCandidate* bestHead = currentHead;
 
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices,
-                                                                                          labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
     FeatureVector& featureVector = callbackPtr_->get(featureIndex_);

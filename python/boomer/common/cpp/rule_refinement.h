@@ -112,7 +112,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
-        std::shared_ptr<AbstractStatistics> statisticsPtr_;
+        AbstractStatistics& statistics_;
 
         IWeightVector& weights_;
 
@@ -127,8 +127,8 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
     public:
 
         /**
-         * @param statisticsPtr     A shared pointer to an object of type `AbstractStatistics` that provides access to
-         *                          the statistics which serve as the basis for evaluating the potential refinements of
+         * @param statisticsPtr     A reference to an object of type `AbstractStatistics` that provides access to the
+         *                          statistics which serve as the basis for evaluating the potential refinements of
          *                          rules
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
          *                          of the individual training examples
@@ -139,8 +139,8 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
          *                          allows to retrieve a feature vector for the given feature
          */
-        ExactRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, IWeightVector& weights,
-                                uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+        ExactRuleRefinementImpl(AbstractStatistics& statistics, IWeightVector& weights, uint32 totalSumOfWeights,
+                                uint32 featureIndex, bool nominal,
                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
         void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,

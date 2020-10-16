@@ -273,7 +273,7 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this);
-    return std::make_unique<ExactRuleRefinementImpl>(thresholds_.statisticsPtr_, *weightsPtr_, sumOfWeights_,
+    return std::make_unique<ExactRuleRefinementImpl>(*(thresholds_.statisticsPtr_), *weightsPtr_, sumOfWeights_,
                                                      featureIndex, nominal, std::move(callbackPtr));
 }
 
