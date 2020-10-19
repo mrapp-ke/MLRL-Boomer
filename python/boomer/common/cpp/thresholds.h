@@ -98,6 +98,8 @@ class AbstractThresholds : virtual public IMatrix {
 
                 IThresholdsSubset* createSubset(IWeightVector* weights);
 
+                std::unordered_map<uint32, Bin*> FeatureBins;
+
                 class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
 
                     public:
