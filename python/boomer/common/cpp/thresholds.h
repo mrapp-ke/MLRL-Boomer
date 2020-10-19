@@ -6,9 +6,11 @@
 #pragma once
 
 #include "arrays.h"
+#include "binning.h"
 #include "data.h"
 #include "predictions.h"
 #include "input_data.h"
+#include "statistics.h"
 #include "sub_sampling.h"
 #include "rule_refinement.h"
 #include "head_refinement.h"
@@ -125,6 +127,19 @@ class AbstractThresholds : virtual public IMatrix {
                         BinVector* get(uint32 featureIndex);
 
                 };
+
+                /*Hier bekomme ich: "error: expected class-name before ‘{’ token" was normalerweise darauf hinweist,
+                dass ein #include fehlt, aber es sollte alles nötige da sein.
+                class ConstantBinObserver : public virtual IHistogramBuilder {
+
+                    private:
+
+                    public:
+
+                        std::unique_ptr<AbstractStatistics> build(IndexedFloat32Array indexedArray) override;
+
+                };
+                */
 
         };
 
