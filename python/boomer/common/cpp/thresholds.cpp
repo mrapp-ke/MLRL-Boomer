@@ -228,6 +228,13 @@ static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEnt
 
 AbstractThresholds::ApproximateThresholdImpl::ApproximateThresholdImpl(IRuleRefinementCallback<BinVector>* callback){
 
+    //TODO: 0 ist nur ein Dummy-Wert
+    uint32 numElements = callback->get(0).getNumElements();
+    //Der Kompiler sagt mir hier i und numElements hätten unterschiedliche signedness aber die müssten beide unsigned sein
+    for(uint32 i = 0; i <= numElements; i++){
+        FeatureBins[i] = NULL;
+    }
+
 }
 
 AbstractThresholds::ApproximateThresholdImpl::BinCallback::BinCallback(){
@@ -238,6 +245,8 @@ BinVector* AbstractThresholds::ApproximateThresholdImpl::BinCallback::get(uint32
 
     //IndexedFloat32Array indexedArray;
     //featureMatrixPtr_.get()->fetchFeatureValues(featureIndex, &indexedArray);
+    //HistogramBuilderImpl Observer = ...;
+    //
     return NULL;
 
 }
