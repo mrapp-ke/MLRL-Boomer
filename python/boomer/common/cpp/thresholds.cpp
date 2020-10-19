@@ -243,7 +243,7 @@ AbstractThresholds::ApproximateThresholdImpl::BinCallback::BinCallback(){
 
 BinVector* AbstractThresholds::ApproximateThresholdImpl::BinCallback::get(uint32 featureIndex){
 
-    //IndexedFloat32Array indexedArray;
+    //IndexedFloat32Array indexedArray; // Muss als Feature Vector umgesetzt werden
     //featureMatrixPtr_.get()->fetchFeatureValues(featureIndex, &indexedArray);
     //ConstantBinObserver Observer = ...;
     //Observer.build(indexedArray)
