@@ -245,11 +245,32 @@ BinVector* AbstractThresholds::ApproximateThresholdImpl::BinCallback::get(uint32
 
     //IndexedFloat32Array indexedArray;
     //featureMatrixPtr_.get()->fetchFeatureValues(featureIndex, &indexedArray);
-    //HistogramBuilderImpl Observer = ...;
-    //
+    //ConstantBinObserver Observer = ...;
+    //Observer.build(indexedArray)
     return NULL;
 
 }
+
+/*
+std::unique_ptr<AbstractStatistics> AbstractThresholds::ApproximateThresholdImpl::build(IndexedFloat32Array indexedArray,
+                                                                                        IBinning binMethod//? ){
+
+    binMethod.creatBins(numBins, indexedArray, this); //Hier entsteht offensichtlich ein Problem (Vector/Array)
+
+}
+
+void AbstractThresholds::ApproximateThresholdImpl::onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry){
+
+    Bin* toUpdate = FeatureBins[binIndex];
+    toUpdate->numExamples += 1;
+    if(toUpdate->max < entry){
+        toUpdate->max = entry;
+    } else if(entry < toUpdate->min){
+        toUpdate->min = entry;
+    }
+
+}
+*/
 
 //AbstractRuleRefinement* AbstractThresholds::ApproximateThresholdImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex){
 //
