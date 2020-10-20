@@ -234,15 +234,21 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
         class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
 
+            private:
+
+                ApproximateThresholdImpl& thresholds_;
+
             public:
 
-                 std::unique_ptr<AbstractRuleRefinement> createRuleRefinement(uint32 featureIndex);
+                ThresholdsSubsetImpl(ApproximateThresholdImpl& thresholds);
 
-                 void applyRefinement(Refinement &refinement);
+                std::unique_ptr<AbstractRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
 
-                 void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement);
+                void applyRefinement(Refinement& refinement) override;
 
-                 void applyPrediction(Prediction* prediction);
+                void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const override;
+
+                void applyPrediction(Prediction& prediction) override;
 
         };
 
@@ -252,6 +258,6 @@ class ApproximateThresholdImpl : public AbstractThresholds {
                            std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                            std::shared_ptr<AbstractStatistics> statisticsPtr);
 
-        IThresholdsSubset* createSubset(IWeightVector* weights);
+        std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) override;
 
 };

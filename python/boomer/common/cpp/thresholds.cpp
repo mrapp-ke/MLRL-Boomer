@@ -397,9 +397,44 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::shared
     return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weightsPtr);
 }
 
+ApproximateThresholdImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ApproximateThresholdImpl& thresholds)
+                                                                    : thresholds_(thresholds) {
+
+}
+
+std::unique_ptr<AbstractRuleRefinement> ApproximateThresholdImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex){
+
+}
+
+void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement){
+
+}
+
+void ApproximateThresholdImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
+                                                                           Refinement& refinement) const {
+
+}
+
+void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& prediction){
+
+}
+
 ApproximateThresholdImpl::ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                                    std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                                    std::shared_ptr<AbstractStatistics> statisticsPtr)
                                         : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr){
 
+}
+
+std::unique_ptr<IThresholdsSubset> ApproximateThresholdImpl::createSubset(std::shared_ptr<IWeightVector> weightsPtr){
+    //TODO: Vereinheitlichen. Vermerk: ExactThresholdsImpl::createSubset
+    uint32 numExamples = statisticsPtr_->getNumRows();
+    statisticsPtr_->resetSampledStatistics();
+
+    for (uint32 r = 0; r < numExamples; r++) {
+        uint32 weight = weightsPtr->getValue(r);
+        statisticsPtr_->addSampledStatistic(r, weight);
+    }
+
+    return std::make_unique<ApproximateThresholdImpl::ThresholdsSubsetImpl>(*this);
 }
