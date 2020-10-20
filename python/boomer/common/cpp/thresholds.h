@@ -232,7 +232,7 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
     private:
 
-        class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
+        class ThresholdsSubsetImpl : virtual public IThresholdsSubset, virtual public IBinningObserver {
 
             private:
 
@@ -249,6 +249,8 @@ class ApproximateThresholdImpl : public AbstractThresholds {
                 void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const override;
 
                 void applyPrediction(Prediction& prediction) override;
+
+                void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
 
         };
 
