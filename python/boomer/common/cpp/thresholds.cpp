@@ -437,9 +437,21 @@ ApproximateThresholdImpl::ThresholdsSubsetImpl::Callback::Callback(ApproximateTh
 
 }
 
-void ApproximateThresholdImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry){
+void ApproximateThresholdImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
+                                                                           const FeatureVector::Entry& entry){
 
-
+    //TODO: Laufzeit: Wir greifen jedes mal auf die unordered_map zu -> nicht ganz billig
+    auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+    BinVector* bins = cacheIterator->second.get();
+    BinVector::iterator binIterator = bins->begin();
+    binIterator[binIndex].numExamples += 1;
+    float32 currentValue = entry.value;
+    if(currentValue < binIterator[binIndex].minValue){
+        binIterator[binIndex].minValue = currentValue;
+    }
+    if(binIterator[binIndex].maxValue < currentValue){
+        binIterator[binIndex].maxValue = currentValue;
+    }
 
 }
 
