@@ -254,12 +254,14 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
         std::shared_ptr<IBinning> binningPtr_;
 
+        uint32 numBins_;
+
     public:
 
         ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                            std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                            std::shared_ptr<AbstractStatistics> statisticsPtr,
-                           std::shared_ptr<IBinning> binningPtr);
+                           std::shared_ptr<IBinning> binningPtr, uint32 numBins);
 
         std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) override;
 
