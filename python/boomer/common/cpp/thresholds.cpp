@@ -226,57 +226,7 @@ static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEnt
     cacheEntry.numConditions = numConditions;
 }
 
-AbstractThresholds::ApproximateThresholdImpl::ApproximateThresholdImpl(IRuleRefinementCallback<BinVector>* callback){
 
-    //TODO: 0 ist nur ein Dummy-Wert
-    uint32 numElements = callback->get(0).getNumElements();
-    //Der Kompiler sagt mir hier i und numElements hätten unterschiedliche signedness aber die müssten beide unsigned sein
-    for(uint32 i = 0; i <= numElements; i++){
-        FeatureBins[i] = NULL;
-    }
-
-}
-
-AbstractThresholds::ApproximateThresholdImpl::BinCallback::BinCallback(){
-
-}
-
-BinVector* AbstractThresholds::ApproximateThresholdImpl::BinCallback::get(uint32 featureIndex){
-
-    //IndexedFloat32Array indexedArray; // Muss als Feature Vector umgesetzt werden
-    //featureMatrixPtr_.get()->fetchFeatureValues(featureIndex, &indexedArray);
-    //ConstantBinObserver Observer = ...;
-    //Observer.build(indexedArray)
-    return NULL;
-
-}
-
-/*
-std::unique_ptr<AbstractStatistics> AbstractThresholds::ApproximateThresholdImpl::build(IndexedFloat32Array indexedArray,
-                                                                                        IBinning binMethod//? ){
-
-    binMethod.creatBins(numBins, indexedArray, this); //Hier entsteht offensichtlich ein Problem (Vector/Array)
-
-}
-
-void AbstractThresholds::ApproximateThresholdImpl::onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry){
-
-    Bin* toUpdate = FeatureBins[binIndex];
-    toUpdate->numExamples += 1;
-    if(toUpdate->max < entry){
-        toUpdate->max = entry;
-    } else if(entry < toUpdate->min){
-        toUpdate->min = entry;
-    }
-
-}
-*/
-
-//AbstractRuleRefinement* AbstractThresholds::ApproximateThresholdImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex){
-//
-//    return NULL;
-//
-//}
 
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
@@ -445,4 +395,11 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::shared
     }
 
     return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weightsPtr);
+}
+
+ApproximateThresholdImpl::ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                                                   std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                                   std::shared_ptr<AbstractStatistics> statisticsPtr)
+                                        : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr){
+
 }

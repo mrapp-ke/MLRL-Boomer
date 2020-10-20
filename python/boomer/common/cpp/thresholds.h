@@ -90,59 +90,6 @@ class AbstractThresholds : virtual public IMatrix {
 
     public:
 
-        class ApproximateThresholdImpl {
-
-            private:
-
-            public:
-
-                ApproximateThresholdImpl(IRuleRefinementCallback<BinVector>* callback);
-
-                IThresholdsSubset* createSubset(IWeightVector* weights);
-
-                std::unordered_map<uint32, Bin*> FeatureBins;
-
-                class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
-
-                    public:
-
-                    //    AbstractRuleRefinement* createRuleRefinement(uint32 featureIndex);
-
-                        void applyRefinement(Refinement &refinement);
-
-                        void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement);
-
-                        void applyPrediction(Prediction* prediction);
-
-                };
-
-                class BinCallback : public virtual IRuleRefinementCallback<BinVector> {
-
-                    private:
-
-                    public:
-
-                        BinCallback();
-
-                        BinVector* get(uint32 featureIndex);
-
-                };
-
-                /*Hier bekomme ich: "error: expected class-name before ‘{’ token" was normalerweise darauf hinweist,
-                dass ein #include fehlt, aber es sollte alles nötige da sein.
-                class ConstantBinObserver : public virtual IHistogramBuilder {
-
-                    private:
-
-                    public:
-
-                        std::unique_ptr<AbstractStatistics> build(IndexedFloat32Array indexedArray) override;
-
-                };
-                */
-
-        };
-
         /**
          * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
          *                                  to the feature values of the training examples
@@ -278,5 +225,33 @@ class ExactThresholdsImpl : public AbstractThresholds {
                             std::shared_ptr<AbstractStatistics> statisticsPtr);
 
         std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) override;
+
+};
+
+class ApproximateThresholdImpl : public AbstractThresholds {
+
+    private:
+
+        class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
+
+            public:
+
+                 std::unique_ptr<AbstractRuleRefinement> createRuleRefinement(uint32 featureIndex);
+
+                 void applyRefinement(Refinement &refinement);
+
+                 void recalculatePrediction(IHeadRefinement* headRefinement, Refinement &refinement);
+
+                 void applyPrediction(Prediction* prediction);
+
+        };
+
+    public:
+
+        ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                           std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                           std::shared_ptr<AbstractStatistics> statisticsPtr);
+
+        IThresholdsSubset* createSubset(IWeightVector* weights);
 
 };
