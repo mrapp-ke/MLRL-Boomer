@@ -403,6 +403,9 @@ ApproximateThresholdImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(Approximate
 }
 
 std::unique_ptr<AbstractRuleRefinement> ApproximateThresholdImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex){
+//ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
+//                                      std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
+
 
 }
 
@@ -421,8 +424,10 @@ void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyPrediction(Prediction&
 
 ApproximateThresholdImpl::ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                                    std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                                   std::shared_ptr<AbstractStatistics> statisticsPtr)
-                                        : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr){
+                                                   std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                                   std::shared_ptr<IBinning> binningPtr)
+                                        : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr),
+                                        binningPtr_(binningPtr) {
 
 }
 
