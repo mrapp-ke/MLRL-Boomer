@@ -407,9 +407,11 @@ std::unique_ptr<AbstractRuleRefinement> ApproximateThresholdImpl::ThresholdsSubs
 //                                      std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
 //createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer)
 //fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr)
+    uint32 numBins = thresholds_.numBins_;
     std::unique_ptr<FeatureVector> featureVectorPtr;
     thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, featureVectorPtr);
-    thresholds_.binningPtr_->createBins(thresholds_.numBins_, *featureVectorPtr, *this);
+    thresholds_.cache_.emplace(featureIndex, std::make_unique<BinVector>(numBins));
+    thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
 
 }
 
@@ -427,6 +429,8 @@ void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyPrediction(Prediction&
 }
 
 void ApproximateThresholdImpl::ThresholdsSubsetImpl::onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry){
+
+
 
 }
 

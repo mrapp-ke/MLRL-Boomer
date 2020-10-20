@@ -258,6 +258,8 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
         uint32 numBins_;
 
+        std::unordered_map<uint32, std::unique_ptr<BinVector>> cache_;
+
     public:
 
         ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
