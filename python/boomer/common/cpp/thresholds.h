@@ -232,9 +232,25 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
     private:
 
-        class ThresholdsSubsetImpl : virtual public IThresholdsSubset, virtual public IBinningObserver {
+        class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
 
             private:
+
+                class Callback : virtual public IBinningObserver{
+
+                    private:
+
+                        ThresholdsSubsetImpl& thresholdsSubset_;
+
+                        uint32 featureIndex_;
+
+                    public:
+
+                        Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
+
+                        void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
+
+                };
 
                 ApproximateThresholdImpl& thresholds_;
 
@@ -249,8 +265,6 @@ class ApproximateThresholdImpl : public AbstractThresholds {
                 void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const override;
 
                 void applyPrediction(Prediction& prediction) override;
-
-                void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
 
         };
 
