@@ -452,7 +452,7 @@ void ApproximateThresholdImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint3
     if(binIterator[binIndex].maxValue < currentValue){
         binIterator[binIndex].maxValue = currentValue;
     }
-
+    //TODO: histogramBuilder.->onBinUpdate(binIndex, entry);
 }
 
 ApproximateThresholdImpl::ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
