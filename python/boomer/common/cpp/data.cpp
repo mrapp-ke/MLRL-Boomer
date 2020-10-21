@@ -32,7 +32,7 @@ T DenseVector<T>::getValue(uint32 pos) const {
 
 template<class T>
 typename DenseVector<T>::iterator DenseVector<T>::begin() {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>
@@ -42,7 +42,7 @@ typename DenseVector<T>::iterator DenseVector<T>::end() {
 
 template<class T>
 typename DenseVector<T>::const_iterator DenseVector<T>::cbegin() const {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>
@@ -96,7 +96,7 @@ void SparseArrayVector<T>::setNumElements(uint32 numElements) {
 
 template<class T>
 typename SparseArrayVector<T>::iterator SparseArrayVector<T>::begin() {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>
@@ -106,7 +106,7 @@ typename SparseArrayVector<T>::iterator SparseArrayVector<T>::end() {
 
 template<class T>
 typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cbegin() const {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>
