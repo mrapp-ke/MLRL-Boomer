@@ -9,16 +9,16 @@ from boomer.seco.heuristics cimport Heuristic
 from libcpp.memory cimport make_shared
 
 
-cdef class LabelWiseRuleEvaluation:
+cdef class LabelWiseRuleEvaluationFactory:
     """
-    A wrapper for the pure virtual C++ class `ILabelWiseRuleEvaluation`.
+    A wrapper for the pure virtual C++ class `ILabelWiseRuleEvaluationFactory`.
     """
     pass
 
 
-cdef class HeuristicLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
+cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationImpl`.
+    A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationFactoryImpl`.
     """
 
     def __cinit__(self, Heuristic heuristic, bint predictMajority = False):
@@ -27,5 +27,5 @@ cdef class HeuristicLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
         :param predictMajority: True, if for each label the majority label should be predicted, False, if the minority
                                 label should be predicted
         """
-        self.rule_evaluation_ptr = <shared_ptr[ILabelWiseRuleEvaluation]>make_shared[HeuristicLabelWiseRuleEvaluationImpl](
+        self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[HeuristicLabelWiseRuleEvaluationFactoryImpl](
             heuristic.heuristic_ptr, predictMajority)

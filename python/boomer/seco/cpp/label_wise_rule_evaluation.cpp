@@ -3,23 +3,25 @@
 using namespace seco;
 
 
-HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<IHeuristic> heuristicPtr,
+HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(uint32 numPredictions,
+                                                                           const uint32* labelIndices,
+                                                                           std::shared_ptr<IHeuristic> heuristicPtr,
                                                                            bool predictMajority)
-    : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
+    : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority), labelIndices_(labelIndices),
+      prediction_(LabelWiseEvaluatedPrediction(numPredictions)) {
 
 }
 
-void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
-        const uint32* labelIndices, const uint8* minorityLabels, const float64* confusionMatricesTotal,
-        const float64* confusionMatricesSubset, const float64* confusionMatricesCovered, bool uncovered,
-        LabelWiseEvaluatedPrediction& prediction) const {
-    uint32 numPredictions = prediction.getNumElements();
-    LabelWiseEvaluatedPrediction::iterator valueIterator = prediction.begin();
-    LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator = prediction.quality_scores_begin();
+const LabelWiseEvaluatedPrediction& HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
+        const uint8* minorityLabels, const float64* confusionMatricesTotal, const float64* confusionMatricesSubset,
+        const float64* confusionMatricesCovered, bool uncovered) {
+    uint32 numPredictions = prediction_.getNumElements();
+    LabelWiseEvaluatedPrediction::iterator valueIterator = prediction_.begin();
+    LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator = prediction_.quality_scores_begin();
     float64 overallQualityScore = 0;
 
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
+        uint32 l = labelIndices_ != nullptr ? labelIndices_[c] : c;
 
         // Set the score to be predicted for the current label...
         uint8 minorityLabel = minorityLabels[l];
@@ -58,5 +60,18 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
     }
 
     overallQualityScore /= numPredictions;
-    prediction.overallQualityScore = overallQualityScore;
+    prediction_.overallQualityScore = overallQualityScore;
+    return prediction_;
+}
+
+HeuristicLabelWiseRuleEvaluationFactoryImpl::HeuristicLabelWiseRuleEvaluationFactoryImpl(
+        std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority)
+    : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
+
+}
+
+std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create(
+        uint32 numLabelIndices, const uint32* labelIndices) const {
+    return std::make_unique<HeuristicLabelWiseRuleEvaluationImpl>(numLabelIndices, labelIndices, heuristicPtr_,
+                                                                  predictMajority_);
 }

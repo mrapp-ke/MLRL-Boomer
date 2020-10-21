@@ -7,16 +7,16 @@ quality scores.
 from libcpp.memory cimport make_shared
 
 
-cdef class LabelWiseRuleEvaluation:
+cdef class LabelWiseRuleEvaluationFactory:
     """
-    A wrapper for the pure virtual C++ class `ILabelWiseRuleEvaluation`.
+    A wrapper for the pure virtual C++ class `ILabelWiseRuleEvaluationFactory`.
     """
     pass
 
 
-cdef class RegularizedLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
+cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `RegularizedLabelWiseRuleEvaluationImpl`.
+    A wrapper for the C++ class `RegularizedLabelWiseRuleEvaluationFactoryImpl`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):
@@ -24,5 +24,5 @@ cdef class RegularizedLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
                                          to be predicted by rules
         """
-        self.rule_evaluation_ptr = <shared_ptr[ILabelWiseRuleEvaluation]>make_shared[RegularizedLabelWiseRuleEvaluationImpl](
+        self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[RegularizedLabelWiseRuleEvaluationFactoryImpl](
             l2_regularization_weight)

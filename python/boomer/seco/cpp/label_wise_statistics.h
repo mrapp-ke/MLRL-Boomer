@@ -23,28 +23,30 @@ namespace seco {
 
         protected:
 
-            std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
         public:
 
             /**
-             * @param numStatistics         The number of statistics
-             * @param numLabels             The number of labels
-             * @param sumUncoveredLabels    The sum of weights of all labels that remain to be covered, initially
-             * @param ruleEvaluationPtr     A shared pointer to an object of type `ILabelWiseRuleEvaluation`, to be used
-             *                              for calculating the predictions, as well as corresponding quality scores, of
-             *                              rules
+             * @param numStatistics             The number of statistics
+             * @param numLabels                 The number of labels
+             * @param sumUncoveredLabels        The sum of weights of all labels that remain to be covered, initially
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
+             *                                  that allows to create instances of the class that is used for
+             *                                  calculating the predictions, as well as corresponding quality scores, of
+             *                                  rules
              */
             AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels,
-                                        std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr);
+                                        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
             /**
-             * Sets the implementation to be used for calculating the predictions, as well as corresponding quality
-             * scores, of rules.
+             * Sets the factory that allows to create instances of the class that is used for calculating the
+             * predictions, as well as corresponding quality scores, of rules.
              *
-             * @param ruleEvaluationPtr A shared pointer to an object of type `ILabelWiseRuleEvaluation` to be set
+             * @param ruleEvaluationFactoryPtr A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
+             *                                 to be set
              */
-            void setRuleEvaluation(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr);
+            void setRuleEvaluationFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
     };
 
@@ -66,6 +68,8 @@ namespace seco {
 
                     const DenseLabelWiseStatisticsImpl& statistics_;
 
+                    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
                     uint32 numPredictions_;
 
                     const uint32* labelIndices_;
@@ -74,20 +78,22 @@ namespace seco {
 
                     float64* accumulatedConfusionMatricesCovered_;
 
-                    LabelWiseEvaluatedPrediction prediction_;
-
                 public:
 
                     /**
                      * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the confusion matrices
+                     * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
+                     *                          should be used to calculate the predictions, as well as corresponding
+                     *                          quality scores, of rules
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
                      *                          subset or a null pointer, if all labels should be considered
                      */
-                    StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
-                                         const uint32* labelIndices);
+                    StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
+                                         std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                         uint32 numPredictions, const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
 
@@ -113,19 +119,21 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationPtr     A shared pointer to an object of type `ILabelWiseRuleEvaluation` to be used
-             *                              for calculating the predictions, as well as corresponding quality scores, of
-             *                              rules
-             * @param labelMatrixPtr        A shared pointer to an object of type `IRandomAccessLabelMatrix` that
-             *                              provides random access to the labels of the training examples
-             * @param uncoveredLabels       A pointer to an array of type `float64`, shape `(numExamples, numLabels)`,
-             *                              indicating which examples and labels remain to be covered
-             * @param sumUncoveredLabels    The sum of weights of all labels that remain to be covered
-             * @param minorityLabels        A pointer to an array of type `uint8`, shape `(numLabels)`, indicating
-             *                              whether rules should predict individual labels as relevant (1) or irrelevant
-             *                              (0)
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
+             *                                  that allows to create instances of the class that is used for
+             *                                  calculating the predictions, as well as corresponding quality scores, of
+             *                                  rules
+             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
+             *                                  provides random access to the labels of the training examples
+             * @param uncoveredLabels           A pointer to an array of type `float64`, shape
+             *                                  `(numExamples, numLabels)`, indicating which examples and labels remain
+             *                                  to be covered
+             * @param sumUncoveredLabels        The sum of weights of all labels that remain to be covered
+             * @param minorityLabels            A pointer to an array of type `uint8`, shape `(numLabels)`, indicating
+             *                                  whether rules should predict individual labels as relevant (1) or
+             *                                  irrelevant (0)
              */
-            DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+            DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                          std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                                          float64* uncoveredLabels, float64 sumUncoveredLabels, uint8* minorityLabels);
 
@@ -174,20 +182,23 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
         public:
 
             /**
-             * @param ruleEvaluationPtr A shared pointer to an object of type `ILabelWiseRuleEvaluation` to be used for
-             *                          calculating the predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
-             *                          random access to the labels of the training examples
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
+             *                                  that allows to create instances of the class that is used for
+             *                                  calculating the predictions, as well as corresponding quality scores, of
+             *                                  rules
+             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
+             *                                  provides random access to the labels of the training examples
              */
-            DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
+            DenseLabelWiseStatisticsFactoryImpl(
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
             std::unique_ptr<AbstractLabelWiseStatistics> create() const override;
 
