@@ -90,4 +90,47 @@ namespace seco {
 
     };
 
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `ILabelWiseRuleEvaluation`.
+     */
+    class ILabelWiseRuleEvaluationFactory {
+
+        public:
+
+            virtual ~ILabelWiseRuleEvaluationFactory() { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluation`.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create() const = 0;
+
+    };
+
+    /**
+     * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
+     */
+    class HeuristicLabelWiseRuleEvaluationFactoryImpl : virtual public ILabelWiseRuleEvaluationFactory {
+
+        private:
+
+            std::shared_ptr<IHeuristic> heuristicPtr_;
+
+            bool predictMajority_;
+
+        public:
+
+            /**
+             * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
+             *                          to be optimized
+             * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
+             *                          minority label should be predicted
+             */
+            HeuristicLabelWiseRuleEvaluationFactoryImpl(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
+
+            std::unique_ptr<ILabelWiseRuleEvaluation> create() const override;
+
+    };
+
 }

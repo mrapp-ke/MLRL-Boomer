@@ -60,3 +60,13 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
     overallQualityScore /= numPredictions;
     prediction.overallQualityScore = overallQualityScore;
 }
+
+HeuristicLabelWiseRuleEvaluationFactoryImpl::HeuristicLabelWiseRuleEvaluationFactoryImpl(
+        std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority)
+    : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
+
+}
+
+std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create() const {
+    return std::make_unique<HeuristicLabelWiseRuleEvaluationImpl>(heuristicPtr_, predictMajority_);
+}
