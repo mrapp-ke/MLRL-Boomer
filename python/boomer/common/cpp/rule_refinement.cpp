@@ -463,13 +463,13 @@ void ExactRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefineme
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
-        AbstractStatistics& statistics, uint32 featureIndex,
+        const AbstractStatistics& statistics, uint32 featureIndex,
         std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
     : statistics_(statistics), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement,
+void ApproximateRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefinement,
                                                    const PredictionCandidate* currentHead, uint32 numLabelIndices,
                                                    const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
@@ -481,7 +481,7 @@ void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefineme
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
-    BinVector& binVector = callbackPtr_->get(featureIndex_);
+    const BinVector& binVector = callbackPtr_->get(featureIndex_);
     BinVector::const_iterator iterator = binVector.cbegin();
     uint32 numBins = binVector.getNumElements();
 

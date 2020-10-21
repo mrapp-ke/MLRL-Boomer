@@ -112,7 +112,7 @@ namespace boosting {
 
                 private:
 
-                    DenseLabelWiseStatisticsImpl& statistics_;
+                    const DenseLabelWiseStatisticsImpl& statistics_;
 
                     uint32 numBins_;
 
@@ -127,11 +127,11 @@ namespace boosting {
                      *                      the gradients and Hessians
                      * @param numBins       The number of bins, the histogram should consist of
                      */
-                    HistogramBuilderImpl(DenseLabelWiseStatisticsImpl& statistics, uint32 numBins);
+                    HistogramBuilderImpl(const DenseLabelWiseStatisticsImpl& statistics, uint32 numBins);
 
                     void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
 
-                    std::unique_ptr<AbstractStatistics> build() override;
+                    std::unique_ptr<AbstractStatistics> build() const override;
 
             };
 
@@ -181,7 +181,7 @@ namespace boosting {
 
             void applyPrediction(uint32 statisticIndex, const Prediction& prediction) override;
 
-            std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) override;
+            std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override;
 
     };
 

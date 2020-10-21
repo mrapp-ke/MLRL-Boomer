@@ -82,7 +82,7 @@ const LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubs
     return *prediction_;
 }
 
-DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl& statistics,
+DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numBins)
     : statistics_(statistics), numBins_(numBins) {
     uint32 numLabels = numBins_ * statistics.getNumCols();
@@ -105,7 +105,7 @@ void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binI
     }
 }
 
-std::unique_ptr<AbstractStatistics> DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build() {
+std::unique_ptr<AbstractStatistics> DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build() const {
     return std::make_unique<DenseLabelWiseStatisticsImpl>(statistics_.lossFunctionPtr_, statistics_.ruleEvaluationPtr_,
                                                           statistics_.labelMatrixPtr_, gradients_, hessians_,
                                                           statistics_.currentScores_);
@@ -188,7 +188,8 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const 
     }
 }
 
-std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsImpl::buildHistogram(uint32 numBins) {
+std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsImpl::buildHistogram(
+        uint32 numBins) const {
     return std::make_unique<DenseLabelWiseStatisticsImpl::HistogramBuilderImpl>(*this, numBins);
 }
 
