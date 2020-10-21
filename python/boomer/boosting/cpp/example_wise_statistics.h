@@ -66,7 +66,7 @@ namespace boosting {
 
                 private:
 
-                    DenseExampleWiseStatisticsImpl& statistics_;
+                    const DenseExampleWiseStatisticsImpl& statistics_;
 
                     uint32 numPredictions_;
 
@@ -104,9 +104,9 @@ namespace boosting {
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
-                     *                          subset or NULL, if all labels should be considered
+                     *                          subset or a null pointer, if all labels should be considered
                      */
-                    StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl& statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(const DenseExampleWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
@@ -115,10 +115,11 @@ namespace boosting {
 
                     void resetSubset() override;
 
-                    LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
-                                                                               bool accumulated) override;
+                    const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
+                                                                                     bool accumulated) override;
 
-                    PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+                    const PredictionCandidate& calculateExampleWisePrediction(bool uncovered,
+                                                                              bool accumulated) override;
 
             };
 
@@ -201,9 +202,9 @@ namespace boosting {
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
             std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
-                                                            const uint32* labelIndices) override;
+                                                            const uint32* labelIndices) const override;
 
-            void applyPrediction(uint32 statisticIndex, Prediction& prediction) override;
+            void applyPrediction(uint32 statisticIndex, const Prediction& prediction) override;
 
             std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) override;
 

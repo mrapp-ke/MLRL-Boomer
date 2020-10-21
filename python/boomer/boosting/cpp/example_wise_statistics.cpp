@@ -17,9 +17,8 @@ void AbstractExampleWiseStatistics::setRuleEvaluation(
     ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
-DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseExampleWiseStatisticsImpl& statistics,
-                                                                           uint32 numPredictions,
-                                                                           const uint32* labelIndices)
+DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
+        const DenseExampleWiseStatisticsImpl& statistics, uint32 numPredictions, const uint32* labelIndices)
     : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
@@ -100,7 +99,7 @@ void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+const LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -110,7 +109,7 @@ LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetIm
     return *prediction_;
 }
 
-PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
+const PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -227,13 +226,13 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticInde
 }
 
 std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
-                                                                                const uint32* labelIndices) {
+                                                                                const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
     return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(*this, numPredictions, labelIndices);
 }
 
-void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction& prediction) {
+void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = prediction.numPredictions_;
     const uint32* labelIndices = prediction.labelIndices_;

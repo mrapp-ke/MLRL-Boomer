@@ -17,14 +17,14 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRu
     ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics,
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices)
     : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     confusionMatricesCovered_ = (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
-    accumulatedConfusionMatricesCovered_ = NULL;
-    uint32* predictionLabelIndices = NULL;
+    accumulatedConfusionMatricesCovered_ = nullptr;
+    uint32* predictionLabelIndices = nullptr;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
     prediction_ = new LabelWisePredictionCandidate(numPredictions, predictionLabelIndices, predictedScores,
@@ -42,7 +42,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
     uint32 offset = statisticIndex * numLabels;
 
     for (uint32 c = 0; c < numPredictions_; c++) {
-        uint32 l = labelIndices_ != NULL ? labelIndices_[c] : c;
+        uint32 l = labelIndices_ != nullptr ? labelIndices_[c] : c;
 
         // Only uncovered labels must be considered...
         if (statistics_.uncoveredLabels_[offset + l] > 0) {
@@ -57,7 +57,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
 
 void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     // Allocate an array for storing the accumulated confusion matrices, if necessary...
-    if (accumulatedConfusionMatricesCovered_ == NULL) {
+    if (accumulatedConfusionMatricesCovered_ == nullptr) {
         accumulatedConfusionMatricesCovered_ =
             (float64*) malloc(numPredictions_ * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
         arrays::setToZeros(accumulatedConfusionMatricesCovered_, numPredictions_ * NUM_CONFUSION_MATRIX_ELEMENTS);
@@ -75,7 +75,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+const LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
     statistics_.ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.minorityLabels_,
@@ -162,13 +162,13 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
 }
 
 std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
-                                                                              const uint32* labelIndices) {
+                                                                              const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+    uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
     return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, numPredictions, labelIndices);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction& prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = prediction.numPredictions_;
     const uint32* labelIndices = prediction.labelIndices_;
@@ -177,7 +177,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
 
     // Only the labels that are predicted by the new rule must be considered...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != NULL ? labelIndices[c] : c;
+        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
         uint8 predictedLabel = predictedScores[c];
         uint8 minorityLabel = minorityLabels_[l];
 
