@@ -7,7 +7,6 @@ from boomer.common._arrays cimport uint32, intp, float32
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport AbstractStatistics
-from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -46,7 +45,6 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
         # Functions:
 
-        void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
-                            const uint32* labelIndices)
+        void findRefinement(PredictionCandidate* currentHead, uint32 numLabelIndices, const uint32* labelIndices)
 
         unique_ptr[Refinement] pollRefinement()
