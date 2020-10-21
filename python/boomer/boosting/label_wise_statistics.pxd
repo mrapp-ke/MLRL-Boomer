@@ -2,7 +2,7 @@ from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.label_wise_losses cimport LabelWiseLoss, ILabelWiseLoss
-from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, ILabelWiseRuleEvaluation
+from boomer.boosting.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
@@ -13,7 +13,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
 
         # Functions:
 
-        void setRuleEvaluation(shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr)
+        void setRuleEvaluationFactory(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
 
 
     cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
@@ -21,7 +21,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         DenseLabelWiseStatisticsImpl(shared_ptr[ILabelWiseLoss] lossFunctionPtr,
-                                     shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr) except +
+                                     shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
 
 
     cdef cppclass ILabelWiseStatisticsFactory:
@@ -36,7 +36,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         # Constructors:
 
         DenseLabelWiseStatisticsFactoryImpl(shared_ptr[ILabelWiseLoss] lossFunctionPtr,
-                                            shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr,
+                                            shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr,
                                             shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 
@@ -62,7 +62,7 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluation rule_evaluation
+    cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory
 
     # Functions:
 
@@ -75,9 +75,9 @@ cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
 
     cdef LabelWiseLoss loss_function
 
-    cdef LabelWiseRuleEvaluation default_rule_evaluation
+    cdef LabelWiseRuleEvaluationFactory default_rule_evaluation_factory
 
-    cdef LabelWiseRuleEvaluation rule_evaluation
+    cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory
 
     # Functions:
 
