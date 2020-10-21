@@ -203,7 +203,7 @@ static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEnt
     uint32 maxElements = featureVector.getNumElements();
     FeatureVector* filteredVector = cacheEntry.featureVectorPtr.get();
 
-    if (filteredVector == NULL) {
+    if (filteredVector == nullptr) {
         cacheEntry.featureVectorPtr = std::move(std::make_unique<FeatureVector>(maxElements));
         filteredVector = cacheEntry.featureVectorPtr.get();
     }
@@ -267,7 +267,7 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
     FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
 
     // If the `CacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to the cache...
-    if (featureVector == NULL) {
+    if (featureVector == nullptr) {
         thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
     }
 
@@ -286,7 +286,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
-    if (featureVector == NULL) {
+    if (featureVector == nullptr) {
         auto cacheIterator = thresholds_.cache_.find(featureIndex);
         featureVector = cacheIterator->second.get();
     }
@@ -352,11 +352,11 @@ FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 f
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
-    if (featureVector == NULL) {
+    if (featureVector == nullptr) {
         auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex);
         featureVector = cacheIterator->second.get();
 
-        if (featureVector == NULL) {
+        if (featureVector == nullptr) {
             thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, cacheIterator->second);
             cacheIterator->second->sortByValues();
             featureVector = cacheIterator->second.get();
