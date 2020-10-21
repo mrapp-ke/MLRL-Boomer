@@ -11,7 +11,7 @@ from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.thresholds cimport AbstractThresholds
 from boomer.common.stopping_criteria cimport StoppingCriterion
 from boomer.common.sub_sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling
-from boomer.common.head_refinement cimport IHeadRefinement
+from boomer.common.head_refinement cimport IHeadRefinementFactory
 
 from libcpp.memory cimport shared_ptr, unique_ptr, make_unique
 
@@ -23,49 +23,55 @@ cdef class SequentialRuleInduction:
     """
 
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, ThresholdsFactory thresholds_factory,
-                  RuleInduction rule_induction, HeadRefinement default_rule_head_refinement,
-                  HeadRefinement head_refinement, list stopping_criteria, LabelSubSampling label_sub_sampling,
-                  InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
-                  PostProcessor post_processor, uint32 min_coverage, intp max_conditions, intp max_head_refinements,
-                  int num_threads):
+                  RuleInduction rule_induction, HeadRefinementFactory default_rule_head_refinement_factory,
+                  HeadRefinementFactory head_refinement_factory, list stopping_criteria,
+                  LabelSubSampling label_sub_sampling, InstanceSubSampling instance_sub_sampling,
+                  FeatureSubSampling feature_sub_sampling, Pruning pruning, PostProcessor post_processor,
+                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads):
         """
-        :param statistics_provider_factory:     A factory that allows to create a provider that provides access to the
-                                                statistics which serve as the basis for learning rules
-        :param thresholds_factory:              A factory that allows to create objects that provide access to the
-                                                thresholds that may be used by the conditions of rules
-        :param rule_induction:                  The algorithm that should be used to induce rules
-        :param default_rule_head_refinement:    The strategy that should be used to find the head of the default rule
-        :param head_refinement:                 The strategy that should be used to find the heads of rules
-        :param stopping_criteria                A list that contains the stopping criteria that should be used to decide
-                                                whether additional rules should be induced or not
-        :param label_sub_sampling:              The strategy that should be used for sub-sampling the labels each time a
-                                                new classification rule is learned or None, if no sub-sampling should be
-                                                used
-        :param instance_sub_sampling:           The strategy that should be used for sub-sampling the training examples
-                                                each time a new classification rule is learned or None, if no
-                                                sub-sampling should be used
-        :param feature_sub_sampling:            The strategy that should be used for sub-sampling the features each time
-                                                a classification rule is refined or None, if no sub-sampling should be
-                                                used
-        :param pruning:                         The strategy that should be used for pruning rules or None, if no
-                                                pruning should be used
-        :param post_processor:                  The post-processor that should be used to post-process the rule once it
-                                                has been learned
-        :param min_coverage:                    The minimum number of training examples that must be covered by a rule.
-                                                Must be at least 1
-        :param max_conditions:                  The maximum number of conditions to be included in a rule's body. Must
-                                                be at least 1 or -1, if the number of conditions should not be
-                                                restricted
-        :param max_head_refinements:            The maximum number of times the head of a rule may be refined after a
-                                                new condition has been added to its body. Must be at least 1 or -1, if
-                                                the number of refinements should not be restricted
-        :param num_threads:                     The number of threads to be used for training. Must be at least 1
+        :param statistics_provider_factory:             A factory that allows to create a provider that provides access
+                                                        to the statistics which serve as the basis for learning rules
+        :param thresholds_factory:                      A factory that allows to create objects that provide access to
+                                                        the thresholds that may be used by the conditions of rules
+        :param rule_induction:                          The algorithm that should be used to induce rules
+        :param default_rule_head_refinement_factory:    The factory that allows to create instances of the class that
+                                                        implements the strategy that should be used to find the head of
+                                                        the default rule
+        :param head_refinement_factory:                 The factory that allows to create instances of the class that
+                                                        implements the strategy that should be used to find the heads of
+                                                        rules
+        :param stopping_criteria                        A list that contains the stopping criteria that should be used
+                                                        to decide whether additional rules should be induced or not
+        :param label_sub_sampling:                      The strategy that should be used for sub-sampling the labels
+                                                        each time a new classification rule is learned or None, if no
+                                                        sub-sampling should be used
+        :param instance_sub_sampling:                   The strategy that should be used for sub-sampling the training
+                                                        examples each time a new classification rule is learned or None,
+                                                        if no sub-sampling should be used
+        :param feature_sub_sampling:                    The strategy that should be used for sub-sampling the features
+                                                        each time a classification rule is refined or None, if no
+                                                        sub-sampling should be used
+        :param pruning:                                 The strategy that should be used for pruning rules or None, if
+                                                        no pruning should be used
+        :param post_processor:                          The post-processor that should be used to post-process the rule
+                                                        once it has been learned
+        :param min_coverage:                            The minimum number of training examples that must be covered by
+                                                        a rule. Must be at least 1
+        :param max_conditions:                          The maximum number of conditions to be included in a rule's
+                                                        body. Must be at least 1 or -1, if the number of conditions
+                                                        should not be restricted
+        :param max_head_refinements:                    The maximum number of times the head of a rule may be refined
+                                                        after a new condition has been added to its body. Must be at
+                                                        least 1 or -1, if the number of refinements should not be
+                                                        restricted
+        :param num_threads:                             The number of threads to be used for training. Must be at least
+                                                        1
         """
         self.statistics_provider_factory = statistics_provider_factory
         self.thresholds_factory = thresholds_factory
         self.rule_induction = rule_induction
-        self.default_rule_head_refinement = default_rule_head_refinement
-        self.head_refinement = head_refinement
+        self.default_rule_head_refinement_factory = default_rule_head_refinement_factory
+        self.head_refinement_factory = head_refinement_factory
         self.stopping_criteria = stopping_criteria
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
@@ -95,8 +101,8 @@ cdef class SequentialRuleInduction:
         cdef StatisticsProviderFactory statistics_provider_factory = self.statistics_provider_factory
         cdef ThresholdsFactory thresholds_factory = self.thresholds_factory
         cdef RuleInduction rule_induction = self.rule_induction
-        cdef HeadRefinement default_rule_head_refinement = self.default_rule_head_refinement
-        cdef HeadRefinement head_refinement = self.head_refinement
+        cdef HeadRefinementFactory default_rule_head_refinement_factory = self.default_rule_head_refinement_factory
+        cdef HeadRefinementFactory head_refinement_factory = self.head_refinement_factory
         cdef list stopping_criteria = self.stopping_criteria
         cdef LabelSubSampling label_sub_sampling = self.label_sub_sampling
         cdef InstanceSubSampling instance_sub_sampling = self.instance_sub_sampling
@@ -115,17 +121,16 @@ cdef class SequentialRuleInduction:
         cdef bint success
 
         # Induce default rule...
-        cdef shared_ptr[IHeadRefinement] head_refinement_ptr
+        cdef shared_ptr[IHeadRefinementFactory] head_refinement_factory_ptr
 
-        if default_rule_head_refinement is not None:
-            head_refinement_ptr = default_rule_head_refinement.head_refinement_ptr
+        if default_rule_head_refinement_factory is not None:
+            head_refinement_factory_ptr = default_rule_head_refinement_factory.head_refinement_factory_ptr
             num_rules += 1;
 
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
-        rule_induction.induce_default_rule(statistics_provider, head_refinement_ptr.get(), model_builder)
+        rule_induction.induce_default_rule(statistics_provider, head_refinement_factory_ptr.get(), model_builder)
 
         # Induce the remaining rules...
-        head_refinement_ptr = head_refinement.head_refinement_ptr
         cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
         cdef shared_ptr[INominalFeatureVector] nominal_feature_vector_ptr = nominal_feature_vector.nominal_feature_vector_ptr
         cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr = label_sub_sampling.label_sub_sampling_ptr
@@ -133,15 +138,15 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
         cdef shared_ptr[IPostProcessor] post_processor_ptr = post_processor.post_processor_ptr
         cdef unique_ptr[AbstractThresholds] thresholds_ptr
-        thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_vector, statistics_provider))
+        thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_vector, statistics_provider,
+                                                       head_refinement_factory))
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_vector_ptr.get(),
-                                                 feature_matrix_ptr.get(), head_refinement_ptr.get(),
-                                                 label_sub_sampling_ptr.get(), instance_sub_sampling_ptr.get(),
-                                                 feature_sub_sampling_ptr.get(), pruning, post_processor_ptr.get(),
-                                                 min_coverage, max_conditions, max_head_refinements, num_threads,
-                                                 rng_ptr.get(), model_builder)
+                                                 feature_matrix_ptr.get(), label_sub_sampling_ptr.get(),
+                                                 instance_sub_sampling_ptr.get(), feature_sub_sampling_ptr.get(),
+                                                 pruning, post_processor_ptr.get(), min_coverage, max_conditions,
+                                                 max_head_refinements, num_threads, rng_ptr.get(), model_builder)
 
             if not success:
                 break

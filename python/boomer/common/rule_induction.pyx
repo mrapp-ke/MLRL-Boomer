@@ -5,6 +5,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 """
 from boomer.common._arrays cimport float32, array_uint32
 from boomer.common._predictions cimport PredictionCandidate
+from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
@@ -25,25 +26,25 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
-                                  ModelBuilder model_builder):
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
+                                  IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder):
         """
         Induces the default rule.
 
-        :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
-                                    the basis for inducing the default rule
-        :param head_refinement:     A pointer to an object of type `IHeadRefinement` that should be used to find the
-                                    head of the default rule or a null pointer, if no default rule should be induced
-        :param model_builder:       The builder, the default rule should be added to
+        :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
+                                        as the basis for inducing the default rule
+        :param head_refinement_factory: A pointer to an object of type `IHeadRefinementFactory` that allows to create
+                                        instances of the class that should be used to find the head of the default rule
+                                        or a null pointer, if no default rule should be induced
+        :param model_builder:           The builder, the default rule should be added to
         """
         pass
 
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
-                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
-                          ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
-                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, IPostProcessor* post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
-                          RNG* rng, ModelBuilder model_builder):
+                          IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
+                          IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
+                          Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
+                          intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         """
         Induces a new classification rule.
 
@@ -53,8 +54,6 @@ cdef class RuleInduction:
                                         the information whether individual features are nominal or not
         :param feature_matrix:          A pointer to an object of type `IFeatureMatrix` that provides column-wise access
                                         to the feature values of the training examples
-        :param head_refinement:         A pointer to an object of type `IHeadRefinement` that should be used to find the
-                                        head of the rule
         :param label_sub_sampling:      A pointer to an object of type `ILabelSubSampling`, implementing the strategy
                                         that should be used to sub-sample the labels
         :param instance_sub_sampling:   A pointer to an object of type `IInstanceSubSampling`, implementing the strategy
@@ -89,14 +88,15 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     rule the most is chosen. The search stops if no refinement results in an improvement.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider, IHeadRefinement* head_refinement,
-                                  ModelBuilder model_builder):
+    cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
+                                  IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder):
+        cdef unique_ptr[IHeadRefinement] head_refinement_ptr
         cdef unique_ptr[PredictionCandidate] default_prediction_ptr
         cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
         cdef AbstractStatistics* statistics
         cdef uint32 num_statistics, i
 
-        if head_refinement != NULL:
+        if head_refinement_factory != NULL:
             statistics = statistics_provider.get()
             num_statistics = statistics.getNumRows()
             statistics.resetSampledStatistics()
@@ -105,8 +105,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 statistics.addSampledStatistic(i, 1)
 
             statistics_subset_ptr = statistics.createSubset(0, NULL)
-            head_refinement.findHead(NULL, default_prediction_ptr, NULL, dereference(statistics_subset_ptr.get()), True,
-                                     False)
+            head_refinement_ptr = head_refinement_factory.create()
+            head_refinement_ptr.get().findHead(NULL, default_prediction_ptr, NULL,
+                                               dereference(statistics_subset_ptr.get()), True, False)
             statistics_provider.switch_rule_evaluation()
 
             for i in range(num_statistics):
@@ -117,11 +118,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
-                          IFeatureMatrix* feature_matrix, IHeadRefinement* head_refinement,
-                          ILabelSubSampling* label_sub_sampling, IInstanceSubSampling* instance_sub_sampling,
-                          IFeatureSubSampling* feature_sub_sampling, Pruning pruning, IPostProcessor* post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
-                          RNG* rng, ModelBuilder model_builder):
+                          IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
+                          IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
+                          Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
+                          intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         # The total number of statistics
         cdef uint32 num_examples = thresholds.getNumRows()
         # The total number of features
@@ -184,8 +184,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                 f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
                 rule_refinement = rule_refinements[f]
-                rule_refinement.findRefinement(dereference(head_refinement), best_refinement_ptr.get().headPtr.get(),
-                                               num_predictions, label_indices)
+                rule_refinement.findRefinement(best_refinement_ptr.get().headPtr.get(), num_predictions, label_indices)
 
             # Pick the best refinement among the refinements that have been found for the different features...
             for c in range(num_sampled_features):
@@ -235,8 +234,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
                 # training data...
-                thresholds_subset_ptr.get().recalculatePrediction(dereference(head_refinement),
-                                                                  dereference(best_refinement_ptr.get()))
+                thresholds_subset_ptr.get().recalculatePrediction(dereference(best_refinement_ptr.get()))
 
             # Apply post-processor...
             post_processor.postProcess(dereference(best_refinement_ptr.get().headPtr.get()))

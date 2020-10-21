@@ -50,11 +50,9 @@ class IThresholdsSubset {
          * When calculating the updated scores the weights of the individual training examples are ignored and equally
          * distributed weights are assumed instead.
          *
-         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to calculate
-         *                          the updated scores
-         * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
+         * @param refinement A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(const IHeadRefinement& headRefinement, Refinement& refinement) const = 0;
+        virtual void recalculatePrediction(Refinement& refinement) const = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
@@ -79,6 +77,8 @@ class AbstractThresholds : virtual public IMatrix {
 
         std::shared_ptr<AbstractStatistics> statisticsPtr_;
 
+        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
+
     public:
 
         /**
@@ -88,10 +88,14 @@ class AbstractThresholds : virtual public IMatrix {
          *                                  access to the information whether individual features are nominal or not
          * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
          *                                  access to statistics about the labels of the training examples
+         * @param headRefinementPtr         A shared pointer to an object of type `IHeadRefinementFactory` that allows
+         *                                  to create instances of the class that should be used to find the heads of
+         *                                  rules
          */
         AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                            std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                           std::shared_ptr<AbstractStatistics> statisticsPtr);
+                           std::shared_ptr<AbstractStatistics> statisticsPtr,
+                           std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
@@ -169,6 +173,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ExactThresholdsImpl& thresholds_;
 
+                std::unique_ptr<IHeadRefinement> headRefinementPtr_;
+
                 std::unique_ptr<IWeightVector> weightsPtr_;
 
                 uint32 sumOfWeights_;
@@ -184,12 +190,16 @@ class ExactThresholdsImpl : public AbstractThresholds {
             public:
 
                 /**
-                 * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the
-                 *                      thresholds
-                 * @param weightsPtr    An unique pointer to an object of type `IWeightVector` that provides access to
-                 *                      the weights of the individual training examples
+                 * @param thresholds        A reference to an object of type `ExactThresholdsImpl` that stores the
+                 *                          thresholds
+                 * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that allows to
+                 *                          create instances of the class that allows to find the heads of the rules
+                 * @param weightsPtr        An unique pointer to an object of type `IWeightVector` that provides access
+                 *                          to the weights of the individual training examples
                  */
-                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, std::unique_ptr<IWeightVector> weightsPtr);
+                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
+                                     std::unique_ptr<IHeadRefinement> headRefinementPtr,
+                                     std::unique_ptr<IWeightVector> weightsPtr);
 
                 ~ThresholdsSubsetImpl();
 
@@ -197,8 +207,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 void applyRefinement(Refinement& refinement) override;
 
-                void recalculatePrediction(const IHeadRefinement& headRefinement,
-                                           Refinement& refinement) const override;
+                void recalculatePrediction(Refinement& refinement) const override;
 
                 void applyPrediction(const Prediction& prediction) override;
 
@@ -215,10 +224,14 @@ class ExactThresholdsImpl : public AbstractThresholds {
          *                                  access to the information whether individual features are nominal or not
          * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
          *                                  access to statistics about the labels of the training examples
+         * @param headRefinementPtr         A shared pointer to an object of type `IHeadRefinementFactory` that allows
+         *                                  to create instances of the class that should be used to find the heads of
+         *                                  rules
          */
         ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                            std::shared_ptr<AbstractStatistics> statisticsPtr);
+                            std::shared_ptr<AbstractStatistics> statisticsPtr,
+                            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
         std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) override;
 
