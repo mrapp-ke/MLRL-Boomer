@@ -31,7 +31,7 @@ T DenseVector<T>::getValue(uint32 pos) const {
 
 template<class T>
 typename DenseVector<T>::iterator DenseVector<T>::begin() {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>
@@ -41,7 +41,7 @@ typename DenseVector<T>::iterator DenseVector<T>::end() {
 
 template<class T>
 typename DenseVector<T>::const_iterator DenseVector<T>::cbegin() const {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>
