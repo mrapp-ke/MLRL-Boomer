@@ -324,11 +324,11 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHea
         }
     }
 
-    const Prediction& prediction = headRefinement.calculatePrediction(*statisticsSubsetPtr, false, false);
-    const float64* updatedScores = prediction.predictedScores_;
+    const EvaluatedPrediction& prediction = headRefinement.calculatePrediction(*statisticsSubsetPtr, false, false);
+    const EvaluatedPrediction::const_iterator updatedIterator = prediction.cbegin();
 
     for (uint32 c = 0; c < numLabelIndices; c++) {
-        predictedScores[c] = updatedScores[c];
+        predictedScores[c] = updatedIterator[c];
     }
 }
 
