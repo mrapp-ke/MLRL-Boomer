@@ -6,7 +6,6 @@
  */
 #pragma once
 
-#include "../../common/cpp/arrays.h"
 #include "../../common/cpp/input_data.h"
 #include "../../common/cpp/statistics.h"
 #include "label_wise_rule_evaluation.h"
