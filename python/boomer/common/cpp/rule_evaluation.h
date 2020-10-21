@@ -15,9 +15,13 @@
  */
 class EvaluatedPrediction : virtual public IVector {
 
+    protected:
+
+        uint32 numElements_;
+
     private:
 
-        DenseVector<float64> scoreVector_;
+        float64* scores_;
 
     public:
 
@@ -26,9 +30,11 @@ class EvaluatedPrediction : virtual public IVector {
          */
         EvaluatedPrediction(uint32 numElements);
 
-        typedef DenseVector<float64>::iterator iterator;
+        ~EvaluatedPrediction();
 
-        typedef DenseVector<float64>::const_iterator const_iterator;
+        typedef float64* iterator;
+
+        typedef const float64* const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the predicted scores.
@@ -75,7 +81,7 @@ class LabelWiseEvaluatedPrediction : public EvaluatedPrediction {
 
     private:
 
-        DenseVector<float64> qualityScoreVector_;
+        float64* qualityScores_;
 
     public:
 
@@ -84,9 +90,11 @@ class LabelWiseEvaluatedPrediction : public EvaluatedPrediction {
          */
         LabelWiseEvaluatedPrediction(uint32 numElements);
 
-        typedef DenseVector<float64>::iterator quality_score_iterator;
+        ~LabelWiseEvaluatedPrediction();
 
-        typedef DenseVector<float64>::const_iterator quality_score_const_iterator;
+        typedef float64* quality_score_iterator;
+
+        typedef const float64* quality_score_const_iterator;
 
         /**
          * Returns a `quality_score_iterator` to the beginning of the quality scores.

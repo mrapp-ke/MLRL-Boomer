@@ -2,47 +2,55 @@
 
 
 EvaluatedPrediction::EvaluatedPrediction(uint32 numElements)
-    : scoreVector_(DenseVector<float64>(numElements)) {
+    : numElements_(numElements), scores_(new float64[numElements]) {
 
+}
+
+EvaluatedPrediction::~EvaluatedPrediction() {
+    delete[] scores_;
 }
 
 uint32 EvaluatedPrediction::getNumElements() const {
-    return scoreVector_.getNumElements();
+    return numElements_;
 }
 
 EvaluatedPrediction::iterator EvaluatedPrediction::begin() {
-    return scoreVector_.begin();
+    return &scores_[0];
 }
 
 EvaluatedPrediction::iterator EvaluatedPrediction::end() {
-    return scoreVector_.end();
+    return &scores_[numElements_];
 }
 
 EvaluatedPrediction::const_iterator EvaluatedPrediction::cbegin() const {
-    return scoreVector_.cbegin();
+    return &scores_[0];
 }
 
 EvaluatedPrediction::const_iterator EvaluatedPrediction::cend() const {
-    return scoreVector_.cend();
+    return &scores_[numElements_];
 }
 
 LabelWiseEvaluatedPrediction::LabelWiseEvaluatedPrediction(uint32 numElements)
-    : EvaluatedPrediction(numElements), qualityScoreVector_(DenseVector<float64>(numElements)) {
+    : EvaluatedPrediction(numElements), qualityScores_(new float64[numElements]) {
 
+}
+
+LabelWiseEvaluatedPrediction::~LabelWiseEvaluatedPrediction() {
+    delete[] qualityScores_;
 }
 
 LabelWiseEvaluatedPrediction::quality_score_iterator LabelWiseEvaluatedPrediction::quality_scores_begin() {
-    return qualityScoreVector_.begin();
+    return qualityScores_;
 }
 
 LabelWiseEvaluatedPrediction::quality_score_iterator LabelWiseEvaluatedPrediction::quality_scores_end() {
-    return qualityScoreVector_.end();
+    return &qualityScores_[numElements_];
 }
 
 LabelWiseEvaluatedPrediction::quality_score_const_iterator LabelWiseEvaluatedPrediction::quality_scores_cbegin() const {
-    return qualityScoreVector_.cbegin();
+    return qualityScores_;
 }
 
 LabelWiseEvaluatedPrediction::quality_score_const_iterator LabelWiseEvaluatedPrediction::quality_scores_cend() const {
-    return qualityScoreVector_.cend();
+    return &qualityScores_[numElements_];
 }
