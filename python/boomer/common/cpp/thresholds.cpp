@@ -395,12 +395,12 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::unique
     return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(weightsPtr));
 }
 
-ApproximateThresholdImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ApproximateThresholdImpl& thresholds)
+ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds)
                                                                     : thresholds_(thresholds) {
 
 }
 
-std::unique_ptr<AbstractRuleRefinement> ApproximateThresholdImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex){
+std::unique_ptr<AbstractRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex){
 //ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
 //                                      std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
 //createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer)
@@ -415,27 +415,27 @@ std::unique_ptr<AbstractRuleRefinement> ApproximateThresholdImpl::ThresholdsSubs
     }
 }
 
-void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement){
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement){
 
 }
 
-void ApproximateThresholdImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHeadRefinement& headRefinement,
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHeadRefinement& headRefinement,
                                                                            Refinement& refinement) const {
 
 }
 
-void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction){
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction){
 
 }
 
-ApproximateThresholdImpl::ThresholdsSubsetImpl::Callback::Callback(ApproximateThresholdImpl::ThresholdsSubsetImpl& thresholdsSubset,
+ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ApproximateThresholdsImpl::ThresholdsSubsetImpl& thresholdsSubset,
                                                                     uint32 featureIndex)
                                                                    : thresholdsSubset_(thresholdsSubset),
                                                                    featureIndex_(featureIndex){
 
 }
 
-void ApproximateThresholdImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
                                                                            const FeatureVector::Entry& entry){
 
     //TODO: Laufzeit: Wir greifen jedes mal auf die unordered_map zu -> nicht ganz billig
@@ -453,7 +453,7 @@ void ApproximateThresholdImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint3
     //TODO: histogramBuilder.->onBinUpdate(binIndex, entry);
 }
 
-ApproximateThresholdImpl::ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                                    std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                                    std::shared_ptr<AbstractStatistics> statisticsPtr,
                                                    std::shared_ptr<IBinning> binningPtr, uint32 numBins)
@@ -462,7 +462,7 @@ ApproximateThresholdImpl::ApproximateThresholdImpl(std::shared_ptr<IFeatureMatri
 
 }
 
-std::unique_ptr<IThresholdsSubset> ApproximateThresholdImpl::createSubset(std::shared_ptr<IWeightVector> weightsPtr){
+std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(std::shared_ptr<IWeightVector> weightsPtr){
     //TODO: Vereinheitlichen. Vermerk: ExactThresholdsImpl::createSubset
     uint32 numExamples = statisticsPtr_->getNumRows();
     statisticsPtr_->resetSampledStatistics();
@@ -472,5 +472,5 @@ std::unique_ptr<IThresholdsSubset> ApproximateThresholdImpl::createSubset(std::s
         statisticsPtr_->addSampledStatistic(r, weight);
     }
 
-    return std::make_unique<ApproximateThresholdImpl::ThresholdsSubsetImpl>(*this);
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this);
 }

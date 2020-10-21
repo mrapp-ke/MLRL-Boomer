@@ -229,7 +229,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
 };
 
-class ApproximateThresholdImpl : public AbstractThresholds {
+class ApproximateThresholdsImpl : public AbstractThresholds {
 
     private:
 
@@ -253,11 +253,11 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
                 };
 
-                ApproximateThresholdImpl& thresholds_;
+                ApproximateThresholdsImpl& thresholds_;
 
             public:
 
-                ThresholdsSubsetImpl(ApproximateThresholdImpl& thresholds);
+                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
 
                 std::unique_ptr<AbstractRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
 
@@ -278,7 +278,7 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
     public:
 
-        ApproximateThresholdImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+        ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                            std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                            std::shared_ptr<AbstractStatistics> statisticsPtr,
                            std::shared_ptr<IBinning> binningPtr, uint32 numBins);
