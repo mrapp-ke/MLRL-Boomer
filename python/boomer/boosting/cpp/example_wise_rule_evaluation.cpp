@@ -95,3 +95,13 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(
     overallQualityScore += 0.5 * l2RegularizationWeight_ * linalg::l2NormPow(valueIterator, numPredictions);
     prediction.overallQualityScore = overallQualityScore;
 }
+
+RegularizedExampleWiseRuleEvaluationFactoryImpl::RegularizedExampleWiseRuleEvaluationFactoryImpl(
+        float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
+    : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
+
+}
+
+std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactoryImpl::create() const {
+    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl>(l2RegularizationWeight_, blasPtr_, lapackPtr_);
+}

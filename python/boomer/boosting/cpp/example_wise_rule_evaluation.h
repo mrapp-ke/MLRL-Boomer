@@ -165,4 +165,53 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `IExampleWiseRuleEvaluation`.
+     */
+    class IExampleWiseRuleEvaluationFactory {
+
+        public:
+
+            virtual ~IExampleWiseRuleEvaluationFactory() { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluation`.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been created
+             */
+            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create() const = 0;
+
+    };
+
+    /**
+     * Allows to create instances of the class `RegularizedExampleWiseRuleEvaluation`.
+     */
+    class RegularizedExampleWiseRuleEvaluationFactoryImpl : virtual public IExampleWiseRuleEvaluationFactory {
+
+        private:
+
+            float64 l2RegularizationWeight_;
+
+            std::shared_ptr<Blas> blasPtr_;
+
+            std::shared_ptr<Lapack> lapackPtr_;
+
+        public:
+
+            /**
+             * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
+             *                               scores to be predicted by rules
+             * @param blasPtr                A shared pointer to an object of type `Blas` that allows to execute
+             *                               different BLAS routines
+             * @param lapackPtr              A shared pointer to an object of type `Lapack` that allows to execute
+             *                               different LAPACK routines
+             */
+            RegularizedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
+                                                            std::shared_ptr<Blas> blasPtr,
+                                                            std::shared_ptr<Lapack> lapackPtr);
+
+            std::unique_ptr<IExampleWiseRuleEvaluation> create() const override;
+
+    };
+
 }
