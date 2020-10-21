@@ -1,7 +1,5 @@
 #include "label_wise_statistics.h"
-#include "heuristics.h"
-#include <stdlib.h>
-#include <cstddef>
+#include <cstdlib>
 
 using namespace seco;
 
