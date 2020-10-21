@@ -272,7 +272,8 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
     }
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this);
+    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this,
+                                                                                                     featureIndex);
     return std::make_unique<ExactRuleRefinementImpl>(*(thresholds_.statisticsPtr_), *weightsPtr_, sumOfWeights_,
                                                      featureIndex, nominal, std::move(callbackPtr));
 }
@@ -342,22 +343,23 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction
     }
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetImpl& thresholdsSubset)
-    : thresholdsSubset_(thresholdsSubset) {
+ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetImpl& thresholdsSubset,
+                                                              uint32 featureIndex)
+    : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
 
 }
 
-const FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) const {
-    auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex);
+const FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get() const {
+    auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
     if (featureVector == nullptr) {
-        auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex);
+        auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
         featureVector = cacheIterator->second.get();
 
         if (featureVector == nullptr) {
-            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, cacheIterator->second);
+            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, cacheIterator->second);
             cacheIterator->second->sortByValues();
             featureVector = cacheIterator->second.get();
         }

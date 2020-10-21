@@ -64,12 +64,11 @@ class IRuleRefinementCallback {
         virtual ~IRuleRefinementCallback() { };
 
         /**
-         * Returns the information that is required to identify potential refinements for a specific feature.
+         * Returns the information that is required to identify potential refinements.
          *
-         * @param featureIndex  The index of the feature
-         * @return              A reference to an object of template type `T` that stores the information
+         * @return A reference to an object of template type `T` that stores the information
          */
-        virtual const T& get(uint32 featureIndex) const = 0;
+        virtual const T& get() const = 0;
 
 };
 
