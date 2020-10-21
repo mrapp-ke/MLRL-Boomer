@@ -6,17 +6,10 @@
  */
 #pragma once
 
-#include "arrays.h"
-#include "tuples.h"
-#include "data.h"
 #include "input_data.h"
-#include "predictions.h"
 #include "rules.h"
-#include "statistics.h"
 #include "sub_sampling.h"
 #include "head_refinement.h"
-#include <memory>
-#include <utility>
 
 
 /**

@@ -7,13 +7,11 @@
  */
 #pragma once
 
-#include "../../common/cpp/arrays.h"
 #include "../../common/cpp/statistics.h"
 #include "example_wise_rule_evaluation.h"
 #include "example_wise_losses.h"
 #include "statistics.h"
 #include "lapack.h"
-#include <memory>
 
 
 namespace boosting {

@@ -1,5 +1,5 @@
 #include "rule_refinement.h"
-#include <math.h>
+#include <cmath>
 
 
 bool Refinement::isBetterThan(const Refinement& another) const {
