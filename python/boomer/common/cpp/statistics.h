@@ -38,7 +38,7 @@ class IStatisticsSubset {
          * functions that will be called later. Any information computed by this function is expected to be reset when
          * invoking the function `resetSubset` for the next time.
          *
-         * @param statistic_index   The index of the covered statistic
+         * @param statisticIndex    The index of the covered statistic
          * @param weight            The weight of the covered statistic
          */
         virtual void addToSubset(uint32 statisticIndex, uint32 weight) = 0;
@@ -77,12 +77,12 @@ class IStatisticsSubset {
          * predict for any other labels. In addition to each score, a quality score, which assesses the quality of the
          * prediction for the respective label, is returned.
          *
-         * @param uncovered:    0, if the rule covers all statistics that have been added to the subset via the function
+         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
          *                      between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated:  0, if the rule covers all statistics that have been added to the subset via the function
+         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
@@ -112,12 +112,12 @@ class IStatisticsSubset {
          * addition to the scores, an overall quality score, which assesses the quality of the predictions for all
          * labels in terms of a single score, is returned.
          *
-         * @param uncovered:    0, if the rule covers all statistics that have been added to the subset via the function
+         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
          *                      between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated:  0, if the rule covers all statistics that have been added to the subset via the function
+         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
