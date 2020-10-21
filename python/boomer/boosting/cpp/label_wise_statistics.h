@@ -78,7 +78,7 @@ namespace boosting {
 
                     float64* accumulatedSumsOfHessians_;
 
-                    LabelWisePredictionCandidate* prediction_;
+                    LabelWiseEvaluatedPrediction prediction_;
 
                 public:
 
@@ -99,7 +99,7 @@ namespace boosting {
 
                     void resetSubset() override;
 
-                    const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
+                    const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                      bool accumulated) override;
 
             };
