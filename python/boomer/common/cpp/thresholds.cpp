@@ -260,8 +260,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
     delete[] coveredExamplesMask_;
 }
 
-std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
-        uint32 featureIndex) {
+std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex) {
     // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
     FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
@@ -272,9 +271,10 @@ std::unique_ptr<AbstractRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImp
     }
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this);
-    return std::make_unique<ExactRuleRefinementImpl>(*(thresholds_.statisticsPtr_), *weightsPtr_, sumOfWeights_,
-                                                     featureIndex, nominal, std::move(callbackPtr));
+    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this,
+                                                                                                     featureIndex);
+    return std::make_unique<ExactRuleRefinementImpl>(*weightsPtr_, sumOfWeights_, featureIndex, nominal,
+                                                     std::move(callbackPtr));
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
@@ -342,22 +342,23 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction
     }
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetImpl& thresholdsSubset)
-    : thresholdsSubset_(thresholdsSubset) {
+ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetImpl& thresholdsSubset,
+                                                              uint32 featureIndex)
+    : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
 
 }
 
-const FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) const {
-    auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex);
+std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get() const {
+    auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
     if (featureVector == nullptr) {
-        auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex);
+        auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
         featureVector = cacheIterator->second.get();
 
         if (featureVector == nullptr) {
-            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, cacheIterator->second);
+            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, cacheIterator->second);
             cacheIterator->second->sortByValues();
             featureVector = cacheIterator->second.get();
         }
@@ -372,7 +373,8 @@ const FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(ui
         featureVector = cacheEntry.featureVectorPtr.get();
     }
 
-    return *featureVector;
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>(
+        *thresholdsSubset_.thresholds_.statisticsPtr_, *featureVector);
 }
 
 ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
