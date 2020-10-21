@@ -29,8 +29,6 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
     sumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
     arrays::setToZeros(sumsOfHessians_, numHessians);
     accumulatedSumsOfHessians_ = nullptr;
-    prediction_ = nullptr;
-    labelWisePrediction_ = nullptr;
     tmpGradients_ = nullptr;
     tmpHessians_ = nullptr;
     dsysvTmpArray1_ = nullptr;
@@ -44,8 +42,6 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
-    delete prediction_;
-    delete labelWisePrediction_;
     free(tmpGradients_);
     free(tmpHessians_);
     free(dsysvTmpArray1_);
@@ -103,15 +99,9 @@ const LabelWiseEvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSu
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
-
-    if (labelWisePrediction_ == nullptr) {
-        labelWisePrediction_ = new LabelWiseEvaluatedPrediction(numPredictions_);
-    }
-
-    ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_, sumsOfGradients,
-                                                     statistics_.totalSumsOfHessians_, sumsOfHessians, uncovered,
-                                                     *labelWisePrediction_);
-    return *labelWisePrediction_;
+    return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.totalSumsOfGradients_, sumsOfGradients,
+                                                            statistics_.totalSumsOfHessians_, sumsOfHessians,
+                                                            uncovered);
 }
 
 const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
@@ -121,8 +111,7 @@ const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl:
 
     // To avoid array recreation each time this function is called, the temporary arrays are only initialized if they
     // have not been initialized yet
-    if (prediction_ == nullptr) {
-        prediction_ = new EvaluatedPrediction(numPredictions_);
+    if (tmpGradients_ == nullptr) {
         tmpGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
         uint32 numHessians = linalg::triangularNumber(numPredictions_);
         tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
@@ -131,17 +120,15 @@ const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl:
         dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
 
         // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, prediction_->begin(),
-                                                                       numPredictions_);
+        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, tmpGradients_, numPredictions_);
         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
     }
 
-    ruleEvaluationPtr_->calculateExampleWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
-                                                       sumsOfGradients, statistics_.totalSumsOfHessians_,
-                                                       sumsOfHessians, tmpGradients_, tmpHessians_, dsysvLwork_,
-                                                       dsysvTmpArray1_, dsysvTmpArray2_, dsysvTmpArray3_,
-                                                       dspmvTmpArray_, uncovered, *prediction_);
-    return *prediction_;
+    return ruleEvaluationPtr_->calculateExampleWisePrediction(statistics_.totalSumsOfGradients_, sumsOfGradients,
+                                                              statistics_.totalSumsOfHessians_, sumsOfHessians,
+                                                              tmpGradients_, tmpHessians_, dsysvLwork_, dsysvTmpArray1_,
+                                                              dsysvTmpArray2_, dsysvTmpArray3_, dspmvTmpArray_,
+                                                              uncovered);
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
@@ -203,7 +190,8 @@ std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
                                                                                 const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create();
+    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
+                                                                                                      labelIndices);
     return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
                                                                                   numPredictions, labelIndices);
 }

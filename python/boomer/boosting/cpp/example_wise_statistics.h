@@ -81,10 +81,6 @@ namespace boosting {
 
                     float64* accumulatedSumsOfHessians_;
 
-                    EvaluatedPrediction* prediction_;
-
-                    LabelWiseEvaluatedPrediction* labelWisePrediction_;
-
                     float64* tmpGradients_;
 
                     float64* tmpHessians_;
