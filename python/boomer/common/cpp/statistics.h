@@ -5,9 +5,8 @@
  */
 #pragma once
 
-#include "arrays.h"
+#include "rule_evaluation.h"
 #include "predictions.h"
-#include "data.h"
 #include <memory>
 
 
@@ -84,11 +83,11 @@ class IStatisticsSubset {
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
-         * @return              A reference to an object of type `LabelWisePredictionCandidate` that stores the scores
+         * @return              A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the scores
          *                      to be predicted by the rule for each considered label, as well as the corresponding
          *                      quality scores
          */
-        virtual const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -119,10 +118,10 @@ class IStatisticsSubset {
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
-         * @return              A reference to an object of type `PredictionCandidate` that stores the scores to be
+         * @return              A reference to an object of type `EvaluatedPrediction` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual const PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
 
 };
 
@@ -135,7 +134,7 @@ class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
 
     public:
 
-        const PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+        const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
 };
 

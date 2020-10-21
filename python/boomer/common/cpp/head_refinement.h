@@ -5,8 +5,6 @@
  */
 #pragma once
 
-#include "arrays.h"
-#include "predictions.h"
 #include "statistics.h"
 
 
@@ -65,10 +63,10 @@ class IHeadRefinement {
          * @param accumulated       False, if the rule covers all examples that have been added since the
          *                          `IStatisticsSubset` has been reset for the last time, True, if the rule covers all
          *                          examples that have been added so far
-         * @return                  A reference to an object of type `PredictionCandidate` that stores the optimal
+         * @return                  A reference to an object of type `EvaluatedPrediction` that stores the optimal
          *                          scores to be predicted by the rule, as well as its overall quality score
          */
-        virtual const PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+        virtual const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                bool accumulated) const = 0;
 
 };
@@ -84,7 +82,7 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                       bool accumulated) const override;
 
-        const PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+        const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                        bool accumulated) const override;
 
 };
@@ -100,7 +98,7 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                       bool accumulated) const override;
 
-        const PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+        const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                        bool accumulated) const override;
 
 };
