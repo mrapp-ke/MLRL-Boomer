@@ -1,6 +1,5 @@
 #include "example_wise_rule_evaluation.h"
 #include "linalg.h"
-#include <math.h>
 
 using namespace boosting;
 
