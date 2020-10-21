@@ -80,8 +80,6 @@ namespace boosting {
 
                     float64* accumulatedSumsOfHessians_;
 
-                    LabelWiseEvaluatedPrediction prediction_;
-
                 public:
 
                     /**
