@@ -79,7 +79,9 @@ namespace boosting {
 
                     float64* accumulatedSumsOfHessians_;
 
-                    LabelWisePredictionCandidate* prediction_;
+                    EvaluatedPrediction* prediction_;
+
+                    LabelWiseEvaluatedPrediction* labelWisePrediction_;
 
                     float64* tmpGradients_;
 
@@ -114,10 +116,10 @@ namespace boosting {
 
                     void resetSubset() override;
 
-                    const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
+                    const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                      bool accumulated) override;
 
-                    const PredictionCandidate& calculateExampleWisePrediction(bool uncovered,
+                    const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered,
                                                                               bool accumulated) override;
 
             };

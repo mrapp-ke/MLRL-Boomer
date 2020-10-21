@@ -27,11 +27,8 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
     sumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
     arrays::setToZeros(sumsOfHessians_, numHessians);
     accumulatedSumsOfHessians_ = NULL;
-    uint32* predictionLabelIndices = NULL;
-    float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-    float64* qualityScores = NULL;
-    prediction_ = new LabelWisePredictionCandidate(numPredictions, predictionLabelIndices, predictedScores,
-                                                   qualityScores, 0);
+    prediction_ = NULL;
+    labelWisePrediction_ = NULL;
     tmpGradients_ = NULL;
     tmpHessians_ = NULL;
     dsysvTmpArray1_ = NULL;
@@ -46,6 +43,7 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
     delete prediction_;
+    delete labelWisePrediction_;
     free(tmpGradients_);
     free(tmpHessians_);
     free(dsysvTmpArray1_);
@@ -99,24 +97,30 @@ void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-const LabelWisePredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+const LabelWiseEvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
+
+    if (labelWisePrediction_ == nullptr) {
+        labelWisePrediction_ = new LabelWiseEvaluatedPrediction(numPredictions_);
+    }
+
     statistics_.ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
                                                                   sumsOfGradients, statistics_.totalSumsOfHessians_,
-                                                                  sumsOfHessians, uncovered, *prediction_);
-    return *prediction_;
+                                                                  sumsOfHessians, uncovered, *labelWisePrediction_);
+    return *labelWisePrediction_;
 }
 
-const PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
+const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
 
     // To avoid array recreation each time this function is called, the temporary arrays are only initialized if they
     // have not been initialized yet
-    if (tmpGradients_ == NULL) {
+    if (prediction_ == nullptr) {
+        prediction_ = new EvaluatedPrediction(numPredictions_);
         tmpGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
         uint32 numHessians = linalg::triangularNumber(numPredictions_);
         tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
@@ -125,7 +129,7 @@ const PredictionCandidate& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl:
         dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
 
         // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, prediction_->predictedScores_,
+        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, prediction_->begin(),
                                                                        numPredictions_);
         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
     }
