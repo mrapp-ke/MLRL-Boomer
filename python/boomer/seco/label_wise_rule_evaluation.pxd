@@ -6,23 +6,23 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
 
-    cdef cppclass ILabelWiseRuleEvaluation:
+    cdef cppclass ILabelWiseRuleEvaluationFactory:
         pass
 
 
-    cdef cppclass HeuristicLabelWiseRuleEvaluationImpl(ILabelWiseRuleEvaluation):
+    cdef cppclass HeuristicLabelWiseRuleEvaluationFactoryImpl(ILabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        HeuristicLabelWiseRuleEvaluationImpl(IHeuristic* heuristic, bool predictMajority) except +
+        HeuristicLabelWiseRuleEvaluationFactoryImpl(IHeuristic* heuristic, bool predictMajority) except +
 
 
-cdef class LabelWiseRuleEvaluation:
+cdef class LabelWiseRuleEvaluationFactory:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelWiseRuleEvaluation] rule_evaluation_ptr
+    cdef shared_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
-cdef class HeuristicLabelWiseRuleEvaluation(LabelWiseRuleEvaluation):
+cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass

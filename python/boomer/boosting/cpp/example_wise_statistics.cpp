@@ -6,19 +6,22 @@ using namespace boosting;
 
 
 AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
+        uint32 numStatistics, uint32 numLabels,
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
 }
 
-void AbstractExampleWiseStatistics::setRuleEvaluation(
-        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
+void AbstractExampleWiseStatistics::setRuleEvaluationFactory(
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
+    ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
 }
 
 DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
-        const DenseExampleWiseStatisticsImpl& statistics, uint32 numPredictions, const uint32* labelIndices)
-    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
+        const DenseExampleWiseStatisticsImpl& statistics, std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
+        uint32 numPredictions, const uint32* labelIndices)
+    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), numPredictions_(numPredictions),
+      labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = nullptr;
@@ -105,9 +108,9 @@ const LabelWiseEvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSu
         labelWisePrediction_ = new LabelWiseEvaluatedPrediction(numPredictions_);
     }
 
-    statistics_.ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
-                                                                  sumsOfGradients, statistics_.totalSumsOfHessians_,
-                                                                  sumsOfHessians, uncovered, *labelWisePrediction_);
+    ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_, sumsOfGradients,
+                                                     statistics_.totalSumsOfHessians_, sumsOfHessians, uncovered,
+                                                     *labelWisePrediction_);
     return *labelWisePrediction_;
 }
 
@@ -133,21 +136,21 @@ const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl:
         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
     }
 
-    statistics_.ruleEvaluationPtr_->calculateExampleWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
-                                                                   sumsOfGradients, statistics_.totalSumsOfHessians_,
-                                                                   sumsOfHessians, tmpGradients_, tmpHessians_,
-                                                                   dsysvLwork_, dsysvTmpArray1_, dsysvTmpArray2_,
-                                                                   dsysvTmpArray3_, dspmvTmpArray_, uncovered,
-                                                                   *prediction_);
+    ruleEvaluationPtr_->calculateExampleWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
+                                                       sumsOfGradients, statistics_.totalSumsOfHessians_,
+                                                       sumsOfHessians, tmpGradients_, tmpHessians_, dsysvLwork_,
+                                                       dsysvTmpArray1_, dsysvTmpArray2_, dsysvTmpArray3_,
+                                                       dspmvTmpArray_, uncovered, *prediction_);
     return *prediction_;
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::shared_ptr<Lapack> lapackPtr,
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, std::shared_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
         float64* currentScores)
-    : AbstractExampleWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr),
+    : AbstractExampleWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(),
+                                    ruleEvaluationFactoryPtr),
       lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr), gradients_(gradients),
       hessians_(hessians), currentScores_(currentScores) {
     // The number of labels
@@ -200,7 +203,9 @@ std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
                                                                                 const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(*this, numPredictions, labelIndices);
+    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create();
+    return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
+                                                                                  numPredictions, labelIndices);
 }
 
 void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
@@ -225,10 +230,10 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, cons
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-        std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, std::unique_ptr<Lapack> lapackPtr,
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, std::unique_ptr<Lapack> lapackPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
     lossFunctionPtr_ = lossFunctionPtr;
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
+    ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
     lapackPtr_ = std::move(lapackPtr);
     labelMatrixPtr_ = labelMatrixPtr;
 }
@@ -260,6 +265,6 @@ std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactory
                                                         &hessians[r * numHessians]);
     }
 
-    return std::make_unique<DenseExampleWiseStatisticsImpl>(lossFunctionPtr_, ruleEvaluationPtr_, lapackPtr_,
+    return std::make_unique<DenseExampleWiseStatisticsImpl>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_,
                                                             labelMatrixPtr_, gradients, hessians, currentScores);
 }
