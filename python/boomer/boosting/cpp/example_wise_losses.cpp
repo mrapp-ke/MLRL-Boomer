@@ -19,7 +19,7 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(const IRandomAcc
         sumOfExponentials += exponential;
     }
 
-    float64 sumOfExponentialsPow = pow(sumOfExponentials, 2);
+    float64 sumOfExponentialsPow = sumOfExponentials * sumOfExponentials;
     uint32 i = 0;
 
     for (uint32 c = 0; c < numLabels; c++) {
@@ -41,7 +41,7 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(const IRandomAcc
             i++;
         }
 
-        tmp = pow(expectedScore, 2) * exponential * (sumOfExponentials - exponential);
+        tmp = expectedScore * expectedScore * exponential * (sumOfExponentials - exponential);
         tmp /= sumOfExponentialsPow;
         hessians[i] = tmp;
         i++;

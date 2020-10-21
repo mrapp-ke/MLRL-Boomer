@@ -85,7 +85,7 @@ float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 
     } else if (beta_ > 0) {
         // Weighted harmonic mean between precision and recall
         float64 numCoveredEqual = cin + crp;
-        float64 betaPow = pow(beta_, 2);
+        float64 betaPow = beta_ * beta_;
         float64 numerator = (1 + betaPow) * numCoveredEqual;
         float64 denominator = numerator + (betaPow * (uin + urp)) + (cip + crn);
 
