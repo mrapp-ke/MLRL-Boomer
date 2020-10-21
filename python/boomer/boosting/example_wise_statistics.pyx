@@ -30,18 +30,19 @@ cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
     A wrapper for the C++ class `DenseExampleWiseStatisticsFactoryImpl`.
     """
 
-    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluation rule_evaluation,
+    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluationFactory rule_evaluation_factory,
                  RandomAccessLabelMatrix label_matrix):
         """
-        :param loss_function:   The loss function to be used for calculating gradients and Hessians
-        :param rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as well as
-                                corresponding quality scores, of rules
-        :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
-                                examples
+        :param loss_function:           The loss function to be used for calculating gradients and Hessians
+        :param rule_evaluation_factory: The `LabelWiseRuleEvaluation` that allows to create instances of the class that
+                                        is used for calculating the predictions, as well as corresponding quality
+                                        scores, of rules
+        :param label_matrix:            A `RandomAccessLabelMatrix` that provides random access to the labels of the
+                                        training examples
         """
         cdef unique_ptr[Lapack] lapack_ptr = init_lapack()
         self.statistics_factory_ptr = <shared_ptr[IExampleWiseStatisticsFactory]>make_shared[DenseExampleWiseStatisticsFactoryImpl](
-            loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr, move(lapack_ptr),
+            loss_function.loss_function_ptr, rule_evaluation_factory.rule_evaluation_factory_ptr, move(lapack_ptr),
             dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
@@ -50,24 +51,26 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
     Provides access to an object of type `AbstractExampleWiseStatistics`.
     """
 
-    def __cinit__(self, ExampleWiseStatisticsFactory statistics_factory, ExampleWiseRuleEvaluation rule_evaluation):
+    def __cinit__(self, ExampleWiseStatisticsFactory statistics_factory,
+                  ExampleWiseRuleEvaluationFactory rule_evaluation_factory):
         """
-        :param statistics_factory:  A factory that allows to create a new object of type `AbstractExampleWiseStatistics`
-        :param rule_evaluation:     The `ExampleWiseRuleEvaluation` to switch to when invoking the function
-                                    `switch_rule_evaluation`
+        :param statistics_factory:      A factory that allows to create a new object of type
+                                        `AbstractExampleWiseStatistics`
+        :param rule_evaluation_factory: The `ExampleWiseRuleEvaluationFactory` to switch to when invoking the function
+                                        `switch_rule_evaluation`
         """
         cdef unique_ptr[AbstractStatistics] statistics_ptr = <unique_ptr[AbstractStatistics]>statistics_factory.create()
         self.statistics_ptr = <shared_ptr[AbstractStatistics]>move(statistics_ptr)
-        self.rule_evaluation = rule_evaluation
+        self.rule_evaluation_factory = rule_evaluation_factory
 
     cdef AbstractStatistics* get(self):
         return self.statistics_ptr.get()
 
     cdef void switch_rule_evaluation(self):
-        cdef ExampleWiseRuleEvaluation rule_evaluation = self.rule_evaluation
-        cdef shared_ptr[IExampleWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
-        dynamic_pointer_cast[AbstractExampleWiseStatistics, AbstractStatistics](self.statistics_ptr).get().setRuleEvaluation(
-            rule_evaluation_ptr)
+        cdef ExampleWiseRuleEvaluationFactory rule_evaluation_factory = self.rule_evaluation_factory
+        cdef shared_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr = rule_evaluation_factory.rule_evaluation_factory_ptr
+        dynamic_pointer_cast[AbstractExampleWiseStatistics, AbstractStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
+            rule_evaluation_factory_ptr)
 
 
 cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
@@ -75,20 +78,21 @@ cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
     A factory that allows to create instances of the class `ExampleWiseStatisticsProvider`.
     """
 
-    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluation default_rule_evaluation,
-                  ExampleWiseRuleEvaluation rule_evaluation):
+    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluationFactory default_rule_evaluation_factory,
+                  ExampleWiseRuleEvaluationFactory rule_evaluation_factory):
         """
-        :param loss_function:           The loss function to be used for calculating gradients and Hessians
-        :param default_rule_evaluation: The `ExampleWiseRuleEvaluation` to be used for calculating the predictions, as
-                                        well as corresponding quality scores, of the default rules
-        :param rule_evaluation:         The `ExampleWiseRuleEvaluation` to be used for calculating the predictions, as
-                                        well as corresponding quality scores, of rules
-        :param label_matrix:            A label matrix that provides random access to the labels of the training
-                                        examples
+        :param loss_function:                   The loss function to be used for calculating gradients and Hessians
+        :param default_rule_evaluation_factory: The `ExampleWiseRuleEvaluation` to be used for calculating the
+                                                predictions, as well as corresponding quality scores, of the default
+                                                rule
+        :param rule_evaluation_factory:         The `ExampleWiseRuleEvaluationFactory` to be used for calculating the
+                                                predictions, as well as corresponding quality scores, of rules
+        :param label_matrix:                    A label matrix that provides random access to the labels of the training
+                                                examples
         """
         self.loss_function = loss_function
-        self.default_rule_evaluation = default_rule_evaluation
-        self.rule_evaluation = rule_evaluation
+        self.default_rule_evaluation_factory = default_rule_evaluation_factory
+        self.rule_evaluation_factory = rule_evaluation_factory
 
     cdef ExampleWiseStatisticsProvider create(self, LabelMatrix label_matrix):
         cdef ExampleWiseStatisticsFactory statistics_factory
@@ -96,9 +100,10 @@ cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory = DenseExampleWiseStatisticsFactory.__new__(DenseExampleWiseStatisticsFactory,
                                                                            self.loss_function,
-                                                                           self.default_rule_evaluation, label_matrix)
+                                                                           self.default_rule_evaluation_factory,
+                                                                           label_matrix)
         else:
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
 
         return ExampleWiseStatisticsProvider.__new__(ExampleWiseStatisticsProvider, statistics_factory,
-                                                     self.rule_evaluation)
+                                                     self.rule_evaluation_factory)

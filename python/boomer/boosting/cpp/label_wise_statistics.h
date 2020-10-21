@@ -22,26 +22,29 @@ namespace boosting {
 
         protected:
 
-            std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
         public:
 
             /**
-             * @param numStatistics     The number of statistics
-             * @param numLabels         The number of labels
-             * @param ruleEvaluationPtr A shared pointer to an object of type `ILabelWiseRuleEvaluation`, to be used for
-             *                          calculating the predictions, as well as corresponding quality scores, of rules
+             * @param numStatistics             The number of statistics
+             * @param numLabels                 The number of labels
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`,
+             *                                  that allows to create instances of the class that is used for
+             *                                  calculating the predictions, as well as corresponding quality scores, of
+             *                                  rules
              */
             AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
-                                        std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr);
+                                        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
             /**
-             * Sets the implementation to be used for calculating the predictions, as well as corresponding quality
-             * scores, of rules.
+             * Sets the factory that allows to create instances of the class that is used for calculating the
+             * predictions, as well as corresponding quality scores, of rules.
              *
-             * @param ruleEvaluationPtr A shared pointer to an object of type `ILabelWiseRuleEvaluation` to be set
+             * @param ruleEvaluationFactoryPtr A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
+             *                                 to be set
              */
-            void setRuleEvaluation(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr);
+            void setRuleEvaluationFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
     };
 
@@ -63,6 +66,8 @@ namespace boosting {
 
                     const DenseLabelWiseStatisticsImpl& statistics_;
 
+                    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
                     uint32 numPredictions_;
 
                     const uint32* labelIndices_;
@@ -75,20 +80,22 @@ namespace boosting {
 
                     float64* accumulatedSumsOfHessians_;
 
-                    LabelWiseEvaluatedPrediction prediction_;
-
                 public:
 
                     /**
                      * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the gradients and Hessians
+                     * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
+                     *                          should be used to calculate the predictions, as well as corresponding
+                     *                          quality scores, of rules
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
                      *                          subset or a null pointer, if all labels should be included
                      */
-                    StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
-                                         const uint32* labelIndices);
+                    StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
+                                         std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                         uint32 numPredictions, const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
 
@@ -118,21 +125,24 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr   A shared pointer to an object of type `ILabelWiseLoss`, representing the loss
-             *                          function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `ILabelWiseRuleEvaluation`, to be used for
-             *                          calculating the predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
-             *                          random access to the labels of the training examples
-             * @param gradients         A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                          representing the gradients
-             * @param hessians          A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                          representing the Hessians
-             * @param current_scores    A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                          representing the currently predicted scores
+             * @param lossFunctionPtr           A shared pointer to an object of type `ILabelWiseLoss`, representing the
+             *                                  loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`,
+             *                                  that allows to create instances of the class that is used for
+             *                                  calculating the predictions, as well as corresponding quality scores, of
+             *                                  rules
+             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
+             *                                  provides random access to the labels of the training examples
+             * @param gradients                 A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels)`, representing the gradients
+             * @param hessians                  A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels)`, representing the Hessians
+             * @param current_scores            A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels)`, representing the currently predicted
+             *                                  scores
              */
             DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
-                                         std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+                                         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                          std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
                                          float64* hessians, float64* current_scores);
 
@@ -177,23 +187,25 @@ namespace boosting {
 
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
-            std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
         public:
 
             /**
-             * @param lossFunctionPtr   A shared pointer to an object of type `ILabelWiseLoss`, representing the loss
-             *                          function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `ILabelWiseRuleEvaluation`, to be used for
-             *                          calculating the predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
-             *                          random access to the labels of the training examples
+             * @param lossFunctionPtr           A shared pointer to an object of type `ILabelWiseLoss`, representing the
+             *                                  loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
+             *                                  that allows to create instances of the class that is used to calculate
+             *                                  the predictions, as well as corresponding quality scores, of rules
+             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
+             *                                  provides random access to the labels of the training examples
              */
-            DenseLabelWiseStatisticsFactoryImpl(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
-                                                std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
+            DenseLabelWiseStatisticsFactoryImpl(
+                std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
             std::unique_ptr<AbstractLabelWiseStatistics> create() const override;
 
