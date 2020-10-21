@@ -415,7 +415,7 @@ std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl
     uint32 numBins = thresholds_.numBins_;
     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
     bool uninitialized = thresholds_.cache_.emplace(featureIndex, std::make_unique<BinVector>(numBins, true)).second;
-    if(uninitialized){
+    if (uninitialized) {
         std::unique_ptr<FeatureVector> featureVectorPtr;
         thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, featureVectorPtr);
         thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *callbackPtr);
@@ -430,13 +430,13 @@ void ApproximateThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(Refi
 
 }
 
-void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction){
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction) {
 
 }
 
 ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(
         ApproximateThresholdsImpl::ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex)
-    : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex){
+    : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
 
 }
 
@@ -449,10 +449,10 @@ void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint
     BinVector::iterator binIterator = bins->begin();
     binIterator[binIndex].numExamples += 1;
     float32 currentValue = entry.value;
-    if(currentValue < binIterator[binIndex].minValue){
+    if (currentValue < binIterator[binIndex].minValue) {
         binIterator[binIndex].minValue = currentValue;
     }
-    if(binIterator[binIndex].maxValue < currentValue){
+    if (binIterator[binIndex].maxValue < currentValue) {
         binIterator[binIndex].maxValue = currentValue;
     }
     //TODO: histogramBuilder.->onBinUpdate(binIndex, entry);
