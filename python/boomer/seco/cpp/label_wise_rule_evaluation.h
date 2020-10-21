@@ -6,8 +6,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/arrays.h"
-#include "../../common/cpp/predictions.h"
+#include "../../common/cpp/rule_evaluation.h"
 #include "heuristics.h"
 #include <memory>
 
@@ -27,7 +26,7 @@ namespace seco {
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on
              * confusion matrices. The predicted scores and quality scores are stored in a given object of type
-             * `LabelWisePredictionCandidate`.
+             * `LabelWiseEvaluatedPrediction`.
              *
              * @param labelIndices              A pointer to an array of type `uint32`, shape
              *                                  `(prediction.numPredictions_)`, representing the indices of the labels
@@ -50,14 +49,14 @@ namespace seco {
              * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
              *                                  correspond to the examples that are covered by rule, True, if they
              *                                  correspond to the examples that are not covered by the rule
-             * @param prediction                A reference to an object of type `LabelWisePredictionCandidate` that
+             * @param prediction                A reference to an object of type `LabelWiseEvaluatedPrediction` that
              *                                  should be used to store the predicted scores and quality scores
              */
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
                                                       const float64* confusionMatricesTotal,
                                                       const float64* confusionMatricesSubset,
                                                       const float64* confusionMatricesCovered, bool uncovered,
-                                                      LabelWisePredictionCandidate& prediction) const = 0;
+                                                      LabelWiseEvaluatedPrediction& prediction) const = 0;
 
     };
 
@@ -87,7 +86,7 @@ namespace seco {
                                               const float64* confusionMatricesTotal,
                                               const float64* confusionMatricesSubset,
                                               const float64* confusionMatricesCovered, bool uncovered,
-                                              LabelWisePredictionCandidate& prediction) const override;
+                                              LabelWiseEvaluatedPrediction& prediction) const override;
 
     };
 
