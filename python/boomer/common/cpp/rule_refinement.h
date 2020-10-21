@@ -74,7 +74,7 @@ class IRuleRefinementCallback {
 };
 
 /**
- * Defines an interface for all classes that allow to find the best refinement of existing rules.
+ * An abstract base class for all classes that allow to find the best refinement of existing rules.
  */
 class AbstractRuleRefinement {
 
@@ -127,7 +127,7 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
     public:
 
         /**
-         * @param statisticsPtr     A reference to an object of type `AbstractStatistics` that provides access to the
+         * @param statistics        A reference to an object of type `AbstractStatistics` that provides access to the
          *                          statistics which serve as the basis for evaluating the potential refinements of
          *                          rules
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
