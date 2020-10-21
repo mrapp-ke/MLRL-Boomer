@@ -11,7 +11,8 @@ cdef class ThresholdsFactory:
     """
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
-                                    StatisticsProvider statistics_provider):
+                                    StatisticsProvider statistics_provider,
+                                    HeadRefinementFactory head_refinement_factory):
         """
         Creates and returns a new instance of the class `AbstractThresholds`.
 
@@ -21,6 +22,8 @@ cdef class ThresholdsFactory:
                                         individual features are nominal or not
         :param statistics_provider:     A `StatisticsProvider` that provides access to statistics about the labels of
                                         training examples
+        :param head_refinement_factory: A `HeadRefinementFactory` that allows to create instances of the class that
+                                        should be used to find the heads of rules
         :return:                        A pointer to an object of type `AbstractThresholds` that has been created
         """
         pass
@@ -32,7 +35,9 @@ cdef class ExactThresholdsFactory(ThresholdsFactory):
     """
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
-                                    StatisticsProvider statistics_provider):
+                                    StatisticsProvider statistics_provider,
+                                    HeadRefinementFactory head_refinement_factory):
         return new ExactThresholdsImpl(feature_matrix.feature_matrix_ptr,
                                        nominal_feature_vector.nominal_feature_vector_ptr,
-                                       statistics_provider.statistics_ptr)
+                                       statistics_provider.statistics_ptr,
+                                       head_refinement_factory.head_refinement_factory_ptr)
