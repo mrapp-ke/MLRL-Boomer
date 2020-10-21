@@ -30,7 +30,7 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(
         float64 sumOfHessians = sumsOfHessians[c2];
 
         if (uncovered) {
-            uint32 l = labelIndices != NULL ? labelIndices[c] : c;
+            uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
             sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
             uint32 l2 = linalg::triangularNumber(l + 1) - 1;
             sumOfHessians = totalSumsOfHessians[l2] - sumOfHessians;
@@ -70,12 +70,12 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(
         uint32 i = 0;
 
         for (uint32 c = 0; c < numPredictions; c++) {
-            uint32 l = labelIndices != NULL ? labelIndices[c] : c;
+            uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
             gradients[c] = totalSumsOfGradients[l] - sumsOfGradients[c];
             uint32 offset = linalg::triangularNumber(l);
 
             for (uint32 c2 = 0; c2 < c + 1; c2++) {
-                uint32 l2 = offset + (labelIndices != NULL ? labelIndices[c2] : c2);
+                uint32 l2 = offset + (labelIndices != nullptr ? labelIndices[c2] : c2);
                 hessians[i] = totalSumsOfHessians[l2] - sumsOfHessians[i];
                 i++;
             }
