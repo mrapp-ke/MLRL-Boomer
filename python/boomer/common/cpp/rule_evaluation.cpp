@@ -6,6 +6,10 @@ EvaluatedPrediction::EvaluatedPrediction(uint32 numElements)
 
 }
 
+uint32 EvaluatedPrediction::getNumElements() const {
+    return scoreVector_.getNumElements();
+}
+
 EvaluatedPrediction::iterator EvaluatedPrediction::begin() {
     return scoreVector_.begin();
 }

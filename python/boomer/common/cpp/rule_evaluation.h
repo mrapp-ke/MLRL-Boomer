@@ -13,7 +13,7 @@
  * Stores the scores that are predicted by a rule, as well as a quality score that assesses the overall quality of the
  * rule.
  */
-class EvaluatedPrediction {
+class EvaluatedPrediction : virtual public IVector {
 
     private:
 
@@ -62,6 +62,8 @@ class EvaluatedPrediction {
          * A score that assesses the overall quality of the prediction.
          */
         float64 overallQualityScore;
+
+        uint32 getNumElements() const override;
 
 };
 
