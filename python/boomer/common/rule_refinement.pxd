@@ -44,11 +44,9 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
     cdef cppclass IRuleRefinement:
 
-        # Attributes:
-
-        unique_ptr[Refinement] bestRefinementPtr_
-
         # Functions:
 
         void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
                             const uint32* labelIndices)
+
+        unique_ptr[Refinement] pollRefinement()

@@ -82,7 +82,7 @@ class IRuleRefinement {
         virtual ~IRuleRefinement() { };
 
         /**
-         * Finds the best refinement of an existing rule and updates the class attribute `bestRefinement_` accordingly.
+         * Finds the best refinement of an existing rule.
          *
          * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
          *                          head of the refined rule
@@ -96,9 +96,12 @@ class IRuleRefinement {
                                     uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
-         * An unique pointer to the best refinement that has been found so far.
+         * Returns the best refinement that has been found by the function `findRefinement`.
+         *
+         * @return An unique pointer to an object of type `Refinement` that stores information about the best refinement
+         *         that has been found
          */
-        std::unique_ptr<Refinement> bestRefinementPtr_;
+        virtual std::unique_ptr<Refinement> pollRefinement() = 0;
 
 };
 
@@ -123,6 +126,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
         std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
 
+        std::unique_ptr<Refinement> refinementPtr_;
+
     public:
 
         /**
@@ -144,5 +149,7 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
         void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
+
+        std::unique_ptr<Refinement> pollRefinement() override;
 
 };
