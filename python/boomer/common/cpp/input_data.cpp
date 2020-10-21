@@ -1,5 +1,4 @@
 #include "input_data.h"
-#include<stdlib.h>
 
 
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y)
