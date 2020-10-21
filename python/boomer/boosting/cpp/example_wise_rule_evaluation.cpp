@@ -40,7 +40,7 @@ void RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(
         valueIterator[c] = score;
 
         // Calculate the quality score for the current label...
-        float64 scorePow = pow(score, 2);
+        float64 scorePow = score * score;
         score = (sumOfGradients * score) + (0.5 * scorePow * sumOfHessians);
         qualityScoreIterator[c] = score + (0.5 * l2RegularizationWeight_ * scorePow);
         overallQualityScore += score;
