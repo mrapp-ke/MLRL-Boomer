@@ -5,14 +5,7 @@
  */
 #pragma once
 
-#include "arrays.h"
-#include "data.h"
-#include "predictions.h"
-#include "input_data.h"
-#include "sub_sampling.h"
 #include "rule_refinement.h"
-#include "head_refinement.h"
-#include <memory>
 #include <unordered_map>
 
 
