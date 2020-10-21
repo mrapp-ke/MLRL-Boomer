@@ -170,7 +170,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex_);
 
-                        const FeatureVector& get() const override;
+                        std::unique_ptr<Result> get() const override;
 
                 };
 
