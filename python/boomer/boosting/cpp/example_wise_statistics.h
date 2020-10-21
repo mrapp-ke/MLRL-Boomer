@@ -23,27 +23,29 @@ namespace boosting {
 
         protected:
 
-            std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
         public:
 
             /**
-             * @param numStatistics     The number of statistics
-             * @param numLabels         The number of labels
-             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
-             *                          for calculating the predictions, as well as corresponding quality scores, of
-             *                          rules
+             * @param numStatistics             The number of statistics
+             * @param numLabels                 The number of labels
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
+             *                                  `IExampleWiseRuleEvaluationFactory` that allows to create instances of
+             *                                  the class that is used for calculating the predictions, as well as
+             *                                  corresponding quality scores, of rules
              */
             AbstractExampleWiseStatistics(uint32 numStatistics, uint32 numLabels,
-                                          std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr);
+                                          std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
             /**
-             * Sets the implementation to be used for calculating the predictions, as well as corresponding quality
-             * scores, of rules.
+             * Sets the factory that allows to create instances of the class that is used for calculating the
+             * predictions, as well as corresponding quality scores, of rules.
              *
-             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation` to be set
+             * @param ruleEvaluationFactoryPtr A shared pointer to an object of type `IExampleWiseRuleFactoryEvaluation`
+             *                                 to be set
              */
-            void setRuleEvaluation(std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr);
+            void setRuleEvaluationFactory(std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
     };
 
@@ -64,6 +66,8 @@ namespace boosting {
                 private:
 
                     const DenseExampleWiseStatisticsImpl& statistics_;
+
+                    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
 
                     uint32 numPredictions_;
 
@@ -100,13 +104,17 @@ namespace boosting {
                     /**
                      * @param statistics        A reference to an object of type `DenseExampleWiseStatisticsImpl` that
                      *                          stores the gradients and Hessians
+                     * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
+                     *                          should be used to calculate the predictions, as well as corresponding
+                     *                          quality scores, of rules
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
                      *                          subset or a null pointer, if all labels should be considered
                      */
-                    StatisticsSubsetImpl(const DenseExampleWiseStatisticsImpl& statistics, uint32 numPredictions,
-                                         const uint32* labelIndices);
+                    StatisticsSubsetImpl(const DenseExampleWiseStatisticsImpl& statistics,
+                                         std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
+                                         uint32 numPredictions, const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
 
@@ -141,24 +149,26 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr   A shared pointer to an object of type `IExampleWiseLoss`, representing the loss
-             *                          function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
-             *                          for calculating the predictions, as well as corresponding quality scores, of
-             *                          rules
-             * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
-             *                          Lapack routines
-             * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
-             *                          random access to the labels of the training examples
-             * @param gradients         A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-             *                          representing the gradients
-             * @param hessians          A pointer to an array of type `float64`, shape
-             *                          `(num_examples, num_labels + (num_labels + 1) // 2)`, representing the Hessians
-             * @param currentScores     A pointer to an array of type `float64`, shape `(num_examples, num_labels`),
-             *                          representing the currently predicted scores
+             * @param lossFunctionPtr           A shared pointer to an object of type `IExampleWiseLoss`, representing
+             *                                  the loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
+             *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
+             *                                  predictions, as well as corresponding quality scores, of rules
+             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             *                                  different Lapack routines
+             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
+             *                                  provides random access to the labels of the training examples
+             * @param gradients                 A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels)`, representing the gradients
+             * @param hessians                  A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels + (num_labels + 1) // 2)`, representing the
+             *                                  Hessians
+             * @param currentScores             A pointer to an array of type `float64`, shape
+             *                                  `(num_examples, num_labels`), representing the currently predicted
+             *                                  scores
              */
             DenseExampleWiseStatisticsImpl(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-                                          std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
+                                          std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                           std::shared_ptr<Lapack> lapackPtr,
                                           std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
                                           float64* hessians, float64* currentScores);
@@ -204,7 +214,7 @@ namespace boosting {
 
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
 
-            std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
             std::shared_ptr<Lapack> lapackPtr_;
 
@@ -213,20 +223,20 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr   A shared pointer to an object of type `IExampleWiseLoss`, representing the loss
-             *                          function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationPtr A shared pointer to an object of type `IExampleWiseRuleEvaluation`, to be used
-             *                          for calculating the predictions, as well as corresponding quality scores, of
-             *                          rules
-             * @param lapackPtr         An unique pointer to an object of type `Lapack` that allows to execute different
-             *                          Lapack routines
-             * @param labelMatrixPtr    A shared pointer to an object of type `IRandomAccessLabelMatrix` that provides
-             *                          random access to the labels of the training examples
+             * @param lossFunctionPtr           A shared pointer to an object of type `IExampleWiseLoss`, representing
+             *                                  the loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
+             *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
+             *                                  predictions, as well as corresponding quality scores, of rules
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
+             *                                  different Lapack routines
+             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
+             *                                  provides random access to the labels of the training examples
              */
-            DenseExampleWiseStatisticsFactoryImpl(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-                                                  std::shared_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                                  std::unique_ptr<Lapack> lapackPtr,
-                                                  std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
+            DenseExampleWiseStatisticsFactoryImpl(
+                    std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                    std::unique_ptr<Lapack> lapackPtr, std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
             std::unique_ptr<AbstractExampleWiseStatistics> create() const override;
 
