@@ -101,7 +101,8 @@ void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binI
 }
 
 std::unique_ptr<AbstractStatistics> DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build() const {
-    return std::make_unique<DenseLabelWiseStatisticsImpl>(statistics_.lossFunctionPtr_, statistics_.ruleEvaluationPtr_,
+    return std::make_unique<DenseLabelWiseStatisticsImpl>(statistics_.lossFunctionPtr_,
+                                                          statistics_.ruleEvaluationFactoryPtr_,
                                                           statistics_.labelMatrixPtr_, gradients_, hessians_,
                                                           statistics_.currentScores_);
 }

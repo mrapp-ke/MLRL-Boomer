@@ -158,9 +158,9 @@ void DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 bi
 
 std::unique_ptr<AbstractStatistics> DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::build() const {
     return std::make_unique<DenseExampleWiseStatisticsImpl>(statistics_.lossFunctionPtr_,
-                                                            statistics_.ruleEvaluationPtr_, statistics_.lapackPtr_,
-                                                            statistics_.labelMatrixPtr_, gradients_, hessians_,
-                                                            statistics_.currentScores_);
+                                                            statistics_.ruleEvaluationFactoryPtr_,
+                                                            statistics_.lapackPtr_, statistics_.labelMatrixPtr_,
+                                                            gradients_, hessians_, statistics_.currentScores_);
 }
 
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
