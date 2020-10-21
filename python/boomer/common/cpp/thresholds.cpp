@@ -226,8 +226,6 @@ static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEnt
     cacheEntry.numConditions = numConditions;
 }
 
-
-
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                        std::shared_ptr<AbstractStatistics> statisticsPtr)
