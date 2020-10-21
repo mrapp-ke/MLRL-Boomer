@@ -158,15 +158,19 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                         ThresholdsSubsetImpl& thresholdsSubset_;
 
+                        uint32 featureIndex_;
+
                     public:
 
                         /**
-                         * @param thresholdsSubset A reference to an object of type `ThresholdsSubsetImpl` that caches
-                         *                         the feature vectors
+                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubsetImpl` that caches
+                         *                          the feature vectors
+                         * @param featureIndex      The index of the feature for which the feature vector should be
+                         *                          retrieved
                          */
-                        Callback(ThresholdsSubsetImpl& thresholdsSubset);
+                        Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex_);
 
-                        const FeatureVector& get(uint32 featureIndex) const override;
+                        const FeatureVector& get() const override;
 
                 };
 

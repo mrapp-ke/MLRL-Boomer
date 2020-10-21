@@ -32,7 +32,7 @@ void ExactRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefineme
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
-    const FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
+    const FeatureVector& featureVector = callbackPtr_->get();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     uint32 numElements = featureVector.getNumElements();
 
