@@ -5,7 +5,6 @@
  */
 #pragma once
 
-#include "../../common/cpp/arrays.h"
 #include "../../common/cpp/input_data.h"
 
 
