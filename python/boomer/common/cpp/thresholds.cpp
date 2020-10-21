@@ -228,9 +228,10 @@ static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEnt
 
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                       std::shared_ptr<AbstractStatistics> statisticsPtr)
+                                       std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                       std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
     : featureMatrixPtr_(featureMatrixPtr), nominalFeatureVectorPtr_(nominalFeatureVectorPtr),
-      statisticsPtr_(statisticsPtr) {
+      statisticsPtr_(statisticsPtr), headRefinementFactoryPtr_(headRefinementFactoryPtr) {
 
 }
 
@@ -247,8 +248,9 @@ uint32 AbstractThresholds::getNumLabels() const {
 }
 
 ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
+                                                                std::unique_ptr<IHeadRefinement> headRefinementPtr,
                                                                 std::unique_ptr<IWeightVector> weightsPtr)
-    : thresholds_(thresholds), weightsPtr_(std::move(weightsPtr)) {
+    : thresholds_(thresholds), headRefinementPtr_(std::move(headRefinementPtr)), weightsPtr_(std::move(weightsPtr)) {
     sumOfWeights_ = weightsPtr_->getSumOfWeights();
     uint32 numExamples = thresholds.getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
@@ -273,8 +275,8 @@ std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::crea
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this,
                                                                                                      featureIndex);
-    return std::make_unique<ExactRuleRefinementImpl>(*weightsPtr_, sumOfWeights_, featureIndex, nominal,
-                                                     std::move(callbackPtr));
+    return std::make_unique<ExactRuleRefinementImpl>(*headRefinementPtr_, *weightsPtr_, sumOfWeights_, featureIndex,
+                                                     nominal, std::move(callbackPtr));
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
@@ -308,8 +310,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
                                                         *thresholds_.statisticsPtr_, *weightsPtr_);
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHeadRefinement& headRefinement,
-                                                                      Refinement& refinement) const {
+void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(Refinement& refinement) const {
     PredictionCandidate& head = *refinement.headPtr;
     uint32 numLabelIndices = head.numPredictions_;
     const uint32* labelIndices = head.labelIndices_;
@@ -324,7 +325,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHea
         }
     }
 
-    const EvaluatedPrediction& prediction = headRefinement.calculatePrediction(*statisticsSubsetPtr, false, false);
+    const EvaluatedPrediction& prediction = headRefinementPtr_->calculatePrediction(*statisticsSubsetPtr, false, false);
     const EvaluatedPrediction::const_iterator updatedIterator = prediction.cbegin();
 
     for (uint32 c = 0; c < numLabelIndices; c++) {
@@ -379,8 +380,9 @@ std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> Exa
 
 ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                          std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                         std::shared_ptr<AbstractStatistics> statisticsPtr)
-    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr) {
+                                         std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr) {
 
 }
 
@@ -394,7 +396,9 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::unique
         statisticsPtr_->addSampledStatistic(r, weight);
     }
 
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(weightsPtr));
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = headRefinementFactoryPtr_->create();
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(headRefinementPtr),
+                                                                       std::move(weightsPtr));
 }
 
 ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds)

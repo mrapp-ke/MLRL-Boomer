@@ -1,4 +1,4 @@
-from boomer.common.head_refinement cimport HeadRefinement, IHeadRefinement
+from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 from boomer.seco.lift_functions cimport ILiftFunction
 
 from libcpp.memory cimport shared_ptr
@@ -6,12 +6,12 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/head_refinement.h" namespace "seco" nogil:
 
-    cdef cppclass PartialHeadRefinementImpl(IHeadRefinement):
+    cdef cppclass PartialHeadRefinementFactoryImpl(IHeadRefinementFactory):
 
         # Constructors:
 
-        PartialHeadRefinementImpl(shared_ptr[ILiftFunction] liftFunctionPtr) except +
+        PartialHeadRefinementFactoryImpl(shared_ptr[ILiftFunction] liftFunctionPtr) except +
 
 
-cdef class PartialHeadRefinement(HeadRefinement):
+cdef class PartialHeadRefinementFactory(HeadRefinementFactory):
     pass

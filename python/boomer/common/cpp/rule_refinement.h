@@ -89,16 +89,14 @@ class IRuleRefinement {
         /**
          * Finds the best refinement of an existing rule.
          *
-         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
-         *                          head of the refined rule
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
          *                          existing rule or a null pointer, if no rule exists yet
          * @param numLabelIndices   The number of elements in the array `labelIndices`
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict
          */
-        virtual void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
-                                    uint32 numLabelIndices, const uint32* labelIndices) = 0;
+        virtual void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                    const uint32* labelIndices) = 0;
 
         /**
          * Returns the best refinement that has been found by the function `findRefinement`.
@@ -119,6 +117,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
+        IHeadRefinement& headRefinement_;
+
         const IWeightVector& weights_;
 
         uint32 totalSumOfWeights_;
@@ -134,6 +134,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
     public:
 
         /**
+         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
+         *                          head of refined rules
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
          *                          of the individual training examples
          * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
@@ -143,11 +145,12 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
          *                          allows to retrieve a feature vector for the given feature
          */
-        ExactRuleRefinementImpl(const IWeightVector& weights, uint32 totalSumOfWeights, uint32 featureIndex,
-                                bool nominal, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
+        ExactRuleRefinementImpl(IHeadRefinement& headRefinement, const IWeightVector& weights, uint32 totalSumOfWeights,
+                                uint32 featureIndex, bool nominal,
+                                std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
-        void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
-                            uint32 numLabelIndices, const uint32* labelIndices) override;
+        void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                            const uint32* labelIndices) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 
@@ -162,6 +165,8 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
+        IHeadRefinement& headRefinement_;
+
         uint32 featureIndex_;
 
         std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr_;
@@ -171,15 +176,17 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
     public:
 
         /**
-         * @param featureIndex  The index of the feature, the new condition corresponds to
-         * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that allows
-         *                      to retrieve the bins for a certain feature
+         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
+         *                          head of refined rules
+         * @param featureIndex      The index of the feature, the new condition corresponds to
+         * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that
+         *                          allows to retrieve the bins for a certain feature
          */
-        ApproximateRuleRefinementImpl(uint32 featureIndex,
+        ApproximateRuleRefinementImpl(IHeadRefinement& headRefinement, uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
-        void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
-                            uint32 numLabelIndices, const uint32* labelIndices) override;
+        void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                            const uint32* labelIndices) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 
