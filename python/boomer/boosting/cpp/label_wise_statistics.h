@@ -87,7 +87,7 @@ namespace boosting {
                      * @param numPredictions    The number of elements in the array `labelIndices`
                      * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
                      *                          representing the indices of the labels that should be included in the
-                     *                          subset or NULL, if all labels should be included
+                     *                          subset or a null pointer, if all labels should be included
                      */
                     StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);

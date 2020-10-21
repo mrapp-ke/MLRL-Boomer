@@ -574,7 +574,7 @@ cdef class ModelBuilder:
         Initializes the model and sets its default rule.
 
         :param scores: A pointer to an object of type `Prediction` that represents the prediction of the default rule or
-                       NULL, if no default rule should be used
+                       a null pointer, if no default rule should be used
         """
         pass
 

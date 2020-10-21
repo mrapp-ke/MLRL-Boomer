@@ -33,7 +33,7 @@ cdef class RuleInduction:
         :param statistics_provider: A `StatisticsProvider` that provides access to the statistics which should serve as
                                     the basis for inducing the default rule
         :param head_refinement:     A pointer to an object of type `IHeadRefinement` that should be used to find the
-                                    head of the default rule or NULL, if no default rule should be induced
+                                    head of the default rule or a null pointer, if no default rule should be induced
         :param model_builder:       The builder, the default rule should be added to
         """
         pass

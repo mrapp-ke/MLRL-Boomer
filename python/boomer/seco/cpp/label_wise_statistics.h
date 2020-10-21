@@ -83,9 +83,9 @@ namespace seco {
                      * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that
                      *                          stores the confusion matrices
                      * @param numPredictions    The number of elements in the array `labelIndices`
-                     * @param labelIndices      An array of type `uint32`, shape `(numPredictions)`, representing the
-                     *                          indices of the labels that should be included in the subset or NULL,
-                     *                          if all labels should be considered
+                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
+                     *                          representing the indices of the labels that should be included in the
+                     *                          subset or a null pointer, if all labels should be considered
                      */
                     StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
