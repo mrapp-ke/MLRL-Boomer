@@ -4,7 +4,7 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
-from boomer.common._predictions cimport PredictionCandidate
+from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport IStatisticsSubset
@@ -100,11 +100,11 @@ cdef class IREP(Pruning):
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        cdef const PredictionCandidate* prediction = &head_refinement.calculatePrediction(
+        cdef const EvaluatedPrediction* prediction = &head_refinement.calculatePrediction(
                 dereference(statistics_subset_ptr.get()), False, False)
 
         # Initialize variables that are used to keep track of the best rule...
-        cdef float64 best_quality_score = prediction.overallQualityScore_
+        cdef float64 best_quality_score = prediction.overallQualityScore
         cdef uint32[::1] best_covered_examples_mask = covered_examples_mask
         cdef uint32 best_covered_examples_target = covered_examples_target
         cdef uint32 num_pruned_conditions = 0
@@ -168,7 +168,7 @@ cdef class IREP(Pruning):
             # (reaching the same quality score with fewer conditions is also considered an improvement)...
             prediction = &head_refinement.calculatePrediction(dereference(statistics_subset_ptr.get()), uncovered,
                                                               False)
-            current_quality_score = prediction.overallQualityScore_
+            current_quality_score = prediction.overallQualityScore
 
             if current_quality_score < best_quality_score or (num_pruned_conditions == 0 and current_quality_score <= best_quality_score):
                 best_quality_score = current_quality_score

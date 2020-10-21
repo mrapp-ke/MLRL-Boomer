@@ -20,21 +20,16 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRu
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices)
-    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
+    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices),
+      prediction_(LabelWiseEvaluatedPrediction(numPredictions)) {
     confusionMatricesCovered_ = (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
     accumulatedConfusionMatricesCovered_ = nullptr;
-    uint32* predictionLabelIndices = nullptr;
-    float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-    float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
-    prediction_ = new LabelWisePredictionCandidate(numPredictions, predictionLabelIndices, predictedScores,
-                                                   qualityScores, 0);
 }
 
 DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(confusionMatricesCovered_);
     free(accumulatedConfusionMatricesCovered_);
-    delete prediction_;
 }
 
 void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
@@ -75,14 +70,14 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-const LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
     statistics_.ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.minorityLabels_,
                                                                  statistics_.confusionMatricesTotal_,
                                                                  statistics_.confusionMatricesSubset_,
-                                                                 confusionMatricesCovered, uncovered, *prediction_);
-    return *prediction_;
+                                                                 confusionMatricesCovered, uncovered, prediction_);
+    return prediction_;
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
