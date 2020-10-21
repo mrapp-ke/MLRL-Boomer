@@ -13,11 +13,11 @@ bool Refinement::isBetterThan(const Refinement& another) const {
     return false;
 }
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(const AbstractStatistics& statistics, const IWeightVector& weights,
-                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(const IWeightVector& weights, uint32 totalSumOfWeights,
+                                                 uint32 featureIndex, bool nominal,
                                                  std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
-    : statistics_(statistics), weights_(weights), totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex),
-      nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+    : weights_(weights), totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex), nominal_(nominal),
+      callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -28,13 +28,15 @@ void ExactRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefineme
     refinementPtr->featureIndex = featureIndex_;
     const PredictionCandidate* bestHead = currentHead;
 
-    // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
-
-    // Retrieve the array to be iterated...
-    const FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
+    // Invoke the callback...
+    std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
+    const AbstractStatistics& statistics = callbackResultPtr->first;
+    const FeatureVector& featureVector = callbackResultPtr->second;
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     uint32 numElements = featureVector.getNumElements();
+
+    // Create a new, empty subset of the statistics...
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(numLabelIndices, labelIndices);
 
     // In the following, we start by processing all examples with feature values < 0...
     uint32 sumOfWeights = 0;
@@ -459,13 +461,16 @@ void ExactRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefineme
         }
     }
 
-    bestRefinementPtr_ = std::move(refinementPtr);
+    refinementPtr_ = std::move(refinementPtr);
+}
+
+std::unique_ptr<Refinement> ExactRuleRefinementImpl::pollRefinement() {
+    return std::move(refinementPtr_);
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
-        const AbstractStatistics& statistics, uint32 featureIndex,
-        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
-    : statistics_(statistics), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
+        uint32 featureIndex, std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
+    : featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -477,13 +482,15 @@ void ApproximateRuleRefinementImpl::findRefinement(const IHeadRefinement& headRe
     refinementPtr->start = 0;
     const PredictionCandidate* bestHead = currentHead;
 
-    // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
-
-    // Retrieve the array to be iterated...
-    const BinVector& binVector = callbackPtr_->get(featureIndex_);
+    // Invoke the callback...
+    std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
+    const AbstractStatistics& statistics = callbackResultPtr->first;
+    const BinVector& binVector = callbackResultPtr->second;
     BinVector::const_iterator iterator = binVector.cbegin();
     uint32 numBins = binVector.getNumElements();
+
+    // Create a new, empty subset of the current statistics when processing a new feature...
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(numLabelIndices, labelIndices);
 
     // Search for the first non-empty bin...
     uint32 r = 0;
@@ -536,5 +543,9 @@ void ApproximateRuleRefinementImpl::findRefinement(const IHeadRefinement& headRe
         }
     }
 
-    bestRefinementPtr_ = std::move(refinementPtr);
+    refinementPtr_ = std::move(refinementPtr);
+}
+
+std::unique_ptr<Refinement> ApproximateRuleRefinementImpl::pollRefinement() {
+    return std::move(refinementPtr_);
 }
