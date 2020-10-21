@@ -25,7 +25,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
     float64 overallQualityScore = 0;
 
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != NULL ? labelIndices[c] : c;
+        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
 
         // Set the score to be predicted for the current label...
         uint8 minorityLabel = minorityLabels[l];

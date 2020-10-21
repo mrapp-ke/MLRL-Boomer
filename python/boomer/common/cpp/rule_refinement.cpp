@@ -5,9 +5,9 @@
 bool Refinement::isBetterThan(Refinement& another) const {
     const PredictionCandidate* head = headPtr.get();
 
-    if (head != NULL) {
+    if (head != nullptr) {
         const PredictionCandidate* anotherHead = another.headPtr.get();
-        return anotherHead == NULL || head->overallQualityScore_ < anotherHead->overallQualityScore_;
+        return anotherHead == nullptr || head->overallQualityScore_ < anotherHead->overallQualityScore_;
     }
 
     return false;

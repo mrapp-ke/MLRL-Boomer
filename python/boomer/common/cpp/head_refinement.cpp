@@ -22,21 +22,21 @@ bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead
     }
 
     // The quality score must be better than that of `bestHead`...
-    if (bestHead == NULL || bestQualityScore < bestHead->overallQualityScore_) {
+    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore_) {
         float64* predictedScores = prediction.predictedScores_;
         PredictionCandidate* recyclableHead = headPtr.get();
 
-        if (recyclableHead == NULL) {
+        if (recyclableHead == nullptr) {
             // Create a new `PredictionCandidate`...
             uint32* candidateLabelIndices = (uint32*) malloc(sizeof(uint32));
-            candidateLabelIndices[0] = labelIndices == NULL ? bestC : labelIndices[bestC];
+            candidateLabelIndices[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
             float64* candidatePredictedScores = (float64*) malloc(sizeof(float64));
             candidatePredictedScores[0] = predictedScores[bestC];
             headPtr = std::make_unique<PredictionCandidate>(1, candidateLabelIndices, candidatePredictedScores,
                                                             bestQualityScore);
         } else {
             // Modify the `recyclableHead`...
-            recyclableHead->labelIndices_[0] = labelIndices == NULL ? bestC : labelIndices[bestC];
+            recyclableHead->labelIndices_[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
             recyclableHead->predictedScores_[0] = predictedScores[bestC];
             recyclableHead->overallQualityScore_ = bestQualityScore;
         }
@@ -59,21 +59,21 @@ bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::
     float64 overallQualityScore = prediction.overallQualityScore_;
 
     // The quality score must be better than that of `bestHead`...
-    if (bestHead == NULL || overallQualityScore < bestHead->overallQualityScore_) {
+    if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore_) {
         uint32 numPredictions = prediction.numPredictions_;
         float64* predictedScores = prediction.predictedScores_;
         PredictionCandidate* recyclableHead = headPtr.get();
 
-        if (recyclableHead == NULL) {
+        if (recyclableHead == nullptr) {
             // Create a new `PredictionCandidate`...
             float64* candidatePredictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-            uint32* candidateLabelIndices = NULL;
+            uint32* candidateLabelIndices = nullptr;
 
             for (uint32 c = 0; c < numPredictions; c++) {
                 candidatePredictedScores[c] = predictedScores[c];
             }
 
-            if (labelIndices != NULL) {
+            if (labelIndices != nullptr) {
                 uint32* candidateLabelIndices = (uint32*) malloc(numPredictions * sizeof(uint32));
 
                 for (uint32 c = 0; c < numPredictions; c++) {
