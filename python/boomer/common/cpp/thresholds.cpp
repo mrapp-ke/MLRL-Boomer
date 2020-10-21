@@ -308,7 +308,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
                                                         *thresholds_.statisticsPtr_, *weightsPtr_);
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
+void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHeadRefinement& headRefinement,
                                                                       Refinement& refinement) const {
     PredictionCandidate& head = *refinement.headPtr;
     uint32 numLabelIndices = head.numPredictions_;
@@ -324,7 +324,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefin
         }
     }
 
-    Prediction& prediction = headRefinement.calculatePrediction(*statisticsSubsetPtr, false, false);
+    const Prediction& prediction = headRefinement.calculatePrediction(*statisticsSubsetPtr, false, false);
     const float64* updatedScores = prediction.predictedScores_;
 
     for (uint32 c = 0; c < numLabelIndices; c++) {
@@ -332,7 +332,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefin
     }
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& prediction) {
+void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction) {
     uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -347,7 +347,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 
 }
 
-FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) const {
+const FeatureVector& ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get(uint32 featureIndex) const {
     auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex);
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();

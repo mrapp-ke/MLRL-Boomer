@@ -68,8 +68,8 @@ class IHeadRefinement {
          * @return                  A reference to an object of type `PredictionCandidate` that stores the optimal
          *                          scores to be predicted by the rule, as well as its overall quality score
          */
-        virtual PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                         bool accumulated) const = 0;
+        virtual const PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                               bool accumulated) const = 0;
 
 };
 
@@ -84,8 +84,8 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                       bool accumulated) const override;
 
-        PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                 bool accumulated) const override;
+        const PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                       bool accumulated) const override;
 
 };
 
@@ -100,7 +100,7 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                       bool accumulated) const override;
 
-        PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                 bool accumulated) const override;
+        const PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                       bool accumulated) const override;
 
 };

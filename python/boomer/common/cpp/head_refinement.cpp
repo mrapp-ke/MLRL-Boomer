@@ -6,7 +6,8 @@ bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead
                                              std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
                                              IStatisticsSubset& statisticsSubset, bool uncovered,
                                              bool accumulated) const {
-    LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
+    const LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                   accumulated);
     uint32 numPredictions = prediction.numPredictions_;
     float64* qualityScores = prediction.qualityScores_;
     uint32 bestC = 0;
@@ -47,15 +48,15 @@ bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead
     return false;
 }
 
-PredictionCandidate& SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                        bool uncovered, bool accumulated) const {
+const PredictionCandidate& SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                              bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
 
 bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                                       bool accumulated) const {
-    PredictionCandidate& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
+    const PredictionCandidate& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction.overallQualityScore_;
 
     // The quality score must be better than that of `bestHead`...
@@ -98,7 +99,7 @@ bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::
     return false;
 }
 
-PredictionCandidate& FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                                 bool accumulated) const {
+const PredictionCandidate& FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                       bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
 }
