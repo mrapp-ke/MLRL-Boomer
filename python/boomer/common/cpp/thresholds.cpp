@@ -462,7 +462,7 @@ ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMat
 
 }
 
-std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(std::shared_ptr<IWeightVector> weightsPtr) {
+std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(std::unique_ptr<IWeightVector> weightsPtr) {
     //TODO: Vereinheitlichen. Vermerk: ExactThresholdsImpl::createSubset
     uint32 numExamples = statisticsPtr_->getNumRows();
     statisticsPtr_->resetSampledStatistics();
