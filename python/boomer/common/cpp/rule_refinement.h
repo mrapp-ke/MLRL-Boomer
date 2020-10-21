@@ -88,7 +88,7 @@ class AbstractRuleRefinement {
          * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
          *                          head of the refined rule
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
-         *                          existing rule or NULL, if no rule exists yet
+         *                          existing rule or a null pointer, if no rule exists yet
          * @param numLabelIndices   The number of elements in the array `labelIndices`
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict

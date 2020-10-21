@@ -26,16 +26,16 @@ class IHeadRefinement {
          * `IStatisticsSubset#addToSubset`.
          *
          * @param bestHead          A pointer to an object of type `PredictionCandidate` that corresponds to the best
-         *                          rule known so far (as found in the previous or current refinement iteration) or
-         *                          NULL, if no such rule is available yet. The new head must be better than this one,
-         *                          otherwise it is discarded
+         *                          rule known so far (as found in the previous or current refinement iteration) or a
+         *                          null pointer, if no such rule is available yet. The new head must be better than
+         *                          this one, otherwise it is discarded
          * @param headPtr           An unique pointer to an object of type `PredictionCandidate`, which represents the
          *                          best head that has been found so far. If the pointer does not refer to an object, a
          *                          new object will be created, otherwise the existing object will be modified to avoid
          *                          unnecessary memory allocations
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(num_predictions)`, representing the
-         *                          indices of the labels for which the head may predict or NULL, if the head may
-         *                          predict for all labels
+         *                          indices of the labels for which the head may predict or a null pointer, if the head
+         *                          may predict for all labels
          * @param statisticsSubset  A reference to an object of type `IStatisticsSubset` to be used for calculating
          *                          predictions and corresponding quality scores
          * @param uncovered         False, if the rule for which the head should be found covers all statistics that
