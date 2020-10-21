@@ -459,5 +459,9 @@ void ExactRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefineme
         }
     }
 
-    bestRefinementPtr_ = std::move(refinementPtr);
+    refinementPtr_ = std::move(refinementPtr);
+}
+
+std::unique_ptr<Refinement> ExactRuleRefinementImpl::pollRefinement() {
+    return std::move(refinementPtr_);
 }

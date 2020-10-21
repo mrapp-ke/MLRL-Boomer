@@ -144,6 +144,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         # Temporary variables
         cdef unique_ptr[IRuleRefinement] rule_refinement_ptr
+        cdef unique_ptr[Refinement] current_refinement_ptr
         cdef IRuleRefinement* rule_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
@@ -190,9 +191,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for c in range(num_sampled_features):
                 f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
                 rule_refinement = rule_refinements[f]
+                current_refinement_ptr = move(rule_refinement.pollRefinement())
 
-                if rule_refinement.bestRefinementPtr_.get().isBetterThan(dereference(best_refinement_ptr.get())):
-                    best_refinement_ptr = move(rule_refinement.bestRefinementPtr_)
+                if current_refinement_ptr.get().isBetterThan(dereference(best_refinement_ptr.get())):
+                    best_refinement_ptr = move(current_refinement_ptr)
                     found_refinement = True
 
                 del rule_refinement
