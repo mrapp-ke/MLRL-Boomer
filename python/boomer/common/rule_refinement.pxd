@@ -42,7 +42,7 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         bool isBetterThan(Refinement& another)
 
 
-    cdef cppclass AbstractRuleRefinement:
+    cdef cppclass IRuleRefinement:
 
         # Attributes:
 

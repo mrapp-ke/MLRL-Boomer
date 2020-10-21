@@ -51,7 +51,7 @@ class Refinement {
 };
 
 /**
- * Defines an interface for callbacks that may be invoked by subclasses of the the class `AbstractRuleRefinement` in
+ * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in
  * order to retrieve information that is required to identify potential refinements for a certain feature.
  *
  * @tparam T The type of the information that is retrieved by the callback
@@ -73,13 +73,13 @@ class IRuleRefinementCallback {
 };
 
 /**
- * An abstract base class for all classes that allow to find the best refinement of existing rules.
+ * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
-class AbstractRuleRefinement {
+class IRuleRefinement {
 
     public:
 
-        virtual ~AbstractRuleRefinement() { };
+        virtual ~IRuleRefinement() { };
 
         /**
          * Finds the best refinement of an existing rule and updates the class attribute `bestRefinement_` accordingly.
@@ -107,7 +107,7 @@ class AbstractRuleRefinement {
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  */
-class ExactRuleRefinementImpl : public AbstractRuleRefinement {
+class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
