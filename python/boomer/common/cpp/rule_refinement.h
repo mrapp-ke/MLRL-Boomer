@@ -36,7 +36,7 @@ class Refinement {
          * @param   A reference to an object of type `Refinement` to be compared to
          * @return  True, if this refinement is better than the given one, false otherwise
          */
-        bool isBetterThan(Refinement& another) const;
+        bool isBetterThan(const Refinement& another) const;
 
         std::unique_ptr<PredictionCandidate> headPtr;
 
@@ -77,12 +77,12 @@ class IRuleRefinementCallback {
          * @param featureIndex  The index of the feature
          * @return              A reference to an object of template type `T` that stores the information
          */
-        virtual T& get(uint32 featureIndex) const = 0;
+        virtual const T& get(uint32 featureIndex) const = 0;
 
 };
 
 /**
- * Defines an interface for all classes that allow to find the best refinement of existing rules.
+ * An abstract base class for all classes that allow to find the best refinement of existing rules.
  */
 class AbstractRuleRefinement {
 
@@ -96,12 +96,12 @@ class AbstractRuleRefinement {
          * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
          *                          head of the refined rule
          * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
-         *                          existing rule or NULL, if no rule exists yet
+         *                          existing rule or a null pointer, if no rule exists yet
          * @param numLabelIndices   The number of elements in the array `labelIndices`
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict
          */
-        virtual void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
+        virtual void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                                     uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
@@ -120,9 +120,9 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
-        std::shared_ptr<AbstractStatistics> statisticsPtr_;
+        const AbstractStatistics& statistics_;
 
-        std::shared_ptr<IWeightVector> weightsPtr_;
+        const IWeightVector& weights_;
 
         uint32 totalSumOfWeights_;
 
@@ -135,11 +135,11 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
     public:
 
         /**
-         * @param statisticsPtr     A shared pointer to an object of type `AbstractStatistics` that provides access to
-         *                          the statistics which serve as the basis for evaluating the potential refinements of
+         * @param statistics        A reference to an object of type `AbstractStatistics` that provides access to the
+         *                          statistics which serve as the basis for evaluating the potential refinements of
          *                          rules
-         * @param weights           A shared pointer to an object of type `IWeightVector` that provides access to the
-         *                          weights of the individual training examples
+         * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
+         *                          of the individual training examples
          * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
@@ -147,12 +147,11 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
          *                          allows to retrieve a feature vector for the given feature
          */
-        ExactRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr,
-                                std::shared_ptr<IWeightVector> weightsPtr, uint32 totalSumOfWeights,
-                                uint32 featureIndex, bool nominal,
+        ExactRuleRefinementImpl(const AbstractStatistics& statistics, const IWeightVector& weights,
+                                uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
-        void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
+        void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };
@@ -166,7 +165,7 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
-        std::shared_ptr<AbstractStatistics> statisticsPtr_;
+        const AbstractStatistics& statistics_;
 
         uint32 featureIndex_;
 
@@ -175,16 +174,16 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
     public:
 
         /**
-         * @param statisticsPtr A shared pointer to an object of type `AbstractStatistics` that provides access to the
+         * @param statisticsPtr A reference to an object of type `AbstractStatistics` that provides access to the
          *                      statistics which serve as the basis for evaluating the potential refinements of rules
          * @param featureIndex  The index of the feature, the new condition corresponds to
          * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that allows
          *                      to retrieve the bins for a certain feature
          */
-        ApproximateRuleRefinementImpl(std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
+        ApproximateRuleRefinementImpl(const AbstractStatistics& statistics, uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
-        void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
+        void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };

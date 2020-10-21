@@ -65,7 +65,7 @@ class IIndexVector : virtual public IRandomAccessVector<uint32> {
 /**
  * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
  *
- * @tparam The type of the data that is stored in the vector
+ * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
 class DenseVector : virtual public IRandomAccessVector<T> {
@@ -168,7 +168,7 @@ class RangeIndexVector : virtual public IIndexVector {
 /**
  * A sparse vector that stores a fixed number of elements, consisting of an index and a value, in a C-contiguous array.
  *
- * @tparam The type of the data that is stored in the vector
+ * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
 class SparseArrayVector : virtual public IVector {
@@ -300,7 +300,7 @@ class IMatrix {
 /**
  * Defines an interface for all two-dimensional matrices that provide random access to their elements.
  *
- * @tparam The type of the data that is stored in the matrix
+ * @tparam T The type of the data that is stored in the matrix
  */
 template<class T>
 class IRandomAccessMatrix : virtual public IMatrix {

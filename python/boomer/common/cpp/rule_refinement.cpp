@@ -2,38 +2,37 @@
 #include <math.h>
 
 
-bool Refinement::isBetterThan(Refinement& another) const {
+bool Refinement::isBetterThan(const Refinement& another) const {
     const PredictionCandidate* head = headPtr.get();
 
-    if (head != NULL) {
+    if (head != nullptr) {
         const PredictionCandidate* anotherHead = another.headPtr.get();
-        return anotherHead == NULL || head->overallQualityScore_ < anotherHead->overallQualityScore_;
+        return anotherHead == nullptr || head->overallQualityScore_ < anotherHead->overallQualityScore_;
     }
 
     return false;
 }
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(
-        std::shared_ptr<AbstractStatistics> statisticsPtr, std::shared_ptr<IWeightVector> weightsPtr,
-        uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
-    : statisticsPtr_(statisticsPtr), weightsPtr_(weightsPtr), totalSumOfWeights_(totalSumOfWeights),
-      featureIndex_(featureIndex), nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(const AbstractStatistics& statistics, const IWeightVector& weights,
+                                                 uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
+    : statistics_(statistics), weights_(weights), totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex),
+      nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
-                                             uint32 numLabelIndices, const uint32* labelIndices) {
+void ExactRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefinement,
+                                             const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                             const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     const PredictionCandidate* bestHead = currentHead;
 
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices,
-                                                                                          labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
-    FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
+    const FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     uint32 numElements = featureVector.getNumElements();
 
@@ -55,7 +54,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
         lastNegativeR = r;
         uint32 i = iterator[r].index;
-        uint32 weight = weightsPtr_->getValue(i);
+        uint32 weight = weights_.getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -80,7 +79,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 
             lastNegativeR = r;
             uint32 i = iterator[r].index;
-            uint32 weight = weightsPtr_->getValue(i);
+            uint32 weight = weights_.getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -205,7 +204,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = iterator[r].index;
-        uint32 weight = weightsPtr_->getValue(i);
+        uint32 weight = weights_.getValue(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -223,7 +222,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     if (sumOfWeights > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = iterator[r].index;
-            uint32 weight = weightsPtr_->getValue(i);
+            uint32 weight = weights_.getValue(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -464,13 +463,13 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
-        std::shared_ptr<AbstractStatistics> statisticsPtr, uint32 featureIndex,
+        const AbstractStatistics& statistics, uint32 featureIndex,
         std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
-    : statisticsPtr_(statisticsPtr), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
+    : statistics_(statistics), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement,
+void ApproximateRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefinement,
                                                    const PredictionCandidate* currentHead, uint32 numLabelIndices,
                                                    const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
@@ -479,11 +478,10 @@ void ApproximateRuleRefinementImpl::findRefinement(IHeadRefinement& headRefineme
     const PredictionCandidate* bestHead = currentHead;
 
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statisticsPtr_->createSubset(numLabelIndices,
-                                                                                          labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
-    BinVector& binVector = callbackPtr_->get(featureIndex_);
+    const BinVector& binVector = callbackPtr_->get(featureIndex_);
     BinVector::const_iterator iterator = binVector.cbegin();
     uint32 numBins = binVector.getNumElements();
 
