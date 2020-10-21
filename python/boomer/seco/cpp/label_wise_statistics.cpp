@@ -21,7 +21,7 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
         const DenseLabelWiseStatisticsImpl& statistics, std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
         uint32 numPredictions, const uint32* labelIndices)
     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), numPredictions_(numPredictions),
-      labelIndices_(labelIndices), prediction_(LabelWiseEvaluatedPrediction(numPredictions)) {
+      labelIndices_(labelIndices) {
     confusionMatricesCovered_ = (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
     arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
     accumulatedConfusionMatricesCovered_ = nullptr;
@@ -73,11 +73,10 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
 const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
-    ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.minorityLabels_,
-                                                     statistics_.confusionMatricesTotal_,
-                                                     statistics_.confusionMatricesSubset_, confusionMatricesCovered,
-                                                     uncovered, prediction_);
-    return prediction_;
+    return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.minorityLabels_,
+                                                            statistics_.confusionMatricesTotal_,
+                                                            statistics_.confusionMatricesSubset_,
+                                                            confusionMatricesCovered, uncovered);
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
@@ -160,7 +159,8 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(ui
                                                                               const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create();
+    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
+                                                                                                    labelIndices);
     return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
                                                                                 numPredictions, labelIndices);
 }
