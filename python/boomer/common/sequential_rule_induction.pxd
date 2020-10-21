@@ -3,7 +3,7 @@ from boomer.common.rules cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport RuleInduction
 from boomer.common.statistics cimport StatisticsProviderFactory
 from boomer.common.thresholds cimport ThresholdsFactory
-from boomer.common.head_refinement cimport HeadRefinement
+from boomer.common.head_refinement cimport HeadRefinementFactory
 from boomer.common.input_data cimport LabelMatrix, FeatureMatrix, NominalFeatureVector
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
@@ -20,9 +20,9 @@ cdef class SequentialRuleInduction:
 
     cdef RuleInduction rule_induction
 
-    cdef HeadRefinement default_rule_head_refinement
+    cdef HeadRefinementFactory default_rule_head_refinement_factory
 
-    cdef HeadRefinement head_refinement
+    cdef HeadRefinementFactory head_refinement_factory
 
     cdef list stopping_criteria
 
