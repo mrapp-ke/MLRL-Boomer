@@ -263,9 +263,10 @@ class ApproximateThresholdImpl : public AbstractThresholds {
 
                 void applyRefinement(Refinement& refinement) override;
 
-                void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const override;
+                void recalculatePrediction(const IHeadRefinement& headRefinement,
+                                           Refinement& refinement) const override;
 
-                void applyPrediction(Prediction& prediction) override;
+                void applyPrediction(const Prediction& prediction) override;
 
         };
 

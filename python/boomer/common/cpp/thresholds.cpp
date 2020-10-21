@@ -421,12 +421,12 @@ void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyRefinement(Refinement&
 
 }
 
-void ApproximateThresholdImpl::ThresholdsSubsetImpl::recalculatePrediction(IHeadRefinement& headRefinement,
+void ApproximateThresholdImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHeadRefinement& headRefinement,
                                                                            Refinement& refinement) const {
 
 }
 
-void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyPrediction(Prediction& prediction){
+void ApproximateThresholdImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction){
 
 }
 
