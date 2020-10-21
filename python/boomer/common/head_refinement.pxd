@@ -1,4 +1,5 @@
 from boomer.common._arrays cimport uint32
+from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.statistics cimport IStatisticsSubset
 
@@ -13,7 +14,7 @@ cdef extern from "cpp/head_refinement.h" nogil:
         bool findHead(PredictionCandidate* bestHead, unique_ptr[PredictionCandidate]& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
-        PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
+        EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
 
     cdef cppclass SingleLabelHeadRefinementImpl(IHeadRefinement):
