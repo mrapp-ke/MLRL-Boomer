@@ -1,5 +1,5 @@
 #include "heuristics.h"
-#include <math.h>
+#include <cmath>
 
 using namespace seco;
 
@@ -79,7 +79,7 @@ FMeasureImpl::FMeasureImpl(float64 beta)
 
 float64 FMeasureImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                               float64 uip, float64 urn, float64 urp) const {
-    if (isinf(beta_)) {
+    if (std::isinf(beta_)) {
         // Equivalent to recall
         return recall(cin, crp, uin, urp);
     } else if (beta_ > 0) {
@@ -107,7 +107,7 @@ MEstimateImpl::MEstimateImpl(float64 m)
 
 float64 MEstimateImpl::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                float64 uip, float64 urn, float64 urp) const {
-    if (isinf(m_)) {
+    if (std::isinf(m_)) {
         // Equivalent to weighted relative accuracy
         return wra(cin, cip, crn, crp, uin, uip, urn, urp);
     } else if (m_ > 0) {

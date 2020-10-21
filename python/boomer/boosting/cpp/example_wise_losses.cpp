@@ -1,5 +1,5 @@
 #include "example_wise_losses.h"
-#include <math.h>
+#include <cmath>
 
 using namespace boosting;
 
