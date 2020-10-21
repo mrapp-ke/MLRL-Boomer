@@ -14,14 +14,10 @@ HeuristicLabelWiseRuleEvaluationImpl::HeuristicLabelWiseRuleEvaluationImpl(std::
 void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
         const uint32* labelIndices, const uint8* minorityLabels, const float64* confusionMatricesTotal,
         const float64* confusionMatricesSubset, const float64* confusionMatricesCovered, bool uncovered,
-        LabelWisePredictionCandidate& prediction) const {
-    // The number of labels to predict for
-    uint32 numPredictions = prediction.numPredictions_;
-    // The array that should be used to store the predicted scores
-    float64* predictedScores = prediction.predictedScores_;
-    // The array that should be used to store the quality scores
-    float64* qualityScores = prediction.qualityScores_;
-    // The overall quality score, i.e., the average of the quality scores for each label
+        LabelWiseEvaluatedPrediction& prediction) const {
+    uint32 numPredictions = prediction.getNumElements();
+    LabelWiseEvaluatedPrediction::iterator valueIterator = prediction.begin();
+    LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator = prediction.quality_scores_begin();
     float64 overallQualityScore = 0;
 
     for (uint32 c = 0; c < numPredictions; c++) {
@@ -30,7 +26,7 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
         // Set the score to be predicted for the current label...
         uint8 minorityLabel = minorityLabels[l];
         float64 score = (float64) (predictMajority_ ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
-        predictedScores[c] = score;
+        valueIterator[c] = score;
 
         // Calculate the quality score for the current label...
         uint32 offsetC = c * NUM_CONFUSION_MATRIX_ELEMENTS;
@@ -59,10 +55,10 @@ void HeuristicLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
         }
 
         score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
-        qualityScores[c] = score;
+        qualityScoreIterator[c] = score;
         overallQualityScore += score;
     }
 
     overallQualityScore /= numPredictions;
-    prediction.overallQualityScore_ = overallQualityScore;
+    prediction.overallQualityScore = overallQualityScore;
 }

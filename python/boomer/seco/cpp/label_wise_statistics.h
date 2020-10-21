@@ -75,7 +75,7 @@ namespace seco {
 
                     float64* accumulatedConfusionMatricesCovered_;
 
-                    LabelWisePredictionCandidate* prediction_;
+                    LabelWiseEvaluatedPrediction prediction_;
 
                 public:
 
@@ -96,7 +96,7 @@ namespace seco {
 
                     void resetSubset() override;
 
-                    const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
+                    const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                      bool accumulated) override;
 
             };

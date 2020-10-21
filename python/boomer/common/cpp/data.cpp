@@ -51,6 +51,7 @@ typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
 }
 
 template class DenseVector<uint32>;
+template class DenseVector<float64>;
 template class DenseVector<Bin>;
 
 DenseIndexVector::DenseIndexVector(uint32 numElements)
@@ -96,7 +97,7 @@ void SparseArrayVector<T>::setNumElements(uint32 numElements) {
 
 template<class T>
 typename SparseArrayVector<T>::iterator SparseArrayVector<T>::begin() {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>
@@ -106,7 +107,7 @@ typename SparseArrayVector<T>::iterator SparseArrayVector<T>::end() {
 
 template<class T>
 typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cbegin() const {
-    return &array_[0];
+    return array_;
 }
 
 template<class T>

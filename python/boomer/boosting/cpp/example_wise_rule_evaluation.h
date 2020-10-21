@@ -6,8 +6,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/arrays.h"
-#include "../../common/cpp/predictions.h"
+#include "../../common/cpp/rule_evaluation.h"
 #include "blas.h"
 #include "lapack.h"
 #include <memory>
@@ -29,7 +28,7 @@ namespace boosting {
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
              * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
-             * scores are stored in a given object of type `LabelWisePredictionCandidate`.
+             * scores are stored in a given object of type `LabelWiseEvaluatedPrediction`.
              *
              * If the argument `uncovered` is True, the rule is considered to cover the difference between the sums of
              * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
@@ -55,18 +54,18 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A reference to an object of type `LabelWisePredictionCandidate` that should
+             * @param prediction            A reference to an object of type `LabelWiseEvaluatedPrediction` that should
              *                              be used to store the predicted scores and quality scores
              */
             virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                       float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                       float64* sumsOfHessians, bool uncovered,
-                                                      LabelWisePredictionCandidate& prediction) const = 0;
+                                                      LabelWiseEvaluatedPrediction& prediction) const = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
              * of gradients and Hessians that are covered by the rule. The predicted scores and quality scores are
-             * stored in a given object of type `PredictionCandidate`.
+             * stored in a given object of type `EvaluatedPrediction`.
              *
              * If the argument `uncovered` is True, the rule is considered to cover the difference between the sums of
              * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
@@ -111,7 +110,7 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A reference to an object of type `PredictionCandidate` that should be used
+             * @param prediction            A reference to an object of type `EvaluatedPrediction` that should be used
              *                              to store the predicted scores and quality score
              */
             virtual void calculateExampleWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
@@ -120,7 +119,7 @@ namespace boosting {
                                                         float64* tmpHessians, int dsysvLwork, float64* dsysvTmpArray1,
                                                         int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                         float64* dspmvTmpArray, bool uncovered,
-                                                        PredictionCandidate& prediction) const = 0;
+                                                        EvaluatedPrediction& prediction) const = 0;
 
     };
 
@@ -155,14 +154,14 @@ namespace boosting {
             void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                               float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                               float64* sumsOfHessians, bool uncovered,
-                                              LabelWisePredictionCandidate& prediction) const override;
+                                              LabelWiseEvaluatedPrediction& prediction) const override;
 
             void calculateExampleWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
                                                 float64* sumsOfGradients, const float64* totalSumsOfHessians,
                                                 float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians,
                                                 int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                 double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered,
-                                                PredictionCandidate& prediction) const override;
+                                                EvaluatedPrediction& prediction) const override;
 
     };
 
