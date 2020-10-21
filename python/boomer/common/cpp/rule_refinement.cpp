@@ -2,18 +2,18 @@
 #include <math.h>
 
 
-bool Refinement::isBetterThan(Refinement& another) const {
+bool Refinement::isBetterThan(const Refinement& another) const {
     const PredictionCandidate* head = headPtr.get();
 
-    if (head != NULL) {
+    if (head != nullptr) {
         const PredictionCandidate* anotherHead = another.headPtr.get();
-        return anotherHead == NULL || head->overallQualityScore_ < anotherHead->overallQualityScore_;
+        return anotherHead == nullptr || head->overallQualityScore_ < anotherHead->overallQualityScore_;
     }
 
     return false;
 }
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics& statistics, IWeightVector& weights,
+ExactRuleRefinementImpl::ExactRuleRefinementImpl(const AbstractStatistics& statistics, const IWeightVector& weights,
                                                  uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
                                                  std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
     : statistics_(statistics), weights_(weights), totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex),
@@ -21,8 +21,9 @@ ExactRuleRefinementImpl::ExactRuleRefinementImpl(AbstractStatistics& statistics,
 
 }
 
-void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
-                                             uint32 numLabelIndices, const uint32* labelIndices) {
+void ExactRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefinement,
+                                             const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                             const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     const PredictionCandidate* bestHead = currentHead;
@@ -31,7 +32,7 @@ void ExactRuleRefinementImpl::findRefinement(IHeadRefinement& headRefinement, co
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics_.createSubset(numLabelIndices, labelIndices);
 
     // Retrieve the array to be iterated...
-    FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
+    const FeatureVector& featureVector = callbackPtr_->get(featureIndex_);
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     uint32 numElements = featureVector.getNumElements();
 

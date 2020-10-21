@@ -31,8 +31,8 @@ namespace seco {
              *
              * @param labelIndices              A pointer to an array of type `uint32`, shape
              *                                  `(prediction.numPredictions_)`, representing the indices of the labels
-             *                                  for which the rule should predict or NULL, if the rule should predict
-             *                                  for all labels
+             *                                  for which the rule should predict or a null pointer, if the rule should
+             *                                  predict for all labels
              * @param minorityLabels            A pointer to an array of type `uint8`, shape `(num_labels)`, indicating
              *                                  whether the rule should predict individual labels as positive (1) or
              *                                  negative (0)

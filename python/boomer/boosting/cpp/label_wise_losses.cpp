@@ -5,7 +5,8 @@ using namespace boosting;
 
 
 std::pair<float64, float64> LabelWiseLogisticLossImpl::calculateGradientAndHessian(
-        IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex, float64 predictedScore) const {
+        const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex,
+        float64 predictedScore) const {
     uint8 trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
     float64 expectedScore = trueLabel ? 1 : -1;
     float64 exponential = exp(expectedScore * predictedScore);
@@ -15,7 +16,8 @@ std::pair<float64, float64> LabelWiseLogisticLossImpl::calculateGradientAndHessi
 }
 
 std::pair<float64, float64> LabelWiseSquaredErrorLossImpl::calculateGradientAndHessian(
-        IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex, float64 predictedScore) const {
+        const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex,
+        float64 predictedScore) const {
     uint8 trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
     float64 expectedScore = trueLabel ? 1 : -1;
     float64 gradient = (2 * predictedScore) - (2 * expectedScore);
