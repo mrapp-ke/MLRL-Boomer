@@ -7,7 +7,7 @@ they minimize a loss function that is applied example-wise.
 from boomer.boosting._blas cimport init_blas
 from boomer.boosting._lapack cimport init_lapack
 
-from libcpp.memory cimport unique_ptr, make_shared
+from libcpp.memory cimport make_shared
 from libcpp.utility cimport move
 
 
@@ -18,9 +18,9 @@ cdef class ExampleWiseRuleEvaluation:
     pass
 
 
-cdef class RegularizedExampleWiseRuleEvaluation(ExampleWiseRuleEvaluation):
+cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `RegularizedExampleWiseRuleEvaluationImpl`.
+    A wrapper for the C++ class `RegularizedExampleWiseRuleEvaluationFactoryImpl`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):
@@ -28,7 +28,7 @@ cdef class RegularizedExampleWiseRuleEvaluation(ExampleWiseRuleEvaluation):
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
                                          to be predicted by rules
         """
-        cdef unique_ptr[Blas] blas_ptr = init_blas()
-        cdef unique_ptr[Lapack] lapack_ptr = init_lapack()
-        self.rule_evaluation_ptr = <shared_ptr[IExampleWiseRuleEvaluation]>make_shared[RegularizedExampleWiseRuleEvaluationImpl](
-            l2_regularization_weight, move(blas_ptr), move(lapack_ptr))
+        cdef shared_ptr[Blas] blas_ptr = <shared_ptr[Blas]>move(init_blas())
+        cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())
+        self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[RegularizedExampleWiseRuleEvaluationFactoryImpl](
+            l2_regularization_weight, blas_ptr, lapack_ptr)

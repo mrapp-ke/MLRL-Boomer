@@ -1,7 +1,7 @@
 from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.seco.statistics cimport AbstractCoverageStatistics
-from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluation, ILabelWiseRuleEvaluation
+from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
@@ -12,14 +12,14 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Functions:
 
-        void setRuleEvaluation(shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr)
+        void setRuleEvaluationFactory(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
 
 
     cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
 
         # Constructors:
 
-        DenseLabelWiseStatisticsImpl(shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr) except +
+        DenseLabelWiseStatisticsImpl(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
 
 
     cdef cppclass ILabelWiseStatisticsFactory:
@@ -33,7 +33,7 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
 
         # Constructors:
 
-        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[ILabelWiseRuleEvaluation] ruleEvaluationPtr,
+        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr,
                                             shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 
@@ -59,7 +59,7 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluation rule_evaluation
+    cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory
 
     # Functions:
 
@@ -70,9 +70,9 @@ cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
 
     # Attributes:
 
-    cdef LabelWiseRuleEvaluation default_rule_evaluation
+    cdef LabelWiseRuleEvaluationFactory default_rule_evaluation_factory
 
-    cdef LabelWiseRuleEvaluation rule_evaluation
+    cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory
 
     # Functions:
 
