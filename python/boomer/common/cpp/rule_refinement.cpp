@@ -468,13 +468,13 @@ std::unique_ptr<Refinement> ExactRuleRefinementImpl::pollRefinement() {
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
-        uint32 featureIndex, std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
-    : featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
+        IHeadRefinement& headRefinement, uint32 featureIndex,
+        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
+    : headRefinement_(headRefinement), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-void ApproximateRuleRefinementImpl::findRefinement(const IHeadRefinement& headRefinement,
-                                                   const PredictionCandidate* currentHead, uint32 numLabelIndices,
+void ApproximateRuleRefinementImpl::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
                                                    const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
@@ -509,8 +509,8 @@ void ApproximateRuleRefinementImpl::findRefinement(const IHeadRefinement& headRe
         if (numExamples > 0) {
             float32 currentValue = iterator[r].minValue;
 
-            bool foundBetterHead = headRefinement.findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                           *statisticsSubsetPtr, false, false);
+            bool foundBetterHead = headRefinement_.findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                            *statisticsSubsetPtr, false, false);
 
             if (foundBetterHead) {
                 bestHead = refinementPtr->headPtr.get();
@@ -522,8 +522,8 @@ void ApproximateRuleRefinementImpl::findRefinement(const IHeadRefinement& headRe
                 refinementPtr->covered = true;
             }
 
-            foundBetterHead = headRefinement.findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                      *statisticsSubsetPtr, true, false);
+            foundBetterHead = headRefinement_.findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                       *statisticsSubsetPtr, true, false);
 
             if (foundBetterHead) {
                 bestHead = refinementPtr->headPtr.get();
