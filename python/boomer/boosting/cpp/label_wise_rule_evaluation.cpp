@@ -26,7 +26,7 @@ void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
         float64 sumOfHessians =  sumsOfHessians[c];
 
         if (uncovered) {
-            uint32 l = labelIndices != NULL ? labelIndices[c] : c;
+            uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
             sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
             sumOfHessians = totalSumsOfHessians[l] - sumOfHessians;
         }
