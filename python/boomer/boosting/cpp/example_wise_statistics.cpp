@@ -51,12 +51,12 @@ void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 st
     uint32 i = 0;
 
     for (uint32 c = 0; c < numPredictions_; c++) {
-        uint32 l = labelIndices_ != NULL ? labelIndices_[c] : c;
+        uint32 l = labelIndices_ != nullptr ? labelIndices_[c] : c;
         sumsOfGradients_[c] += (weight * statistics_.gradients_[offsetGradients + l]);
         uint32 triangularNumber = linalg::triangularNumber(l);
 
         for (uint32 c2 = 0; c2 < c + 1; c2++) {
-            uint32 l2 = triangularNumber + (labelIndices_ != NULL ? labelIndices_[c2] : c2);
+            uint32 l2 = triangularNumber + (labelIndices_ != nullptr ? labelIndices_[c2] : c2);
             sumsOfHessians_[i] += (weight * statistics_.hessians_[offsetHessians + l2]);
             i++;
         }
@@ -67,7 +67,7 @@ void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     uint32 numHessians = linalg::triangularNumber(numPredictions_);
 
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
-    if (accumulatedSumsOfGradients_ == NULL) {
+    if (accumulatedSumsOfGradients_ == nullptr) {
         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
         arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions_);
         accumulatedSumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
@@ -190,7 +190,7 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticInde
 std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
                                                                                 const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+    uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
     return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(*this, numPredictions, labelIndices);
 }
 
@@ -205,7 +205,7 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, cons
     // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
     // example at the given index...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != NULL ? labelIndices[c] : c;
+        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
         currentScores_[offset + l] += predictedScores[c];
     }
 
