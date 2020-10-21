@@ -54,6 +54,10 @@ const EvaluatedPrediction& SingleLabelHeadRefinementImpl::calculatePrediction(IS
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
 
+std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create() const {
+    return std::make_unique<SingleLabelHeadRefinementImpl>();
+}
+
 bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                                       bool accumulated) const {
@@ -103,4 +107,8 @@ bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::
 const EvaluatedPrediction& FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
                                                                        bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
+}
+
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create() const {
+    return std::make_unique<FullHeadRefinementImpl>();
 }

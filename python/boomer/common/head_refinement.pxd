@@ -17,24 +17,29 @@ cdef extern from "cpp/head_refinement.h" nogil:
         EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
 
-    cdef cppclass SingleLabelHeadRefinementImpl(IHeadRefinement):
+    cdef cppclass IHeadRefinementFactory:
+
+        unique_ptr[IHeadRefinement] create()
+
+
+    cdef cppclass SingleLabelHeadRefinementFactoryImpl(IHeadRefinementFactory):
         pass
 
 
-    cdef cppclass FullHeadRefinementImpl(IHeadRefinement):
+    cdef cppclass FullHeadRefinementFactoryImpl(IHeadRefinementFactory):
         pass
 
 
-cdef class HeadRefinement:
+cdef class HeadRefinementFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IHeadRefinement] head_refinement_ptr
+    cdef shared_ptr[IHeadRefinementFactory] head_refinement_factory_ptr
 
 
-cdef class SingleLabelHeadRefinement(HeadRefinement):
+cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
     pass
 
 
-cdef class FullHeadRefinement(HeadRefinement):
+cdef class FullHeadRefinementFactory(HeadRefinementFactory):
     pass

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
+from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
+    FullHeadRefinementFactory
 from boomer.common.post_processing import NoPostProcessor
 from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import TopDownGreedyRuleInduction
@@ -8,7 +9,7 @@ from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from boomer.common.thresholds import ExactThresholdsFactory
-from boomer.seco.head_refinement import PartialHeadRefinement
+from boomer.seco.head_refinement import PartialHeadRefinementFactory
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.label_wise_rule_evaluation import HeuristicLabelWiseRuleEvaluationFactory
 from boomer.seco.label_wise_statistics import LabelWiseStatisticsProviderFactory
@@ -156,8 +157,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         thresholds_factory = ExactThresholdsFactory()
         rule_induction = TopDownGreedyRuleInduction()
         lift_function = self.__create_lift_function(num_labels)
-        default_rule_head_refinement = FullHeadRefinement()
-        head_refinement = self.__create_head_refinement(lift_function)
+        default_rule_head_refinement_factory = FullHeadRefinementFactory()
+        head_refinement_factory = self.__create_head_refinement_factory(lift_function)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
@@ -170,7 +171,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         stopping_criteria.append(UncoveredLabelsCriterion(0))
         num_threads = create_num_threads(self.num_threads)
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
-                                       default_rule_head_refinement, head_refinement, stopping_criteria,
+                                       default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
                                        label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
                                        post_processor, min_coverage, max_conditions, max_head_refinements, num_threads)
 
@@ -218,15 +219,15 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
 
         raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
 
-    def __create_head_refinement(self, lift_function: LiftFunction) -> HeadRefinement:
+    def __create_head_refinement_factory(self, lift_function: LiftFunction) -> HeadRefinementFactory:
         head_refinement = self.head_refinement
 
         if head_refinement is None:
-            return SingleLabelHeadRefinement()
+            return SingleLabelHeadRefinementFactory()
         elif head_refinement == HEAD_REFINEMENT_SINGLE:
-            return SingleLabelHeadRefinement()
+            return SingleLabelHeadRefinementFactory()
         elif head_refinement == HEAD_REFINEMENT_PARTIAL:
-            return PartialHeadRefinement(lift_function)
+            return PartialHeadRefinementFactory(lift_function)
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self) -> Predictor:
