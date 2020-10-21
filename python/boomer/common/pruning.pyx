@@ -100,7 +100,7 @@ cdef class IREP(Pruning):
 
         # Determine the optimal prediction of the existing rule, as well as the corresponding quality score, based on
         # the prune set...
-        cdef PredictionCandidate* prediction = &head_refinement.calculatePrediction(
+        cdef const PredictionCandidate* prediction = &head_refinement.calculatePrediction(
                 dereference(statistics_subset_ptr.get()), False, False)
 
         # Initialize variables that are used to keep track of the best rule...

@@ -38,7 +38,7 @@ class IStatisticsSubset {
          * functions that will be called later. Any information computed by this function is expected to be reset when
          * invoking the function `resetSubset` for the next time.
          *
-         * @param statistic_index   The index of the covered statistic
+         * @param statisticIndex    The index of the covered statistic
          * @param weight            The weight of the covered statistic
          */
         virtual void addToSubset(uint32 statisticIndex, uint32 weight) = 0;
@@ -77,12 +77,12 @@ class IStatisticsSubset {
          * predict for any other labels. In addition to each score, a quality score, which assesses the quality of the
          * prediction for the respective label, is returned.
          *
-         * @param uncovered:    0, if the rule covers all statistics that have been added to the subset via the function
+         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
          *                      between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated:  0, if the rule covers all statistics that have been added to the subset via the function
+         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
@@ -90,7 +90,7 @@ class IStatisticsSubset {
          *                      to be predicted by the rule for each considered label, as well as the corresponding
          *                      quality scores
          */
-        virtual LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -112,19 +112,19 @@ class IStatisticsSubset {
          * addition to the scores, an overall quality score, which assesses the quality of the predictions for all
          * labels in terms of a single score, is returned.
          *
-         * @param uncovered:    0, if the rule covers all statistics that have been added to the subset via the function
+         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
          *                      between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated:  0, if the rule covers all statistics that have been added to the subset via the function
+         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
          * @return              A reference to an object of type `PredictionCandidate` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
 
 };
 
@@ -137,7 +137,7 @@ class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
 
     public:
 
-        PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+        const PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
 };
 
@@ -171,7 +171,7 @@ class AbstractStatistics : virtual public IMatrix {
                  *
                  * @return An unique pointer to an object of type `AbstractStatistics` that has been created
                  */
-                virtual std::unique_ptr<AbstractStatistics> build() = 0;
+                virtual std::unique_ptr<AbstractStatistics> build() const = 0;
 
         };
 
@@ -260,7 +260,8 @@ class AbstractStatistics : virtual public IMatrix {
          *                          should be included
          * @return                  An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
+                                                                const uint32* labelIndices) const = 0;
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.
@@ -272,7 +273,7 @@ class AbstractStatistics : virtual public IMatrix {
          * @param prediction        A reference to an object of type `Prediction`, representing the predictions of the
          *                          newly induced rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, Prediction& prediction) = 0;
+        virtual void applyPrediction(uint32 statisticIndex, const Prediction& prediction) = 0;
 
         /**
          * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on
@@ -280,7 +281,7 @@ class AbstractStatistics : virtual public IMatrix {
          *
          * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
          */
-        virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) = 0;
+        virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const = 0;
 
         uint32 getNumRows() const override;
 

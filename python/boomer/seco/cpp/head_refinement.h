@@ -12,6 +12,9 @@
 
 namespace seco {
 
+    /**
+     * Allows to find the best head that predicts for one or several labels depending on a lift function.
+     */
     class PartialHeadRefinementImpl : virtual public IHeadRefinement {
 
         private:
@@ -30,8 +33,8 @@ namespace seco {
                           const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                           bool accumulated) const override;
 
-            PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                     bool accumulated) const override;
+            const PredictionCandidate& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                           bool accumulated) const override;
 
     };
 

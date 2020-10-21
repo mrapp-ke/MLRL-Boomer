@@ -5,7 +5,7 @@
 using namespace seco;
 
 
-static inline uint32* argsort(float64* a, uint32 numElements) {
+static inline uint32* argsort(const float64* a, uint32 numElements) {
     IndexedValue<float64> tmpArray[numElements];
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -32,7 +32,8 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
                                          std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
                                          IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
     bool result = false;
-    LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
+    const LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                   accumulated);
     uint32 numPredictions = prediction.numPredictions_;
     float64* predictedScores = prediction.predictedScores_;
     float64* qualityScores = prediction.qualityScores_;
@@ -123,7 +124,7 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
     return result;
 }
 
-PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                                    bool accumulated) const {
+const PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                          bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }

@@ -35,8 +35,8 @@ namespace boosting {
              *
              * @param labelIndices          A pointer to an array of type `uint32`, shape
              *                              `(prediction.numPredictions_)`, representing the indices of the labels for
-             *                              which the rule should predict or NULL, if the rule should predict for all
-             *                              labels
+             *                              which the rule should predict or a null pointer, if the rule should predict
+             *                              for all labels
              * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels), representing
              *                              the total sums of gradients for individual labels
              * @param sumsOfGradients       A pointer to an array of type `float64`, shape

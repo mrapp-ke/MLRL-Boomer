@@ -63,14 +63,14 @@ class IThresholdsSubset {
          *                          the updated scores
          * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const = 0;
+        virtual void recalculatePrediction(const IHeadRefinement& headRefinement, Refinement& refinement) const = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
          *
          * @param prediction A reference to an object of type `Prediction`, representing the predictions to be applied
          */
-        virtual void applyPrediction(Prediction& prediction) = 0;
+        virtual void applyPrediction(const Prediction& prediction) = 0;
 
 };
 
@@ -105,11 +105,11 @@ class AbstractThresholds : virtual public IMatrix {
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
          *
-         * @param weightsPtr    A shared pointer to an object of type `IWeightVector` that provides access to the
+         * @param weightsPtr    An unique pointer to an object of type `IWeightVector` that provides access to the
          *                      weights of the individual training examples
          * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) = 0;
 
         /**
          * Returns the total number of available labels.
@@ -168,13 +168,13 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset);
 
-                        FeatureVector& get(uint32 featureIndex) const override;
+                        const FeatureVector& get(uint32 featureIndex) const override;
 
                 };
 
                 ExactThresholdsImpl& thresholds_;
 
-                std::shared_ptr<IWeightVector> weightsPtr_;
+                std::unique_ptr<IWeightVector> weightsPtr_;
 
                 uint32 sumOfWeights_;
 
@@ -191,10 +191,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
                 /**
                  * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the
                  *                      thresholds
-                 * @param weightsPtr    A shared pointer to an object of type `IWeightVector` that provides access to
+                 * @param weightsPtr    An unique pointer to an object of type `IWeightVector` that provides access to
                  *                      the weights of the individual training examples
                  */
-                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, std::shared_ptr<IWeightVector> weightsPtr);
+                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, std::unique_ptr<IWeightVector> weightsPtr);
 
                 ~ThresholdsSubsetImpl();
 
@@ -202,9 +202,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 void applyRefinement(Refinement& refinement) override;
 
-                void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const override;
+                void recalculatePrediction(const IHeadRefinement& headRefinement,
+                                           Refinement& refinement) const override;
 
-                void applyPrediction(Prediction& prediction) override;
+                void applyPrediction(const Prediction& prediction) override;
 
         };
 
@@ -224,7 +225,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                             std::shared_ptr<AbstractStatistics> statisticsPtr);
 
-        std::unique_ptr<IThresholdsSubset> createSubset(std::shared_ptr<IWeightVector> weightsPtr) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) override;
 
 };
 

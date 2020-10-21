@@ -15,17 +15,17 @@ void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRu
     ruleEvaluationPtr_ = ruleEvaluationPtr;
 }
 
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics,
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numPredictions,
                                                                          const uint32* labelIndices)
     : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
-    accumulatedSumsOfGradients_ = NULL;
+    accumulatedSumsOfGradients_ = nullptr;
     sumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfHessians_, numPredictions);
-    accumulatedSumsOfHessians_ = NULL;
-    uint32* predictionLabelIndices = NULL;
+    accumulatedSumsOfHessians_ = nullptr;
+    uint32* predictionLabelIndices = nullptr;
     float64* predictedScores = (float64*) malloc(numPredictions * sizeof(float64));
     float64* qualityScores = (float64*) malloc(numPredictions * sizeof(float64));
     prediction_ = new LabelWisePredictionCandidate(numPredictions, predictionLabelIndices, predictedScores,
@@ -46,7 +46,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
     uint32 offset = statisticIndex * statistics_.getNumCols();
 
     for (uint32 c = 0; c < numPredictions_; c++) {
-        uint32 l = labelIndices_ != NULL ? labelIndices_[c] : c;
+        uint32 l = labelIndices_ != nullptr ? labelIndices_[c] : c;
         uint32 i = offset + l;
         sumsOfGradients_[c] += (weight * statistics_.gradients_[i]);
         sumsOfHessians_[c] += (weight * statistics_.hessians_[i]) ;
@@ -55,7 +55,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
 
 void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
-    if (accumulatedSumsOfGradients_ == NULL) {
+    if (accumulatedSumsOfGradients_ == nullptr) {
         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
         arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions_);
         accumulatedSumsOfHessians_ = (float64*) malloc(numPredictions_ * sizeof(float64));
@@ -72,7 +72,7 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+const LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -82,7 +82,7 @@ LabelWisePredictionCandidate& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl
     return *prediction_;
 }
 
-DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(DenseLabelWiseStatisticsImpl& statistics,
+DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                                                          uint32 numBins)
     : statistics_(statistics), numBins_(numBins) {
     uint32 numLabels = numBins_ * statistics.getNumCols();
@@ -105,7 +105,7 @@ void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binI
     }
 }
 
-std::unique_ptr<AbstractStatistics> DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build() {
+std::unique_ptr<AbstractStatistics> DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build() const {
     return std::make_unique<DenseLabelWiseStatisticsImpl>(statistics_.lossFunctionPtr_, statistics_.ruleEvaluationPtr_,
                                                           statistics_.labelMatrixPtr_, gradients_, hessians_,
                                                           statistics_.currentScores_);
@@ -156,13 +156,13 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
 }
 
 std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
-                                                                              const uint32* labelIndices) {
+                                                                              const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = labelIndices == NULL ? numLabels : numLabelIndices;
+    uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
     return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, numPredictions, labelIndices);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Prediction& prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = prediction.numPredictions_;
     const uint32* labelIndices = prediction.labelIndices_;
@@ -171,7 +171,7 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
 
     // Only the labels that are predicted by the new rule must be considered...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != NULL ? labelIndices[c] : c;
+        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
         float64 predictedScore = predictedScores[c];
         uint32 i = offset + l;
 
@@ -188,7 +188,8 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, Predic
     }
 }
 
-std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsImpl::buildHistogram(uint32 numBins) {
+std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsImpl::buildHistogram(
+        uint32 numBins) const {
     return std::make_unique<DenseLabelWiseStatisticsImpl::HistogramBuilderImpl>(*this, numBins);
 }
 
