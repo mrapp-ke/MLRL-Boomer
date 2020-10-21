@@ -42,13 +42,11 @@ cdef extern from "cpp/rule_refinement.h" nogil:
         bool isBetterThan(Refinement& another)
 
 
-    cdef cppclass AbstractRuleRefinement:
-
-        # Attributes:
-
-        unique_ptr[Refinement] bestRefinementPtr_
+    cdef cppclass IRuleRefinement:
 
         # Functions:
 
         void findRefinement(IHeadRefinement& headRefinement, PredictionCandidate* currentHead, uint32 numLabelIndices,
                             const uint32* labelIndices)
+
+        unique_ptr[Refinement] pollRefinement()

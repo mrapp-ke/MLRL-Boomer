@@ -6,7 +6,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 from boomer.common._arrays cimport float32, array_uint32
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.rules cimport Condition, Comparator
-from boomer.common.rule_refinement cimport Refinement, AbstractRuleRefinement
+from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
 from boomer.common.thresholds cimport IThresholdsSubset
@@ -135,16 +135,17 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # An array representing the number of conditions per type of operator
         cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
         num_conditions_per_comparator[:] = 0
-        # A map that stores a pointer to an object of type `AbstractRuleRefinement` for each feature
-        cdef unordered_map[uint32, AbstractRuleRefinement*] rule_refinements  # Stack-allocated map
+        # A map that stores a pointer to an object of type `IRuleRefinement` for each feature
+        cdef unordered_map[uint32, IRuleRefinement*] rule_refinements  # Stack-allocated map
         # An unique pointer to the best refinement of the current rule
         cdef unique_ptr[Refinement] best_refinement_ptr = make_unique[Refinement]()
         # Whether a refinement of the current rule has been found
         cdef bint found_refinement = True
 
         # Temporary variables
-        cdef unique_ptr[AbstractRuleRefinement] rule_refinement_ptr
-        cdef AbstractRuleRefinement* rule_refinement
+        cdef unique_ptr[IRuleRefinement] rule_refinement_ptr
+        cdef unique_ptr[Refinement] current_refinement_ptr
+        cdef IRuleRefinement* rule_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
         cdef intp c
@@ -173,7 +174,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             sampled_feature_indices_ptr = feature_sub_sampling.subSample(num_features, dereference(rng))
             num_sampled_features = sampled_feature_indices_ptr.get().getNumElements()
 
-            # For each feature, create an object of type `AbstractRuleRefinement`...
+            # For each feature, create an object of type `IRuleRefinement`...
             for c in range(num_sampled_features):
                 f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
                 rule_refinement_ptr = thresholds_subset_ptr.get().createRuleRefinement(f)
@@ -190,9 +191,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for c in range(num_sampled_features):
                 f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
                 rule_refinement = rule_refinements[f]
+                current_refinement_ptr = move(rule_refinement.pollRefinement())
 
-                if rule_refinement.bestRefinementPtr_.get().isBetterThan(dereference(best_refinement_ptr.get())):
-                    best_refinement_ptr = move(rule_refinement.bestRefinementPtr_)
+                if current_refinement_ptr.get().isBetterThan(dereference(best_refinement_ptr.get())):
+                    best_refinement_ptr = move(current_refinement_ptr)
                     found_refinement = True
 
                 del rule_refinement

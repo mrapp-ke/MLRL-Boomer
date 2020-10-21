@@ -16,6 +16,7 @@
 #include "sub_sampling.h"
 #include "head_refinement.h"
 #include <memory>
+#include <utility>
 
 
 /**
@@ -59,10 +60,10 @@ class Refinement {
 };
 
 /**
- * Defines an interface for callbacks that may be invoked by subclasses of the the class `AbstractRuleRefinement` in
- * order to retrieve information that is required to identify potential refinements for a certain feature.
+ * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in order to
+ * retrieve the data, consisting of statistics and a vector, that is required to search for potential refinements.
  *
- * @tparam T The type of the information that is retrieved by the callback
+ * @tparam T The type of the vector that is returned by the callback
  */
 template<class T>
 class IRuleRefinementCallback {
@@ -71,27 +72,29 @@ class IRuleRefinementCallback {
 
         virtual ~IRuleRefinementCallback() { };
 
+        typedef std::pair<const AbstractStatistics&, const T&> Result;
+
         /**
-         * Returns the information that is required to identify potential refinements for a specific feature.
+         * Invokes the callback and returns its result.
          *
-         * @param featureIndex  The index of the feature
-         * @return              A reference to an object of template type `T` that stores the information
+         * @return An unique pointer to an object of type `Result` that stores references to the statistics and the
+         *         vector that may be used to search for potential refinements
          */
-        virtual const T& get(uint32 featureIndex) const = 0;
+        virtual std::unique_ptr<Result> get() const = 0;
 
 };
 
 /**
- * An abstract base class for all classes that allow to find the best refinement of existing rules.
+ * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
-class AbstractRuleRefinement {
+class IRuleRefinement {
 
     public:
 
-        virtual ~AbstractRuleRefinement() { };
+        virtual ~IRuleRefinement() { };
 
         /**
-         * Finds the best refinement of an existing rule and updates the class attribute `bestRefinement_` accordingly.
+         * Finds the best refinement of an existing rule.
          *
          * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
          *                          head of the refined rule
@@ -105,9 +108,12 @@ class AbstractRuleRefinement {
                                     uint32 numLabelIndices, const uint32* labelIndices) = 0;
 
         /**
-         * An unique pointer to the best refinement that has been found so far.
+         * Returns the best refinement that has been found by the function `findRefinement`.
+         *
+         * @return An unique pointer to an object of type `Refinement` that stores information about the best refinement
+         *         that has been found
          */
-        std::unique_ptr<Refinement> bestRefinementPtr_;
+        virtual std::unique_ptr<Refinement> pollRefinement() = 0;
 
 };
 
@@ -116,11 +122,9 @@ class AbstractRuleRefinement {
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  */
-class ExactRuleRefinementImpl : public AbstractRuleRefinement {
+class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
-
-        const AbstractStatistics& statistics_;
 
         const IWeightVector& weights_;
 
@@ -132,12 +136,11 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
 
         std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
 
+        std::unique_ptr<Refinement> refinementPtr_;
+
     public:
 
         /**
-         * @param statistics        A reference to an object of type `AbstractStatistics` that provides access to the
-         *                          statistics which serve as the basis for evaluating the potential refinements of
-         *                          rules
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
          *                          of the individual training examples
          * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
@@ -147,12 +150,13 @@ class ExactRuleRefinementImpl : public AbstractRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
          *                          allows to retrieve a feature vector for the given feature
          */
-        ExactRuleRefinementImpl(const AbstractStatistics& statistics, const IWeightVector& weights,
-                                uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-                                std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
+        ExactRuleRefinementImpl(const IWeightVector& weights, uint32 totalSumOfWeights, uint32 featureIndex,
+                                bool nominal, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
         void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
+
+        std::unique_ptr<Refinement> pollRefinement() override;
 
 };
 
