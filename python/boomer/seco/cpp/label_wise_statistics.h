@@ -78,8 +78,6 @@ namespace seco {
 
                     float64* accumulatedConfusionMatricesCovered_;
 
-                    LabelWiseEvaluatedPrediction prediction_;
-
                 public:
 
                     /**
