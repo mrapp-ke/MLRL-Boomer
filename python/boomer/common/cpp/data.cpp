@@ -1,5 +1,4 @@
 #include "data.h"
-#include <algorithm>
 #include <cstdlib>
 
 

@@ -1,5 +1,5 @@
 #include "head_refinement.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 
 bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,

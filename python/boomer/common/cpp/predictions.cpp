@@ -1,5 +1,5 @@
 #include "predictions.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 
 Prediction::Prediction(uint32 numPredictions, uint32* labelIndices, float64* predictedScores)
