@@ -7,7 +7,6 @@
 
 #include "../../common/cpp/head_refinement.h"
 #include "lift_functions.h"
-#include <memory>
 
 
 namespace seco {

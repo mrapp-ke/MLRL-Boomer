@@ -1,5 +1,4 @@
 #include "head_refinement.h"
-#include "../../common/cpp/tuples.h"
 #include <cstdlib>
 
 using namespace seco;

@@ -1,5 +1,5 @@
 #include "lift_functions.h"
-#include <math.h>
+#include <cmath>
 
 using namespace seco;
 
