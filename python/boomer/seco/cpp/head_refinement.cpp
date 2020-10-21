@@ -128,3 +128,12 @@ const EvaluatedPrediction& PartialHeadRefinementImpl::calculatePrediction(IStati
                                                                           bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
+
+PartialHeadRefinementFactoryImpl::PartialHeadRefinementFactoryImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr)
+    : liftFunctionPtr_(liftFunctionPtr) {
+
+}
+
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create() const {
+    return std::make_unique<PartialHeadRefinementImpl>(liftFunctionPtr_);
+}
