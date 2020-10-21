@@ -1,6 +1,6 @@
 from boomer.common._arrays cimport uint32
 from boomer.common._predictions cimport Prediction
-from boomer.common.head_refinement cimport IHeadRefinement
+from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureVector, INominalFeatureVector
 from boomer.common.rule_refinement cimport IRuleRefinement, Refinement
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
@@ -19,7 +19,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         void applyRefinement(Refinement &refinement)
 
-        void recalculatePrediction(IHeadRefinement& headRefinement, Refinement &refinement)
+        void recalculatePrediction(Refinement &refinement)
 
         void applyPrediction(Prediction& prediction)
 
@@ -43,7 +43,8 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         ExactThresholdsImpl(shared_ptr[IFeatureMatrix] featureMatrixPtr,
                             shared_ptr[INominalFeatureVector] nominalFeatureVectorPtr,
-                            shared_ptr[AbstractStatistics] statisticsPtr) except +
+                            shared_ptr[AbstractStatistics] statisticsPtr,
+                            shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
 
 
 cdef class ThresholdsFactory:
@@ -51,7 +52,8 @@ cdef class ThresholdsFactory:
     # Functions:
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
-                                    StatisticsProvider statistic_provider)
+                                    StatisticsProvider statistic_provider,
+                                    HeadRefinementFactory head_refinement_factory)
 
 
 cdef class ExactThresholdsFactory(ThresholdsFactory):
@@ -59,4 +61,5 @@ cdef class ExactThresholdsFactory(ThresholdsFactory):
     # Functions:
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
-                                    StatisticsProvider statistic_provider)
+                                    StatisticsProvider statistic_provider,
+                                    HeadRefinementFactory head_refinement_factory)

@@ -72,6 +72,24 @@ class IHeadRefinement {
 };
 
 /**
+ * Defines an interface for all factories that allow to create instances of the type `IHeadRefinement`.
+ */
+class IHeadRefinementFactory {
+
+    public:
+
+        virtual ~IHeadRefinementFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IHeadRefinement`.
+         *
+         * @return An unique pointer to an object of type `IHeadRefinement` that has been created
+         */
+        virtual std::unique_ptr<IHeadRefinement> create() const = 0;
+
+};
+
+/**
  * Allows to find the best single-label head that predicts for a single label.
  */
 class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
@@ -88,6 +106,17 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
 };
 
 /**
+ * Allows to create instances of the class `SingleLabelHeadRefinementImpl`.
+ */
+class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFactory {
+
+    public:
+
+        std::unique_ptr<IHeadRefinement> create() const override;
+
+};
+
+/**
  * Allows to find the best multi-label head that predicts for all labels.
  */
 class FullHeadRefinementImpl : virtual public IHeadRefinement {
@@ -100,5 +129,16 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
         const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                        bool accumulated) const override;
+
+};
+
+/**
+ * Allows to create instances of the class `FullHeadRefinementImpl`.
+ */
+class FullHeadRefinementFactoryImpl : virtual public IHeadRefinementFactory {
+
+    public:
+
+        std::unique_ptr<IHeadRefinement> create() const override;
 
 };
