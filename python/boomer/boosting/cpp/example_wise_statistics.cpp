@@ -21,9 +21,19 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
     : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
+    accumulatedSumsOfGradients_ = nullptr;
     uint32 numHessians = linalg::triangularNumber(numPredictions);
     sumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
     arrays::setToZeros(sumsOfHessians_, numHessians);
+    accumulatedSumsOfHessians_ = nullptr;
+    prediction_ = nullptr;
+    labelWisePrediction_ = nullptr;
+    tmpGradients_ = nullptr;
+    tmpHessians_ = nullptr;
+    dsysvTmpArray1_ = nullptr;
+    dsysvTmpArray2_ = nullptr;
+    dsysvTmpArray3_ = nullptr;
+    dspmvTmpArray_ = nullptr;
 }
 
 DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
