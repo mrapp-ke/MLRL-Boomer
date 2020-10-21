@@ -165,7 +165,7 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
 
     private:
 
-        AbstractStatistics& statistics_;
+        const AbstractStatistics& statistics_;
 
         uint32 featureIndex_;
 
@@ -180,10 +180,10 @@ class ApproximateRuleRefinementImpl : public AbstractRuleRefinement {
          * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that allows
          *                      to retrieve the bins for a certain feature
          */
-        ApproximateRuleRefinementImpl(AbstractStatistics& statistics, uint32 featureIndex,
+        ApproximateRuleRefinementImpl(const AbstractStatistics& statistics, uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
-        void findRefinement(IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
+        void findRefinement(const IHeadRefinement& headRefinement, const PredictionCandidate* currentHead,
                             uint32 numLabelIndices, const uint32* labelIndices) override;
 
 };

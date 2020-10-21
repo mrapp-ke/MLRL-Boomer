@@ -202,7 +202,8 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const 
     }
 }
 
-std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsImpl::buildHistogram(uint32 numBins) {
+std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsImpl::buildHistogram(
+        uint32 numBins) const {
     //TODO Support creation of histograms
     std::unique_ptr<DenseLabelWiseStatisticsImpl::IHistogramBuilder> result;
     return result;

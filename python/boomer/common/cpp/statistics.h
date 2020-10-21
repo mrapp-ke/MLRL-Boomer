@@ -171,7 +171,7 @@ class AbstractStatistics : virtual public IMatrix {
                  *
                  * @return An unique pointer to an object of type `AbstractStatistics` that has been created
                  */
-                virtual std::unique_ptr<AbstractStatistics> build() = 0;
+                virtual std::unique_ptr<AbstractStatistics> build() const = 0;
 
         };
 
@@ -281,7 +281,7 @@ class AbstractStatistics : virtual public IMatrix {
          *
          * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
          */
-        virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) = 0;
+        virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const = 0;
 
         uint32 getNumRows() const override;
 
