@@ -271,8 +271,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                 void applyRefinement(Refinement& refinement) override;
 
-                void recalculatePrediction(const IHeadRefinement& headRefinement,
-                                           Refinement& refinement) const override;
+                void recalculatePrediction(Refinement& refinement) const override;
 
                 void applyPrediction(const Prediction& prediction) override;
 
@@ -289,6 +288,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
         ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                   std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                   std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                  std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                   std::shared_ptr<IBinning> binningPtr, uint32 numBins);
 
         std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) override;
