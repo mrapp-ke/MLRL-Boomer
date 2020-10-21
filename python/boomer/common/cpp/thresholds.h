@@ -61,14 +61,14 @@ class IThresholdsSubset {
          *                          the updated scores
          * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const = 0;
+        virtual void recalculatePrediction(const IHeadRefinement& headRefinement, Refinement& refinement) const = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
          *
          * @param prediction A reference to an object of type `Prediction`, representing the predictions to be applied
          */
-        virtual void applyPrediction(Prediction& prediction) = 0;
+        virtual void applyPrediction(const Prediction& prediction) = 0;
 
 };
 
@@ -166,7 +166,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset);
 
-                        FeatureVector& get(uint32 featureIndex) const override;
+                        const FeatureVector& get(uint32 featureIndex) const override;
 
                 };
 
@@ -200,9 +200,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 void applyRefinement(Refinement& refinement) override;
 
-                void recalculatePrediction(IHeadRefinement& headRefinement, Refinement& refinement) const override;
+                void recalculatePrediction(const IHeadRefinement& headRefinement,
+                                           Refinement& refinement) const override;
 
-                void applyPrediction(Prediction& prediction) override;
+                void applyPrediction(const Prediction& prediction) override;
 
         };
 

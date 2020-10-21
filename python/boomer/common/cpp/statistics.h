@@ -88,7 +88,7 @@ class IStatisticsSubset {
          *                      to be predicted by the rule for each considered label, as well as the corresponding
          *                      quality scores
          */
-        virtual LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -122,7 +122,7 @@ class IStatisticsSubset {
          * @return              A reference to an object of type `PredictionCandidate` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
 
 };
 
@@ -135,7 +135,7 @@ class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
 
     public:
 
-        PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+        const PredictionCandidate& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
 
 };
 
@@ -238,7 +238,8 @@ class AbstractStatistics : virtual public IMatrix {
          *                          should be included
          * @return                  An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices, const uint32* labelIndices) = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
+                                                                const uint32* labelIndices) const = 0;
 
         /**
          * Updates a specific statistic based on the predictions of a newly induced rule.
@@ -250,7 +251,7 @@ class AbstractStatistics : virtual public IMatrix {
          * @param prediction        A reference to an object of type `Prediction`, representing the predictions of the
          *                          newly induced rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, Prediction& prediction) = 0;
+        virtual void applyPrediction(uint32 statisticIndex, const Prediction& prediction) = 0;
 
         uint32 getNumRows() const override;
 
