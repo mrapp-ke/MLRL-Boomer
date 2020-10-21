@@ -5,7 +5,6 @@
  */
 #pragma once
 
-#include "arrays.h"
 #include "data.h"
 #include "random.h"
 #include <memory>
