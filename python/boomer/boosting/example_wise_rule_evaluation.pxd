@@ -7,24 +7,24 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/example_wise_rule_evaluation.h" namespace "boosting" nogil:
 
-    cdef cppclass IExampleWiseRuleEvaluation:
+    cdef cppclass IExampleWiseRuleEvaluationFactory:
         pass
 
 
-    cdef cppclass RegularizedExampleWiseRuleEvaluationImpl(IExampleWiseRuleEvaluation):
+    cdef cppclass RegularizedExampleWiseRuleEvaluationFactoryImpl(IExampleWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        RegularizedExampleWiseRuleEvaluationImpl(float64 l2RegularizationWeight, shared_ptr[Blas] blasPtr,
-                                                 shared_ptr[Lapack] lapackPtr) except +
+        RegularizedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, shared_ptr[Blas] blasPtr,
+                                                        shared_ptr[Lapack] lapackPtr) except +
 
 
-cdef class ExampleWiseRuleEvaluation:
+cdef class ExampleWiseRuleEvaluationFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IExampleWiseRuleEvaluation] rule_evaluation_ptr
+    cdef shared_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
-cdef class RegularizedExampleWiseRuleEvaluation(ExampleWiseRuleEvaluation):
+cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     pass

@@ -29,17 +29,18 @@ cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
     A wrapper for the C++ class `DenseLabelWiseStatisticsFactoryImpl`.
     """
 
-    def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluation rule_evaluation,
+    def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluationFactory rule_evaluation_factory,
                   RandomAccessLabelMatrix label_matrix):
         """
-        :param loss_function:   The loss function to be used for calculating gradients and Hessians
-        :param rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as well as
-                                corresponding quality scores, of rules
-        :param label_matrix:    A `RandomAccessLabelMatrix` that provides random access to the labels of the training
-                                examples
+        :param loss_function:           The loss function to be used for calculating gradients and Hessians
+        :param rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of the
+                                        class that should be used for calculating the predictions, as well as
+                                        corresponding quality scores, of rules
+        :param label_matrix:            A `RandomAccessLabelMatrix` that provides random access to the labels of the
+                                        training examples
         """
         self.statistics_factory_ptr = <shared_ptr[ILabelWiseStatisticsFactory]>make_shared[DenseLabelWiseStatisticsFactoryImpl](
-            loss_function.loss_function_ptr, rule_evaluation.rule_evaluation_ptr,
+            loss_function.loss_function_ptr, rule_evaluation_factory.rule_evaluation_factory_ptr,
             dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](label_matrix.label_matrix_ptr))
 
 
@@ -48,24 +49,26 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
     Provides access to an object of type `AbstractLabelWiseStatistics`.
     """
 
-    def __cinit__(self, LabelWiseStatisticsFactory statistics_factory, LabelWiseRuleEvaluation rule_evaluation):
+    def __cinit__(self, LabelWiseStatisticsFactory statistics_factory,
+                  LabelWiseRuleEvaluationFactory rule_evaluation_factory):
         """
-        :param statistics_factory:  A factory that allows to create a new object of type `AbstractLabelWiseStatistics`
-        :param rule_evaluation:     The `LabelWiseRuleEvaluation` to switch to when invoking the function
-                                    `switch_rule_evaluation`
+        :param statistics_factory:      A factory that allows to create a new object of type
+                                        `AbstractLabelWiseStatistics`
+        :param rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` to switch to when invoking the function
+                                        `switch_rule_evaluation`
         """
         cdef unique_ptr[AbstractStatistics] statistics_ptr = <unique_ptr[AbstractStatistics]>statistics_factory.create()
         self.statistics_ptr = <shared_ptr[AbstractStatistics]>move(statistics_ptr)
-        self.rule_evaluation = rule_evaluation
+        self.rule_evaluation_factory = rule_evaluation_factory
 
     cdef AbstractStatistics* get(self):
         return self.statistics_ptr.get()
 
     cdef void switch_rule_evaluation(self):
-        cdef LabelWiseRuleEvaluation rule_evaluation = self.rule_evaluation
-        cdef shared_ptr[ILabelWiseRuleEvaluation] rule_evaluation_ptr = rule_evaluation.rule_evaluation_ptr
-        dynamic_pointer_cast[AbstractLabelWiseStatistics, AbstractStatistics](self.statistics_ptr).get().setRuleEvaluation(
-            rule_evaluation_ptr)
+        cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory = self.rule_evaluation_factory
+        cdef shared_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr = rule_evaluation_factory.rule_evaluation_factory_ptr
+        dynamic_pointer_cast[AbstractLabelWiseStatistics, AbstractStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
+            rule_evaluation_factory_ptr)
 
 
 cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
@@ -73,18 +76,20 @@ cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     A factory that allows to create instances of the class `LabelWiseStatisticsProvider`.
     """
 
-    def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluation default_rule_evaluation,
-                  LabelWiseRuleEvaluation rule_evaluation):
+    def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluationFactory default_rule_evaluation_factory,
+                  LabelWiseRuleEvaluationFactory rule_evaluation_factory):
         """
-        :param loss_function:           The loss function to be used for calculating gradients and Hessians
-        :param default_rule_evaluation: The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
-                                        well as corresponding quality scores, of the default rule
-        :param rule_evaluation:         The `LabelWiseRuleEvaluation` to be used for calculating the predictions, as
-                                        well as corresponding quality scores, of rules
+        :param loss_function:                   The loss function to be used for calculating gradients and Hessians
+        :param default_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
+                                                the class that should be used for calculating the predictions, as well
+                                                as corresponding quality scores, of the default rule
+        :param rule_evaluation:                 The `LabelWiseRuleEvaluationFactory` that allows to create instances of
+                                                the class that should be used for calculating the predictions, as well
+                                                as corresponding quality scores, of rules
         """
         self.loss_function = loss_function
-        self.default_rule_evaluation = default_rule_evaluation
-        self.rule_evaluation = rule_evaluation
+        self.default_rule_evaluation_factory = default_rule_evaluation_factory
+        self.rule_evaluation_factory = rule_evaluation_factory
 
     cdef LabelWiseStatisticsProvider create(self, LabelMatrix label_matrix):
         cdef LabelWiseStatisticsFactory statistics_factory
@@ -92,9 +97,10 @@ cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
         if isinstance(label_matrix, RandomAccessLabelMatrix):
             statistics_factory = DenseLabelWiseStatisticsFactory.__new__(DenseLabelWiseStatisticsFactory,
                                                                          self.loss_function,
-                                                                         self.default_rule_evaluation, label_matrix)
+                                                                         self.default_rule_evaluation_factory,
+                                                                         label_matrix)
         else:
             raise ValueError('Unsupported type of label matrix: ' + str(label_matrix.__type__))
 
         return LabelWiseStatisticsProvider.__new__(LabelWiseStatisticsProvider, statistics_factory,
-                                                   self.rule_evaluation)
+                                                   self.rule_evaluation_factory)

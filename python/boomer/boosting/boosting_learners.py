@@ -6,11 +6,11 @@
 Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
-from boomer.boosting.example_wise_rule_evaluation import RegularizedExampleWiseRuleEvaluation
+from boomer.boosting.example_wise_rule_evaluation import RegularizedExampleWiseRuleEvaluationFactory
 from boomer.boosting.example_wise_statistics import ExampleWiseStatisticsProviderFactory
 from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
-from boomer.boosting.label_wise_rule_evaluation import RegularizedLabelWiseRuleEvaluation
+from boomer.boosting.label_wise_rule_evaluation import RegularizedLabelWiseRuleEvaluationFactory
 from boomer.boosting.label_wise_statistics import LabelWiseStatisticsProviderFactory
 from boomer.boosting.post_processing import ConstantShrinkage
 from boomer.common.head_refinement import HeadRefinement, SingleLabelHeadRefinement, FullHeadRefinement
@@ -161,9 +161,9 @@ class Boomer(MLRuleLearner):
         default_rule_head_refinement = FullHeadRefinement()
         head_refinement = self.__create_head_refinement(loss_function)
         l2_regularization_weight = self.__create_l2_regularization_weight()
-        rule_evaluation = self.__create_rule_evaluation(loss_function, l2_regularization_weight)
+        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
+        statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads = create_num_threads(self.num_threads)
-        statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation)
         thresholds_factory = ExactThresholdsFactory()
         rule_induction = TopDownGreedyRuleInduction()
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
@@ -193,17 +193,17 @@ class Boomer(MLRuleLearner):
             return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_rule_evaluation(self, loss_function, l2_regularization_weight: float):
+    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float):
         if isinstance(loss_function, LabelWiseLoss):
-            return RegularizedLabelWiseRuleEvaluation(l2_regularization_weight)
+            return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
         else:
-            return RegularizedExampleWiseRuleEvaluation(l2_regularization_weight)
+            return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
 
-    def __create_statistics_provider_factory(self, loss_function, rule_evaluation) -> StatisticsProviderFactory:
+    def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory) -> StatisticsProviderFactory:
         if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseStatisticsProviderFactory(loss_function, rule_evaluation, rule_evaluation)
+            return LabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
         else:
-            return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation, rule_evaluation)
+            return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
 
     def __create_head_refinement(self, loss_function) -> HeadRefinement:
         head_refinement = self.head_refinement

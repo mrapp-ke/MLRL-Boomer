@@ -28,10 +28,6 @@ namespace seco {
              * confusion matrices. The predicted scores and quality scores are stored in a given object of type
              * `LabelWiseEvaluatedPrediction`.
              *
-             * @param labelIndices              A pointer to an array of type `uint32`, shape
-             *                                  `(prediction.numPredictions_)`, representing the indices of the labels
-             *                                  for which the rule should predict or a null pointer, if the rule should
-             *                                  predict for all labels
              * @param minorityLabels            A pointer to an array of type `uint8`, shape `(num_labels)`, indicating
              *                                  whether the rule should predict individual labels as positive (1) or
              *                                  negative (0)
@@ -49,14 +45,12 @@ namespace seco {
              * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
              *                                  correspond to the examples that are covered by rule, True, if they
              *                                  correspond to the examples that are not covered by the rule
-             * @param prediction                A reference to an object of type `LabelWiseEvaluatedPrediction` that
-             *                                  should be used to store the predicted scores and quality scores
+             * @param return                    A reference to an object of type `LabelWiseEvaluatedPrediction` that
+             *                                  stores the predicted scores and quality scores
              */
-            virtual void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
-                                                      const float64* confusionMatricesTotal,
-                                                      const float64* confusionMatricesSubset,
-                                                      const float64* confusionMatricesCovered, bool uncovered,
-                                                      LabelWiseEvaluatedPrediction& prediction) const = 0;
+            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+                const uint8* minorityLabels, const float64* confusionMatricesTotal,
+                const float64* confusionMatricesSubset, const float64* confusionMatricesCovered, bool uncovered) = 0;
 
     };
 
@@ -72,6 +66,68 @@ namespace seco {
 
             bool predictMajority_;
 
+            const uint32* labelIndices_;
+
+            LabelWiseEvaluatedPrediction prediction_;
+
+        public:
+
+            /**
+             * @param numPredictions    The number of labels for which the rules should predict
+             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels
+             *                          for which the rules should predict or a null pointer, if the rules should
+             *                          predict for all labels
+             * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
+             *                          to be optimized
+             * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
+             *                          minority label should be predicted
+             */
+            HeuristicLabelWiseRuleEvaluationImpl(uint32 numPredictions, const uint32* labelIndices,
+                                                 std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
+
+            const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+                const uint8* minorityLabels, const float64* confusionMatricesTotal,
+                const float64* confusionMatricesSubset, const float64* confusionMatricesCovered,
+                bool uncovered) override;
+
+    };
+
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `ILabelWiseRuleEvaluation`.
+     */
+    class ILabelWiseRuleEvaluationFactory {
+
+        public:
+
+            virtual ~ILabelWiseRuleEvaluationFactory() { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
+             * predictions of rules for several labels.
+             *
+             * @param numLabelIndices   The number of labels for which the rules should predict
+             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels for
+             *                          which the rules should predict or a null pointer, if the rules should predict
+             *                          for all available labels
+             * @return                  An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                          created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
+                                                                     const uint32* labelIndices) const = 0;
+
+    };
+
+    /**
+     * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
+     */
+    class HeuristicLabelWiseRuleEvaluationFactoryImpl : virtual public ILabelWiseRuleEvaluationFactory {
+
+        private:
+
+            std::shared_ptr<IHeuristic> heuristicPtr_;
+
+            bool predictMajority_;
+
         public:
 
             /**
@@ -80,13 +136,10 @@ namespace seco {
              * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
              *                          minority label should be predicted
              */
-            HeuristicLabelWiseRuleEvaluationImpl(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
+            HeuristicLabelWiseRuleEvaluationFactoryImpl(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
 
-            void calculateLabelWisePrediction(const uint32* labelIndices, const uint8* minorityLabels,
-                                              const float64* confusionMatricesTotal,
-                                              const float64* confusionMatricesSubset,
-                                              const float64* confusionMatricesCovered, bool uncovered,
-                                              LabelWiseEvaluatedPrediction& prediction) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
+                                                             const uint32* labelIndices) const override;
 
     };
 
