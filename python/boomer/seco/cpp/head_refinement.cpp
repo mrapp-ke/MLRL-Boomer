@@ -32,22 +32,23 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
                                          std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
                                          IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
     bool result = false;
-    const LabelWisePredictionCandidate& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
+    const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
-    uint32 numPredictions = prediction.numPredictions_;
-    float64* predictedScores = prediction.predictedScores_;
-    float64* qualityScores = prediction.qualityScores_;
+    uint32 numPredictions = prediction.getNumElements();
+    LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
+    LabelWiseEvaluatedPrediction::quality_score_const_iterator qualityScoreIterator =
+        prediction.quality_scores_cbegin();
     uint32* sortedIndices = NULL;
     float64 sumOfQualityScores = 0;
     uint32 bestNumPredictions = 0;
     float64 bestQualityScore = 0;
 
     if (labelIndices == NULL) {
-        sortedIndices = argsort(qualityScores, numPredictions);
+        sortedIndices = argsort(qualityScoreIterator, numPredictions);
         float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
         for (uint32 c = 0; c < numPredictions; c++) {
-            sumOfQualityScores += 1 - qualityScores[sortedIndices[c]];
+            sumOfQualityScores += 1 - qualityScoreIterator[sortedIndices[c]];
             float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunctionPtr_->calculateLift(c + 1);
 
             if (c == 0 || qualityScore < bestQualityScore) {
@@ -62,7 +63,7 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
         }
     } else {
         for (uint32 c = 0; c < numPredictions; c++) {
-            sumOfQualityScores += 1 - qualityScores[c];
+            sumOfQualityScores += 1 - qualityScoreIterator[c];
         }
 
         bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
@@ -82,12 +83,12 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
                 for (uint32 c = 0; c < bestNumPredictions; c++) {
                     uint32 i = sortedIndices[c];
                     candidateLabelIndices[c] = labelIndices == NULL ? i : labelIndices[i];
-                    candidatePredictedScores[c] = predictedScores[i];
+                    candidatePredictedScores[c] = valueIterator[i];
                 }
             } else {
                 for (uint32 c = 0; c < bestNumPredictions; c++) {
                     candidateLabelIndices[c] = labelIndices[c];
-                    candidatePredictedScores[c] = predictedScores[c];
+                    candidatePredictedScores[c] = valueIterator[c];
                 }
             }
 
@@ -107,12 +108,12 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
                 for (uint32 c = 0; c < bestNumPredictions; c++) {
                     uint32 i = sortedIndices[c];
                     recyclableHead->labelIndices_[c] = labelIndices == NULL ? i : labelIndices[i];
-                    recyclableHead->predictedScores_[c] = predictedScores[i];
+                    recyclableHead->predictedScores_[c] = valueIterator[i];
                 }
             } else {
                 for (uint32 c = 0; c < bestNumPredictions; c++) {
                     recyclableHead->labelIndices_[c] = labelIndices[c];
-                    recyclableHead->predictedScores_[c] = predictedScores[c];
+                    recyclableHead->predictedScores_[c] = valueIterator[c];
                 }
             }
 
@@ -124,7 +125,7 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
     return result;
 }
 
-const PredictionCandidate& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
+const EvaluatedPrediction& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
                                                                           bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
