@@ -45,3 +45,13 @@ void RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
     overallQualityScore += 0.5 * l2RegularizationWeight_ * linalg::l2NormPow(valueIterator, numPredictions);
     prediction.overallQualityScore = overallQualityScore;
 }
+
+RegularizedLabelWiseRuleEvaluationFactoryImpl::RegularizedLabelWiseRuleEvaluationFactoryImpl(
+        float64 l2RegularizationWeight)
+    : l2RegularizationWeight_(l2RegularizationWeight) {
+
+}
+
+std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create() const {
+    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl>(l2RegularizationWeight_);
+}

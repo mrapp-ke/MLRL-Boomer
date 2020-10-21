@@ -87,4 +87,43 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `ILabelWiseRuleEvaluation`.
+     */
+    class ILabelWiseRuleEvaluationFactory {
+
+        public:
+
+            virtual ~ILabelWiseRuleEvaluationFactory() { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluation`.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create() const = 0;
+
+    };
+
+    /**
+     * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
+     */
+    class RegularizedLabelWiseRuleEvaluationFactoryImpl : virtual public ILabelWiseRuleEvaluationFactory {
+
+        private:
+
+            float64 l2RegularizationWeight_;
+
+        public:
+
+            /**
+             * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
+             *                               scores to be predicted by rules
+             */
+            RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight);
+
+            std::unique_ptr<ILabelWiseRuleEvaluation> create() const override;
+
+    };
+
 }
