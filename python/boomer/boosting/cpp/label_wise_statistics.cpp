@@ -5,20 +5,22 @@ using namespace boosting;
 
 
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationPtr_(ruleEvaluationPtr) {
+        uint32 numStatistics, uint32 numLabels,
+        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
 }
 
-void AbstractLabelWiseStatistics::setRuleEvaluation(std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr) {
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
+void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
+        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
+    ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
 }
 
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
-                                                                         uint32 numPredictions,
-                                                                         const uint32* labelIndices)
-    : statistics_(statistics), numPredictions_(numPredictions), labelIndices_(labelIndices),
-      prediction_(LabelWiseEvaluatedPrediction(numPredictions)) {
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
+        const DenseLabelWiseStatisticsImpl& statistics, std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
+        uint32 numPredictions, const uint32* labelIndices)
+    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), numPredictions_(numPredictions),
+      labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = nullptr;
@@ -70,10 +72,9 @@ const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubs
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
-    statistics_.ruleEvaluationPtr_->calculateLabelWisePrediction(labelIndices_, statistics_.totalSumsOfGradients_,
-                                                                 sumsOfGradients, statistics_.totalSumsOfHessians_,
-                                                                 sumsOfHessians, uncovered, prediction_);
-    return prediction_;
+    return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.totalSumsOfGradients_, sumsOfGradients,
+                                                            statistics_.totalSumsOfHessians_, sumsOfHessians,
+                                                            uncovered);
 }
 
 DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(const DenseLabelWiseStatisticsImpl& statistics,
@@ -105,12 +106,12 @@ std::unique_ptr<AbstractStatistics> DenseLabelWiseStatisticsImpl::HistogramBuild
                                                           statistics_.currentScores_);
 }
 
-DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
-                                                           std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                                           std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                                           float64* gradients, float64* hessians,
-                                                           float64* currentScores)
-    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationPtr),
+DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
+        std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients, float64* hessians,
+        float64* currentScores)
+    : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(), ruleEvaluationFactoryPtr),
       lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), gradients_(gradients), hessians_(hessians),
       currentScores_(currentScores) {
     // The number of labels
@@ -153,7 +154,10 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(ui
                                                                               const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, numPredictions, labelIndices);
+    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
+                                                                                                    labelIndices);
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
+                                                                                numPredictions, labelIndices);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
@@ -188,11 +192,12 @@ std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsI
 }
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
-        std::shared_ptr<ILabelWiseLoss> lossFunctionPtr, std::shared_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    ruleEvaluationPtr_ = ruleEvaluationPtr;
-    labelMatrixPtr_ = labelMatrixPtr;
+        std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
+    : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
+      labelMatrixPtr_(labelMatrixPtr) {
+
 }
 
 std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
@@ -223,6 +228,6 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
         }
     }
 
-    return std::make_unique<DenseLabelWiseStatisticsImpl>(lossFunctionPtr_, ruleEvaluationPtr_, labelMatrixPtr_,
+    return std::make_unique<DenseLabelWiseStatisticsImpl>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_,
                                                           gradients, hessians, currentScores);
 }
