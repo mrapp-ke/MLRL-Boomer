@@ -65,7 +65,7 @@ namespace seco {
 
                 private:
 
-                    DenseLabelWiseStatisticsImpl& statistics_;
+                    const DenseLabelWiseStatisticsImpl& statistics_;
 
                     uint32 numPredictions_;
 
@@ -87,7 +87,7 @@ namespace seco {
                      *                          representing the indices of the labels that should be included in the
                      *                          subset or a null pointer, if all labels should be considered
                      */
-                    StatisticsSubsetImpl(DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
+                    StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics, uint32 numPredictions,
                                          const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
@@ -96,8 +96,8 @@ namespace seco {
 
                     void resetSubset() override;
 
-                    LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
-                                                                               bool accumulated) override;
+                    const LabelWisePredictionCandidate& calculateLabelWisePrediction(bool uncovered,
+                                                                                     bool accumulated) override;
 
             };
 
@@ -141,9 +141,9 @@ namespace seco {
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
             std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
-                                                            const uint32* labelIndices) override;
+                                                            const uint32* labelIndices) const override;
 
-            void applyPrediction(uint32 statisticIndex, Prediction& prediction) override;
+            void applyPrediction(uint32 statisticIndex, const Prediction& prediction) override;
 
     };
 

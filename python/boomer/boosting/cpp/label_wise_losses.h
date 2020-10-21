@@ -34,7 +34,7 @@ namespace boosting {
              * @return                  A pair that contains two scalars of type `float64`, representing the gradient
              *                          and the Hessian that have been calculated
              */
-            virtual std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix& labelMatrix,
+            virtual std::pair<float64, float64> calculateGradientAndHessian(const IRandomAccessLabelMatrix& labelMatrix,
                                                                             uint32 exampleIndex, uint32 labelIndex,
                                                                             float64 predictedScore) const = 0;
 
@@ -47,7 +47,7 @@ namespace boosting {
 
         public:
 
-            std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix& labelMatrix,
+            std::pair<float64, float64> calculateGradientAndHessian(const IRandomAccessLabelMatrix& labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) const override;
 
@@ -60,7 +60,7 @@ namespace boosting {
 
         public:
 
-            std::pair<float64, float64> calculateGradientAndHessian(IRandomAccessLabelMatrix& labelMatrix,
+            std::pair<float64, float64> calculateGradientAndHessian(const IRandomAccessLabelMatrix& labelMatrix,
                                                                     uint32 exampleIndex, uint32 labelIndex,
                                                                     float64 predictedScore) const override;
 
