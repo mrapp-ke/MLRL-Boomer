@@ -32,10 +32,6 @@ namespace boosting {
              * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              * `totalSumsOfHessians` and `sumsOfHessians`, respectively.
              *
-             * @param labelIndices          A pointer to an array of type `uint32`, shape
-             *                              `(prediction.numPredictions_)`, representing the indices of the labels for
-             *                              which the rule should predict or a null pointer, if the rule should predict
-             *                              for all labels
              * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels), representing
              *                              the total sums of gradients for individual labels
              * @param sumsOfGradients       A pointer to an array of type `float64`, shape
@@ -51,13 +47,12 @@ namespace boosting {
              *                              covers the difference between the sums of gradients and Hessians that are
              *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
              *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A reference to an object of type `LabelWiseEvaluatedPrediction` that should
-             *                              be used to store the predicted scores and quality scores
+             * @return                      A reference to an object of type `LabelWiseEvaluatedPrediction` that stores
+             *                              the predicted scores and quality scores
              */
-            virtual void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
-                                                      float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                                      float64* sumsOfHessians, bool uncovered,
-                                                      LabelWiseEvaluatedPrediction& prediction) const = 0;
+            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                float64* sumsOfHessians, bool uncovered) = 0;
 
     };
 
@@ -72,18 +67,26 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
+            const uint32* labelIndices_;
+
+            LabelWiseEvaluatedPrediction prediction_;
+
         public:
 
             /**
+             * @param numPredictions            The number of labels for which the rules should predict
+             * @param labelIndices              A pointer to an array of type `uint32` that stores the indices of the
+             *                                  labels for which the rules should predict or a null pointer, if the
+             *                                  rules should predict for all labels
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            RegularizedLabelWiseRuleEvaluationImpl(float64 l2RegularizationWeight);
+            RegularizedLabelWiseRuleEvaluationImpl(uint32 numPredictions, const uint32* labelIndices,
+                                                   float64 l2RegularizationWeight);
 
-            void calculateLabelWisePrediction(const uint32* labelIndices, const float64* totalSumsOfGradients,
-                                              float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                                              float64* sumsOfHessians, bool uncovered,
-                                              LabelWiseEvaluatedPrediction& prediction) const override;
+            const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
+                float64* sumsOfHessians, bool uncovered) override;
 
     };
 
@@ -97,11 +100,19 @@ namespace boosting {
             virtual ~ILabelWiseRuleEvaluationFactory() { };
 
             /**
-             * Creates and returns a new object of type `ILabelWiseRuleEvaluation`.
+             * Creates a new instance of the class `ILabelWiseRuleEvaluation` that allows to calculate the predictions
+             * of rules for several labels.
              *
-             * @return An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been created
+             * @param numLabelIndices   The number of labels for which the rules should predict
+             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels for
+             *                          which the rules should predict or a null pointer, if the rules should predict
+             *                          for all available labels
+             * @return                  An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                          created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create() const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
+                                                                     const uint32* labelIndices) const = 0;
+
 
     };
 
@@ -122,7 +133,8 @@ namespace boosting {
              */
             RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create() const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
+                                                             const uint32* labelIndices) const override;
 
     };
 
