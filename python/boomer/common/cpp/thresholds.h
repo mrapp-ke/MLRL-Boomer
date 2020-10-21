@@ -241,7 +241,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
             private:
 
-                class Callback : virtual public IBinningObserver{
+                class Callback : virtual public IBinningObserver {
 
                     private:
 
@@ -263,7 +263,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                 ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
 
-                std::unique_ptr<AbstractRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;
 
