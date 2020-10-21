@@ -426,8 +426,7 @@ void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement
 
 }
 
-void ApproximateThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(const IHeadRefinement& headRefinement,
-                                                                            Refinement& refinement) const {
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(Refinement& refinement) const {
 
 }
 
@@ -462,9 +461,10 @@ void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint
 ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                                      std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                                      std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                                     std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                                      std::shared_ptr<IBinning> binningPtr, uint32 numBins)
-    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr), binningPtr_(binningPtr),
-      numBins_(numBins) {
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr),
+      binningPtr_(binningPtr), numBins_(numBins) {
 
 }
 
