@@ -245,7 +245,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
             private:
 
-                class Callback : virtual public IBinningObserver {
+                class Callback : virtual public IBinningObserver, virtual public IRuleRefinementCallback<BinVector> {
 
                     private:
 
@@ -259,15 +259,20 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                         Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
 
+                        std::unique_ptr<Result> get() const override;
+
                         void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
 
                 };
 
                 ApproximateThresholdsImpl& thresholds_;
 
+                std::unique_ptr<IHeadRefinement> headRefinementPtr_;
+
             public:
 
-                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
+                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds,
+                                     std::unique_ptr<IHeadRefinement> headRefinementPtr);
 
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
 
