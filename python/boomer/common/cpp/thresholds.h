@@ -2,6 +2,7 @@
  * Implements classes that provide access to the thresholds that may be used by the conditions of rules.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
@@ -284,11 +285,16 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
         };
 
+        struct BinCacheEntry {
+            std::unique_ptr<AbstractStatistics> statisticsPtr;
+            std::unique_ptr<BinVector> binVectorPtr;
+        };
+
         std::shared_ptr<IBinning> binningPtr_;
 
         uint32 numBins_;
 
-        std::unordered_map<uint32, std::unique_ptr<BinVector>> cache_;
+        std::unordered_map<uint32, BinCacheEntry> cache_;
 
     public:
 

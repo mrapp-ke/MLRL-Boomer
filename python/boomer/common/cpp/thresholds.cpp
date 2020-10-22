@@ -411,7 +411,7 @@ std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl
         uint32 featureIndex) {
 
     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-    thresholds_.cache_.emplace(featureIndex, std::unique_ptr<BinVector>());
+    thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
     return std::make_unique<ApproximateRuleRefinementImpl>(*headRefinementPtr_, featureIndex, std::move(callbackPtr));
 
 }
@@ -437,18 +437,18 @@ ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(
 std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::get(){
 
     auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-    BinVector* binVector = cacheIterator->second.get();
-    if(binVector == nullptr){
+    BinCacheEntry& binCacheEntry = cacheIterator->second;
+    if(binCacheEntry.binVectorPtr.get() == nullptr){
         std::unique_ptr<FeatureVector> featureVectorPtr;
         thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, featureVectorPtr);
         uint32 numBins = thresholdsSubset_.thresholds_.numBins_;
-        cacheIterator->second =  std::move(std::make_unique<BinVector>(numBins, true));
+        binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVector>(numBins, true));
         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
         thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
-        binVector = cacheIterator->second.get();
-        std::unique_ptr<AbstractStatistics> histogram = histogramBuilderPtr_->build();
+        binCacheEntry.statisticsPtr = std::move(histogramBuilderPtr_->build());
     }
-    //TODO: return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>( , *binVector);
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>(*binCacheEntry.statisticsPtr,
+                                                                                               *binCacheEntry.binVectorPtr);
 }
 
 void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
@@ -456,7 +456,7 @@ void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint
 
     //TODO: Laufzeit: Wir greifen jedes mal auf die unordered_map zu -> nicht ganz billig
     auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-    BinVector* bins = cacheIterator->second.get();
+    BinVector* bins = cacheIterator->second.binVectorPtr.get();
     BinVector::iterator binIterator = bins->begin();
     binIterator[binIndex].numExamples += 1;
     float32 currentValue = entry.value;
