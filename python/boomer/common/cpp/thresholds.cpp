@@ -444,6 +444,7 @@ std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Resul
         uint32 numBins = thresholdsSubset_.thresholds_.numBins_;
         binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVector>(numBins, true));
         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+        currentBinVector_ = binCacheEntry.binVectorPtr.get();
         thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
         binCacheEntry.statisticsPtr = std::move(histogramBuilderPtr_->build());
     }
@@ -454,10 +455,7 @@ std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Resul
 void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
                                                                             const FeatureVector::Entry& entry) {
 
-    //TODO: Laufzeit: Wir greifen jedes mal auf die unordered_map zu -> nicht ganz billig
-    auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-    BinVector* bins = cacheIterator->second.binVectorPtr.get();
-    BinVector::iterator binIterator = bins->begin();
+    BinVector::iterator binIterator = currentBinVector_->begin();
     binIterator[binIndex].numExamples += 1;
     float32 currentValue = entry.value;
     if (currentValue < binIterator[binIndex].minValue) {
