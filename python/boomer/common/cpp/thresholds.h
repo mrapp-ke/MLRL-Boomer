@@ -167,7 +167,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex_);
 
-                        std::unique_ptr<Result> get() const override;
+                        std::unique_ptr<Result> get() override;
 
                 };
 
@@ -259,7 +259,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                         Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
 
-                        std::unique_ptr<Result> get() const override;
+                        std::unique_ptr<Result> get() override;
 
                         void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
 

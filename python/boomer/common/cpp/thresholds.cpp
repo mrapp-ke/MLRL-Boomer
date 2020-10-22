@@ -349,7 +349,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 
 }
 
-std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get() const {
+std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get() {
     auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
@@ -434,13 +434,21 @@ ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(
 
 }
 
-std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::get() const{
+std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::get(){
 
-    //thresholds_.cache_.emplace(featureIndex, std::make_unique<BinVector>(numBins, true));
-    //std::unique_ptr<FeatureVector> featureVectorPtr;
-    //thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex, featureVectorPtr);
-    //thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *callbackPtr);
-
+    auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+    BinVector* binVector = cacheIterator->second.get();
+    if(binVector == nullptr){
+        std::unique_ptr<FeatureVector> featureVectorPtr;
+        thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, featureVectorPtr);
+        uint32 numBins = thresholdsSubset_.thresholds_.numBins_;
+        cacheIterator->second =  std::move(std::make_unique<BinVector>(numBins, true));
+        histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+        thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
+        binVector = cacheIterator->second.get();
+        std::unique_ptr<AbstractStatistics> histogram = histogramBuilderPtr_->build();
+    }
+    //TODO: return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>( , *binVector);
 }
 
 void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
