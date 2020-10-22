@@ -73,7 +73,7 @@ class IRuleRefinementCallback {
          * @return An unique pointer to an object of type `Result` that stores references to the statistics and the
          *         vector that may be used to search for potential refinements
          */
-        virtual std::unique_ptr<Result> get() const = 0;
+        virtual std::unique_ptr<Result> get() = 0;
 
 };
 
