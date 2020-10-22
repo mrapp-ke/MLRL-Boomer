@@ -253,6 +253,8 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                         uint32 featureIndex_;
 
+                        std::unique_ptr<AbstractStatistics::IHistogramBuilder> histogramBuilderPtr_;
+
                     public:
 
                         Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
