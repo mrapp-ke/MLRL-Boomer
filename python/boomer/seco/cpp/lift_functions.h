@@ -2,6 +2,7 @@
  * Implements different lift functions that allow to affect the quality score of rules depending on how many labels they
  * predict.
  *
+ * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
