@@ -2,6 +2,7 @@
  * Implements classes that provide access to the thresholds that may be used by the conditions of rules.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
@@ -167,7 +168,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex_);
 
-                        std::unique_ptr<Result> get() const override;
+                        std::unique_ptr<Result> get() override;
 
                 };
 
@@ -232,6 +233,119 @@ class ExactThresholdsImpl : public AbstractThresholds {
                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                             std::shared_ptr<AbstractStatistics> statisticsPtr,
                             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
+
+        std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) override;
+
+};
+
+/**
+ * Provides access to the thresholds that result from applying a binning method to the feature values of the training
+ * examples.
+ */
+class ApproximateThresholdsImpl : public AbstractThresholds {
+
+    private:
+
+        /**
+         * Provides access to a subset of the thresholds that are stored by an instance of the class
+         * `ApproximateThresholdsImpl`.
+         */
+        class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
+
+            private:
+
+                /**
+                 * A callback that allows to retrieve bins and corresponding statistics. If available, the bins and
+                 * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
+                 * from the feature matrix and applying a binning method.
+                 */
+                class Callback : virtual public IBinningObserver, virtual public IRuleRefinementCallback<BinVector> {
+
+                    private:
+
+                        ThresholdsSubsetImpl& thresholdsSubset_;
+
+                        uint32 featureIndex_;
+
+                        std::unique_ptr<AbstractStatistics::IHistogramBuilder> histogramBuilderPtr_;
+
+                        BinVector* currentBinVector_;
+
+                    public:
+
+                        /**
+                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubsetImpl` that caches
+                         *                          the bins
+                         * @param featureIndex      The index of the feature for which the bins should be retrieved
+                         */
+                        Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
+
+                        std::unique_ptr<Result> get() override;
+
+                        void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
+
+                };
+
+                ApproximateThresholdsImpl& thresholds_;
+
+                std::unique_ptr<IHeadRefinement> headRefinementPtr_;
+
+            public:
+
+                /**
+                 * @param thresholds        A reference to an object of type `ApproximateThresholdsImpl` that stores the
+                 *                          thresholds
+                 * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that allows to
+                 *                          create instances of the class that allows to find the heads of the rules
+                 */
+                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds,
+                                     std::unique_ptr<IHeadRefinement> headRefinementPtr);
+
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
+
+                void applyRefinement(Refinement& refinement) override;
+
+                void recalculatePrediction(Refinement& refinement) const override;
+
+                void applyPrediction(const Prediction& prediction) override;
+
+        };
+
+        /**
+         * A wrapper for statistics and bins that is stored in the cache.
+         */
+        struct BinCacheEntry {
+            std::unique_ptr<AbstractStatistics> statisticsPtr;
+            std::unique_ptr<BinVector> binVectorPtr;
+        };
+
+        std::shared_ptr<IBinning> binningPtr_;
+
+        uint32 numBins_;
+
+        std::unordered_map<uint32, BinCacheEntry> cache_;
+
+    public:
+
+        /**
+         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
+         *                                  to the feature values of the training examples
+         * @param nominalFeatureVectorPtr   A shared pointer to an object of type `INominalFeatureVector` that provides
+         *                                  access to the information whether individual features are nominal or not
+         * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
+         *                                  access to statistics about the labels of the training examples
+         * @param headRefinementPtr         A shared pointer to an object of type `IHeadRefinementFactory` that allows
+         *                                  to create instances of the class that should be used to find the heads of
+         *                                  rules
+         * @param binningPtr                A shared pointer to an object of type `IBinning` that implements the binning
+         *                                  method to be used
+         * @param numBins                   The number of bins that should be used by the given binning method
+         */
+        ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                                  std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                  std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                  std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
+                                  std::shared_ptr<IBinning> binningPtr, uint32 numBins);
 
         std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) override;
 
