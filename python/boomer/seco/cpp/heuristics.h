@@ -8,6 +8,7 @@
  * All heuristics must treat positive and negative labels equally, i.e., if the ground truth and a rule's predictions
  * would be inverted, the resulting quality scores must be the same as before.
  *
+ * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once

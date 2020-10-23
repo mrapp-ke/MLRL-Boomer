@@ -1,4 +1,5 @@
 """
+@author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides wrappers for classes that allow to store the elements of confusion matrices that are computed independently for
