@@ -1,7 +1,8 @@
 """
-Provides Cython wrappers for C++ classes that implement different lift functions.
-
+@author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides Cython wrappers for C++ classes that implement different lift functions.
 """
 from libcpp.memory cimport make_shared
 
