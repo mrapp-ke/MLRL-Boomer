@@ -38,7 +38,7 @@ struct IndexedFloat32Array {
 };
 
 /**
- *  A struct that stores all necessary information of a group of examples to calculate thresholds.
+ *  A struct that stores information about the examples that are contained by a bin.
  */
 struct Bin {
     Bin() : numExamples(0), minValue(std::numeric_limits<float32>::max()),
