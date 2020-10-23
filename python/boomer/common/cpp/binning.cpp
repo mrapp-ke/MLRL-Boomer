@@ -46,7 +46,9 @@ void EqualWidthBinningImpl::createBins(uint32 numBins, FeatureVector& featureVec
 
         if (currentValue < min) {
             min = currentValue;
-        } else if (max < currentValue) {
+        }
+
+        if (max < currentValue) {
             max = currentValue;
         }
     }
