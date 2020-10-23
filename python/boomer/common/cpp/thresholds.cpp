@@ -409,8 +409,8 @@ ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(
 
 std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         uint32 featureIndex) {
-    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
     thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
+    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
     return std::make_unique<ApproximateRuleRefinementImpl>(*headRefinementPtr_, featureIndex, std::move(callbackPtr));
 }
 
