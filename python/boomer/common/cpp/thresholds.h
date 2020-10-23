@@ -238,14 +238,27 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
 };
 
+/**
+ * Provides access to the thresholds that result from applying a binning method to the feature values of the training
+ * examples.
+ */
 class ApproximateThresholdsImpl : public AbstractThresholds {
 
     private:
 
+        /**
+         * Provides access to a subset of the thresholds that are stored by an instance of the class
+         * `ApproximateThresholdsImpl`.
+         */
         class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
 
             private:
 
+                /**
+                 * A callback that allows to retrieve bins and corresponding statistics. If available, the bins and
+                 * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
+                 * from the feature matrix and applying a binning method.
+                 */
                 class Callback : virtual public IBinningObserver, virtual public IRuleRefinementCallback<BinVector> {
 
                     private:
@@ -260,6 +273,11 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                     public:
 
+                        /**
+                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubsetImpl` that caches
+                         *                          the bins
+                         * @param featureIndex      The index of the feature for which the bins should be retrieved
+                         */
                         Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
 
                         std::unique_ptr<Result> get() override;
@@ -274,6 +292,12 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
             public:
 
+                /**
+                 * @param thresholds        A reference to an object of type `ApproximateThresholdsImpl` that stores the
+                 *                          thresholds
+                 * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that allows to
+                 *                          create instances of the class that allows to find the heads of the rules
+                 */
                 ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds,
                                      std::unique_ptr<IHeadRefinement> headRefinementPtr);
 
@@ -287,6 +311,9 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
         };
 
+        /**
+         * A wrapper for statistics and bins that is stored in the cache.
+         */
         struct BinCacheEntry {
             std::unique_ptr<AbstractStatistics> statisticsPtr;
             std::unique_ptr<BinVector> binVectorPtr;
@@ -300,6 +327,20 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
     public:
 
+        /**
+         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
+         *                                  to the feature values of the training examples
+         * @param nominalFeatureVectorPtr   A shared pointer to an object of type `INominalFeatureVector` that provides
+         *                                  access to the information whether individual features are nominal or not
+         * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
+         *                                  access to statistics about the labels of the training examples
+         * @param headRefinementPtr         A shared pointer to an object of type `IHeadRefinementFactory` that allows
+         *                                  to create instances of the class that should be used to find the heads of
+         *                                  rules
+         * @param binningPtr                A shared pointer to an object of type `IBinning` that implements the binning
+         *                                  method to be used
+         * @param numBins                   The number of bins that should be used by the given binning method
+         */
         ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                   std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                   std::shared_ptr<AbstractStatistics> statisticsPtr,
