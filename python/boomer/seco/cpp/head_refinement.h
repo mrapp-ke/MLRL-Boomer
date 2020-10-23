@@ -1,6 +1,7 @@
 /**
  * Provides classes that implement different strategies for finding the heads of rules.
  *
+ * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt)
  */
 #pragma once

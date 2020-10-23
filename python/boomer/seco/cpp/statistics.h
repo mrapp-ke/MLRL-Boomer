@@ -2,9 +2,10 @@
  * Implements base classes for all classes that allow to store the elements of confusion matrices that are computed
  * based on a weight matrix and the ground truth labels of the training examples.
  *
+ * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
-# pragma once
+#pragma once
 
 #include "../../common/cpp/statistics.h"
 

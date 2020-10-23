@@ -1,3 +1,9 @@
+"""
+@author Jakob Steeg (jakob.steeg@gmail.com)
+@author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides classes that implement different stopping criteria for separate-and-conquer algorithms.
+"""
 from boomer.seco.statistics cimport AbstractCoverageStatistics
 
 
