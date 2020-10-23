@@ -401,19 +401,17 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::unique
                                                                        std::move(weightsPtr));
 }
 
-ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds,
-                                           std::unique_ptr<IHeadRefinement> headRefinementPtr)
-                                           : thresholds_(thresholds), headRefinementPtr_(std::move(headRefinementPtr)) {
+ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(
+        ApproximateThresholdsImpl& thresholds, std::unique_ptr<IHeadRefinement> headRefinementPtr)
+    : thresholds_(thresholds), headRefinementPtr_(std::move(headRefinementPtr)) {
 
 }
 
 std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         uint32 featureIndex) {
-
     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
     thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
     return std::make_unique<ApproximateRuleRefinementImpl>(*headRefinementPtr_, featureIndex, std::move(callbackPtr));
-
 }
 
 void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
@@ -434,11 +432,11 @@ ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(
 
 }
 
-std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::get(){
-
+std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::get() {
     auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
     BinCacheEntry& binCacheEntry = cacheIterator->second;
-    if(binCacheEntry.binVectorPtr.get() == nullptr){
+
+    if (binCacheEntry.binVectorPtr.get() == nullptr) {
         std::unique_ptr<FeatureVector> featureVectorPtr;
         thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, featureVectorPtr);
         uint32 numBins = thresholdsSubset_.thresholds_.numBins_;
@@ -448,25 +446,26 @@ std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Resul
         thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
         binCacheEntry.statisticsPtr = std::move(histogramBuilderPtr_->build());
     }
-    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>(*binCacheEntry.statisticsPtr,
-                                                                                               *binCacheEntry.binVectorPtr);
+
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>(
+        *binCacheEntry.statisticsPtr, *binCacheEntry.binVectorPtr);
 }
 
 void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
                                                                             const FeatureVector::Entry& entry) {
-
     BinVector::iterator binIterator = currentBinVector_->begin();
     binIterator[binIndex].numExamples += 1;
     float32 currentValue = entry.value;
+
     if (currentValue < binIterator[binIndex].minValue) {
         binIterator[binIndex].minValue = currentValue;
     }
+
     if (binIterator[binIndex].maxValue < currentValue) {
         binIterator[binIndex].maxValue = currentValue;
     }
 
     histogramBuilderPtr_->onBinUpdate(binIndex, entry);
-
 }
 
 ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
