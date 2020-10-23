@@ -349,7 +349,7 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetIm
 
 }
 
-std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get() const {
+std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get() {
     auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
