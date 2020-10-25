@@ -14,6 +14,8 @@ cdef extern from "cpp/head_refinement.h" nogil:
         bool findHead(PredictionCandidate* bestHead, unique_ptr[PredictionCandidate]& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
+        unique_ptr[PredictionCandidate] pollHead()
+
         EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
 
