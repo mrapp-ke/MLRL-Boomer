@@ -296,8 +296,8 @@ std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl<T>::c
     std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create();
     std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this,
                                                                                                      featureIndex);
-    return std::make_unique<ExactRuleRefinementImpl>(std::move(headRefinementPtr), weights_, sumOfWeights_,
-                                                     featureIndex, nominal, std::move(callbackPtr));
+    return std::make_unique<ExactRuleRefinementImpl<T>>(std::move(headRefinementPtr), labelIndices_, weights_,
+                                                        sumOfWeights_, featureIndex, nominal, std::move(callbackPtr));
 }
 
 template<class T>
@@ -438,8 +438,8 @@ std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl
     thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
     std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create();
-    return std::make_unique<ApproximateRuleRefinementImpl>(std::move(headRefinementPtr), featureIndex,
-                                                           std::move(callbackPtr));
+    return std::make_unique<ApproximateRuleRefinementImpl<T>>(std::move(headRefinementPtr), labelIndices_, featureIndex,
+                                                              std::move(callbackPtr));
 }
 
 template<class T>
