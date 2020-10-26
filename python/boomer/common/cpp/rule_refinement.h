@@ -179,7 +179,7 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
 
         std::unique_ptr<IHeadRefinement> headRefinementPtr_;
 
-        T& labelIndices_;
+        const T& labelIndices_;
 
         uint32 featureIndex_;
 
