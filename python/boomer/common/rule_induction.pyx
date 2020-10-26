@@ -156,7 +156,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef bint instance_sub_sampling_used = weights_ptr.get().hasZeroWeights()
 
         # Create a new subset of the given thresholds...
-        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(move(weights_ptr))
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(
+            dereference(weights_ptr.get()))
 
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels,
