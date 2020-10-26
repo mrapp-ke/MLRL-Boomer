@@ -7,6 +7,12 @@
 #pragma once
 
 #include "data.h"
+#include <memory>
+
+// Forward declarations
+class AbstractThresholds;
+class IThresholdsSubset;
+class IWeightVector;
 
 
 /**
@@ -17,6 +23,18 @@ class IIndexVector : virtual public IRandomAccessVector<uint32> {
     public:
 
         virtual ~IIndexVector() { };
+
+        /**
+         * Creates and returns a new subset of the given thresholds that only contains the labels whose indices are
+         * stored in this vector.
+         *
+         * @param thresholds    A reference to an object of type `AbstractThresholds` to create the subset from
+         * @param weights       A reference to an object of type `IWeightVector` that provides access to the weights of
+         *                      individual training examples
+         * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
+         */
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
+                                                                IWeightVector& weights) const = 0;
 
 };
 
@@ -31,6 +49,9 @@ class DenseIndexVector : public DenseVector<uint32>, virtual public IIndexVector
          * @param numElements The number of elements in the vector
          */
         DenseIndexVector(uint32 numElements);
+
+        std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
+                                                        IWeightVector& weights) const override;
 
 };
 
@@ -53,5 +74,8 @@ class RangeIndexVector : virtual public IIndexVector {
         uint32 getNumElements() const override;
 
         uint32 getValue(uint32 pos) const override;
+
+        std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
+                                                        IWeightVector& weights) const override;
 
 };
