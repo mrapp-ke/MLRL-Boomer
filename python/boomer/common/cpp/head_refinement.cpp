@@ -50,7 +50,13 @@ const EvaluatedPrediction& SingleLabelHeadRefinementImpl::calculatePrediction(IS
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create() const {
+std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
+        const RangeIndexVector& labelIndices) const {
+    return std::make_unique<SingleLabelHeadRefinementImpl>();
+}
+
+std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
+        const DenseIndexVector& labelIndices) const {
     return std::make_unique<SingleLabelHeadRefinementImpl>();
 }
 
@@ -103,6 +109,10 @@ const EvaluatedPrediction& FullHeadRefinementImpl::calculatePrediction(IStatisti
     return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
 }
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create() const {
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const RangeIndexVector& labelIndices) const {
+    return std::make_unique<FullHeadRefinementImpl>();
+}
+
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const DenseIndexVector& labelIndices) const {
     return std::make_unique<FullHeadRefinementImpl>();
 }

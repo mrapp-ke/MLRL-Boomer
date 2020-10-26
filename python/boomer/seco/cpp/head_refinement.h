@@ -55,7 +55,9 @@ namespace seco {
              */
             PartialHeadRefinementFactoryImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
-            std::unique_ptr<IHeadRefinement> create() const override;
+            std::unique_ptr<IHeadRefinement> create(const RangeIndexVector& labelIndices) const override;
+
+            std::unique_ptr<IHeadRefinement> create(const DenseIndexVector& labelIndices) const override;
 
     };
 

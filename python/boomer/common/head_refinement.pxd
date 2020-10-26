@@ -1,4 +1,5 @@
 from boomer.common._arrays cimport uint32
+from boomer.common._indices cimport RangeIndexVector, DenseIndexVector
 from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.statistics cimport IStatisticsSubset
@@ -19,7 +20,9 @@ cdef extern from "cpp/head_refinement.h" nogil:
 
     cdef cppclass IHeadRefinementFactory:
 
-        unique_ptr[IHeadRefinement] create()
+        unique_ptr[IHeadRefinement] create(const RangeIndexVector& labelIndices)
+
+        unique_ptr[IHeadRefinement] create(const DenseIndexVector& labelIndices)
 
 
     cdef cppclass SingleLabelHeadRefinementFactoryImpl(IHeadRefinementFactory):
