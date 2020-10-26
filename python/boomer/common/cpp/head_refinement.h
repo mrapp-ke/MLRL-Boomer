@@ -81,11 +81,24 @@ class IHeadRefinementFactory {
         virtual ~IHeadRefinementFactory() { };
 
         /**
-         * Creates and returns a new object of type `IHeadRefinement`.
+         * Creates and returns a new object of type `IHeadRefinement` that allows to find the best head considering all
+         * available labels.
          *
-         * @return An unique pointer to an object of type `IHeadRefinement` that has been created
+         * @param labelIndices  A reference to an object of type `RangeIndexVector` that provides access to the indices
+         *                      of the labels that should be considered
+         * @return              An unique pointer to an object of type `IHeadRefinement` that has been created
          */
-        virtual std::unique_ptr<IHeadRefinement> create() const = 0;
+        virtual std::unique_ptr<IHeadRefinement> create(const RangeIndexVector& labelIndices) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IHeadRefinement` that allows to find the best head considering only
+         * a subset of the available labels.
+         *
+         * @param labelIndices  A reference to an object of type `DenseIndexVector` that provides access to the indices
+         *                      of the labels that should be considered
+         * @return              An unique pointer to an object of type `IHeadRefinement` that has been created
+         */
+        virtual std::unique_ptr<IHeadRefinement> create(const DenseIndexVector& labelIndices) const = 0;
 
 };
 
@@ -112,7 +125,9 @@ class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFacto
 
     public:
 
-        std::unique_ptr<IHeadRefinement> create() const override;
+        std::unique_ptr<IHeadRefinement> create(const RangeIndexVector& labelIndices) const override;
+
+        std::unique_ptr<IHeadRefinement> create(const DenseIndexVector& labelIndices) const override;
 
 };
 
@@ -139,6 +154,8 @@ class FullHeadRefinementFactoryImpl : virtual public IHeadRefinementFactory {
 
     public:
 
-        std::unique_ptr<IHeadRefinement> create() const override;
+        std::unique_ptr<IHeadRefinement> create(const RangeIndexVector& labelIndices) const override;
+
+        std::unique_ptr<IHeadRefinement> create(const DenseIndexVector& labelIndices) const override;
 
 };
