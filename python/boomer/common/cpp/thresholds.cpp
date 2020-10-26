@@ -264,9 +264,10 @@ uint32 AbstractThresholds::getNumLabels() const {
     return statisticsPtr_->getNumCols();
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
-                                                                const IWeightVector& weights)
-    : thresholds_(thresholds), weights_(weights) {
+template<class T>
+ExactThresholdsImpl::ThresholdsSubsetImpl<T>::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
+                                                                   const T& labelIndices, const IWeightVector& weights)
+    : thresholds_(thresholds), labelIndices_(labelIndices), weights_(weights) {
     sumOfWeights_ = weights.getSumOfWeights();
     uint32 numExamples = thresholds.getNumRows();
     coveredExamplesMask_ = new uint32[numExamples]{0};
@@ -274,11 +275,14 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsI
     numRefinements_ = 0;
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
+template<class T>
+ExactThresholdsImpl::ThresholdsSubsetImpl<T>::~ThresholdsSubsetImpl() {
     delete[] coveredExamplesMask_;
 }
 
-std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(uint32 featureIndex) {
+template<class T>
+std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl<T>::createRuleRefinement(
+        uint32 featureIndex) {
     // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
     FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
@@ -296,7 +300,8 @@ std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::crea
                                                      featureIndex, nominal, std::move(callbackPtr));
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
+template<class T>
+void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyRefinement(Refinement& refinement) {
     numRefinements_++;
     sumOfWeights_ = refinement.coveredWeights;
 
@@ -327,7 +332,8 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refi
                                                         *thresholds_.statisticsPtr_, weights_);
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(Refinement& refinement) const {
+template<class T>
+void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinement& refinement) const {
     PredictionCandidate& head = *refinement.headPtr;
     uint32 numLabelIndices = head.numPredictions_;
     const uint32* labelIndices = head.labelIndices_;
@@ -351,7 +357,8 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(Refinement
     }
 }
 
-void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction) {
+template<class T>
+void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyPrediction(const Prediction& prediction) {
     uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -361,13 +368,15 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction
     }
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(ThresholdsSubsetImpl& thresholdsSubset,
-                                                              uint32 featureIndex)
+template<class T>
+ExactThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::Callback(ThresholdsSubsetImpl<T>& thresholdsSubset,
+                                                                 uint32 featureIndex)
     : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
 
 }
 
-std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::get() {
+template<class T>
+std::unique_ptr<typename ExactThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::Result> ExactThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::get() {
     auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
     CacheEntry& cacheEntry = cacheFilteredIterator->second;
     FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
@@ -392,7 +401,7 @@ std::unique_ptr<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> Exa
         featureVector = cacheEntry.featureVectorPtr.get();
     }
 
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>(
+    return std::make_unique<typename ExactThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::Result>(
         *thresholdsSubset_.thresholds_.statisticsPtr_, *featureVector);
 }
 
@@ -407,21 +416,24 @@ ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> feature
 std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights,
                                                                      const RangeIndexVector& labelIndices) {
     updateSampledStatistics(*statisticsPtr_, weights);
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weights);
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl<RangeIndexVector>>(*this, labelIndices, weights);
 }
 
 std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights,
                                                                      const DenseIndexVector& labelIndices) {
     updateSampledStatistics(*statisticsPtr_, weights);
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weights);
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl<DenseIndexVector>>(*this, labelIndices, weights);
 }
 
-ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds)
-    : thresholds_(thresholds) {
+template<class T>
+ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds,
+                                                                         const T& labelIndices)
+    : thresholds_(thresholds), labelIndices_(labelIndices) {
 
 }
 
-std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
+template<class T>
+std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::createRuleRefinement(
         uint32 featureIndex) {
     thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
@@ -430,25 +442,30 @@ std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl
                                                            std::move(callbackPtr));
 }
 
-void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
+template<class T>
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::applyRefinement(Refinement& refinement) {
 
 }
 
-void ApproximateThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(Refinement& refinement) const {
+template<class T>
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinement& refinement) const {
 
 }
 
-void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction) {
+template<class T>
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::applyPrediction(const Prediction& prediction) {
 
 }
 
-ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(
-        ApproximateThresholdsImpl::ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex)
+template<class T>
+ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::Callback(ThresholdsSubsetImpl<T>& thresholdsSubset,
+                                                                       uint32 featureIndex)
     : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
 
 }
 
-std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::get() {
+template<class T>
+std::unique_ptr<typename ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::get() {
     auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
     BinCacheEntry& binCacheEntry = cacheIterator->second;
 
@@ -463,12 +480,13 @@ std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Resul
         binCacheEntry.statisticsPtr = std::move(histogramBuilderPtr_->build());
     }
 
-    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>(
+    return std::make_unique<typename ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::Result>(
         *binCacheEntry.statisticsPtr, *binCacheEntry.binVectorPtr);
 }
 
-void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
-                                                                            const FeatureVector::Entry& entry) {
+template<class T>
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::Callback::onBinUpdate(uint32 binIndex,
+                                                                               const FeatureVector::Entry& entry) {
     BinVector::iterator binIterator = currentBinVector_->begin();
     binIterator[binIndex].numExamples += 1;
     float32 currentValue = entry.value;
@@ -497,11 +515,11 @@ ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMat
 std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights,
                                                                            const RangeIndexVector& labelIndices) {
     updateSampledStatistics(*statisticsPtr_, weights);
-    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this);
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl<RangeIndexVector>>(*this, labelIndices);
 }
 
 std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights,
                                                                            const DenseIndexVector& labelIndices) {
     updateSampledStatistics(*statisticsPtr_, weights);
-    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this);
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl<DenseIndexVector>>(*this, labelIndices);
 }
