@@ -51,6 +51,7 @@ typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
 
 template class DenseVector<uint32>;
 template class DenseVector<float64>;
+template class DenseVector<Bin>;
 
 DenseIndexVector::DenseIndexVector(uint32 numElements)
     : DenseVector<uint32>(numElements) {

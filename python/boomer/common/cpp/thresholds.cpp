@@ -400,3 +400,94 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::unique
     return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(headRefinementPtr),
                                                                        std::move(weightsPtr));
 }
+
+ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(
+        ApproximateThresholdsImpl& thresholds, std::unique_ptr<IHeadRefinement> headRefinementPtr)
+    : thresholds_(thresholds), headRefinementPtr_(std::move(headRefinementPtr)) {
+
+}
+
+std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
+        uint32 featureIndex) {
+    thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
+    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
+    return std::make_unique<ApproximateRuleRefinementImpl>(*headRefinementPtr_, featureIndex, std::move(callbackPtr));
+}
+
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
+
+}
+
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::recalculatePrediction(Refinement& refinement) const {
+
+}
+
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyPrediction(const Prediction& prediction) {
+
+}
+
+ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Callback(
+        ApproximateThresholdsImpl::ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex)
+    : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
+
+}
+
+std::unique_ptr<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result> ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::get() {
+    auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+    BinCacheEntry& binCacheEntry = cacheIterator->second;
+
+    if (binCacheEntry.binVectorPtr.get() == nullptr) {
+        std::unique_ptr<FeatureVector> featureVectorPtr;
+        thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, featureVectorPtr);
+        uint32 numBins = thresholdsSubset_.thresholds_.numBins_;
+        binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVector>(numBins, true));
+        histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+        currentBinVector_ = binCacheEntry.binVectorPtr.get();
+        thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
+        binCacheEntry.statisticsPtr = std::move(histogramBuilderPtr_->build());
+    }
+
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::Result>(
+        *binCacheEntry.statisticsPtr, *binCacheEntry.binVectorPtr);
+}
+
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl::Callback::onBinUpdate(uint32 binIndex,
+                                                                            const FeatureVector::Entry& entry) {
+    BinVector::iterator binIterator = currentBinVector_->begin();
+    binIterator[binIndex].numExamples += 1;
+    float32 currentValue = entry.value;
+
+    if (currentValue < binIterator[binIndex].minValue) {
+        binIterator[binIndex].minValue = currentValue;
+    }
+
+    if (binIterator[binIndex].maxValue < currentValue) {
+        binIterator[binIndex].maxValue = currentValue;
+    }
+
+    histogramBuilderPtr_->onBinUpdate(binIndex, entry);
+}
+
+ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                                                     std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                                     std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                                     std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
+                                                     std::shared_ptr<IBinning> binningPtr, uint32 numBins)
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr),
+      binningPtr_(binningPtr), numBins_(numBins) {
+
+}
+
+std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(std::unique_ptr<IWeightVector> weightsPtr) {
+    //TODO: Vereinheitlichen. Vermerk: ExactThresholdsImpl::createSubset
+    uint32 numExamples = statisticsPtr_->getNumRows();
+    statisticsPtr_->resetSampledStatistics();
+
+    for (uint32 r = 0; r < numExamples; r++) {
+        uint32 weight = weightsPtr->getValue(r);
+        statisticsPtr_->addSampledStatistic(r, weight);
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = headRefinementFactoryPtr_->create();
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(headRefinementPtr));
+}

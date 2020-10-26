@@ -2,11 +2,13 @@
  * Implements classes that provide access to statistics about the labels of training examples.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
 #include "rule_evaluation.h"
 #include "predictions.h"
+#include "binning.h"
 #include <memory>
 
 
@@ -153,6 +155,26 @@ class AbstractStatistics : virtual public IMatrix {
     public:
 
         /**
+         * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
+         * correspond to the same bins.
+         */
+        class IHistogramBuilder : virtual public IBinningObserver {
+
+            public:
+
+                virtual ~IHistogramBuilder() { };
+
+                /**
+                 * Creates and returns a new instance of the class `AbstractStatistics` that stores the histogram that
+                 * has been built.
+                 *
+                 * @return An unique pointer to an object of type `AbstractStatistics` that has been created
+                 */
+                virtual std::unique_ptr<AbstractStatistics> build() const = 0;
+
+        };
+
+        /**
          * @param numStatistics The number of statistics
          */
         AbstractStatistics(uint32 numStatistics, uint32 numLabels);
@@ -251,6 +273,14 @@ class AbstractStatistics : virtual public IMatrix {
          *                          newly induced rule
          */
         virtual void applyPrediction(uint32 statisticIndex, const Prediction& prediction) = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on
+         * the statistics.
+         *
+         * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
+         */
+        virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const = 0;
 
         uint32 getNumRows() const override;
 

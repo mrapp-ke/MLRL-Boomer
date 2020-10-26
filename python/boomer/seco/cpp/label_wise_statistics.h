@@ -153,6 +153,8 @@ namespace seco {
 
             void applyPrediction(uint32 statisticIndex, const Prediction& prediction) override;
 
+            std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override;
+
     };
 
     /**
