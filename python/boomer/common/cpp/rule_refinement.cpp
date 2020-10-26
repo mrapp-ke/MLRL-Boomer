@@ -39,7 +39,8 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
     uint32 numElements = featureVector.getNumElements();
 
     // Create a new, empty subset of the statistics...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(numLabelIndices, labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics, numLabelIndices,
+                                                                                        labelIndices);
 
     // In the following, we start by processing all examples with feature values < 0...
     uint32 sumOfWeights = 0;
@@ -500,7 +501,8 @@ void ApproximateRuleRefinementImpl<T>::findRefinement(const PredictionCandidate*
     uint32 numBins = binVector.getNumElements();
 
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(numLabelIndices, labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics, numLabelIndices,
+                                                                                        labelIndices);
 
     // Search for the first non-empty bin...
     uint32 r = 0;

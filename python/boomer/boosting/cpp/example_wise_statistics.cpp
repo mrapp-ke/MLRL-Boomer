@@ -218,7 +218,19 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticInde
     }
 }
 
-std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
+std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(const RangeIndexVector& indexVector,
+                                                                                uint32 numLabelIndices,
+                                                                                const uint32* labelIndices) const {
+    uint32 numLabels = this->getNumCols();
+    uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
+    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
+                                                                                                      labelIndices);
+    return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
+                                                                                  numPredictions, labelIndices);
+}
+
+std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(const DenseIndexVector& indexVector,
+                                                                                uint32 numLabelIndices,
                                                                                 const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;

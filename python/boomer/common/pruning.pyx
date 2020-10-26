@@ -4,12 +4,13 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
+from boomer.common._indices cimport RangeIndexVector
 from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport IStatisticsSubset
 
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport unique_ptr, make_unique
 
 from cython.operator cimport dereference, postincrement
 
@@ -87,8 +88,12 @@ cdef class IREP(Pruning):
 
         # Reset the statistics and create a new, empty subset...
         statistics.resetSampledStatistics()
-        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr = statistics.createSubset(num_predictions,
-                                                                                           label_indices)
+
+        # TODO Use vector that is given as an argument
+        cdef unique_ptr[RangeIndexVector] label_indices_ptr = make_unique[RangeIndexVector](num_predictions)
+
+        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr = label_indices_ptr.get().createSubset(
+            dereference(statistics), num_predictions, label_indices)
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -133,7 +138,8 @@ cdef class IREP(Pruning):
             num_indexed_values = dereference(indexed_array).numElements
 
             # Create a new, empty subset of the statistics when processing a new condition...
-            statistics_subset_ptr = statistics.createSubset(num_predictions, label_indices)
+            statistics_subset_ptr = label_indices_ptr.get().createSubset(dereference(statistics), num_predictions,
+                                                                         label_indices)
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)
