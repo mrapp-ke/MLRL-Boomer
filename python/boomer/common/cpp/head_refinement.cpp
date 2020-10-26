@@ -45,10 +45,6 @@ bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead
     return false;
 }
 
-std::unique_ptr<PredictionCandidate> SingleLabelHeadRefinementImpl::pollHead() {
-    // TODO
-}
-
 const EvaluatedPrediction& SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
                                                                               bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
@@ -100,10 +96,6 @@ bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::
     }
 
     return false;
-}
-
-std::unique_ptr<PredictionCandidate> FullHeadRefinementImpl::pollHead() {
-    // TODO
 }
 
 const EvaluatedPrediction& FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,

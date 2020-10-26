@@ -121,10 +121,6 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
     return result;
 }
 
-std::unique_ptr<PredictionCandidate> PartialHeadRefinementImpl::pollHead() {
-    // TODO
-}
-
 const EvaluatedPrediction& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
                                                                           bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
