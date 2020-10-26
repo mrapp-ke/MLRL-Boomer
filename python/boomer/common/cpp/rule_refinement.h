@@ -117,7 +117,7 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
-        IHeadRefinement& headRefinement_;
+        std::unique_ptr<IHeadRefinement> headRefinementPtr_;
 
         const IWeightVector& weights_;
 
@@ -134,8 +134,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
     public:
 
         /**
-         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
-         *                          head of refined rules
+         * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that should be used to find
+         *                          the head of refined rules
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
          *                          of the individual training examples
          * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
@@ -145,8 +145,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
          *                          allows to retrieve a feature vector for the given feature
          */
-        ExactRuleRefinementImpl(IHeadRefinement& headRefinement, const IWeightVector& weights, uint32 totalSumOfWeights,
-                                uint32 featureIndex, bool nominal,
+        ExactRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr, const IWeightVector& weights,
+                                uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
         void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
