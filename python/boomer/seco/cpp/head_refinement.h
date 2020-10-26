@@ -21,8 +21,6 @@ namespace seco {
 
             std::shared_ptr<ILiftFunction> liftFunctionPtr_;
 
-            std::unique_ptr<PredictionCandidate> headPtr_;
-
         public:
 
             /**
