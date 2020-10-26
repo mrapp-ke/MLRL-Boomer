@@ -13,17 +13,20 @@ bool Refinement::isBetterThan(const Refinement& another) const {
     return false;
 }
 
-ExactRuleRefinementImpl::ExactRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr,
-                                                 const IWeightVector& weights, uint32 totalSumOfWeights,
-                                                 uint32 featureIndex, bool nominal,
-                                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
-    : headRefinementPtr_(std::move(headRefinementPtr)), weights_(weights), totalSumOfWeights_(totalSumOfWeights),
-      featureIndex_(featureIndex), nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+template<class T>
+ExactRuleRefinementImpl<T>::ExactRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr,
+                                                    const T& labelIndices, const IWeightVector& weights,
+                                                    uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                                                    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
+    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), weights_(weights),
+      totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex), nominal_(nominal),
+      callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-void ExactRuleRefinementImpl::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                             const uint32* labelIndices) {
+template<class T>
+void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                                const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     const PredictionCandidate* bestHead = currentHead;
@@ -464,20 +467,23 @@ void ExactRuleRefinementImpl::findRefinement(const PredictionCandidate* currentH
     refinementPtr_ = std::move(refinementPtr);
 }
 
-std::unique_ptr<Refinement> ExactRuleRefinementImpl::pollRefinement() {
+template<class T>
+std::unique_ptr<Refinement> ExactRuleRefinementImpl<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }
 
-ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
-        std::unique_ptr<IHeadRefinement> headRefinementPtr, uint32 featureIndex,
+template<class T>
+ApproximateRuleRefinementImpl<T>::ApproximateRuleRefinementImpl(
+        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex,
         std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
-    : headRefinementPtr_(std::move(headRefinementPtr)), featureIndex_(featureIndex),
+    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), featureIndex_(featureIndex),
       callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-void ApproximateRuleRefinementImpl::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                                   const uint32* labelIndices) {
+template<class T>
+void ApproximateRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                                      const uint32* labelIndices) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     refinementPtr->start = 0;
@@ -547,6 +553,7 @@ void ApproximateRuleRefinementImpl::findRefinement(const PredictionCandidate* cu
     refinementPtr_ = std::move(refinementPtr);
 }
 
-std::unique_ptr<Refinement> ApproximateRuleRefinementImpl::pollRefinement() {
+template<class T>
+std::unique_ptr<Refinement> ApproximateRuleRefinementImpl<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }
