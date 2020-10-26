@@ -469,9 +469,10 @@ std::unique_ptr<Refinement> ExactRuleRefinementImpl::pollRefinement() {
 }
 
 ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
-        IHeadRefinement& headRefinement, uint32 featureIndex,
+        std::unique_ptr<IHeadRefinement> headRefinementPtr, uint32 featureIndex,
         std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
-    : headRefinement_(headRefinement), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
+    : headRefinementPtr_(std::move(headRefinementPtr)), featureIndex_(featureIndex),
+      callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -510,8 +511,8 @@ void ApproximateRuleRefinementImpl::findRefinement(const PredictionCandidate* cu
         if (numExamples > 0) {
             float32 currentValue = iterator[r].minValue;
 
-            bool foundBetterHead = headRefinement_.findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                            *statisticsSubsetPtr, false, false);
+            bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                                *statisticsSubsetPtr, false, false);
 
             if (foundBetterHead) {
                 bestHead = refinementPtr->headPtr.get();
@@ -523,8 +524,8 @@ void ApproximateRuleRefinementImpl::findRefinement(const PredictionCandidate* cu
                 refinementPtr->covered = true;
             }
 
-            foundBetterHead = headRefinement_.findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                       *statisticsSubsetPtr, true, false);
+            foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                           *statisticsSubsetPtr, true, false);
 
             if (foundBetterHead) {
                 bestHead = refinementPtr->headPtr.get();
