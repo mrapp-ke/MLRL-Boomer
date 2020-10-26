@@ -400,9 +400,8 @@ std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(std::unique
     return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(weightsPtr));
 }
 
-ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(
-        ApproximateThresholdsImpl& thresholds, std::unique_ptr<IHeadRefinement> headRefinementPtr)
-    : thresholds_(thresholds), headRefinementPtr_(std::move(headRefinementPtr)) {
+ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds)
+    : thresholds_(thresholds) {
 
 }
 
@@ -410,7 +409,9 @@ std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl
         uint32 featureIndex) {
     thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-    return std::make_unique<ApproximateRuleRefinementImpl>(*headRefinementPtr_, featureIndex, std::move(callbackPtr));
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create();
+    return std::make_unique<ApproximateRuleRefinementImpl>(std::move(headRefinementPtr), featureIndex,
+                                                           std::move(callbackPtr));
 }
 
 void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
@@ -487,6 +488,5 @@ std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(std::
         statisticsPtr_->addSampledStatistic(r, weight);
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = headRefinementFactoryPtr_->create();
-    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this, std::move(headRefinementPtr));
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this);
 }

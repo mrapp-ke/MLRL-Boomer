@@ -165,7 +165,7 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
-        IHeadRefinement& headRefinement_;
+        std::unique_ptr<IHeadRefinement> headRefinementPtr_;
 
         uint32 featureIndex_;
 
@@ -176,13 +176,13 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
     public:
 
         /**
-         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
-         *                          head of refined rules
+         * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that should be used to find
+         *                          the head of refined rules
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that
          *                          allows to retrieve the bins for a certain feature
          */
-        ApproximateRuleRefinementImpl(IHeadRefinement& headRefinement, uint32 featureIndex,
+        ApproximateRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr, uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
         void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
