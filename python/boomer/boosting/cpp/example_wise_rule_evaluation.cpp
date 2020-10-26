@@ -119,7 +119,13 @@ RegularizedExampleWiseRuleEvaluationFactoryImpl::RegularizedExampleWiseRuleEvalu
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactoryImpl::create(
-        uint32 numLabelIndices, const uint32* labelIndices) const {
+        const RangeIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
+    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl>(numLabelIndices, labelIndices,
+                                                                      l2RegularizationWeight_, blasPtr_, lapackPtr_);
+}
+
+std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactoryImpl::create(
+        const DenseIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
     return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl>(numLabelIndices, labelIndices,
                                                                       l2RegularizationWeight_, blasPtr_, lapackPtr_);
 }
