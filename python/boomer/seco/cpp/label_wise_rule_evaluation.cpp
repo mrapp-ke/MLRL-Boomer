@@ -71,7 +71,13 @@ HeuristicLabelWiseRuleEvaluationFactoryImpl::HeuristicLabelWiseRuleEvaluationFac
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create(
-        uint32 numLabelIndices, const uint32* labelIndices) const {
+        const RangeIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
+    return std::make_unique<HeuristicLabelWiseRuleEvaluationImpl>(numLabelIndices, labelIndices, heuristicPtr_,
+                                                                  predictMajority_);
+}
+
+std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create(
+        const DenseIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
     return std::make_unique<HeuristicLabelWiseRuleEvaluationImpl>(numLabelIndices, labelIndices, heuristicPtr_,
                                                                   predictMajority_);
 }
