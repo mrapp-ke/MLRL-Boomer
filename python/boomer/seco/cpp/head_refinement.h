@@ -33,8 +33,6 @@ namespace seco {
                           const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                           bool accumulated) const override;
 
-            std::unique_ptr<PredictionCandidate> pollHead() override;
-
             const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                            bool accumulated) const override;
 
