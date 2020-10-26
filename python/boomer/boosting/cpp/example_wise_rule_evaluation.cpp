@@ -4,23 +4,27 @@
 using namespace boosting;
 
 
-RegularizedExampleWiseRuleEvaluationImpl::RegularizedExampleWiseRuleEvaluationImpl(uint32 numPredictions,
-                                                                                   const uint32* labelIndices,
-                                                                                   float64 l2RegularizationWeight,
-                                                                                   std::shared_ptr<Blas> blasPtr,
-                                                                                   std::shared_ptr<Lapack> lapackPtr)
-    : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)),
-      numPredictions_(numPredictions), labelIndices_(labelIndices), prediction_(nullptr),
-      labelWisePrediction_(nullptr) {
+template<class T>
+RegularizedExampleWiseRuleEvaluationImpl<T>::RegularizedExampleWiseRuleEvaluationImpl(const T& indexVector,
+                                                                                      uint32 numPredictions,
+                                                                                      const uint32* labelIndices,
+                                                                                      float64 l2RegularizationWeight,
+                                                                                      std::shared_ptr<Blas> blasPtr,
+                                                                                      std::shared_ptr<Lapack> lapackPtr)
+    : indexVector_(indexVector), numPredictions_(numPredictions), labelIndices_(labelIndices),
+      l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)),
+      prediction_(nullptr), labelWisePrediction_(nullptr) {
 
 }
 
-RegularizedExampleWiseRuleEvaluationImpl::~RegularizedExampleWiseRuleEvaluationImpl() {
+template<class T>
+RegularizedExampleWiseRuleEvaluationImpl<T>::~RegularizedExampleWiseRuleEvaluationImpl() {
     delete prediction_;
     delete labelWisePrediction_;
 }
 
-const LabelWiseEvaluatedPrediction& RegularizedExampleWiseRuleEvaluationImpl::calculateLabelWisePrediction(
+template<class T>
+const LabelWiseEvaluatedPrediction& RegularizedExampleWiseRuleEvaluationImpl<T>::calculateLabelWisePrediction(
         const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
         float64* sumsOfHessians, bool uncovered) {
     if (labelWisePrediction_ == nullptr) {
@@ -63,7 +67,8 @@ const LabelWiseEvaluatedPrediction& RegularizedExampleWiseRuleEvaluationImpl::ca
     return *labelWisePrediction_;
 }
 
-const EvaluatedPrediction& RegularizedExampleWiseRuleEvaluationImpl::calculateExampleWisePrediction(
+template<class T>
+const EvaluatedPrediction& RegularizedExampleWiseRuleEvaluationImpl<T>::calculateExampleWisePrediction(
         const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
         float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians, int dsysvLwork, float64* dsysvTmpArray1,
         int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray, bool uncovered) {
@@ -120,12 +125,16 @@ RegularizedExampleWiseRuleEvaluationFactoryImpl::RegularizedExampleWiseRuleEvalu
 
 std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactoryImpl::create(
         const RangeIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
-    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl>(numLabelIndices, labelIndices,
-                                                                      l2RegularizationWeight_, blasPtr_, lapackPtr_);
+    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl<RangeIndexVector>>(indexVector, numLabelIndices,
+                                                                                        labelIndices,
+                                                                                        l2RegularizationWeight_,
+                                                                                        blasPtr_, lapackPtr_);
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactoryImpl::create(
         const DenseIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
-    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl>(numLabelIndices, labelIndices,
-                                                                      l2RegularizationWeight_, blasPtr_, lapackPtr_);
+    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl<DenseIndexVector>>(indexVector, numLabelIndices,
+                                                                                        labelIndices,
+                                                                                        l2RegularizationWeight_,
+                                                                                        blasPtr_, lapackPtr_);
 }
