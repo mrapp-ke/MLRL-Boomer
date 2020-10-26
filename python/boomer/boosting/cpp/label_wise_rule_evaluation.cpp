@@ -4,15 +4,18 @@
 using namespace boosting;
 
 
-RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(uint32 numPredictions,
-                                                                               const uint32* labelIndices,
-                                                                               float64 l2RegularizationWeight)
-    : l2RegularizationWeight_(l2RegularizationWeight), labelIndices_(labelIndices),
+template<class T>
+RegularizedLabelWiseRuleEvaluationImpl<T>::RegularizedLabelWiseRuleEvaluationImpl(const T& indexVector,
+                                                                                  uint32 numPredictions,
+                                                                                  const uint32* labelIndices,
+                                                                                  float64 l2RegularizationWeight)
+    : indexVector_(indexVector), labelIndices_(labelIndices), l2RegularizationWeight_(l2RegularizationWeight),
       prediction_(LabelWiseEvaluatedPrediction(numPredictions)) {
 
 }
 
-const LabelWiseEvaluatedPrediction& RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
+template<class T>
+const LabelWiseEvaluatedPrediction& RegularizedLabelWiseRuleEvaluationImpl<T>::calculateLabelWisePrediction(
         const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
         float64* sumsOfHessians, bool uncovered) {
     uint32 numPredictions = prediction_.getNumElements();
@@ -57,12 +60,14 @@ RegularizedLabelWiseRuleEvaluationFactoryImpl::RegularizedLabelWiseRuleEvaluatio
 
 std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
         const RangeIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
-    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl>(numLabelIndices, labelIndices,
-                                                                    l2RegularizationWeight_);
+    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<RangeIndexVector>>(indexVector, numLabelIndices,
+                                                                                      labelIndices,
+                                                                                      l2RegularizationWeight_);
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
         const DenseIndexVector& indexVector, uint32 numLabelIndices, const uint32* labelIndices) const {
-    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl>(numLabelIndices, labelIndices,
-                                                                    l2RegularizationWeight_);
+    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<DenseIndexVector>>(indexVector, numLabelIndices,
+                                                                                      labelIndices,
+                                                                                      l2RegularizationWeight_);
 }
