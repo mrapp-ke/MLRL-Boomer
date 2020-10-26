@@ -12,15 +12,7 @@
  * Stores the scores that are predicted by a rule, as well as a quality score that assesses the overall quality of the
  * rule.
  */
-class EvaluatedPrediction : virtual public IVector {
-
-    protected:
-
-        uint32 numElements_;
-
-    private:
-
-        float64* scores_;
+class EvaluatedPrediction : public DenseVector<float64> {
 
     public:
 
@@ -29,46 +21,10 @@ class EvaluatedPrediction : virtual public IVector {
          */
         EvaluatedPrediction(uint32 numElements);
 
-        ~EvaluatedPrediction();
-
-        typedef float64* iterator;
-
-        typedef const float64* const_iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the predicted scores.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the predicted scores.
-         *
-         * @return An `iterator` to the end
-         */
-        iterator end();
-
-        /**
-         * Returns a `const_iterator` to the beginning of the predicted scores.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const;
-
-        /**
-         * Returns a `const_iterator` to the end of the predicted scores.
-         *
-         * @return A `const_iterator` to the end
-         */
-        const_iterator cend() const;
-
         /**
          * A score that assesses the overall quality of the prediction.
          */
         float64 overallQualityScore;
-
-        uint32 getNumElements() const override;
 
 };
 

@@ -2,32 +2,8 @@
 
 
 EvaluatedPrediction::EvaluatedPrediction(uint32 numElements)
-    : numElements_(numElements), scores_(new float64[numElements]) {
+    : DenseVector<float64>(numElements) {
 
-}
-
-EvaluatedPrediction::~EvaluatedPrediction() {
-    delete[] scores_;
-}
-
-uint32 EvaluatedPrediction::getNumElements() const {
-    return numElements_;
-}
-
-EvaluatedPrediction::iterator EvaluatedPrediction::begin() {
-    return &scores_[0];
-}
-
-EvaluatedPrediction::iterator EvaluatedPrediction::end() {
-    return &scores_[numElements_];
-}
-
-EvaluatedPrediction::const_iterator EvaluatedPrediction::cbegin() const {
-    return &scores_[0];
-}
-
-EvaluatedPrediction::const_iterator EvaluatedPrediction::cend() const {
-    return &scores_[numElements_];
 }
 
 LabelWiseEvaluatedPrediction::LabelWiseEvaluatedPrediction(uint32 numElements)
@@ -44,7 +20,7 @@ LabelWiseEvaluatedPrediction::quality_score_iterator LabelWiseEvaluatedPredictio
 }
 
 LabelWiseEvaluatedPrediction::quality_score_iterator LabelWiseEvaluatedPrediction::quality_scores_end() {
-    return &qualityScores_[numElements_];
+    return &qualityScores_[this->getNumElements()];
 }
 
 LabelWiseEvaluatedPrediction::quality_score_const_iterator LabelWiseEvaluatedPrediction::quality_scores_cbegin() const {
@@ -52,5 +28,5 @@ LabelWiseEvaluatedPrediction::quality_score_const_iterator LabelWiseEvaluatedPre
 }
 
 LabelWiseEvaluatedPrediction::quality_score_const_iterator LabelWiseEvaluatedPrediction::quality_scores_cend() const {
-    return &qualityScores_[numElements_];
+    return &qualityScores_[this->getNumElements()];
 }
