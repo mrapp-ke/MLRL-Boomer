@@ -95,13 +95,10 @@ namespace boosting {
                      * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
-                     * @param numPredictions    The number of elements in the array `labelIndices`
-                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
-                     *                          representing the indices of the labels that should be included in the
-                     *                          subset or a null pointer, if all labels should be included
                      * @param indexVector       A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
+                    // TODO Remove arguments `numPredictions` and `labelIndices`
                     StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                          std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
                                          const T& indexVector, uint32 numPredictions, const uint32* labelIndices);
