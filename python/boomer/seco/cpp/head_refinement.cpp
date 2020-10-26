@@ -37,12 +37,12 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
     LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
     LabelWiseEvaluatedPrediction::quality_score_const_iterator qualityScoreIterator =
         prediction.quality_scores_cbegin();
-    uint32* sortedIndices = NULL;
+    uint32* sortedIndices = nullptr;
     float64 sumOfQualityScores = 0;
     uint32 bestNumPredictions = 0;
     float64 bestQualityScore = 0;
 
-    if (labelIndices == NULL) {
+    if (labelIndices == nullptr) {
         sortedIndices = argsort(qualityScoreIterator, numPredictions);
         float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
@@ -69,19 +69,17 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
         bestNumPredictions = numPredictions;
     }
 
-    if (bestHead == NULL || bestQualityScore < bestHead->overallQualityScore_) {
+    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore_) {
         result = true;
-        PredictionCandidate* recyclableHead = headPtr.get();
 
-        if (recyclableHead == NULL) {
-            // Create a new `PredictionCandidate`...
+        if (headPtr.get() == nullptr) {
             uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
             float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
 
-            if (labelIndices == NULL) {
+            if (labelIndices == nullptr) {
                 for (uint32 c = 0; c < bestNumPredictions; c++) {
                     uint32 i = sortedIndices[c];
-                    candidateLabelIndices[c] = labelIndices == NULL ? i : labelIndices[i];
+                    candidateLabelIndices[c] = labelIndices == nullptr ? i : labelIndices[i];
                     candidatePredictedScores[c] = valueIterator[i];
                 }
             } else {
@@ -93,31 +91,30 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
 
             headPtr = std::make_unique<PredictionCandidate>(bestNumPredictions, candidateLabelIndices,
                                                             candidatePredictedScores, bestQualityScore);
-        } else {
-            // Modify the `recyclableHead`...
-            if (recyclableHead->numPredictions_ != bestNumPredictions) {
-                recyclableHead->numPredictions_ = bestNumPredictions;
-                recyclableHead->labelIndices_ = (uint32*) realloc(recyclableHead->labelIndices_,
-                                                                  bestNumPredictions * sizeof(uint32));
-                recyclableHead->predictedScores_ = (float64*) realloc(recyclableHead->predictedScores_,
-                                                                      bestNumPredictions * sizeof(float64));
-            }
-
-            if (labelIndices == NULL) {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    uint32 i = sortedIndices[c];
-                    recyclableHead->labelIndices_[c] = labelIndices == NULL ? i : labelIndices[i];
-                    recyclableHead->predictedScores_[c] = valueIterator[i];
-                }
-            } else {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    recyclableHead->labelIndices_[c] = labelIndices[c];
-                    recyclableHead->predictedScores_[c] = valueIterator[c];
-                }
-            }
-
-            recyclableHead->overallQualityScore_ = bestQualityScore;
+        } else if (headPtr->numPredictions_ != bestNumPredictions) {
+            headPtr->numPredictions_ = bestNumPredictions;
+            headPtr->labelIndices_ = (uint32*) realloc(headPtr->labelIndices_, bestNumPredictions * sizeof(uint32));
+            headPtr->predictedScores_ = (float64*) realloc(headPtr->predictedScores_,
+                                                           bestNumPredictions * sizeof(float64));
         }
+
+        float64* headValueIterator = headPtr->predictedScores_;
+        uint32* headIndexIterator = headPtr->labelIndices_;
+
+        if (labelIndices == nullptr) {
+            for (uint32 c = 0; c < bestNumPredictions; c++) {
+                uint32 i = sortedIndices[c];
+                headIndexIterator[c] = labelIndices == nullptr ? i : labelIndices[i];
+                headValueIterator[c] = valueIterator[i];
+            }
+        } else {
+            for (uint32 c = 0; c < bestNumPredictions; c++) {
+                headIndexIterator[c] = labelIndices[c];
+                headValueIterator[c] = valueIterator[c];
+            }
+        }
+
+        headPtr->overallQualityScore_ = bestQualityScore;
     }
 
     delete[] sortedIndices;
