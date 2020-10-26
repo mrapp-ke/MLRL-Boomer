@@ -131,6 +131,38 @@ const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl:
                                                               uncovered);
 }
 
+DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(
+        const DenseExampleWiseStatisticsImpl& statistics, uint32 numBins)
+    : statistics_(statistics), numBins_(numBins) {
+    uint32 numGradients = statistics.getNumCols();
+    uint32 numHessians = linalg::triangularNumber(numGradients);
+    gradients_ = (float64*) calloc((numBins_ * numGradients), sizeof(float64));
+    hessians_ = (float64*) calloc((numBins_ * numHessians), sizeof(float64));
+}
+
+void DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex,
+                                                                       const FeatureVector::Entry& entry) {
+    uint32 numLabels = statistics_.getNumCols();
+    uint32 index = entry.index;
+    uint32 offset = index * numLabels;
+    uint32 gradientOffset = binIndex * numLabels;
+    uint32 hessianOffset = binIndex * linalg::triangularNumber(numLabels);
+
+    for(uint32 c = 0; c < numLabels; c++) {
+        float64 gradient = statistics_.gradients_[offset + c];
+        float64 hessian = statistics_.hessians_[offset + c];
+        gradients_[gradientOffset + c] += gradient;
+        hessians_[hessianOffset + c] += hessian;
+    }
+}
+
+std::unique_ptr<AbstractStatistics> DenseExampleWiseStatisticsImpl::HistogramBuilderImpl::build() const {
+    return std::make_unique<DenseExampleWiseStatisticsImpl>(statistics_.lossFunctionPtr_,
+                                                            statistics_.ruleEvaluationFactoryPtr_,
+                                                            statistics_.lapackPtr_, statistics_.labelMatrixPtr_,
+                                                            gradients_, hessians_, statistics_.currentScores_);
+}
+
 DenseExampleWiseStatisticsImpl::DenseExampleWiseStatisticsImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, std::shared_ptr<Lapack> lapackPtr,
@@ -214,6 +246,11 @@ void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, cons
     // Update the gradients and Hessians for the example at the given index...
     lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
                                                     &gradients_[offset], &hessians_[statisticIndex * numHessians]);
+}
+
+std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseExampleWiseStatisticsImpl::buildHistogram(
+        uint32 numBins) const {
+    return std::make_unique<DenseExampleWiseStatisticsImpl::HistogramBuilderImpl>(*this, numBins);
 }
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(

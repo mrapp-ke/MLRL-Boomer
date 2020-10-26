@@ -77,6 +77,36 @@ const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubs
                                                             uncovered);
 }
 
+DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::HistogramBuilderImpl(const DenseLabelWiseStatisticsImpl& statistics,
+                                                                         uint32 numBins)
+    : statistics_(statistics), numBins_(numBins) {
+    uint32 numLabels = numBins_ * statistics.getNumCols();
+    gradients_ = (float64*) calloc(numLabels, sizeof(float64));
+    hessians_ = (float64*) calloc(numLabels, sizeof(float64));
+}
+
+void DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::onBinUpdate(uint32 binIndex,
+                                                                     const FeatureVector::Entry& entry) {
+    uint32 numLabels = statistics_.getNumCols();
+    uint32 index = entry.index;
+    uint32 offset = index * numLabels;
+    uint32 binOffset = binIndex * numLabels;
+
+    for(uint32 c = 0; c < numLabels; c++) {
+        float64 gradient = statistics_.gradients_[offset + c];
+        float64 hessian = statistics_.hessians_[offset + c];
+        gradients_[binOffset + c] += gradient;
+        hessians_[binOffset + c] += hessian;
+    }
+}
+
+std::unique_ptr<AbstractStatistics> DenseLabelWiseStatisticsImpl::HistogramBuilderImpl::build() const {
+    return std::make_unique<DenseLabelWiseStatisticsImpl>(statistics_.lossFunctionPtr_,
+                                                          statistics_.ruleEvaluationFactoryPtr_,
+                                                          statistics_.labelMatrixPtr_, gradients_, hessians_,
+                                                          statistics_.currentScores_);
+}
+
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
         std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
@@ -155,6 +185,11 @@ void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const 
         gradients_[i] = pair.first;
         hessians_[i] = pair.second;
     }
+}
+
+std::unique_ptr<AbstractStatistics::IHistogramBuilder> DenseLabelWiseStatisticsImpl::buildHistogram(
+        uint32 numBins) const {
+    return std::make_unique<DenseLabelWiseStatisticsImpl::HistogramBuilderImpl>(*this, numBins);
 }
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(

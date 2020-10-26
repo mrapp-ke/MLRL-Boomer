@@ -466,3 +466,85 @@ void ExactRuleRefinementImpl::findRefinement(const PredictionCandidate* currentH
 std::unique_ptr<Refinement> ExactRuleRefinementImpl::pollRefinement() {
     return std::move(refinementPtr_);
 }
+
+ApproximateRuleRefinementImpl::ApproximateRuleRefinementImpl(
+        IHeadRefinement& headRefinement, uint32 featureIndex,
+        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
+    : headRefinement_(headRefinement), featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
+
+}
+
+void ApproximateRuleRefinementImpl::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                                                   const uint32* labelIndices) {
+    std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
+    refinementPtr->featureIndex = featureIndex_;
+    refinementPtr->start = 0;
+    const PredictionCandidate* bestHead = currentHead;
+
+    // Invoke the callback...
+    std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
+    const AbstractStatistics& statistics = callbackResultPtr->first;
+    const BinVector& binVector = callbackResultPtr->second;
+    BinVector::const_iterator iterator = binVector.cbegin();
+    uint32 numBins = binVector.getNumElements();
+
+    // Create a new, empty subset of the current statistics when processing a new feature...
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(numLabelIndices, labelIndices);
+
+    // Search for the first non-empty bin...
+    uint32 r = 0;
+
+    while (iterator[r].numExamples == 0 && r < numBins) {
+        r++;
+    }
+
+    statisticsSubsetPtr->addToSubset(r, 1);
+    uint32 previousR = r;
+    float32 previousValue = iterator[r].maxValue;
+    uint32 numCoveredExamples = iterator[r].numExamples;
+
+    for (r = r + 1; r < numBins; r++) {
+        uint32 numExamples = iterator[r].numExamples;
+
+        if (numExamples > 0) {
+            float32 currentValue = iterator[r].minValue;
+
+            bool foundBetterHead = headRefinement_.findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                            *statisticsSubsetPtr, false, false);
+
+            if (foundBetterHead) {
+                bestHead = refinementPtr->headPtr.get();
+                refinementPtr->comparator = LEQ;
+                refinementPtr->threshold = (previousValue + currentValue) / 2.0;
+                refinementPtr->end = r;
+                refinementPtr->previous = previousR;
+                refinementPtr->coveredWeights = numCoveredExamples;
+                refinementPtr->covered = true;
+            }
+
+            foundBetterHead = headRefinement_.findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                       *statisticsSubsetPtr, true, false);
+
+            if (foundBetterHead) {
+                bestHead = refinementPtr->headPtr.get();
+                refinementPtr->comparator = GR;
+                refinementPtr->threshold = (previousValue + currentValue) / 2.0;
+                refinementPtr->end = r;
+                refinementPtr->previous = previousR;
+                refinementPtr->coveredWeights = numCoveredExamples;
+                refinementPtr->covered = false;
+            }
+
+            previousValue = iterator[r].maxValue;
+            previousR = r;
+            numCoveredExamples += numExamples;
+            statisticsSubsetPtr->addToSubset(r, 1);
+        }
+    }
+
+    refinementPtr_ = std::move(refinementPtr);
+}
+
+std::unique_ptr<Refinement> ApproximateRuleRefinementImpl::pollRefinement() {
+    return std::move(refinementPtr_);
+}

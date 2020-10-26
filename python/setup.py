@@ -24,6 +24,7 @@ sources = [
     'boomer/common/cpp/thresholds.cpp',
     'boomer/common/cpp/head_refinement.cpp',
     'boomer/common/cpp/rule_refinement.cpp',
+    'boomer/common/cpp/binning.cpp',
     'boomer/boosting/cpp/blas.cpp',
     'boomer/boosting/cpp/lapack.cpp',
     'boomer/boosting/cpp/post_processing.cpp',

@@ -2,6 +2,7 @@
  * Implements classes that allow to find the best refinement of rules.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
@@ -10,6 +11,11 @@
 #include "sub_sampling.h"
 #include "head_refinement.h"
 
+
+/**
+ * Typedef for a vector that stores bins.
+ */
+typedef DenseVector<Bin> BinVector;
 
 /**
  * Stores information about a potential refinement of a rule.
@@ -142,6 +148,42 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
         ExactRuleRefinementImpl(IHeadRefinement& headRefinement, const IWeightVector& weights, uint32 totalSumOfWeights,
                                 uint32 featureIndex, bool nominal,
                                 std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
+
+        void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
+                            const uint32* labelIndices) override;
+
+        std::unique_ptr<Refinement> pollRefinement() override;
+
+};
+
+/**
+ * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
+ * certain feature. The thresholds that may be used by the new condition result from the boundaries between the bins
+ * that have been created using a binning method.
+ */
+class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
+
+    private:
+
+        IHeadRefinement& headRefinement_;
+
+        uint32 featureIndex_;
+
+        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr_;
+
+        std::unique_ptr<Refinement> refinementPtr_;
+
+    public:
+
+        /**
+         * @param headRefinement    A reference to an object of type `IHeadRefinement` that should be used to find the
+         *                          head of refined rules
+         * @param featureIndex      The index of the feature, the new condition corresponds to
+         * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that
+         *                          allows to retrieve the bins for a certain feature
+         */
+        ApproximateRuleRefinementImpl(IHeadRefinement& headRefinement, uint32 featureIndex,
+                                      std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
         void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
                             const uint32* labelIndices) override;

@@ -2,10 +2,12 @@
  * Provides type definitions of tuples, as well as corresponding utility functions.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
 #include "arrays.h"
+#include <limits>
 
 
 /**
@@ -35,6 +37,16 @@ struct IndexedFloat32Array {
     uint32 numElements;
 };
 
+/**
+ *  A struct that stores information about the examples that are contained by a bin.
+ */
+struct Bin {
+    Bin() : numExamples(0), minValue(std::numeric_limits<float32>::max()),
+            maxValue(std::numeric_limits<float32>::min()) { };
+    uint32 numExamples;
+    float32 minValue;
+    float32 maxValue;
+};
 
 namespace tuples {
 
