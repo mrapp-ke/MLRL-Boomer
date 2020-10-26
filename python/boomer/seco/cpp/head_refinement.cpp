@@ -71,10 +71,8 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
 
     if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore_) {
         result = true;
-        PredictionCandidate* recyclableHead = headPtr.get();
 
-        if (recyclableHead == nullptr) {
-            // Create a new `PredictionCandidate`...
+        if (headPtr.get() == nullptr) {
             uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
             float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
 
@@ -93,31 +91,30 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
 
             headPtr = std::make_unique<PredictionCandidate>(bestNumPredictions, candidateLabelIndices,
                                                             candidatePredictedScores, bestQualityScore);
-        } else {
-            // Modify the `recyclableHead`...
-            if (recyclableHead->numPredictions_ != bestNumPredictions) {
-                recyclableHead->numPredictions_ = bestNumPredictions;
-                recyclableHead->labelIndices_ = (uint32*) realloc(recyclableHead->labelIndices_,
-                                                                  bestNumPredictions * sizeof(uint32));
-                recyclableHead->predictedScores_ = (float64*) realloc(recyclableHead->predictedScores_,
-                                                                      bestNumPredictions * sizeof(float64));
-            }
-
-            if (labelIndices == nullptr) {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    uint32 i = sortedIndices[c];
-                    recyclableHead->labelIndices_[c] = labelIndices == nullptr ? i : labelIndices[i];
-                    recyclableHead->predictedScores_[c] = valueIterator[i];
-                }
-            } else {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    recyclableHead->labelIndices_[c] = labelIndices[c];
-                    recyclableHead->predictedScores_[c] = valueIterator[c];
-                }
-            }
-
-            recyclableHead->overallQualityScore_ = bestQualityScore;
+        } else if (headPtr->numPredictions_ != bestNumPredictions) {
+            headPtr->numPredictions_ = bestNumPredictions;
+            headPtr->labelIndices_ = (uint32*) realloc(headPtr->labelIndices_, bestNumPredictions * sizeof(uint32));
+            headPtr->predictedScores_ = (float64*) realloc(headPtr->predictedScores_,
+                                                           bestNumPredictions * sizeof(float64));
         }
+
+        float64* headValueIterator = headPtr->predictedScores_;
+        uint32* headIndexIterator = headPtr->labelIndices_;
+
+        if (labelIndices == nullptr) {
+            for (uint32 c = 0; c < bestNumPredictions; c++) {
+                uint32 i = sortedIndices[c];
+                headIndexIterator[c] = labelIndices == nullptr ? i : labelIndices[i];
+                headValueIterator[c] = valueIterator[i];
+            }
+        } else {
+            for (uint32 c = 0; c < bestNumPredictions; c++) {
+                headIndexIterator[c] = labelIndices[c];
+                headValueIterator[c] = valueIterator[c];
+            }
+        }
+
+        headPtr->overallQualityScore_ = bestQualityScore;
     }
 
     delete[] sortedIndices;
