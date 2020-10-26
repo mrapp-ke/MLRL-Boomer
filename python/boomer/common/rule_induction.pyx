@@ -155,10 +155,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef unique_ptr[IWeightVector] weights_ptr = instance_sub_sampling.subSample(num_examples, dereference(rng))
         cdef bint instance_sub_sampling_used = weights_ptr.get().hasZeroWeights()
 
-        # Create a new subset of the given thresholds...
-        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(
-            dereference(weights_ptr.get()))
-
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels,
                                                                                                dereference(rng))
@@ -166,6 +162,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # cdef IIndexVector* label_indices = sampled_label_indices_ptr.get()
         cdef const uint32* label_indices = <const uint32*>NULL
         cdef uint32 num_predictions = 0
+
+        # Create a new subset of the given thresholds...
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = sampled_label_indices_ptr.get().createSubset(
+            dereference(thresholds), dereference(weights_ptr.get()))
 
         # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore
         # or the maximum number of conditions has been reached...

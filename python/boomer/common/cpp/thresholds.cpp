@@ -404,7 +404,14 @@ ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> feature
 
 }
 
-std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights) {
+std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights,
+                                                                     const RangeIndexVector& labelIndices) {
+    updateSampledStatistics(*statisticsPtr_, weights);
+    return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weights);
+}
+
+std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights,
+                                                                     const DenseIndexVector& labelIndices) {
     updateSampledStatistics(*statisticsPtr_, weights);
     return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weights);
 }
@@ -487,7 +494,14 @@ ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMat
 
 }
 
-std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights) {
+std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights,
+                                                                           const RangeIndexVector& labelIndices) {
+    updateSampledStatistics(*statisticsPtr_, weights);
+    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this);
+}
+
+std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights,
+                                                                           const DenseIndexVector& labelIndices) {
     updateSampledStatistics(*statisticsPtr_, weights);
     return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this);
 }
