@@ -4,6 +4,23 @@
 
 
 /**
+ * Updates the given statistics by applying the weights of the individual training examples.
+ *
+ * @param statistics    A reference to an object of type `AbstractStatistics` to be updated
+ * @param weights       A reference to an object of type `IWeightVector` that provides access to the weights of the
+ *                      individual training examples
+ */
+static inline void updateSampledStatistics(AbstractStatistics& statistics, const IWeightVector& weights) {
+    uint32 numExamples = statistics.getNumRows();
+    statistics.resetSampledStatistics();
+
+    for (uint32 r = 0; r < numExamples; r++) {
+        uint32 weight = weights.getValue(r);
+        statistics.addSampledStatistic(r, weight);
+    }
+}
+
+/**
  * Adjusts the position that separates the examples that are covered by a condition from the ones that are not covered,
  * with respect to those examples that are not contained in the current sub-sample. This requires to look back a certain
  * number of examples to see if they satisfy the new condition or not. I.e., to traverse the examples in ascending or
@@ -388,15 +405,7 @@ ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> feature
 }
 
 std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights) {
-    // Notify the statistics about the examples that are included in the sub-sample...
-    uint32 numExamples = statisticsPtr_->getNumRows();
-    statisticsPtr_->resetSampledStatistics();
-
-    for (uint32 r = 0; r < numExamples; r++) {
-        uint32 weight = weights.getValue(r);
-        statisticsPtr_->addSampledStatistic(r, weight);
-    }
-
+    updateSampledStatistics(*statisticsPtr_, weights);
     return std::make_unique<ExactThresholdsImpl::ThresholdsSubsetImpl>(*this, weights);
 }
 
@@ -479,14 +488,6 @@ ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMat
 }
 
 std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights) {
-    //TODO: Vereinheitlichen. Vermerk: ExactThresholdsImpl::createSubset
-    uint32 numExamples = statisticsPtr_->getNumRows();
-    statisticsPtr_->resetSampledStatistics();
-
-    for (uint32 r = 0; r < numExamples; r++) {
-        uint32 weight = weights.getValue(r);
-        statisticsPtr_->addSampledStatistic(r, weight);
-    }
-
+    updateSampledStatistics(*statisticsPtr_, weights);
     return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubsetImpl>(*this);
 }
