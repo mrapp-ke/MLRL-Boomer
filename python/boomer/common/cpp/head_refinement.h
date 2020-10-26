@@ -44,6 +44,7 @@ class IHeadRefinement {
          *                          statistics that have been added so far
          * @return                  True, if the head that has been found is better than `bestHead`, false otherwise
          */
+        // TODO Remove argument `labelIndices`
         virtual bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                               const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                               bool accumulated) const = 0;
@@ -104,10 +105,24 @@ class IHeadRefinementFactory {
 
 /**
  * Allows to find the best single-label head that predicts for a single label.
+ *
+ * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
+ *           for the best head
  */
+template<class T>
 class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
 
+    private:
+
+        const T& labelIndices_;
+
     public:
+
+        /**
+         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
+         *                     labels that should be considered when searching for the best head
+         */
+        SingleLabelHeadRefinementImpl(const T& labelIndices);
 
         bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
@@ -133,10 +148,24 @@ class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFacto
 
 /**
  * Allows to find the best multi-label head that predicts for all labels.
+ *
+ * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
+ *           for the best head
  */
+template<class T>
 class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
+    private:
+
+        const T& labelIndices_;
+
     public:
+
+        /**
+         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
+         *                     labels that should be considered when searching for the best head
+         */
+        FullHeadRefinementImpl(const T& labelIndices);
 
         bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,

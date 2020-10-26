@@ -2,10 +2,17 @@
 #include <cstdlib>
 
 
-bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
-                                             std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
-                                             IStatisticsSubset& statisticsSubset, bool uncovered,
-                                             bool accumulated) const {
+template<class T>
+SingleLabelHeadRefinementImpl<T>::SingleLabelHeadRefinementImpl(const T& labelIndices)
+    : labelIndices_(labelIndices) {
+
+}
+
+template<class T>
+bool SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
+                                                std::unique_ptr<PredictionCandidate>& headPtr,
+                                                const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
+                                                bool uncovered, bool accumulated) const {
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -45,24 +52,33 @@ bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead
     return false;
 }
 
-const EvaluatedPrediction& SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                              bool uncovered, bool accumulated) const {
+template<class T>
+const EvaluatedPrediction& SingleLabelHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                                 bool uncovered,
+                                                                                 bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
 
 std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
         const RangeIndexVector& labelIndices) const {
-    return std::make_unique<SingleLabelHeadRefinementImpl>();
+    return std::make_unique<SingleLabelHeadRefinementImpl<RangeIndexVector>>(labelIndices);
 }
 
 std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
         const DenseIndexVector& labelIndices) const {
-    return std::make_unique<SingleLabelHeadRefinementImpl>();
+    return std::make_unique<SingleLabelHeadRefinementImpl<DenseIndexVector>>(labelIndices);
 }
 
-bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                                      bool accumulated) const {
+template<class T>
+FullHeadRefinementImpl<T>::FullHeadRefinementImpl(const T& labelIndices)
+    : labelIndices_(labelIndices) {
+
+}
+
+template<class T>
+bool FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
+                                         std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
+                                         IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
     const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction.overallQualityScore;
 
@@ -104,15 +120,16 @@ bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::
     return false;
 }
 
-const EvaluatedPrediction& FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                       bool uncovered, bool accumulated) const {
+template<class T>
+const EvaluatedPrediction& FullHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                          bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
 }
 
 std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const RangeIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinementImpl>();
+    return std::make_unique<FullHeadRefinementImpl<RangeIndexVector>>(labelIndices);
 }
 
 std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const DenseIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinementImpl>();
+    return std::make_unique<FullHeadRefinementImpl<DenseIndexVector>>(labelIndices);
 }
