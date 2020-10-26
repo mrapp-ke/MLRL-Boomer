@@ -282,18 +282,13 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                 ApproximateThresholdsImpl& thresholds_;
 
-                std::unique_ptr<IHeadRefinement> headRefinementPtr_;
-
             public:
 
                 /**
-                 * @param thresholds        A reference to an object of type `ApproximateThresholdsImpl` that stores the
-                 *                          thresholds
-                 * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that allows to
-                 *                          create instances of the class that allows to find the heads of the rules
+                 * @param thresholds A reference to an object of type `ApproximateThresholdsImpl` that stores the
+                 *                   thresholds
                  */
-                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds,
-                                     std::unique_ptr<IHeadRefinement> headRefinementPtr);
+                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
 
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
 
@@ -328,7 +323,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
          *                                  access to the information whether individual features are nominal or not
          * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
          *                                  access to statistics about the labels of the training examples
-         * @param headRefinementPtr         A shared pointer to an object of type `IHeadRefinementFactory` that allows
+         * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
          * @param binningPtr                A shared pointer to an object of type `IBinning` that implements the binning
