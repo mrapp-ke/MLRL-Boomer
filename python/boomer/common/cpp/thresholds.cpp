@@ -338,8 +338,8 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinem
     uint32 numLabelIndices = head.numPredictions_;
     const uint32* labelIndices = head.labelIndices_;
     float64* predictedScores = head.predictedScores_;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = thresholds_.statisticsPtr_->createSubset(numLabelIndices,
-                                                                                                      labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(*thresholds_.statisticsPtr_,
+                                                                                        numLabelIndices, labelIndices);
     uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {

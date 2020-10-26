@@ -1,4 +1,5 @@
 #include "indices.h"
+#include "statistics.h"
 #include "sub_sampling.h"
 #include "thresholds.h"
 
@@ -12,6 +13,13 @@ std::unique_ptr<IThresholdsSubset> DenseIndexVector::createSubset(AbstractThresh
                                                                   IWeightVector& weights) const {
     return thresholds.createSubset(weights, *this);
 }
+
+std::unique_ptr<IStatisticsSubset> DenseIndexVector::createSubset(const AbstractStatistics& statistics,
+                                                                  uint32 numLabelIndices,
+                                                                  const uint32* labelIndices) const {
+    return statistics.createSubset(*this, numLabelIndices, labelIndices);
+}
+
 
 RangeIndexVector::RangeIndexVector(uint32 numElements) {
     numElements_ = numElements;
@@ -28,4 +36,10 @@ uint32 RangeIndexVector::getValue(uint32 pos) const {
 std::unique_ptr<IThresholdsSubset> RangeIndexVector::createSubset(AbstractThresholds& thresholds,
                                                                   IWeightVector& weights) const {
     return thresholds.createSubset(weights, *this);
+}
+
+std::unique_ptr<IStatisticsSubset> RangeIndexVector::createSubset(const AbstractStatistics& statistics,
+                                                                  uint32 numLabelIndices,
+                                                                  const uint32* labelIndices) const {
+    return statistics.createSubset(*this, numLabelIndices, labelIndices);
 }

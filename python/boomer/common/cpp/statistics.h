@@ -6,6 +6,7 @@
  */
 #pragma once
 
+#include "indices.h"
 #include "rule_evaluation.h"
 #include "predictions.h"
 #include "binning.h"
@@ -243,23 +244,39 @@ class AbstractStatistics : virtual public IMatrix {
         virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) = 0;
 
         /**
-         * Creates a new, empty subset of the statistics. Individual statistics that are covered by a refinement of a
-         * rule can be added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
+         * a specific `RangeIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
+         * to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
          *
-         * This function must be called each time a new refinement is considered, unless the refinement covers all
-         * statistics previously provided via calls to the function `IStatisticsSubset#addToSubset`.
+         * This function, or the function `createSubset(DenseIndexVector&)` must be called each time a new refinement is
+         * considered, unless the refinement covers all statistics previously provided via calls to the function
+         * `IStatisticsSubset#addToSubset`.
          *
-         * Optionally, a subset of the available labels may be specified via the argument `labelIndices`. In such case,
-         * only the statistics that correspond to the specified labels will be included in the subset. When calling this
-         * function again to create a new subset from scratch, a different set of labels may be specified.
-         *
-         * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
-         *                          indices of the labels that should be included in the subset or None, if all labels
-         *                          should be included
-         * @return                  An unique pointer to an object of type `IStatisticsSubset` that has been created
+         * @param indexVector   A reference to an object of type `RangeIndexVector` that provides access to the indices
+         *                      of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
+        // TODO Remove arguments `numLabelIndices` and `labelIndices`
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const RangeIndexVector& indexVector,
+                                                                uint32 numLabelIndices,
+                                                                const uint32* labelIndices) const = 0;
+
+        /**
+         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
+         * a specific `DenseIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
+         * to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         *
+         * This function, or the function `createSubset(RangeIndexVector&)` must be called each time a new refinement is
+         * considered, unless the refinement covers all statistics previously provided via calls to the function
+         * `IStatisticsSubset#addToSubset`.
+         *
+         * @param indexVector   A reference to an object of type `DenseIndexVector` that provides access to the indices
+         *                      of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        // TODO Remove arguments `numLabelIndices` and `labelIndices`
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const DenseIndexVector& indexVector,
+                                                                uint32 numLabelIndices,
                                                                 const uint32* labelIndices) const = 0;
 
         /**
