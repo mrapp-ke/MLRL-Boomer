@@ -29,7 +29,7 @@ PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFuncti
 
 bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
                                          std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
-                                         IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
+                                         IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) {
     bool result = false;
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);

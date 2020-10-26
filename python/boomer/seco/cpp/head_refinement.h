@@ -31,7 +31,7 @@ namespace seco {
 
             bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                           const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                          bool accumulated) const override;
+                          bool accumulated) override;
 
             std::unique_ptr<PredictionCandidate> pollHead() override;
 
