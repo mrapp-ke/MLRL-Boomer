@@ -101,11 +101,11 @@ class AbstractThresholds : virtual public IMatrix {
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
          *
-         * @param weightsPtr    An unique pointer to an object of type `IWeightVector` that provides access to the
-         *                      weights of the individual training examples
-         * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
+         * @param weights   A reference to an object of type `IWeightVector` that provides access to the weights of the
+         *                  individual training examples
+         * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector& weights) = 0;
 
         /**
          * Returns the total number of available labels.
@@ -174,7 +174,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ExactThresholdsImpl& thresholds_;
 
-                std::unique_ptr<IWeightVector> weightsPtr_;
+                IWeightVector& weights_;
 
                 uint32 sumOfWeights_;
 
@@ -189,12 +189,12 @@ class ExactThresholdsImpl : public AbstractThresholds {
             public:
 
                 /**
-                 * @param thresholds        A reference to an object of type `ExactThresholdsImpl` that stores the
-                 *                          thresholds
-                 * @param weightsPtr        An unique pointer to an object of type `IWeightVector` that provides access
-                 *                          to the weights of the individual training examples
+                 * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the
+                 *                      thresholds
+                 * @param weights       A reference to an object of type `IWeightVector` that provides access to the
+                 *                      weights of the individual training examples
                  */
-                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, std::unique_ptr<IWeightVector> weightsPtr);
+                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, IWeightVector& weights);
 
                 ~ThresholdsSubsetImpl();
 
@@ -228,7 +228,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                             std::shared_ptr<AbstractStatistics> statisticsPtr,
                             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
-        std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector& weights) override;
 
 };
 
@@ -336,6 +336,6 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
                                   std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                   std::shared_ptr<IBinning> binningPtr, uint32 numBins);
 
-        std::unique_ptr<IThresholdsSubset> createSubset(std::unique_ptr<IWeightVector> weightsPtr) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector& weights) override;
 
 };
