@@ -6,6 +6,7 @@
 #pragma once
 
 #include "data.h"
+#include "indices.h"
 #include "random.h"
 #include <memory>
 

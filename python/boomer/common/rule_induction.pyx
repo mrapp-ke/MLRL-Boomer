@@ -4,12 +4,13 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport float32, array_uint32
+from boomer.common._indices cimport IIndexVector
 from boomer.common._predictions cimport PredictionCandidate
 from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
-from boomer.common.sub_sampling cimport IWeightVector, IIndexVector
+from boomer.common.sub_sampling cimport IWeightVector
 from boomer.common.thresholds cimport IThresholdsSubset
 
 from libcpp.unordered_map cimport unordered_map

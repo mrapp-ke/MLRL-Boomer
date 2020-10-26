@@ -22,10 +22,6 @@ cdef extern from "cpp/data.h" nogil:
         T getValue(uint32 pos)
 
 
-    cdef cppclass IIndexVector(IRandomAccessVector[uint32]):
-        pass
-
-
     cdef cppclass BinaryDokVector(IRandomAccessVector[uint8]):
 
         # Constructors:

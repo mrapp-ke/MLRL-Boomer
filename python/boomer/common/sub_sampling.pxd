@@ -1,5 +1,6 @@
 from boomer.common._arrays cimport uint32, float32
-from boomer.common._data cimport IRandomAccessVector, IIndexVector
+from boomer.common._data cimport IRandomAccessVector
+from boomer.common._indices cimport IIndexVector
 from boomer.common._random cimport RNG
 
 from libcpp cimport bool
