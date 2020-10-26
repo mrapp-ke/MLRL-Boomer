@@ -16,11 +16,12 @@ void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
     ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
 }
 
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
+template<class T>
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::StatisticsSubsetImpl(
         const DenseLabelWiseStatisticsImpl& statistics, std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-        uint32 numPredictions, const uint32* labelIndices)
-    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), numPredictions_(numPredictions),
-      labelIndices_(labelIndices) {
+        const T& indexVector, uint32 numPredictions, const uint32* labelIndices)
+    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), indexVector_(indexVector),
+      numPredictions_(numPredictions), labelIndices_(labelIndices) {
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = nullptr;
@@ -29,14 +30,16 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
     accumulatedSumsOfHessians_ = nullptr;
 }
 
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
+template<class T>
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::~StatisticsSubsetImpl() {
     free(sumsOfGradients_);
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
+template<class T>
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::addToSubset(uint32 statisticIndex, uint32 weight) {
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the current sum of gradients and Hessians...
     uint32 offset = statisticIndex * statistics_.getNumCols();
@@ -49,7 +52,8 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 stat
     }
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
+template<class T>
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::resetSubset() {
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
     if (accumulatedSumsOfGradients_ == nullptr) {
         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
@@ -68,7 +72,8 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+template<class T>
+const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -158,8 +163,8 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(co
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
                                                                                                     labelIndices);
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
-                                                                                numPredictions, labelIndices);
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<RangeIndexVector>>(
+        *this, std::move(ruleEvaluationPtr), indexVector, numPredictions, labelIndices);
 }
 
 std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(const DenseIndexVector& indexVector,
@@ -169,8 +174,8 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(co
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
                                                                                                     labelIndices);
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
-                                                                                numPredictions, labelIndices);
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<DenseIndexVector>>(
+        *this, std::move(ruleEvaluationPtr), indexVector, numPredictions, labelIndices);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
