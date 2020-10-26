@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../../common/cpp/rule_evaluation.h"
+#include "../../common/cpp/indices.h"
 #include "blas.h"
 #include "lapack.h"
 #include <memory>
@@ -182,16 +183,28 @@ namespace boosting {
 
             /**
              * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
-             * predictions of rules for several labels.
+             * predictions of rules that predict for all available labels.
              *
-             * @param numLabelIndices   The number of labels for which the rules should predict
-             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels for
-             *                          which the rules should predict or a null pointer, if the rules should predict
-             *                          for all available labels
-             * @return                  An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
-             *                          created
+             * @param indexVector   A reference to an object of type `RangeIndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                      created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create(uint32 numLabelIndices,
+            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
+                                                                       uint32 numLabelIndices,
+                                                                       const uint32* labelIndices) const = 0;
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
+             * predictions of rules that predict for a subset of the available labels.
+             *
+             * @param indexVector   A reference to an object of type `DenseIndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                      created
+             */
+            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
+                                                                       uint32 numLabelIndices,
                                                                        const uint32* labelIndices) const = 0;
 
     };
@@ -223,7 +236,12 @@ namespace boosting {
                                                             std::shared_ptr<Blas> blasPtr,
                                                             std::shared_ptr<Lapack> lapackPtr);
 
-            std::unique_ptr<IExampleWiseRuleEvaluation> create(uint32 numLabelIndices,
+            std::unique_ptr<IExampleWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
+                                                               uint32 numLabelIndices,
+                                                               const uint32* labelIndices) const override;
+
+            std::unique_ptr<IExampleWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
+                                                               uint32 numLabelIndices,
                                                                const uint32* labelIndices) const override;
 
     };

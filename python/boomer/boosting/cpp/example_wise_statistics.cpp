@@ -229,7 +229,8 @@ std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
                                                                                 const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
+    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(indexVector,
+                                                                                                      numPredictions,
                                                                                                       labelIndices);
     return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<RangeIndexVector>>(
         *this, std::move(ruleEvaluationPtr), indexVector, numPredictions, labelIndices);
@@ -240,7 +241,8 @@ std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
                                                                                 const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
+    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(indexVector,
+                                                                                                      numPredictions,
                                                                                                       labelIndices);
     return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<DenseIndexVector>>(
         *this, std::move(ruleEvaluationPtr), indexVector, numPredictions, labelIndices);
