@@ -22,14 +22,18 @@ static inline uint32* argsort(const float64* a, uint32 numElements) {
     return sortedArray;
 }
 
-PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr)
-    : liftFunctionPtr_(liftFunctionPtr) {
+template<class T>
+PartialHeadRefinementImpl<T>::PartialHeadRefinementImpl(const T& labelIndices,
+                                                        std::shared_ptr<ILiftFunction> liftFunctionPtr)
+    : labelIndices_(labelIndices), liftFunctionPtr_(liftFunctionPtr) {
 
 }
 
-bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
-                                         std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
-                                         IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
+template<class T>
+bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
+                                            std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
+                                            IStatisticsSubset& statisticsSubset, bool uncovered,
+                                            bool accumulated) const {
     bool result = false;
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
@@ -121,8 +125,9 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
     return result;
 }
 
-const EvaluatedPrediction& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                          bool uncovered, bool accumulated) const {
+template<class T>
+const EvaluatedPrediction& PartialHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                             bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
 
@@ -132,9 +137,9 @@ PartialHeadRefinementFactoryImpl::PartialHeadRefinementFactoryImpl(std::shared_p
 }
 
 std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const RangeIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinementImpl>(liftFunctionPtr_);
+    return std::make_unique<PartialHeadRefinementImpl<RangeIndexVector>>(labelIndices, liftFunctionPtr_);
 }
 
 std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const DenseIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinementImpl>(liftFunctionPtr_);
+    return std::make_unique<PartialHeadRefinementImpl<DenseIndexVector>>(labelIndices, liftFunctionPtr_);
 }
