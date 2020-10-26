@@ -59,33 +59,38 @@ namespace seco {
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
      * heuristic that is applied using label-wise averaging.
+     *
+     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
+    template<class T>
     class HeuristicLabelWiseRuleEvaluationImpl : virtual public ILabelWiseRuleEvaluation {
 
         private:
 
+            const T& indexVector_;
+
+            const uint32* labelIndices_;
+
             std::shared_ptr<IHeuristic> heuristicPtr_;
 
             bool predictMajority_;
-
-            const uint32* labelIndices_;
 
             LabelWiseEvaluatedPrediction prediction_;
 
         public:
 
             /**
-             * @param numPredictions    The number of labels for which the rules should predict
-             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels
-             *                          for which the rules should predict or a null pointer, if the rules should
-             *                          predict for all labels
+             * @param indexVector       A reference to an object of template type `T` that provides access to the
+             *                          indices of the labels for which the rules may predict
              * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
              *                          to be optimized
              * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
              *                          minority label should be predicted
              */
-            HeuristicLabelWiseRuleEvaluationImpl(uint32 numPredictions, const uint32* labelIndices,
-                                                 std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
+            // TODO Remove arguments `numPredictions` and `labelIndices`
+            HeuristicLabelWiseRuleEvaluationImpl(const T& indexVector, uint32 numPredictions,
+                                                 const uint32* labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
+                                                 bool predictMajority);
 
             const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
                 const uint8* minorityLabels, const float64* confusionMatricesTotal,
