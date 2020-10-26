@@ -34,7 +34,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         uint32 getNumLabels()
 
-        unique_ptr[IThresholdsSubset] createSubset(unique_ptr[IWeightVector] weightsPtr)
+        unique_ptr[IThresholdsSubset] createSubset(IWeightVector& weights)
 
 
     cdef cppclass ExactThresholdsImpl(AbstractThresholds):
