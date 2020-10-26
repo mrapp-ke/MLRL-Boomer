@@ -61,7 +61,11 @@ namespace boosting {
             /**
              * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
              * `DenseExampleWiseStatisticsImpl`.
+             *
+             * @tparam T The type of the vector that provides access to the indices of the labels that are included in
+             *           the subset
              */
+            template<class T>
             class StatisticsSubsetImpl : virtual public IStatisticsSubset {
 
                 private:
@@ -69,6 +73,8 @@ namespace boosting {
                     const DenseExampleWiseStatisticsImpl& statistics_;
 
                     std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
+
+                    const T& indexVector_;
 
                     uint32 numPredictions_;
 
@@ -104,14 +110,12 @@ namespace boosting {
                      * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
-                     * @param numPredictions    The number of elements in the array `labelIndices`
-                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
-                     *                          representing the indices of the labels that should be included in the
-                     *                          subset or a null pointer, if all labels should be considered
+                     * @param indexVector       A reference to an object of template type `T` that provides access to
+                     *                          the indices of the labels that are included in the subset
                      */
                     StatisticsSubsetImpl(const DenseExampleWiseStatisticsImpl& statistics,
                                          std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
-                                         uint32 numPredictions, const uint32* labelIndices);
+                                         const T& indexVector, uint32 numPredictions, const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
 
