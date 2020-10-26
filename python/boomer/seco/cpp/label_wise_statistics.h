@@ -62,7 +62,11 @@ namespace seco {
             /**
              * Provides access to a subset of the confusion matrices that are stored by an instance of the class
              * `DenseLabelWiseStatisticsImpl`.
+             *
+             * @tparam T The type of the vector that provides access to the indices of the labels that are included in
+             *           the subset
              */
+            template<class T>
             class StatisticsSubsetImpl : public AbstractDecomposableStatisticsSubset {
 
                 private:
@@ -70,6 +74,8 @@ namespace seco {
                     const DenseLabelWiseStatisticsImpl& statistics_;
 
                     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
+                    const T& indexVector_;
 
                     uint32 numPredictions_;
 
@@ -87,14 +93,13 @@ namespace seco {
                      * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
-                     * @param numPredictions    The number of elements in the array `labelIndices`
-                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
-                     *                          representing the indices of the labels that should be included in the
-                     *                          subset or a null pointer, if all labels should be considered
+                     * @param indexVector       A reference to an object of template type `T` that provides access to
+                     *                          the indices of the labels that are included in the subset
                      */
+                    // TODO Remove arguments `numPredictions` and `labelIndices`
                     StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                          std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                         uint32 numPredictions, const uint32* labelIndices);
+                                         const T& indexVector, uint32 numPredictions, const uint32* labelIndices);
 
                     ~StatisticsSubsetImpl();
 
