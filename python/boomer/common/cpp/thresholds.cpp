@@ -86,7 +86,7 @@ static inline uint32 filterCurrentFeatureVector(CacheEntry& cacheEntry, FeatureV
                                                 intp conditionStart, intp conditionEnd, Comparator conditionComparator,
                                                 bool covered, uint32 numConditions, uint32* coveredExamplesMask,
                                                 uint32 coveredExamplesTarget, AbstractStatistics& statistics,
-                                                IWeightVector& weights) {
+                                                const IWeightVector& weights) {
     uint32 numTotalElements = featureVector.getNumElements();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     bool descending = conditionEnd < conditionStart;
@@ -247,7 +247,8 @@ uint32 AbstractThresholds::getNumLabels() const {
     return statisticsPtr_->getNumCols();
 }
 
-ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, IWeightVector& weights)
+ExactThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds,
+                                                                const IWeightVector& weights)
     : thresholds_(thresholds), weights_(weights) {
     sumOfWeights_ = weights.getSumOfWeights();
     uint32 numExamples = thresholds.getNumRows();
@@ -386,7 +387,7 @@ ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> feature
 
 }
 
-std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(IWeightVector& weights) {
+std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights) {
     // Notify the statistics about the examples that are included in the sub-sample...
     uint32 numExamples = statisticsPtr_->getNumRows();
     statisticsPtr_->resetSampledStatistics();
@@ -477,7 +478,7 @@ ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMat
 
 }
 
-std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(IWeightVector& weights) {
+std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights) {
     //TODO: Vereinheitlichen. Vermerk: ExactThresholdsImpl::createSubset
     uint32 numExamples = statisticsPtr_->getNumRows();
     statisticsPtr_->resetSampledStatistics();
