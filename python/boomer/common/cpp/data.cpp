@@ -53,23 +53,6 @@ template class DenseVector<uint32>;
 template class DenseVector<float64>;
 template class DenseVector<Bin>;
 
-DenseIndexVector::DenseIndexVector(uint32 numElements)
-    : DenseVector<uint32>(numElements) {
-
-}
-
-RangeIndexVector::RangeIndexVector(uint32 numElements) {
-    numElements_ = numElements;
-}
-
-uint32 RangeIndexVector::getNumElements() const {
-    return numElements_;
-}
-
-uint32 RangeIndexVector::getValue(uint32 pos) const {
-    return pos;
-}
-
 template<class T>
 SparseArrayVector<T>::SparseArrayVector(uint32 numElements)
     : array_((Entry*) malloc(numElements * sizeof(Entry))), numElements_(numElements) {

@@ -15,6 +15,7 @@ sources = [
     '**/*.pyx',
     'boomer/common/cpp/random.cpp',
     'boomer/common/cpp/data.cpp',
+    'boomer/common/cpp/indices.cpp',
     'boomer/common/cpp/input_data.cpp',
     'boomer/common/cpp/predictions.cpp',
     'boomer/common/cpp/post_processing.cpp',
