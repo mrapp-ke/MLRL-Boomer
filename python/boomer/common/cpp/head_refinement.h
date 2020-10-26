@@ -102,10 +102,6 @@ class IHeadRefinementFactory {
  */
 class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
 
-    private:
-
-        std::unique_ptr<PredictionCandidate> headPtr_;
-
     public:
 
         bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
@@ -134,10 +130,6 @@ class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFacto
  * Allows to find the best multi-label head that predicts for all labels.
  */
 class FullHeadRefinementImpl : virtual public IHeadRefinement {
-
-    private:
-
-        std::unique_ptr<PredictionCandidate> headPtr_;
 
     public:
 
