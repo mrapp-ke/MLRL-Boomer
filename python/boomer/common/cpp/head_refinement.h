@@ -46,7 +46,7 @@ class IHeadRefinement {
          */
         virtual bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                               const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                              bool accumulated) = 0;
+                              bool accumulated) const = 0;
 
         /**
          * Returns the best head that has been found by the function `findHead`.
@@ -106,7 +106,7 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
 
         bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                      bool accumulated) override;
+                      bool accumulated) const override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 
@@ -135,7 +135,7 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
         bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                      bool accumulated) override;
+                      bool accumulated) const override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 
