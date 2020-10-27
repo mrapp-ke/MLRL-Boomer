@@ -15,6 +15,8 @@ class IThresholdsSubset;
 class IWeightVector;
 class AbstractStatistics;
 class IStatisticsSubset;
+class IHeadRefinement;
+class IHeadRefinementFactory;
 
 
 /**
@@ -73,6 +75,16 @@ class IIndexVector {
         virtual std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics,
                                                                 uint32 numLabelIndices,
                                                                 const uint32* labelIndices) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IHeadRefinement` that allows to search for the best head of a rule,
+         * considering only the labels whose indices are stored in this vector.
+         *
+         * @param factory   A reference to an object of type `IHeadRefinementFactory` that should be used to create the
+         *                  object
+         * @return          An unique pointer to an object of type `IHeadRefinement` that has been created
+         */
+        virtual std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const = 0;
 
 };
 
@@ -139,6 +151,8 @@ class DenseIndexVector : virtual public IIndexVector {
 
         std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics, uint32 numLabelIndices,
                                                         const uint32* labelIndices) const override;
+
+        std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
 };
 
@@ -208,5 +222,7 @@ class RangeIndexVector : virtual public IIndexVector {
 
         std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics, uint32 numLabelIndices,
                                                         const uint32* labelIndices) const override;
+
+        std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
 };
