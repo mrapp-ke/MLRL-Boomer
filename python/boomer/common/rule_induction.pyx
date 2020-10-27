@@ -115,7 +115,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             statistics_provider.switch_rule_evaluation()
 
             for i in range(num_statistics):
-                statistics.applyPrediction(i, dereference(default_prediction_ptr.get()))
+                default_prediction_ptr.get().apply(dereference(statistics), i)
 
             model_builder.set_default_rule(default_prediction_ptr.get())
         else:

@@ -274,16 +274,29 @@ class AbstractStatistics : virtual public IMatrix {
         virtual std::unique_ptr<IStatisticsSubset> createSubset(const DenseIndexVector& labelIndices) const = 0;
 
         /**
-         * Updates a specific statistic based on the predictions of a newly induced rule.
+         * Updates a specific statistic based on the prediction of a rule that predicts for all available labels.
          *
          * This function must be called for each statistic that is covered by the new rule before learning the next
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param prediction        A reference to an object of type `Prediction`, representing the predictions of the
-         *                          newly induced rule
+         * @param prediction        A reference to an object of type `Prediction` that stores the scores that are
+         *                          predicted by the rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, const Prediction& prediction) = 0;
+        virtual void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) = 0;
+
+        /**
+         * Updates a specific statistic based on the prediction of a rule that predicts for a subset of the available
+         * labels.
+         *
+         * This function must be called for each statistic that is covered by the new rule before learning the next
+         * rule.
+         *
+         * @param statisticIndex    The index of the statistic to be updated
+         * @param prediction        A reference to an object of type `PartialPrediction` that stores the scores that are
+         *                          predicted by the rule
+         */
+        virtual void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
 
         /**
          * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on

@@ -1,4 +1,5 @@
 #include "predictions.h"
+#include "statistics.h"
 #include <cstdlib>
 
 
@@ -32,6 +33,10 @@ void FullPrediction::setNumElements(uint32 numElements) {
     RangeIndexVector::setNumElements(numElements);
 }
 
+void FullPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {
+    statistics.applyPrediction(statisticIndex, *this);
+}
+
 PartialPrediction::PartialPrediction(uint32 numElements)
     : PredictionCandidate(numElements), DenseIndexVector(numElements) {
 
@@ -44,4 +49,8 @@ uint32 PartialPrediction::getNumElements() const {
 void PartialPrediction::setNumElements(uint32 numElements) {
     DenseVector<float64>::setNumElements(numElements);
     DenseIndexVector::setNumElements(numElements);
+}
+
+void PartialPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {
+    statistics.applyPrediction(statisticIndex, *this);
 }

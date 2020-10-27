@@ -242,19 +242,37 @@ std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
         *this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
-void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
+void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = prediction.getNumElements();
-    const uint32* labelIndices = prediction.labelIndices_;
-    const float64* predictedScores = prediction.predictedScores_;
-    uint32 offset = statisticIndex * numLabels;
     uint32 numHessians = linalg::triangularNumber(numLabels);
+    uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    FullPrediction::const_iterator valueIterator = prediction.cbegin();
 
     // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
     // example at the given index...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
-        currentScores_[offset + l] += predictedScores[c];
+        currentScores_[offset + c] += valueIterator[c];
+    }
+
+    // Update the gradients and Hessians for the example at the given index...
+    lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
+                                                    &gradients_[offset], &hessians_[statisticIndex * numHessians]);
+}
+
+void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) {
+    uint32 numLabels = this->getNumCols();
+    uint32 numHessians = linalg::triangularNumber(numLabels);
+    uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+    PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
+
+    // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
+    // example at the given index...
+    for (uint32 c = 0; c < numPredictions; c++) {
+        uint32 l = indexIterator[c];
+        currentScores_[offset + l] += valueIterator[c];
     }
 
     // Update the gradients and Hessians for the example at the given index...

@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint32
 from boomer.common._data cimport IMatrix
 from boomer.common._indices cimport RangeIndexVector, DenseIndexVector
-from boomer.common._predictions cimport Prediction
+from boomer.common._predictions cimport FullPrediction, PartialPrediction
 from boomer.common.input_data cimport LabelMatrix
 
 from libcpp cimport bool
@@ -37,7 +37,9 @@ cdef extern from "cpp/statistics.h" nogil:
 
         unique_ptr[IStatisticsSubset] createSubset(const DenseIndexVector& labelIndices)
 
-        void applyPrediction(uint32 statisticIndex, Prediction& prediction)
+        void applyPrediction(uint32 statisticIndex, FullPrediction& prediction)
+
+        void applyPrediction(uint32 statisticIndex, PartialPrediction& prediction)
 
 
 cdef class StatisticsProvider:

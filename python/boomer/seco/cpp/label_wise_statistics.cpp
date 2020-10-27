@@ -178,17 +178,49 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
         *this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = prediction.getNumElements();
-    const uint32* labelIndices = prediction.labelIndices_;
-    const float64* predictedScores = prediction.predictedScores_;
     uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    FullPrediction::const_iterator valueIterator = prediction.cbegin();
 
     // Only the labels that are predicted by the new rule must be considered...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
-        uint8 predictedLabel = predictedScores[c];
+        uint8 predictedLabel = valueIterator[c];
+        uint8 minorityLabel = minorityLabels_[c];
+
+        // Do only consider predictions that are different from the default rule's predictions...
+        if (predictedLabel == minorityLabel) {
+            uint32 i = offset + c;
+            float64 labelWeight = uncoveredLabels_[i];
+
+            if (labelWeight > 0) {
+                uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
+
+                // Decrement the total sum of uncovered labels, if the prediction for the current example and label is
+                // correct...
+                if (predictedLabel == trueLabel) {
+                    sumUncoveredLabels_ -= labelWeight;
+                }
+
+                // Mark the current example and label as covered...
+                uncoveredLabels_[i] = 0;
+            }
+        }
+    }
+}
+
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) {
+    uint32 numLabels = this->getNumCols();
+    uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+    PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
+
+    // Only the labels that are predicted by the new rule must be considered...
+    for (uint32 c = 0; c < numPredictions; c++) {
+        uint32 l = indexIterator[c];
+        uint8 predictedLabel = valueIterator[c];
         uint8 minorityLabel = minorityLabels_[l];
 
         // Do only consider predictions that are different from the default rule's predictions...

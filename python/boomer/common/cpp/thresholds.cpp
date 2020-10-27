@@ -369,7 +369,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyPrediction(const Predict
 
     for (uint32 r = 0; r < numExamples; r++) {
         if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
-            thresholds_.statisticsPtr_->applyPrediction(r, prediction);
+            prediction.apply(*thresholds_.statisticsPtr_, r);
         }
     }
 }
