@@ -56,6 +56,11 @@ bool SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestH
 }
 
 template<class T>
+std::unique_ptr<PredictionCandidate> SingleLabelHeadRefinementImpl<T>::pollHead() {
+    return std::move(headPtr_);
+}
+
+template<class T>
 const EvaluatedPrediction& SingleLabelHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
                                                                                  bool uncovered,
                                                                                  bool accumulated) const {
@@ -124,6 +129,11 @@ bool FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
     }
 
     return false;
+}
+
+template<class T>
+std::unique_ptr<PredictionCandidate> FullHeadRefinementImpl<T>::pollHead() {
+    return std::move(headPtr_);
 }
 
 template<class T>
