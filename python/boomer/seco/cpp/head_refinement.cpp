@@ -30,11 +30,12 @@ PartialHeadRefinementImpl<T>::PartialHeadRefinementImpl(const T& labelIndices,
 }
 
 template<class T>
-bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                            std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
-                                            IStatisticsSubset& statisticsSubset, bool uncovered,
-                                            bool accumulated) const {
-    bool result = false;
+const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
+                                                                  std::unique_ptr<PredictionCandidate>& headPtr,
+                                                                  const uint32* labelIndices,
+                                                                  IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                                  bool accumulated) const {
+    const PredictionCandidate* result = nullptr;
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -74,8 +75,6 @@ bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
     }
 
     if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
-        result = true;
-
         if (headPtr.get() == nullptr) {
             headPtr = std::make_unique<PartialPrediction>(bestNumPredictions);
 
@@ -124,6 +123,7 @@ bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
         }
 
         headPtr->overallQualityScore = bestQualityScore;
+        result = headPtr.get();
     }
 
     delete[] sortedIndices;

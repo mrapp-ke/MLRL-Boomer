@@ -9,10 +9,11 @@ SingleLabelHeadRefinementImpl<T>::SingleLabelHeadRefinementImpl(const T& labelIn
 }
 
 template<class T>
-bool SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                std::unique_ptr<PredictionCandidate>& headPtr,
-                                                const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
-                                                bool uncovered, bool accumulated) const {
+const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
+                                                                      std::unique_ptr<PredictionCandidate>& headPtr,
+                                                                      const uint32* labelIndices,
+                                                                      IStatisticsSubset& statisticsSubset,
+                                                                      bool uncovered, bool accumulated) const {
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -49,10 +50,10 @@ bool SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestH
         headValueIterator[0] = valueIterator[bestC];
         headIndexIterator[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
         headPtr->overallQualityScore = bestQualityScore;
-        return true;
+        return headPtr.get();
     }
 
-    return false;
+    return nullptr;
 }
 
 template<class T>
@@ -84,9 +85,11 @@ FullHeadRefinementImpl<T>::FullHeadRefinementImpl(const T& labelIndices)
 }
 
 template<class T>
-bool FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                         std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
-                                         IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
+const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
+                                                               std::unique_ptr<PredictionCandidate>& headPtr,
+                                                               const uint32* labelIndices,
+                                                               IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                               bool accumulated) const {
     const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction.overallQualityScore;
 
@@ -125,10 +128,10 @@ bool FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
         }
 
         headPtr->overallQualityScore = overallQualityScore;
-        return true;
+        return headPtr.get();
     }
 
-    return false;
+    return nullptr;
 }
 
 template<class T>

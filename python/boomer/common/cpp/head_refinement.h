@@ -45,9 +45,10 @@ class IHeadRefinement {
          * @return                  True, if the head that has been found is better than `bestHead`, false otherwise
          */
         // TODO Remove argument `labelIndices`
-        virtual bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                              const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                              bool accumulated) const = 0;
+        virtual const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
+                                                    std::unique_ptr<PredictionCandidate>& headPtr,
+                                                    const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
+                                                    bool uncovered, bool accumulated) const = 0;
 
         /**
          * TODO
@@ -131,9 +132,10 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
          */
         SingleLabelHeadRefinementImpl(const T& labelIndices);
 
-        bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                      bool accumulated) const override;
+        const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
+                                            std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
+                                            IStatisticsSubset& statisticsSubset, bool uncovered,
+                                            bool accumulated) const override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 
@@ -178,9 +180,10 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
          */
         FullHeadRefinementImpl(const T& labelIndices);
 
-        bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                      bool accumulated) const override;
+        const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
+                                            std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
+                                            IStatisticsSubset& statisticsSubset, bool uncovered,
+                                            bool accumulated) const override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 
