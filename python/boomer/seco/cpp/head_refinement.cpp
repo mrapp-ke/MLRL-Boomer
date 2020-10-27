@@ -131,6 +131,11 @@ bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
 }
 
 template<class T>
+std::unique_ptr<PredictionCandidate> PartialHeadRefinementImpl<T>::pollHead() {
+    return std::move(headPtr_);
+}
+
+template<class T>
 const EvaluatedPrediction& PartialHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
                                                                              bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);

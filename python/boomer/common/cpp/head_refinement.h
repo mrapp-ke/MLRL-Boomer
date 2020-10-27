@@ -50,6 +50,11 @@ class IHeadRefinement {
                               bool accumulated) const = 0;
 
         /**
+         * TODO
+         */
+        virtual std::unique_ptr<PredictionCandidate> pollHead() = 0;
+
+        /**
          * Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score,
          * according to a `IStatisticsSubset`.
          *
@@ -116,6 +121,8 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
 
         const T& labelIndices_;
 
+        std::unique_ptr<PartialPrediction> headPtr_;
+
     public:
 
         /**
@@ -127,6 +134,8 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
         bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                       bool accumulated) const override;
+
+        std::unique_ptr<PredictionCandidate> pollHead() override;
 
         const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                        bool accumulated) const override;
@@ -159,6 +168,8 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
         const T& labelIndices_;
 
+        std::unique_ptr<FullPrediction> headPtr_;
+
     public:
 
         /**
@@ -170,6 +181,8 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
         bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
                       const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
                       bool accumulated) const override;
+
+        std::unique_ptr<PredictionCandidate> pollHead() override;
 
         const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                        bool accumulated) const override;
