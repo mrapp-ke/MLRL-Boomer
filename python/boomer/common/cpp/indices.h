@@ -34,6 +34,13 @@ class IIndexVector {
         virtual uint32 getNumElements() const = 0;
 
         /**
+         * Sets the number of indices.
+         *
+         * @param numElements The number of indices to be set
+         */
+        virtual void setNumElements(uint32 numElements) = 0;
+
+        /**
          * Returns the index at a specific position.
          *
          * @param pos   The position of the index. Must be in [0, getNumElements())
@@ -123,6 +130,8 @@ class DenseIndexVector : virtual public IIndexVector {
 
         uint32 getNumElements() const override;
 
+        void setNumElements(uint32 numElements) override;
+
         uint32 getIndex(uint32 pos) const override;
 
         std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
@@ -189,6 +198,8 @@ class RangeIndexVector : virtual public IIndexVector {
         index_const_iterator indices_cend() const;
 
         uint32 getNumElements() const override;
+
+        void setNumElements(uint32 numElements) override;
 
         uint32 getIndex(uint32 pos) const override;
 

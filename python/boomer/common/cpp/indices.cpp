@@ -2,19 +2,27 @@
 #include "statistics.h"
 #include "sub_sampling.h"
 #include "thresholds.h"
+#include <cstdlib>
 
 
 DenseIndexVector::DenseIndexVector(uint32 numElements)
-    : numElements_(numElements), array_(new uint32[numElements]) {
+    : numElements_(numElements), array_((uint32*) malloc(numElements * sizeof(uint32))) {
 
 }
 
 DenseIndexVector::~DenseIndexVector() {
-    delete[] array_;
+    free(array_);
 }
 
 uint32 DenseIndexVector::getNumElements() const {
     return numElements_;
+}
+
+void DenseIndexVector::setNumElements(uint32 numElements) {
+    if (numElements != numElements_) {
+        numElements_ = numElements;
+        array_ = (uint32*) realloc(array_, numElements * sizeof(uint32));
+    }
 }
 
 uint32 DenseIndexVector::getIndex(uint32 pos) const {
@@ -75,6 +83,10 @@ RangeIndexVector::RangeIndexVector(uint32 numElements) {
 
 uint32 RangeIndexVector::getNumElements() const {
     return numElements_;
+}
+
+void RangeIndexVector::setNumElements(uint32 numElements) {
+    numElements_ = numElements;
 }
 
 uint32 RangeIndexVector::getIndex(uint32 pos) const {
