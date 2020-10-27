@@ -27,9 +27,6 @@ class IHeadRefinement {
          *                          rule known so far (as found in the previous or current refinement iteration) or a
          *                          null pointer, if no such rule is available yet. The new head must be better than
          *                          this one, otherwise it is discarded
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(num_predictions)`, representing the
-         *                          indices of the labels for which the head may predict or a null pointer, if the head
-         *                          may predict for all labels
          * @param statisticsSubset  A reference to an object of type `IStatisticsSubset` to be used for calculating
          *                          predictions and corresponding quality scores
          * @param uncovered         False, if the rule for which the head should be found covers all statistics that
@@ -42,8 +39,7 @@ class IHeadRefinement {
          *                          been found or a null pointer if the head that has been found is not better than
          *                          `bestHead`
          */
-        // TODO Remove argument `labelIndices`
-        virtual const PredictionCandidate* findHead(const PredictionCandidate* bestHead, const uint32* labelIndices,
+        virtual const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) = 0;
 
@@ -132,9 +128,8 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
          */
         SingleLabelHeadRefinementImpl(const T& labelIndices);
 
-        const PredictionCandidate* findHead(const PredictionCandidate* bestHead, const uint32* labelIndices,
-                                            IStatisticsSubset& statisticsSubset, bool uncovered,
-                                            bool accumulated) override;
+        const PredictionCandidate* findHead(const PredictionCandidate* bestHead, IStatisticsSubset& statisticsSubset,
+                                            bool uncovered, bool accumulated) override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 
@@ -179,9 +174,8 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
          */
         FullHeadRefinementImpl(const T& labelIndices);
 
-        const PredictionCandidate* findHead(const PredictionCandidate* bestHead, const uint32* labelIndices,
-                                            IStatisticsSubset& statisticsSubset, bool uncovered,
-                                            bool accumulated) override;
+        const PredictionCandidate* findHead(const PredictionCandidate* bestHead, IStatisticsSubset& statisticsSubset,
+                                            bool uncovered, bool accumulated) override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 

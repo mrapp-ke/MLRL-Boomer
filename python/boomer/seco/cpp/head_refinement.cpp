@@ -31,7 +31,6 @@ PartialHeadRefinementImpl<T>::PartialHeadRefinementImpl(const T& labelIndices,
 
 template<class T>
 const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                                  const uint32* labelIndices,
                                                                   IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                   bool accumulated) {
     const PredictionCandidate* result = nullptr;
@@ -46,7 +45,14 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
     uint32 bestNumPredictions = 0;
     float64 bestQualityScore = 0;
 
-    if (labelIndices == nullptr) {
+    if (labelIndices_.isPartial()) {
+        for (uint32 c = 0; c < numPredictions; c++) {
+            sumOfQualityScores += 1 - qualityScoreIterator[c];
+        }
+
+        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
+        bestNumPredictions = numPredictions;
+    } else {
         sortedIndices = argsort(qualityScoreIterator, numPredictions);
         float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
@@ -64,13 +70,6 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
                 break;
             }
         }
-    } else {
-        for (uint32 c = 0; c < numPredictions; c++) {
-            sumOfQualityScores += 1 - qualityScoreIterator[c];
-        }
-
-        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
-        bestNumPredictions = numPredictions;
     }
 
     if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
@@ -91,33 +90,36 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
                                                            bestNumPredictions * sizeof(float64));
         }
 
+        typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+
         // TODO Remove the following
-        if (labelIndices == nullptr) {
+        if (labelIndices_.isPartial()) {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
-                uint32 i = sortedIndices[c];
-                headPtr_->labelIndices_[c] = labelIndices == nullptr ? i : labelIndices[i];
-                headPtr_->predictedScores_[c] = valueIterator[i];
+                headPtr_->labelIndices_[c] = indexIterator[c];
+                headPtr_->predictedScores_[c] = valueIterator[c];
             }
         } else {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
-                headPtr_->labelIndices_[c] = labelIndices[c];
-                headPtr_->predictedScores_[c] = valueIterator[c];
+                uint32 i = sortedIndices[c];
+                headPtr_->labelIndices_[c] = indexIterator[i];
+                headPtr_->predictedScores_[c] = valueIterator[i];
             }
+
         }
 
         PartialPrediction::iterator headValueIterator = headPtr_->begin();
         PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
-        if (labelIndices == nullptr) {
+        if (labelIndices_.isPartial()) {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
-                uint32 i = sortedIndices[c];
-                headIndexIterator[c] = labelIndices == nullptr ? i : labelIndices[i];
-                headValueIterator[c] = valueIterator[i];
+                headIndexIterator[c] = indexIterator[c];
+                headValueIterator[c] = valueIterator[c];
             }
         } else {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
-                headIndexIterator[c] = labelIndices[c];
-                headValueIterator[c] = valueIterator[c];
+                uint32 i = sortedIndices[c];
+                headIndexIterator[c] = indexIterator[i];
+                headValueIterator[c] = valueIterator[i];
             }
         }
 

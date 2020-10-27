@@ -10,7 +10,6 @@ SingleLabelHeadRefinementImpl<T>::SingleLabelHeadRefinementImpl(const T& labelIn
 
 template<class T>
 const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                                      const uint32* labelIndices,
                                                                       IStatisticsSubset& statisticsSubset,
                                                                       bool uncovered, bool accumulated) {
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
@@ -33,6 +32,7 @@ const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const Pred
     // The quality score must be better than that of `bestHead`...
     if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
         LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
+        typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
 
         if (headPtr_.get() == nullptr) {
             headPtr_ = std::make_unique<PartialPrediction>(1);
@@ -46,12 +46,12 @@ const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const Pred
 
         // TODO Remove the following
         headPtr_->predictedScores_[0] = valueIterator[bestC];
-        headPtr_->labelIndices_[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
+        headPtr_->labelIndices_[0] = indexIterator[bestC];
 
         PartialPrediction::iterator headValueIterator = headPtr_->begin();
         PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
         headValueIterator[0] = valueIterator[bestC];
-        headIndexIterator[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
+        headIndexIterator[0] = indexIterator[bestC];
         headPtr_->overallQualityScore = bestQualityScore;
         return headPtr_.get();
     }
@@ -89,7 +89,6 @@ FullHeadRefinementImpl<T>::FullHeadRefinementImpl(const T& labelIndices)
 
 template<class T>
 const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                               const uint32* labelIndices,
                                                                IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                bool accumulated) {
     const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
@@ -101,12 +100,13 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
         EvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
 
         if (headPtr_.get() == nullptr) {
-            if (labelIndices != nullptr) {
+            if (labelIndices_.isPartial()) {
+                typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
                 std::unique_ptr<PartialPrediction> headPtr = std::make_unique<PartialPrediction>(numPredictions);
                 PartialPrediction::index_iterator headIndexIterator = headPtr->indices_begin();
 
                 for (uint32 c = 0; c < numPredictions; c++) {
-                    headIndexIterator[c] = labelIndices[c];
+                    headIndexIterator[c] = indexIterator[c];
                 }
 
                 // TODO Remove the following
@@ -114,7 +114,7 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
                 headPtr_->labelIndices_ = candidateLabelIndices;
 
                 for (uint32 c = 0; c < numPredictions; c++) {
-                    candidateLabelIndices[c] = labelIndices[c];
+                    candidateLabelIndices[c] = indexIterator[c];
                 }
 
                 headPtr_ = std::move(headPtr);
