@@ -48,7 +48,10 @@ class IHeadRefinement {
                                                     bool accumulated) = 0;
 
         /**
-         * TODO
+         * Returns the best head that has been found by the function `findHead.
+         *
+         * @return An unique pointer to an object of type `PredictionCandidate`, representing the best head that has
+         *         been found
          */
         virtual std::unique_ptr<PredictionCandidate> pollHead() = 0;
 
