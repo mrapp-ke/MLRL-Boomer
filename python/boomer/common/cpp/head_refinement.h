@@ -166,7 +166,7 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
         const T& labelIndices_;
 
-        std::unique_ptr<FullPrediction> headPtr_;
+        std::unique_ptr<PredictionCandidate> headPtr_;
 
     public:
 

@@ -44,8 +44,12 @@ const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const Pred
             headPtr_->predictedScores_ = candidatePredictedScores;
         }
 
-        float64* headValueIterator = headPtr_->predictedScores_;
-        uint32* headIndexIterator = headPtr_->labelIndices_;
+        // TODO Remove the following
+        headPtr_->predictedScores_[0] = valueIterator[bestC];
+        headPtr_->labelIndices_[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
+
+        PartialPrediction::iterator headValueIterator = headPtr_->begin();
+        PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
         headValueIterator[0] = valueIterator[bestC];
         headIndexIterator[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
         headPtr_->overallQualityScore = bestQualityScore;
@@ -97,29 +101,38 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
         EvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
 
         if (headPtr_.get() == nullptr) {
-            headPtr_ = std::make_unique<FullPrediction>(numPredictions);
-
-            // TODO Remove the following
-            float64* candidatePredictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-            uint32* candidateLabelIndices = nullptr;
-
-            for (uint32 c = 0; c < numPredictions; c++) {
-                candidatePredictedScores[c] = valueIterator[c];
-            }
-
             if (labelIndices != nullptr) {
+                std::unique_ptr<PartialPrediction> headPtr = std::make_unique<PartialPrediction>(numPredictions);
+                PartialPrediction::index_iterator headIndexIterator = headPtr->indices_begin();
+
+                for (uint32 c = 0; c < numPredictions; c++) {
+                    headIndexIterator[c] = labelIndices[c];
+                }
+
+                // TODO Remove the following
                 uint32* candidateLabelIndices = (uint32*) malloc(numPredictions * sizeof(uint32));
+                headPtr_->labelIndices_ = candidateLabelIndices;
 
                 for (uint32 c = 0; c < numPredictions; c++) {
                     candidateLabelIndices[c] = labelIndices[c];
                 }
+
+                headPtr_ = std::move(headPtr);
+            } else {
+                headPtr_ = std::make_unique<FullPrediction>(numPredictions);
             }
 
-            headPtr_->labelIndices_ = candidateLabelIndices;
+            // TODO Remove the following
+            float64* candidatePredictedScores = (float64*) malloc(numPredictions * sizeof(float64));
             headPtr_->predictedScores_ = candidatePredictedScores;
         }
 
-        float64* headValueIterator = headPtr_->predictedScores_;
+        // TODO Remove the following
+        for (uint32 c = 0; c < numPredictions; c++) {
+            headPtr_->predictedScores_[c] = valueIterator[c];
+        }
+
+        PredictionCandidate::iterator headValueIterator = headPtr_->begin();
 
         for (uint32 c = 0; c < numPredictions; c++) {
             headValueIterator[c] = valueIterator[c];

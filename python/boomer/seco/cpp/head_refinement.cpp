@@ -80,20 +80,6 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
             // TODO Remove the following
             uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
             float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
-
-            if (labelIndices == nullptr) {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    uint32 i = sortedIndices[c];
-                    candidateLabelIndices[c] = labelIndices == nullptr ? i : labelIndices[i];
-                    candidatePredictedScores[c] = valueIterator[i];
-                }
-            } else {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    candidateLabelIndices[c] = labelIndices[c];
-                    candidatePredictedScores[c] = valueIterator[c];
-                }
-            }
-
             headPtr_->labelIndices_ = candidateLabelIndices;
             headPtr_->predictedScores_ = candidatePredictedScores;
         } else if (headPtr_->getNumElements() != bestNumPredictions) {
@@ -105,8 +91,22 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
                                                            bestNumPredictions * sizeof(float64));
         }
 
-        float64* headValueIterator = headPtr_->predictedScores_;
-        uint32* headIndexIterator = headPtr_->labelIndices_;
+        // TODO Remove the following
+        if (labelIndices == nullptr) {
+            for (uint32 c = 0; c < bestNumPredictions; c++) {
+                uint32 i = sortedIndices[c];
+                headPtr_->labelIndices_[c] = labelIndices == nullptr ? i : labelIndices[i];
+                headPtr_->predictedScores_[c] = valueIterator[i];
+            }
+        } else {
+            for (uint32 c = 0; c < bestNumPredictions; c++) {
+                headPtr_->labelIndices_[c] = labelIndices[c];
+                headPtr_->predictedScores_[c] = valueIterator[c];
+            }
+        }
+
+        PartialPrediction::iterator headValueIterator = headPtr_->begin();
+        PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
         if (labelIndices == nullptr) {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
