@@ -69,9 +69,7 @@ namespace boosting {
 
         private:
 
-            const T& indexVector_;
-
-            const uint32* labelIndices_;
+            const T& labelIndices_;
 
             float64 l2RegularizationWeight_;
 
@@ -80,14 +78,12 @@ namespace boosting {
         public:
 
             /**
-             * @param indexVector               A reference to an object of template type `T` that provides access to
+             * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            // TODO Remove arguments `numPredictions` and `labelIndices`
-            RegularizedLabelWiseRuleEvaluationImpl(const T& indexVector, uint32 numPredictions,
-                                                   const uint32* labelIndices, float64 l2RegularizationWeight);
+            RegularizedLabelWiseRuleEvaluationImpl(const T& labelIndices, float64 l2RegularizationWeight);
 
             const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
                 const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
@@ -113,10 +109,7 @@ namespace boosting {
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
-            // TODO Remove arguments `numLabelIndices` and `labelIndices`
-            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
-                                                                     uint32 numLabelIndices,
-                                                                     const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector) const = 0;
 
             /**
              * Creates a new instance of the class `ILabelWiseRuleEvaluation` that allows to calculate the predictions
@@ -127,10 +120,7 @@ namespace boosting {
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
-            // TODO Remove arguments `numLabelIndices` and `labelIndices`
-            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
-                                                                     uint32 numLabelIndices,
-                                                                     const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector) const = 0;
 
 
     };
@@ -152,13 +142,9 @@ namespace boosting {
              */
             RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
-                                                             uint32 numLabelIndices,
-                                                             const uint32* labelIndices) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector) const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
-                                                             uint32 numLabelIndices,
-                                                             const uint32* labelIndices) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector) const override;
 
     };
 

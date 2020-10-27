@@ -67,9 +67,7 @@ namespace seco {
 
         private:
 
-            const T& indexVector_;
-
-            const uint32* labelIndices_;
+            const T& labelIndices_;
 
             std::shared_ptr<IHeuristic> heuristicPtr_;
 
@@ -80,16 +78,14 @@ namespace seco {
         public:
 
             /**
-             * @param indexVector       A reference to an object of template type `T` that provides access to the
+             * @param labelIndices      A reference to an object of template type `T` that provides access to the
              *                          indices of the labels for which the rules may predict
              * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
              *                          to be optimized
              * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
              *                          minority label should be predicted
              */
-            // TODO Remove arguments `numPredictions` and `labelIndices`
-            HeuristicLabelWiseRuleEvaluationImpl(const T& indexVector, uint32 numPredictions,
-                                                 const uint32* labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
+            HeuristicLabelWiseRuleEvaluationImpl(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
                                                  bool predictMajority);
 
             const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
@@ -117,9 +113,7 @@ namespace seco {
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
-                                                                     uint32 numLabelIndices,
-                                                                     const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector) const = 0;
 
             /**
              * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
@@ -130,9 +124,7 @@ namespace seco {
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
-                                                                     uint32 numLabelIndices,
-                                                                     const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector) const = 0;
 
     };
 
@@ -157,13 +149,9 @@ namespace seco {
              */
             HeuristicLabelWiseRuleEvaluationFactoryImpl(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
-                                                             uint32 numLabelIndices,
-                                                             const uint32* labelIndices) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const RangeIndexVector& indexVector) const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
-                                                             uint32 numLabelIndices,
-                                                             const uint32* labelIndices) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const DenseIndexVector& indexVector) const override;
 
     };
 

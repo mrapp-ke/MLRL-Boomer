@@ -129,11 +129,7 @@ namespace boosting {
 
         private:
 
-            const T& indexVector_;
-
-            uint32 numPredictions_;
-
-            const uint32* labelIndices_;
+            const T& labelIndices_;
 
             float64 l2RegularizationWeight_;
 
@@ -148,7 +144,7 @@ namespace boosting {
         public:
 
             /**
-             * @param indexVector               A reference to an object of template type `T` that provides access to
+             * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
@@ -157,9 +153,7 @@ namespace boosting {
              * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            // TODO Remove arguments `numPredictions` and `labelIndices`
-            RegularizedExampleWiseRuleEvaluationImpl(const T& indexVector, uint32 numPredictions,
-                                                     const uint32* labelIndices, float64 l2RegularizationWeight,
+            RegularizedExampleWiseRuleEvaluationImpl(const T& labelIndices, float64 l2RegularizationWeight,
                                                      std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr);
 
             ~RegularizedExampleWiseRuleEvaluationImpl();
@@ -194,9 +188,7 @@ namespace boosting {
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
-                                                                       uint32 numLabelIndices,
-                                                                       const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create(const RangeIndexVector& indexVector) const = 0;
 
             /**
              * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
@@ -207,9 +199,7 @@ namespace boosting {
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
-                                                                       uint32 numLabelIndices,
-                                                                       const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<IExampleWiseRuleEvaluation> create(const DenseIndexVector& indexVector) const = 0;
 
     };
 
@@ -240,13 +230,9 @@ namespace boosting {
                                                             std::shared_ptr<Blas> blasPtr,
                                                             std::shared_ptr<Lapack> lapackPtr);
 
-            std::unique_ptr<IExampleWiseRuleEvaluation> create(const RangeIndexVector& indexVector,
-                                                               uint32 numLabelIndices,
-                                                               const uint32* labelIndices) const override;
+            std::unique_ptr<IExampleWiseRuleEvaluation> create(const RangeIndexVector& indexVector) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluation> create(const DenseIndexVector& indexVector,
-                                                               uint32 numLabelIndices,
-                                                               const uint32* labelIndices) const override;
+            std::unique_ptr<IExampleWiseRuleEvaluation> create(const DenseIndexVector& indexVector) const override;
 
     };
 
