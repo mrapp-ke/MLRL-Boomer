@@ -31,7 +31,6 @@ PartialHeadRefinementImpl<T>::PartialHeadRefinementImpl(const T& labelIndices,
 
 template<class T>
 const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                                  std::unique_ptr<PredictionCandidate>& headPtr,
                                                                   const uint32* labelIndices,
                                                                   IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                   bool accumulated) {
