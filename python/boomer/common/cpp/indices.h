@@ -71,10 +71,7 @@ class IIndexVector {
          *                      subset
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        // TODO Remove arguments `numLabelIndices` and `labelIndices`
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics,
-                                                                uint32 numLabelIndices,
-                                                                const uint32* labelIndices) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const = 0;
 
         /**
          * Creates and returns a new object of type `IHeadRefinement` that allows to search for the best head of a rule,
@@ -149,8 +146,7 @@ class DenseIndexVector : virtual public IIndexVector {
         std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
                                                         IWeightVector& weights) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics, uint32 numLabelIndices,
-                                                        const uint32* labelIndices) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
 
         std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
@@ -220,8 +216,7 @@ class RangeIndexVector : virtual public IIndexVector {
         std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
                                                         IWeightVector& weights) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics, uint32 numLabelIndices,
-                                                        const uint32* labelIndices) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
 
         std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 

@@ -33,13 +33,9 @@ cdef extern from "cpp/statistics.h" nogil:
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove)
 
-        # TODO Remove arguments `numLabelIndices` and `labelIndices`
-        unique_ptr[IStatisticsSubset] createSubset(const RangeIndexVector& indexVector, uint32 numLabelIndices,
-                                                   const uint32* labelIndices)
+        unique_ptr[IStatisticsSubset] createSubset(const RangeIndexVector& labelIndices)
 
-        # TODO Remove arguments `numLabelIndices` and `labelIndices`
-        unique_ptr[IStatisticsSubset] createSubset(const DenseIndexVector& indexVector, uint32 numLabelIndices,
-                                                   const uint32* labelIndices)
+        unique_ptr[IStatisticsSubset] createSubset(const DenseIndexVector& labelIndices)
 
         void applyPrediction(uint32 statisticIndex, Prediction& prediction)
 

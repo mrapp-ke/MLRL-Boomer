@@ -50,10 +50,8 @@ std::unique_ptr<IThresholdsSubset> DenseIndexVector::createSubset(AbstractThresh
     return thresholds.createSubset(weights, *this);
 }
 
-std::unique_ptr<IStatisticsSubset> DenseIndexVector::createSubset(const AbstractStatistics& statistics,
-                                                                  uint32 numLabelIndices,
-                                                                  const uint32* labelIndices) const {
-    return statistics.createSubset(*this, numLabelIndices, labelIndices);
+std::unique_ptr<IStatisticsSubset> DenseIndexVector::createSubset(const AbstractStatistics& statistics) const {
+    return statistics.createSubset(*this);
 }
 
 std::unique_ptr<IHeadRefinement> DenseIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {
@@ -110,10 +108,8 @@ std::unique_ptr<IThresholdsSubset> RangeIndexVector::createSubset(AbstractThresh
     return thresholds.createSubset(weights, *this);
 }
 
-std::unique_ptr<IStatisticsSubset> RangeIndexVector::createSubset(const AbstractStatistics& statistics,
-                                                                  uint32 numLabelIndices,
-                                                                  const uint32* labelIndices) const {
-    return statistics.createSubset(*this, numLabelIndices, labelIndices);
+std::unique_ptr<IStatisticsSubset> RangeIndexVector::createSubset(const AbstractStatistics& statistics) const {
+    return statistics.createSubset(*this);
 }
 
 std::unique_ptr<IHeadRefinement> RangeIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {

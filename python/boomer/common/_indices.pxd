@@ -23,9 +23,7 @@ cdef extern from "cpp/indices.h" nogil:
 
         unique_ptr[IThresholdsSubset] createSubset(AbstractThresholds& thresholds, IWeightVector& weights)
 
-        # TODO Remove arguments `numLabelIndices` and `labelIndices`
-        unique_ptr[IStatisticsSubset] createSubset(const AbstractStatistics& statistics, uint32 numLabelIndices,
-                                                   const uint32* labelIndices)
+        unique_ptr[IStatisticsSubset] createSubset(const AbstractStatistics& statistics)
 
 
     cdef cppclass RangeIndexVector(IIndexVector):
