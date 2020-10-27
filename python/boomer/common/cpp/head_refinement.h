@@ -50,7 +50,7 @@ class IHeadRefinement {
         virtual const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
                                                     std::unique_ptr<PredictionCandidate>& headPtr,
                                                     const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
-                                                    bool uncovered, bool accumulated) const = 0;
+                                                    bool uncovered, bool accumulated) = 0;
 
         /**
          * TODO
@@ -137,7 +137,7 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
         const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
                                             std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
                                             IStatisticsSubset& statisticsSubset, bool uncovered,
-                                            bool accumulated) const override;
+                                            bool accumulated) override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 
@@ -185,7 +185,7 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
         const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
                                             std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
                                             IStatisticsSubset& statisticsSubset, bool uncovered,
-                                            bool accumulated) const override;
+                                            bool accumulated) override;
 
         std::unique_ptr<PredictionCandidate> pollHead() override;
 
