@@ -9,7 +9,7 @@
 
 
 /**
- * Stores the predictions of a rule for several labels.
+ * An abstract base class for all classes that store the scores that are predicted by a rule.
  */
 class Prediction {
 
@@ -41,7 +41,8 @@ class Prediction {
 };
 
 /**
- * Stores the predictions of a rule for several labels, as well as an overall quality score.
+ * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a quality score
+ * that assesses the overall quality of the rule.
  */
 class PredictionCandidate : public Prediction {
 
