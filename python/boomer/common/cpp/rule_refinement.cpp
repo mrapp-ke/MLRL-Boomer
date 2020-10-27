@@ -468,6 +468,7 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
         }
     }
 
+    refinementPtr->headPtr = headRefinementPtr_->pollHead();
     refinementPtr_ = std::move(refinementPtr);
 }
 
@@ -559,6 +560,7 @@ void ApproximateRuleRefinementImpl<T>::findRefinement(const PredictionCandidate*
         }
     }
 
+    refinementPtr->headPtr = headRefinementPtr_->pollHead();
     refinementPtr_ = std::move(refinementPtr);
 }
 
