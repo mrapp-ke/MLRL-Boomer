@@ -29,6 +29,14 @@ class IIndexVector {
         virtual ~IIndexVector() { };
 
         /**
+         * Returns whether the indices are partial, i.e., some indices in the range [0, getNumElements()) are missing,
+         * or not.
+         *
+         * @return True, if the indices are partial, false otherwise
+         */
+        virtual bool isPartial() const = 0;
+
+        /**
          * Returns the number of indices.
          *
          * @return The number of indices
@@ -137,6 +145,8 @@ class DenseIndexVector : virtual public IIndexVector {
          */
         index_const_iterator indices_cend() const;
 
+        bool isPartial() const override;
+
         uint32 getNumElements() const override;
 
         void setNumElements(uint32 numElements) override;
@@ -206,6 +216,8 @@ class RangeIndexVector : virtual public IIndexVector {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const;
+
+        bool isPartial() const override;
 
         uint32 getNumElements() const override;
 

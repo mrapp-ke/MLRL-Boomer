@@ -14,6 +14,10 @@ DenseIndexVector::~DenseIndexVector() {
     free(array_);
 }
 
+bool DenseIndexVector::isPartial() const {
+    return true;
+}
+
 uint32 DenseIndexVector::getNumElements() const {
     return numElements_;
 }
@@ -81,6 +85,10 @@ bool RangeIndexVector::Iterator::operator!=(const RangeIndexVector::Iterator& rh
 
 RangeIndexVector::RangeIndexVector(uint32 numElements) {
     numElements_ = numElements;
+}
+
+bool RangeIndexVector::isPartial() const {
+    return false;
 }
 
 uint32 RangeIndexVector::getNumElements() const {
