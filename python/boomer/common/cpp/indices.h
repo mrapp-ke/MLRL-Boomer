@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "data.h"
+#include "arrays.h"
 #include <memory>
 
 // Forward declarations
@@ -25,6 +25,21 @@ class IIndexVector {
     public:
 
         virtual ~IIndexVector() { };
+
+        /**
+         * Returns the number of indices.
+         *
+         * @return The number of indices
+         */
+        virtual uint32 getNumElements() const = 0;
+
+        /**
+         * Returns the index at a specific position.
+         *
+         * @param pos   The position of the index. Must be in [0, getNumElements())
+         * @return      The index at the given position
+         */
+        virtual uint32 getIndex(uint32 pos) const = 0;
 
         /**
          * Creates and returns a new subset of the given thresholds that only contains the labels whose indices are
@@ -108,7 +123,7 @@ class DenseIndexVector : virtual public IIndexVector {
 
         uint32 getNumElements() const override;
 
-        uint32 getValue(uint32 pos) const override;
+        uint32 getIndex(uint32 pos) const override;
 
         std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
                                                         IWeightVector& weights) const override;
@@ -175,7 +190,7 @@ class RangeIndexVector : virtual public IIndexVector {
 
         uint32 getNumElements() const override;
 
-        uint32 getValue(uint32 pos) const override;
+        uint32 getIndex(uint32 pos) const override;
 
         std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
                                                         IWeightVector& weights) const override;

@@ -181,19 +181,19 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
             # For each feature, create an object of type `IRuleRefinement`...
             for c in range(num_sampled_features):
-                f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                 rule_refinement_ptr = thresholds_subset_ptr.get().createRuleRefinement(f)
                 rule_refinements[f] = rule_refinement_ptr.release()
 
             # Search for the best condition among all available features to be added to the current rule...
             for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
-                f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                 rule_refinement = rule_refinements[f]
                 rule_refinement.findRefinement(best_refinement_ptr.get().headPtr.get(), num_predictions, label_indices)
 
             # Pick the best refinement among the refinements that have been found for the different features...
             for c in range(num_sampled_features):
-                f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                 rule_refinement = rule_refinements[f]
                 current_refinement_ptr = move(rule_refinement.pollRefinement())
 
