@@ -34,7 +34,7 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
                                                                   std::unique_ptr<PredictionCandidate>& headPtr,
                                                                   const uint32* labelIndices,
                                                                   IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                                  bool accumulated) const {
+                                                                  bool accumulated) {
     const PredictionCandidate* result = nullptr;
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);

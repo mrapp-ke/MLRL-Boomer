@@ -13,7 +13,7 @@ const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const Pred
                                                                       std::unique_ptr<PredictionCandidate>& headPtr,
                                                                       const uint32* labelIndices,
                                                                       IStatisticsSubset& statisticsSubset,
-                                                                      bool uncovered, bool accumulated) const {
+                                                                      bool uncovered, bool accumulated) {
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -89,7 +89,7 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
                                                                std::unique_ptr<PredictionCandidate>& headPtr,
                                                                const uint32* labelIndices,
                                                                IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                               bool accumulated) const {
+                                                               bool accumulated) {
     const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction.overallQualityScore;
 
