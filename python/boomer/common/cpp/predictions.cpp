@@ -2,9 +2,10 @@
 #include <cstdlib>
 
 
-Prediction::Prediction(uint32 numPredictions, uint32* labelIndices, float64* predictedScores)
-    : numPredictions_(numPredictions), labelIndices_(labelIndices), predictedScores_(predictedScores) {
-
+Prediction::Prediction(uint32 numPredictions)
+    : numPredictions_(numPredictions) {
+    predictedScores_ = nullptr;
+    labelIndices_ = nullptr;
 }
 
 Prediction::~Prediction() {
@@ -12,8 +13,7 @@ Prediction::~Prediction() {
     free(predictedScores_);
 }
 
-PredictionCandidate::PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
-                                         float64 overallQualityScore)
-    : Prediction(numPredictions, labelIndices, predictedScores), overallQualityScore_(overallQualityScore) {
+PredictionCandidate::PredictionCandidate(uint32 numPredictions)
+    : Prediction(numPredictions) {
 
 }

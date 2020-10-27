@@ -16,14 +16,9 @@ class Prediction {
     public:
 
         /**
-         * @param numPredictions    The number of labels for which the rule predicts
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
-         *                          indices of the labels for which the rule predicts or a null pointer, if the rule
-         *                          predicts for all labels
-         * @param predictedScores   A pointer to an array of type `float64`, shape `(numPredictions)`, representing the
-         *                          predicted scores
+         * @param numPredictions The number of labels for which the rule predicts
          */
-        Prediction(uint32 numPredictions, uint32* labelIndices, float64* predictedScores);
+        Prediction(uint32 numPredictions);
 
         ~Prediction();
 
@@ -53,16 +48,9 @@ class PredictionCandidate : public Prediction {
     public:
 
         /**
-         * @param numPredictions        The number of labels for which the rule predicts
-         * @param labelIndices          A pointer to an array of type `uint32`, shape `(numPredictions)`, representing
-         *                              the indices of the labels for which the rule predicts or a null pointer, if the
-         *                              rule predicts for all labels
-         * @param predictedScores       A pointer to an array of type `float64`, shape `(numPredictions)`, representing
-         *                              the predicted scores
-         * @param overallQualityScore   A score that assesses the overall quality of the predictions
+         * @param numPredictions The number of labels for which the rule predicts
          */
-        PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
-                            float64 overallQualityScore);
+        PredictionCandidate(uint32 numPredictions);
 
         /**
          * A score that assesses the overall quality of the predictions.
