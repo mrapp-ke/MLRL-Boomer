@@ -174,21 +174,41 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
         *this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = prediction.getNumElements();
-    const uint32* labelIndices = prediction.labelIndices_;
-    const float64* predictedScores = prediction.predictedScores_;
     uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    FullPrediction::const_iterator valueIterator = prediction.cbegin();
 
     // Only the labels that are predicted by the new rule must be considered...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
-        float64 predictedScore = predictedScores[c];
-        uint32 i = offset + l;
-
         // Update the score that is currently predicted for the current example and label...
-        float64 updatedScore = currentScores_[i] + predictedScore;
+        uint32 i = offset + c;
+        float64 updatedScore = currentScores_[i] + valueIterator[c];
+        currentScores_[i] = updatedScore;
+
+        // Update the gradient and Hessian for the current example and label...
+        std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_,
+                                                                                         statisticIndex, c,
+                                                                                         updatedScore);
+        gradients_[i] = pair.first;
+        hessians_[i] = pair.second;
+    }
+}
+
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) {
+    uint32 numLabels = this->getNumCols();
+    uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+    PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
+
+    // Only the labels that are predicted by the new rule must be considered...
+    for (uint32 c = 0; c < numPredictions; c++) {
+        // Update the score that is currently predicted for the current example and label...
+        uint32 l = indexIterator[c];
+        uint32 i = offset + l;
+        float64 updatedScore = currentScores_[i] + valueIterator[c];
         currentScores_[i] = updatedScore;
 
         // Update the gradient and Hessian for the current example and label...

@@ -8,6 +8,9 @@
 #include "data.h"
 #include "indices.h"
 
+// Forward declarations
+class AbstractStatistics;
+
 
 /**
  * An abstract base class for all classes that store the scores that are predicted by a rule.
@@ -34,6 +37,14 @@ class Prediction : public DenseVector<float64>, virtual public IIndexVector {
          * A pointer to an array of type `float64`, shape `(getNumElements())`, representing the predicted scores.
          */
         float64* predictedScores_;
+
+        /**
+         * TODO
+         *
+         * @param statistics        TODO
+         * @param statisticIndex    TODO
+         */
+        virtual void apply(AbstractStatistics& statistics, uint32 statisticIndex) const = 0;
 
         virtual uint32 getNumElements() const override = 0;
 
@@ -78,6 +89,8 @@ class FullPrediction : public PredictionCandidate, public RangeIndexVector {
 
         void setNumElements(uint32 numElements) override;
 
+        void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
+
 };
 
 /**
@@ -95,5 +108,7 @@ class PartialPrediction : public PredictionCandidate, public DenseIndexVector {
         uint32 getNumElements() const override;
 
         void setNumElements(uint32 numElements) override;
+
+        void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
 
 };

@@ -188,7 +188,9 @@ namespace boosting {
 
             std::unique_ptr<IStatisticsSubset> createSubset(const DenseIndexVector& indexVector) const override;
 
-            void applyPrediction(uint32 statisticIndex, const Prediction& prediction) override;
+            void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override;
+
+            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override;
 
             std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override;
 
