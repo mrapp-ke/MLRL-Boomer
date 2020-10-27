@@ -20,7 +20,7 @@ const LabelWiseEvaluatedPrediction& HeuristicLabelWiseRuleEvaluationImpl<T>::cal
     LabelWiseEvaluatedPrediction::iterator valueIterator = prediction_.begin();
     LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator = prediction_.quality_scores_begin();
     float64 overallQualityScore = 0;
-    typename T::const_iterator indexIterator = labelIndices_.cbegin();
+    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
 
     for (uint32 c = 0; c < numPredictions; c++) {
         uint32 l = indexIterator[c];

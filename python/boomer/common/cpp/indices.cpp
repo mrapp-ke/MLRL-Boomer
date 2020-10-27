@@ -5,8 +5,36 @@
 
 
 DenseIndexVector::DenseIndexVector(uint32 numElements)
-    : DenseVector<uint32>(numElements) {
+    : numElements_(numElements), array_(new uint32[numElements]) {
 
+}
+
+DenseIndexVector::~DenseIndexVector() {
+    delete[] array_;
+}
+
+uint32 DenseIndexVector::getNumElements() const {
+    return numElements_;
+}
+
+uint32 DenseIndexVector::getValue(uint32 pos) const {
+    return array_[pos];
+}
+
+DenseIndexVector::index_iterator DenseIndexVector::indices_begin() {
+    return array_;
+}
+
+DenseIndexVector::index_iterator DenseIndexVector::indices_end() {
+    return &array_[numElements_];
+}
+
+DenseIndexVector::index_const_iterator DenseIndexVector::indices_cbegin() const {
+    return array_;
+}
+
+DenseIndexVector::index_const_iterator DenseIndexVector::indices_cend() const {
+    return &array_[numElements_];
 }
 
 std::unique_ptr<IThresholdsSubset> DenseIndexVector::createSubset(AbstractThresholds& thresholds,
@@ -53,11 +81,11 @@ uint32 RangeIndexVector::getValue(uint32 pos) const {
     return pos;
 }
 
-RangeIndexVector::const_iterator RangeIndexVector::cbegin() const {
+RangeIndexVector::index_const_iterator RangeIndexVector::indices_cbegin() const {
     return RangeIndexVector::Iterator(0);
 }
 
-RangeIndexVector::const_iterator RangeIndexVector::cend() const {
+RangeIndexVector::index_const_iterator RangeIndexVector::indices_cend() const {
     return RangeIndexVector::Iterator(numElements_);
 }
 
