@@ -20,7 +20,4 @@ cdef extern from "cpp/predictions.h" nogil:
 
 
     cdef cppclass PredictionCandidate(Prediction):
-
-        # Attributes:
-
-        float64 overallQualityScore_
+        pass
