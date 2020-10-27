@@ -25,8 +25,7 @@ ExactRuleRefinementImpl<T>::ExactRuleRefinementImpl(std::unique_ptr<IHeadRefinem
 }
 
 template<class T>
-void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                                const uint32* labelIndices) {
+void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* currentHead) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     const PredictionCandidate* bestHead = currentHead;
@@ -477,8 +476,7 @@ ApproximateRuleRefinementImpl<T>::ApproximateRuleRefinementImpl(
 }
 
 template<class T>
-void ApproximateRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                                      const uint32* labelIndices) {
+void ApproximateRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* currentHead) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     refinementPtr->start = 0;

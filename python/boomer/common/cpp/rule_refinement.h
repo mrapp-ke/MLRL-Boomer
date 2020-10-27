@@ -89,15 +89,10 @@ class IRuleRefinement {
         /**
          * Finds the best refinement of an existing rule.
          *
-         * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
-         *                          existing rule or a null pointer, if no rule exists yet
-         * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
-         *                          indices of the labels for which the refined rule may predict
+         * @param currentHead A pointer to an object of type `PredictionCandidate`, representing the head of the
+         *                    existing rule or a null pointer, if no rule exists yet
          */
-        // TODO Remove arguments `numLabelIndices` and `labelIndices`
-        virtual void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                    const uint32* labelIndices) = 0;
+        virtual void findRefinement(const PredictionCandidate* currentHead) = 0;
 
         /**
          * Returns the best refinement that has been found by the function `findRefinement`.
@@ -158,8 +153,7 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
                                 const IWeightVector& weights, uint32 totalSumOfWeights, uint32 featureIndex,
                                 bool nominal, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
-        void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                            const uint32* labelIndices) override;
+        void findRefinement(const PredictionCandidate* currentHead) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 
@@ -203,8 +197,7 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
                                       uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
-        void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                            const uint32* labelIndices) override;
+        void findRefinement(const PredictionCandidate* currentHead) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 

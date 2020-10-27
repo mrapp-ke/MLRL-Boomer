@@ -189,7 +189,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
                 f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                 rule_refinement = rule_refinements[f]
-                rule_refinement.findRefinement(best_refinement_ptr.get().headPtr.get(), num_predictions, label_indices)
+                rule_refinement.findRefinement(best_refinement_ptr.get().headPtr.get())
 
             # Pick the best refinement among the refinements that have been found for the different features...
             for c in range(num_sampled_features):
