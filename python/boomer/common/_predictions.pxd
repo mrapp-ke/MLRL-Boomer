@@ -15,12 +15,6 @@ cdef extern from "cpp/predictions.h" nogil:
 
         ctypedef float64* const_iterator
 
-        # Attributes:
-
-        uint32* labelIndices_
-
-        float64* predictedScores_
-
         # Functions:
 
         bool isPartial()
