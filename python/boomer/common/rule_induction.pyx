@@ -110,7 +110,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
             statistics_subset_ptr = label_indices_ptr.get().createSubset(dereference(statistics))
             head_refinement_ptr = head_refinement_factory.create(dereference(label_indices_ptr.get()))
-            head_refinement_ptr.get().findHead(NULL, NULL, dereference(statistics_subset_ptr.get()), True, False)
+            head_refinement_ptr.get().findHead(NULL, dereference(statistics_subset_ptr.get()), True, False)
             default_prediction_ptr = head_refinement_ptr.get().pollHead()
             statistics_provider.switch_rule_evaluation()
 
