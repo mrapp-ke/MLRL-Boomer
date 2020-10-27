@@ -246,7 +246,7 @@ std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
 
 void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = prediction.numPredictions_;
+    uint32 numPredictions = prediction.getNumElements();
     const uint32* labelIndices = prediction.labelIndices_;
     const float64* predictedScores = prediction.predictedScores_;
     uint32 offset = statisticIndex * numLabels;

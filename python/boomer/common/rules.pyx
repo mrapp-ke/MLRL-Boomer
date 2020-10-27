@@ -624,7 +624,7 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef Rule default_rule
 
         if default_prediction != NULL:
-            num_predictions = default_prediction.numPredictions_
+            num_predictions = default_prediction.getNumElements()
             predicted_scores = default_prediction.predictedScores_
             head_scores = array_float64(num_predictions)
 
@@ -689,7 +689,7 @@ cdef class RuleListBuilder(ModelBuilder):
                                                                  gr_feature_indices, gr_thresholds, eq_feature_indices,
                                                                  eq_thresholds, neq_feature_indices, neq_thresholds)
 
-        cdef uint32 num_predictions = head.numPredictions_
+        cdef uint32 num_predictions = head.getNumElements()
         cdef float64* predicted_scores = head.predictedScores_
         cdef uint32* label_indices = head.labelIndices_
         cdef float64[::1] head_scores = array_float64(num_predictions)

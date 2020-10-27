@@ -98,11 +98,10 @@ bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
 
             headPtr->labelIndices_ = candidateLabelIndices;
             headPtr->predictedScores_ = candidatePredictedScores;
-        } else if (headPtr->numPredictions_ != bestNumPredictions) {
+        } else if (headPtr->getNumElements() != bestNumPredictions) {
             headPtr->setNumElements(bestNumPredictions);
 
             // TODO Remove the following
-            headPtr->numPredictions_ = bestNumPredictions;
             headPtr->labelIndices_ = (uint32*) realloc(headPtr->labelIndices_, bestNumPredictions * sizeof(uint32));
             headPtr->predictedScores_ = (float64*) realloc(headPtr->predictedScores_,
                                                            bestNumPredictions * sizeof(float64));

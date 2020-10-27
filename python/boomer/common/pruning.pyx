@@ -73,7 +73,7 @@ cdef class IREP(Pruning):
         # The number of conditions of the existing rule
         cdef uint32 num_conditions = conditions.size()
         # The number of labels for which the existing rule predicts
-        cdef uint32 num_predictions = head.numPredictions_
+        cdef uint32 num_predictions = head.getNumElements()
         # An array that stores the indices of the labels for which the existing rule predicts
         cdef uint32* label_indices = head.labelIndices_
         # Temporary variables

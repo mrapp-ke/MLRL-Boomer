@@ -9,7 +9,7 @@ ConstantShrinkageImpl::ConstantShrinkageImpl(float64 shrinkage)
 }
 
 void ConstantShrinkageImpl::postProcess(Prediction& prediction) const {
-    uint32 numPredictions = prediction.numPredictions_;
+    uint32 numPredictions = prediction.getNumElements();
     float64* predictedScores = prediction.predictedScores_;
 
     for (uint32 i = 0; i < numPredictions; i++) {
