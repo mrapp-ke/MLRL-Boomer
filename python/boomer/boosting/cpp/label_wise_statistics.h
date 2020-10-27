@@ -73,11 +73,7 @@ namespace boosting {
 
                     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
-                    const T& indexVector_;
-
-                    uint32 numPredictions_;
-
-                    const uint32* labelIndices_;
+                    const T& labelIndices_;
 
                     float64* sumsOfGradients_;
 
@@ -95,13 +91,12 @@ namespace boosting {
                      * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
-                     * @param indexVector       A reference to an object of template type `T` that provides access to
+                     * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    // TODO Remove arguments `numPredictions` and `labelIndices`
                     StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                          std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                         const T& indexVector, uint32 numPredictions, const uint32* labelIndices);
+                                         const T& labelIndices);
 
                     ~StatisticsSubsetImpl();
 
@@ -189,11 +184,9 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const RangeIndexVector& indexVector, uint32 numLabelIndices,
-                                                            const uint32* labelIndices) const override;
+            std::unique_ptr<IStatisticsSubset> createSubset(const RangeIndexVector& indexVector) const override;
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const DenseIndexVector& indexVector, uint32 numLabelIndices,
-                                                            const uint32* labelIndices) const override;
+            std::unique_ptr<IStatisticsSubset> createSubset(const DenseIndexVector& indexVector) const override;
 
             void applyPrediction(uint32 statisticIndex, const Prediction& prediction) override;
 

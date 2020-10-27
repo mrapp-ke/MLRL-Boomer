@@ -335,13 +335,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyRefinement(Refinement& r
 template<class T>
 void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinement& refinement) const {
     Prediction& head = *refinement.headPtr;
-
-    // TODO Remove
-    uint32 numLabelIndices = head.getNumElements();
-    const uint32* labelIndices = head.labelIndices_;
-
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_,
-                                                                               numLabelIndices, labelIndices);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
     uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
