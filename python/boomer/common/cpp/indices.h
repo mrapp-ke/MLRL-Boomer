@@ -86,9 +86,48 @@ class RangeIndexVector : virtual public IIndexVector {
     public:
 
         /**
+         * Allows to iterate the indices of a `RangeIndexVector`.
+         */
+        class Iterator {
+
+            private:
+
+                uint32 index_;
+
+            public:
+
+                Iterator(uint32 index);
+
+                uint32 operator[](uint32 index) const;
+
+                uint32 operator*() const;
+
+                Iterator& operator++(int n);
+
+                bool operator!=(const Iterator& rhs) const;
+
+        };
+
+        /**
          * @param numElements The number of indices, the vector provides access to
          */
         RangeIndexVector(uint32 numElements);
+
+        typedef Iterator const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
 
         uint32 getNumElements() const override;
 
