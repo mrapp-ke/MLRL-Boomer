@@ -149,9 +149,9 @@ cdef class ModelBuilder:
 
     # Functions:
 
-    cdef void set_default_rule(self, Prediction* default_prediction)
+    cdef void set_default_rule(self, Prediction* prediction)
 
-    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* prediction, double_linked_list[Condition] conditions,
                        uint32[::1] num_conditions_per_comparator)
 
     cdef RuleModel build_model(self)
@@ -171,9 +171,9 @@ cdef class RuleListBuilder(ModelBuilder):
 
     # Functions:
 
-    cdef void set_default_rule(self, Prediction* default_prediction)
+    cdef void set_default_rule(self, Prediction* prediction)
 
-    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, Prediction* prediction, double_linked_list[Condition] conditions,
                        uint32[::1] num_conditions_per_comparator)
 
     cdef RuleModel build_model(self)
