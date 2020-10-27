@@ -6,10 +6,14 @@ classes that store the predictions of rules, as well as corresponding quality sc
 from boomer.common._arrays cimport uint32, float64
 from boomer.common.statistics cimport AbstractStatistics
 
+from libcpp cimport bool
+
 
 cdef extern from "cpp/predictions.h" nogil:
 
     cdef cppclass Prediction:
+
+        ctypedef float64* const_iterator
 
         # Attributes:
 
@@ -19,7 +23,13 @@ cdef extern from "cpp/predictions.h" nogil:
 
         # Functions:
 
+        bool isPartial()
+
         uint32 getNumElements()
+
+        const_iterator cbegin()
+
+        const_iterator cend()
 
         void apply(AbstractStatistics& statistics, uint32 statisticIndex)
 
@@ -33,4 +43,11 @@ cdef extern from "cpp/predictions.h" nogil:
 
 
     cdef cppclass PartialPrediction(PredictionCandidate):
-        pass
+
+        ctypedef uint32* index_const_iterator
+
+        # Functions:
+
+        index_const_iterator indices_cbegin()
+
+        index_const_iterator indices_cend()
