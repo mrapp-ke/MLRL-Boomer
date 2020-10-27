@@ -165,9 +165,7 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(co
                                                                               const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(indexVector,
-                                                                                                    numPredictions,
-                                                                                                    labelIndices);
+    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(indexVector);
     return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<RangeIndexVector>>(
         *this, std::move(ruleEvaluationPtr), indexVector, numPredictions, labelIndices);
 }
@@ -177,9 +175,7 @@ std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(co
                                                                               const uint32* labelIndices) const {
     uint32 numLabels = this->getNumCols();
     uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(indexVector,
-                                                                                                    numPredictions,
-                                                                                                    labelIndices);
+    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(indexVector);
     return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<DenseIndexVector>>(
         *this, std::move(ruleEvaluationPtr), indexVector, numPredictions, labelIndices);
 }
