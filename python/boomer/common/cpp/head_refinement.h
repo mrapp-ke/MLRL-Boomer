@@ -42,7 +42,9 @@ class IHeadRefinement {
          * @param accumulated       False, if the rule covers all statistics that have been added since the
          *                          `IStatisticsSubset` has been reset for the last time, True, if the rule covers all
          *                          statistics that have been added so far
-         * @return                  True, if the head that has been found is better than `bestHead`, false otherwise
+         * @return                  A pointer to an object of type `PredictionCandidate`, representing the head that has
+         *                          been found or a null pointer if the head that has been found is not better than
+         *                          `bestHead`
          */
         // TODO Remove argument `labelIndices`
         virtual const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
