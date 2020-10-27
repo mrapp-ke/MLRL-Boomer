@@ -22,7 +22,7 @@ const LabelWiseEvaluatedPrediction& RegularizedLabelWiseRuleEvaluationImpl<T>::c
     float64 overallQualityScore = 0;
 
     // For each label, calculate a score to be predicted, as well as a corresponding quality score...
-    typename T::const_iterator indexIterator = labelIndices_.cbegin();
+    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
 
     for (uint32 c = 0; c < numPredictions; c++) {
         float64 sumOfGradients = sumsOfGradients[c];

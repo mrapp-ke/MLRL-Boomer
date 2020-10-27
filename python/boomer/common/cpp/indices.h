@@ -57,7 +57,13 @@ class IIndexVector : virtual public IRandomAccessVector<uint32> {
 /**
  * An one-dimensional vector that provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class DenseIndexVector : public DenseVector<uint32>, virtual public IIndexVector {
+class DenseIndexVector : virtual public IIndexVector {
+
+    private:
+
+        uint32 numElements_;
+
+        uint32* array_;
 
     public:
 
@@ -65,6 +71,44 @@ class DenseIndexVector : public DenseVector<uint32>, virtual public IIndexVector
          * @param numElements The number of elements in the vector
          */
         DenseIndexVector(uint32 numElements);
+
+        ~DenseIndexVector();
+
+        typedef uint32* index_iterator;
+
+        typedef const uint32* index_const_iterator;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the indices.
+         *
+         * @return An `index_iterator` to the beginning
+         */
+        index_iterator indices_begin();
+
+        /**
+         * Returns an `index_iterator` to the end of the indices.
+         *
+         * @return An `index_iterator` to the end
+         */
+        index_iterator indices_end();
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indices_cend() const;
+
+        uint32 getNumElements() const override;
+
+        uint32 getValue(uint32 pos) const override;
 
         std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
                                                         IWeightVector& weights) const override;
@@ -113,21 +157,21 @@ class RangeIndexVector : virtual public IIndexVector {
          */
         RangeIndexVector(uint32 numElements);
 
-        typedef Iterator const_iterator;
+        typedef Iterator index_const_iterator;
 
         /**
-         * Returns a `const_iterator` to the beginning of the vector.
+         * Returns an `index_const_iterator` to the beginning of the indices.
          *
-         * @return A `const_iterator` to the beginning
+         * @return An `index_const_iterator` to the beginning
          */
-        const_iterator cbegin() const;
+        index_const_iterator indices_cbegin() const;
 
         /**
-         * Returns a `const_iterator` to the end of the vector.
+         * Returns an `index_const_iterator` to the end of the indices.
          *
-         * @return A `const_iterator` to the end
+         * @return An `index_const_iterator` to the end
          */
-        const_iterator cend() const;
+        index_const_iterator indices_cend() const;
 
         uint32 getNumElements() const override;
 

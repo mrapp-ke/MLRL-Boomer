@@ -106,7 +106,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
     std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
-    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
+    DenseIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -138,7 +138,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
     std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
-    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
+    DenseIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
 
     for (uint32 i = 0; i < numSamples; i++) {
         iterator[i] = i;
@@ -169,7 +169,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
     std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
-    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
+    DenseIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
     uint32 unusedIndices[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
