@@ -77,6 +77,9 @@ bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
         result = true;
 
         if (headPtr.get() == nullptr) {
+            headPtr = std::make_unique<PredictionCandidate>(bestNumPredictions);
+
+            // TODO Remove the following
             uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
             float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
 
@@ -93,8 +96,8 @@ bool PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
                 }
             }
 
-            headPtr = std::make_unique<PredictionCandidate>(bestNumPredictions, candidateLabelIndices,
-                                                            candidatePredictedScores, bestQualityScore);
+            headPtr->labelIndices_ = candidateLabelIndices;
+            headPtr->predictedScores_ = candidatePredictedScores;
         } else if (headPtr->numPredictions_ != bestNumPredictions) {
             headPtr->numPredictions_ = bestNumPredictions;
             headPtr->labelIndices_ = (uint32*) realloc(headPtr->labelIndices_, bestNumPredictions * sizeof(uint32));
