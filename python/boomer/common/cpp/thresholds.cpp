@@ -334,12 +334,14 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyRefinement(Refinement& r
 
 template<class T>
 void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinement& refinement) const {
-    PredictionCandidate& head = *refinement.headPtr;
+    Prediction& head = *refinement.headPtr;
+
+    // TODO Remove
     uint32 numLabelIndices = head.getNumElements();
     const uint32* labelIndices = head.labelIndices_;
-    float64* predictedScores = head.predictedScores_;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(*thresholds_.statisticsPtr_,
-                                                                                        numLabelIndices, labelIndices);
+
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_,
+                                                                               numLabelIndices, labelIndices);
     uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -348,11 +350,21 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinem
         }
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create(labelIndices_);
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
+        *thresholds_.headRefinementFactoryPtr_);
     const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
     const EvaluatedPrediction::const_iterator updatedIterator = prediction.cbegin();
+    Prediction::iterator iterator = head.begin();
+    uint32 numElements = head.getNumElements();
 
-    for (uint32 c = 0; c < numLabelIndices; c++) {
+    for (uint32 c = 0; c < numElements; c++) {
+        iterator[c] = updatedIterator[c];
+    }
+
+    // TODO Remove the following
+    float64* predictedScores = head.predictedScores_;
+
+    for (uint32 c = 0; c < numElements; c++) {
         predictedScores[c] = updatedIterator[c];
     }
 }
