@@ -75,8 +75,8 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
     }
 
     if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
-        if (headPtr.get() == nullptr) {
-            headPtr = std::make_unique<PartialPrediction>(bestNumPredictions);
+        if (headPtr_.get() == nullptr) {
+            headPtr_ = std::make_unique<PartialPrediction>(bestNumPredictions);
 
             // TODO Remove the following
             uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
@@ -95,19 +95,19 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
                 }
             }
 
-            headPtr->labelIndices_ = candidateLabelIndices;
-            headPtr->predictedScores_ = candidatePredictedScores;
-        } else if (headPtr->getNumElements() != bestNumPredictions) {
-            headPtr->setNumElements(bestNumPredictions);
+            headPtr_->labelIndices_ = candidateLabelIndices;
+            headPtr_->predictedScores_ = candidatePredictedScores;
+        } else if (headPtr_->getNumElements() != bestNumPredictions) {
+            headPtr_->setNumElements(bestNumPredictions);
 
             // TODO Remove the following
-            headPtr->labelIndices_ = (uint32*) realloc(headPtr->labelIndices_, bestNumPredictions * sizeof(uint32));
-            headPtr->predictedScores_ = (float64*) realloc(headPtr->predictedScores_,
+            headPtr_->labelIndices_ = (uint32*) realloc(headPtr_->labelIndices_, bestNumPredictions * sizeof(uint32));
+            headPtr_->predictedScores_ = (float64*) realloc(headPtr_->predictedScores_,
                                                            bestNumPredictions * sizeof(float64));
         }
 
-        float64* headValueIterator = headPtr->predictedScores_;
-        uint32* headIndexIterator = headPtr->labelIndices_;
+        float64* headValueIterator = headPtr_->predictedScores_;
+        uint32* headIndexIterator = headPtr_->labelIndices_;
 
         if (labelIndices == nullptr) {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
@@ -122,8 +122,8 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
             }
         }
 
-        headPtr->overallQualityScore = bestQualityScore;
-        result = headPtr.get();
+        headPtr_->overallQualityScore = bestQualityScore;
+        result = headPtr_.get();
     }
 
     delete[] sortedIndices;

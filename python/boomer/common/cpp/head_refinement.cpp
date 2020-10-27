@@ -35,22 +35,22 @@ const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const Pred
     if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
         LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
 
-        if (headPtr.get() == nullptr) {
-            headPtr = std::make_unique<PartialPrediction>(1);
+        if (headPtr_.get() == nullptr) {
+            headPtr_ = std::make_unique<PartialPrediction>(1);
 
             // TODO Remove the following
             uint32* candidateLabelIndices = (uint32*) malloc(sizeof(uint32));
             float64* candidatePredictedScores = (float64*) malloc(sizeof(float64));
-            headPtr->labelIndices_ = candidateLabelIndices;
-            headPtr->predictedScores_ = candidatePredictedScores;
+            headPtr_->labelIndices_ = candidateLabelIndices;
+            headPtr_->predictedScores_ = candidatePredictedScores;
         }
 
-        float64* headValueIterator = headPtr->predictedScores_;
-        uint32* headIndexIterator = headPtr->labelIndices_;
+        float64* headValueIterator = headPtr_->predictedScores_;
+        uint32* headIndexIterator = headPtr_->labelIndices_;
         headValueIterator[0] = valueIterator[bestC];
         headIndexIterator[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
-        headPtr->overallQualityScore = bestQualityScore;
-        return headPtr.get();
+        headPtr_->overallQualityScore = bestQualityScore;
+        return headPtr_.get();
     }
 
     return nullptr;
@@ -98,8 +98,8 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
         uint32 numPredictions = prediction.getNumElements();
         EvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
 
-        if (headPtr.get() == nullptr) {
-            headPtr = std::make_unique<FullPrediction>(numPredictions);
+        if (headPtr_.get() == nullptr) {
+            headPtr_ = std::make_unique<FullPrediction>(numPredictions);
 
             // TODO Remove the following
             float64* candidatePredictedScores = (float64*) malloc(numPredictions * sizeof(float64));
@@ -117,18 +117,18 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
                 }
             }
 
-            headPtr->labelIndices_ = candidateLabelIndices;
-            headPtr->predictedScores_ = candidatePredictedScores;
+            headPtr_->labelIndices_ = candidateLabelIndices;
+            headPtr_->predictedScores_ = candidatePredictedScores;
         }
 
-        float64* headValueIterator = headPtr->predictedScores_;
+        float64* headValueIterator = headPtr_->predictedScores_;
 
         for (uint32 c = 0; c < numPredictions; c++) {
             headValueIterator[c] = valueIterator[c];
         }
 
-        headPtr->overallQualityScore = overallQualityScore;
-        return headPtr.get();
+        headPtr_->overallQualityScore = overallQualityScore;
+        return headPtr_.get();
     }
 
     return nullptr;
