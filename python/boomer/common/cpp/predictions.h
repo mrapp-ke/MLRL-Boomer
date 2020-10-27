@@ -5,20 +5,22 @@
  */
 #pragma once
 
-#include "arrays.h"
+#include "data.h"
+#include "indices.h"
 
 
 /**
  * An abstract base class for all classes that store the scores that are predicted by a rule.
  */
-class Prediction {
+// TODO Rename to AbstractPrediction
+class Prediction : public DenseVector<float64>, virtual public IIndexVector {
 
     public:
 
         /**
-         * @param numPredictions The number of labels for which the rule predicts
+         * @param numElements The number of labels for which the rule predicts
          */
-        Prediction(uint32 numPredictions);
+        Prediction(uint32 numElements);
 
         ~Prediction();
 
@@ -38,24 +40,65 @@ class Prediction {
          */
         float64* predictedScores_;
 
+        virtual uint32 getNumElements() const override = 0;
+
+        virtual void setNumElements(uint32 numElements) override = 0;
+
 };
 
 /**
  * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a quality score
  * that assesses the overall quality of the rule.
  */
+// TODO Rename to AbstractEvaluatedPrediction
 class PredictionCandidate : public Prediction {
 
     public:
 
         /**
-         * @param numPredictions The number of labels for which the rule predicts
+         * @param numElements The number of labels for which the rule predicts
          */
-        PredictionCandidate(uint32 numPredictions);
+        PredictionCandidate(uint32 numElements);
 
         /**
-         * A score that assesses the overall quality of the predictions.
+         * A score that assesses the overall quality of the rule.
          */
-        float64 overallQualityScore_;
+        float64 overallQualityScore;
+
+};
+
+/**
+ * Stores the scores that are predicted by a rule that predicts for all available labels.
+ */
+class FullPrediction : public PredictionCandidate, public RangeIndexVector {
+
+    public:
+
+        /**
+         * @param numElements The number of labels for which the rule predicts
+         */
+        FullPrediction(uint32 numElements);
+
+        uint32 getNumElements() const override;
+
+        void setNumElements(uint32 numElements) override;
+
+};
+
+/**
+ * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
+ */
+class PartialPrediction : public PredictionCandidate, public DenseIndexVector {
+
+    public:
+
+        /**
+         * @param numElements The number of labels for which the rule predicts
+         */
+        PartialPrediction(uint32 numElements);
+
+        uint32 getNumElements() const override;
+
+        void setNumElements(uint32 numElements) override;
 
 };

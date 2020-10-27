@@ -31,11 +31,11 @@ bool SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestH
     }
 
     // The quality score must be better than that of `bestHead`...
-    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore_) {
+    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
         LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
 
         if (headPtr.get() == nullptr) {
-            headPtr = std::make_unique<PredictionCandidate>(1);
+            headPtr = std::make_unique<PartialPrediction>(1);
 
             // TODO Remove the following
             uint32* candidateLabelIndices = (uint32*) malloc(sizeof(uint32));
@@ -48,7 +48,7 @@ bool SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestH
         uint32* headIndexIterator = headPtr->labelIndices_;
         headValueIterator[0] = valueIterator[bestC];
         headIndexIterator[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
-        headPtr->overallQualityScore_ = bestQualityScore;
+        headPtr->overallQualityScore = bestQualityScore;
         return true;
     }
 
@@ -86,12 +86,12 @@ bool FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
     float64 overallQualityScore = prediction.overallQualityScore;
 
     // The quality score must be better than that of `bestHead`...
-    if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore_) {
+    if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore) {
         uint32 numPredictions = prediction.getNumElements();
         EvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
 
         if (headPtr.get() == nullptr) {
-            headPtr = std::make_unique<PredictionCandidate>(numPredictions);
+            headPtr = std::make_unique<FullPrediction>(numPredictions);
 
             // TODO Remove the following
             float64* candidatePredictedScores = (float64*) malloc(numPredictions * sizeof(float64));
@@ -119,7 +119,7 @@ bool FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
             headValueIterator[c] = valueIterator[c];
         }
 
-        headPtr->overallQualityScore_ = overallQualityScore;
+        headPtr->overallQualityScore = overallQualityScore;
         return true;
     }
 
