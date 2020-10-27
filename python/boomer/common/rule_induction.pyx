@@ -211,7 +211,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                     # Keep the labels for which the rule predicts, if the head should not be further refined...
-                    num_predictions = best_refinement_ptr.get().headPtr.get().numPredictions_
+                    num_predictions = best_refinement_ptr.get().headPtr.get().getNumElements()
                     label_indices = best_refinement_ptr.get().headPtr.get().labelIndices_
 
                 # Filter the current subset of thresholds by applying the best refinement that has been found...

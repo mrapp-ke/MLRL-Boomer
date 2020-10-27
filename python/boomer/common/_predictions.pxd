@@ -12,11 +12,13 @@ cdef extern from "cpp/predictions.h" nogil:
 
         # Attributes:
 
-        uint32 numPredictions_
-
         uint32* labelIndices_
 
         float64* predictedScores_
+
+        # Functions:
+
+        uint32 getNumElements()
 
 
     cdef cppclass PredictionCandidate(Prediction):

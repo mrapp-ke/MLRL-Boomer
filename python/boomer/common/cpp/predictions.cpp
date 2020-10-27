@@ -3,7 +3,7 @@
 
 
 Prediction::Prediction(uint32 numElements)
-    : DenseVector<float64>(numElements), numPredictions_(numElements) {
+    : DenseVector<float64>(numElements) {
     predictedScores_ = nullptr;
     labelIndices_ = nullptr;
 }
