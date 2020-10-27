@@ -75,38 +75,11 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
     if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
         if (headPtr_.get() == nullptr) {
             headPtr_ = std::make_unique<PartialPrediction>(bestNumPredictions);
-
-            // TODO Remove the following
-            uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
-            float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
-            headPtr_->labelIndices_ = candidateLabelIndices;
-            headPtr_->predictedScores_ = candidatePredictedScores;
         } else if (headPtr_->getNumElements() != bestNumPredictions) {
             headPtr_->setNumElements(bestNumPredictions);
-
-            // TODO Remove the following
-            headPtr_->labelIndices_ = (uint32*) realloc(headPtr_->labelIndices_, bestNumPredictions * sizeof(uint32));
-            headPtr_->predictedScores_ = (float64*) realloc(headPtr_->predictedScores_,
-                                                           bestNumPredictions * sizeof(float64));
         }
 
         typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
-
-        // TODO Remove the following
-        if (labelIndices_.isPartial()) {
-            for (uint32 c = 0; c < bestNumPredictions; c++) {
-                headPtr_->labelIndices_[c] = indexIterator[c];
-                headPtr_->predictedScores_[c] = valueIterator[c];
-            }
-        } else {
-            for (uint32 c = 0; c < bestNumPredictions; c++) {
-                uint32 i = sortedIndices[c];
-                headPtr_->labelIndices_[c] = indexIterator[i];
-                headPtr_->predictedScores_[c] = valueIterator[i];
-            }
-
-        }
-
         PartialPrediction::iterator headValueIterator = headPtr_->begin();
         PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 

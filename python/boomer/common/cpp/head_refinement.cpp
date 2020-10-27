@@ -36,17 +36,7 @@ const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const Pred
 
         if (headPtr_.get() == nullptr) {
             headPtr_ = std::make_unique<PartialPrediction>(1);
-
-            // TODO Remove the following
-            uint32* candidateLabelIndices = (uint32*) malloc(sizeof(uint32));
-            float64* candidatePredictedScores = (float64*) malloc(sizeof(float64));
-            headPtr_->labelIndices_ = candidateLabelIndices;
-            headPtr_->predictedScores_ = candidatePredictedScores;
         }
-
-        // TODO Remove the following
-        headPtr_->predictedScores_[0] = valueIterator[bestC];
-        headPtr_->labelIndices_[0] = indexIterator[bestC];
 
         PartialPrediction::iterator headValueIterator = headPtr_->begin();
         PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
@@ -109,27 +99,10 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
                     headIndexIterator[c] = indexIterator[c];
                 }
 
-                // TODO Remove the following
-                uint32* candidateLabelIndices = (uint32*) malloc(numPredictions * sizeof(uint32));
-                headPtr_->labelIndices_ = candidateLabelIndices;
-
-                for (uint32 c = 0; c < numPredictions; c++) {
-                    candidateLabelIndices[c] = indexIterator[c];
-                }
-
                 headPtr_ = std::move(headPtr);
             } else {
                 headPtr_ = std::make_unique<FullPrediction>(numPredictions);
             }
-
-            // TODO Remove the following
-            float64* candidatePredictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-            headPtr_->predictedScores_ = candidatePredictedScores;
-        }
-
-        // TODO Remove the following
-        for (uint32 c = 0; c < numPredictions; c++) {
-            headPtr_->predictedScores_[c] = valueIterator[c];
         }
 
         PredictionCandidate::iterator headValueIterator = headPtr_->begin();

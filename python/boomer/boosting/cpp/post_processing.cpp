@@ -15,11 +15,4 @@ void ConstantShrinkageImpl::postProcess(Prediction& prediction) const {
     for (uint32 i = 0; i < numElements; i++) {
         iterator[i] *= shrinkage_;
     }
-
-    // TODO Remove the following
-    float64* predictedScores = prediction.predictedScores_;
-
-    for (uint32 i = 0; i < numElements; i++) {
-        predictedScores[i] *= shrinkage_;
-    }
 }
