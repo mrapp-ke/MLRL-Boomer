@@ -95,6 +95,7 @@ class IRuleRefinement {
          * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
          *                          indices of the labels for which the refined rule may predict
          */
+        // TODO Remove arguments `numLabelIndices` and `labelIndices`
         virtual void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
                                     const uint32* labelIndices) = 0;
 
