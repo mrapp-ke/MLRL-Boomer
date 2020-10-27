@@ -18,9 +18,9 @@ class IStatisticsSubset;
 
 
 /**
- * Defines an interface for all one-dimensional vectors that provide random access to indices.
+ * Defines an interface for all classes that provide random access to indices.
  */
-class IIndexVector : virtual public IRandomAccessVector<uint32> {
+class IIndexVector {
 
     public:
 
@@ -55,7 +55,7 @@ class IIndexVector : virtual public IRandomAccessVector<uint32> {
 };
 
 /**
- * An one-dimensional vector that provides random access to a fixed number of indices stored in a C-contiguous array.
+ * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */
 class DenseIndexVector : virtual public IIndexVector {
 
@@ -119,7 +119,7 @@ class DenseIndexVector : virtual public IIndexVector {
 };
 
 /**
- * An one-dimensional vector that provides random access to all indices within a continuous range [0, numIndices).
+ * Provides random access to all indices within a continuous range [0, numIndices).
  */
 class RangeIndexVector : virtual public IIndexVector {
 
