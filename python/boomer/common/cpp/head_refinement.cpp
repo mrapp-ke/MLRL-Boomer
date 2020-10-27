@@ -10,7 +10,6 @@ SingleLabelHeadRefinementImpl<T>::SingleLabelHeadRefinementImpl(const T& labelIn
 
 template<class T>
 const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                                      std::unique_ptr<PredictionCandidate>& headPtr,
                                                                       const uint32* labelIndices,
                                                                       IStatisticsSubset& statisticsSubset,
                                                                       bool uncovered, bool accumulated) {
@@ -86,7 +85,6 @@ FullHeadRefinementImpl<T>::FullHeadRefinementImpl(const T& labelIndices)
 
 template<class T>
 const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                               std::unique_ptr<PredictionCandidate>& headPtr,
                                                                const uint32* labelIndices,
                                                                IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                bool accumulated) {
