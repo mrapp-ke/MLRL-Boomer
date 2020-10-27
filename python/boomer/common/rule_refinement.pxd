@@ -45,6 +45,6 @@ cdef extern from "cpp/rule_refinement.h" nogil:
 
         # Functions:
 
-        void findRefinement(PredictionCandidate* currentHead, uint32 numLabelIndices, const uint32* labelIndices)
+        void findRefinement(PredictionCandidate* currentHead)
 
         unique_ptr[Refinement] pollRefinement()
