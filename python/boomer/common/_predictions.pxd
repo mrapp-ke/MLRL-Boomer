@@ -21,11 +21,6 @@ cdef extern from "cpp/predictions.h" nogil:
 
     cdef cppclass PredictionCandidate(Prediction):
 
-        # Constructors:
-
-        PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
-                            float64 overallQualityScore) except +
-
         # Attributes:
 
         float64 overallQualityScore_
