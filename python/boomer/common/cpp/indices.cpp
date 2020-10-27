@@ -56,6 +56,10 @@ std::unique_ptr<IStatisticsSubset> DenseIndexVector::createSubset(const Abstract
     return statistics.createSubset(*this, numLabelIndices, labelIndices);
 }
 
+std::unique_ptr<IHeadRefinement> DenseIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {
+    return factory.create(*this);
+}
+
 RangeIndexVector::Iterator::Iterator(uint32 index) {
     index_ = index;
 }
@@ -110,4 +114,8 @@ std::unique_ptr<IStatisticsSubset> RangeIndexVector::createSubset(const Abstract
                                                                   uint32 numLabelIndices,
                                                                   const uint32* labelIndices) const {
     return statistics.createSubset(*this, numLabelIndices, labelIndices);
+}
+
+std::unique_ptr<IHeadRefinement> RangeIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {
+    return factory.create(*this);
 }
