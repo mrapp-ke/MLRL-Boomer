@@ -93,12 +93,13 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the == operator in case of a nominal feature) is used...
-                    bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                                        *statisticsSubsetPtr, false, false);
+                    const PredictionCandidate* head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr,
+                                                                                   labelIndices, *statisticsSubsetPtr,
+                                                                                   false, false);
 
                     // If the refinement is better than the current rule...
-                    if (foundBetterHead) {
-                        bestHead = refinementPtr->headPtr.get();
+                    if (head != nullptr) {
+                        bestHead = head;
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -116,12 +117,12 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the != operator in case of a nominal feature) is used...
-                    foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                                   *statisticsSubsetPtr, true, false);
+                    head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                        *statisticsSubsetPtr, true, false);
 
                     // If the refinement is better than the current rule...
-                    if (foundBetterHead) {
-                        bestHead = refinementPtr->headPtr.get();
+                    if (head != nullptr) {
+                        bestHead = head;
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -163,11 +164,12 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
                                              || accumulatedSumOfWeights < totalSumOfWeights_)) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
-            bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                                *statisticsSubsetPtr, false, false);
+            const PredictionCandidate* head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr,
+                                                                           labelIndices, *statisticsSubsetPtr, false,
+                                                                           false);
 
-            if (foundBetterHead) {
-                bestHead = refinementPtr->headPtr.get();
+            if (head != nullptr) {
+                bestHead = head;
                 refinementPtr->start = firstR;
                 refinementPtr->end = (lastNegativeR + 1);
                 refinementPtr->previous = previousR;
@@ -179,11 +181,11 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             // used...
-            foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                           *statisticsSubsetPtr, true, false);
+            head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices, *statisticsSubsetPtr,
+                                                true, false);
 
-            if (foundBetterHead) {
-                bestHead = refinementPtr->headPtr.get();
+            if (head != nullptr) {
+                bestHead = head;
                 refinementPtr->start = firstR;
                 refinementPtr->end = (lastNegativeR + 1);
                 refinementPtr->previous = previousR;
@@ -238,12 +240,13 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the == operator in case of a nominal feature) is used...
-                    bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                                        *statisticsSubsetPtr, false, false);
+                    const PredictionCandidate* head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr,
+                                                                                   labelIndices, *statisticsSubsetPtr,
+                                                                                   false, false);
 
                     // If the refinement is better than the current rule...
-                    if (foundBetterHead) {
-                        bestHead = refinementPtr->headPtr.get();
+                    if (head != nullptr) {
+                        bestHead = head;
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -261,12 +264,12 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the != operator in case of a nominal feature) is used...
-                    foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                                   *statisticsSubsetPtr, true, false);
+                    head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                        *statisticsSubsetPtr, true, false);
 
                     // If the refinement is better than the current rule...
-                    if (foundBetterHead) {
-                        bestHead = refinementPtr->headPtr.get();
+                    if (head != nullptr) {
+                        bestHead = head;
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -308,12 +311,12 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
     if (nominal_ && sumOfWeights > 0 && sumOfWeights < accumulatedSumOfWeights) {
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
-        bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                            *statisticsSubsetPtr, false, false);
+        const PredictionCandidate* head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                                       *statisticsSubsetPtr, false, false);
 
         // If the refinement is better than the current rule...
-        if (foundBetterHead) {
-            bestHead = refinementPtr->headPtr.get();
+        if (head != nullptr) {
+            bestHead = head;
             refinementPtr->start = firstR;
             refinementPtr->end = lastNegativeR;
             refinementPtr->previous = previousR;
@@ -325,12 +328,12 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
 
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         // used...
-        foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                       *statisticsSubsetPtr, true, false);
+        head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices, *statisticsSubsetPtr, true,
+                                            false);
 
         // If the refinement is better than the current rule...
-        if (foundBetterHead) {
-            bestHead = refinementPtr->headPtr.get();
+        if (head != nullptr) {
+            bestHead = head;
             refinementPtr->start = firstR;
             refinementPtr->end = lastNegativeR;
             refinementPtr->previous = previousR;
@@ -357,12 +360,12 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
 
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
-        bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                            *statisticsSubsetPtr, false, nominal_);
+        const PredictionCandidate* head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                                       *statisticsSubsetPtr, false, nominal_);
 
         // If the refinement is better than the current rule...
-        if (foundBetterHead) {
-            bestHead = refinementPtr->headPtr.get();
+        if (head != nullptr) {
+            bestHead = head;
             refinementPtr->start = firstR;
             refinementPtr->covered = true;
 
@@ -383,12 +386,12 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
 
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
-        foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                      *statisticsSubsetPtr, true, nominal_);
+        head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices, *statisticsSubsetPtr, true,
+                                            nominal_);
 
         // If the refinement is better than the current rule...
-        if (foundBetterHead) {
-            bestHead = refinementPtr->headPtr.get();
+        if (head != nullptr) {
+            bestHead = head;
             refinementPtr->start = firstR;
             refinementPtr->covered = false;
 
@@ -416,11 +419,11 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
     if (!nominal_ && accumulatedSumOfWeightsNegative > 0 && accumulatedSumOfWeightsNegative < totalSumOfWeights_) {
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
-        bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                            *statisticsSubsetPtr, false, true);
+        const PredictionCandidate* head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
+                                                                       *statisticsSubsetPtr, false, true);
 
-        if (foundBetterHead) {
-            bestHead = refinementPtr->headPtr.get();
+        if (head != nullptr) {
+            bestHead = head;
             refinementPtr->start = 0;
             refinementPtr->end = (lastNegativeR + 1);
             refinementPtr->previous = previousRNegative;
@@ -441,11 +444,11 @@ void ExactRuleRefinementImpl<T>::findRefinement(const PredictionCandidate* curre
 
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         // used...
-        foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                       *statisticsSubsetPtr, true, true);
+        head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices, *statisticsSubsetPtr, true,
+                                            true);
 
-        if (foundBetterHead) {
-            bestHead = refinementPtr->headPtr.get();
+        if (head != nullptr) {
+            bestHead = head;
             refinementPtr->start = 0;
             refinementPtr->end = (lastNegativeR + 1);
             refinementPtr->previous = previousRNegative;
@@ -522,11 +525,12 @@ void ApproximateRuleRefinementImpl<T>::findRefinement(const PredictionCandidate*
         if (numExamples > 0) {
             float32 currentValue = iterator[r].minValue;
 
-            bool foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                                *statisticsSubsetPtr, false, false);
+            const PredictionCandidate* head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr,
+                                                                           labelIndices, *statisticsSubsetPtr, false,
+                                                                           false);
 
-            if (foundBetterHead) {
-                bestHead = refinementPtr->headPtr.get();
+            if (head != nullptr) {
+                bestHead = head;
                 refinementPtr->comparator = LEQ;
                 refinementPtr->threshold = (previousValue + currentValue) / 2.0;
                 refinementPtr->end = r;
@@ -535,11 +539,11 @@ void ApproximateRuleRefinementImpl<T>::findRefinement(const PredictionCandidate*
                 refinementPtr->covered = true;
             }
 
-            foundBetterHead = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices,
-                                                           *statisticsSubsetPtr, true, false);
+            head = headRefinementPtr_->findHead(bestHead, refinementPtr->headPtr, labelIndices, *statisticsSubsetPtr,
+                                                true, false);
 
-            if (foundBetterHead) {
-                bestHead = refinementPtr->headPtr.get();
+            if (head != nullptr) {
+                bestHead = head;
                 refinementPtr->comparator = GR;
                 refinementPtr->threshold = (previousValue + currentValue) / 2.0;
                 refinementPtr->end = r;

@@ -39,9 +39,10 @@ namespace seco {
              */
             PartialHeadRefinementImpl(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
-            bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                          const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                          bool accumulated) const override;
+            const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
+                                                std::unique_ptr<PredictionCandidate>& headPtr,
+                                                const uint32* labelIndices, IStatisticsSubset& statisticsSubset,
+                                                bool uncovered, bool accumulated) const override;
 
             std::unique_ptr<PredictionCandidate> pollHead() override;
 
