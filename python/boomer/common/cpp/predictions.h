@@ -25,19 +25,6 @@ class Prediction : public DenseVector<float64>, virtual public IIndexVector {
          */
         Prediction(uint32 numElements);
 
-        ~Prediction();
-
-        /**
-         * A pointer to an array of type `uint32`, shape `(getNumElements())`, representing the indices of the labels
-         * for which the rule predicts or a null pointer, if the rule predicts for all labels.
-         */
-        uint32* labelIndices_;
-
-        /**
-         * A pointer to an array of type `float64`, shape `(getNumElements())`, representing the predicted scores.
-         */
-        float64* predictedScores_;
-
         /**
          * TODO
          *

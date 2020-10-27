@@ -354,13 +354,6 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinem
     for (uint32 c = 0; c < numElements; c++) {
         iterator[c] = updatedIterator[c];
     }
-
-    // TODO Remove the following
-    float64* predictedScores = head.predictedScores_;
-
-    for (uint32 c = 0; c < numElements; c++) {
-        predictedScores[c] = updatedIterator[c];
-    }
 }
 
 template<class T>

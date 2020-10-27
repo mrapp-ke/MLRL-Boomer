@@ -5,13 +5,7 @@
 
 Prediction::Prediction(uint32 numElements)
     : DenseVector<float64>(numElements) {
-    predictedScores_ = nullptr;
-    labelIndices_ = nullptr;
-}
 
-Prediction::~Prediction() {
-    free(labelIndices_);
-    free(predictedScores_);
 }
 
 PredictionCandidate::PredictionCandidate(uint32 numElements)
