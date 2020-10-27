@@ -159,15 +159,10 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef bint instance_sub_sampling_used = weights_ptr.get().hasZeroWeights()
 
         # Sub-sample labels...
-        cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels,
-                                                                                               dereference(rng))
-        # TODO Reactivate label sampling
-        # cdef IIndexVector* label_indices = sampled_label_indices_ptr.get()
-        cdef const uint32* label_indices = <const uint32*>NULL
-        cdef uint32 num_predictions = 0
+        cdef unique_ptr[IIndexVector] label_indices_ptr = label_sub_sampling.subSample(num_labels, dereference(rng))
 
         # Create a new subset of the given thresholds...
-        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = sampled_label_indices_ptr.get().createSubset(
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = label_indices_ptr.get().createSubset(
             dereference(thresholds), dereference(weights_ptr.get()))
 
         # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore
@@ -209,10 +204,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 num_conditions += 1
                 num_conditions_per_comparator[<uint32>best_refinement_ptr.get().comparator] += 1
 
-                if max_head_refinements > 0 and num_conditions >= max_head_refinements:
+                # if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                     # Keep the labels for which the rule predicts, if the head should not be further refined...
-                    num_predictions = best_refinement_ptr.get().headPtr.get().getNumElements()
-                    label_indices = best_refinement_ptr.get().headPtr.get().labelIndices_
+                    # TODO Store the label indices of the refinement's head
 
                 # Filter the current subset of thresholds by applying the best refinement that has been found...
                 thresholds_subset_ptr.get().applyRefinement(dereference(best_refinement_ptr.get()))
