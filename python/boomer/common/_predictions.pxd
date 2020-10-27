@@ -24,10 +24,3 @@ cdef extern from "cpp/predictions.h" nogil:
         # Attributes:
 
         float64 overallQualityScore_
-
-
-    cdef cppclass LabelWisePredictionCandidate(PredictionCandidate):
-
-        # Attributes:
-
-        float64* qualityScores_
