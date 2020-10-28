@@ -14,24 +14,36 @@ namespace seco {
 
     /**
      * Allows to find the best head that predicts for one or several labels depending on a lift function.
+     *
+     * @tparam T The type of the vector that provides access to the indices of the labels that are considered when
+     *           searching for the best head
      */
+    template<class T>
     class PartialHeadRefinementImpl : virtual public IHeadRefinement {
 
         private:
 
+            const T& labelIndices_;
+
             std::shared_ptr<ILiftFunction> liftFunctionPtr_;
+
+            std::unique_ptr<PartialPrediction> headPtr_;
 
         public:
 
             /**
-             * @param liftFunctionPtr A shared pointer to an object of type `ILiftFunction` that should affect the
-             *                        quality scores of rules, depending on how many labels they predict
+             * @param labelIndices      A reference to an object of template type `T` that provides access to the
+             *                          indices of the labels that should be considered when searching for the best head
+             * @param liftFunctionPtr   A shared pointer to an object of type `ILiftFunction` that should affect the
+             *                          quality scores of rules, depending on how many labels they predict
              */
-            PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr);
+            PartialHeadRefinementImpl(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
-            bool findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                          const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                          bool accumulated) const override;
+            const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                        IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                        bool accumulated) override;
+
+            std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override;
 
             const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                            bool accumulated) const override;
@@ -55,7 +67,9 @@ namespace seco {
              */
             PartialHeadRefinementFactoryImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
-            std::unique_ptr<IHeadRefinement> create() const override;
+            std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const override;
+
+            std::unique_ptr<IHeadRefinement> create(const PartialIndexVector& labelIndices) const override;
 
     };
 

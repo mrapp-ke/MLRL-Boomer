@@ -1,31 +1,50 @@
 #include "predictions.h"
+#include "statistics.h"
 #include <cstdlib>
 
 
-Prediction::Prediction(uint32 numPredictions, uint32* labelIndices, float64* predictedScores)
-    : numPredictions_(numPredictions), labelIndices_(labelIndices), predictedScores_(predictedScores) {
+AbstractPrediction::AbstractPrediction(uint32 numElements)
+    : DenseVector<float64>(numElements) {
 
 }
 
-Prediction::~Prediction() {
-    free(labelIndices_);
-    free(predictedScores_);
-}
-
-PredictionCandidate::PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
-                                         float64 overallQualityScore)
-    : Prediction(numPredictions, labelIndices, predictedScores), overallQualityScore_(overallQualityScore) {
+AbstractEvaluatedPrediction::AbstractEvaluatedPrediction(uint32 numElements)
+    : AbstractPrediction(numElements) {
 
 }
 
-LabelWisePredictionCandidate::LabelWisePredictionCandidate(uint32 numPredictions, uint32* labelIndices,
-                                                           float64* predictedScores, float64* qualityScores,
-                                                           float64 overallQualityScore)
-    : PredictionCandidate(numPredictions, labelIndices, predictedScores, overallQualityScore),
-      qualityScores_(qualityScores) {
+FullPrediction::FullPrediction(uint32 numElements)
+    : AbstractEvaluatedPrediction(numElements), FullIndexVector(numElements) {
 
 }
 
-LabelWisePredictionCandidate::~LabelWisePredictionCandidate() {
-    free(qualityScores_);
+uint32 FullPrediction::getNumElements() const {
+    return DenseVector<float64>::getNumElements();
+}
+
+void FullPrediction::setNumElements(uint32 numElements) {
+    DenseVector<float64>::setNumElements(numElements);
+    FullIndexVector::setNumElements(numElements);
+}
+
+void FullPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {
+    statistics.applyPrediction(statisticIndex, *this);
+}
+
+PartialPrediction::PartialPrediction(uint32 numElements)
+    : AbstractEvaluatedPrediction(numElements), PartialIndexVector(numElements) {
+
+}
+
+uint32 PartialPrediction::getNumElements() const {
+    return DenseVector<float64>::getNumElements();
+}
+
+void PartialPrediction::setNumElements(uint32 numElements) {
+    DenseVector<float64>::setNumElements(numElements);
+    PartialIndexVector::setNumElements(numElements);
+}
+
+void PartialPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {
+    statistics.applyPrediction(statisticIndex, *this);
 }

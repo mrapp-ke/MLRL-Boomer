@@ -105,8 +105,8 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacement(uin
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTrackingSelection(uint32 numTotal,
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
-    std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
-    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
+    std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numSamples);
+    PartialIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -137,8 +137,8 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaReservoirSampling(uint32 numTotal,
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
-    std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
-    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
+    std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numSamples);
+    PartialIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
 
     for (uint32 i = 0; i < numSamples; i++) {
         iterator[i] = i;
@@ -168,8 +168,8 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
 static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRandomPermutation(uint32 numTotal,
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
-    std::unique_ptr<DenseIndexVector> indexVectorPtr = std::make_unique<DenseIndexVector>(numSamples);
-    DenseIndexVector::iterator iterator = indexVectorPtr->begin();
+    std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numSamples);
+    PartialIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
     uint32 unusedIndices[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -318,7 +318,7 @@ std::unique_ptr<IIndexVector> RandomFeatureSubsetSelectionImpl::subSample(uint32
 }
 
 std::unique_ptr<IIndexVector> NoFeatureSubSamplingImpl::subSample(uint32 numFeatures, RNG& rng) const {
-    return std::make_unique<RangeIndexVector>(numFeatures);
+    return std::make_unique<FullIndexVector>(numFeatures);
 }
 
 RandomLabelSubsetSelectionImpl::RandomLabelSubsetSelectionImpl(uint32 numSamples)
@@ -331,5 +331,5 @@ std::unique_ptr<IIndexVector> RandomLabelSubsetSelectionImpl::subSample(uint32 n
 }
 
 std::unique_ptr<IIndexVector> NoLabelSubSamplingImpl::subSample(uint32 numLabels, RNG& rng) const {
-    return std::make_unique<RangeIndexVector>(numLabels);
+    return std::make_unique<FullIndexVector>(numLabels);
 }

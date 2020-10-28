@@ -23,13 +23,27 @@ class IThresholdsSubset {
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
-         * an existing rule, which results from adding a new condition that corresponds to the feature at a specific
-         * index.
+         * an existing rule that predicts for all available labels.
          *
-         * @param featureIndex  The index of the feature, the new condition corresponds to
+         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
+         *                      of the labels for which the existing rule predicts
+         * @param featureIndex  The index of the feature that should be considered when searching for refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) = 0;
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
+                                                                      uint32 featureIndex) = 0;
+
+        /**
+         * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
+         * an existing rule that predicts for a subset of the available labels.
+         *
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels for which the existing rule predicts
+         * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
+         */
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
+                                                                      uint32 featureIndex) = 0;
 
         /**
          * Applies a refinement that has been found by an instance of the type `IRuleRefinement`, which was previously
@@ -58,9 +72,10 @@ class IThresholdsSubset {
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
          *
-         * @param prediction A reference to an object of type `Prediction`, representing the predictions to be applied
+         * @param prediction A reference to an object of type `AbstractPrediction`, representing the predictions to be
+         *                   applied
          */
-        virtual void applyPrediction(const Prediction& prediction) = 0;
+        virtual void applyPrediction(const AbstractPrediction& prediction) = 0;
 
 };
 
@@ -105,7 +120,7 @@ class AbstractThresholds : virtual public IMatrix {
          *                  individual training examples
          * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector& weights) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
 
         /**
          * Returns the total number of available labels.
@@ -174,7 +189,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ExactThresholdsImpl& thresholds_;
 
-                IWeightVector& weights_;
+                const IWeightVector& weights_;
 
                 uint32 sumOfWeights_;
 
@@ -186,6 +201,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 std::unordered_map<uint32, CacheEntry> cacheFiltered_;
 
+                template<class T>
+                std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex);
+
             public:
 
                 /**
@@ -194,17 +212,21 @@ class ExactThresholdsImpl : public AbstractThresholds {
                  * @param weights       A reference to an object of type `IWeightVector` that provides access to the
                  *                      weights of the individual training examples
                  */
-                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, IWeightVector& weights);
+                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, const IWeightVector& weights);
 
                 ~ThresholdsSubsetImpl();
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
+
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;
 
                 void recalculatePrediction(Refinement& refinement) const override;
 
-                void applyPrediction(const Prediction& prediction) override;
+                void applyPrediction(const AbstractPrediction& prediction) override;
 
         };
 
@@ -228,7 +250,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                             std::shared_ptr<AbstractStatistics> statisticsPtr,
                             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
-        std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector& weights) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
 };
 
@@ -282,6 +304,10 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                 ApproximateThresholdsImpl& thresholds_;
 
+                template<class T>
+                std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
+                                                                                 uint32 featureIndex);
+
             public:
 
                 /**
@@ -290,13 +316,17 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
                  */
                 ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
+
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;
 
                 void recalculatePrediction(Refinement& refinement) const override;
 
-                void applyPrediction(const Prediction& prediction) override;
+                void applyPrediction(const AbstractPrediction& prediction) override;
 
         };
 
@@ -336,6 +366,6 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
                                   std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                   std::shared_ptr<IBinning> binningPtr, uint32 numBins);
 
-        std::unique_ptr<IThresholdsSubset> createSubset(IWeightVector& weights) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
 };

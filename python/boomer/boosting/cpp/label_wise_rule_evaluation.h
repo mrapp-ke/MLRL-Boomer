@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../../common/cpp/rule_evaluation.h"
+#include "../../common/cpp/indices.h"
 #include <memory>
 
 
@@ -60,29 +61,29 @@ namespace boosting {
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
      * Hessians that have been calculated according to a loss function that is applied label-wise using L2
      * regularization.
+     *
+     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
+    template<class T>
     class RegularizedLabelWiseRuleEvaluationImpl : virtual public ILabelWiseRuleEvaluation {
 
         private:
 
-            float64 l2RegularizationWeight_;
+            const T& labelIndices_;
 
-            const uint32* labelIndices_;
+            float64 l2RegularizationWeight_;
 
             LabelWiseEvaluatedPrediction prediction_;
 
         public:
 
             /**
-             * @param numPredictions            The number of labels for which the rules should predict
-             * @param labelIndices              A pointer to an array of type `uint32` that stores the indices of the
-             *                                  labels for which the rules should predict or a null pointer, if the
-             *                                  rules should predict for all labels
+             * @param labelIndices              A reference to an object of template type `T` that provides access to
+             *                                  the indices of the labels for which the rules may predict
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            RegularizedLabelWiseRuleEvaluationImpl(uint32 numPredictions, const uint32* labelIndices,
-                                                   float64 l2RegularizationWeight);
+            RegularizedLabelWiseRuleEvaluationImpl(const T& labelIndices, float64 l2RegularizationWeight);
 
             const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
                 const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
@@ -101,17 +102,25 @@ namespace boosting {
 
             /**
              * Creates a new instance of the class `ILabelWiseRuleEvaluation` that allows to calculate the predictions
-             * of rules for several labels.
+             * of rules that predict for all available labels.
              *
-             * @param numLabelIndices   The number of labels for which the rules should predict
-             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels for
-             *                          which the rules should predict or a null pointer, if the rules should predict
-             *                          for all available labels
-             * @return                  An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
-             *                          created
+             * @param indexVector   A reference to an object of the type `FullIndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                      created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
-                                                                     const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const = 0;
+
+            /**
+             * Creates a new instance of the class `ILabelWiseRuleEvaluation` that allows to calculate the predictions
+             * of rules that predict for a subset of the available labels.
+             *
+             * @param indexVector   A reference to an object of the type `PartialIndexVector` that provides access to
+             *                      the indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                      created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const = 0;
 
 
     };
@@ -133,8 +142,9 @@ namespace boosting {
              */
             RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
-                                                             const uint32* labelIndices) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
+
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
 
     };
 

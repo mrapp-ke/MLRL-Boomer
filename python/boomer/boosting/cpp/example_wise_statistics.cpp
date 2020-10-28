@@ -17,11 +17,12 @@ void AbstractExampleWiseStatistics::setRuleEvaluationFactory(
     ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
 }
 
-DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
+template<class T>
+DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<T>::StatisticsSubsetImpl(
         const DenseExampleWiseStatisticsImpl& statistics, std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
-        uint32 numPredictions, const uint32* labelIndices)
-    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), numPredictions_(numPredictions),
-      labelIndices_(labelIndices) {
+        const T& labelIndices)
+    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices) {
+    uint32 numPredictions = labelIndices.getNumElements();
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = nullptr;
@@ -37,7 +38,8 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
     dspmvTmpArray_ = nullptr;
 }
 
-DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
+template<class T>
+DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<T>::~StatisticsSubsetImpl() {
     free(sumsOfGradients_);
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
@@ -50,41 +52,46 @@ DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
     free(dspmvTmpArray_);
 }
 
-void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
+template<class T>
+void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<T>::addToSubset(uint32 statisticIndex, uint32 weight) {
     // Add the gradients and Hessians of the example at the given index (weighted by the given weight) to the current
     // sum of gradients and Hessians...
     uint32 numLabels = statistics_.getNumCols();
     uint32 offsetGradients = statisticIndex * numLabels;
     uint32 offsetHessians = statisticIndex * linalg::triangularNumber(numLabels);
+    uint32 numPredictions = labelIndices_.getNumElements();
+    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
     uint32 i = 0;
 
-    for (uint32 c = 0; c < numPredictions_; c++) {
-        uint32 l = labelIndices_ != nullptr ? labelIndices_[c] : c;
+    for (uint32 c = 0; c < numPredictions; c++) {
+        uint32 l = indexIterator[c];
         sumsOfGradients_[c] += (weight * statistics_.gradients_[offsetGradients + l]);
         uint32 triangularNumber = linalg::triangularNumber(l);
 
         for (uint32 c2 = 0; c2 < c + 1; c2++) {
-            uint32 l2 = triangularNumber + (labelIndices_ != nullptr ? labelIndices_[c2] : c2);
+            uint32 l2 = triangularNumber + indexIterator[c2];
             sumsOfHessians_[i] += (weight * statistics_.hessians_[offsetHessians + l2]);
             i++;
         }
     }
 }
 
-void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
-    uint32 numHessians = linalg::triangularNumber(numPredictions_);
+template<class T>
+void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<T>::resetSubset() {
+    uint32 numPredictions = labelIndices_.getNumElements();
+    uint32 numHessians = linalg::triangularNumber(numPredictions);
 
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
     if (accumulatedSumsOfGradients_ == nullptr) {
-        accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
-        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions_);
+        accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions);
         accumulatedSumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
         arrays::setToZeros(accumulatedSumsOfHessians_, numHessians);
     }
 
     // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums of gradients
     // and Hessians...
-    for (uint32 c = 0; c < numPredictions_; c++) {
+    for (uint32 c = 0; c < numPredictions; c++) {
         accumulatedSumsOfGradients_[c] += sumsOfGradients_[c];
         sumsOfGradients_[c] = 0;
     }
@@ -95,7 +102,8 @@ void DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-const LabelWiseEvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+template<class T>
+const LabelWiseEvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<T>::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -104,23 +112,25 @@ const LabelWiseEvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSu
                                                             uncovered);
 }
 
-const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl::calculateExampleWisePrediction(
+template<class T>
+const EvaluatedPrediction& DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<T>::calculateExampleWisePrediction(
         bool uncovered, bool accumulated) {
+    uint32 numPredictions = labelIndices_.getNumElements();
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
 
     // To avoid array recreation each time this function is called, the temporary arrays are only initialized if they
     // have not been initialized yet
     if (tmpGradients_ == nullptr) {
-        tmpGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
-        uint32 numHessians = linalg::triangularNumber(numPredictions_);
+        tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
+        uint32 numHessians = linalg::triangularNumber(numPredictions);
         tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
-        dsysvTmpArray1_ = (float64*) malloc(numPredictions_ * numPredictions_ * sizeof(float64));
-        dsysvTmpArray2_ = (int*) malloc(numPredictions_ * sizeof(int));
-        dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+        dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
+        dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
+        dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
 
         // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
-        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, tmpGradients_, numPredictions_);
+        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, tmpGradients_, numPredictions);
         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
     }
 
@@ -218,29 +228,51 @@ void DenseExampleWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticInde
     }
 }
 
-std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
-                                                                                const uint32* labelIndices) const {
-    uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
-                                                                                                      labelIndices);
-    return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
-                                                                                  numPredictions, labelIndices);
+std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
+        const FullIndexVector& labelIndices) const {
+    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
+    return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<FullIndexVector>>(
+        *this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
-void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
+std::unique_ptr<IStatisticsSubset> DenseExampleWiseStatisticsImpl::createSubset(
+        const PartialIndexVector& labelIndices) const {
+    std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
+    return std::make_unique<DenseExampleWiseStatisticsImpl::StatisticsSubsetImpl<PartialIndexVector>>(
+        *this, std::move(ruleEvaluationPtr), labelIndices);
+}
+
+void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = prediction.numPredictions_;
-    const uint32* labelIndices = prediction.labelIndices_;
-    const float64* predictedScores = prediction.predictedScores_;
-    uint32 offset = statisticIndex * numLabels;
     uint32 numHessians = linalg::triangularNumber(numLabels);
+    uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    FullPrediction::const_iterator valueIterator = prediction.cbegin();
 
     // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
     // example at the given index...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
-        currentScores_[offset + l] += predictedScores[c];
+        currentScores_[offset + c] += valueIterator[c];
+    }
+
+    // Update the gradients and Hessians for the example at the given index...
+    lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
+                                                    &gradients_[offset], &hessians_[statisticIndex * numHessians]);
+}
+
+void DenseExampleWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) {
+    uint32 numLabels = this->getNumCols();
+    uint32 numHessians = linalg::triangularNumber(numLabels);
+    uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+    PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
+
+    // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for the
+    // example at the given index...
+    for (uint32 c = 0; c < numPredictions; c++) {
+        uint32 l = indexIterator[c];
+        currentScores_[offset + l] += valueIterator[c];
     }
 
     // Update the gradients and Hessians for the example at the given index...

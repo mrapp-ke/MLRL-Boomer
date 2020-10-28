@@ -20,9 +20,9 @@ class IPostProcessor {
         /**
          * Post-processes the prediction of a rule.
          *
-         * @param prediction A reference to an object of type `Prediction` that stores the predictions of a rule
+         * @param prediction A reference to an object of type `AbstractPrediction` that stores the predictions of a rule
          */
-        virtual void postProcess(Prediction& prediction) const = 0;
+        virtual void postProcess(AbstractPrediction& prediction) const = 0;
 
 };
 
@@ -34,6 +34,6 @@ class NoPostProcessorImpl : virtual public IPostProcessor {
 
     public:
 
-        void postProcess(Prediction& prediction) const override;
+        void postProcess(AbstractPrediction& prediction) const override;
 
 };
