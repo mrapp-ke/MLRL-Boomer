@@ -94,7 +94,7 @@ class IIndexVector {
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class DenseIndexVector : virtual public IIndexVector {
+class PartialIndexVector : virtual public IIndexVector {
 
     private:
 
@@ -107,9 +107,9 @@ class DenseIndexVector : virtual public IIndexVector {
         /**
          * @param numElements The number of elements in the vector
          */
-        DenseIndexVector(uint32 numElements);
+        PartialIndexVector(uint32 numElements);
 
-        ~DenseIndexVector();
+        ~PartialIndexVector();
 
         typedef uint32* index_iterator;
 
@@ -163,7 +163,7 @@ class DenseIndexVector : virtual public IIndexVector {
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */
-class RangeIndexVector : virtual public IIndexVector {
+class FullIndexVector : virtual public IIndexVector {
 
     private:
 
@@ -172,7 +172,7 @@ class RangeIndexVector : virtual public IIndexVector {
     public:
 
         /**
-         * Allows to iterate the indices of a `RangeIndexVector`.
+         * Allows to iterate the indices of a `FullIndexVector`.
          */
         class Iterator {
 
@@ -197,7 +197,7 @@ class RangeIndexVector : virtual public IIndexVector {
         /**
          * @param numElements The number of indices, the vector provides access to
          */
-        RangeIndexVector(uint32 numElements);
+        FullIndexVector(uint32 numElements);
 
         typedef Iterator index_const_iterator;
 

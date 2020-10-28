@@ -161,16 +161,16 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
 }
 
 std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
-        const RangeIndexVector& labelIndices) const {
+        const FullIndexVector& labelIndices) const {
     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<RangeIndexVector>>(
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<FullIndexVector>>(
         *this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
 std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
-        const DenseIndexVector& labelIndices) const {
+        const PartialIndexVector& labelIndices) const {
     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<DenseIndexVector>>(
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<PartialIndexVector>>(
         *this, std::move(ruleEvaluationPtr), labelIndices);
 }
 

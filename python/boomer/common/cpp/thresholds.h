@@ -25,24 +25,24 @@ class IThresholdsSubset {
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
          * an existing rule that predicts for all available labels.
          *
-         * @param labelIndices  A reference to an object of type `RangeIndexVector` that provides access to the indices
+         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
          *                      of the labels for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const RangeIndexVector& labelIndices,
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
                                                                       uint32 featureIndex) = 0;
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
          * an existing rule that predicts for a subset of the available labels.
          *
-         * @param labelIndices  A reference to an object of type `DenseIndexVector` that provides access to the indices
-         *                      of the labels for which the existing rule predicts
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const DenseIndexVector& labelIndices,
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
                                                                       uint32 featureIndex) = 0;
 
         /**
@@ -216,10 +216,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 ~ThresholdsSubsetImpl();
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const RangeIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
                                                                       uint32 featureIndex) override;
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const DenseIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
                                                                       uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;
@@ -316,10 +316,10 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
                  */
                 ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const RangeIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
                                                                       uint32 featureIndex) override;
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const DenseIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
                                                                       uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;

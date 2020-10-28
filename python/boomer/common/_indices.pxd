@@ -26,9 +26,9 @@ cdef extern from "cpp/indices.h" nogil:
         unique_ptr[IRuleRefinement] createRuleRefinement(IThresholdsSubset& thresholds, uint32 featureIndex)
 
 
-    cdef cppclass RangeIndexVector(IIndexVector):
+    cdef cppclass FullIndexVector(IIndexVector):
         pass
 
 
-    cdef cppclass DenseIndexVector(IIndexVector):
+    cdef cppclass PartialIndexVector(IIndexVector):
         pass

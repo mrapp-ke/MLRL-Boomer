@@ -59,13 +59,13 @@ RegularizedLabelWiseRuleEvaluationFactoryImpl::RegularizedLabelWiseRuleEvaluatio
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
-        const RangeIndexVector& indexVector) const {
-    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<RangeIndexVector>>(indexVector,
-                                                                                      l2RegularizationWeight_);
+        const FullIndexVector& indexVector) const {
+    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<FullIndexVector>>(indexVector,
+                                                                                     l2RegularizationWeight_);
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
-        const DenseIndexVector& indexVector) const {
-    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<DenseIndexVector>>(indexVector,
-                                                                                      l2RegularizationWeight_);
+        const PartialIndexVector& indexVector) const {
+    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<PartialIndexVector>>(indexVector,
+                                                                                        l2RegularizationWeight_);
 }

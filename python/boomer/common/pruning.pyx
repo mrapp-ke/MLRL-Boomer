@@ -4,7 +4,7 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
-from boomer.common._indices cimport RangeIndexVector
+from boomer.common._indices cimport FullIndexVector
 from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator

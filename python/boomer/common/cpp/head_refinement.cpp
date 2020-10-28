@@ -62,13 +62,13 @@ const EvaluatedPrediction& SingleLabelHeadRefinementImpl<T>::calculatePrediction
 }
 
 std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
-        const RangeIndexVector& labelIndices) const {
-    return std::make_unique<SingleLabelHeadRefinementImpl<RangeIndexVector>>(labelIndices);
+        const FullIndexVector& labelIndices) const {
+    return std::make_unique<SingleLabelHeadRefinementImpl<FullIndexVector>>(labelIndices);
 }
 
 std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
-        const DenseIndexVector& labelIndices) const {
-    return std::make_unique<SingleLabelHeadRefinementImpl<DenseIndexVector>>(labelIndices);
+        const PartialIndexVector& labelIndices) const {
+    return std::make_unique<SingleLabelHeadRefinementImpl<PartialIndexVector>>(labelIndices);
 }
 
 template<class T>
@@ -129,10 +129,10 @@ const EvaluatedPrediction& FullHeadRefinementImpl<T>::calculatePrediction(IStati
     return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
 }
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const RangeIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinementImpl<RangeIndexVector>>(labelIndices);
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const FullIndexVector& labelIndices) const {
+    return std::make_unique<FullHeadRefinementImpl<FullIndexVector>>(labelIndices);
 }
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const DenseIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinementImpl<DenseIndexVector>>(labelIndices);
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const PartialIndexVector& labelIndices) const {
+    return std::make_unique<FullHeadRefinementImpl<PartialIndexVector>>(labelIndices);
 }

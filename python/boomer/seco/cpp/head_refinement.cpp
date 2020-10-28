@@ -120,10 +120,10 @@ PartialHeadRefinementFactoryImpl::PartialHeadRefinementFactoryImpl(std::shared_p
 
 }
 
-std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const RangeIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinementImpl<RangeIndexVector>>(labelIndices, liftFunctionPtr_);
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const FullIndexVector& labelIndices) const {
+    return std::make_unique<PartialHeadRefinementImpl<FullIndexVector>>(labelIndices, liftFunctionPtr_);
 }
 
-std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const DenseIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinementImpl<DenseIndexVector>>(labelIndices, liftFunctionPtr_);
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const PartialIndexVector& labelIndices) const {
+    return std::make_unique<PartialHeadRefinementImpl<PartialIndexVector>>(labelIndices, liftFunctionPtr_);
 }

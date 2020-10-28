@@ -245,33 +245,33 @@ class AbstractStatistics : virtual public IMatrix {
 
         /**
          * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
-         * a specific `RangeIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
+         * a specific `FullIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
          * to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
          *
-         * This function, or the function `createSubset(DenseIndexVector&)` must be called each time a new refinement is
-         * considered, unless the refinement covers all statistics previously provided via calls to the function
+         * This function, or the function `createSubset(PartialIndexVector&)` must be called each time a new refinement
+         * is considered, unless the refinement covers all statistics previously provided via calls to the function
          * `IStatisticsSubset#addToSubset`.
          *
-         * @param labelIndices  A reference to an object of type `RangeIndexVector` that provides access to the indices
+         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
          *                      of the labels that should be included in the subset
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const RangeIndexVector& labelIndices) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const = 0;
 
         /**
          * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
-         * a specific `DenseIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
-         * to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         * a specific `PartialIndexVector`. Individual statistics that are covered by a refinement of a rule can be
+         * added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
          *
-         * This function, or the function `createSubset(RangeIndexVector&)` must be called each time a new refinement is
+         * This function, or the function `createSubset(FullIndexVector&)` must be called each time a new refinement is
          * considered, unless the refinement covers all statistics previously provided via calls to the function
          * `IStatisticsSubset#addToSubset`.
          *
-         * @param labelIndices  A reference to an object of type `DenseIndexVector` that provides access to the indices
-         *                      of the labels that should be included in the subset
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const DenseIndexVector& labelIndices) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const = 0;
 
         /**
          * Updates a specific statistic based on the prediction of a rule that predicts for all available labels.

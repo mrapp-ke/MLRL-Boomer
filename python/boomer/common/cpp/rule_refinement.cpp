@@ -468,8 +468,8 @@ std::unique_ptr<Refinement> ExactRuleRefinementImpl<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }
 
-template class ExactRuleRefinementImpl<RangeIndexVector>;
-template class ExactRuleRefinementImpl<DenseIndexVector>;
+template class ExactRuleRefinementImpl<FullIndexVector>;
+template class ExactRuleRefinementImpl<PartialIndexVector>;
 
 template<class T>
 ApproximateRuleRefinementImpl<T>::ApproximateRuleRefinementImpl(
@@ -556,5 +556,5 @@ std::unique_ptr<Refinement> ApproximateRuleRefinementImpl<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }
 
-template class ApproximateRuleRefinementImpl<RangeIndexVector>;
-template class ApproximateRuleRefinementImpl<DenseIndexVector>;
+template class ApproximateRuleRefinementImpl<FullIndexVector>;
+template class ApproximateRuleRefinementImpl<PartialIndexVector>;
