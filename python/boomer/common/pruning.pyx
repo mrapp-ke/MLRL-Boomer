@@ -72,8 +72,6 @@ cdef class IREP(Pruning):
         cdef uint32 num_examples = covered_examples_mask.shape[0]
         # The number of conditions of the existing rule
         cdef uint32 num_conditions = conditions.size()
-        # The number of labels for which the existing rule predicts
-        cdef uint32 num_predictions = head.getNumElements()
         # Temporary variables
         cdef Condition condition
         cdef Comparator comparator
@@ -86,12 +84,7 @@ cdef class IREP(Pruning):
 
         # Reset the statistics and create a new, empty subset...
         statistics.resetSampledStatistics()
-
-        # TODO Use vector that is given as an argument
-        cdef unique_ptr[RangeIndexVector] label_indices_ptr = make_unique[RangeIndexVector](num_predictions)
-
-        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr = label_indices_ptr.get().createSubset(
-            dereference(statistics))
+        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr = head.createSubset(dereference(statistics))
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -136,7 +129,7 @@ cdef class IREP(Pruning):
             num_indexed_values = dereference(indexed_array).numElements
 
             # Create a new, empty subset of the statistics when processing a new condition...
-            statistics_subset_ptr = label_indices_ptr.get().createSubset(dereference(statistics))
+            statistics_subset_ptr = head.createSubset(dereference(statistics))
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)
