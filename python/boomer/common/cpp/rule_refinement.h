@@ -32,7 +32,7 @@ class Refinement {
          */
         bool isBetterThan(const Refinement& another) const;
 
-        std::unique_ptr<PredictionCandidate> headPtr;
+        std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
         uint32 featureIndex;
 
@@ -89,14 +89,10 @@ class IRuleRefinement {
         /**
          * Finds the best refinement of an existing rule.
          *
-         * @param currentHead       A pointer to an object of type `PredictionCandidate`, representing the head of the
-         *                          existing rule or a null pointer, if no rule exists yet
-         * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numLabelIndices)`, representing the
-         *                          indices of the labels for which the refined rule may predict
+         * @param currentHead A pointer to an object of type `AbstractEvaluatedPrediction`, representing the head of the
+         *                    existing rule or a null pointer, if no rule exists yet
          */
-        virtual void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                                    const uint32* labelIndices) = 0;
+        virtual void findRefinement(const AbstractEvaluatedPrediction* currentHead) = 0;
 
         /**
          * Returns the best refinement that has been found by the function `findRefinement`.
@@ -112,12 +108,18 @@ class IRuleRefinement {
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
+ *
+ * @tparam T The type of the vector that provides access to the indices of the labels for which the refined rule is
+ *           allowed to predict
  */
+template<class T>
 class ExactRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
         std::unique_ptr<IHeadRefinement> headRefinementPtr_;
+
+        const T& labelIndices_;
 
         const IWeightVector& weights_;
 
@@ -136,6 +138,8 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
         /**
          * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that should be used to find
          *                          the head of refined rules
+         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
+         *                          the labels for which the refined rule is allowed to predict
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
          *                          of the individual training examples
          * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
@@ -145,12 +149,11 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
          *                          allows to retrieve a feature vector for the given feature
          */
-        ExactRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr, const IWeightVector& weights,
-                                uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
-                                std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
+        ExactRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
+                                const IWeightVector& weights, uint32 totalSumOfWeights, uint32 featureIndex,
+                                bool nominal, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
-        void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                            const uint32* labelIndices) override;
+        void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 
@@ -160,12 +163,18 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
  * certain feature. The thresholds that may be used by the new condition result from the boundaries between the bins
  * that have been created using a binning method.
+ *
+ * @tparam T The type of the vector that provides access to the indices of the labels for which the refined rule is
+ *           allowed to predict
  */
+template<class T>
 class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
 
     private:
 
         std::unique_ptr<IHeadRefinement> headRefinementPtr_;
+
+        const T& labelIndices_;
 
         uint32 featureIndex_;
 
@@ -178,15 +187,17 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
         /**
          * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that should be used to find
          *                          the head of refined rules
+         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
+         *                          the labels for which the refined rule is allowed to predict
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<BinVector>` that
          *                          allows to retrieve the bins for a certain feature
          */
-        ApproximateRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr, uint32 featureIndex,
+        ApproximateRuleRefinementImpl(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
+                                      uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
-        void findRefinement(const PredictionCandidate* currentHead, uint32 numLabelIndices,
-                            const uint32* labelIndices) override;
+        void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 

@@ -6,6 +6,7 @@
  */
 #pragma once
 
+#include "indices.h"
 #include "rule_evaluation.h"
 #include "predictions.h"
 #include "binning.h"
@@ -243,36 +244,59 @@ class AbstractStatistics : virtual public IMatrix {
         virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) = 0;
 
         /**
-         * Creates a new, empty subset of the statistics. Individual statistics that are covered by a refinement of a
-         * rule can be added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
+         * a specific `FullIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
+         * to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
          *
-         * This function must be called each time a new refinement is considered, unless the refinement covers all
-         * statistics previously provided via calls to the function `IStatisticsSubset#addToSubset`.
+         * This function, or the function `createSubset(PartialIndexVector&)` must be called each time a new refinement
+         * is considered, unless the refinement covers all statistics previously provided via calls to the function
+         * `IStatisticsSubset#addToSubset`.
          *
-         * Optionally, a subset of the available labels may be specified via the argument `labelIndices`. In such case,
-         * only the statistics that correspond to the specified labels will be included in the subset. When calling this
-         * function again to create a new subset from scratch, a different set of labels may be specified.
-         *
-         * @param numLabelIndices   The number of elements in the array `labelIndices`
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
-         *                          indices of the labels that should be included in the subset or None, if all labels
-         *                          should be included
-         * @return                  An unique pointer to an object of type `IStatisticsSubset` that has been created
+         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
+         *                      of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
-                                                                const uint32* labelIndices) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const = 0;
 
         /**
-         * Updates a specific statistic based on the predictions of a newly induced rule.
+         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
+         * a specific `PartialIndexVector`. Individual statistics that are covered by a refinement of a rule can be
+         * added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         *
+         * This function, or the function `createSubset(FullIndexVector&)` must be called each time a new refinement is
+         * considered, unless the refinement covers all statistics previously provided via calls to the function
+         * `IStatisticsSubset#addToSubset`.
+         *
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const = 0;
+
+        /**
+         * Updates a specific statistic based on the prediction of a rule that predicts for all available labels.
          *
          * This function must be called for each statistic that is covered by the new rule before learning the next
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param prediction        A reference to an object of type `Prediction`, representing the predictions of the
-         *                          newly induced rule
+         * @param prediction        A reference to an object of type `Prediction` that stores the scores that are
+         *                          predicted by the rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, const Prediction& prediction) = 0;
+        virtual void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) = 0;
+
+        /**
+         * Updates a specific statistic based on the prediction of a rule that predicts for a subset of the available
+         * labels.
+         *
+         * This function must be called for each statistic that is covered by the new rule before learning the next
+         * rule.
+         *
+         * @param statisticIndex    The index of the statistic to be updated
+         * @param prediction        A reference to an object of type `PartialPrediction` that stores the scores that are
+         *                          predicted by the rule
+         */
+        virtual void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
 
         /**
          * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on

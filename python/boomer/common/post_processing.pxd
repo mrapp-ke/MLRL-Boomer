@@ -1,4 +1,4 @@
-from boomer.common._predictions cimport Prediction
+from boomer.common._predictions cimport AbstractPrediction
 
 from libcpp.memory cimport shared_ptr
 
@@ -9,7 +9,7 @@ cdef extern from "cpp/post_processing.h" nogil:
 
         # Functions:
 
-        void postProcess(Prediction& prediction)
+        void postProcess(AbstractPrediction& prediction)
 
 
     cdef cppclass NoPostProcessorImpl(IPostProcessor):

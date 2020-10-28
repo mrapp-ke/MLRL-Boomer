@@ -5,99 +5,95 @@
  */
 #pragma once
 
-#include "arrays.h"
+#include "data.h"
+#include "indices.h"
+
+// Forward declarations
+class AbstractStatistics;
 
 
 /**
- * Stores the predictions of a rule for several labels.
+ * An abstract base class for all classes that store the scores that are predicted by a rule.
  */
-class Prediction {
+class AbstractPrediction : public DenseVector<float64>, virtual public IIndexVector {
 
     public:
 
         /**
-         * @param numPredictions    The number of labels for which the rule predicts
-         * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`, representing the
-         *                          indices of the labels for which the rule predicts or a null pointer, if the rule
-         *                          predicts for all labels
-         * @param predictedScores   A pointer to an array of type `float64`, shape `(numPredictions)`, representing the
-         *                          predicted scores
+         * @param numElements The number of labels for which the rule predicts
          */
-        Prediction(uint32 numPredictions, uint32* labelIndices, float64* predictedScores);
-
-        ~Prediction();
+        AbstractPrediction(uint32 numElements);
 
         /**
-         * The number of labels for which the rule predicts.
+         * Updates the given statistics by applying this prediction.
+         *
+         * @param statistics        A reference to an object of type `AbstractStatistics` to be updated
+         * @param statisticIndex    The index of the statistic to be updated
          */
-        uint32 numPredictions_;
+        virtual void apply(AbstractStatistics& statistics, uint32 statisticIndex) const = 0;
 
-        /**
-         * A pointer to an array of type `uint32`, shape `(numPredictions_)`, representing the indices of the labels for
-         * which the rule predicts or a null pointer, if the rule predicts for all labels.
-         */
-        uint32* labelIndices_;
+        virtual uint32 getNumElements() const override = 0;
 
-        /**
-         * A pointer to an array of type `float64`, shape `(numPredictions_)`, representing the predicted scores.
-         */
-        float64* predictedScores_;
+        virtual void setNumElements(uint32 numElements) override = 0;
 
 };
 
 /**
- * Stores the predictions of a rule for several labels, as well as an overall quality score.
+ * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a quality score
+ * that assesses the overall quality of the rule.
  */
-class PredictionCandidate : public Prediction {
+class AbstractEvaluatedPrediction : public AbstractPrediction {
 
     public:
 
         /**
-         * @param numPredictions        The number of labels for which the rule predicts
-         * @param labelIndices          A pointer to an array of type `uint32`, shape `(numPredictions)`, representing
-         *                              the indices of the labels for which the rule predicts or a null pointer, if the
-         *                              rule predicts for all labels
-         * @param predictedScores       A pointer to an array of type `float64`, shape `(numPredictions)`, representing
-         *                              the predicted scores
-         * @param overallQualityScore   A score that assesses the overall quality of the predictions
+         * @param numElements The number of labels for which the rule predicts
          */
-        PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
-                            float64 overallQualityScore);
+        AbstractEvaluatedPrediction(uint32 numElements);
 
         /**
-         * A score that assesses the overall quality of the predictions.
+         * A score that assesses the overall quality of the rule.
          */
-        float64 overallQualityScore_;
+        float64 overallQualityScore;
 
 };
 
 /**
- * Stores the predictions of a rule for several labels, as well as corresponding quality scores.
+ * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class LabelWisePredictionCandidate : public PredictionCandidate {
+class FullPrediction : public AbstractEvaluatedPrediction, public FullIndexVector {
 
     public:
 
         /**
-         * @param numPredictions        The number of labels for which the rule predicts
-         * @param labelIndices          A pointer to an array of type `uint32`, shape `(numPredictions)`, representing
-         *                              the indices of the labels for which the rule predicts or a null pointer, if the
-         *                              rule predicts for all labels
-         * @param predictedScores       A pointer to an array of type `float64`, shape `(numPredictions)`, representing
-         *                              the predicted scores
-         * @param qualityScores         A pointer to an array of type `float64`, shape `(numPredictions)`, representing
-         *                              the quality scores for individual labels
-         * @param overallQualityScore   A score that assesses the overall quality of the predictions
+         * @param numElements The number of labels for which the rule predicts
          */
-        LabelWisePredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
-                                     float64* qualityScores, float64 overallQualityScore);
+        FullPrediction(uint32 numElements);
 
-        ~LabelWisePredictionCandidate();
+        uint32 getNumElements() const override;
+
+        void setNumElements(uint32 numElements) override;
+
+        void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
+
+};
+
+/**
+ * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
+ */
+class PartialPrediction : public AbstractEvaluatedPrediction, public PartialIndexVector {
+
+    public:
 
         /**
-         * A pointer to an array of type `float64`, shape `(numPredictions_)`, representing the quality scores for
-         * individual labels.
+         * @param numElements The number of labels for which the rule predicts
          */
-        float64* qualityScores_;
+        PartialPrediction(uint32 numElements);
+
+        uint32 getNumElements() const override;
+
+        void setNumElements(uint32 numElements) override;
+
+        void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
 
 };

@@ -10,13 +10,14 @@ DenseVector<T>::DenseVector(uint32 numElements)
 
 template<class T>
 DenseVector<T>::DenseVector(uint32 numElements, bool init)
-    : array_(init ? new T[numElements]() : new T[numElements]), numElements_(numElements) {
+    : array_((T*) (init ? calloc(numElements, sizeof(T)) : malloc(numElements * sizeof(T)))),
+      numElements_(numElements) {
 
 }
 
 template<class T>
 DenseVector<T>::~DenseVector() {
-    delete[] array_;
+    free(array_);
 }
 
 template<class T>
@@ -47,6 +48,14 @@ typename DenseVector<T>::const_iterator DenseVector<T>::cbegin() const {
 template<class T>
 typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
     return &array_[numElements_];
+}
+
+template<class T>
+void DenseVector<T>::setNumElements(uint32 numElements) {
+    if (numElements != numElements_) {
+        numElements_ = numElements;
+        array_ = (T*) realloc(array_, numElements * sizeof(T));
+    }
 }
 
 template class DenseVector<uint32>;

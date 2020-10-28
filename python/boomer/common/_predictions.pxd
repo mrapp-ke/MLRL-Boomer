@@ -4,35 +4,47 @@
 classes that store the predictions of rules, as well as corresponding quality scores.
 """
 from boomer.common._arrays cimport uint32, float64
+from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
+
+from libcpp cimport bool
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "cpp/predictions.h" nogil:
 
-    cdef cppclass Prediction:
+    cdef cppclass AbstractPrediction:
 
-        # Attributes:
+        ctypedef float64* const_iterator
 
-        uint32 numPredictions_
+        # Functions:
 
-        uint32* labelIndices_
+        bool isPartial()
 
-        float64* predictedScores_
+        uint32 getNumElements()
 
+        const_iterator cbegin()
 
-    cdef cppclass PredictionCandidate(Prediction):
+        const_iterator cend()
 
-        # Constructors:
+        unique_ptr[IStatisticsSubset] createSubset(const AbstractStatistics& statistics)
 
-        PredictionCandidate(uint32 numPredictions, uint32* labelIndices, float64* predictedScores,
-                            float64 overallQualityScore) except +
-
-        # Attributes:
-
-        float64 overallQualityScore_
+        void apply(AbstractStatistics& statistics, uint32 statisticIndex)
 
 
-    cdef cppclass LabelWisePredictionCandidate(PredictionCandidate):
+    cdef cppclass AbstractEvaluatedPrediction(AbstractPrediction):
+        pass
 
-        # Attributes:
 
-        float64* qualityScores_
+    cdef cppclass FullPrediction(AbstractEvaluatedPrediction):
+        pass
+
+
+    cdef cppclass PartialPrediction(AbstractEvaluatedPrediction):
+
+        ctypedef uint32* index_const_iterator
+
+        # Functions:
+
+        index_const_iterator indices_cbegin()
+
+        index_const_iterator indices_cend()

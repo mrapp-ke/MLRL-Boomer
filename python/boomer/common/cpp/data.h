@@ -112,6 +112,13 @@ class DenseVector : virtual public IRandomAccessVector<T> {
          */
         const_iterator cend() const;
 
+        /**
+         * Sets the number of elements in the vector.
+         *
+         * @param numElements The number of elements to be set
+         */
+        void setNumElements(uint32 numElements);
+
         uint32 getNumElements() const override;
 
         T getValue(uint32 pos) const override;

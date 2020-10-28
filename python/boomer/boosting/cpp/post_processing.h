@@ -27,7 +27,7 @@ namespace boosting {
              */
             ConstantShrinkageImpl(float64 shrinkage);
 
-            void postProcess(Prediction& prediction) const override;
+            void postProcess(AbstractPrediction& prediction) const override;
 
     };
 
