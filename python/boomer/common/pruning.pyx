@@ -4,12 +4,13 @@
 Provides classes that implement strategies for pruning classification rules.
 """
 from boomer.common._arrays cimport float32, float64, array_uint32
+from boomer.common._indices cimport FullIndexVector
 from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._tuples cimport IndexedFloat32
 from boomer.common.rules cimport Comparator
 from boomer.common.statistics cimport IStatisticsSubset
 
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport unique_ptr, make_unique
 
 from cython.operator cimport dereference, postincrement
 
@@ -22,7 +23,7 @@ cdef class Pruning:
     """
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
-                                         double_linked_list[Condition] conditions, Prediction* head,
+                                         double_linked_list[Condition] conditions, AbstractPrediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          IWeightVector* weights, AbstractStatistics* statistics,
                                          IHeadRefinement* head_refinement):
@@ -36,8 +37,8 @@ cdef class Pruning:
                                             as their values for the respective feature, sorted in ascending order by the
                                             feature values
         :param conditions:                  A list that contains the conditions of the existing rule
-        :param head:                        A pointer to an object of type `Prediction` representing the head of the
-                                            existing rule
+        :param head:                        A pointer to an object of type `AbstractPrediction` representing the head of
+                                            the existing rule
         :param covered_examples_mask:       An array of type `uint32`, shape `(num_examples)` that is used to keep track
                                             of the indices of the examples that are covered by the existing rule
         :param covered_examples_target:     The value that is used to mark those elements in `covered_examples_mask`
@@ -63,7 +64,7 @@ cdef class IREP(Pruning):
     """
 
     cdef pair[uint32[::1], uint32] prune(self, unordered_map[uint32, IndexedFloat32Array*]* sorted_feature_values_map,
-                                         double_linked_list[Condition] conditions, Prediction* head,
+                                         double_linked_list[Condition] conditions, AbstractPrediction* head,
                                          uint32[::1] covered_examples_mask, uint32 covered_examples_target,
                                          IWeightVector* weights, AbstractStatistics* statistics,
                                          IHeadRefinement* head_refinement):
@@ -71,10 +72,6 @@ cdef class IREP(Pruning):
         cdef uint32 num_examples = covered_examples_mask.shape[0]
         # The number of conditions of the existing rule
         cdef uint32 num_conditions = conditions.size()
-        # The number of labels for which the existing rule predicts
-        cdef uint32 num_predictions = head.numPredictions_
-        # An array that stores the indices of the labels for which the existing rule predicts
-        cdef uint32* label_indices = head.labelIndices_
         # Temporary variables
         cdef Condition condition
         cdef Comparator comparator
@@ -87,8 +84,7 @@ cdef class IREP(Pruning):
 
         # Reset the statistics and create a new, empty subset...
         statistics.resetSampledStatistics()
-        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr = statistics.createSubset(num_predictions,
-                                                                                           label_indices)
+        cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr = head.createSubset(dereference(statistics))
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
@@ -133,7 +129,7 @@ cdef class IREP(Pruning):
             num_indexed_values = dereference(indexed_array).numElements
 
             # Create a new, empty subset of the statistics when processing a new condition...
-            statistics_subset_ptr = statistics.createSubset(num_predictions, label_indices)
+            statistics_subset_ptr = head.createSubset(dereference(statistics))
 
             # Find the range [start, end) that either contains all covered or uncovered examples...
             end = __upper_bound(indexed_values, num_indexed_values, threshold)

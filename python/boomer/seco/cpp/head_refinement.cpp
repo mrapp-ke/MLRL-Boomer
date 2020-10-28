@@ -22,15 +22,18 @@ static inline uint32* argsort(const float64* a, uint32 numElements) {
     return sortedArray;
 }
 
-PartialHeadRefinementImpl::PartialHeadRefinementImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr)
-    : liftFunctionPtr_(liftFunctionPtr) {
+template<class T>
+PartialHeadRefinementImpl<T>::PartialHeadRefinementImpl(const T& labelIndices,
+                                                        std::shared_ptr<ILiftFunction> liftFunctionPtr)
+    : labelIndices_(labelIndices), liftFunctionPtr_(liftFunctionPtr) {
 
 }
 
-bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
-                                         std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
-                                         IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated) const {
-    bool result = false;
+template<class T>
+const AbstractEvaluatedPrediction* PartialHeadRefinementImpl<T>::findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                                          IStatisticsSubset& statisticsSubset,
+                                                                          bool uncovered, bool accumulated) {
+    const AbstractEvaluatedPrediction* result = nullptr;
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -42,7 +45,14 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
     uint32 bestNumPredictions = 0;
     float64 bestQualityScore = 0;
 
-    if (labelIndices == nullptr) {
+    if (labelIndices_.isPartial()) {
+        for (uint32 c = 0; c < numPredictions; c++) {
+            sumOfQualityScores += 1 - qualityScoreIterator[c];
+        }
+
+        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
+        bestNumPredictions = numPredictions;
+    } else {
         sortedIndices = argsort(qualityScoreIterator, numPredictions);
         float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
@@ -60,69 +70,48 @@ bool PartialHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
                 break;
             }
         }
-    } else {
-        for (uint32 c = 0; c < numPredictions; c++) {
-            sumOfQualityScores += 1 - qualityScoreIterator[c];
-        }
-
-        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
-        bestNumPredictions = numPredictions;
     }
 
-    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore_) {
-        result = true;
-
-        if (headPtr.get() == nullptr) {
-            uint32* candidateLabelIndices = (uint32*) malloc(bestNumPredictions * sizeof(uint32));
-            float64* candidatePredictedScores = (float64*) malloc(bestNumPredictions * sizeof(float64));
-
-            if (labelIndices == nullptr) {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    uint32 i = sortedIndices[c];
-                    candidateLabelIndices[c] = labelIndices == nullptr ? i : labelIndices[i];
-                    candidatePredictedScores[c] = valueIterator[i];
-                }
-            } else {
-                for (uint32 c = 0; c < bestNumPredictions; c++) {
-                    candidateLabelIndices[c] = labelIndices[c];
-                    candidatePredictedScores[c] = valueIterator[c];
-                }
-            }
-
-            headPtr = std::make_unique<PredictionCandidate>(bestNumPredictions, candidateLabelIndices,
-                                                            candidatePredictedScores, bestQualityScore);
-        } else if (headPtr->numPredictions_ != bestNumPredictions) {
-            headPtr->numPredictions_ = bestNumPredictions;
-            headPtr->labelIndices_ = (uint32*) realloc(headPtr->labelIndices_, bestNumPredictions * sizeof(uint32));
-            headPtr->predictedScores_ = (float64*) realloc(headPtr->predictedScores_,
-                                                           bestNumPredictions * sizeof(float64));
+    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
+        if (headPtr_.get() == nullptr) {
+            headPtr_ = std::make_unique<PartialPrediction>(bestNumPredictions);
+        } else if (headPtr_->getNumElements() != bestNumPredictions) {
+            headPtr_->setNumElements(bestNumPredictions);
         }
 
-        float64* headValueIterator = headPtr->predictedScores_;
-        uint32* headIndexIterator = headPtr->labelIndices_;
+        typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+        PartialPrediction::iterator headValueIterator = headPtr_->begin();
+        PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
-        if (labelIndices == nullptr) {
+        if (labelIndices_.isPartial()) {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
-                uint32 i = sortedIndices[c];
-                headIndexIterator[c] = labelIndices == nullptr ? i : labelIndices[i];
-                headValueIterator[c] = valueIterator[i];
+                headIndexIterator[c] = indexIterator[c];
+                headValueIterator[c] = valueIterator[c];
             }
         } else {
             for (uint32 c = 0; c < bestNumPredictions; c++) {
-                headIndexIterator[c] = labelIndices[c];
-                headValueIterator[c] = valueIterator[c];
+                uint32 i = sortedIndices[c];
+                headIndexIterator[c] = indexIterator[i];
+                headValueIterator[c] = valueIterator[i];
             }
         }
 
-        headPtr->overallQualityScore_ = bestQualityScore;
+        headPtr_->overallQualityScore = bestQualityScore;
+        result = headPtr_.get();
     }
 
     delete[] sortedIndices;
     return result;
 }
 
-const EvaluatedPrediction& PartialHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                          bool uncovered, bool accumulated) const {
+template<class T>
+std::unique_ptr<AbstractEvaluatedPrediction> PartialHeadRefinementImpl<T>::pollHead() {
+    return std::move(headPtr_);
+}
+
+template<class T>
+const EvaluatedPrediction& PartialHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                             bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
 
@@ -131,6 +120,10 @@ PartialHeadRefinementFactoryImpl::PartialHeadRefinementFactoryImpl(std::shared_p
 
 }
 
-std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create() const {
-    return std::make_unique<PartialHeadRefinementImpl>(liftFunctionPtr_);
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const FullIndexVector& labelIndices) const {
+    return std::make_unique<PartialHeadRefinementImpl<FullIndexVector>>(labelIndices, liftFunctionPtr_);
+}
+
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const PartialIndexVector& labelIndices) const {
+    return std::make_unique<PartialHeadRefinementImpl<PartialIndexVector>>(labelIndices, liftFunctionPtr_);
 }

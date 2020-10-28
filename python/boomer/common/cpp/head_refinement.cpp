@@ -2,10 +2,16 @@
 #include <cstdlib>
 
 
-bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead,
-                                             std::unique_ptr<PredictionCandidate>& headPtr, const uint32* labelIndices,
-                                             IStatisticsSubset& statisticsSubset, bool uncovered,
-                                             bool accumulated) const {
+template<class T>
+SingleLabelHeadRefinementImpl<T>::SingleLabelHeadRefinementImpl(const T& labelIndices)
+    : labelIndices_(labelIndices) {
+
+}
+
+template<class T>
+const AbstractEvaluatedPrediction* SingleLabelHeadRefinementImpl<T>::findHead(
+        const AbstractEvaluatedPrediction* bestHead, IStatisticsSubset& statisticsSubset, bool uncovered,
+        bool accumulated) {
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -24,85 +30,109 @@ bool SingleLabelHeadRefinementImpl::findHead(const PredictionCandidate* bestHead
     }
 
     // The quality score must be better than that of `bestHead`...
-    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore_) {
+    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
         LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
+        typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
 
-        if (headPtr.get() == nullptr) {
-            uint32* candidateLabelIndices = (uint32*) malloc(sizeof(uint32));
-            float64* candidatePredictedScores = (float64*) malloc(sizeof(float64));
-            headPtr = std::make_unique<PredictionCandidate>(1, candidateLabelIndices, candidatePredictedScores,
-                                                            bestQualityScore);
+        if (headPtr_.get() == nullptr) {
+            headPtr_ = std::make_unique<PartialPrediction>(1);
         }
 
-        float64* headValueIterator = headPtr->predictedScores_;
-        uint32* headIndexIterator = headPtr->labelIndices_;
+        PartialPrediction::iterator headValueIterator = headPtr_->begin();
+        PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
         headValueIterator[0] = valueIterator[bestC];
-        headIndexIterator[0] = labelIndices == nullptr ? bestC : labelIndices[bestC];
-        headPtr->overallQualityScore_ = bestQualityScore;
-        return true;
+        headIndexIterator[0] = indexIterator[bestC];
+        headPtr_->overallQualityScore = bestQualityScore;
+        return headPtr_.get();
     }
 
-    return false;
+    return nullptr;
 }
 
-const EvaluatedPrediction& SingleLabelHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                              bool uncovered, bool accumulated) const {
+template<class T>
+std::unique_ptr<AbstractEvaluatedPrediction> SingleLabelHeadRefinementImpl<T>::pollHead() {
+    return std::move(headPtr_);
+}
+
+template<class T>
+const EvaluatedPrediction& SingleLabelHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                                 bool uncovered,
+                                                                                 bool accumulated) const {
     return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
 }
 
-std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create() const {
-    return std::make_unique<SingleLabelHeadRefinementImpl>();
+std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
+        const FullIndexVector& labelIndices) const {
+    return std::make_unique<SingleLabelHeadRefinementImpl<FullIndexVector>>(labelIndices);
 }
 
-bool FullHeadRefinementImpl::findHead(const PredictionCandidate* bestHead, std::unique_ptr<PredictionCandidate>& headPtr,
-                                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered,
-                                      bool accumulated) const {
+std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactoryImpl::create(
+        const PartialIndexVector& labelIndices) const {
+    return std::make_unique<SingleLabelHeadRefinementImpl<PartialIndexVector>>(labelIndices);
+}
+
+template<class T>
+FullHeadRefinementImpl<T>::FullHeadRefinementImpl(const T& labelIndices)
+    : labelIndices_(labelIndices) {
+
+}
+
+template<class T>
+const AbstractEvaluatedPrediction* FullHeadRefinementImpl<T>::findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                                       IStatisticsSubset& statisticsSubset,
+                                                                       bool uncovered, bool accumulated) {
     const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction.overallQualityScore;
 
     // The quality score must be better than that of `bestHead`...
-    if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore_) {
+    if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore) {
         uint32 numPredictions = prediction.getNumElements();
         EvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
 
-        if (headPtr.get() == nullptr) {
-            float64* candidatePredictedScores = (float64*) malloc(numPredictions * sizeof(float64));
-            uint32* candidateLabelIndices = nullptr;
-
-            for (uint32 c = 0; c < numPredictions; c++) {
-                candidatePredictedScores[c] = valueIterator[c];
-            }
-
-            if (labelIndices != nullptr) {
-                uint32* candidateLabelIndices = (uint32*) malloc(numPredictions * sizeof(uint32));
+        if (headPtr_.get() == nullptr) {
+            if (labelIndices_.isPartial()) {
+                typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+                std::unique_ptr<PartialPrediction> headPtr = std::make_unique<PartialPrediction>(numPredictions);
+                PartialPrediction::index_iterator headIndexIterator = headPtr->indices_begin();
 
                 for (uint32 c = 0; c < numPredictions; c++) {
-                    candidateLabelIndices[c] = labelIndices[c];
+                    headIndexIterator[c] = indexIterator[c];
                 }
-            }
 
-            headPtr = std::make_unique<PredictionCandidate>(numPredictions, candidateLabelIndices,
-                                                            candidatePredictedScores, overallQualityScore);
+                headPtr_ = std::move(headPtr);
+            } else {
+                headPtr_ = std::make_unique<FullPrediction>(numPredictions);
+            }
         }
 
-        float64* headValueIterator = headPtr->predictedScores_;
+        AbstractEvaluatedPrediction::iterator headValueIterator = headPtr_->begin();
 
         for (uint32 c = 0; c < numPredictions; c++) {
             headValueIterator[c] = valueIterator[c];
         }
 
-        headPtr->overallQualityScore_ = overallQualityScore;
-        return true;
+        headPtr_->overallQualityScore = overallQualityScore;
+        return headPtr_.get();
     }
 
-    return false;
+    return nullptr;
 }
 
-const EvaluatedPrediction& FullHeadRefinementImpl::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                       bool uncovered, bool accumulated) const {
+template<class T>
+std::unique_ptr<AbstractEvaluatedPrediction> FullHeadRefinementImpl<T>::pollHead() {
+    return std::move(headPtr_);
+}
+
+template<class T>
+const EvaluatedPrediction& FullHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
+                                                                          bool uncovered, bool accumulated) const {
     return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
 }
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create() const {
-    return std::make_unique<FullHeadRefinementImpl>();
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const FullIndexVector& labelIndices) const {
+    return std::make_unique<FullHeadRefinementImpl<FullIndexVector>>(labelIndices);
+}
+
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactoryImpl::create(const PartialIndexVector& labelIndices) const {
+    return std::make_unique<FullHeadRefinementImpl<PartialIndexVector>>(labelIndices);
 }

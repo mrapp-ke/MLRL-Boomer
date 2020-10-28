@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../../common/cpp/rule_evaluation.h"
+#include "../../common/cpp/indices.h"
 #include "heuristics.h"
 #include <memory>
 
@@ -58,33 +59,34 @@ namespace seco {
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they optimize a
      * heuristic that is applied using label-wise averaging.
+     *
+     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
+    template<class T>
     class HeuristicLabelWiseRuleEvaluationImpl : virtual public ILabelWiseRuleEvaluation {
 
         private:
 
+            const T& labelIndices_;
+
             std::shared_ptr<IHeuristic> heuristicPtr_;
 
             bool predictMajority_;
-
-            const uint32* labelIndices_;
 
             LabelWiseEvaluatedPrediction prediction_;
 
         public:
 
             /**
-             * @param numPredictions    The number of labels for which the rules should predict
-             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels
-             *                          for which the rules should predict or a null pointer, if the rules should
-             *                          predict for all labels
+             * @param labelIndices      A reference to an object of template type `T` that provides access to the
+             *                          indices of the labels for which the rules may predict
              * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
              *                          to be optimized
              * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
              *                          minority label should be predicted
              */
-            HeuristicLabelWiseRuleEvaluationImpl(uint32 numPredictions, const uint32* labelIndices,
-                                                 std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
+            HeuristicLabelWiseRuleEvaluationImpl(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
+                                                 bool predictMajority);
 
             const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
                 const uint8* minorityLabels, const float64* confusionMatricesTotal,
@@ -104,17 +106,25 @@ namespace seco {
 
             /**
              * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
-             * predictions of rules for several labels.
+             * predictions of rules that predict for all available labels.
              *
-             * @param numLabelIndices   The number of labels for which the rules should predict
-             * @param labelIndices      A pointer to an array of type `uint32` that stores the indices of the labels for
-             *                          which the rules should predict or a null pointer, if the rules should predict
-             *                          for all available labels
-             * @return                  An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
-             *                          created
+             * @param indexVector   A reference to an object of type `FullIndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                      created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
-                                                                     const uint32* labelIndices) const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const = 0;
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
+             * predictions of rules that predict for a subset of the available labels.
+             *
+             * @param indexVector   A reference to an object of type `PartialIndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
+             *                      created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const = 0;
 
     };
 
@@ -139,8 +149,9 @@ namespace seco {
              */
             HeuristicLabelWiseRuleEvaluationFactoryImpl(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(uint32 numLabelIndices,
-                                                             const uint32* labelIndices) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
+
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
 
     };
 

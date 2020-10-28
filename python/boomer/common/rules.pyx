@@ -3,8 +3,8 @@
 
 Provides model classes that are used to build rule-based models.
 """
-from boomer.common._arrays cimport array_uint32, array_float32, array_float64
-from boomer.common._arrays cimport c_matrix_uint8, c_matrix_float64
+from boomer.common._arrays cimport array_uint32, array_float32, array_float64, c_matrix_uint8, c_matrix_float64
+from boomer.common._predictions cimport PartialPrediction
 
 from cython.operator cimport dereference, postincrement
 
@@ -569,22 +569,22 @@ cdef class ModelBuilder:
     A base class for all builders that allow to incrementally build a `RuleModel`.
     """
 
-    cdef void set_default_rule(self, Prediction* default_prediction):
+    cdef void set_default_rule(self, AbstractPrediction* prediction):
         """
         Initializes the model and sets its default rule.
 
-        :param scores: A pointer to an object of type `Prediction` that represents the prediction of the default rule or
-                       a null pointer, if no default rule should be used
+        :param prediction: A pointer to an object of type `AbstractPrediction` that stores the scores that are predicted
+                           by the default rule or a null pointer, if no default rule should be used
         """
         pass
 
-    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, AbstractPrediction* prediction, double_linked_list[Condition] conditions,
                        uint32[::1] num_conditions_per_comparator):
         """
         Adds a new rule to the model.
 
-        :param head:                            A pointer to an object of type `Prediction`, representing the head of
-                                                the rule
+        :param prediction:                      A pointer to an object of type `AbstractPrediction` that stores the
+                                                scores that are predicted by the rule
         :param conditions:                      A list that contains the rule's conditions
         :param num_conditions_per_comparator:   An array of type `uint32`, shape `(4)`, representing the number of
                                                 conditions that use a specific operator
@@ -611,25 +611,25 @@ cdef class RuleListBuilder(ModelBuilder):
         self.rule_list = None
         self.default_rule = None
 
-    cdef void set_default_rule(self, Prediction* default_prediction):
+    cdef void set_default_rule(self, AbstractPrediction* prediction):
         cdef bint use_mask = self.use_mask
         cdef bint default_rule_at_end = self.default_rule_at_end
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
         self.rule_list = rule_list
         cdef uint32 num_predictions, c
-        cdef float64* predicted_scores
+        cdef AbstractPrediction.const_iterator value_iterator
         cdef float64[::1] head_scores
         cdef FullHead head
         cdef EmptyBody body
         cdef Rule default_rule
 
-        if default_prediction != NULL:
-            num_predictions = default_prediction.numPredictions_
-            predicted_scores = default_prediction.predictedScores_
+        if prediction != NULL:
+            num_predictions = prediction.getNumElements()
+            value_iterator = prediction.cbegin()
             head_scores = array_float64(num_predictions)
 
             for c in range(num_predictions):
-                head_scores[c] = predicted_scores[c]
+                head_scores[c] = value_iterator[c]
 
             head = FullHead.__new__(FullHead, head_scores)
             body = EmptyBody.__new__(EmptyBody)
@@ -640,7 +640,7 @@ cdef class RuleListBuilder(ModelBuilder):
             else:
                 rule_list.add_rule(default_rule)
 
-    cdef void add_rule(self, Prediction* head, double_linked_list[Condition] conditions,
+    cdef void add_rule(self, AbstractPrediction* prediction, double_linked_list[Condition] conditions,
                        uint32[::1] num_conditions_per_comparator):
         cdef uint32 num_conditions = num_conditions_per_comparator[<uint32>Comparator.LEQ]
         cdef uint32[::1] leq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
@@ -689,26 +689,28 @@ cdef class RuleListBuilder(ModelBuilder):
                                                                  gr_feature_indices, gr_thresholds, eq_feature_indices,
                                                                  eq_thresholds, neq_feature_indices, neq_thresholds)
 
-        cdef uint32 num_predictions = head.numPredictions_
-        cdef float64* predicted_scores = head.predictedScores_
-        cdef uint32* label_indices = head.labelIndices_
+        cdef uint32 num_predictions = prediction.getNumElements()
+        cdef AbstractPrediction.const_iterator value_iterator = prediction.cbegin()
         cdef float64[::1] head_scores = array_float64(num_predictions)
-        cdef uint32[::1] head_label_indices
-        cdef Head rule_head
         cdef uint32 c
 
         for c in range(num_predictions):
-            head_scores[c] = predicted_scores[c]
+            head_scores[c] = value_iterator[c]
 
-        if label_indices == NULL:
-            rule_head = FullHead.__new__(FullHead, head_scores)
-        else:
+        cdef PartialPrediction.index_const_iterator index_iterator
+        cdef uint32[::1] head_label_indices
+        cdef Head rule_head
+
+        if prediction.isPartial():
+            index_iterator = (<PartialPrediction*>prediction).indices_cbegin()
             head_label_indices = array_uint32(num_predictions)
 
             for c in range(num_predictions):
-                head_label_indices[c] = label_indices[c]
+                head_label_indices[c] = index_iterator[c]
 
             rule_head = PartialHead.__new__(PartialHead, head_label_indices, head_scores)
+        else:
+            rule_head = FullHead.__new__(FullHead, head_scores)
 
         cdef rule = Rule.__new__(Rule, rule_body, rule_head)
         cdef RuleList rule_list = self.rule_list
