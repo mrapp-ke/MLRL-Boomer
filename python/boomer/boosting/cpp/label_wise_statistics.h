@@ -184,9 +184,9 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const RangeIndexVector& indexVector) const override;
+            std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& indexVector) const override;
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const DenseIndexVector& indexVector) const override;
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& indexVector) const override;
 
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override;
 

@@ -14,7 +14,7 @@ AbstractEvaluatedPrediction::AbstractEvaluatedPrediction(uint32 numElements)
 }
 
 FullPrediction::FullPrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), RangeIndexVector(numElements) {
+    : AbstractEvaluatedPrediction(numElements), FullIndexVector(numElements) {
 
 }
 
@@ -24,7 +24,7 @@ uint32 FullPrediction::getNumElements() const {
 
 void FullPrediction::setNumElements(uint32 numElements) {
     DenseVector<float64>::setNumElements(numElements);
-    RangeIndexVector::setNumElements(numElements);
+    FullIndexVector::setNumElements(numElements);
 }
 
 void FullPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {
@@ -32,7 +32,7 @@ void FullPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex
 }
 
 PartialPrediction::PartialPrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), DenseIndexVector(numElements) {
+    : AbstractEvaluatedPrediction(numElements), PartialIndexVector(numElements) {
 
 }
 
@@ -42,7 +42,7 @@ uint32 PartialPrediction::getNumElements() const {
 
 void PartialPrediction::setNumElements(uint32 numElements) {
     DenseVector<float64>::setNumElements(numElements);
-    DenseIndexVector::setNumElements(numElements);
+    PartialIndexVector::setNumElements(numElements);
 }
 
 void PartialPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {

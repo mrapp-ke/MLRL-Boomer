@@ -61,7 +61,7 @@ class AbstractEvaluatedPrediction : public AbstractPrediction {
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class FullPrediction : public AbstractEvaluatedPrediction, public RangeIndexVector {
+class FullPrediction : public AbstractEvaluatedPrediction, public FullIndexVector {
 
     public:
 
@@ -81,7 +81,7 @@ class FullPrediction : public AbstractEvaluatedPrediction, public RangeIndexVect
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
-class PartialPrediction : public AbstractEvaluatedPrediction, public DenseIndexVector {
+class PartialPrediction : public AbstractEvaluatedPrediction, public PartialIndexVector {
 
     public:
 

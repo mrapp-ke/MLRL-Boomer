@@ -4,7 +4,7 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport float32, array_uint32
-from boomer.common._indices cimport IIndexVector, RangeIndexVector
+from boomer.common._indices cimport IIndexVector, FullIndexVector
 from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.rules cimport Condition, Comparator
@@ -94,7 +94,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef unique_ptr[IHeadRefinement] head_refinement_ptr
         cdef unique_ptr[AbstractEvaluatedPrediction] default_prediction_ptr
         cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
-        cdef unique_ptr[RangeIndexVector] label_indices_ptr
+        cdef unique_ptr[FullIndexVector] label_indices_ptr
         cdef AbstractStatistics* statistics
         cdef uint32 num_statistics, num_labels, i
 
@@ -102,7 +102,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             statistics = statistics_provider.get()
             num_statistics = statistics.getNumRows()
             num_labels = statistics.getNumCols()
-            label_indices_ptr = make_unique[RangeIndexVector](num_labels)
+            label_indices_ptr = make_unique[FullIndexVector](num_labels)
             statistics.resetSampledStatistics()
 
             for i in range(num_statistics):

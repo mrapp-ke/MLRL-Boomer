@@ -298,12 +298,12 @@ std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::crea
 }
 
 std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
-        const RangeIndexVector& labelIndices, uint32 featureIndex) {
+        const FullIndexVector& labelIndices, uint32 featureIndex) {
     return createExactRuleRefinement(labelIndices, featureIndex);
 }
 
 std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
-        const DenseIndexVector& labelIndices, uint32 featureIndex) {
+        const PartialIndexVector& labelIndices, uint32 featureIndex) {
     return createExactRuleRefinement(labelIndices, featureIndex);
 }
 
@@ -435,12 +435,12 @@ std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl
 }
 
 std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
-        const RangeIndexVector& labelIndices, uint32 featureIndex) {
+        const FullIndexVector& labelIndices, uint32 featureIndex) {
     return createApproximateRuleRefinement(labelIndices, featureIndex);
 }
 
 std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
-        const DenseIndexVector& labelIndices, uint32 featureIndex) {
+        const PartialIndexVector& labelIndices, uint32 featureIndex) {
     return createApproximateRuleRefinement(labelIndices, featureIndex);
 }
 

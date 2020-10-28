@@ -128,15 +128,15 @@ RegularizedExampleWiseRuleEvaluationFactoryImpl::RegularizedExampleWiseRuleEvalu
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactoryImpl::create(
-        const RangeIndexVector& indexVector) const {
-    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl<RangeIndexVector>>(indexVector,
-                                                                                        l2RegularizationWeight_,
-                                                                                        blasPtr_, lapackPtr_);
+        const FullIndexVector& indexVector) const {
+    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl<FullIndexVector>>(indexVector,
+                                                                                       l2RegularizationWeight_,
+                                                                                       blasPtr_, lapackPtr_);
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactoryImpl::create(
-        const DenseIndexVector& indexVector) const {
-    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl<DenseIndexVector>>(indexVector,
-                                                                                        l2RegularizationWeight_,
-                                                                                        blasPtr_, lapackPtr_);
+        const PartialIndexVector& indexVector) const {
+    return std::make_unique<RegularizedExampleWiseRuleEvaluationImpl<PartialIndexVector>>(indexVector,
+                                                                                          l2RegularizationWeight_,
+                                                                                          blasPtr_, lapackPtr_);
 }
