@@ -201,6 +201,9 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 std::unordered_map<uint32, CacheEntry> cacheFiltered_;
 
+                template<class T>
+                std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex);
+
             public:
 
                 /**
@@ -300,6 +303,10 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
                 };
 
                 ApproximateThresholdsImpl& thresholds_;
+
+                template<class T>
+                std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
+                                                                                 uint32 featureIndex);
 
             public:
 
