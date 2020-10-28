@@ -26,10 +26,10 @@ class Prediction : public DenseVector<float64>, virtual public IIndexVector {
         Prediction(uint32 numElements);
 
         /**
-         * TODO
+         * Updates the given statistics by applying this prediction.
          *
-         * @param statistics        TODO
-         * @param statisticIndex    TODO
+         * @param statistics        A reference to an object of type `AbstractStatistics` to be updated
+         * @param statisticIndex    The index of the statistic to be updated
          */
         virtual void apply(AbstractStatistics& statistics, uint32 statisticIndex) const = 0;
 
