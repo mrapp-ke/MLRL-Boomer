@@ -160,10 +160,11 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         # Sub-sample labels...
         cdef unique_ptr[IIndexVector] label_indices_ptr = label_sub_sampling.subSample(num_labels, dereference(rng))
+        cdef IIndexVector* label_indices = label_indices_ptr.get()
 
         # Create a new subset of the given thresholds...
-        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = label_indices_ptr.get().createSubset(
-            dereference(thresholds), dereference(weights_ptr.get()))
+        cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(
+            dereference(weights_ptr.get()))
 
         # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore
         # or the maximum number of conditions has been reached...
@@ -177,7 +178,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             # For each feature, create an object of type `IRuleRefinement`...
             for c in range(num_sampled_features):
                 f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
-                rule_refinement_ptr = thresholds_subset_ptr.get().createRuleRefinement(f)
+                rule_refinement_ptr = label_indices.createRuleRefinement(dereference(thresholds_subset_ptr.get()), f)
                 rule_refinements[f] = rule_refinement_ptr.release()
 
             # Search for the best condition among all available features to be added to the current rule...
@@ -204,9 +205,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 num_conditions += 1
                 num_conditions_per_comparator[<uint32>best_refinement_ptr.get().comparator] += 1
 
-                # if max_head_refinements > 0 and num_conditions >= max_head_refinements:
+                if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                     # Keep the labels for which the rule predicts, if the head should not be further refined...
-                    # TODO Store the label indices of the refinement's head
+                    label_indices = <IIndexVector*>best_refinement_ptr.get().headPtr.get()
 
                 # Filter the current subset of thresholds by applying the best refinement that has been found...
                 thresholds_subset_ptr.get().applyRefinement(dereference(best_refinement_ptr.get()))
