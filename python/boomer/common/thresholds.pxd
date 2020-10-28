@@ -1,8 +1,8 @@
 from boomer.common._arrays cimport uint32
-from boomer.common._predictions cimport Prediction
+from boomer.common._predictions cimport AbstractPrediction
 from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureVector, INominalFeatureVector
-from boomer.common.rule_refinement cimport IRuleRefinement, Refinement
+from boomer.common.rule_refinement cimport Refinement
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.sub_sampling cimport IWeightVector
 
@@ -15,13 +15,11 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         # Functions:
 
-        unique_ptr[IRuleRefinement] createRuleRefinement(uint32 featureIndex)
-
         void applyRefinement(Refinement &refinement)
 
         void recalculatePrediction(Refinement &refinement)
 
-        void applyPrediction(Prediction& prediction)
+        void applyPrediction(AbstractPrediction& prediction)
 
 
     cdef cppclass AbstractThresholds:
@@ -34,7 +32,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         uint32 getNumLabels()
 
-        unique_ptr[IThresholdsSubset] createSubset(IWeightVector& weights)
+        unique_ptr[IThresholdsSubset] createSubset(const IWeightVector& weights)
 
 
     cdef cppclass ExactThresholdsImpl(AbstractThresholds):

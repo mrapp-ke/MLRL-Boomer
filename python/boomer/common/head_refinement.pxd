@@ -1,6 +1,6 @@
-from boomer.common._arrays cimport uint32
+from boomer.common._indices cimport FullIndexVector, PartialIndexVector
 from boomer.common._rule_evaluation cimport EvaluatedPrediction
-from boomer.common._predictions cimport PredictionCandidate
+from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.statistics cimport IStatisticsSubset
 
 from libcpp cimport bool
@@ -11,15 +11,20 @@ cdef extern from "cpp/head_refinement.h" nogil:
 
     cdef cppclass IHeadRefinement:
 
-        bool findHead(PredictionCandidate* bestHead, unique_ptr[PredictionCandidate]& headPtr,
-                      const uint32* labelIndices, IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
+        const AbstractEvaluatedPrediction* findHead(AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated)
+
+        unique_ptr[AbstractEvaluatedPrediction] pollHead()
 
         EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
 
     cdef cppclass IHeadRefinementFactory:
 
-        unique_ptr[IHeadRefinement] create()
+        unique_ptr[IHeadRefinement] create(const FullIndexVector& labelIndices)
+
+        unique_ptr[IHeadRefinement] create(const PartialIndexVector& labelIndices)
 
 
     cdef cppclass SingleLabelHeadRefinementFactoryImpl(IHeadRefinementFactory):

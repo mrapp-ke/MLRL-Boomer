@@ -62,7 +62,11 @@ namespace seco {
             /**
              * Provides access to a subset of the confusion matrices that are stored by an instance of the class
              * `DenseLabelWiseStatisticsImpl`.
+             *
+             * @tparam T The type of the vector that provides access to the indices of the labels that are included in
+             *           the subset
              */
+            template<class T>
             class StatisticsSubsetImpl : public AbstractDecomposableStatisticsSubset {
 
                 private:
@@ -71,9 +75,7 @@ namespace seco {
 
                     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
-                    uint32 numPredictions_;
-
-                    const uint32* labelIndices_;
+                    const T& labelIndices_;
 
                     float64* confusionMatricesCovered_;
 
@@ -87,14 +89,12 @@ namespace seco {
                      * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
-                     * @param numPredictions    The number of elements in the array `labelIndices`
-                     * @param labelIndices      A pointer to an array of type `uint32`, shape `(numPredictions)`,
-                     *                          representing the indices of the labels that should be included in the
-                     *                          subset or a null pointer, if all labels should be considered
+                     * @param labelIndices      A reference to an object of template type `T` that provides access to
+                     *                          the indices of the labels that are included in the subset
                      */
                     StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
                                          std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                         uint32 numPredictions, const uint32* labelIndices);
+                                         const T& labelIndices);
 
                     ~StatisticsSubsetImpl();
 
@@ -148,10 +148,13 @@ namespace seco {
 
             void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override;
 
-            std::unique_ptr<IStatisticsSubset> createSubset(uint32 numLabelIndices,
-                                                            const uint32* labelIndices) const override;
+            std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override;
 
-            void applyPrediction(uint32 statisticIndex, const Prediction& prediction) override;
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override;
+
+            void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override;
+
+            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override;
 
             std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override;
 

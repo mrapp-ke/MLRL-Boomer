@@ -16,11 +16,12 @@ void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
     ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
 }
 
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
+template<class T>
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::StatisticsSubsetImpl(
         const DenseLabelWiseStatisticsImpl& statistics, std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-        uint32 numPredictions, const uint32* labelIndices)
-    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), numPredictions_(numPredictions),
-      labelIndices_(labelIndices) {
+        const T& labelIndices)
+    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices) {
+    uint32 numPredictions = labelIndices.getNumElements();
     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
     arrays::setToZeros(sumsOfGradients_, numPredictions);
     accumulatedSumsOfGradients_ = nullptr;
@@ -29,38 +30,45 @@ DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::StatisticsSubsetImpl(
     accumulatedSumsOfHessians_ = nullptr;
 }
 
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::~StatisticsSubsetImpl() {
+template<class T>
+DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::~StatisticsSubsetImpl() {
     free(sumsOfGradients_);
     free(accumulatedSumsOfGradients_);
     free(sumsOfHessians_);
     free(accumulatedSumsOfHessians_);
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::addToSubset(uint32 statisticIndex, uint32 weight) {
+template<class T>
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::addToSubset(uint32 statisticIndex, uint32 weight) {
     // For each label, add the gradient and Hessian of the example at the given index (weighted by the given weight) to
     // the current sum of gradients and Hessians...
     uint32 offset = statisticIndex * statistics_.getNumCols();
+    uint32 numPredictions = labelIndices_.getNumElements();
+    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
 
-    for (uint32 c = 0; c < numPredictions_; c++) {
-        uint32 l = labelIndices_ != nullptr ? labelIndices_[c] : c;
+    for (uint32 c = 0; c < numPredictions; c++) {
+        uint32 l = indexIterator[c];
         uint32 i = offset + l;
         sumsOfGradients_[c] += (weight * statistics_.gradients_[i]);
-        sumsOfHessians_[c] += (weight * statistics_.hessians_[i]) ;
+        sumsOfHessians_[c] += (weight * statistics_.hessians_[i]);
     }
 }
 
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
+template<class T>
+void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::resetSubset() {
+    uint32 numPredictions = labelIndices_.getNumElements();
+
     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
     if (accumulatedSumsOfGradients_ == nullptr) {
-        accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions_ * sizeof(float64));
-        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions_);
-        accumulatedSumsOfHessians_ = (float64*) malloc(numPredictions_ * sizeof(float64));
-        arrays::setToZeros(accumulatedSumsOfHessians_, numPredictions_);
+        accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions);
+        accumulatedSumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
+        arrays::setToZeros(accumulatedSumsOfHessians_, numPredictions);
     }
 
     // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums of gradients
     // and hessians...
-    for (uint32 c = 0; c < numPredictions_; c++) {
+    for (uint32 c = 0; c < numPredictions; c++) {
         accumulatedSumsOfGradients_[c] += sumsOfGradients_[c];
         sumsOfGradients_[c] = 0;
         accumulatedSumsOfHessians_[c] += sumsOfHessians_[c];
@@ -68,7 +76,8 @@ void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::resetSubset() {
     }
 }
 
-const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl::calculateLabelWisePrediction(
+template<class T>
+const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::calculateLabelWisePrediction(
         bool uncovered, bool accumulated) {
     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
@@ -151,31 +160,55 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
     }
 }
 
-std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(uint32 numLabelIndices,
-                                                                              const uint32* labelIndices) const {
-    uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = labelIndices == nullptr ? numLabels : numLabelIndices;
-    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(numPredictions,
-                                                                                                    labelIndices);
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl>(*this, std::move(ruleEvaluationPtr),
-                                                                                numPredictions, labelIndices);
+std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
+        const FullIndexVector& labelIndices) const {
+    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<FullIndexVector>>(
+        *this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
-void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const Prediction& prediction) {
+std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
+        const PartialIndexVector& labelIndices) const {
+    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
+    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<PartialIndexVector>>(
+        *this, std::move(ruleEvaluationPtr), labelIndices);
+}
+
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) {
     uint32 numLabels = this->getNumCols();
-    uint32 numPredictions = prediction.numPredictions_;
-    const uint32* labelIndices = prediction.labelIndices_;
-    const float64* predictedScores = prediction.predictedScores_;
     uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    FullPrediction::const_iterator valueIterator = prediction.cbegin();
 
     // Only the labels that are predicted by the new rule must be considered...
     for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = labelIndices != nullptr ? labelIndices[c] : c;
-        float64 predictedScore = predictedScores[c];
-        uint32 i = offset + l;
-
         // Update the score that is currently predicted for the current example and label...
-        float64 updatedScore = currentScores_[i] + predictedScore;
+        uint32 i = offset + c;
+        float64 updatedScore = currentScores_[i] + valueIterator[c];
+        currentScores_[i] = updatedScore;
+
+        // Update the gradient and Hessian for the current example and label...
+        std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_,
+                                                                                         statisticIndex, c,
+                                                                                         updatedScore);
+        gradients_[i] = pair.first;
+        hessians_[i] = pair.second;
+    }
+}
+
+void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) {
+    uint32 numLabels = this->getNumCols();
+    uint32 offset = statisticIndex * numLabels;
+    uint32 numPredictions = prediction.getNumElements();
+    PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+    PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
+
+    // Only the labels that are predicted by the new rule must be considered...
+    for (uint32 c = 0; c < numPredictions; c++) {
+        // Update the score that is currently predicted for the current example and label...
+        uint32 l = indexIterator[c];
+        uint32 i = offset + l;
+        float64 updatedScore = currentScores_[i] + valueIterator[c];
         currentScores_[i] = updatedScore;
 
         // Update the gradient and Hessian for the current example and label...

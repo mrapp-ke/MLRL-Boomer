@@ -4,8 +4,8 @@
 Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._arrays cimport float32, array_uint32
-from boomer.common._indices cimport IIndexVector
-from boomer.common._predictions cimport PredictionCandidate
+from boomer.common._indices cimport IIndexVector, FullIndexVector
+from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
@@ -92,27 +92,30 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder):
         cdef unique_ptr[IHeadRefinement] head_refinement_ptr
-        cdef unique_ptr[PredictionCandidate] default_prediction_ptr
+        cdef unique_ptr[AbstractEvaluatedPrediction] default_prediction_ptr
         cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
+        cdef unique_ptr[FullIndexVector] label_indices_ptr
         cdef AbstractStatistics* statistics
-        cdef uint32 num_statistics, i
+        cdef uint32 num_statistics, num_labels, i
 
         if head_refinement_factory != NULL:
             statistics = statistics_provider.get()
             num_statistics = statistics.getNumRows()
+            num_labels = statistics.getNumCols()
+            label_indices_ptr = make_unique[FullIndexVector](num_labels)
             statistics.resetSampledStatistics()
 
             for i in range(num_statistics):
                 statistics.addSampledStatistic(i, 1)
 
-            statistics_subset_ptr = statistics.createSubset(0, NULL)
-            head_refinement_ptr = head_refinement_factory.create()
-            head_refinement_ptr.get().findHead(NULL, default_prediction_ptr, NULL,
-                                               dereference(statistics_subset_ptr.get()), True, False)
+            statistics_subset_ptr = label_indices_ptr.get().createSubset(dereference(statistics))
+            head_refinement_ptr = head_refinement_factory.create(dereference(label_indices_ptr.get()))
+            head_refinement_ptr.get().findHead(NULL, dereference(statistics_subset_ptr.get()), True, False)
+            default_prediction_ptr = head_refinement_ptr.get().pollHead()
             statistics_provider.switch_rule_evaluation()
 
             for i in range(num_statistics):
-                statistics.applyPrediction(i, dereference(default_prediction_ptr.get()))
+                default_prediction_ptr.get().apply(dereference(statistics), i)
 
             model_builder.set_default_rule(default_prediction_ptr.get())
         else:
@@ -155,17 +158,13 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef unique_ptr[IWeightVector] weights_ptr = instance_sub_sampling.subSample(num_examples, dereference(rng))
         cdef bint instance_sub_sampling_used = weights_ptr.get().hasZeroWeights()
 
+        # Sub-sample labels...
+        cdef unique_ptr[IIndexVector] label_indices_ptr = label_sub_sampling.subSample(num_labels, dereference(rng))
+        cdef IIndexVector* label_indices = label_indices_ptr.get()
+
         # Create a new subset of the given thresholds...
         cdef unique_ptr[IThresholdsSubset] thresholds_subset_ptr = thresholds.createSubset(
             dereference(weights_ptr.get()))
-
-        # Sub-sample labels...
-        cdef unique_ptr[IIndexVector] sampled_label_indices_ptr = label_sub_sampling.subSample(num_labels,
-                                                                                               dereference(rng))
-        # TODO Reactivate label sampling
-        # cdef IIndexVector* label_indices = sampled_label_indices_ptr.get()
-        cdef const uint32* label_indices = <const uint32*>NULL
-        cdef uint32 num_predictions = 0
 
         # Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore
         # or the maximum number of conditions has been reached...
@@ -178,19 +177,19 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
             # For each feature, create an object of type `IRuleRefinement`...
             for c in range(num_sampled_features):
-                f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
-                rule_refinement_ptr = thresholds_subset_ptr.get().createRuleRefinement(f)
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
+                rule_refinement_ptr = label_indices.createRuleRefinement(dereference(thresholds_subset_ptr.get()), f)
                 rule_refinements[f] = rule_refinement_ptr.release()
 
             # Search for the best condition among all available features to be added to the current rule...
             for c in prange(num_sampled_features, nogil=True, schedule='dynamic', num_threads=num_threads):
-                f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                 rule_refinement = rule_refinements[f]
-                rule_refinement.findRefinement(best_refinement_ptr.get().headPtr.get(), num_predictions, label_indices)
+                rule_refinement.findRefinement(best_refinement_ptr.get().headPtr.get())
 
             # Pick the best refinement among the refinements that have been found for the different features...
             for c in range(num_sampled_features):
-                f = sampled_feature_indices_ptr.get().getValue(<uint32>c)
+                f = sampled_feature_indices_ptr.get().getIndex(<uint32>c)
                 rule_refinement = rule_refinements[f]
                 current_refinement_ptr = move(rule_refinement.pollRefinement())
 
@@ -208,8 +207,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                     # Keep the labels for which the rule predicts, if the head should not be further refined...
-                    num_predictions = best_refinement_ptr.get().headPtr.get().numPredictions_
-                    label_indices = best_refinement_ptr.get().headPtr.get().labelIndices_
+                    label_indices = <IIndexVector*>best_refinement_ptr.get().headPtr.get()
 
                 # Filter the current subset of thresholds by applying the best refinement that has been found...
                 thresholds_subset_ptr.get().applyRefinement(dereference(best_refinement_ptr.get()))

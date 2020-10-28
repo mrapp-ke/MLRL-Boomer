@@ -4,15 +4,16 @@
 using namespace boosting;
 
 
-RegularizedLabelWiseRuleEvaluationImpl::RegularizedLabelWiseRuleEvaluationImpl(uint32 numPredictions,
-                                                                               const uint32* labelIndices,
-                                                                               float64 l2RegularizationWeight)
-    : l2RegularizationWeight_(l2RegularizationWeight), labelIndices_(labelIndices),
-      prediction_(LabelWiseEvaluatedPrediction(numPredictions)) {
+template<class T>
+RegularizedLabelWiseRuleEvaluationImpl<T>::RegularizedLabelWiseRuleEvaluationImpl(const T& labelIndices,
+                                                                                  float64 l2RegularizationWeight)
+    : labelIndices_(labelIndices), l2RegularizationWeight_(l2RegularizationWeight),
+      prediction_(LabelWiseEvaluatedPrediction(labelIndices.getNumElements())) {
 
 }
 
-const LabelWiseEvaluatedPrediction& RegularizedLabelWiseRuleEvaluationImpl::calculateLabelWisePrediction(
+template<class T>
+const LabelWiseEvaluatedPrediction& RegularizedLabelWiseRuleEvaluationImpl<T>::calculateLabelWisePrediction(
         const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
         float64* sumsOfHessians, bool uncovered) {
     uint32 numPredictions = prediction_.getNumElements();
@@ -21,12 +22,14 @@ const LabelWiseEvaluatedPrediction& RegularizedLabelWiseRuleEvaluationImpl::calc
     float64 overallQualityScore = 0;
 
     // For each label, calculate a score to be predicted, as well as a corresponding quality score...
+    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+
     for (uint32 c = 0; c < numPredictions; c++) {
         float64 sumOfGradients = sumsOfGradients[c];
         float64 sumOfHessians =  sumsOfHessians[c];
 
         if (uncovered) {
-            uint32 l = labelIndices_ != nullptr ? labelIndices_[c] : c;
+            uint32 l = indexIterator[c];
             sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
             sumOfHessians = totalSumsOfHessians[l] - sumOfHessians;
         }
@@ -56,7 +59,13 @@ RegularizedLabelWiseRuleEvaluationFactoryImpl::RegularizedLabelWiseRuleEvaluatio
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
-        uint32 numLabelIndices, const uint32* labelIndices) const {
-    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl>(numLabelIndices, labelIndices,
-                                                                    l2RegularizationWeight_);
+        const FullIndexVector& indexVector) const {
+    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<FullIndexVector>>(indexVector,
+                                                                                     l2RegularizationWeight_);
+}
+
+std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
+        const PartialIndexVector& indexVector) const {
+    return std::make_unique<RegularizedLabelWiseRuleEvaluationImpl<PartialIndexVector>>(indexVector,
+                                                                                        l2RegularizationWeight_);
 }
