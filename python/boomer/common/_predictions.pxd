@@ -12,7 +12,7 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "cpp/predictions.h" nogil:
 
-    cdef cppclass Prediction:
+    cdef cppclass AbstractPrediction:
 
         ctypedef float64* const_iterator
 
@@ -31,15 +31,15 @@ cdef extern from "cpp/predictions.h" nogil:
         void apply(AbstractStatistics& statistics, uint32 statisticIndex)
 
 
-    cdef cppclass PredictionCandidate(Prediction):
+    cdef cppclass AbstractEvaluatedPrediction(AbstractPrediction):
         pass
 
 
-    cdef cppclass FullPrediction(PredictionCandidate):
+    cdef cppclass FullPrediction(AbstractEvaluatedPrediction):
         pass
 
 
-    cdef cppclass PartialPrediction(PredictionCandidate):
+    cdef cppclass PartialPrediction(AbstractEvaluatedPrediction):
 
         ctypedef uint32* index_const_iterator
 

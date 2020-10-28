@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint32
-from boomer.common._predictions cimport Prediction
+from boomer.common._predictions cimport AbstractPrediction
 from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureVector, INominalFeatureVector
 from boomer.common.rule_refinement cimport IRuleRefinement, Refinement
@@ -21,7 +21,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         void recalculatePrediction(Refinement &refinement)
 
-        void applyPrediction(Prediction& prediction)
+        void applyPrediction(AbstractPrediction& prediction)
 
 
     cdef cppclass AbstractThresholds:

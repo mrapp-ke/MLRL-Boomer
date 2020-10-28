@@ -58,9 +58,10 @@ class IThresholdsSubset {
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.
          *
-         * @param prediction A reference to an object of type `Prediction`, representing the predictions to be applied
+         * @param prediction A reference to an object of type `AbstractPrediction`, representing the predictions to be
+         *                   applied
          */
-        virtual void applyPrediction(const Prediction& prediction) = 0;
+        virtual void applyPrediction(const AbstractPrediction& prediction) = 0;
 
 };
 
@@ -228,7 +229,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                 void recalculatePrediction(Refinement& refinement) const override;
 
-                void applyPrediction(const Prediction& prediction) override;
+                void applyPrediction(const AbstractPrediction& prediction) override;
 
         };
 
@@ -332,7 +333,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                 void recalculatePrediction(Refinement& refinement) const override;
 
-                void applyPrediction(const Prediction& prediction) override;
+                void applyPrediction(const AbstractPrediction& prediction) override;
 
         };
 

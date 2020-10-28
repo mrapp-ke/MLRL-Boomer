@@ -5,7 +5,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 """
 from boomer.common._arrays cimport float32, array_uint32
 from boomer.common._indices cimport IIndexVector, RangeIndexVector
-from boomer.common._predictions cimport PredictionCandidate
+from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
@@ -92,7 +92,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder):
         cdef unique_ptr[IHeadRefinement] head_refinement_ptr
-        cdef unique_ptr[PredictionCandidate] default_prediction_ptr
+        cdef unique_ptr[AbstractEvaluatedPrediction] default_prediction_ptr
         cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
         cdef unique_ptr[RangeIndexVector] label_indices_ptr
         cdef AbstractStatistics* statistics

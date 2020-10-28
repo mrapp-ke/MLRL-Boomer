@@ -15,15 +15,14 @@ class AbstractStatistics;
 /**
  * An abstract base class for all classes that store the scores that are predicted by a rule.
  */
-// TODO Rename to AbstractPrediction
-class Prediction : public DenseVector<float64>, virtual public IIndexVector {
+class AbstractPrediction : public DenseVector<float64>, virtual public IIndexVector {
 
     public:
 
         /**
          * @param numElements The number of labels for which the rule predicts
          */
-        Prediction(uint32 numElements);
+        AbstractPrediction(uint32 numElements);
 
         /**
          * Updates the given statistics by applying this prediction.
@@ -43,15 +42,14 @@ class Prediction : public DenseVector<float64>, virtual public IIndexVector {
  * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a quality score
  * that assesses the overall quality of the rule.
  */
-// TODO Rename to AbstractEvaluatedPrediction
-class PredictionCandidate : public Prediction {
+class AbstractEvaluatedPrediction : public AbstractPrediction {
 
     public:
 
         /**
          * @param numElements The number of labels for which the rule predicts
          */
-        PredictionCandidate(uint32 numElements);
+        AbstractEvaluatedPrediction(uint32 numElements);
 
         /**
          * A score that assesses the overall quality of the rule.
@@ -63,7 +61,7 @@ class PredictionCandidate : public Prediction {
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class FullPrediction : public PredictionCandidate, public RangeIndexVector {
+class FullPrediction : public AbstractEvaluatedPrediction, public RangeIndexVector {
 
     public:
 
@@ -83,7 +81,7 @@ class FullPrediction : public PredictionCandidate, public RangeIndexVector {
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
-class PartialPrediction : public PredictionCandidate, public DenseIndexVector {
+class PartialPrediction : public AbstractEvaluatedPrediction, public DenseIndexVector {
 
     public:
 

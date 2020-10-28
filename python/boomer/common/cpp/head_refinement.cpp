@@ -9,9 +9,9 @@ SingleLabelHeadRefinementImpl<T>::SingleLabelHeadRefinementImpl(const T& labelIn
 }
 
 template<class T>
-const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                                      IStatisticsSubset& statisticsSubset,
-                                                                      bool uncovered, bool accumulated) {
+const AbstractEvaluatedPrediction* SingleLabelHeadRefinementImpl<T>::findHead(
+        const AbstractEvaluatedPrediction* bestHead, IStatisticsSubset& statisticsSubset, bool uncovered,
+        bool accumulated) {
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -50,7 +50,7 @@ const PredictionCandidate* SingleLabelHeadRefinementImpl<T>::findHead(const Pred
 }
 
 template<class T>
-std::unique_ptr<PredictionCandidate> SingleLabelHeadRefinementImpl<T>::pollHead() {
+std::unique_ptr<AbstractEvaluatedPrediction> SingleLabelHeadRefinementImpl<T>::pollHead() {
     return std::move(headPtr_);
 }
 
@@ -78,9 +78,9 @@ FullHeadRefinementImpl<T>::FullHeadRefinementImpl(const T& labelIndices)
 }
 
 template<class T>
-const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                               IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                               bool accumulated) {
+const AbstractEvaluatedPrediction* FullHeadRefinementImpl<T>::findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                                       IStatisticsSubset& statisticsSubset,
+                                                                       bool uncovered, bool accumulated) {
     const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
     float64 overallQualityScore = prediction.overallQualityScore;
 
@@ -105,7 +105,7 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
             }
         }
 
-        PredictionCandidate::iterator headValueIterator = headPtr_->begin();
+        AbstractEvaluatedPrediction::iterator headValueIterator = headPtr_->begin();
 
         for (uint32 c = 0; c < numPredictions; c++) {
             headValueIterator[c] = valueIterator[c];
@@ -119,7 +119,7 @@ const PredictionCandidate* FullHeadRefinementImpl<T>::findHead(const PredictionC
 }
 
 template<class T>
-std::unique_ptr<PredictionCandidate> FullHeadRefinementImpl<T>::pollHead() {
+std::unique_ptr<AbstractEvaluatedPrediction> FullHeadRefinementImpl<T>::pollHead() {
     return std::move(headPtr_);
 }
 
