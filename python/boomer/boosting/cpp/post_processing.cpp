@@ -8,9 +8,9 @@ ConstantShrinkageImpl::ConstantShrinkageImpl(float64 shrinkage)
 
 }
 
-void ConstantShrinkageImpl::postProcess(Prediction& prediction) const {
+void ConstantShrinkageImpl::postProcess(AbstractPrediction& prediction) const {
     uint32 numElements = prediction.getNumElements();
-    Prediction::iterator iterator = prediction.begin();
+    AbstractPrediction::iterator iterator = prediction.begin();
 
     for (uint32 i = 0; i < numElements; i++) {
         iterator[i] *= shrinkage_;

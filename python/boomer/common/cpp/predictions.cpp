@@ -3,18 +3,18 @@
 #include <cstdlib>
 
 
-Prediction::Prediction(uint32 numElements)
+AbstractPrediction::AbstractPrediction(uint32 numElements)
     : DenseVector<float64>(numElements) {
 
 }
 
-PredictionCandidate::PredictionCandidate(uint32 numElements)
-    : Prediction(numElements) {
+AbstractEvaluatedPrediction::AbstractEvaluatedPrediction(uint32 numElements)
+    : AbstractPrediction(numElements) {
 
 }
 
 FullPrediction::FullPrediction(uint32 numElements)
-    : PredictionCandidate(numElements), RangeIndexVector(numElements) {
+    : AbstractEvaluatedPrediction(numElements), RangeIndexVector(numElements) {
 
 }
 
@@ -32,7 +32,7 @@ void FullPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex
 }
 
 PartialPrediction::PartialPrediction(uint32 numElements)
-    : PredictionCandidate(numElements), DenseIndexVector(numElements) {
+    : AbstractEvaluatedPrediction(numElements), DenseIndexVector(numElements) {
 
 }
 

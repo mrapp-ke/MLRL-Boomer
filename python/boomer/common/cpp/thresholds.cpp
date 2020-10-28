@@ -334,7 +334,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyRefinement(Refinement& r
 
 template<class T>
 void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinement& refinement) const {
-    Prediction& head = *refinement.headPtr;
+    AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
     uint32 numExamples = thresholds_.getNumRows();
 
@@ -348,7 +348,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinem
         *thresholds_.headRefinementFactoryPtr_);
     const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
     const EvaluatedPrediction::const_iterator updatedIterator = prediction.cbegin();
-    Prediction::iterator iterator = head.begin();
+    AbstractPrediction::iterator iterator = head.begin();
     uint32 numElements = head.getNumElements();
 
     for (uint32 c = 0; c < numElements; c++) {
@@ -357,7 +357,7 @@ void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(Refinem
 }
 
 template<class T>
-void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyPrediction(const Prediction& prediction) {
+void ExactThresholdsImpl::ThresholdsSubsetImpl<T>::applyPrediction(const AbstractPrediction& prediction) {
     uint32 numExamples = thresholds_.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -452,7 +452,7 @@ void ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::recalculatePrediction(R
 }
 
 template<class T>
-void ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::applyPrediction(const Prediction& prediction) {
+void ApproximateThresholdsImpl::ThresholdsSubsetImpl<T>::applyPrediction(const AbstractPrediction& prediction) {
 
 }
 

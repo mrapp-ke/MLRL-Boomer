@@ -1,6 +1,6 @@
 from boomer.common._indices cimport RangeIndexVector, DenseIndexVector
 from boomer.common._rule_evaluation cimport EvaluatedPrediction
-from boomer.common._predictions cimport PredictionCandidate
+from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.statistics cimport IStatisticsSubset
 
 from libcpp cimport bool
@@ -11,10 +11,11 @@ cdef extern from "cpp/head_refinement.h" nogil:
 
     cdef cppclass IHeadRefinement:
 
-        const PredictionCandidate* findHead(PredictionCandidate* bestHead, IStatisticsSubset& statisticsSubset,
-                                            bool uncovered, bool accumulated)
+        const AbstractEvaluatedPrediction* findHead(AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated)
 
-        unique_ptr[PredictionCandidate] pollHead()
+        unique_ptr[AbstractEvaluatedPrediction] pollHead()
 
         EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 

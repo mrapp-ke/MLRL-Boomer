@@ -30,10 +30,10 @@ PartialHeadRefinementImpl<T>::PartialHeadRefinementImpl(const T& labelIndices,
 }
 
 template<class T>
-const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const PredictionCandidate* bestHead,
-                                                                  IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                                  bool accumulated) {
-    const PredictionCandidate* result = nullptr;
+const AbstractEvaluatedPrediction* PartialHeadRefinementImpl<T>::findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                                          IStatisticsSubset& statisticsSubset,
+                                                                          bool uncovered, bool accumulated) {
+    const AbstractEvaluatedPrediction* result = nullptr;
     const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                    accumulated);
     uint32 numPredictions = prediction.getNumElements();
@@ -105,7 +105,7 @@ const PredictionCandidate* PartialHeadRefinementImpl<T>::findHead(const Predicti
 }
 
 template<class T>
-std::unique_ptr<PredictionCandidate> PartialHeadRefinementImpl<T>::pollHead() {
+std::unique_ptr<AbstractEvaluatedPrediction> PartialHeadRefinementImpl<T>::pollHead() {
     return std::move(headPtr_);
 }
 

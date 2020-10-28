@@ -32,7 +32,7 @@ class Refinement {
          */
         bool isBetterThan(const Refinement& another) const;
 
-        std::unique_ptr<PredictionCandidate> headPtr;
+        std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
         uint32 featureIndex;
 
@@ -89,10 +89,10 @@ class IRuleRefinement {
         /**
          * Finds the best refinement of an existing rule.
          *
-         * @param currentHead A pointer to an object of type `PredictionCandidate`, representing the head of the
+         * @param currentHead A pointer to an object of type `AbstractEvaluatedPrediction`, representing the head of the
          *                    existing rule or a null pointer, if no rule exists yet
          */
-        virtual void findRefinement(const PredictionCandidate* currentHead) = 0;
+        virtual void findRefinement(const AbstractEvaluatedPrediction* currentHead) = 0;
 
         /**
          * Returns the best refinement that has been found by the function `findRefinement`.
@@ -153,7 +153,7 @@ class ExactRuleRefinementImpl : virtual public IRuleRefinement {
                                 const IWeightVector& weights, uint32 totalSumOfWeights, uint32 featureIndex,
                                 bool nominal, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
-        void findRefinement(const PredictionCandidate* currentHead) override;
+        void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 
@@ -197,7 +197,7 @@ class ApproximateRuleRefinementImpl : virtual public IRuleRefinement {
                                       uint32 featureIndex,
                                       std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr);
 
-        void findRefinement(const PredictionCandidate* currentHead) override;
+        void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 
         std::unique_ptr<Refinement> pollRefinement() override;
 

@@ -23,9 +23,9 @@ class IHeadRefinement {
          * The given object of type `IStatisticsSubset` must have been prepared properly via calls to the function
          * `IStatisticsSubset#addToSubset`.
          *
-         * @param bestHead          A pointer to an object of type `PredictionCandidate` that corresponds to the best
-         *                          rule known so far (as found in the previous or current refinement iteration) or a
-         *                          null pointer, if no such rule is available yet. The new head must be better than
+         * @param bestHead          A pointer to an object of type `AbstractEvaluatedPrediction` that corresponds to the
+         *                          best rule known so far (as found in the previous or current refinement iteration) or
+         *                          a null pointer, if no such rule is available yet. The new head must be better than
          *                          this one, otherwise it is discarded
          * @param statisticsSubset  A reference to an object of type `IStatisticsSubset` to be used for calculating
          *                          predictions and corresponding quality scores
@@ -35,21 +35,21 @@ class IHeadRefinement {
          * @param accumulated       False, if the rule covers all statistics that have been added since the
          *                          `IStatisticsSubset` has been reset for the last time, True, if the rule covers all
          *                          statistics that have been added so far
-         * @return                  A pointer to an object of type `PredictionCandidate`, representing the head that has
-         *                          been found or a null pointer if the head that has been found is not better than
-         *                          `bestHead`
+         * @return                  A pointer to an object of type `AbstractEvaluatedPrediction`, representing the head
+         *                          that has been found or a null pointer if the head that has been found is not better
+         *                          than `bestHead`
          */
-        virtual const PredictionCandidate* findHead(const PredictionCandidate* bestHead,
-                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) = 0;
+        virtual const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                            IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                            bool accumulated) = 0;
 
         /**
          * Returns the best head that has been found by the function `findHead.
          *
-         * @return An unique pointer to an object of type `PredictionCandidate`, representing the best head that has
-         *         been found
+         * @return An unique pointer to an object of type `AbstractEvaluatedPrediction`, representing the best head that
+         *         has been found
          */
-        virtual std::unique_ptr<PredictionCandidate> pollHead() = 0;
+        virtual std::unique_ptr<AbstractEvaluatedPrediction> pollHead() = 0;
 
         /**
          * Calculates the optimal scores to be predicted by a rule, as well as the rule's overall quality score,
@@ -128,10 +128,11 @@ class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
          */
         SingleLabelHeadRefinementImpl(const T& labelIndices);
 
-        const PredictionCandidate* findHead(const PredictionCandidate* bestHead, IStatisticsSubset& statisticsSubset,
-                                            bool uncovered, bool accumulated) override;
+        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated) override;
 
-        std::unique_ptr<PredictionCandidate> pollHead() override;
+        std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override;
 
         const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                        bool accumulated) const override;
@@ -164,7 +165,7 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
 
         const T& labelIndices_;
 
-        std::unique_ptr<PredictionCandidate> headPtr_;
+        std::unique_ptr<AbstractEvaluatedPrediction> headPtr_;
 
     public:
 
@@ -174,10 +175,11 @@ class FullHeadRefinementImpl : virtual public IHeadRefinement {
          */
         FullHeadRefinementImpl(const T& labelIndices);
 
-        const PredictionCandidate* findHead(const PredictionCandidate* bestHead, IStatisticsSubset& statisticsSubset,
-                                            bool uncovered, bool accumulated) override;
+        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated) override;
 
-        std::unique_ptr<PredictionCandidate> pollHead() override;
+        std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override;
 
         const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                        bool accumulated) const override;
