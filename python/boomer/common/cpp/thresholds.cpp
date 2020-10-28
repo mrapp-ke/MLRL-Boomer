@@ -278,8 +278,9 @@ ExactThresholdsImpl::ThresholdsSubsetImpl::~ThresholdsSubsetImpl() {
     delete[] coveredExamplesMask_;
 }
 
-std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
-        const RangeIndexVector& labelIndices, uint32 featureIndex) {
+template<class T>
+std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createExactRuleRefinement(
+        const T& labelIndices, uint32 featureIndex) {
     // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
     FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
@@ -291,31 +292,19 @@ std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::crea
 
     bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
     std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create(labelIndices);
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this,
-                                                                                                     featureIndex);
-    return std::make_unique<ExactRuleRefinementImpl<RangeIndexVector>>(std::move(headRefinementPtr), labelIndices,
-                                                                       weights_, sumOfWeights_, featureIndex, nominal,
-                                                                       std::move(callbackPtr));
+    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
+    return std::make_unique<ExactRuleRefinementImpl<T>>(std::move(headRefinementPtr), labelIndices, weights_,
+                                                        sumOfWeights_, featureIndex, nominal, std::move(callbackPtr));
+}
+
+std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
+        const RangeIndexVector& labelIndices, uint32 featureIndex) {
+    return createExactRuleRefinement(labelIndices, featureIndex);
 }
 
 std::unique_ptr<IRuleRefinement> ExactThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         const DenseIndexVector& labelIndices, uint32 featureIndex) {
-    // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
-    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
-    FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
-
-    // If the `CacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to the cache...
-    if (featureVector == nullptr) {
-        thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
-    }
-
-    bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create(labelIndices);
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr = std::make_unique<Callback>(*this,
-                                                                                                     featureIndex);
-    return std::make_unique<ExactRuleRefinementImpl<DenseIndexVector>>(std::move(headRefinementPtr), labelIndices,
-                                                                       weights_, sumOfWeights_, featureIndex, nominal,
-                                                                       std::move(callbackPtr));
+    return createExactRuleRefinement(labelIndices, featureIndex);
 }
 
 void ExactThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
@@ -435,24 +424,24 @@ ApproximateThresholdsImpl::ThresholdsSubsetImpl::ThresholdsSubsetImpl(Approximat
 
 }
 
-std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
-        const RangeIndexVector& labelIndices, uint32 featureIndex) {
+template<class T>
+std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createApproximateRuleRefinement(
+        const T& labelIndices, uint32 featureIndex) {
     thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
     std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create(labelIndices);
-    return std::make_unique<ApproximateRuleRefinementImpl<RangeIndexVector>>(std::move(headRefinementPtr),
-                                                                             labelIndices, featureIndex,
-                                                                             std::move(callbackPtr));
+    return std::make_unique<ApproximateRuleRefinementImpl<T>>(std::move(headRefinementPtr), labelIndices, featureIndex,
+                                                              std::move(callbackPtr));
+}
+
+std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
+        const RangeIndexVector& labelIndices, uint32 featureIndex) {
+    return createApproximateRuleRefinement(labelIndices, featureIndex);
 }
 
 std::unique_ptr<IRuleRefinement> ApproximateThresholdsImpl::ThresholdsSubsetImpl::createRuleRefinement(
         const DenseIndexVector& labelIndices, uint32 featureIndex) {
-    thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
-    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create(labelIndices);
-    return std::make_unique<ApproximateRuleRefinementImpl<DenseIndexVector>>(std::move(headRefinementPtr),
-                                                                             labelIndices, featureIndex,
-                                                                             std::move(callbackPtr));
+    return createApproximateRuleRefinement(labelIndices, featureIndex);
 }
 
 void ApproximateThresholdsImpl::ThresholdsSubsetImpl::applyRefinement(Refinement& refinement) {
