@@ -10,9 +10,8 @@
 #include <memory>
 
 // Forward declarations
-class AbstractThresholds;
+class IRuleRefinement;
 class IThresholdsSubset;
-class IWeightVector;
 class AbstractStatistics;
 class IStatisticsSubset;
 class IHeadRefinement;
@@ -59,19 +58,6 @@ class IIndexVector {
         virtual uint32 getIndex(uint32 pos) const = 0;
 
         /**
-         * Creates and returns a new subset of the given thresholds that only contains the labels whose indices are
-         * stored in this vector.
-         *
-         * @param thresholds    A reference to an object of type `AbstractThresholds` that should be used to create the
-         *                      subset
-         * @param weights       A reference to an object of type `IWeightVector` that provides access to the weights of
-         *                      individual training examples
-         * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
-         */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
-                                                                IWeightVector& weights) const = 0;
-
-        /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
          * stored in this vector.
          *
@@ -82,11 +68,23 @@ class IIndexVector {
         virtual std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const = 0;
 
         /**
-         * Creates and returns a new object of type `IHeadRefinement` that allows to search for the best head of a rule,
-         * considering only the labels whose indices are stored in this vector.
+         * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
+         * an existing rule that predicts only for the labels whose indices are stored in this vector.
+         *
+         * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to create
+         *                          the instance
+         * @param featureIndex      The index of the feature that should be considered when searching for the refinement
+         * @return                  An unique pointer to an object of type `IHeadRefinement` that has been created
+         */
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                                      uint32 featureIndex) const = 0;
+
+        /**
+         * Creates and returns a new instance of type `IHeadRefinement` that allows to search for the best head of a
+         * rule, considering only the labels whose indices are stored in this vector.
          *
          * @param factory   A reference to an object of type `IHeadRefinementFactory` that should be used to create the
-         *                  object
+         *                  instance
          * @return          An unique pointer to an object of type `IHeadRefinement` that has been created
          */
         virtual std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const = 0;
@@ -153,10 +151,10 @@ class DenseIndexVector : virtual public IIndexVector {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
-                                                        IWeightVector& weights) const override;
-
         std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+
+        std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                              uint32 featureIndex) const override;
 
         std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
@@ -225,10 +223,10 @@ class RangeIndexVector : virtual public IIndexVector {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IThresholdsSubset> createSubset(AbstractThresholds& thresholds,
-                                                        IWeightVector& weights) const override;
-
         std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+
+        std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                              uint32 featureIndex) const override;
 
         std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 

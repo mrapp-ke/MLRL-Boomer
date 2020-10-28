@@ -49,13 +49,13 @@ DenseIndexVector::index_const_iterator DenseIndexVector::indices_cend() const {
     return &array_[numElements_];
 }
 
-std::unique_ptr<IThresholdsSubset> DenseIndexVector::createSubset(AbstractThresholds& thresholds,
-                                                                  IWeightVector& weights) const {
-    return thresholds.createSubset(weights, *this);
-}
-
 std::unique_ptr<IStatisticsSubset> DenseIndexVector::createSubset(const AbstractStatistics& statistics) const {
     return statistics.createSubset(*this);
+}
+
+std::unique_ptr<IRuleRefinement> DenseIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                                        uint32 featureIndex) const {
+    return thresholdsSubset.createRuleRefinement(*this, featureIndex);
 }
 
 std::unique_ptr<IHeadRefinement> DenseIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {
@@ -111,13 +111,13 @@ RangeIndexVector::index_const_iterator RangeIndexVector::indices_cend() const {
     return RangeIndexVector::Iterator(numElements_);
 }
 
-std::unique_ptr<IThresholdsSubset> RangeIndexVector::createSubset(AbstractThresholds& thresholds,
-                                                                  IWeightVector& weights) const {
-    return thresholds.createSubset(weights, *this);
-}
-
 std::unique_ptr<IStatisticsSubset> RangeIndexVector::createSubset(const AbstractStatistics& statistics) const {
     return statistics.createSubset(*this);
+}
+
+std::unique_ptr<IRuleRefinement> RangeIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                                        uint32 featureIndex) const {
+    return thresholdsSubset.createRuleRefinement(*this, featureIndex);
 }
 
 std::unique_ptr<IHeadRefinement> RangeIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {

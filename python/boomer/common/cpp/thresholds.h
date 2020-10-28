@@ -23,13 +23,27 @@ class IThresholdsSubset {
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
-         * an existing rule, which results from adding a new condition that corresponds to the feature at a specific
-         * index.
+         * an existing rule that predicts for all available labels.
          *
-         * @param featureIndex  The index of the feature, the new condition corresponds to
+         * @param labelIndices  A reference to an object of type `RangeIndexVector` that provides access to the indices
+         *                      of the labels for which the existing rule predicts
+         * @param featureIndex  The index of the feature that should be considered when searching for refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) = 0;
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const RangeIndexVector& labelIndices,
+                                                                      uint32 featureIndex) = 0;
+
+        /**
+         * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
+         * an existing rule that predicts for a subset of the available labels.
+         *
+         * @param labelIndices  A reference to an object of type `DenseIndexVector` that provides access to the indices
+         *                      of the labels for which the existing rule predicts
+         * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
+         */
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const DenseIndexVector& labelIndices,
+                                                                      uint32 featureIndex) = 0;
 
         /**
          * Applies a refinement that has been found by an instance of the type `IRuleRefinement`, which was previously
@@ -102,26 +116,11 @@ class AbstractThresholds : virtual public IMatrix {
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
          *
-         * @param weights       A reference to an object of type `IWeightVector` that provides access to the weights of
-         *                      the individual training examples
-         * @param labelIndices  A reference to an object of type `DenseIndexVector` that provides access to the indices
-         *                      of the labels that should be contained in the subset
-         * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
+         * @param weights   A reference to an object of type `IWeightVector` that provides access to the weights of the
+         *                  individual training examples
+         * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
-                                                                const RangeIndexVector& labelIndices) = 0;
-
-        /**
-         * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
-         *
-         * @param weights       A reference to an object of type `IWeightVector` that provides access to the weights of
-         *                      the individual training examples
-         * @param labelIndices  A reference to an object of type `DenseIndexVector` that provides access to the indices
-         *                      of the labels that should be contained in the subset
-         * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
-         */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
-                                                                const DenseIndexVector& labelIndices) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
 
         /**
          * Returns the total number of available labels.
@@ -157,11 +156,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class
          * `ExactThresholdsImpl`.
-         *
-         * @tparam T The type of the vector that provides access to the indices of the labels that are included in the
-         *           subset
          */
-        template<class T>
         class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
 
             private:
@@ -174,7 +169,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
                     private:
 
-                        ThresholdsSubsetImpl<T>& thresholdsSubset_;
+                        ThresholdsSubsetImpl& thresholdsSubset_;
 
                         uint32 featureIndex_;
 
@@ -186,15 +181,13 @@ class ExactThresholdsImpl : public AbstractThresholds {
                          * @param featureIndex      The index of the feature for which the feature vector should be
                          *                          retrieved
                          */
-                        Callback(ThresholdsSubsetImpl<T>& thresholdsSubset, uint32 featureIndex_);
+                        Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex_);
 
                         std::unique_ptr<Result> get() override;
 
                 };
 
                 ExactThresholdsImpl& thresholds_;
-
-                const T& labelIndices_;
 
                 const IWeightVector& weights_;
 
@@ -213,17 +206,18 @@ class ExactThresholdsImpl : public AbstractThresholds {
                 /**
                  * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the
                  *                      thresholds
-                 * @param labelIndices  A reference to an object of template type `T` that provides access to the
-                 *                      indices of the labels that are included in the subset
                  * @param weights       A reference to an object of type `IWeightVector` that provides access to the
                  *                      weights of the individual training examples
                  */
-                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, const T& labelIndices,
-                                     const IWeightVector& weights);
+                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, const IWeightVector& weights);
 
                 ~ThresholdsSubsetImpl();
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const RangeIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
+
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const DenseIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;
 
@@ -253,11 +247,7 @@ class ExactThresholdsImpl : public AbstractThresholds {
                             std::shared_ptr<AbstractStatistics> statisticsPtr,
                             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
-                                                        const RangeIndexVector& labelIndices) override;
-
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
-                                                        const DenseIndexVector& labelIndices) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
 };
 
@@ -272,11 +262,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class
          * `ApproximateThresholdsImpl`.
-         *
-         * @tparam T The type of the vector that provides access to the indices of the labels that are included in the
-         *           subset
          */
-        template<class T>
         class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
 
             private:
@@ -290,7 +276,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                     private:
 
-                        ThresholdsSubsetImpl<T>& thresholdsSubset_;
+                        ThresholdsSubsetImpl& thresholdsSubset_;
 
                         uint32 featureIndex_;
 
@@ -305,7 +291,7 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
                          *                          the bins
                          * @param featureIndex      The index of the feature for which the bins should be retrieved
                          */
-                        Callback(ThresholdsSubsetImpl<T>& thresholdsSubset, uint32 featureIndex);
+                        Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
 
                         std::unique_ptr<Result> get() override;
 
@@ -315,19 +301,19 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
                 ApproximateThresholdsImpl& thresholds_;
 
-                const T& labelIndices_;
-
             public:
 
                 /**
-                 * @param thresholds    A reference to an object of type `ApproximateThresholdsImpl` that stores the
-                 *                      thresholds
-                 * @param labelIndices  A reference to an object of template type `T` that provides access to the
-                 *                      indices of the labels that are included in the subset
+                 * @param thresholds A reference to an object of type `ApproximateThresholdsImpl` that stores the
+                 *                   thresholds
                  */
-                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds, const T& labelIndices);
+                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(uint32 featureIndex) override;
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const RangeIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
+
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const DenseIndexVector& labelIndices,
+                                                                      uint32 featureIndex) override;
 
                 void applyRefinement(Refinement& refinement) override;
 
@@ -373,10 +359,6 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
                                   std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                   std::shared_ptr<IBinning> binningPtr, uint32 numBins);
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
-                                                        const RangeIndexVector& labelIndices) override;
-
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
-                                                        const DenseIndexVector& labelIndices) override;
+        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
 };
