@@ -1,4 +1,5 @@
 #include "label_wise_statistics.h"
+#include "../../common/cpp/arrays.cpp"
 #include "confusion_matrices.cpp"
 #include <cstdlib>
 
