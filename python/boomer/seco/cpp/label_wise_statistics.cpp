@@ -4,6 +4,106 @@
 using namespace seco;
 
 
+/**
+ * Provides access to a subset of the confusion matrices that are stored by an instance of the class
+ * `DenseLabelWiseStatisticsImpl`.
+ *
+ * @tparam T The type of the vector that provides access to the indices of the labels that are included in the subset
+ */
+template<class T>
+class DenseLabelWiseStatisticsImpl::StatisticsSubset : public AbstractDecomposableStatisticsSubset {
+
+    private:
+
+        const DenseLabelWiseStatisticsImpl& statistics_;
+
+        std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+
+        const T& labelIndices_;
+
+        float64* confusionMatricesCovered_;
+
+        float64* accumulatedConfusionMatricesCovered_;
+
+    public:
+
+        /**
+         * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that stores the
+         *                          confusion matrices
+         * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that should be
+         *                          used to calculate the predictions, as well as corresponding quality scores, of rules
+         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
+         *                          the labels that are included in the subset
+         */
+        StatisticsSubset(const DenseLabelWiseStatisticsImpl& statistics,
+                         std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
+            : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices) {
+            uint32 numPredictions = labelIndices.getNumElements();
+            confusionMatricesCovered_ =
+                (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
+            arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
+            accumulatedConfusionMatricesCovered_ = nullptr;
+        }
+
+        ~StatisticsSubset() {
+            free(confusionMatricesCovered_);
+            free(accumulatedConfusionMatricesCovered_);
+        }
+
+        void addToSubset(uint32 statisticIndex, uint32 weight) override {
+            uint32 numLabels = statistics_.labelMatrixPtr_->getNumCols();
+            uint32 offset = statisticIndex * numLabels;
+            uint32 numPredictions = labelIndices_.getNumElements();
+            typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+
+            for (uint32 c = 0; c < numPredictions; c++) {
+                uint32 l = indexIterator[c];
+
+                // Only uncovered labels must be considered...
+                if (statistics_.uncoveredLabels_[offset + l] > 0) {
+                    // Add the current example and label to the confusion matrix for the current label...
+                    uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
+                    uint8 predictedLabel = statistics_.minorityLabels_[l];
+                    uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
+                    confusionMatricesCovered_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += weight;
+                }
+            }
+        }
+
+        void resetSubset() override {
+            uint32 numPredictions = labelIndices_.getNumElements();
+
+            // Allocate an array for storing the accumulated confusion matrices, if necessary...
+            if (accumulatedConfusionMatricesCovered_ == nullptr) {
+                accumulatedConfusionMatricesCovered_ =
+                    (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
+                arrays::setToZeros(accumulatedConfusionMatricesCovered_,
+                                   numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
+            }
+
+            // Reset the confusion matrix for each label to zero and add its elements to the accumulated confusion matrix...
+            for (uint32 c = 0; c < numPredictions; c++) {
+                uint32 offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
+
+                for (uint32 i = 0; i < NUM_CONFUSION_MATRIX_ELEMENTS; i++) {
+                    uint32 j = offset + i;
+                    accumulatedConfusionMatricesCovered_[j] += confusionMatricesCovered_[j];
+                    confusionMatricesCovered_[j] = 0;
+                }
+            }
+        }
+
+        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered, bool accumulated) override {
+            float64* confusionMatricesCovered =
+                accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
+            return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.minorityLabels_,
+                                                                    statistics_.confusionMatricesTotal_,
+                                                                    statistics_.confusionMatricesSubset_,
+                                                                    confusionMatricesCovered, uncovered);
+        }
+
+};
+
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
         uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels,
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
@@ -15,77 +115,6 @@ AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
 void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
     ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
-}
-
-template<class T>
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::StatisticsSubsetImpl(
-        const DenseLabelWiseStatisticsImpl& statistics, std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-        const T& labelIndices)
-    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices) {
-    uint32 numPredictions = labelIndices.getNumElements();
-    confusionMatricesCovered_ = (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-    arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
-    accumulatedConfusionMatricesCovered_ = nullptr;
-}
-
-template<class T>
-DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::~StatisticsSubsetImpl() {
-    free(confusionMatricesCovered_);
-    free(accumulatedConfusionMatricesCovered_);
-}
-
-template<class T>
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::addToSubset(uint32 statisticIndex, uint32 weight) {
-    uint32 numLabels = statistics_.labelMatrixPtr_->getNumCols();
-    uint32 offset = statisticIndex * numLabels;
-    uint32 numPredictions = labelIndices_.getNumElements();
-    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
-
-    for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 l = indexIterator[c];
-
-        // Only uncovered labels must be considered...
-        if (statistics_.uncoveredLabels_[offset + l] > 0) {
-            // Add the current example and label to the confusion matrix for the current label...
-            uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
-            uint8 predictedLabel = statistics_.minorityLabels_[l];
-            uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
-            confusionMatricesCovered_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += weight;
-        }
-    }
-}
-
-template<class T>
-void DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::resetSubset() {
-    uint32 numPredictions = labelIndices_.getNumElements();
-
-    // Allocate an array for storing the accumulated confusion matrices, if necessary...
-    if (accumulatedConfusionMatricesCovered_ == nullptr) {
-        accumulatedConfusionMatricesCovered_ =
-            (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-        arrays::setToZeros(accumulatedConfusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
-    }
-
-    // Reset the confusion matrix for each label to zero and add its elements to the accumulated confusion matrix...
-    for (uint32 c = 0; c < numPredictions; c++) {
-        uint32 offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
-
-        for (uint32 i = 0; i < NUM_CONFUSION_MATRIX_ELEMENTS; i++) {
-            uint32 j = offset + i;
-            accumulatedConfusionMatricesCovered_[j] += confusionMatricesCovered_[j];
-            confusionMatricesCovered_[j] = 0;
-        }
-    }
-}
-
-template<class T>
-const LabelWiseEvaluatedPrediction& DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<T>::calculateLabelWisePrediction(
-        bool uncovered, bool accumulated) {
-    float64* confusionMatricesCovered = accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
-    return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.minorityLabels_,
-                                                            statistics_.confusionMatricesTotal_,
-                                                            statistics_.confusionMatricesSubset_,
-                                                            confusionMatricesCovered, uncovered);
 }
 
 DenseLabelWiseStatisticsImpl::DenseLabelWiseStatisticsImpl(
@@ -167,15 +196,13 @@ void DenseLabelWiseStatisticsImpl::updateCoveredStatistic(uint32 statisticIndex,
 std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
         const FullIndexVector& labelIndices) const {
     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<FullIndexVector>>(
-        *this, std::move(ruleEvaluationPtr), labelIndices);
+    return std::make_unique<StatisticsSubset<FullIndexVector>>(*this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
 std::unique_ptr<IStatisticsSubset> DenseLabelWiseStatisticsImpl::createSubset(
         const PartialIndexVector& labelIndices) const {
     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
-    return std::make_unique<DenseLabelWiseStatisticsImpl::StatisticsSubsetImpl<PartialIndexVector>>(
-        *this, std::move(ruleEvaluationPtr), labelIndices);
+    return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr), labelIndices);
 }
 
 void DenseLabelWiseStatisticsImpl::applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) {
