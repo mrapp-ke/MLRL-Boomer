@@ -118,59 +118,6 @@ namespace boosting {
     };
 
     /**
-     * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
-     * Hessians that have been calculated according to a loss function that is applied example wise using L2
-     * regularization.
-     *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
-     */
-    template<class T>
-    class RegularizedExampleWiseRuleEvaluationImpl : virtual public IExampleWiseRuleEvaluation {
-
-        private:
-
-            const T& labelIndices_;
-
-            float64 l2RegularizationWeight_;
-
-            std::shared_ptr<Blas> blasPtr_;
-
-            std::shared_ptr<Lapack> lapackPtr_;
-
-            EvaluatedPrediction* prediction_;
-
-            LabelWiseEvaluatedPrediction* labelWisePrediction_;
-
-        public:
-
-            /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
-             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
-             *                                  scores to be predicted by rules
-             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
-             *                                  different BLAS routines
-             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
-             *                                  different LAPACK routines
-             */
-            RegularizedExampleWiseRuleEvaluationImpl(const T& labelIndices, float64 l2RegularizationWeight,
-                                                     std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr);
-
-            ~RegularizedExampleWiseRuleEvaluationImpl();
-
-            const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, bool uncovered) override;
-
-            const EvaluatedPrediction& calculateExampleWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians, int dsysvLwork,
-                float64* dsysvTmpArray1, int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray,
-                bool uncovered) override;
-
-    };
-
-    /**
      * Defines an interface for all factories that allow to create instances of the type `IExampleWiseRuleEvaluation`.
      */
     class IExampleWiseRuleEvaluationFactory {

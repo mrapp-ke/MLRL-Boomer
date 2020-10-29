@@ -106,40 +106,6 @@ class IHeadRefinementFactory {
 };
 
 /**
- * Allows to find the best single-label head that predicts for a single label.
- *
- * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
- *           for the best head
- */
-template<class T>
-class SingleLabelHeadRefinementImpl : virtual public IHeadRefinement {
-
-    private:
-
-        const T& labelIndices_;
-
-        std::unique_ptr<PartialPrediction> headPtr_;
-
-    public:
-
-        /**
-         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
-         *                     labels that should be considered when searching for the best head
-         */
-        SingleLabelHeadRefinementImpl(const T& labelIndices);
-
-        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
-                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) override;
-
-        std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override;
-
-        const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                       bool accumulated) const override;
-
-};
-
-/**
  * Allows to create instances of the class `SingleLabelHeadRefinementImpl`.
  */
 class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFactory {
@@ -149,40 +115,6 @@ class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFacto
         std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const override;
 
         std::unique_ptr<IHeadRefinement> create(const PartialIndexVector& labelIndices) const override;
-
-};
-
-/**
- * Allows to find the best multi-label head that predicts for all labels.
- *
- * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
- *           for the best head
- */
-template<class T>
-class FullHeadRefinementImpl : virtual public IHeadRefinement {
-
-    private:
-
-        const T& labelIndices_;
-
-        std::unique_ptr<AbstractEvaluatedPrediction> headPtr_;
-
-    public:
-
-        /**
-         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
-         *                     labels that should be considered when searching for the best head
-         */
-        FullHeadRefinementImpl(const T& labelIndices);
-
-        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
-                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) override;
-
-        std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override;
-
-        const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                       bool accumulated) const override;
 
 };
 
