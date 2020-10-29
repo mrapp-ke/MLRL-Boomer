@@ -1,4 +1,5 @@
 #include "example_wise_statistics.h"
+#include "../../common/cpp/arrays.cpp"
 #include "linalg.cpp"
 #include <cstdlib>
 
