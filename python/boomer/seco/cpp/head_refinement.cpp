@@ -22,98 +22,121 @@ static inline uint32* argsort(const float64* a, uint32 numElements) {
     return sortedArray;
 }
 
+/**
+ * Allows to find the best head that predicts for one or several labels depending on a lift function.
+ *
+ * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
+ *           for the best head
+ */
 template<class T>
-PartialHeadRefinementImpl<T>::PartialHeadRefinementImpl(const T& labelIndices,
-                                                        std::shared_ptr<ILiftFunction> liftFunctionPtr)
-    : labelIndices_(labelIndices), liftFunctionPtr_(liftFunctionPtr) {
+class PartialHeadRefinement : virtual public IHeadRefinement {
 
-}
+    private:
 
-template<class T>
-const AbstractEvaluatedPrediction* PartialHeadRefinementImpl<T>::findHead(const AbstractEvaluatedPrediction* bestHead,
-                                                                          IStatisticsSubset& statisticsSubset,
-                                                                          bool uncovered, bool accumulated) {
-    const AbstractEvaluatedPrediction* result = nullptr;
-    const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
-                                                                                                   accumulated);
-    uint32 numPredictions = prediction.getNumElements();
-    LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
-    LabelWiseEvaluatedPrediction::quality_score_const_iterator qualityScoreIterator =
-        prediction.quality_scores_cbegin();
-    uint32* sortedIndices = nullptr;
-    float64 sumOfQualityScores = 0;
-    uint32 bestNumPredictions = 0;
-    float64 bestQualityScore = 0;
+        const T& labelIndices_;
 
-    if (labelIndices_.isPartial()) {
-        for (uint32 c = 0; c < numPredictions; c++) {
-            sumOfQualityScores += 1 - qualityScoreIterator[c];
+        std::shared_ptr<ILiftFunction> liftFunctionPtr_;
+
+        std::unique_ptr<PartialPrediction> headPtr_;
+
+    public:
+
+        /**
+         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
+         *                          the labels that should be considered when searching for the best head
+         * @param liftFunctionPtr   A shared pointer to an object of type `ILiftFunction` that should affect the quality
+         *                          scores of rules, depending on how many labels they predict
+         */
+        PartialHeadRefinement(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr)
+            : labelIndices_(labelIndices), liftFunctionPtr_(liftFunctionPtr) {
+
         }
 
-        bestQualityScore = 1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
-        bestNumPredictions = numPredictions;
-    } else {
-        sortedIndices = argsort(qualityScoreIterator, numPredictions);
-        float64 maximumLift = liftFunctionPtr_->getMaxLift();
+        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated) override {
+            const AbstractEvaluatedPrediction* result = nullptr;
+            const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                           accumulated);
+            uint32 numPredictions = prediction.getNumElements();
+            LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
+            LabelWiseEvaluatedPrediction::quality_score_const_iterator qualityScoreIterator =
+                prediction.quality_scores_cbegin();
+            uint32* sortedIndices = nullptr;
+            float64 sumOfQualityScores = 0;
+            uint32 bestNumPredictions = 0;
+            float64 bestQualityScore = 0;
 
-        for (uint32 c = 0; c < numPredictions; c++) {
-            sumOfQualityScores += 1 - qualityScoreIterator[sortedIndices[c]];
-            float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunctionPtr_->calculateLift(c + 1);
+            if (labelIndices_.isPartial()) {
+                for (uint32 c = 0; c < numPredictions; c++) {
+                    sumOfQualityScores += 1 - qualityScoreIterator[c];
+                }
 
-            if (c == 0 || qualityScore < bestQualityScore) {
-                bestNumPredictions = c + 1;
-                bestQualityScore = qualityScore;
+                bestQualityScore =
+                    1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
+                bestNumPredictions = numPredictions;
+            } else {
+                sortedIndices = argsort(qualityScoreIterator, numPredictions);
+                float64 maximumLift = liftFunctionPtr_->getMaxLift();
+
+                for (uint32 c = 0; c < numPredictions; c++) {
+                    sumOfQualityScores += 1 - qualityScoreIterator[sortedIndices[c]];
+                    float64 qualityScore = 1 - (sumOfQualityScores / (c + 1)) * liftFunctionPtr_->calculateLift(c + 1);
+
+                    if (c == 0 || qualityScore < bestQualityScore) {
+                        bestNumPredictions = c + 1;
+                        bestQualityScore = qualityScore;
+                    }
+
+                    if (qualityScore * maximumLift < bestQualityScore) {
+                        // Prunable by decomposition...
+                        break;
+                    }
+                }
             }
 
-            if (qualityScore * maximumLift < bestQualityScore) {
-                // Prunable by decomposition...
-                break;
+            if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
+                if (headPtr_.get() == nullptr) {
+                    headPtr_ = std::make_unique<PartialPrediction>(bestNumPredictions);
+                } else if (headPtr_->getNumElements() != bestNumPredictions) {
+                    headPtr_->setNumElements(bestNumPredictions);
+                }
+
+                typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+                PartialPrediction::iterator headValueIterator = headPtr_->begin();
+                PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
+
+                if (labelIndices_.isPartial()) {
+                    for (uint32 c = 0; c < bestNumPredictions; c++) {
+                        headIndexIterator[c] = indexIterator[c];
+                        headValueIterator[c] = valueIterator[c];
+                    }
+                } else {
+                    for (uint32 c = 0; c < bestNumPredictions; c++) {
+                        uint32 i = sortedIndices[c];
+                        headIndexIterator[c] = indexIterator[i];
+                        headValueIterator[c] = valueIterator[i];
+                    }
+                }
+
+                headPtr_->overallQualityScore = bestQualityScore;
+                result = headPtr_.get();
             }
+
+            delete[] sortedIndices;
+            return result;
         }
-    }
 
-    if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
-        if (headPtr_.get() == nullptr) {
-            headPtr_ = std::make_unique<PartialPrediction>(bestNumPredictions);
-        } else if (headPtr_->getNumElements() != bestNumPredictions) {
-            headPtr_->setNumElements(bestNumPredictions);
+        std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override {
+            return std::move(headPtr_);
         }
 
-        typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
-        PartialPrediction::iterator headValueIterator = headPtr_->begin();
-        PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
-
-        if (labelIndices_.isPartial()) {
-            for (uint32 c = 0; c < bestNumPredictions; c++) {
-                headIndexIterator[c] = indexIterator[c];
-                headValueIterator[c] = valueIterator[c];
-            }
-        } else {
-            for (uint32 c = 0; c < bestNumPredictions; c++) {
-                uint32 i = sortedIndices[c];
-                headIndexIterator[c] = indexIterator[i];
-                headValueIterator[c] = valueIterator[i];
-            }
+        const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                       bool accumulated) const override {
+            return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
         }
 
-        headPtr_->overallQualityScore = bestQualityScore;
-        result = headPtr_.get();
-    }
-
-    delete[] sortedIndices;
-    return result;
-}
-
-template<class T>
-std::unique_ptr<AbstractEvaluatedPrediction> PartialHeadRefinementImpl<T>::pollHead() {
-    return std::move(headPtr_);
-}
-
-template<class T>
-const EvaluatedPrediction& PartialHeadRefinementImpl<T>::calculatePrediction(IStatisticsSubset& statisticsSubset,
-                                                                             bool uncovered, bool accumulated) const {
-    return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
-}
+};
 
 PartialHeadRefinementFactoryImpl::PartialHeadRefinementFactoryImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr)
     : liftFunctionPtr_(liftFunctionPtr) {
@@ -121,9 +144,9 @@ PartialHeadRefinementFactoryImpl::PartialHeadRefinementFactoryImpl(std::shared_p
 }
 
 std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const FullIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinementImpl<FullIndexVector>>(labelIndices, liftFunctionPtr_);
+    return std::make_unique<PartialHeadRefinement<FullIndexVector>>(labelIndices, liftFunctionPtr_);
 }
 
 std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const PartialIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinementImpl<PartialIndexVector>>(labelIndices, liftFunctionPtr_);
+    return std::make_unique<PartialHeadRefinement<PartialIndexVector>>(labelIndices, liftFunctionPtr_);
 }

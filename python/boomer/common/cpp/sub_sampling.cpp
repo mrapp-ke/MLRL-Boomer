@@ -3,6 +3,73 @@
 
 
 /**
+ * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
+ */
+class DenseWeightVector : public DenseVector<uint32>, virtual public IWeightVector {
+
+    private:
+
+        uint32 sumOfWeights_;
+
+    public:
+
+        /**
+         * @param numElements   The number of elements in the vector. Must be at least 1
+         * @param sumOfWeights  The sum of the weights in the vector
+         */
+        DenseWeightVector(uint32 numElements, uint32 sumOfWeights)
+            : DenseVector<uint32>(numElements, true), sumOfWeights_(sumOfWeights) {
+
+        }
+
+        bool hasZeroWeights() const override {
+            return true;
+        }
+
+        uint32 getSumOfWeights() const override {
+            return sumOfWeights_;
+        }
+
+};
+
+/**
+ * An one-dimensional that provides random access to a fixed number of equal weights.
+ */
+class EqualWeightVector : virtual public IWeightVector {
+
+    private:
+
+        uint32 numElements_;
+
+    public:
+
+        /**
+         * @param numTotalElements The number of elements in the vector. Must be at least 1
+         */
+        EqualWeightVector(uint32 numElements)
+            : numElements_(numElements) {
+
+        }
+
+        uint32 getNumElements() const override {
+            return numElements_;
+        }
+
+        bool hasZeroWeights() const override {
+            return false;
+        }
+
+        uint32 getValue(uint32 pos) const override {
+            return 1;
+        }
+
+        uint32 getSumOfWeights() const override {
+            return numElements_;
+        }
+
+};
+
+/**
  * Randomly selects `numSamples` out of `numTotal` elements and sets their weights to 1, while the remaining weights are
  * set to 0, by using a set to keep track of the elements that have already been selected. This method is suitable if
  * `numSamples` is much smaller than `numTotal`.
@@ -229,40 +296,6 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacement(uint
         // Otherwise, use random permutation as the default method
         return sampleIndicesWithoutReplacementViaRandomPermutation(numTotal, numSamples, rng);
     }
-}
-
-DenseWeightVector::DenseWeightVector(uint32 numElements, uint32 sumOfWeights)
-    : DenseVector<uint32>(numElements, true), sumOfWeights_(sumOfWeights) {
-
-}
-
-bool DenseWeightVector::hasZeroWeights() const {
-    return true;
-}
-
-uint32 DenseWeightVector::getSumOfWeights() const {
-    return sumOfWeights_;
-}
-
-EqualWeightVector::EqualWeightVector(uint32 numElements)
-    : numElements_(numElements) {
-
-}
-
-uint32 EqualWeightVector::getNumElements() const {
-    return numElements_;
-}
-
-bool EqualWeightVector::hasZeroWeights() const {
-    return false;
-}
-
-uint32 EqualWeightVector::getValue(uint32 pos) const {
-    return 1;
-}
-
-uint32 EqualWeightVector::getSumOfWeights() const {
-    return numElements_;
 }
 
 BaggingImpl::BaggingImpl(float32 sampleSize)
