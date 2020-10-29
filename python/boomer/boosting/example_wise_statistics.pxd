@@ -18,15 +18,6 @@ cdef extern from "cpp/example_wise_statistics.h" namespace "boosting" nogil:
         void setRuleEvaluationFactory(shared_ptr[IExampleWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
 
 
-    cdef cppclass DenseExampleWiseStatisticsImpl(AbstractExampleWiseStatistics):
-
-        # Constructors:
-
-        DenseExampleWiseStatisticsImpl(shared_ptr[IExampleWiseLoss] lossFunctionPtr,
-                                       shared_ptr[IExampleWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr,
-                                       shared_ptr[Lapack] lapackPtr) except +
-
-
     cdef cppclass IExampleWiseStatisticsFactory:
 
         # Functions:
