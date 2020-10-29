@@ -57,88 +57,9 @@ namespace boosting {
 
         private:
 
-            /**
-             * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
-             * `DenseLabelWiseStatisticsImpl`.
-             *
-             * @tparam T The type of the vector that provides access to the indices of the labels that are included in
-             *           the subset
-             */
-            template<class T>
-            class StatisticsSubsetImpl : public AbstractDecomposableStatisticsSubset {
-
-                private:
-
-                    const DenseLabelWiseStatisticsImpl& statistics_;
-
-                    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
-
-                    const T& labelIndices_;
-
-                    float64* sumsOfGradients_;
-
-                    float64* accumulatedSumsOfGradients_;
-
-                    float64* sumsOfHessians_;
-
-                    float64* accumulatedSumsOfHessians_;
-
-                public:
-
-                    /**
-                     * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that
-                     *                          stores the gradients and Hessians
-                     * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
-                     *                          should be used to calculate the predictions, as well as corresponding
-                     *                          quality scores, of rules
-                     * @param labelIndices      A reference to an object of template type `T` that provides access to
-                     *                          the indices of the labels that are included in the subset
-                     */
-                    StatisticsSubsetImpl(const DenseLabelWiseStatisticsImpl& statistics,
-                                         std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr,
-                                         const T& labelIndices);
-
-                    ~StatisticsSubsetImpl();
-
-                    void addToSubset(uint32 statisticIndex, uint32 weight) override;
-
-                    void resetSubset() override;
-
-                    const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
-                                                                                     bool accumulated) override;
-
-            };
-
-            /**
-             * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the
-             * class `DenseLabelWiseStatisticsImpl`.
-             */
-            class HistogramBuilderImpl : virtual public AbstractStatistics::IHistogramBuilder {
-
-                private:
-
-                    const DenseLabelWiseStatisticsImpl& statistics_;
-
-                    uint32 numBins_;
-
-                    float64* gradients_;
-
-                    float64* hessians_;
-
-                public:
-
-                    /**
-                     * @param statistics    A reference to an object of type `DenseLabelWiseStatisticsImpl` that stores
-                     *                      the gradients and Hessians
-                     * @param numBins       The number of bins, the histogram should consist of
-                     */
-                    HistogramBuilderImpl(const DenseLabelWiseStatisticsImpl& statistics, uint32 numBins);
-
-                    void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
-
-                    std::unique_ptr<AbstractStatistics> build() const override;
-
-            };
+            // Forward declarations
+            template<class T> class StatisticsSubset;
+            class HistogramBuilder;
 
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
