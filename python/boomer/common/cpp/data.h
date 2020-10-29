@@ -74,7 +74,7 @@ class DenseVector : virtual public IRandomAccessVector<T> {
 
         /**
          * @param numElements   The number of elements in the vector
-         * @param allZero       True, if all elements in the vector should be value-initialized, false otherwise
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         DenseVector(uint32 numElements, bool init);
 
