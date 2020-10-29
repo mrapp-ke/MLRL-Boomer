@@ -1,4 +1,5 @@
 #include "label_wise_statistics.h"
+#include "confusion_matrices.cpp"
 #include <cstdlib>
 
 using namespace seco;
