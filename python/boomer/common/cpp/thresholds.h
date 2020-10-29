@@ -153,82 +153,8 @@ class ExactThresholdsImpl : public AbstractThresholds {
 
     private:
 
-        /**
-         * Provides access to a subset of the thresholds that are stored by an instance of the class
-         * `ExactThresholdsImpl`.
-         */
-        class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
-
-            private:
-
-                /**
-                 * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved
-                 * from the cache. Otherwise, they are fetched from the feature matrix.
-                 */
-                class Callback : virtual public IRuleRefinementCallback<FeatureVector> {
-
-                    private:
-
-                        ThresholdsSubsetImpl& thresholdsSubset_;
-
-                        uint32 featureIndex_;
-
-                    public:
-
-                        /**
-                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubsetImpl` that caches
-                         *                          the feature vectors
-                         * @param featureIndex      The index of the feature for which the feature vector should be
-                         *                          retrieved
-                         */
-                        Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex_);
-
-                        std::unique_ptr<Result> get() override;
-
-                };
-
-                ExactThresholdsImpl& thresholds_;
-
-                const IWeightVector& weights_;
-
-                uint32 sumOfWeights_;
-
-                uint32* coveredExamplesMask_;
-
-                uint32 coveredExamplesTarget_;
-
-                uint32 numRefinements_;
-
-                std::unordered_map<uint32, CacheEntry> cacheFiltered_;
-
-                template<class T>
-                std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex);
-
-            public:
-
-                /**
-                 * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the
-                 *                      thresholds
-                 * @param weights       A reference to an object of type `IWeightVector` that provides access to the
-                 *                      weights of the individual training examples
-                 */
-                ThresholdsSubsetImpl(ExactThresholdsImpl& thresholds, const IWeightVector& weights);
-
-                ~ThresholdsSubsetImpl();
-
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
-                                                                      uint32 featureIndex) override;
-
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
-                                                                      uint32 featureIndex) override;
-
-                void applyRefinement(Refinement& refinement) override;
-
-                void recalculatePrediction(Refinement& refinement) const override;
-
-                void applyPrediction(const AbstractPrediction& prediction) override;
-
-        };
+        // Forward declarations
+        class ThresholdsSubset;
 
         std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cache_;
 
@@ -262,73 +188,8 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
 
     private:
 
-        /**
-         * Provides access to a subset of the thresholds that are stored by an instance of the class
-         * `ApproximateThresholdsImpl`.
-         */
-        class ThresholdsSubsetImpl : virtual public IThresholdsSubset {
-
-            private:
-
-                /**
-                 * A callback that allows to retrieve bins and corresponding statistics. If available, the bins and
-                 * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
-                 * from the feature matrix and applying a binning method.
-                 */
-                class Callback : virtual public IBinningObserver, virtual public IRuleRefinementCallback<BinVector> {
-
-                    private:
-
-                        ThresholdsSubsetImpl& thresholdsSubset_;
-
-                        uint32 featureIndex_;
-
-                        std::unique_ptr<AbstractStatistics::IHistogramBuilder> histogramBuilderPtr_;
-
-                        BinVector* currentBinVector_;
-
-                    public:
-
-                        /**
-                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubsetImpl` that caches
-                         *                          the bins
-                         * @param featureIndex      The index of the feature for which the bins should be retrieved
-                         */
-                        Callback(ThresholdsSubsetImpl& thresholdsSubset, uint32 featureIndex);
-
-                        std::unique_ptr<Result> get() override;
-
-                        void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override;
-
-                };
-
-                ApproximateThresholdsImpl& thresholds_;
-
-                template<class T>
-                std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
-                                                                                 uint32 featureIndex);
-
-            public:
-
-                /**
-                 * @param thresholds A reference to an object of type `ApproximateThresholdsImpl` that stores the
-                 *                   thresholds
-                 */
-                ThresholdsSubsetImpl(ApproximateThresholdsImpl& thresholds);
-
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
-                                                                      uint32 featureIndex) override;
-
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
-                                                                      uint32 featureIndex) override;
-
-                void applyRefinement(Refinement& refinement) override;
-
-                void recalculatePrediction(Refinement& refinement) const override;
-
-                void applyPrediction(const AbstractPrediction& prediction) override;
-
-        };
+        // Forward declarations
+        class ThresholdsSubset;
 
         /**
          * A wrapper for statistics and bins that is stored in the cache.
