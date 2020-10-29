@@ -37,55 +37,6 @@ class IWeightVector : virtual public IRandomAccessVector<uint32> {
 };
 
 /**
- * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
- */
-class DenseWeightVector : public DenseVector<uint32>, virtual public IWeightVector {
-
-    private:
-
-        uint32 sumOfWeights_;
-
-    public:
-
-        /**
-         * @param numElements   The number of elements in the vector. Must be at least 1
-         * @param sumOfWeights  The sum of the weights in the vector
-         */
-        DenseWeightVector(uint32 numElements, uint32 sumOfWeights);
-
-        bool hasZeroWeights() const override;
-
-        uint32 getSumOfWeights() const override;
-
-};
-
-/**
- * An one-dimensional that provides random access to a fixed number of equal weights.
- */
-class EqualWeightVector : virtual public IWeightVector {
-
-    private:
-
-        uint32 numElements_;
-
-    public:
-
-        /**
-         * @param numTotalElements The number of elements in the vector. Must be at least 1
-         */
-        EqualWeightVector(uint32 numElements);
-
-        uint32 getNumElements() const override;
-
-        bool hasZeroWeights() const override;
-
-        uint32 getValue(uint32 pos) const override;
-
-        uint32 getSumOfWeights() const override;
-
-};
-
-/**
  * Defines an interface for all classes that implement a strategy for sub-sampling training examples.
  */
 class IInstanceSubSampling {

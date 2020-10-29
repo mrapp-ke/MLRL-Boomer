@@ -58,40 +58,6 @@ namespace boosting {
     };
 
     /**
-     * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
-     * Hessians that have been calculated according to a loss function that is applied label-wise using L2
-     * regularization.
-     *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
-     */
-    template<class T>
-    class RegularizedLabelWiseRuleEvaluationImpl : virtual public ILabelWiseRuleEvaluation {
-
-        private:
-
-            const T& labelIndices_;
-
-            float64 l2RegularizationWeight_;
-
-            LabelWiseEvaluatedPrediction prediction_;
-
-        public:
-
-            /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
-             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
-             *                                  scores to be predicted by rules
-             */
-            RegularizedLabelWiseRuleEvaluationImpl(const T& labelIndices, float64 l2RegularizationWeight);
-
-            const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, bool uncovered) override;
-
-    };
-
-    /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseRuleEvaluation`.
      */
     class ILabelWiseRuleEvaluationFactory {
