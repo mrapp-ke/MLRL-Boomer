@@ -16,14 +16,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "boosting" nogil:
         void setRuleEvaluationFactory(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
 
 
-    cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
-
-        # Constructors:
-
-        DenseLabelWiseStatisticsImpl(shared_ptr[ILabelWiseLoss] lossFunctionPtr,
-                                     shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
-
-
     cdef cppclass ILabelWiseStatisticsFactory:
 
         # Functions:
