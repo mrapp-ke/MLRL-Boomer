@@ -15,13 +15,6 @@ cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
         void setRuleEvaluationFactory(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
 
 
-    cdef cppclass DenseLabelWiseStatisticsImpl(AbstractLabelWiseStatistics):
-
-        # Constructors:
-
-        DenseLabelWiseStatisticsImpl(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
-
-
     cdef cppclass ILabelWiseStatisticsFactory:
 
         # Functions:
