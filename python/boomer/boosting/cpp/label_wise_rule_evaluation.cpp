@@ -1,5 +1,5 @@
 #include "label_wise_rule_evaluation.h"
-#include "linalg.h"
+#include "linalg.cpp"
 
 using namespace boosting;
 

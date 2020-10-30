@@ -3,8 +3,6 @@
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
-#pragma once
-
 #include "../../common/cpp/arrays.h"
 #include <math.h>
 
