@@ -4,9 +4,9 @@
 
 /**
  * Provides access to a subset of the thresholds that are stored by an instance of the class
- * `ApproximateThresholdsImpl`.
+ * `ApproximateThresholds`.
  */
-class ApproximateThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSubset {
+class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
     private:
 
@@ -74,7 +74,7 @@ class ApproximateThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSu
 
         };
 
-        ApproximateThresholdsImpl& thresholds_;
+        ApproximateThresholds& thresholds_;
 
         template<class T>
         std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices, uint32 featureIndex) {
@@ -89,9 +89,9 @@ class ApproximateThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSu
     public:
 
         /**
-         * @param thresholds A reference to an object of type `ApproximateThresholdsImpl` that stores the thresholds
+         * @param thresholds A reference to an object of type `ApproximateThresholds` that stores the thresholds
          */
-        ThresholdsSubset(ApproximateThresholdsImpl& thresholds)
+        ThresholdsSubset(ApproximateThresholds& thresholds)
             : thresholds_(thresholds) {
 
         }
@@ -120,17 +120,17 @@ class ApproximateThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSu
 
 };
 
-ApproximateThresholdsImpl::ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                                     std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                                     std::shared_ptr<AbstractStatistics> statisticsPtr,
-                                                     std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                                     std::shared_ptr<IBinning> binningPtr, uint32 numBins)
+ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                             std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
+                                             std::shared_ptr<IBinning> binningPtr, uint32 numBins)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr),
       binningPtr_(binningPtr), numBins_(numBins) {
 
 }
 
-std::unique_ptr<IThresholdsSubset> ApproximateThresholdsImpl::createSubset(const IWeightVector& weights) {
+std::unique_ptr<IThresholdsSubset> ApproximateThresholds::createSubset(const IWeightVector& weights) {
     updateSampledStatistics(*statisticsPtr_, weights);
-    return std::make_unique<ApproximateThresholdsImpl::ThresholdsSubset>(*this);
+    return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this);
 }
