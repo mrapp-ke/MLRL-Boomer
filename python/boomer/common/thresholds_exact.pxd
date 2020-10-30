@@ -8,14 +8,14 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/thresholds_exact.h" nogil:
 
-    cdef cppclass ExactThresholdsImpl(AbstractThresholds):
+    cdef cppclass ExactThresholds(AbstractThresholds):
 
         # Constructors:
 
-        ExactThresholdsImpl(shared_ptr[IFeatureMatrix] featureMatrixPtr,
-                            shared_ptr[INominalFeatureVector] nominalFeatureVectorPtr,
-                            shared_ptr[AbstractStatistics] statisticsPtr,
-                            shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
+        ExactThresholds(shared_ptr[IFeatureMatrix] featureMatrixPtr,
+                        shared_ptr[INominalFeatureVector] nominalFeatureVectorPtr,
+                        shared_ptr[AbstractStatistics] statisticsPtr,
+                        shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
 
 
 cdef class ExactThresholdsFactory(ThresholdsFactory):

@@ -3,9 +3,9 @@
 
 
 /**
- * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholdsImpl`.
+ * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
  */
-class ExactThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSubset {
+class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
     private:
 
@@ -65,7 +65,7 @@ class ExactThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSubset {
 
     };
 
-    ExactThresholdsImpl& thresholds_;
+    ExactThresholds& thresholds_;
 
     const IWeightVector& weights_;
 
@@ -102,11 +102,11 @@ class ExactThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSubset {
     public:
 
         /**
-         * @param thresholds    A reference to an object of type `ExactThresholdsImpl` that stores the thresholds
+         * @param thresholds    A reference to an object of type `ExactThresholds` that stores the thresholds
          * @param weights       A reference to an object of type `IWeightVector` that provides access to the weights of
          *                      the individual training examples
          */
-        ThresholdsSubset(ExactThresholdsImpl& thresholds, const IWeightVector& weights)
+        ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
             : thresholds_(thresholds), weights_(weights) {
             sumOfWeights_ = weights.getSumOfWeights();
             uint32 numExamples = thresholds.getNumRows();
@@ -198,15 +198,15 @@ class ExactThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSubset {
 
 };
 
-ExactThresholdsImpl::ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                         std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                         std::shared_ptr<AbstractStatistics> statisticsPtr,
-                                         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
+ExactThresholds::ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                                 std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                 std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                 std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr) {
 
 }
 
-std::unique_ptr<IThresholdsSubset> ExactThresholdsImpl::createSubset(const IWeightVector& weights) {
+std::unique_ptr<IThresholdsSubset> ExactThresholds::createSubset(const IWeightVector& weights) {
     updateSampledStatistics(*statisticsPtr_, weights);
-    return std::make_unique<ExactThresholdsImpl::ThresholdsSubset>(*this, weights);
+    return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, weights);
 }
