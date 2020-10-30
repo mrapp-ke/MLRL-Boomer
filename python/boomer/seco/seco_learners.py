@@ -8,7 +8,7 @@ from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
-from boomer.common.thresholds import ExactThresholdsFactory
+from boomer.common.thresholds_exact import ExactThresholdsFactory
 from boomer.seco.head_refinement import PartialHeadRefinementFactory
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction

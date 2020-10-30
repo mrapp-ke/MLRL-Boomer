@@ -20,7 +20,7 @@ from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
-from boomer.common.thresholds import ExactThresholdsFactory
+from boomer.common.thresholds_exact import ExactThresholdsFactory
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
