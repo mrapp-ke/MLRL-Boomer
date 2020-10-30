@@ -81,8 +81,9 @@ class ExactRuleRefinement : virtual public IRuleRefinement {
             uint32 sumOfWeights = 0;
             intp firstR = 0;
             intp lastNegativeR = -1;
-            float32 previousThreshold;
-            intp r, previousR;
+            float32 previousThreshold = 0;
+            intp previousR = 0;
+            intp r;
 
             // Traverse examples with feature values < 0 in ascending order until the first example with weight > 0 is
             // encountered...
