@@ -5,13 +5,13 @@
 
 Provides a scikit-learn implementations of boosting algorithms
 """
-from boomer.boosting.example_wise_losses import ExampleWiseLogisticLoss
-from boomer.boosting.example_wise_rule_evaluation import RegularizedExampleWiseRuleEvaluationFactory
-from boomer.boosting.example_wise_statistics import ExampleWiseStatisticsProviderFactory
-from boomer.boosting.label_wise_losses import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
-from boomer.boosting.label_wise_rule_evaluation import RegularizedLabelWiseRuleEvaluationFactory
-from boomer.boosting.label_wise_statistics import LabelWiseStatisticsProviderFactory
+from boomer.boosting.losses_example_wise import ExampleWiseLogisticLoss
+from boomer.boosting.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
 from boomer.boosting.post_processing import ConstantShrinkage
+from boomer.boosting.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory
+from boomer.boosting.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory
+from boomer.boosting.statistics_example_wise import ExampleWiseStatisticsProviderFactory
+from boomer.boosting.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
 from boomer.common.post_processing import PostProcessor, NoPostProcessor

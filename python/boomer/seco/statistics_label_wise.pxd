@@ -1,12 +1,12 @@
 from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
 from boomer.seco.statistics cimport AbstractCoverageStatistics
-from boomer.seco.label_wise_rule_evaluation cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
+from boomer.seco.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/label_wise_statistics.h" namespace "seco" nogil:
+cdef extern from "cpp/statistics_label_wise.h" namespace "seco" nogil:
 
     cdef cppclass AbstractLabelWiseStatistics(AbstractCoverageStatistics):
 
