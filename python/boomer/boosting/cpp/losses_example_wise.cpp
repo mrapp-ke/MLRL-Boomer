@@ -1,4 +1,4 @@
-#include "example_wise_losses.h"
+#include "losses_example_wise.h"
 #include <cmath>
 
 using namespace boosting;
