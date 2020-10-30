@@ -19,7 +19,7 @@ typedef DenseVector<Bin> BinVector;
 /**
  * Stores information about a potential refinement of a rule.
  */
-class Refinement {
+class Refinement : public Condition {
 
     public:
 
@@ -32,12 +32,6 @@ class Refinement {
         bool isBetterThan(const Refinement& another) const;
 
         std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
-
-        uint32 featureIndex;
-
-        float32 threshold;
-
-        Comparator comparator;
 
         bool covered;
 
