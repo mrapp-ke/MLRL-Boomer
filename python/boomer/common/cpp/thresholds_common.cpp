@@ -86,43 +86,43 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
 }
 
 /**
- * Filters a feature vector that contains the indices of the examples that are covered by the previous rule, as well as
- * their values for a certain feature, after a new condition that corresponds to said feature has been added, such that
- * the filtered vector does only contain the indices and feature values of the examples that are covered by the new
- * rule. The filtered vector is stored in a given struct of type `FilteredCacheEntry` and the given statistics are
- * updated accordingly.
+ * Filters a given vector, containing e.g. feature values or bins, which contains the elements for a certain feature
+ * that are covered by the previous rule, after a new condition that corresponds to said feature has been added, such
+ * that the filtered vector does only contain the elements that are covered by the new rule. The filtered vector is
+ * stored in a given struct of type `FilteredCacheEntry` and the given statistics are updated accordingly.
  *
+ * @tparam T                    The type of the vector to be filtered
  * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the
  *                              filtered feature vector
- * @param featureVector         A reference to an object of type `FeatureVector` that should be filtered
- * @param conditionStart        The element in `featureVector` that corresponds to the first example (inclusive)
- *                              included in the `IStatisticsSubset` that is covered by the new condition
- * @param conditionEnd          The element in `featureVector` that corresponds to the last example (exclusive)
+ * @param vector                A reference to an object of template type `T` that should be filtered
+ * @param conditionStart        The element in `vector` that corresponds to the first statistic (inclusive) included in
+ *                              the `IStatisticsSubset` that is covered by the new condition
+ * @param conditionEnd          The element in `vector` that corresponds to the last statistic (exclusive)
  * @param conditionComparator   The type of the operator that is used by the new condition
- * @param covered               True, if the examples in range [conditionStart, conditionEnd) are covered by the new
- *                              condition and the remaining ones are not, false, if the examples in said range are not
- *                              covered and the remaining ones are
+ * @param covered               True, if the elements in range [conditionStart, conditionEnd) are covered by the new
+ *                              condition and the remaining ones are not, false, if the elements in said range are not
+ *                              covered, but the remaining ones are
  * @param numConditions         The total number of conditions in the rule's body (including the new one)
  * @param coveredExamplesMask   An array of type `uint32`, shape `(num_examples)` that is used to keep track of the
- *                              indices of the examples that are covered by the previous rule. It will be updated by
- *                              this function
+ *                              elements that are covered by the previous rule. It will be updated by this function
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the previous rule
- * @param statistics            A reference to an object of type `AbstractStatistics` to be notified about the examples
- *                              that must be considered when searching for the next refinement, i.e., the examples that
- *                              are covered by the new rule
+ * @param statistics            A reference to an object of type `AbstractStatistics` to be notified about the
+ *                              statistics that must be considered when searching for the next refinement, i.e., the
+ *                              statistics that are covered by the new rule
  * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
- *                              of the training examples
+ *                              of the individual training examples
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
-static inline uint32 filterCurrentVector(FilteredCacheEntry<FeatureVector>& cacheEntry, FeatureVector& featureVector,
-                                         intp conditionStart, intp conditionEnd, Comparator conditionComparator,
-                                         bool covered, uint32 numConditions, uint32* coveredExamplesMask,
+template<class T>
+static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const T& vector, intp conditionStart,
+                                         intp conditionEnd, Comparator conditionComparator, bool covered,
+                                         uint32 numConditions, uint32* coveredExamplesMask,
                                          uint32 coveredExamplesTarget, AbstractStatistics& statistics,
                                          const IWeightVector& weights) {
-    uint32 numTotalElements = featureVector.getNumElements();
-    FeatureVector::const_iterator iterator = featureVector.cbegin();
+    uint32 numTotalElements = vector.getNumElements();
+    typename T::const_iterator iterator = vector.cbegin();
     bool descending = conditionEnd < conditionStart;
     uint32 updatedTarget;
 
