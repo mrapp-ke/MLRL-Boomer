@@ -12,7 +12,7 @@
 /**
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
-class ExactThresholdsImpl : public AbstractThresholds {
+class ExactThresholds : public AbstractThresholds {
 
     private:
 
@@ -34,10 +34,10 @@ class ExactThresholdsImpl : public AbstractThresholds {
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
          */
-        ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                            std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                            std::shared_ptr<AbstractStatistics> statisticsPtr,
-                            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
+        ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                        std::shared_ptr<AbstractStatistics> statisticsPtr,
+                        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
