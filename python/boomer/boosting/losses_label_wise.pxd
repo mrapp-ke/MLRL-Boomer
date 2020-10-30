@@ -1,7 +1,7 @@
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/label_wise_losses.h" namespace "boosting" nogil:
+cdef extern from "cpp/losses_label_wise.h" namespace "boosting" nogil:
 
     cdef cppclass ILabelWiseLoss:
         pass

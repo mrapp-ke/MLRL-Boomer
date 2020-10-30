@@ -1,4 +1,4 @@
-#include "label_wise_statistics.h"
+#include "statistics_label_wise.h"
 #include "../../common/cpp/arrays.cpp"
 #include <cstdlib>
 
