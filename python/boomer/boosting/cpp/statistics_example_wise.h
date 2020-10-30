@@ -8,8 +8,8 @@
 #pragma once
 
 #include "../../common/cpp/statistics.h"
-#include "example_wise_rule_evaluation.h"
-#include "example_wise_losses.h"
+#include "rule_evaluation_example_wise.h"
+#include "losses_example_wise.h"
 #include "statistics.h"
 #include "lapack.h"
 

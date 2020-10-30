@@ -1,4 +1,4 @@
-#include "label_wise_losses.h"
+#include "losses_label_wise.h"
 #include <cmath>
 
 using namespace boosting;
