@@ -73,3 +73,21 @@ cdef class ExactThresholdsFactory(ThresholdsFactory):
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
                                     StatisticsProvider statistic_provider,
                                     HeadRefinementFactory head_refinement_factory)
+
+cdef class ApproximateThresholdsFactory(ThresholdsFactory):
+
+    # Attributes:
+
+    cdef shared_ptr[IBinning] binningPtr
+
+    cdef uint32 numBins
+
+    # Constructors:
+
+    cdef ApproximateThresholdsFactory(shared_ptr[IBinning] binning_method, uint32 num_bins)
+
+    # Functions:
+
+    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
+                                    StatisticsProvider statistic_provider,
+                                    HeadRefinementFactory head_refinement_factory)
