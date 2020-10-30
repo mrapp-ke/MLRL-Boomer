@@ -7,13 +7,16 @@
 
 
 /**
- * A wrapper for a filtered feature vector that is stored in the cache. The field `numConditions` specifies how many
- * conditions the rule contained when the array was updated for the last time. It may be used to check if the array is
- * still valid or must be updated.
+ * An entry that is stored in a cache and contains an unique pointer to a vector of arbitrary type. The field
+ * `numConditions` specifies how many conditions the rule contained when the vector was updated for the last time. It
+ * may be used to check if the vector is still valid or must be updated.
+ *
+ * @tparam T The type of the vector that is stored by the entry
  */
+template<class T>
 struct FilteredCacheEntry {
-    FilteredCacheEntry() : numConditions(0) { };
-    std::unique_ptr<FeatureVector> featureVectorPtr;
+    FilteredCacheEntry<T>() : numConditions(0) { };
+    std::unique_ptr<T> vectorPtr;
     uint32 numConditions;
 };
 
@@ -113,11 +116,11 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
-static inline uint32 filterCurrentFeatureVector(FilteredCacheEntry& cacheEntry, FeatureVector& featureVector,
-                                                intp conditionStart, intp conditionEnd, Comparator conditionComparator,
-                                                bool covered, uint32 numConditions, uint32* coveredExamplesMask,
-                                                uint32 coveredExamplesTarget, AbstractStatistics& statistics,
-                                                const IWeightVector& weights) {
+static inline uint32 filterCurrentFeatureVector(FilteredCacheEntry<FeatureVector>& cacheEntry,
+                                                FeatureVector& featureVector, intp conditionStart, intp conditionEnd,
+                                                Comparator conditionComparator, bool covered, uint32 numConditions,
+                                                uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
+                                                AbstractStatistics& statistics, const IWeightVector& weights) {
     uint32 numTotalElements = featureVector.getNumElements();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     bool descending = conditionEnd < conditionStart;
@@ -210,7 +213,7 @@ static inline uint32 filterCurrentFeatureVector(FilteredCacheEntry& cacheEntry, 
         }
     }
 
-    cacheEntry.featureVectorPtr = std::move(filteredVectorPtr);
+    cacheEntry.vectorPtr = std::move(filteredVectorPtr);
     cacheEntry.numConditions = numConditions;
     return updatedTarget;
 }
@@ -229,15 +232,15 @@ static inline uint32 filterCurrentFeatureVector(FilteredCacheEntry& cacheEntry, 
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the current rule
  */
-static inline void filterAnyFeatureVector(FeatureVector& featureVector, FilteredCacheEntry& cacheEntry,
-                                          uint32 numConditions, const uint32* coveredExamplesMask,
-                                          uint32 coveredExamplesTarget) {
+static inline void filterAnyFeatureVector(FeatureVector& featureVector,
+                                          FilteredCacheEntry<FeatureVector>& cacheEntry, uint32 numConditions,
+                                          const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
     uint32 maxElements = featureVector.getNumElements();
-    FeatureVector* filteredVector = cacheEntry.featureVectorPtr.get();
+    FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
-        cacheEntry.featureVectorPtr = std::move(std::make_unique<FeatureVector>(maxElements));
-        filteredVector = cacheEntry.featureVectorPtr.get();
+        cacheEntry.vectorPtr = std::move(std::make_unique<FeatureVector>(maxElements));
+        filteredVector = cacheEntry.vectorPtr.get();
     }
 
     FeatureVector::const_iterator iterator = featureVector.cbegin();
