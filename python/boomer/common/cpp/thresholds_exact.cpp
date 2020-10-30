@@ -55,8 +55,9 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                 uint32 numConditions = thresholdsSubset_.numRefinements_;
 
                 if (numConditions > cacheEntry.numConditions) {
-                    filterAnyVector(*featureVector, cacheEntry, numConditions, thresholdsSubset_.coveredExamplesMask_,
-                                    thresholdsSubset_.coveredExamplesTarget_);
+                    filterAnyVector<FeatureVector>(*featureVector, cacheEntry, numConditions,
+                                                   thresholdsSubset_.coveredExamplesMask_,
+                                                   thresholdsSubset_.coveredExamplesTarget_);
                     featureVector = cacheEntry.vectorPtr.get();
                 }
 
