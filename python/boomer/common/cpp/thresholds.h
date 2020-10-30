@@ -2,7 +2,6 @@
  * Implements classes that provide access to the thresholds that may be used by the conditions of rules.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
- * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
