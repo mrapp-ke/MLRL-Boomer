@@ -2,7 +2,6 @@
  * Implements classes that allow to find the best refinement of rules.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
- * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
