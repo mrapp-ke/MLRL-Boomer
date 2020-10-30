@@ -5,6 +5,7 @@ from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeat
 from boomer.common.rule_refinement cimport Refinement
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.sub_sampling cimport IWeightVector
+from boomer.common.binning cimport IBinning
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
@@ -43,6 +44,17 @@ cdef extern from "cpp/thresholds.h" nogil:
                             shared_ptr[INominalFeatureVector] nominalFeatureVectorPtr,
                             shared_ptr[AbstractStatistics] statisticsPtr,
                             shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
+
+    cdef cppclass ApproximateThresholdsImpl(AbstractThresholds):
+
+        # Constructors:
+
+        ApproximateThresholdsImpl(shared_ptr[IFeatureMatrix] featureMatrixPtr,
+                                  shared_ptr[INominalFeatureVector] nominalFeatureVectorPtr,
+                                  shared_ptr[AbstractStatistics] statisticsPtr,
+                                  shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
+                                  shared_ptr[IBinning] binningPtr,
+                                  uint32 numBins) except +
 
 
 cdef class ThresholdsFactory:
