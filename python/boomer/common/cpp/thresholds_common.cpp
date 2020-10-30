@@ -116,11 +116,11 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
-static inline uint32 filterCurrentFeatureVector(FilteredCacheEntry<FeatureVector>& cacheEntry,
-                                                FeatureVector& featureVector, intp conditionStart, intp conditionEnd,
-                                                Comparator conditionComparator, bool covered, uint32 numConditions,
-                                                uint32* coveredExamplesMask, uint32 coveredExamplesTarget,
-                                                AbstractStatistics& statistics, const IWeightVector& weights) {
+static inline uint32 filterCurrentVector(FilteredCacheEntry<FeatureVector>& cacheEntry, FeatureVector& featureVector,
+                                         intp conditionStart, intp conditionEnd, Comparator conditionComparator,
+                                         bool covered, uint32 numConditions, uint32* coveredExamplesMask,
+                                         uint32 coveredExamplesTarget, AbstractStatistics& statistics,
+                                         const IWeightVector& weights) {
     uint32 numTotalElements = featureVector.getNumElements();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     bool descending = conditionEnd < conditionStart;
@@ -232,9 +232,9 @@ static inline uint32 filterCurrentFeatureVector(FilteredCacheEntry<FeatureVector
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the current rule
  */
-static inline void filterAnyFeatureVector(FeatureVector& featureVector,
-                                          FilteredCacheEntry<FeatureVector>& cacheEntry, uint32 numConditions,
-                                          const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
+static inline void filterAnyVector(FeatureVector& featureVector, FilteredCacheEntry<FeatureVector>& cacheEntry,
+                                   uint32 numConditions, const uint32* coveredExamplesMask,
+                                   uint32 coveredExamplesTarget) {
     uint32 maxElements = featureVector.getNumElements();
     FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
 
