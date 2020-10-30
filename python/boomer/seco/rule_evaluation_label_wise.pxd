@@ -4,7 +4,7 @@ from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/label_wise_rule_evaluation.h" namespace "seco" nogil:
+cdef extern from "cpp/rule_evaluation_label_wise.h" namespace "seco" nogil:
 
     cdef cppclass ILabelWiseRuleEvaluationFactory:
         pass
