@@ -155,10 +155,11 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             }
 
             // Identify the examples that are covered by the refined rule...
-            coveredExamplesTarget_ = filterCurrentVector(cacheEntry, *featureVector, refinement.start, refinement.end,
-                                                         refinement.comparator, refinement.covered, numRefinements_,
-                                                         coveredExamplesMask_, coveredExamplesTarget_,
-                                                         *thresholds_.statisticsPtr_, weights_);
+            coveredExamplesTarget_ = filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, refinement.start,
+                                                                        refinement.end, refinement.comparator,
+                                                                        refinement.covered, numRefinements_,
+                                                                        coveredExamplesMask_, coveredExamplesTarget_,
+                                                                        *thresholds_.statisticsPtr_, weights_);
         }
 
         void recalculatePrediction(Refinement& refinement) const override {
