@@ -103,28 +103,22 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  *                              condition and the remaining ones are not, false, if the elements in said range are not
  *                              covered, but the remaining ones are
  * @param numConditions         The total number of conditions in the rule's body (including the new one)
- * @param coveredExamplesMask   An array of type `uint32`, shape `(num_statistics)` that is used to keep track of the
+ * @param coverageMask          A reference to an object of type `CoverageMask` that is used to keep track of the
  *                              elements that are covered by the previous rule. It will be updated by this function
- * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
- *                              by the previous rule
  * @param statistics            A reference to an object of type `AbstractStatistics` to be notified about the
  *                              statistics that must be considered when searching for the next refinement, i.e., the
  *                              statistics that are covered by the new rule
  * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
  *                              of the individual training examples
- * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
- *                              are covered by the new rule
  */
 template<class T>
-static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const T& vector, intp conditionStart,
-                                         intp conditionEnd, Comparator conditionComparator, bool covered,
-                                         uint32 numConditions, uint32* coveredExamplesMask,
-                                         uint32 coveredExamplesTarget, AbstractStatistics& statistics,
-                                         const IWeightVector& weights) {
+static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const T& vector, intp conditionStart,
+                                       intp conditionEnd, Comparator conditionComparator, bool covered,
+                                       uint32 numConditions, CoverageMask& coverageMask, AbstractStatistics& statistics,
+                                       const IWeightVector& weights) {
     uint32 numTotalElements = vector.getNumElements();
     typename T::const_iterator iterator = vector.cbegin();
     bool descending = conditionEnd < conditionStart;
-    uint32 updatedTarget;
 
     // Determine the number of elements in the filtered vector...
     uint32 numConditionSteps = abs(conditionStart - conditionEnd);
@@ -134,6 +128,7 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
     // Create a new vector that will contain the filtered elements...
     std::unique_ptr<FeatureVector> filteredVectorPtr = std::make_unique<FeatureVector>(numElements);
     FeatureVector::iterator filteredIterator = filteredVectorPtr->begin();
+    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     intp direction;
     uint32 i;
@@ -147,16 +142,15 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
     }
 
     if (covered) {
-        updatedTarget = numConditions;
+        coverageMask.target = numConditions;
         statistics.resetCoveredStatistics();
 
-        // Retain the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
-        // `coveredExamplesMasK` to `numConditions`, which marks them as covered (because
-        // `updatedTarget == numConditions`)...
+        // Retain the indices at positions [conditionStart, conditionEnd) and set the corresponding values in the given
+        // `coverageMask` to `numConditions` to mark them as covered...
         for (uint32 j = 0; j < numConditionSteps; j++) {
             uint32 r = conditionStart + (j * direction);
             uint32 index = iterator[r].index;
-            coveredExamplesMask[index] = numConditions;
+            coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
             uint32 weight = weights.getValue(index);
@@ -164,7 +158,6 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
             i += direction;
         }
     } else {
-        updatedTarget = coveredExamplesTarget;
         intp start, end;
 
         if (descending) {
@@ -177,7 +170,7 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
 
         if (conditionComparator == NEQ) {
             // Retain the indices at positions [start, conditionStart), while leaving the corresponding values in
-            // `coveredExamplesMask` untouched, such that all previously covered examples in said range are still marked
+            // `coverageMask` untouched, such that all previously covered examples in said range are still marked
             // as covered, while previously uncovered examples are still marked as uncovered...
             uint32 numSteps = abs(start - conditionStart);
 
@@ -190,19 +183,18 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
         }
 
         // Discard the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
-        // `coveredExamplesMask` to `numConditions`, which marks them as uncovered (because
-        // `updatedTarget != numConditions`)...
+        // `coverageMask` to `numConditions`, which marks them as uncovered...
         for (uint32 j = 0; j < numConditionSteps; j++) {
             uint32 r = conditionStart + (j * direction);
             uint32 index = iterator[r].index;
-            coveredExamplesMask[index] = numConditions;
+            coverageMaskIterator[index] = numConditions;
             uint32 weight = weights.getValue(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
 
-        // Retain the indices at positions [conditionEnd, end), while leaving the corresponding values in
-        // `coveredExamplesMask` untouched, such that all previously covered examples in said range are still marked as
-        // covered, while previously uncovered examples are still marked as uncovered...
+        // Retain the indices at positions [conditionEnd, end), while leaving the corresponding values in `coverageMask`
+        // untouched, such that all previously covered examples in said range are still marked as covered, while
+        // previously uncovered examples are still marked as uncovered...
         uint32 numSteps = abs(conditionEnd - end);
 
         for (uint32 j = 0; j < numSteps; j++) {
@@ -215,7 +207,6 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
 
     cacheEntry.vectorPtr = std::move(filteredVectorPtr);
     cacheEntry.numConditions = numConditions;
-    return updatedTarget;
 }
 
 /**
@@ -227,14 +218,12 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
  * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the
  *                              filtered vector
  * @param numConditions         The total number of conditions in the current rule's body
- * @param coveredExamplesMask   An array of type `uint32`, shape `(num_statistics)`, that is used to keep track of the
- *                              indices of the examples that are covered by the current rule
- * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
- *                              by the current rule
+ * @param coverageMask          A reference to an object of type `CoverageMask` that is used to keep track of the
+ *                              elements that are covered by the current rule
  */
 template<class T>
 static inline void filterAnyVector(T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
-                                   const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
+                                   const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     T* filteredVector = cacheEntry.vectorPtr.get();
 
@@ -250,7 +239,7 @@ static inline void filterAnyVector(T& vector, FilteredCacheEntry<T>& cacheEntry,
     for (uint32 r = 0; r < maxElements; r++) {
         uint32 index = iterator[r].index;
 
-        if (coveredExamplesMask[index] == coveredExamplesTarget) {
+        if (coverageMask.isCovered(index)) {
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
             i++;
