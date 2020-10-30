@@ -33,13 +33,7 @@ class Refinement : public Condition {
 
         std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
-        bool covered;
-
         uint32 coveredWeights;
-
-        intp start;
-
-        intp end;
 
         intp previous;
 
