@@ -103,7 +103,7 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  *                              condition and the remaining ones are not, false, if the elements in said range are not
  *                              covered, but the remaining ones are
  * @param numConditions         The total number of conditions in the rule's body (including the new one)
- * @param coveredExamplesMask   An array of type `uint32`, shape `(num_examples)` that is used to keep track of the
+ * @param coveredExamplesMask   An array of type `uint32`, shape `(num_statistics)` that is used to keep track of the
  *                              elements that are covered by the previous rule. It will be updated by this function
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the previous rule
@@ -219,32 +219,32 @@ static inline uint32 filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, cons
 }
 
 /**
- * Filters a feature vector that contains the indices of training examples, as well as their values for a certain
- * feature, such that the filtered vector does only contain the indices and feature values of those examples that are
- * covered by the current rule. The filtered vector is stored in a given struct of type `FilteredCacheEntry`.
+ * Filters a given vector, containing e.g. feature values or bins, such that the filtered vector does only contain the
+ * elements that are covered by the current rule. The filtered vector is stored in a given struct of type
+ * `FilteredCacheEntry`.
  *
- * @param indexedArray          A reference to an object of type `FeatureVector` that should be filtered
- * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the filtered
- *                              vector
+ * @param vector                A reference to an object of template type `T` that should be filtered
+ * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the
+ *                              filtered vector
  * @param numConditions         The total number of conditions in the current rule's body
- * @param coveredExamplesMask   An array of type `uint32`, shape `(num_examples)`, that is used to keep track of the
+ * @param coveredExamplesMask   An array of type `uint32`, shape `(num_statistics)`, that is used to keep track of the
  *                              indices of the examples that are covered by the current rule
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the current rule
  */
-static inline void filterAnyVector(FeatureVector& featureVector, FilteredCacheEntry<FeatureVector>& cacheEntry,
-                                   uint32 numConditions, const uint32* coveredExamplesMask,
-                                   uint32 coveredExamplesTarget) {
-    uint32 maxElements = featureVector.getNumElements();
-    FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
+template<class T>
+static inline void filterAnyVector(T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
+                                   const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
+    uint32 maxElements = vector.getNumElements();
+    T* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::move(std::make_unique<FeatureVector>(maxElements));
+        cacheEntry.vectorPtr = std::move(std::make_unique<T>(maxElements));
         filteredVector = cacheEntry.vectorPtr.get();
     }
 
-    FeatureVector::const_iterator iterator = featureVector.cbegin();
-    FeatureVector::iterator filteredIterator = filteredVector->begin();
+    typename T::const_iterator iterator = vector.cbegin();
+    typename T::iterator filteredIterator = filteredVector->begin();
     uint32 i = 0;
 
     for (uint32 r = 0; r < maxElements; r++) {
