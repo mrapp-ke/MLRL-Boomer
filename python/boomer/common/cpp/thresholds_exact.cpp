@@ -36,7 +36,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
             std::unique_ptr<Result> get() override {
                 auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
-                CacheEntry& cacheEntry = cacheFilteredIterator->second;
+                FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                 FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
                 if (featureVector == nullptr) {
@@ -78,16 +78,16 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
     uint32 numRefinements_;
 
-    std::unordered_map<uint32, CacheEntry> cacheFiltered_;
+    std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
 
     template<class T>
     std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex) {
-        // Retrieve the `CacheEntry` from the cache, or insert a new one if it does not already exist...
-        auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, CacheEntry()).first;
+        // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already exist...
+        auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
         FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
 
-        // If the `CacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to the
-        // cache...
+        // If the `FilteredCacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to
+        // the cache...
         if (featureVector == nullptr) {
             thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
         }
@@ -136,7 +136,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
             uint32 featureIndex = refinement.featureIndex;
             auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-            CacheEntry& cacheEntry = cacheFilteredIterator->second;
+            FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
             FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
 
             if (featureVector == nullptr) {
