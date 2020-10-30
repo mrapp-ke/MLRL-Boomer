@@ -1,4 +1,6 @@
 #include "thresholds.h"
+#include "rule_refinement_exact.cpp"
+#include "rule_refinement_approximate.cpp"
 #include <cstddef>
 #include <stdlib.h>
 
@@ -336,9 +338,8 @@ class ExactThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSubset {
         std::unique_ptr<IHeadRefinement> headRefinementPtr =
             thresholds_.headRefinementFactoryPtr_->create(labelIndices);
         std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-        return std::make_unique<ExactRuleRefinementImpl<T>>(std::move(headRefinementPtr), labelIndices, weights_,
-                                                            sumOfWeights_, featureIndex, nominal,
-                                                            std::move(callbackPtr));
+        return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices, weights_,
+                                                        sumOfWeights_, featureIndex, nominal, std::move(callbackPtr));
     }
 
     public:
@@ -554,8 +555,8 @@ class ApproximateThresholdsImpl::ThresholdsSubset : virtual public IThresholdsSu
             std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
             std::unique_ptr<IHeadRefinement> headRefinementPtr =
                 thresholds_.headRefinementFactoryPtr_->create(labelIndices);
-            return std::make_unique<ApproximateRuleRefinementImpl<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                      featureIndex, std::move(callbackPtr));
+            return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
+                                                                  featureIndex, std::move(callbackPtr));
         }
 
     public:
