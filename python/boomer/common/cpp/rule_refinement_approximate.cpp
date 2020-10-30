@@ -1,3 +1,10 @@
+/**
+ * Implements classes that allow to find the best refinement of rules based on approximate thresholds that result from
+ * the boundaries between the bins that have been creating using a binning method.
+ *
+ * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
 #include "rule_refinement.h"
 
 

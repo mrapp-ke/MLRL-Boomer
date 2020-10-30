@@ -1,3 +1,9 @@
+/**
+ * Implements classes that allow to find the best refinement of rules based on exact thresholds that result from the
+ * feature values of all training examples.
+ *
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
 #include "rule_refinement.h"
 #include <cmath>
 
