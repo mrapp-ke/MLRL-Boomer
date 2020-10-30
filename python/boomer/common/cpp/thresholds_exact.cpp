@@ -56,8 +56,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
                 if (numConditions > cacheEntry.numConditions) {
                     filterAnyVector<FeatureVector>(*featureVector, cacheEntry, numConditions,
-                                                   thresholdsSubset_.coveredExamplesMask_,
-                                                   thresholdsSubset_.coveredExamplesTarget_);
+                                                   thresholdsSubset_.coverageMask_);
                     featureVector = cacheEntry.vectorPtr.get();
                 }
 
@@ -72,9 +71,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
     uint32 sumOfWeights_;
 
-    uint32* coveredExamplesMask_;
-
-    uint32 coveredExamplesTarget_;
+    CoverageMask coverageMask_;
 
     uint32 numRefinements_;
 
@@ -108,16 +105,9 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
          *                      the individual training examples
          */
         ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
-            : thresholds_(thresholds), weights_(weights) {
+            : thresholds_(thresholds), weights_(weights), coverageMask_(CoverageMask(thresholds.getNumRows())) {
             sumOfWeights_ = weights.getSumOfWeights();
-            uint32 numExamples = thresholds.getNumRows();
-            coveredExamplesMask_ = new uint32[numExamples]{0};
-            coveredExamplesTarget_ = 0;
             numRefinements_ = 0;
-        }
-
-        ~ThresholdsSubset() {
-            delete[] coveredExamplesMask_;
         }
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
@@ -156,11 +146,9 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             }
 
             // Identify the examples that are covered by the refined rule...
-            coveredExamplesTarget_ = filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, refinement.start,
-                                                                        refinement.end, refinement.comparator,
-                                                                        refinement.covered, numRefinements_,
-                                                                        coveredExamplesMask_, coveredExamplesTarget_,
-                                                                        *thresholds_.statisticsPtr_, weights_);
+            filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, refinement.start, refinement.end,
+                                               refinement.comparator, refinement.covered, numRefinements_,
+                                               coverageMask_, *thresholds_.statisticsPtr_, weights_);
         }
 
         void recalculatePrediction(Refinement& refinement) const override {
@@ -169,7 +157,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             uint32 numExamples = thresholds_.getNumRows();
 
             for (uint32 r = 0; r < numExamples; r++) {
-                if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
+                if (coverageMask_.isCovered(r)) {
                     statisticsSubsetPtr->addToSubset(r, 1);
                 }
             }
@@ -191,7 +179,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             uint32 numExamples = thresholds_.getNumRows();
 
             for (uint32 r = 0; r < numExamples; r++) {
-                if (coveredExamplesMask_[r] == coveredExamplesTarget_) {
+                if (coverageMask_.isCovered(r)) {
                     prediction.apply(*thresholds_.statisticsPtr_, r);
                 }
             }
