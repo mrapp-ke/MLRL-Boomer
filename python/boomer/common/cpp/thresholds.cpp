@@ -1,6 +1,27 @@
 #include "thresholds.h"
 
 
+CoverageMask::CoverageMask(uint32 numElements)
+    : array_(new uint32[numElements]{0}), numElements_(numElements), target(0) {
+
+}
+
+CoverageMask::~CoverageMask() {
+    delete[] array_;
+}
+
+CoverageMask::iterator CoverageMask::begin() {
+    return array_;
+}
+
+CoverageMask::iterator CoverageMask::end() {
+    return &array_[numElements_];
+}
+
+bool CoverageMask::isCovered(uint32 pos) const {
+    return array_[pos] == target;
+}
+
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                        std::shared_ptr<AbstractStatistics> statisticsPtr,
