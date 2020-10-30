@@ -14,7 +14,7 @@
  * Provides access to the thresholds that result from applying a binning method to the feature values of the training
  * examples.
  */
-class ApproximateThresholdsImpl : public AbstractThresholds {
+class ApproximateThresholds : public AbstractThresholds {
 
     private:
 
@@ -51,11 +51,11 @@ class ApproximateThresholdsImpl : public AbstractThresholds {
          *                                  method to be used
          * @param numBins                   The number of bins that should be used by the given binning method
          */
-        ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                  std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                  std::shared_ptr<AbstractStatistics> statisticsPtr,
-                                  std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                  std::shared_ptr<IBinning> binningPtr, uint32 numBins);
+        ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                              std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                              std::shared_ptr<AbstractStatistics> statisticsPtr,
+                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
+                              std::shared_ptr<IBinning> binningPtr, uint32 numBins);
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
