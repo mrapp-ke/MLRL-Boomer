@@ -19,11 +19,16 @@ enum Comparator : uint32 {
 };
 
 /**
- * A struct that represents a condition of a rule. It consists of the index of the feature, the condition corresponds
- * to, the type of the operator that is used by the condition, as well as a threshold.
+ * Stores information about a condition of a rule. It consists of the index of the feature, the condition corresponds
+ * to, the type of the operator that is used by the condition, as well as a threshold. In addition, it stores the range
+ * [start, end) that corresponds to the elements, e.g. examples or bins, that are covered (or uncovered, if
+ * `covered == false`) by the condition.
  */
 struct Condition {
     uint32 featureIndex;
     Comparator comparator;
     float32 threshold;
+    intp start;
+    intp end;
+    bool covered;
 };
