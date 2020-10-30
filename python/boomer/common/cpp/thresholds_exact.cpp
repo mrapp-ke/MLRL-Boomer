@@ -55,9 +55,8 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                 uint32 numConditions = thresholdsSubset_.numRefinements_;
 
                 if (numConditions > cacheEntry.numConditions) {
-                    filterAnyFeatureVector(*featureVector, cacheEntry, numConditions,
-                                           thresholdsSubset_.coveredExamplesMask_,
-                                           thresholdsSubset_.coveredExamplesTarget_);
+                    filterAnyVector(*featureVector, cacheEntry, numConditions, thresholdsSubset_.coveredExamplesMask_,
+                                    thresholdsSubset_.coveredExamplesTarget_);
                     featureVector = cacheEntry.vectorPtr.get();
                 }
 
@@ -147,20 +146,19 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             // If there are examples with zero weights, those examples have not been considered considered when
             // searching for the refinement. In the next step, we need to identify the examples that are covered by the
             // refined rule, including those that have previously been ignored, via the function
-            // `filterCurrentFeatureVector`. Said function calculates the number of covered examples based on the
-            // variable `refinement.end`, which represents the position that separates the covered from the uncovered
-            // examples. However, when taking into account the examples with zero weights, this position may differ from
-            // the current value of `refinement.end` and therefore must be adjusted...
+            // `filterCurrentVector`. Said function calculates the number of covered examples based on the variable
+            // `refinement.end`, which represents the position that separates the covered from the uncovered examples.
+            // However, when taking into account the examples with zero weights, this position may differ from the
+            // current value of `refinement.end` and therefore must be adjusted...
             if (weights_.hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
                 refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
             }
 
             // Identify the examples that are covered by the refined rule...
-            coveredExamplesTarget_ = filterCurrentFeatureVector(cacheEntry, *featureVector, refinement.start,
-                                                                refinement.end, refinement.comparator,
-                                                                refinement.covered, numRefinements_,
-                                                                coveredExamplesMask_, coveredExamplesTarget_,
-                                                                *thresholds_.statisticsPtr_, weights_);
+            coveredExamplesTarget_ = filterCurrentVector(cacheEntry, *featureVector, refinement.start, refinement.end,
+                                                         refinement.comparator, refinement.covered, numRefinements_,
+                                                         coveredExamplesMask_, coveredExamplesTarget_,
+                                                         *thresholds_.statisticsPtr_, weights_);
         }
 
         void recalculatePrediction(Refinement& refinement) const override {
