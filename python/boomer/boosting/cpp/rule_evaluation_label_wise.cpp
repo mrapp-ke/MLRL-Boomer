@@ -70,7 +70,7 @@ class RegularizedLabelWiseRuleEvaluation : virtual public ILabelWiseRuleEvaluati
             }
 
             // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * linalg::l2NormPow(valueIterator, numPredictions);
+            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(valueIterator, numPredictions);
             prediction_.overallQualityScore = overallQualityScore;
             return prediction_;
         }
