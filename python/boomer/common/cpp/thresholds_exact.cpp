@@ -36,8 +36,8 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
             std::unique_ptr<Result> get() override {
                 auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
-                FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
+                FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
+                FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                 if (featureVector == nullptr) {
                     auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
@@ -58,7 +58,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                     filterAnyFeatureVector(*featureVector, cacheEntry, numConditions,
                                            thresholdsSubset_.coveredExamplesMask_,
                                            thresholdsSubset_.coveredExamplesTarget_);
-                    featureVector = cacheEntry.featureVectorPtr.get();
+                    featureVector = cacheEntry.vectorPtr.get();
                 }
 
                 return std::make_unique<Result>(*thresholdsSubset_.thresholds_.statisticsPtr_, *featureVector);
@@ -78,13 +78,13 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
     uint32 numRefinements_;
 
-    std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
+    std::unordered_map<uint32, FilteredCacheEntry<FeatureVector>> cacheFiltered_;
 
     template<class T>
     std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex) {
         // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already exist...
-        auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
-        FeatureVector* featureVector = cacheFilteredIterator->second.featureVectorPtr.get();
+        auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry<FeatureVector>()).first;
+        FeatureVector* featureVector = cacheFilteredIterator->second.vectorPtr.get();
 
         // If the `FilteredCacheEntry` in the cache does not refer to a `FeatureVector`, add an empty `unique_ptr` to
         // the cache...
@@ -136,8 +136,8 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
             uint32 featureIndex = refinement.featureIndex;
             auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-            FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
-            FeatureVector* featureVector = cacheEntry.featureVectorPtr.get();
+            FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
+            FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
             if (featureVector == nullptr) {
                 auto cacheIterator = thresholds_.cache_.find(featureIndex);
