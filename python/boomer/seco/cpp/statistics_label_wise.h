@@ -1,25 +1,26 @@
 /**
- * Provides classes that allow to store gradients and Hessians that are calculated according to a (decomposable) loss
- * function that is applied label-wise.
+ * Provides classes that allow to store the elements of confusion matrices that are computed independently for each
+ * label.
  *
+ * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
- * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
+#include "../../common/cpp/input_data.h"
 #include "../../common/cpp/statistics.h"
-#include "label_wise_rule_evaluation.h"
-#include "label_wise_losses.h"
+#include "rule_evaluation_label_wise.h"
 #include "statistics.h"
+#include <memory>
 
 
-namespace boosting {
+namespace seco {
 
     /**
-     * An abstract base class for all classes that store gradients and Hessians that are calculated according to a
-     * differentiable loss function that is applied label-wise.
+     * An abstract base class for all classes that allow to store the elements of confusion matrices that are computed
+     * independently for each label.
      */
-    class AbstractLabelWiseStatistics : public AbstractGradientStatistics {
+    class AbstractLabelWiseStatistics : public AbstractCoverageStatistics {
 
         protected:
 
@@ -30,12 +31,13 @@ namespace boosting {
             /**
              * @param numStatistics             The number of statistics
              * @param numLabels                 The number of labels
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`,
+             * @param sumUncoveredLabels        The sum of weights of all labels that remain to be covered, initially
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
              *                                  that allows to create instances of the class that is used for
              *                                  calculating the predictions, as well as corresponding quality scores, of
              *                                  rules
              */
-            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
+            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels,
                                         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
             /**
@@ -75,8 +77,6 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
-
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
@@ -84,16 +84,14 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr           A shared pointer to an object of type `ILabelWiseLoss`, representing the
-             *                                  loss function to be used for calculating gradients and Hessians
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
-             *                                  that allows to create instances of the class that is used to calculate
-             *                                  the predictions, as well as corresponding quality scores, of rules
+             *                                  that allows to create instances of the class that is used for
+             *                                  calculating the predictions, as well as corresponding quality scores, of
+             *                                  rules
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
              */
             DenseLabelWiseStatisticsFactoryImpl(
-                std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 

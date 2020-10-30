@@ -2,12 +2,10 @@
  * Implements classes that provide access to the thresholds that may be used by the conditions of rules.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
- * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
 
 #include "rule_refinement.h"
-#include <unordered_map>
 
 
 /**
@@ -132,101 +130,5 @@ class AbstractThresholds : virtual public IMatrix {
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;
-
-};
-
-/**
- * A wrapper for a (filtered) feature vector that is stored in the cache. The field `numConditions` specifies how many
- * conditions the rule contained when the array was updated for the last time. It may be used to check if the array is
- * still valid or must be updated.
- */
-struct CacheEntry {
-    CacheEntry() : numConditions(0) { };
-    std::unique_ptr<FeatureVector> featureVectorPtr;
-    uint32 numConditions;
-};
-
-/**
- * Provides access to all thresholds that result from the feature values of the training examples.
- */
-class ExactThresholdsImpl : public AbstractThresholds {
-
-    private:
-
-        // Forward declarations
-        class ThresholdsSubset;
-
-        std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cache_;
-
-    public:
-
-        /**
-         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
-         *                                  to the feature values of the training examples
-         * @param nominalFeatureVectorPtr   A shared pointer to an object of type `INominalFeatureVector` that provides
-         *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
-         *                                  access to statistics about the labels of the training examples
-         * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
-         *                                  to create instances of the class that should be used to find the heads of
-         *                                  rules
-         */
-        ExactThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                            std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                            std::shared_ptr<AbstractStatistics> statisticsPtr,
-                            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
-
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
-
-};
-
-/**
- * Provides access to the thresholds that result from applying a binning method to the feature values of the training
- * examples.
- */
-class ApproximateThresholdsImpl : public AbstractThresholds {
-
-    private:
-
-        // Forward declarations
-        class ThresholdsSubset;
-
-        /**
-         * A wrapper for statistics and bins that is stored in the cache.
-         */
-        struct BinCacheEntry {
-            std::unique_ptr<AbstractStatistics> statisticsPtr;
-            std::unique_ptr<BinVector> binVectorPtr;
-        };
-
-        std::shared_ptr<IBinning> binningPtr_;
-
-        uint32 numBins_;
-
-        std::unordered_map<uint32, BinCacheEntry> cache_;
-
-    public:
-
-        /**
-         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
-         *                                  to the feature values of the training examples
-         * @param nominalFeatureVectorPtr   A shared pointer to an object of type `INominalFeatureVector` that provides
-         *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
-         *                                  access to statistics about the labels of the training examples
-         * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
-         *                                  to create instances of the class that should be used to find the heads of
-         *                                  rules
-         * @param binningPtr                A shared pointer to an object of type `IBinning` that implements the binning
-         *                                  method to be used
-         * @param numBins                   The number of bins that should be used by the given binning method
-         */
-        ApproximateThresholdsImpl(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                  std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
-                                  std::shared_ptr<AbstractStatistics> statisticsPtr,
-                                  std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                  std::shared_ptr<IBinning> binningPtr, uint32 numBins);
-
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
 };
