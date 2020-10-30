@@ -9,6 +9,59 @@
 
 
 /**
+ * Allows to keep track of the elements, e.g. examples or bins, that are covered by a rule as the rule is refined. For
+ * each element, an integer is stored in a C-contiguous array that may be updated when the rule is refined. The elements
+ * that correspond to a number that is equal to the "target" are considered to be covered.
+ */
+class CoverageMask {
+
+    private:
+
+        uint32* array_;
+
+        uint32 numElements_;
+
+    public:
+
+        /**
+         * @param numElements The number of elements
+         */
+        CoverageMask(uint32 numElements);
+
+        ~CoverageMask();
+
+        typedef uint32* iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the mask.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the mask.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns whether the element at a specific element it covered or not.
+         *
+         * @param pos   The position of the element to be checked
+         * @return      True, if the element at the given position is covered, false otherwise
+         */
+        bool isCovered(uint32 pos) const;
+
+        /**
+         * The "target" that corresponds to the elements that are considered to be covered.
+         */
+        uint32 target;
+
+};
+
+/**
  * Defines an interface for all classes that provide access a subset of thresholds that may be used by the conditions of
  * a rule with arbitrary body. The thresholds may include only those that correspond to the subspace of the instance
  * space that is covered by the rule.
