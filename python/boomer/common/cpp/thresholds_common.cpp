@@ -7,12 +7,12 @@
 
 
 /**
- * A wrapper for a (filtered) feature vector that is stored in the cache. The field `numConditions` specifies how many
+ * A wrapper for a filtered feature vector that is stored in the cache. The field `numConditions` specifies how many
  * conditions the rule contained when the array was updated for the last time. It may be used to check if the array is
  * still valid or must be updated.
  */
-struct CacheEntry {
-    CacheEntry() : numConditions(0) { };
+struct FilteredCacheEntry {
+    FilteredCacheEntry() : numConditions(0) { };
     std::unique_ptr<FeatureVector> featureVectorPtr;
     uint32 numConditions;
 };
@@ -86,11 +86,11 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * Filters a feature vector that contains the indices of the examples that are covered by the previous rule, as well as
  * their values for a certain feature, after a new condition that corresponds to said feature has been added, such that
  * the filtered vector does only contain the indices and feature values of the examples that are covered by the new
- * rule. The filtered vector is stored in a given struct of type `CacheEntry` and the given statistics are updated
- * accordingly.
+ * rule. The filtered vector is stored in a given struct of type `FilteredCacheEntry` and the given statistics are
+ * updated accordingly.
  *
- * @param cacheEntry            A reference to a struct of type `CacheEntry` that should be used to store the filtered
- *                              feature vector
+ * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the
+ *                              filtered feature vector
  * @param featureVector         A reference to an object of type `FeatureVector` that should be filtered
  * @param conditionStart        The element in `featureVector` that corresponds to the first example (inclusive)
  *                              included in the `IStatisticsSubset` that is covered by the new condition
@@ -113,7 +113,7 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @return                      The value that is used to mark those elements in the updated `coveredExamplesMask` that
  *                              are covered by the new rule
  */
-static inline uint32 filterCurrentFeatureVector(CacheEntry& cacheEntry, FeatureVector& featureVector,
+static inline uint32 filterCurrentFeatureVector(FilteredCacheEntry& cacheEntry, FeatureVector& featureVector,
                                                 intp conditionStart, intp conditionEnd, Comparator conditionComparator,
                                                 bool covered, uint32 numConditions, uint32* coveredExamplesMask,
                                                 uint32 coveredExamplesTarget, AbstractStatistics& statistics,
@@ -218,10 +218,10 @@ static inline uint32 filterCurrentFeatureVector(CacheEntry& cacheEntry, FeatureV
 /**
  * Filters a feature vector that contains the indices of training examples, as well as their values for a certain
  * feature, such that the filtered vector does only contain the indices and feature values of those examples that are
- * covered by the current rule. The filtered vector is stored in a given struct of type `CacheEntry`.
+ * covered by the current rule. The filtered vector is stored in a given struct of type `FilteredCacheEntry`.
  *
  * @param indexedArray          A reference to an object of type `FeatureVector` that should be filtered
- * @param cacheEntry            A reference to a struct of type `CacheEntry` that should be used to store the filtered
+ * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the filtered
  *                              vector
  * @param numConditions         The total number of conditions in the current rule's body
  * @param coveredExamplesMask   An array of type `uint32`, shape `(num_examples)`, that is used to keep track of the
@@ -229,8 +229,9 @@ static inline uint32 filterCurrentFeatureVector(CacheEntry& cacheEntry, FeatureV
  * @param coveredExamplesTarget The value that is used to mark those elements in `coveredExamplesMask` that are covered
  *                              by the current rule
  */
-static inline void filterAnyFeatureVector(FeatureVector& featureVector, CacheEntry& cacheEntry, uint32 numConditions,
-                                          const uint32* coveredExamplesMask, uint32 coveredExamplesTarget) {
+static inline void filterAnyFeatureVector(FeatureVector& featureVector, FilteredCacheEntry& cacheEntry,
+                                          uint32 numConditions, const uint32* coveredExamplesMask,
+                                          uint32 coveredExamplesTarget) {
     uint32 maxElements = featureVector.getNumElements();
     FeatureVector* filteredVector = cacheEntry.featureVectorPtr.get();
 
