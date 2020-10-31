@@ -84,7 +84,7 @@ cdef class ApproximateThresholdsFactory(ThresholdsFactory):
 
     # Constructors:
 
-    cdef ApproximateThresholdsFactory(shared_ptr[IBinning] binning_method, uint32 num_bins)
+    cdef ApproximateThresholdsFactory(self, shared_ptr[IBinning] binning_method, uint32 num_bins)
 
     # Functions:
 
