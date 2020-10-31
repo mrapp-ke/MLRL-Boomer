@@ -20,7 +20,7 @@ from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
-from boomer.common.thresholds import ExactThresholdsFactory
+from boomer.common.thresholds import ThresholdsFactory
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
@@ -161,7 +161,7 @@ class Boomer(MLRuleLearner):
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads = create_num_threads(self.num_threads)
-        thresholds_factory = ExactThresholdsFactory()
+        thresholds_factory = ThresholdsFactory()
         rule_induction = TopDownGreedyRuleInduction()
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                        default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
