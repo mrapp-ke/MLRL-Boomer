@@ -109,16 +109,26 @@ class IThresholdsSubset {
         virtual void applyRefinement(Refinement& refinement) = 0;
 
         /**
-         * Recalculates the scores to be predicted by a refinement that has been found by an instance of the type
-         * `IRuleRefinement`, which was previously created via the function `createRuleRefinement`, and updates the head
+         * Returns a `CoverageMask` that specifies which elements are covered by the refinement that has been applied
+         * via the function `applyRefinement`.
+         *
+         * @return A reference to an object of type `CoverageMask` that specifies the elements that are covered by the
+         *         refinement
+         */
+        virtual const CoverageMask& getCoverageMask() const = 0;
+
+        /**
+         * Recalculates the scores to be predicted by a refinement based on a given `CoverageMask` and updates the head
          * of the refinement accordingly.
          *
          * When calculating the updated scores the weights of the individual training examples are ignored and equally
          * distributed weights are assumed instead.
          *
-         * @param refinement A reference to an object of type `Refinement`, whose head should be updated
+         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which elements are
+         *                      covered by the refinement
+         * @param refinement    A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(Refinement& refinement) const = 0;
+        virtual void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.

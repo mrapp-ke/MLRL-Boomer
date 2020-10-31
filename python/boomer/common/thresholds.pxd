@@ -11,13 +11,19 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "cpp/thresholds.h" nogil:
 
+    cdef cppclass CoverageMask:
+        pass
+
+
     cdef cppclass IThresholdsSubset:
 
         # Functions:
 
         void applyRefinement(Refinement &refinement)
 
-        void recalculatePrediction(Refinement &refinement)
+        const CoverageMask& getCoverageMask()
+
+        void recalculatePrediction(const CoverageMask& coverageMask, Refinement &refinement)
 
         void applyPrediction(AbstractPrediction& prediction)
 
