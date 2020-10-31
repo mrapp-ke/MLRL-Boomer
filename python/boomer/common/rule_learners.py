@@ -24,6 +24,7 @@ from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSe
 from boomer.common.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
     NoInstanceSubSampling
 from boomer.common.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
+from boomer.common.binning import Binning, NoBinning
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
@@ -155,6 +156,14 @@ def create_num_threads(num_threads: int) -> int:
         raise ValueError('Invalid value given for parameter \'num_threads\': ' + str(num_threads))
 
     return num_threads
+
+
+def create_feature_binning(feature_binning: str) -> Binning:
+    if feature_binning is None:
+        return NoBinning()
+    else:
+        prefix, args = parse_prefix_and_dict(feature_binning,
+                                             [])
 
 
 def parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
