@@ -171,6 +171,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--store-rules', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),
                             help='True, if the induced rules should be stored in TXT files, False otherwise')
+        parser.add_argument('--feature-binning', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('feature_binning', None, **kwargs),
+                            help='The name of the strategy to be used for feature-binning or None')
         return self
 
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
