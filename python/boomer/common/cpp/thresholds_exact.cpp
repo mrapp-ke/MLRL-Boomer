@@ -151,13 +151,17 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                                                coverageMask_, *thresholds_.statisticsPtr_, weights_);
         }
 
-        void recalculatePrediction(Refinement& refinement) const override {
+        const CoverageMask& getCoverageMask() const {
+            return coverageMask_;
+        }
+
+        void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
             AbstractPrediction& head = *refinement.headPtr;
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
             uint32 numExamples = thresholds_.getNumRows();
 
             for (uint32 r = 0; r < numExamples; r++) {
-                if (coverageMask_.isCovered(r)) {
+                if (coverageMask.isCovered(r)) {
                     statisticsSubsetPtr->addToSubset(r, 1);
                 }
             }
