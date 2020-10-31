@@ -111,7 +111,11 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
 
         }
 
-        void recalculatePrediction(Refinement& refinement) const override {
+        const CoverageMask& getCoverageMask() const {
+
+        }
+
+        void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
 
         }
 
