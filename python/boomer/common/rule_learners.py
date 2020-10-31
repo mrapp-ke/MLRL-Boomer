@@ -164,6 +164,7 @@ def create_feature_binning(feature_binning: str) -> Binning:
     else:
         prefix, args = parse_prefix_and_dict(feature_binning,
                                              [])
+    # TODO: Talk about format for numBins and finish the implementation
 
 
 def parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
