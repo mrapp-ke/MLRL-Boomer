@@ -115,6 +115,10 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
 
         }
 
+        float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
+            return 0;
+        }
+
         void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
 
         }

@@ -155,6 +155,23 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             return coverageMask_;
         }
 
+        float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
+            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
+            uint32 numExamples = thresholds_.getNumRows();
+
+            for (uint32 r = 0; r < numExamples; r++) {
+                if (weights_.getValue(r) == 0 && coverageMask.isCovered(r)) {
+                    statisticsSubsetPtr->addToSubset(r, 1);
+                }
+            }
+
+            std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
+                *thresholds_.headRefinementFactoryPtr_);
+            const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
+                                                                                           false);
+            return prediction.overallQualityScore;
+        }
+
         void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
             AbstractPrediction& head = *refinement.headPtr;
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
