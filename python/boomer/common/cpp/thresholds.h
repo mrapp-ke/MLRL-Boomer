@@ -47,6 +47,11 @@ class CoverageMask {
         iterator end();
 
         /**
+         * Resets the mask by setting all elements and the "target" to zero.
+         */
+        void reset();
+
+        /**
          * Returns whether the element at a specific element it covered or not.
          *
          * @param pos   The position of the element to be checked
