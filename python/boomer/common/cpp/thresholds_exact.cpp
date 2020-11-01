@@ -171,6 +171,13 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                                                coverageMask_, *thresholds_.statisticsPtr_, weights_);
         }
 
+        void resetThresholds() override {
+            numModifications_ = 0;
+            sumOfWeights_ = weights_.getSumOfWeights();
+            cacheFiltered_.clear();
+            coverageMask_.reset();
+        }
+
         const CoverageMask& getCoverageMask() const {
             return coverageMask_;
         }

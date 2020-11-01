@@ -118,6 +118,12 @@ class IThresholdsSubset {
         virtual void filterThresholds(const Condition& condition) = 0;
 
         /**
+         * Resets the filtered thresholds. This reverts the effects of all previous calls to the functions
+         * `filterThresholds(Refinement)` or `filterThresholds(Condition)`.
+         */
+        virtual void resetThresholds() = 0;
+
+        /**
          * Returns a `CoverageMask` that specifies which elements are covered by the refinement that has been applied
          * via the function `applyRefinement`.
          *
