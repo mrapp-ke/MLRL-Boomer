@@ -19,7 +19,7 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         # Functions:
 
-        void applyRefinement(Refinement &refinement)
+        void filterThresholds(Refinement &refinement)
 
         const CoverageMask& getCoverageMask()
 

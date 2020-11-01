@@ -102,7 +102,7 @@ class IThresholdsSubset {
          *
          * @param refinement A reference to an object of type `Refinement` that stores information about the refinement
          */
-        virtual void applyRefinement(Refinement& refinement) = 0;
+        virtual void filterThresholds(Refinement& refinement) = 0;
 
         /**
          * Returns a `CoverageMask` that specifies which elements are covered by the refinement that has been applied

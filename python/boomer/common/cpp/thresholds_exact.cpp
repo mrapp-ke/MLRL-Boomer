@@ -120,7 +120,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             return createExactRuleRefinement(labelIndices, featureIndex);
         }
 
-        void applyRefinement(Refinement& refinement) override {
+        void filterThresholds(Refinement& refinement) override {
             numRefinements_++;
             sumOfWeights_ = refinement.coveredWeights;
 
