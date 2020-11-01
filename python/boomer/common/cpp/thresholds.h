@@ -105,6 +105,14 @@ class IThresholdsSubset {
         virtual void filterThresholds(Refinement& refinement) = 0;
 
         /**
+         * Filters the thresholds such that only those thresholds, which correspond to the instance space that is
+         * covered by specific condition of a rule, are included.
+         *
+         * @param  A reference to an object of type `Refinement` that stores information about the condition
+         */
+        virtual void filterThresholds(const Condition& condition) = 0;
+
+        /**
          * Returns a `CoverageMask` that specifies which elements are covered by the refinement that has been applied
          * via the function `applyRefinement`.
          *
