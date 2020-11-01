@@ -211,7 +211,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     label_indices = <IIndexVector*>best_refinement_ptr.get().headPtr.get()
 
                 # Filter the current subset of thresholds by applying the best refinement that has been found...
-                thresholds_subset_ptr.get().applyRefinement(dereference(best_refinement_ptr.get()))
+                thresholds_subset_ptr.get().filterThresholds(dereference(best_refinement_ptr.get()))
                 num_covered_examples = best_refinement_ptr.get().coveredWeights
 
                 if num_covered_examples <= min_coverage:

@@ -107,7 +107,7 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
             return createApproximateRuleRefinement(labelIndices, featureIndex);
         }
 
-        void applyRefinement(Refinement& refinement) override {
+        void filterThresholds(Refinement& refinement) override {
 
         }
 
