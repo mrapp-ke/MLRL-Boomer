@@ -97,14 +97,10 @@ class IThresholdsSubset {
                                                                       uint32 featureIndex) = 0;
 
         /**
-         * Applies a refinement that has been found by an instance of the type `IRuleRefinement`, which was previously
-         * created via the function `createRuleRefinement`.
+         * Filters the thresholds such that only those thresholds, which correspond to the instance space that is
+         * covered by a specific refinement of a rule, are included.
          *
-         * This causes the thresholds that will be available for further refinements to be filtered such that only those
-         * thresholds that correspond to the subspace of the instance space that is covered by the refined rule are
-         * included.
-         *
-         * @param refinement A reference to an object of type `Refinement`, representing the refinement to be applied
+         * @param refinement A reference to an object of type `Refinement` that stores information about the refinement
          */
         virtual void applyRefinement(Refinement& refinement) = 0;
 
