@@ -115,6 +115,10 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
 
         }
 
+        void resetThresholds() override {
+
+        }
+
         const CoverageMask& getCoverageMask() const {
 
         }
