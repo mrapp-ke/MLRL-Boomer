@@ -121,10 +121,10 @@ class IThresholdsSubset {
          * Recalculates the scores to be predicted by a refinement based on a given `CoverageMask` and updates the head
          * of the refinement accordingly.
          *
-         * When calculating the updated scores the weights of the individual training examples are ignored and equally
+         * When calculating the updated scores, the weights of the individual training examples are ignored and equally
          * distributed weights are assumed instead.
          *
-         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which elements are
+         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which examples are
          *                      covered by the refinement
          * @param refinement    A reference to an object of type `Refinement`, whose head should be updated
          */
