@@ -263,4 +263,5 @@ cdef inline Condition __create_condition(Refinement* refinement):
     condition.start = refinement.start
     condition.end = refinement.end
     condition.covered = refinement.covered
+    condition.coveredWeights = refinement.coveredWeights;
     return condition
