@@ -151,6 +151,26 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                                                coverageMask_, *thresholds_.statisticsPtr_, weights_);
         }
 
+        void filterThresholds(const Condition& condition) override {
+            numModifications_++;
+            sumOfWeights_ = condition.coveredWeights;
+
+            uint32 featureIndex = condition.featureIndex;
+            auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
+            FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
+            FeatureVector* featureVector = cacheEntry.vectorPtr.get();
+
+            if (featureVector == nullptr) {
+                auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                featureVector = cacheIterator->second.get();
+            }
+
+            // Identify the examples that are covered by the refined rule...
+            filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, condition.start, condition.end,
+                                               condition.comparator, condition.covered, numModifications_,
+                                               coverageMask_, *thresholds_.statisticsPtr_, weights_);
+        }
+
         const CoverageMask& getCoverageMask() const {
             return coverageMask_;
         }
