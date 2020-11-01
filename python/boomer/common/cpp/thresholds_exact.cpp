@@ -52,7 +52,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                 }
 
                 // Filter feature vector, if only a subset of its elements are covered by the current rule...
-                uint32 numConditions = thresholdsSubset_.numRefinements_;
+                uint32 numConditions = thresholdsSubset_.numModifications_;
 
                 if (numConditions > cacheEntry.numConditions) {
                     filterAnyVector<FeatureVector>(*featureVector, cacheEntry, numConditions,
@@ -73,7 +73,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
     CoverageMask coverageMask_;
 
-    uint32 numRefinements_;
+    uint32 numModifications_;
 
     std::unordered_map<uint32, FilteredCacheEntry<FeatureVector>> cacheFiltered_;
 
@@ -107,7 +107,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
         ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
             : thresholds_(thresholds), weights_(weights), coverageMask_(CoverageMask(thresholds.getNumRows())) {
             sumOfWeights_ = weights.getSumOfWeights();
-            numRefinements_ = 0;
+            numModifications_ = 0;
         }
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
@@ -121,7 +121,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
         }
 
         void filterThresholds(Refinement& refinement) override {
-            numRefinements_++;
+            numModifications_++;
             sumOfWeights_ = refinement.coveredWeights;
 
             uint32 featureIndex = refinement.featureIndex;
@@ -147,7 +147,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
             // Identify the examples that are covered by the refined rule...
             filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, refinement.start, refinement.end,
-                                               refinement.comparator, refinement.covered, numRefinements_,
+                                               refinement.comparator, refinement.covered, numModifications_,
                                                coverageMask_, *thresholds_.statisticsPtr_, weights_);
         }
 
