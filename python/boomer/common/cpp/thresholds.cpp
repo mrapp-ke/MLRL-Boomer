@@ -18,6 +18,14 @@ CoverageMask::iterator CoverageMask::end() {
     return &array_[numElements_];
 }
 
+void CoverageMask::reset() {
+    target = 0;
+
+    for (uint32 i = 0; i < numElements_; i++) {
+        array_[i] = 0;
+    }
+}
+
 bool CoverageMask::isCovered(uint32 pos) const {
     return array_[pos] == target;
 }
