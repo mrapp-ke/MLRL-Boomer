@@ -28,6 +28,11 @@ class CoverageMask {
          */
         CoverageMask(uint32 numElements);
 
+        /**
+         * @param coverageMask A reference to an object of type `CoverageMask` to be copied
+         */
+        CoverageMask(const CoverageMask& coverageMask);
+
         ~CoverageMask();
 
         typedef uint32* iterator;
