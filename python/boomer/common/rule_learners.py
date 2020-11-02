@@ -16,7 +16,7 @@ from boomer.common.input_data import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
 from boomer.common.input_data import DokNominalFeatureVector
 from boomer.common.prediction import Predictor
-from boomer.common.pruning import Pruning, IREP
+from boomer.common.pruning import Pruning, NoPruning, IREP
 from boomer.common.rules import ModelBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
@@ -103,7 +103,7 @@ def create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling
 
 def create_pruning(pruning: str) -> Pruning:
     if pruning is None:
-        return None
+        return NoPruning()
     if pruning == PRUNING_IREP:
         return IREP()
     raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
