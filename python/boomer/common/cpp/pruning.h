@@ -32,7 +32,7 @@ class IPruning {
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the existing rule
          * @return                  An unique pointer to an object of type `CoverageMask` that specifies the examples
-         *                          that are covered by the pruned rule
+         *                          that are covered by the pruned rule or a null pointer if the rule was not pruned
          */
         virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset,
                                                     std::list<Condition>& conditions,
