@@ -1,4 +1,4 @@
-#include "label_wise_statistics.h"
+#include "statistics_label_wise.h"
 #include "../../common/cpp/arrays.cpp"
 #include <cstdlib>
 
@@ -56,10 +56,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                       labelIndices_(labelIndices) {
                     uint32 numPredictions = labelIndices.getNumElements();
                     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                    arrays::setToZeros(sumsOfGradients_, numPredictions);
+                    setToZeros(sumsOfGradients_, numPredictions);
                     accumulatedSumsOfGradients_ = nullptr;
                     sumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
-                    arrays::setToZeros(sumsOfHessians_, numPredictions);
+                    setToZeros(sumsOfHessians_, numPredictions);
                     accumulatedSumsOfHessians_ = nullptr;
                 }
 
@@ -91,9 +91,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumsOfGradients_ == nullptr) {
                         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions);
+                        setToZeros(accumulatedSumsOfGradients_, numPredictions);
                         accumulatedSumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
-                        arrays::setToZeros(accumulatedSumsOfHessians_, numPredictions);
+                        setToZeros(accumulatedSumsOfHessians_, numPredictions);
                     }
 
                     // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums
@@ -228,8 +228,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         void resetCoveredStatistics() override {
             uint32 numLabels = this->getNumCols();
-            arrays::setToZeros(totalSumsOfGradients_, numLabels);
-            arrays::setToZeros(totalSumsOfHessians_, numLabels);
+            setToZeros(totalSumsOfGradients_, numLabels);
+            setToZeros(totalSumsOfHessians_, numLabels);
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {

@@ -1,4 +1,4 @@
-#include "label_wise_statistics.h"
+#include "statistics_label_wise.h"
 #include "../../common/cpp/arrays.cpp"
 #include "confusion_matrices.cpp"
 #include <cstdlib>
@@ -54,7 +54,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     uint32 numPredictions = labelIndices.getNumElements();
                     confusionMatricesCovered_ =
                         (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-                    arrays::setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
+                    setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
                     accumulatedConfusionMatricesCovered_ = nullptr;
                 }
 
@@ -90,8 +90,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     if (accumulatedConfusionMatricesCovered_ == nullptr) {
                         accumulatedConfusionMatricesCovered_ =
                             (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-                        arrays::setToZeros(accumulatedConfusionMatricesCovered_,
-                                           numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
+                        setToZeros(accumulatedConfusionMatricesCovered_,
+                                   numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
                     }
 
                     // Reset the confusion matrix for each label to zero and add its elements to the accumulated
@@ -169,8 +169,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         void resetSampledStatistics() override {
             uint32 numLabels = this->getNumCols();
             uint32 numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
-            arrays::setToZeros(confusionMatricesTotal_, numElements);
-            arrays::setToZeros(confusionMatricesSubset_, numElements);
+            setToZeros(confusionMatricesTotal_, numElements);
+            setToZeros(confusionMatricesSubset_, numElements);
         }
 
         void addSampledStatistic(uint32 statisticIndex, uint32 weight) override {
@@ -197,7 +197,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
             // Reset confusion matrices to 0...
             uint32 numLabels = this->getNumCols();
             uint32 numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
-            arrays::setToZeros(confusionMatricesSubset_, numElements);
+            setToZeros(confusionMatricesSubset_, numElements);
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {

@@ -1,4 +1,4 @@
-#include "example_wise_statistics.h"
+#include "statistics_example_wise.h"
 #include "../../common/cpp/arrays.cpp"
 #include "linalg.cpp"
 #include <cstdlib>
@@ -71,11 +71,11 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                       labelIndices_(labelIndices) {
                     uint32 numPredictions = labelIndices.getNumElements();
                     sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                    arrays::setToZeros(sumsOfGradients_, numPredictions);
+                    setToZeros(sumsOfGradients_, numPredictions);
                     accumulatedSumsOfGradients_ = nullptr;
-                    uint32 numHessians = linalg::triangularNumber(numPredictions);
+                    uint32 numHessians = triangularNumber(numPredictions);
                     sumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
-                    arrays::setToZeros(sumsOfHessians_, numHessians);
+                    setToZeros(sumsOfHessians_, numHessians);
                     accumulatedSumsOfHessians_ = nullptr;
                     tmpGradients_ = nullptr;
                     tmpHessians_ = nullptr;
@@ -103,7 +103,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     // to the current sum of gradients and Hessians...
                     uint32 numLabels = statistics_.getNumCols();
                     uint32 offsetGradients = statisticIndex * numLabels;
-                    uint32 offsetHessians = statisticIndex * linalg::triangularNumber(numLabels);
+                    uint32 offsetHessians = statisticIndex * triangularNumber(numLabels);
                     uint32 numPredictions = labelIndices_.getNumElements();
                     typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
                     uint32 i = 0;
@@ -111,10 +111,10 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     for (uint32 c = 0; c < numPredictions; c++) {
                         uint32 l = indexIterator[c];
                         sumsOfGradients_[c] += (weight * statistics_.gradients_[offsetGradients + l]);
-                        uint32 triangularNumber = linalg::triangularNumber(l);
+                        uint32 offset = triangularNumber(l);
 
                         for (uint32 c2 = 0; c2 < c + 1; c2++) {
-                            uint32 l2 = triangularNumber + indexIterator[c2];
+                            uint32 l2 = offset + indexIterator[c2];
                             sumsOfHessians_[i] += (weight * statistics_.hessians_[offsetHessians + l2]);
                             i++;
                         }
@@ -123,14 +123,14 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 void resetSubset() override {
                     uint32 numPredictions = labelIndices_.getNumElements();
-                    uint32 numHessians = linalg::triangularNumber(numPredictions);
+                    uint32 numHessians = triangularNumber(numPredictions);
 
                     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumsOfGradients_ == nullptr) {
                         accumulatedSumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                        arrays::setToZeros(accumulatedSumsOfGradients_, numPredictions);
+                        setToZeros(accumulatedSumsOfGradients_, numPredictions);
                         accumulatedSumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
-                        arrays::setToZeros(accumulatedSumsOfHessians_, numHessians);
+                        setToZeros(accumulatedSumsOfHessians_, numHessians);
                     }
 
                     // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums
@@ -165,7 +165,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     // initialized if they have not been initialized yet
                     if (tmpGradients_ == nullptr) {
                         tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                        uint32 numHessians = linalg::triangularNumber(numPredictions);
+                        uint32 numHessians = triangularNumber(numPredictions);
                         tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
                         dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
                         dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
@@ -215,7 +215,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             HistogramBuilder(const DenseExampleWiseStatistics& statistics, uint32 numBins)
                 : statistics_(statistics), numBins_(numBins) {
                 uint32 numGradients = statistics.getNumCols();
-                uint32 numHessians = linalg::triangularNumber(numGradients);
+                uint32 numHessians = triangularNumber(numGradients);
                 gradients_ = (float64*) calloc((numBins_ * numGradients), sizeof(float64));
                 hessians_ = (float64*) calloc((numBins_ * numHessians), sizeof(float64));
             }
@@ -225,7 +225,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 uint32 index = entry.index;
                 uint32 offset = index * numLabels;
                 uint32 gradientOffset = binIndex * numLabels;
-                uint32 hessianOffset = binIndex * linalg::triangularNumber(numLabels);
+                uint32 hessianOffset = binIndex * triangularNumber(numLabels);
 
                 for(uint32 c = 0; c < numLabels; c++) {
                     float64 gradient = statistics_.gradients_[offset + c];
@@ -292,7 +292,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             // The number of labels
             uint32 numLabels = this->getNumCols();
             // The number of hessians
-            uint32 numHessians = linalg::triangularNumber(numLabels);
+            uint32 numHessians = triangularNumber(numLabels);
             // An array that stores the column-wise sums of the matrix of gradients
             totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
             // An array that stores the column-wise sums of the matrix of Hessians
@@ -309,9 +309,9 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         void resetCoveredStatistics() override {
             uint32 numLabels = this->getNumCols();
-            arrays::setToZeros(totalSumsOfGradients_, numLabels);
-            uint32 numHessians = linalg::triangularNumber(numLabels);
-            arrays::setToZeros(totalSumsOfHessians_, numHessians);
+            setToZeros(totalSumsOfGradients_, numLabels);
+            uint32 numHessians = triangularNumber(numLabels);
+            setToZeros(totalSumsOfHessians_, numHessians);
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
@@ -325,7 +325,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 totalSumsOfGradients_[c] += (signedWeight * gradients_[offset + c]);
             }
 
-            uint32 numHessians = linalg::triangularNumber(numLabels);
+            uint32 numHessians = triangularNumber(numLabels);
             offset = statisticIndex * numHessians;
 
             // Add the Hessians of the example at the given index (weighted by the given weight) to the total sums of
@@ -351,7 +351,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
             uint32 numLabels = this->getNumCols();
-            uint32 numHessians = linalg::triangularNumber(numLabels);
+            uint32 numHessians = triangularNumber(numLabels);
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
             FullPrediction::const_iterator valueIterator = prediction.cbegin();
@@ -370,7 +370,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
             uint32 numLabels = this->getNumCols();
-            uint32 numHessians = linalg::triangularNumber(numLabels);
+            uint32 numHessians = triangularNumber(numLabels);
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
             PartialPrediction::const_iterator valueIterator = prediction.cbegin();
@@ -423,7 +423,7 @@ std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactory
     // The number of labels
     uint32 numLabels = labelMatrixPtr_->getNumCols();
     // The number of hessians
-    uint32 numHessians = linalg::triangularNumber(numLabels);
+    uint32 numHessians = triangularNumber(numLabels);
     // A matrix that stores the gradients for each example
     float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // A matrix that stores the Hessians for each example

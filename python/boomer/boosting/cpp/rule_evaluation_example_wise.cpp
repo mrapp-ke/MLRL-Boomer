@@ -1,4 +1,4 @@
-#include "example_wise_rule_evaluation.h"
+#include "rule_evaluation_example_wise.h"
 #include "linalg.cpp"
 
 using namespace boosting;
@@ -71,13 +71,13 @@ class RegularizedExampleWiseRuleEvaluation : virtual public IExampleWiseRuleEval
 
             for (uint32 c = 0; c < numPredictions; c++) {
                 float64 sumOfGradients = sumsOfGradients[c];
-                uint32 c2 = linalg::triangularNumber(c + 1) - 1;
+                uint32 c2 = triangularNumber(c + 1) - 1;
                 float64 sumOfHessians = sumsOfHessians[c2];
 
                 if (uncovered) {
                     uint32 l = indexIterator[c];
                     sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
-                    uint32 l2 = linalg::triangularNumber(l + 1) - 1;
+                    uint32 l2 = triangularNumber(l + 1) - 1;
                     sumOfHessians = totalSumsOfHessians[l2] - sumOfHessians;
                 }
 
@@ -94,7 +94,7 @@ class RegularizedExampleWiseRuleEvaluation : virtual public IExampleWiseRuleEval
             }
 
             // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * linalg::l2NormPow(valueIterator, numPredictions);
+            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(valueIterator, numPredictions);
             labelWisePrediction_->overallQualityScore = overallQualityScore;
             return *labelWisePrediction_;
         }
@@ -124,7 +124,7 @@ class RegularizedExampleWiseRuleEvaluation : virtual public IExampleWiseRuleEval
                 for (uint32 c = 0; c < numPredictions; c++) {
                     uint32 l = indexIterator[c];
                     gradients[c] = totalSumsOfGradients[l] - sumsOfGradients[c];
-                    uint32 offset = linalg::triangularNumber(l);
+                    uint32 offset = triangularNumber(l);
 
                     for (uint32 c2 = 0; c2 < c + 1; c2++) {
                         uint32 l2 = offset + indexIterator[c2];
@@ -147,7 +147,7 @@ class RegularizedExampleWiseRuleEvaluation : virtual public IExampleWiseRuleEval
             overallQualityScore += 0.5 * blasPtr_->ddot(valueIterator, dspmvTmpArray, numPredictions);
 
             // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * linalg::l2NormPow(valueIterator, numPredictions);
+            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(valueIterator, numPredictions);
             prediction_->overallQualityScore = overallQualityScore;
             return *prediction_;
         }

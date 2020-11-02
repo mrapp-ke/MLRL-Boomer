@@ -1,24 +1,29 @@
 from boomer.common._arrays cimport uint32
 from boomer.common._predictions cimport AbstractPrediction
-from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
-from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureVector, INominalFeatureVector
+from boomer.common.head_refinement cimport HeadRefinementFactory
+from boomer.common.input_data cimport FeatureMatrix, NominalFeatureVector
 from boomer.common.rule_refinement cimport Refinement
-from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
+from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.sub_sampling cimport IWeightVector
-from boomer.common.binning cimport IBinning, Binning
 
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "cpp/thresholds.h" nogil:
+
+    cdef cppclass CoverageMask:
+        pass
+
 
     cdef cppclass IThresholdsSubset:
 
         # Functions:
 
-        void applyRefinement(Refinement &refinement)
+        void filterThresholds(Refinement &refinement)
 
-        void recalculatePrediction(Refinement &refinement)
+        const CoverageMask& getCoverageMask()
+
+        void recalculatePrediction(const CoverageMask& coverageMask, Refinement &refinement)
 
         void applyPrediction(AbstractPrediction& prediction)
 
@@ -36,15 +41,6 @@ cdef extern from "cpp/thresholds.h" nogil:
         unique_ptr[IThresholdsSubset] createSubset(const IWeightVector& weights)
 
 
-    cdef cppclass ExactThresholdsImpl(AbstractThresholds):
-
-        # Constructors:
-
-        ExactThresholdsImpl(shared_ptr[IFeatureMatrix] featureMatrixPtr,
-                            shared_ptr[INominalFeatureVector] nominalFeatureVectorPtr,
-                            shared_ptr[AbstractStatistics] statisticsPtr,
-                            shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
-
     cdef cppclass ApproximateThresholdsImpl(AbstractThresholds):
 
         # Constructors:
@@ -57,15 +53,6 @@ cdef extern from "cpp/thresholds.h" nogil:
 
 
 cdef class ThresholdsFactory:
-
-    # Functions:
-
-    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
-                                    StatisticsProvider statistic_provider,
-                                    HeadRefinementFactory head_refinement_factory)
-
-
-cdef class ExactThresholdsFactory(ThresholdsFactory):
 
     # Functions:
 

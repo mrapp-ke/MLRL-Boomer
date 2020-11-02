@@ -11,7 +11,7 @@ from boomer.common.rules cimport Condition, Comparator
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector
-from boomer.common.thresholds cimport IThresholdsSubset
+from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 
 from libcpp.unordered_map cimport unordered_map
 from libcpp.list cimport list as double_linked_list
@@ -152,6 +152,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IRuleRefinement* rule_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
+        cdef const CoverageMask* coverage_mask
         cdef intp c
 
         # Sub-sample examples...
@@ -210,7 +211,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                     label_indices = <IIndexVector*>best_refinement_ptr.get().headPtr.get()
 
                 # Filter the current subset of thresholds by applying the best refinement that has been found...
-                thresholds_subset_ptr.get().applyRefinement(dereference(best_refinement_ptr.get()))
+                thresholds_subset_ptr.get().filterThresholds(dereference(best_refinement_ptr.get()))
                 num_covered_examples = best_refinement_ptr.get().coveredWeights
 
                 if num_covered_examples <= min_coverage:
@@ -223,6 +224,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             return False
         else:
             if instance_sub_sampling_used:
+                coverage_mask = &thresholds_subset_ptr.get().getCoverageMask()
                 # TODO Reactivate pruning
                 # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
                 # if pruning is not None and num_conditions > 1:
@@ -234,7 +236,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
                 # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
                 # training data...
-                thresholds_subset_ptr.get().recalculatePrediction(dereference(best_refinement_ptr.get()))
+                thresholds_subset_ptr.get().recalculatePrediction(dereference(coverage_mask),
+                                                                  dereference(best_refinement_ptr.get()))
 
             # Apply post-processor...
             post_processor.postProcess(dereference(best_refinement_ptr.get().headPtr.get()))
@@ -257,4 +260,8 @@ cdef inline Condition __create_condition(Refinement* refinement):
     condition.featureIndex = refinement.featureIndex
     condition.comparator = refinement.comparator
     condition.threshold = refinement.threshold
+    condition.start = refinement.start
+    condition.end = refinement.end
+    condition.covered = refinement.covered
+    condition.coveredWeights = refinement.coveredWeights;
     return condition

@@ -13,7 +13,7 @@ static inline uint32* argsort(const float64* a, uint32 numElements) {
         tmpArray[i].value = a[i];
     }
 
-    qsort(&tmpArray, numElements, sizeof(IndexedValue<float64>), &tuples::compareIndexedValue<float64>);
+    qsort(&tmpArray, numElements, sizeof(IndexedValue<float64>), &compareIndexedValue<float64>);
     uint32* sortedArray = new uint32[numElements];
 
     for (uint32 i = 0; i < numElements; i++) {
