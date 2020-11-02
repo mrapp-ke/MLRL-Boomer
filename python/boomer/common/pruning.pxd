@@ -4,6 +4,7 @@ from boomer.common._tuples cimport IndexedFloat32Array
 from boomer.common.rules cimport Condition
 from boomer.common.statistics cimport AbstractStatistics
 from boomer.common.sub_sampling cimport IWeightVector
+from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 from boomer.common.head_refinement cimport IHeadRefinement
 
 from libcpp.list cimport list as double_linked_list
@@ -14,7 +15,11 @@ from libcpp.unordered_map cimport unordered_map
 cdef extern from "cpp/pruning.h" nogil:
 
     cdef cppclass IPruning:
-        pass
+
+        # Functions:
+
+        const CoverageMask& prune(IThresholdsSubset& thresholdsSubset, double_linked_list[Condition]& conditions,
+                                  const AbstractPrediction& head)
 
 
     cdef cppclass NoPruningImpl(IPruning):
