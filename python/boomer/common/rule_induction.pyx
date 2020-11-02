@@ -152,6 +152,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IRuleRefinement* rule_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
+        cdef unique_ptr[CoverageMask] coverage_mask_ptr
         cdef const CoverageMask* coverage_mask
         cdef intp c
 
@@ -224,18 +225,15 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             return False
         else:
             if instance_sub_sampling_used:
-                coverage_mask = &thresholds_subset_ptr.get().getCoverageMask()
-                # TODO Reactivate pruning
-                # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-                # if pruning is not None and num_conditions > 1:
-                #     uint32_array_scalar_pair = pruning.prune(cache_global, conditions, best_refinement.head,
-                #                                              covered_statistics_mask, covered_statistics_target,
-                #                                              weights_ptr.get(), statistics, head_refinement)
-                #     covered_statistics_mask = uint32_array_scalar_pair.first
-                #     covered_statistics_target = uint32_array_scalar_pair.second
+                # Prune rule...
+                coverage_mask_ptr = pruning.prune(dereference(thresholds_subset_ptr.get()), conditions,
+                                                  dereference(best_refinement_ptr.get().headPtr.get()))
+                coverage_mask = coverage_mask_ptr.get()
 
-                # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
-                # training data...
+                # Re-calculate the scores in the head based on the entire training data...
+                if coverage_mask == NULL:
+                    coverage_mask = &thresholds_subset_ptr.get().getCoverageMask()
+
                 thresholds_subset_ptr.get().recalculatePrediction(dereference(coverage_mask),
                                                                   dereference(best_refinement_ptr.get()))
 
