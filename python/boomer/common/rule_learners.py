@@ -25,7 +25,9 @@ from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSe
 from boomer.common.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
     NoInstanceSubSampling
 from boomer.common.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
-from boomer.common.thresholds import ExactThresholdsFactory, ApproximateThresholdsFactory, ThresholdsFactory
+from boomer.common.thresholds import ThresholdsFactory
+from boomer.common.thresholds_approximate import ApproximateThresholdsFactory
+from boomer.common.thresholds_exact import ExactThresholdsFactory
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
