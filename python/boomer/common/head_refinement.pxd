@@ -17,8 +17,6 @@ cdef extern from "cpp/head_refinement.h" nogil:
 
         unique_ptr[AbstractEvaluatedPrediction] pollHead()
 
-        EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
-
 
     cdef cppclass IHeadRefinementFactory:
 
