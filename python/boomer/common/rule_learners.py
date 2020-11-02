@@ -12,6 +12,7 @@ from enum import Enum
 from typing import List
 
 import numpy as np
+from boomer.common.binning import EqualWidthBinning, EqualFrequencyBinning
 from boomer.common.input_data import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
 from boomer.common.input_data import DokNominalFeatureVector
@@ -24,7 +25,6 @@ from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSe
 from boomer.common.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
     NoInstanceSubSampling
 from boomer.common.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
-from boomer.common.binning import Binning, EqualWidthBinning, EqualFrequencyBinning
 from boomer.common.thresholds import ExactThresholdsFactory, ApproximateThresholdsFactory, ThresholdsFactory
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
