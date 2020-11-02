@@ -26,8 +26,6 @@ cdef extern from "cpp/predictions.h" nogil:
 
         const_iterator cend()
 
-        unique_ptr[IStatisticsSubset] createSubset(const AbstractStatistics& statistics)
-
         void apply(AbstractStatistics& statistics, uint32 statisticIndex)
 
 
