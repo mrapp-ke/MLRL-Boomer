@@ -47,7 +47,7 @@ class IPruning {
  * depending on which of the resulting rules improves the most over the quality score of the original rules as measured
  * on the prune set.
  */
-class IREP : virtual public IPruning {
+class IREPImpl : virtual public IPruning {
 
     public:
 
