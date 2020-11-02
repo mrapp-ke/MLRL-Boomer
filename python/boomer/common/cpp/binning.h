@@ -55,7 +55,7 @@ class IBinning {
          * @param observer      A reference to an object of type `IBinningObserver`, which should be notified when a
          *                      value is assigned to a bin
          */
-        virtual void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) = 0;
+        virtual void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const = 0;
 
 };
 
@@ -78,7 +78,7 @@ class EqualFrequencyBinningImpl : virtual public IBinning {
 
         uint32 getNumBins(const FeatureVector& featureVector) const override;
 
-        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
+        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const override;
 
 };
 
@@ -101,6 +101,6 @@ class EqualWidthBinningImpl : virtual public IBinning {
 
         uint32 getNumBins(const FeatureVector& featureVector) const override;
 
-        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
+        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const override;
 
 };

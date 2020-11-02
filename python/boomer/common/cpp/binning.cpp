@@ -11,7 +11,8 @@ uint32 EqualFrequencyBinningImpl::getNumBins(const FeatureVector& featureVector)
     return ceil(featureVector.getNumElements() * binRatio_);
 }
 
-void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) {
+void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector,
+                                           IBinningObserver& observer) const {
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
     //Sorting the array
@@ -43,7 +44,7 @@ uint32 EqualWidthBinningImpl::getNumBins(const FeatureVector& featureVector) con
     return ceil(featureVector.getNumElements() * binRatio_);
 }
 
-void EqualWidthBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) {
+void EqualWidthBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const {
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
     //defining minimal and maximum values
