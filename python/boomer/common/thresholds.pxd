@@ -41,30 +41,7 @@ cdef extern from "cpp/thresholds.h" nogil:
         unique_ptr[IThresholdsSubset] createSubset(const IWeightVector& weights)
 
 
-    cdef cppclass ApproximateThresholdsImpl(AbstractThresholds):
-
-        # Constructors:
-
-        ApproximateThresholdsImpl(shared_ptr[IFeatureMatrix] featureMatrixPtr,
-                                  shared_ptr[INominalFeatureVector] nominalFeatureVectorPtr,
-                                  shared_ptr[AbstractStatistics] statisticsPtr,
-                                  shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                                  shared_ptr[IBinning] binningPtr) except +
-
-
 cdef class ThresholdsFactory:
-
-    # Functions:
-
-    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
-                                    StatisticsProvider statistic_provider,
-                                    HeadRefinementFactory head_refinement_factory)
-
-cdef class ApproximateThresholdsFactory(ThresholdsFactory):
-
-    # Attributes:
-
-    cdef Binning binning
 
     # Functions:
 
