@@ -222,7 +222,7 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
  *                              elements that are covered by the current rule
  */
 template<class T>
-static inline void filterAnyVector(T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
+static inline void filterAnyVector(const T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
                                    const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     T* filteredVector = cacheEntry.vectorPtr.get();
