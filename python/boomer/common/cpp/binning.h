@@ -38,6 +38,8 @@ class IBinning {
 
         virtual ~IBinning() { };
 
+        virtual uint32 getNumBins(FeatureVector& featureVector) const = 0;
+
         /**
          * Assigns the values in an array to bins.
          *
@@ -56,7 +58,15 @@ class IBinning {
  */
 class EqualFrequencyBinningImpl : virtual public IBinning {
 
+    private:
+
+        float32 binRatio_;
+
     public:
+
+        EqualFrequencyBinningImpl(float32 binRatio);
+
+        uint32 getNumBins(FeatureVector& featureVector) const override;
 
         void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
 
@@ -67,7 +77,15 @@ class EqualFrequencyBinningImpl : virtual public IBinning {
  */
 class EqualWidthBinningImpl : virtual public IBinning {
 
+    private:
+
+        float32 binRatio_;
+
     public:
+
+        EqualWidthBinningImpl(float32 binRatio);
+
+        uint32 getNumBins(FeatureVector& featureVector) const override;
 
         void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
 

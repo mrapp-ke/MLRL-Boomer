@@ -1,23 +1,30 @@
-from boomer.common._arrays cimport uint32
+from libcpp.memory cimport shared_ptr
+from boomer.common._arrays cimport float32
 
 
 cdef extern from "cpp/binning.h" nogil:
 
     cdef cppclass IBinning:
+        pass
 
+    cdef cppclass EqualFrequencyBinningImpl(IBinning):
         # Constructors:
 
-            IBinning();
+        EqualFrequencyBinningImpl(float32 binRatio) except +
 
-    cdef cppclass EqualFrequencyBinningImpl:
-
+    cdef cppclass EqualWidthBinningImpl(IBinning):
         # Constructors:
 
-            EqualFrequencyBinningImpl();
+        EqualWidthBinningImpl(float32 binRatio) except +
 
+cdef class Binning:
 
-    cdef cppclass EqualWidthBinningImpl:
+    # Attributes:
 
-        # Constructors:
+    cdef shared_ptr[IBinning] binning_ptr
 
-            EqualFrequencyBinningImpl();
+cdef class EqualFrequencyBinning(Binning):
+    pass
+
+cdef class EqualWidthBinning(Binning):
+    pass
