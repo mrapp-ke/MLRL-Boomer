@@ -228,7 +228,7 @@ static inline void filterAnyVector(const T& vector, FilteredCacheEntry<T>& cache
     T* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::move(std::make_unique<T>(maxElements));
+        cacheEntry.vectorPtr = std::make_unique<T>(maxElements);
         filteredVector = cacheEntry.vectorPtr.get();
     }
 
