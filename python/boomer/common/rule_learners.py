@@ -42,8 +42,6 @@ INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
 
 FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 
-PRUNING_IREP = 'irep'
-
 ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
 ARGUMENT_NUM_SAMPLES = 'num_samples'
@@ -53,6 +51,8 @@ BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 BINNING_EQUAL_WIDTH = 'equal-width'
 
 ARGUMENT_BIN_RATIO = 'bin_ratio'
+
+PRUNING_IREP = 'irep'
 
 
 class SparsePolicy(Enum):
