@@ -1,15 +1,20 @@
 #include "binning.h"
 #include <cmath>
-#include <stdexcept>
 
 
-void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) {
+EqualFrequencyBinningImpl::EqualFrequencyBinningImpl(float32 binRatio)
+    : binRatio_(binRatio) {
+
+}
+
+uint32 EqualFrequencyBinningImpl::getNumBins(const FeatureVector& featureVector) const {
+    return ceil(featureVector.getNumElements() * binRatio_);
+}
+
+void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector,
+                                           IBinningObserver& observer) const {
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
-    //Throwing an exception if the caller doesn't fulfil the requirement
-    if (numBins > length) {
-        throw std::invalid_argument("numBins has to be less or equal to the length of the example array");
-    }
     //Sorting the array
     featureVector.sortByValues();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
@@ -30,13 +35,18 @@ void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featur
     }
 }
 
-void EqualWidthBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) {
+EqualWidthBinningImpl::EqualWidthBinningImpl(float32 binRatio)
+    : binRatio_(binRatio) {
+
+}
+
+uint32 EqualWidthBinningImpl::getNumBins(const FeatureVector& featureVector) const {
+    return ceil(featureVector.getNumElements() * binRatio_);
+}
+
+void EqualWidthBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const {
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
-    //Throwing an exception if the caller doesn't fulfil the requirement
-    if (numBins > length) {
-        throw std::invalid_argument("numBins has to be less or equal to the length of the example array");
-    }
     //defining minimal and maximum values
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     float32 min = iterator[0].value;
