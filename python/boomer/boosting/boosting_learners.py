@@ -48,9 +48,9 @@ class Boomer(MLRuleLearner):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, time_limit: int = -1,
                  head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
-                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
-                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads: int = -1, feature_binning: str = None):
+                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, feature_binning: str = None,
+                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0,
+                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -107,6 +107,7 @@ class Boomer(MLRuleLearner):
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
+        self.feature_binning = feature_binning
         self.pruning = pruning
         self.shrinkage = shrinkage
         self.l2_regularization_weight = l2_regularization_weight
@@ -114,7 +115,6 @@ class Boomer(MLRuleLearner):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
-        self.feature_binning = feature_binning
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -127,6 +127,8 @@ class Boomer(MLRuleLearner):
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.feature_binning is not None:
+            name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
         if 0.0 < float(self.shrinkage) < 1.0:
@@ -141,8 +143,6 @@ class Boomer(MLRuleLearner):
             name += '_max-head-refinements=' + str(self.max_head_refinements)
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
-        if self.feature_binning is not None:
-            name += '_feature-binning=' + str(self.feature_binning)
         return name
 
     def _create_predictor(self) -> Predictor:
