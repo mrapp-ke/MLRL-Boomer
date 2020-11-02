@@ -41,6 +41,19 @@ class IPruning {
 };
 
 /**
+ * An implementation of the class `IPruning` that does not actually perform any pruning, but retains all conditions.
+ */
+class NoPruningImpl : virtual public IPruning {
+
+    public:
+
+        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset,
+                                                    std::list<Condition>& conditions,
+                                                    const AbstractPrediction& head) const override;
+
+};
+
+/**
  * Implements incremental reduced error pruning (IREP) for pruning classification rules.
  *
  * Given `n` conditions in the order of their induction, IREP allows to remove up to `n - 1` trailing conditions,

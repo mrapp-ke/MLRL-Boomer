@@ -1,8 +1,13 @@
 #include "pruning.h"
 
 
-std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, std::list<Condition>& conditions,
-                                          const AbstractPrediction& head) const {
+std::unique_ptr<CoverageMask> NoPruningImpl::prune(IThresholdsSubset& thresholdsSubset, std::list<Condition>& conditions,
+                                                   const AbstractPrediction& head) const {
+    return nullptr;
+}
+
+std::unique_ptr<CoverageMask> IREPImpl::prune(IThresholdsSubset& thresholdsSubset, std::list<Condition>& conditions,
+                                              const AbstractPrediction& head) const {
     // Calculate the quality score of the original rule on the prune set...
     float64 bestQualityScore = thresholdsSubset.evaluateOutOfSample(thresholdsSubset.getCoverageMask(), head);
 
