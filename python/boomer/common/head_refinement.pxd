@@ -1,5 +1,4 @@
 from boomer.common._indices cimport FullIndexVector, PartialIndexVector
-from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.statistics cimport IStatisticsSubset
 
