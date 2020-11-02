@@ -44,7 +44,7 @@ cdef class RuleInduction:
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
-                          Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
+                          IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
                           intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         """
         Induces a new classification rule.
@@ -61,8 +61,8 @@ cdef class RuleInduction:
                                         that should be used to sub-sample the training examples
         :param feature_sub_sampling:    A pointer to an object of type `IFeatureSubSampling`, implementing the strategy
                                         that should be used to sub-sample the available features
-        :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
-                                        used
+        :param pruning:                 A pointer to an object of type `IPruning`, implementing the strategy that should
+                                        be used to prune the rule
         :param post_processor:          A pointer to an object of type `IPostProcessor`, implementing the post-processor
                                         that should be used to post-process the rules once they have been learned
         :param min_coverage:            The minimum number of training examples that must be covered by the rule. Must
@@ -124,7 +124,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
-                          Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
+                          IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
                           intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         # The total number of statistics
         cdef uint32 num_examples = thresholds.getNumRows()

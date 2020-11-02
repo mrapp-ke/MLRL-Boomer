@@ -6,6 +6,7 @@ Provides classes that allow to sequentially induce models that consist of severa
 from boomer.common._random cimport RNG
 from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureVector
 from boomer.common.rules cimport Rule, RuleList
+from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
 from boomer.common.thresholds cimport AbstractThresholds
@@ -136,6 +137,7 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr = label_sub_sampling.label_sub_sampling_ptr
         cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr = feature_sub_sampling.feature_sub_sampling_ptr
         cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
+        cdef shared_ptr[IPruning] pruning_ptr = pruning.pruning_ptr
         cdef shared_ptr[IPostProcessor] post_processor_ptr = post_processor.post_processor_ptr
         cdef unique_ptr[AbstractThresholds] thresholds_ptr
         thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_vector, statistics_provider,
@@ -145,8 +147,9 @@ cdef class SequentialRuleInduction:
             success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_vector_ptr.get(),
                                                  feature_matrix_ptr.get(), label_sub_sampling_ptr.get(),
                                                  instance_sub_sampling_ptr.get(), feature_sub_sampling_ptr.get(),
-                                                 pruning, post_processor_ptr.get(), min_coverage, max_conditions,
-                                                 max_head_refinements, num_threads, rng_ptr.get(), model_builder)
+                                                 pruning_ptr.get(), post_processor_ptr.get(), min_coverage,
+                                                 max_conditions, max_head_refinements, num_threads, rng_ptr.get(),
+                                                 model_builder)
 
             if not success:
                 break
