@@ -107,12 +107,24 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
             return createApproximateRuleRefinement(labelIndices, featureIndex);
         }
 
-        void applyRefinement(Refinement& refinement) override {
+        void filterThresholds(Refinement& refinement) override {
+
+        }
+
+        void filterThresholds(const Condition& condition) override {
+
+        }
+
+        void resetThresholds() override {
 
         }
 
         const CoverageMask& getCoverageMask() const {
 
+        }
+
+        float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
+            return 0;
         }
 
         void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {

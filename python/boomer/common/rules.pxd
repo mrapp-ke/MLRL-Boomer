@@ -21,6 +21,7 @@ cdef extern from "cpp/rules.h" nogil:
         intp start
         intp end
         bool covered
+        uint32 coveredWeights
 
 
 cdef class Body:

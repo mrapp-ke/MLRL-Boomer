@@ -52,7 +52,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                 }
 
                 // Filter feature vector, if only a subset of its elements are covered by the current rule...
-                uint32 numConditions = thresholdsSubset_.numRefinements_;
+                uint32 numConditions = thresholdsSubset_.numModifications_;
 
                 if (numConditions > cacheEntry.numConditions) {
                     filterAnyVector<FeatureVector>(*featureVector, cacheEntry, numConditions,
@@ -73,7 +73,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
     CoverageMask coverageMask_;
 
-    uint32 numRefinements_;
+    uint32 numModifications_;
 
     std::unordered_map<uint32, FilteredCacheEntry<FeatureVector>> cacheFiltered_;
 
@@ -107,7 +107,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
         ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
             : thresholds_(thresholds), weights_(weights), coverageMask_(CoverageMask(thresholds.getNumRows())) {
             sumOfWeights_ = weights.getSumOfWeights();
-            numRefinements_ = 0;
+            numModifications_ = 0;
         }
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
@@ -120,8 +120,8 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             return createExactRuleRefinement(labelIndices, featureIndex);
         }
 
-        void applyRefinement(Refinement& refinement) override {
-            numRefinements_++;
+        void filterThresholds(Refinement& refinement) override {
+            numModifications_++;
             sumOfWeights_ = refinement.coveredWeights;
 
             uint32 featureIndex = refinement.featureIndex;
@@ -147,12 +147,57 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
             // Identify the examples that are covered by the refined rule...
             filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, refinement.start, refinement.end,
-                                               refinement.comparator, refinement.covered, numRefinements_,
+                                               refinement.comparator, refinement.covered, numModifications_,
                                                coverageMask_, *thresholds_.statisticsPtr_, weights_);
+        }
+
+        void filterThresholds(const Condition& condition) override {
+            numModifications_++;
+            sumOfWeights_ = condition.coveredWeights;
+
+            uint32 featureIndex = condition.featureIndex;
+            auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex,
+                                                                FilteredCacheEntry<FeatureVector>()).first;
+            FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
+            FeatureVector* featureVector = cacheEntry.vectorPtr.get();
+
+            if (featureVector == nullptr) {
+                auto cacheIterator = thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>()).first;
+                featureVector = cacheIterator->second.get();
+            }
+
+            // Identify the examples that are covered by the refined rule...
+            filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, condition.start, condition.end,
+                                               condition.comparator, condition.covered, numModifications_,
+                                               coverageMask_, *thresholds_.statisticsPtr_, weights_);
+        }
+
+        void resetThresholds() override {
+            numModifications_ = 0;
+            sumOfWeights_ = weights_.getSumOfWeights();
+            cacheFiltered_.clear();
+            coverageMask_.reset();
         }
 
         const CoverageMask& getCoverageMask() const {
             return coverageMask_;
+        }
+
+        float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
+            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
+            uint32 numExamples = thresholds_.getNumRows();
+
+            for (uint32 r = 0; r < numExamples; r++) {
+                if (weights_.getValue(r) == 0 && coverageMask.isCovered(r)) {
+                    statisticsSubsetPtr->addToSubset(r, 1);
+                }
+            }
+
+            std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
+                *thresholds_.headRefinementFactoryPtr_);
+            const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
+                                                                                           false);
+            return prediction.overallQualityScore;
         }
 
         void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {

@@ -22,7 +22,7 @@ enum Comparator : uint32 {
  * Stores information about a condition of a rule. It consists of the index of the feature, the condition corresponds
  * to, the type of the operator that is used by the condition, as well as a threshold. In addition, it stores the range
  * [start, end) that corresponds to the elements, e.g. examples or bins, that are covered (or uncovered, if
- * `covered == false`) by the condition.
+ * `covered == false`) by the condition, as well as the sum of the weights of these elements.
  */
 struct Condition {
     uint32 featureIndex;
@@ -31,4 +31,5 @@ struct Condition {
     intp start;
     intp end;
     bool covered;
+    uint32 coveredWeights;
 };

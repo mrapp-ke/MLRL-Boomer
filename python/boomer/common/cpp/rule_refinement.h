@@ -33,8 +33,6 @@ class Refinement : public Condition {
 
         std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
-        uint32 coveredWeights;
-
         intp previous;
 
 };
