@@ -6,6 +6,14 @@ CoverageMask::CoverageMask(uint32 numElements)
 
 }
 
+CoverageMask::CoverageMask(const CoverageMask& coverageMask)
+    : array_(new uint32[coverageMask.numElements_]), numElements_(coverageMask.numElements_),
+      target(coverageMask.target) {
+    for (uint32 i = 0; i < numElements_; i++) {
+        array_[i] = coverageMask.array_[i];
+    }
+}
+
 CoverageMask::~CoverageMask() {
     delete[] array_;
 }
@@ -16,6 +24,14 @@ CoverageMask::iterator CoverageMask::begin() {
 
 CoverageMask::iterator CoverageMask::end() {
     return &array_[numElements_];
+}
+
+void CoverageMask::reset() {
+    target = 0;
+
+    for (uint32 i = 0; i < numElements_; i++) {
+        array_[i] = 0;
+    }
 }
 
 bool CoverageMask::isCovered(uint32 pos) const {
