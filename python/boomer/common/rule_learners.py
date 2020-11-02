@@ -12,6 +12,7 @@ from enum import Enum
 from typing import List
 
 import numpy as np
+from boomer.common.binning import EqualWidthBinning, EqualFrequencyBinning
 from boomer.common.input_data import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
 from boomer.common.input_data import DokNominalFeatureVector
@@ -24,6 +25,9 @@ from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSe
 from boomer.common.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
     NoInstanceSubSampling
 from boomer.common.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
+from boomer.common.thresholds import ThresholdsFactory
+from boomer.common.thresholds_approximate import ApproximateThresholdsFactory
+from boomer.common.thresholds_exact import ExactThresholdsFactory
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
@@ -40,11 +44,17 @@ INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
 
 FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 
-PRUNING_IREP = 'irep'
-
 ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
 ARGUMENT_NUM_SAMPLES = 'num_samples'
+
+BINNING_EQUAL_FREQUENCY = 'equal-frequency'
+
+BINNING_EQUAL_WIDTH = 'equal-width'
+
+ARGUMENT_BIN_RATIO = 'bin_ratio'
+
+PRUNING_IREP = 'irep'
 
 
 class SparsePolicy(Enum):
@@ -155,6 +165,21 @@ def create_num_threads(num_threads: int) -> int:
         raise ValueError('Invalid value given for parameter \'num_threads\': ' + str(num_threads))
 
     return num_threads
+
+
+def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
+    if feature_binning is None:
+        return ExactThresholdsFactory()
+    else:
+        prefix, args = parse_prefix_and_dict(feature_binning,
+                                             [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH])
+        if prefix == BINNING_EQUAL_FREQUENCY:
+            bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
+            return ApproximateThresholdsFactory(EqualFrequencyBinning(bin_ratio))
+        elif prefix == BINNING_EQUAL_WIDTH:
+            bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
+            return ApproximateThresholdsFactory(EqualWidthBinning(bin_ratio))
+        raise ValueError('Invalid value given for parameter \'feature_binning\': ' + str(feature_binning))
 
 
 def parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:

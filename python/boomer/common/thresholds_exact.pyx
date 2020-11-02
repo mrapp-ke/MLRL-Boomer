@@ -8,7 +8,7 @@ rules.
 
 cdef class ExactThresholdsFactory(ThresholdsFactory):
     """
-    A factory that allows to create instances of the class `ExactThresholdsImpl`.
+    A factory that allows to create instances of the class `ExactThresholds`.
     """
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
