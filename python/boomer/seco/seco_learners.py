@@ -8,7 +8,6 @@ from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
-from boomer.common.thresholds import ThresholdsFactory
 from boomer.seco.head_refinement import PartialHeadRefinementFactory
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.label_wise_rule_evaluation import HeuristicLabelWiseRuleEvaluationFactory
@@ -20,7 +19,8 @@ from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
 from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, create_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument
+    create_max_head_refinements, create_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, \
+    create_thresholds_factory
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -62,7 +62,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                  head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, pruning: str = None,
-                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1):
+                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1,
+                 feature_binning: str = None):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -122,6 +123,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
+        self.feature_binning = feature_binning
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -146,6 +148,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
             name += '_max-head-refinements=' + str(self.max_head_refinements)
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
+        if self.feature_binning is not None:
+            name += '_feature-binning=' + str(self.feature_binning)
         return name
 
     def _create_model_builder(self) -> ModelBuilder:
@@ -154,7 +158,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         heuristic = self.__create_heuristic()
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
-        thresholds_factory = ThresholdsFactory
+        thresholds_factory = create_thresholds_factory(self.feature_binning)
         rule_induction = TopDownGreedyRuleInduction()
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()

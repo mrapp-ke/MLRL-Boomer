@@ -44,9 +44,8 @@ cdef class ExactThresholdsFactory(ThresholdsFactory):
 
 cdef class ApproximateThresholdsFactory(ThresholdsFactory):
 
-    cdef ApproximateThresholdsFactory(self, shared_ptr[IBinning] binning_method, uint32 num_bins):
-        binningPtr = binning_method
-        numBins = num_bins
+    def __cinit__(self, Binning binning_method):
+        self.binning = binning_method
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
                                     StatisticsProvider statistics_provider,
@@ -55,4 +54,4 @@ cdef class ApproximateThresholdsFactory(ThresholdsFactory):
                                        nominal_feature_vector.nominal_feature_vector_ptr,
                                        statistics_provider.statistics_ptr,
                                        head_refinement_factory.head_refinement_factory_ptr,
-                                       self.binningPtr, self.numBins)
+                                       self.binning.binning_ptr)
