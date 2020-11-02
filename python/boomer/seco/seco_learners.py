@@ -10,9 +10,9 @@ from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from boomer.seco.head_refinement import PartialHeadRefinementFactory
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
-from boomer.seco.label_wise_rule_evaluation import HeuristicLabelWiseRuleEvaluationFactory
-from boomer.seco.label_wise_statistics import LabelWiseStatisticsProviderFactory
 from boomer.seco.lift_functions import LiftFunction, PeakLiftFunction
+from boomer.seco.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
+from boomer.seco.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE

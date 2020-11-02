@@ -109,7 +109,7 @@ typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cend() const
 
 template<class T>
 void SparseArrayVector<T>::sortByValues() {
-    qsort(array_, numElements_, sizeof(Entry), &tuples::compareIndexedValue<T>);
+    qsort(array_, numElements_, sizeof(Entry), &compareIndexedValue<T>);
 }
 
 template class SparseArrayVector<float32>;

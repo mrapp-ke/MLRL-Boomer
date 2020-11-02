@@ -1,6 +1,7 @@
-from boomer.common._arrays cimport uint8, uint32, float32, float64
+from boomer.common._arrays cimport uint8, uint32, intp, float32, float64
 from boomer.common._predictions cimport AbstractPrediction
 
+from libcpp cimport bool
 from libcpp.list cimport list as double_linked_list
 
 
@@ -17,6 +18,10 @@ cdef extern from "cpp/rules.h" nogil:
         uint32 featureIndex
         Comparator comparator
         float32 threshold
+        intp start
+        intp end
+        bool covered
+        uint32 coveredWeights
 
 
 cdef class Body:
