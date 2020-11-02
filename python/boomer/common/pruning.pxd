@@ -11,6 +11,20 @@ from libcpp.pair cimport pair
 from libcpp.unordered_map cimport unordered_map
 
 
+cdef extern from "cpp/pruning.h" nogil:
+
+    cdef cppclass IPruning:
+        pass
+
+
+    cdef cppclass NoPruningImpl(IPruning):
+        pass
+
+
+    cdef cppclass IREPImpl(IPruning):
+        pass
+
+
 cdef class Pruning:
 
     # Functions:
