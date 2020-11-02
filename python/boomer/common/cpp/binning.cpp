@@ -7,7 +7,7 @@ EqualFrequencyBinningImpl::EqualFrequencyBinningImpl(float32 binRatio)
 
 }
 
-uint32 EqualFrequencyBinningImpl::getNumBins(FeatureVector& featureVector) const {
+uint32 EqualFrequencyBinningImpl::getNumBins(const FeatureVector& featureVector) const {
 
         return ceil(featureVector.getNumElements() * binRatio_);
 
@@ -41,7 +41,7 @@ EqualWidthBinningImpl::EqualWidthBinningImpl(float32 binRatio)
 
 }
 
-uint32 EqualWidthBinningImpl::getNumBins(FeatureVector& featureVector) const {
+uint32 EqualWidthBinningImpl::getNumBins(const FeatureVector& featureVector) const {
 
         return ceil(featureVector.getNumElements() * binRatio_);
 

@@ -44,7 +44,7 @@ class IBinning {
          * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
          * @return              The number of bins to be used
          */
-        virtual uint32 getNumBins(FeatureVector& featureVector) const = 0;
+        virtual uint32 getNumBins(const FeatureVector& featureVector) const = 0;
 
         /**
          * Assigns the values in an array to bins.
@@ -76,7 +76,7 @@ class EqualFrequencyBinningImpl : virtual public IBinning {
          */
         EqualFrequencyBinningImpl(float32 binRatio);
 
-        uint32 getNumBins(FeatureVector& featureVector) const override;
+        uint32 getNumBins(const FeatureVector& featureVector) const override;
 
         void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
 
@@ -99,7 +99,7 @@ class EqualWidthBinningImpl : virtual public IBinning {
          */
         EqualWidthBinningImpl(float32 binRatio);
 
-        uint32 getNumBins(FeatureVector& featureVector) const override;
+        uint32 getNumBins(const FeatureVector& featureVector) const override;
 
         void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
 
