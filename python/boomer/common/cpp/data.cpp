@@ -1,5 +1,5 @@
 #include "data.h"
-#include "tuples.cpp"
+#include <algorithm>
 #include <cstdlib>
 
 
@@ -109,10 +109,18 @@ typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cend() const
 
 template<class T>
 void SparseArrayVector<T>::sortByValues() {
-    qsort(array_, numElements_, sizeof(Entry), &compareIndexedValue<T>);
+    struct {
+
+        bool operator()(const SparseArrayVector<T>::Entry& a, const SparseArrayVector<T>::Entry& b) const {
+            return a.value < b.value;
+        }
+
+    } comparator;
+    std::sort(this->begin(), this->end(), comparator);
 }
 
 template class SparseArrayVector<float32>;
+template class SparseArrayVector<float64>;
 
 BinaryDokVector::BinaryDokVector(uint32 numElements)
     : numElements_(numElements) {
