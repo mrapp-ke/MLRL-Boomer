@@ -32,10 +32,6 @@ cdef extern from "cpp/predictions.h" nogil:
         pass
 
 
-    cdef cppclass FullPrediction(AbstractEvaluatedPrediction):
-        pass
-
-
     cdef cppclass PartialPrediction(AbstractEvaluatedPrediction):
 
         ctypedef uint32* index_const_iterator
