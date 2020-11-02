@@ -3,14 +3,12 @@
 
 
 EqualFrequencyBinningImpl::EqualFrequencyBinningImpl(float32 binRatio)
-                                                    : binRatio_(binRatio) {
+    : binRatio_(binRatio) {
 
 }
 
 uint32 EqualFrequencyBinningImpl::getNumBins(const FeatureVector& featureVector) const {
-
-        return ceil(featureVector.getNumElements() * binRatio_);
-
+    return ceil(featureVector.getNumElements() * binRatio_);
 }
 
 void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) {
@@ -37,14 +35,12 @@ void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featur
 }
 
 EqualWidthBinningImpl::EqualWidthBinningImpl(float32 binRatio)
-                                            : binRatio_(binRatio) {
+    : binRatio_(binRatio) {
 
 }
 
 uint32 EqualWidthBinningImpl::getNumBins(const FeatureVector& featureVector) const {
-
-        return ceil(featureVector.getNumElements() * binRatio_);
-
+    return ceil(featureVector.getNumElements() * binRatio_);
 }
 
 void EqualWidthBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) {
