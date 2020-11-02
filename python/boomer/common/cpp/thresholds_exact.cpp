@@ -156,12 +156,13 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             sumOfWeights_ = condition.coveredWeights;
 
             uint32 featureIndex = condition.featureIndex;
-            auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
+            auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex,
+                                                                FilteredCacheEntry<FeatureVector>()).first;
             FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
             FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
             if (featureVector == nullptr) {
-                auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                auto cacheIterator = thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>()).first;
                 featureVector = cacheIterator->second.get();
             }
 
