@@ -95,6 +95,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
                                                     or None, if no sub-sampling should be used. Additional argument may
                                                     be provided as a dictionary, e.g.
                                                     `random-feature-selection{\"sample_size\":0.5}`
+        :param feature_binning:                     The strategy that is used for assigning examples to bins based on
+                                                    their feature values. Must be `equal-width`, `equal-frequency` or
+                                                    None, if no feature binning should be used. Additional arguments may
+                                                    be provided as a dictionary, e.g. `equal-width{\"bin_ratio\":0.5}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param min_coverage:                        The minimum number of training examples that must be covered by a
