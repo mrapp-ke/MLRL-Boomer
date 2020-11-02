@@ -1,5 +1,5 @@
 /**
- * Provides type definitions of tuples, as well as corresponding utility functions.
+ * Provides type definitions of commonly used tuples.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
@@ -17,24 +17,6 @@ template<class T>
 struct IndexedValue {
     uint32 index;
     T value;
-};
-
-/**
- * A struct that stores a value of type float32 and a corresponding index that refers to the (original) position of the
- * value in an array.
- */
-struct IndexedFloat32 {
-    uint32 index;
-    float32 value;
-};
-
-/**
- * A struct that contains a pointer to an array of type `IndexedFloat32`. The attribute `numElements` specifies how many
- * elements the array contains.
- */
-struct IndexedFloat32Array {
-    IndexedFloat32* data;
-    uint32 numElements;
 };
 
 /**
