@@ -1,5 +1,6 @@
-from libcpp.memory cimport shared_ptr
 from boomer.common._arrays cimport float32
+
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/binning.h" nogil:
