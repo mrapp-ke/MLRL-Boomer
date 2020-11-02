@@ -8,9 +8,17 @@ cdef class Binning:
     pass
 
 cdef class EqualFrequencyBinning(Binning):
+    """
+    A wrapper for the C++ class `EqualFrequencyBinningImpl`.
+    """
+
     def __cinit__(self, float32 bin_ratio):
         self.binning_ptr = <shared_ptr[IBinning]>make_shared[EqualFrequencyBinningImpl](bin_ratio)
 
 cdef class EqualWidthBinning(Binning):
+    """
+    A wrapper for the C++ class `EqualWidthBinningImpl`.
+    """
+
     def __cinit__(self, float32 bin_ratio):
         self.binning_ptr = <shared_ptr[IBinning]>make_shared[EqualWidthBinningImpl](bin_ratio)
