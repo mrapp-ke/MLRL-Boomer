@@ -4,10 +4,9 @@
 classes that store the predictions of rules, as well as corresponding quality scores.
 """
 from boomer.common._arrays cimport uint32, float64
-from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
+from boomer.common.statistics cimport AbstractStatistics
 
 from libcpp cimport bool
-from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "cpp/predictions.h" nogil:
