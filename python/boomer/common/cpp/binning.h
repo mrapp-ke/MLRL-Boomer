@@ -38,6 +38,12 @@ class IBinning {
 
         virtual ~IBinning() { };
 
+        /**
+         * Returns the number of bins that should be used to assign the values in a specific array to.
+         *
+         * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
+         * @return              The number of bins to be used
+         */
         virtual uint32 getNumBins(FeatureVector& featureVector) const = 0;
 
         /**
@@ -64,6 +70,10 @@ class EqualFrequencyBinningImpl : virtual public IBinning {
 
     public:
 
+        /**
+         * @param binRatio A percentage that specifies how many bins should be used to assign the values in an array to,
+         *                 e.g., if 100 values are available, 0.5 means that `ceil(0.5 * 100) = 50` bins should be used
+         */
         EqualFrequencyBinningImpl(float32 binRatio);
 
         uint32 getNumBins(FeatureVector& featureVector) const override;
@@ -83,6 +93,10 @@ class EqualWidthBinningImpl : virtual public IBinning {
 
     public:
 
+        /**
+         * @param binRatio A percentage that specifies how many bins should be used to assign the values in an array to,
+         *                 e.g., if 100 values are available, 0.5 means that `ceil(0.5 * 100) = 50` bins should be used
+         */
         EqualWidthBinningImpl(float32 binRatio);
 
         uint32 getNumBins(FeatureVector& featureVector) const override;
