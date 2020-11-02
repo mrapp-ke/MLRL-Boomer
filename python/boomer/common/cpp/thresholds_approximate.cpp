@@ -45,8 +45,9 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
 
                     if (binCacheEntry.binVectorPtr.get() == nullptr) {
                         std::unique_ptr<FeatureVector> featureVectorPtr;
-                        thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, featureVectorPtr);
-                        uint32 numBins = thresholdsSubset_.thresholds_.numBins_;
+                        thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
+                                                                                            featureVectorPtr);
+                        uint32 numBins = thresholdsSubset_.thresholds_.binningPtr_->getNumBins(*featureVectorPtr);
                         binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVector>(numBins, true));
                         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                         currentBinVector_ = binCacheEntry.binVectorPtr.get();
@@ -141,9 +142,9 @@ ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> fea
                                              std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                                              std::shared_ptr<AbstractStatistics> statisticsPtr,
                                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                             std::shared_ptr<IBinning> binningPtr, uint32 numBins)
+                                             std::shared_ptr<IBinning> binningPtr)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr),
-      binningPtr_(binningPtr), numBins_(numBins) {
+      binningPtr_(binningPtr) {
 
 }
 
