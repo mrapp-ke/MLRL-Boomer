@@ -62,7 +62,7 @@ class IInstanceSubSampling {
  * Implements bootstrap aggregating (bagging) for selecting a subset of the available training examples with
  * replacement.
  */
-class BaggingImpl : virtual public IInstanceSubSampling {
+class BaggingImpl : public IInstanceSubSampling {
 
     private:
 
@@ -84,7 +84,7 @@ class BaggingImpl : virtual public IInstanceSubSampling {
  * Implements random instance subset selection for selecting a subset of the available training examples without
  * replacement.
  */
-class RandomInstanceSubsetSelectionImpl : virtual public IInstanceSubSampling {
+class RandomInstanceSubsetSelectionImpl : public IInstanceSubSampling {
 
     private:
 
@@ -106,7 +106,7 @@ class RandomInstanceSubsetSelectionImpl : virtual public IInstanceSubSampling {
  * An implementation of the class `IInstanceSubSampling` that does not perform any sampling, but assigns equal weights
  * to all examples.
  */
-class NoInstanceSubSamplingImpl : virtual public IInstanceSubSampling {
+class NoInstanceSubSamplingImpl : public IInstanceSubSampling {
 
     public:
 
@@ -140,7 +140,7 @@ class IFeatureSubSampling {
  * Implements random feature subset selection for selecting a random subset of the available features without
  * replacement.
  */
-class RandomFeatureSubsetSelectionImpl : virtual public IFeatureSubSampling {
+class RandomFeatureSubsetSelectionImpl : public IFeatureSubSampling {
 
     private:
 
@@ -162,7 +162,7 @@ class RandomFeatureSubsetSelectionImpl : virtual public IFeatureSubSampling {
 /**
  * An implementation of the class `IFeatureSubSampling` that does not perform any sampling, but includes all features.
  */
-class NoFeatureSubSamplingImpl : virtual public IFeatureSubSampling {
+class NoFeatureSubSamplingImpl : public IFeatureSubSampling {
 
     public:
 
@@ -194,7 +194,7 @@ class ILabelSubSampling {
 /**
  * Implements random label subset selection for selecting a random subset of the available features without replacement.
  */
-class RandomLabelSubsetSelectionImpl : virtual public ILabelSubSampling {
+class RandomLabelSubsetSelectionImpl : public ILabelSubSampling {
 
     private:
 
@@ -214,7 +214,7 @@ class RandomLabelSubsetSelectionImpl : virtual public ILabelSubSampling {
 /**
  * An implementation of the class `ILabelSubSampling` that does not perform any sampling, but includes all labels.
  */
-class NoLabelSubSamplingImpl : virtual public ILabelSubSampling {
+class NoLabelSubSamplingImpl : public ILabelSubSampling {
 
     public:
 

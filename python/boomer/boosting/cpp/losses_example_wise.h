@@ -44,7 +44,7 @@ namespace boosting {
     /**
      * A multi-label variant of the logistic loss that is applied example-wise.
      */
-    class ExampleWiseLogisticLossImpl : virtual public IExampleWiseLoss {
+    class ExampleWiseLogisticLossImpl : public IExampleWiseLoss {
 
         public:
 

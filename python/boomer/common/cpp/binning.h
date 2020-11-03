@@ -62,7 +62,7 @@ class IBinning {
 /**
  * Assigns floating point values to bins in a way such that each bin contains approximately the same number of values.
  */
-class EqualFrequencyBinningImpl : virtual public IBinning {
+class EqualFrequencyBinningImpl : public IBinning {
 
     private:
 
@@ -85,7 +85,7 @@ class EqualFrequencyBinningImpl : virtual public IBinning {
 /**
  * Assigns floating point values to bins in a way such that each bin contains values from equally sized value ranges.
  */
-class EqualWidthBinningImpl : virtual public IBinning {
+class EqualWidthBinningImpl : public IBinning {
 
     private:
 

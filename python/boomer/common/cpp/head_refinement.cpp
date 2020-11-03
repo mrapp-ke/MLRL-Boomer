@@ -9,7 +9,7 @@
  *           for the best head
  */
 template<class T>
-class SingleLabelHeadRefinement : virtual public IHeadRefinement {
+class SingleLabelHeadRefinement : public IHeadRefinement {
 
     private:
 
@@ -86,7 +86,7 @@ class SingleLabelHeadRefinement : virtual public IHeadRefinement {
  *           for the best head
  */
 template<class T>
-class FullHeadRefinement : virtual public IHeadRefinement {
+class FullHeadRefinement : public IHeadRefinement {
 
     private:
 

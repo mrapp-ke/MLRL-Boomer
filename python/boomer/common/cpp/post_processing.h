@@ -30,7 +30,7 @@ class IPostProcessor {
  * An implementation of the class `IPostProcessor` that does not perform any post-processing, but retains the original
  * predictions of rules.
  */
-class NoPostProcessorImpl : virtual public IPostProcessor {
+class NoPostProcessorImpl : public IPostProcessor {
 
     public:
 
