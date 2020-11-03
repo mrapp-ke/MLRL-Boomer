@@ -17,29 +17,52 @@ typedef SparseArrayVector<float32> FeatureVector;
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
-class ILabelMatrix : virtual public IMatrix {
+class ILabelMatrix {
 
     public:
 
         virtual ~ILabelMatrix() { };
+
+        /**
+         * Returns the number of rows in the matrix.
+         *
+         * @return The number of rows
+         */
+        virtual uint32 getNumRows() const = 0;
+
+        /**
+         * Returns the number of columns in the matrix.
+         *
+         * @return The number of columns
+         */
+        virtual uint32 getNumCols() const = 0;
 
 };
 
 /**
  * Defines an interface for all label matrices that provide random access to the labels of the training examples.
  */
-class IRandomAccessLabelMatrix : virtual public ILabelMatrix, virtual public IRandomAccessMatrix<uint8> {
+class IRandomAccessLabelMatrix : public ILabelMatrix {
 
     public:
 
         virtual ~IRandomAccessLabelMatrix() { };
+
+        /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param row   The row of the element. Must be in [0, getNumRows())
+         * @param col   The column of the element. Must be in [0, getNumCols())
+         * @return      The value of the given element
+         */
+        virtual uint8 getValue(uint32 row, uint32 col) const = 0;
 
 };
 
 /**
  * Implements random access to the labels of the training examples based on a C-contiguous array.
  */
-class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
+class DenseLabelMatrixImpl : public IRandomAccessLabelMatrix {
 
     private:
 
@@ -71,7 +94,7 @@ class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
  * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of keys
  * (DOK) format.
  */
-class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
+class DokLabelMatrixImpl : public IRandomAccessLabelMatrix {
 
     private:
 
@@ -97,11 +120,25 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of the training
  * examples.
  */
-class IFeatureMatrix : virtual public IMatrix {
+class IFeatureMatrix {
 
     public:
 
         virtual ~IFeatureMatrix() { };
+
+        /**
+         * Returns the number of rows in the matrix.
+         *
+         * @return The number of rows
+         */
+        virtual uint32 getNumRows() const = 0;
+
+        /**
+         * Returns the number of columns in the matrix.
+         *
+         * @return The number of columns
+         */
+        virtual uint32 getNumCols() const = 0;
 
         /**
          * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,
@@ -119,7 +156,7 @@ class IFeatureMatrix : virtual public IMatrix {
 /**
  * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
  */
-class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
+class DenseFeatureMatrixImpl : public IFeatureMatrix {
 
     private:
 
@@ -151,7 +188,7 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
  * Implements column-wise access to the feature values of the training examples based on a sparse matrix in the
  * compressed sparse column (CSC) format.
  */
-class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
+class CscFeatureMatrixImpl : public IFeatureMatrix {
 
     private:
 

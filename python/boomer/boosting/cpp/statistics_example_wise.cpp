@@ -101,7 +101,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
                     // Add the gradients and Hessians of the example at the given index (weighted by the given weight)
                     // to the current sum of gradients and Hessians...
-                    uint32 numLabels = statistics_.getNumCols();
+                    uint32 numLabels = statistics_.getNumLabels();
                     uint32 offsetGradients = statisticIndex * numLabels;
                     uint32 offsetHessians = statisticIndex * triangularNumber(numLabels);
                     uint32 numPredictions = labelIndices_.getNumElements();
@@ -214,14 +214,14 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
              */
             HistogramBuilder(const DenseExampleWiseStatistics& statistics, uint32 numBins)
                 : statistics_(statistics), numBins_(numBins) {
-                uint32 numGradients = statistics.getNumCols();
+                uint32 numGradients = statistics.getNumLabels();
                 uint32 numHessians = triangularNumber(numGradients);
                 gradients_ = (float64*) calloc((numBins_ * numGradients), sizeof(float64));
                 hessians_ = (float64*) calloc((numBins_ * numHessians), sizeof(float64));
             }
 
             void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
-                uint32 numLabels = statistics_.getNumCols();
+                uint32 numLabels = statistics_.getNumLabels();
                 uint32 index = entry.index;
                 uint32 offset = index * numLabels;
                 uint32 gradientOffset = binIndex * numLabels;
@@ -290,7 +290,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
               lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
               gradients_(gradients), hessians_(hessians), currentScores_(currentScores) {
             // The number of labels
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             // The number of hessians
             uint32 numHessians = triangularNumber(numLabels);
             // An array that stores the column-wise sums of the matrix of gradients
@@ -308,7 +308,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         }
 
         void resetCoveredStatistics() override {
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             setToZeros(totalSumsOfGradients_, numLabels);
             uint32 numHessians = triangularNumber(numLabels);
             setToZeros(totalSumsOfHessians_, numHessians);
@@ -316,7 +316,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
 
             // Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
@@ -350,7 +350,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         }
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             uint32 numHessians = triangularNumber(numLabels);
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
@@ -369,7 +369,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         }
 
         void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             uint32 numHessians = triangularNumber(numLabels);
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();

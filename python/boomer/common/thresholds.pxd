@@ -32,9 +32,9 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         # Functions:
 
-        uint32 getNumRows()
+        uint32 getNumExamples()
 
-        uint32 getNumCols()
+        uint32 getNumFeatures()
 
         uint32 getNumLabels()
 

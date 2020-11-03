@@ -73,7 +73,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
                     // For each label, add the gradient and Hessian of the example at the given index (weighted by the
                     // given weight) to the current sum of gradients and Hessians...
-                    uint32 offset = statisticIndex * statistics_.getNumCols();
+                    uint32 offset = statisticIndex * statistics_.getNumLabels();
                     uint32 numPredictions = labelIndices_.getNumElements();
                     typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
 
@@ -143,13 +143,13 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                  */
                 HistogramBuilder(const DenseLabelWiseStatistics& statistics, uint32 numBins)
                     : statistics_(statistics), numBins_(numBins) {
-                    uint32 numLabels = numBins_ * statistics.getNumCols();
+                    uint32 numLabels = numBins_ * statistics.getNumLabels();
                     gradients_ = (float64*) calloc(numLabels, sizeof(float64));
                     hessians_ = (float64*) calloc(numLabels, sizeof(float64));
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
-                    uint32 numLabels = statistics_.getNumCols();
+                    uint32 numLabels = statistics_.getNumLabels();
                     uint32 index = entry.index;
                     uint32 offset = index * numLabels;
                     uint32 binOffset = binIndex * numLabels;
@@ -211,7 +211,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
               ruleEvaluationFactoryPtr), lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
               gradients_(gradients), hessians_(hessians), currentScores_(currentScores) {
             // The number of labels
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             // An array that stores the column-wise sums of the matrix of gradients
             totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
             // An array that stores the column-wise sums of the matrix of hessians
@@ -227,13 +227,13 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         void resetCoveredStatistics() override {
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             setToZeros(totalSumsOfGradients_, numLabels);
             setToZeros(totalSumsOfHessians_, numLabels);
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
             float64 signedWeight = remove ? -((float64) weight) : weight;
 
@@ -261,7 +261,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
             FullPrediction::const_iterator valueIterator = prediction.cbegin();
@@ -283,7 +283,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-            uint32 numLabels = this->getNumCols();
+            uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
             PartialPrediction::const_iterator valueIterator = prediction.cbegin();

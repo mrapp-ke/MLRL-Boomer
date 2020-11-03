@@ -1,5 +1,4 @@
 from boomer.common._arrays cimport uint32
-from boomer.common._data cimport IMatrix
 from boomer.common._indices cimport FullIndexVector, PartialIndexVector
 from boomer.common._predictions cimport FullPrediction, PartialPrediction
 from boomer.common.input_data cimport LabelMatrix
@@ -21,7 +20,7 @@ cdef extern from "cpp/statistics.h" nogil:
         pass
 
 
-    cdef cppclass AbstractStatistics(IMatrix):
+    cdef cppclass AbstractStatistics:
 
         # Functions:
 
@@ -40,6 +39,10 @@ cdef extern from "cpp/statistics.h" nogil:
         void applyPrediction(uint32 statisticIndex, FullPrediction& prediction)
 
         void applyPrediction(uint32 statisticIndex, PartialPrediction& prediction)
+
+        uint32 getNumStatistics()
+
+        uint32 getNumLabels()
 
 
 cdef class StatisticsProvider:

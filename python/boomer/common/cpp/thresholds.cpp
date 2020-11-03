@@ -47,14 +47,14 @@ AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMa
 
 }
 
-uint32 AbstractThresholds::getNumRows() const {
+uint32 AbstractThresholds::getNumExamples() const {
     return featureMatrixPtr_->getNumRows();
 }
 
-uint32 AbstractThresholds::getNumCols() const {
+uint32 AbstractThresholds::getNumFeatures() const {
     return featureMatrixPtr_->getNumCols();
 }
 
 uint32 AbstractThresholds::getNumLabels() const {
-    return statisticsPtr_->getNumCols();
+    return statisticsPtr_->getNumLabels();
 }

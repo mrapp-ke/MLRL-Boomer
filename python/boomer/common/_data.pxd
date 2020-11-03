@@ -33,20 +33,7 @@ cdef extern from "cpp/data.h" nogil:
         void setValue(uint32 pos)
 
 
-    cdef cppclass IMatrix:
-
-        # Functions:
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
-
-
-    cdef cppclass IRandomAccessMatrix(IMatrix):
-        pass
-
-
-    cdef cppclass BinaryDokMatrix(IRandomAccessMatrix):
+    cdef cppclass BinaryDokMatrix:
 
         # Constructors:
 

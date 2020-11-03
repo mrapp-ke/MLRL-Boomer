@@ -233,57 +233,9 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
 };
 
 /**
- * Defines an interface for all two-dimensional matrices.
- */
-class IMatrix {
-
-    public:
-
-        virtual ~IMatrix() { };
-
-        /**
-         * Returns the number of rows in the matrix.
-         *
-         * @return The number of rows
-         */
-        virtual uint32 getNumRows() const = 0;
-
-        /**
-         * Returns the number of columns in the matrix.
-         *
-         * @return The number of columns
-         */
-        virtual uint32 getNumCols() const = 0;
-
-};
-
-/**
- * Defines an interface for all two-dimensional matrices that provide random access to their elements.
- *
- * @tparam T The type of the data that is stored in the matrix
- */
-template<class T>
-class IRandomAccessMatrix : virtual public IMatrix {
-
-    public:
-
-        virtual ~IRandomAccessMatrix() { };
-
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param row   The row of the element. Must be in [0, getNumRows())
-         * @param col   The column of the element. Must be in [0, getNumCols())
-         * @return      The value of the given element
-         */
-        virtual T getValue(uint32 row, uint32 col) const = 0;
-
-};
-
-/**
  * A sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
+class BinaryDokMatrix {
 
     private:
 
@@ -315,17 +267,34 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
         BinaryDokMatrix(uint32 numRows, uint32 numCols);
 
         /**
+         * Returns the number of rows in the matrix.
+         *
+         * @return The number of rows
+         */
+        uint32 getNumRows() const;
+
+        /**
+         * Returns the number of columns in the matrix.
+         *
+         * @return The number of columns
+         */
+        uint32 getNumCols() const;
+
+        /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param row   The row of the element. Must be in [0, getNumRows())
+         * @param col   The column of the element. Must be in [0, getNumCols())
+         * @return      The value of the given element
+         */
+        uint8 getValue(uint32 row, uint32 col) const;
+
+        /**
          * Sets a non-zero value to the element at a specific position.
          *
          * @param row       The row of the element. Must be in [0, getNumRows())
          * @param column    The column of the element. Must be in [0, getNumCols())
          */
         void setValue(uint32 row, uint32 column);
-
-        uint8 getValue(uint32 row, uint32 col) const override;
-
-        uint32 getNumRows() const override;
-
-        uint32 getNumCols() const override;
 
 };
