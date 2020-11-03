@@ -87,7 +87,7 @@ class IIndexVector {
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class PartialIndexVector : virtual public IIndexVector {
+class PartialIndexVector : public IIndexVector {
 
     private:
 
@@ -157,7 +157,7 @@ class PartialIndexVector : virtual public IIndexVector {
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */
-class FullIndexVector : virtual public IIndexVector {
+class FullIndexVector : public IIndexVector {
 
     private:
 
