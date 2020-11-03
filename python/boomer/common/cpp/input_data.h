@@ -259,11 +259,6 @@ class DokNominalFeatureMaskImpl : virtual public INominalFeatureMask {
     public:
 
         /**
-         * @param numFeatures The number of available features
-         */
-        DokNominalFeatureMaskImpl(uint32 numFeatures);
-
-        /**
          * Marks the feature at a specific index as nominal.
          *
          * @param featureIndex The index of the feature
