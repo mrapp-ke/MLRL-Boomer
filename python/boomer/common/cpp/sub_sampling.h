@@ -14,7 +14,7 @@
 /**
  * Defines an interface for one-dimensional vectors that provide access to weights.
  */
-class IWeightVector : virtual public IRandomAccessVector<uint32> {
+class IWeightVector : virtual public IVector {
 
     public:
 
@@ -33,6 +33,14 @@ class IWeightVector : virtual public IRandomAccessVector<uint32> {
          * @return The sum of the weights
          */
         virtual uint32 getSumOfWeights() const = 0;
+
+        /**
+         * Returns the weight of the example at a specific index.
+         *
+         * @param pos   The index of the example
+         * @return      The weight of the example at the given index
+         */
+        virtual uint32 getWeight(uint32 pos) const = 0;
 
 };
 

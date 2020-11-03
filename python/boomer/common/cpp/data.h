@@ -30,34 +30,12 @@ class IVector {
 };
 
 /**
- * Defines an interface for all one-dimensional vectors that provide random access to their elements.
- *
- * @tparam T The type of the data that is stored in the vector
- */
-template<class T>
-class IRandomAccessVector : virtual public IVector {
-
-    public:
-
-        virtual ~IRandomAccessVector() { };
-
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
-         */
-        virtual T getValue(uint32 pos) const = 0;
-
-};
-
-/**
  * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
  *
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class DenseVector : virtual public IRandomAccessVector<T> {
+class DenseVector : virtual public IVector {
 
     private:
 
@@ -113,6 +91,14 @@ class DenseVector : virtual public IRandomAccessVector<T> {
         const_iterator cend() const;
 
         /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
+         */
+        T getValue(uint32 pos) const;
+
+        /**
          * Sets the number of elements in the vector.
          *
          * @param numElements The number of elements to be set
@@ -120,8 +106,6 @@ class DenseVector : virtual public IRandomAccessVector<T> {
         void setNumElements(uint32 numElements);
 
         uint32 getNumElements() const override;
-
-        T getValue(uint32 pos) const override;
 
 };
 
@@ -204,7 +188,7 @@ class SparseArrayVector : virtual public IVector {
 /**
  * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
+class BinaryDokVector : virtual public IVector {
 
     private:
 
@@ -220,6 +204,14 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
         BinaryDokVector(uint32 numElements);
 
         /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
+         */
+        uint8 getValue(uint32 pos) const;
+
+        /**
          * Sets a non-zero value to the element at a specific position.
          *
          * @param pos The position of the element. Must be in [0, getNumElements())
@@ -228,7 +220,6 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
 
         uint32 getNumElements() const override;
 
-        uint8 getValue(uint32 pos) const override;
 
 };
 

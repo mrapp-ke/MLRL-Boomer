@@ -32,7 +32,7 @@ static inline void updateSampledStatistics(AbstractStatistics& statistics, const
     statistics.resetSampledStatistics();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        uint32 weight = weights.getValue(r);
+        uint32 weight = weights.getWeight(r);
         statistics.addSampledStatistic(r, weight);
     }
 }
@@ -153,7 +153,7 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            uint32 weight = weights.getValue(index);
+            uint32 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, false);
             i += direction;
         }
@@ -188,7 +188,7 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
             uint32 r = conditionStart + (j * direction);
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getValue(index);
+            uint32 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
 
