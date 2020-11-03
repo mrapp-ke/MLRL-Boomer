@@ -20,14 +20,14 @@ from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
-from boomer.common.thresholds_exact import ExactThresholdsFactory
+
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
 from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, create_num_threads
+    create_max_head_refinements, create_num_threads, create_thresholds_factory
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -48,9 +48,9 @@ class Boomer(MLRuleLearner):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, time_limit: int = -1,
                  head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
-                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, pruning: str = None, shrinkage: float = 0.3,
-                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads: int = -1):
+                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, feature_binning: str = None,
+                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0,
+                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -77,6 +77,10 @@ class Boomer(MLRuleLearner):
                                                     or None, if no sub-sampling should be used. Additional argument may
                                                     be provided as a dictionary, e.g.
                                                     `random-feature-selection{\"sample_size\":0.5}`
+        :param feature_binning:                     The strategy that is used for assigning examples to bins based on
+                                                    their feature values. Must be `equal-width`, `equal-frequency` or
+                                                    None, if no feature binning should be used. Additional arguments may
+                                                    be provided as a dictionary, e.g. `equal-width{\"bin_ratio\":0.5}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
@@ -103,6 +107,7 @@ class Boomer(MLRuleLearner):
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
+        self.feature_binning = feature_binning
         self.pruning = pruning
         self.shrinkage = shrinkage
         self.l2_regularization_weight = l2_regularization_weight
@@ -122,6 +127,8 @@ class Boomer(MLRuleLearner):
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.feature_binning is not None:
+            name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
         if 0.0 < float(self.shrinkage) < 1.0:
@@ -161,7 +168,7 @@ class Boomer(MLRuleLearner):
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads = create_num_threads(self.num_threads)
-        thresholds_factory = ExactThresholdsFactory()
+        thresholds_factory = create_thresholds_factory(self.feature_binning)
         rule_induction = TopDownGreedyRuleInduction()
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                        default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
