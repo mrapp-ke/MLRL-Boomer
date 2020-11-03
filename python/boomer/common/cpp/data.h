@@ -12,24 +12,6 @@
 
 
 /**
- * Defines an interface for all one-dimensional vectors.
- */
-class IVector {
-
-    public:
-
-        virtual ~IVector() { };
-
-        /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements
-         */
-        virtual uint32 getNumElements() const = 0;
-
-};
-
-/**
  * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
  *
  * @tparam T The type of the data that is stored in the vector
