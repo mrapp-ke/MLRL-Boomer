@@ -10,13 +10,13 @@ using namespace seco;
  * Provides access to the elements of confusion matrices that are computed independently for each label using dense data
  * structures.
  */
-class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
+class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
     private:
 
         /**
          * Provides access to a subset of the confusion matrices that are stored by an instance of the class
-         * `DenseLabelWiseStatistics`.
+         * `DenseLabelWiseStatisticsImpl`.
          *
          * @tparam T The type of the vector that provides access to the indices of the labels that are included in the
          *           subset
@@ -26,7 +26,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
             private:
 
-                const DenseLabelWiseStatistics& statistics_;
+                const DenseLabelWiseStatisticsImpl& statistics_;
 
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
@@ -39,7 +39,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
             public:
 
                 /**
-                 * @param statistics        A reference to an object of type `DenseLabelWiseStatistics` that stores
+                 * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsImpl` that stores
                  *                          the confusion matrices
                  * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                  *                          should be used to calculate the predictions, as well as corresponding
@@ -47,7 +47,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                  * @param labelIndices      A reference to an object of template type `T` that provides access to the
                  *                          indices of the labels that are included in the subset
                  */
-                StatisticsSubset(const DenseLabelWiseStatistics& statistics,
+                StatisticsSubset(const DenseLabelWiseStatisticsImpl& statistics,
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices) {
@@ -144,9 +144,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
          *                                  whether rules should predict individual labels as relevant (1) or irrelevant
          *                                  (0)
          */
-        DenseLabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
-                                 float64 sumUncoveredLabels, uint8* minorityLabels)
+        DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                                     std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
+                                     float64 sumUncoveredLabels, uint8* minorityLabels)
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(),
                                           sumUncoveredLabels, ruleEvaluationFactoryPtr),
               labelMatrixPtr_(labelMatrixPtr), uncoveredLabels_(uncoveredLabels), minorityLabels_(minorityLabels) {
@@ -159,7 +159,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
             confusionMatricesSubset_ = (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
         }
 
-        ~DenseLabelWiseStatistics() {
+        ~DenseLabelWiseStatisticsImpl() {
             free(uncoveredLabels_);
             free(minorityLabels_);
             free(confusionMatricesTotal_);
@@ -363,6 +363,6 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
         }
     }
 
-    return std::make_unique<DenseLabelWiseStatistics>(ruleEvaluationFactoryPtr_, labelMatrixPtr_, uncoveredLabels,
-                                                      sumUncoveredLabels, minorityLabels);
+    return std::make_unique<DenseLabelWiseStatisticsImpl>(ruleEvaluationFactoryPtr_, labelMatrixPtr_, uncoveredLabels,
+                                                          sumUncoveredLabels, minorityLabels);
 }
