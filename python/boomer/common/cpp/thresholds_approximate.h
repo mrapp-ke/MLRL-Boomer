@@ -38,7 +38,7 @@ class ApproximateThresholds : public AbstractThresholds {
         /**
          * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
          *                                  to the feature values of the training examples
-         * @param nominalFeatureVectorPtr   A shared pointer to an object of type `INominalFeatureVector` that provides
+         * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
          * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
          *                                  access to statistics about the labels of the training examples
@@ -49,7 +49,7 @@ class ApproximateThresholds : public AbstractThresholds {
          *                                  method to be used
          */
         ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                              std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                              std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                               std::shared_ptr<AbstractStatistics> statisticsPtr,
                               std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                               std::shared_ptr<IBinning> binningPtr);

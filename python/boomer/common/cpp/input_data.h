@@ -227,14 +227,22 @@ class CscFeatureMatrixImpl : public IFeatureMatrix {
 };
 
 /**
- * Defines an interface for all vectors that provide access to the information whether the features at specific indices
+ * Defines an interface for all classes that provide access to the information whether the features at specific indices
  * are nominal or not.
  */
-class INominalFeatureVector : virtual public IRandomAccessVector<uint8> {
+class INominalFeatureMask {
 
     public:
 
-        virtual ~INominalFeatureVector() { };
+        virtual ~INominalFeatureMask() { };
+
+        /**
+         * Returns whether the feature at a specific index is nominal or not.
+         *
+         * @param featureIndex  The index of the feature
+         * @return              True, if the feature at the given index is nominal, false otherwise
+         */
+        virtual bool isNominal(uint32 featureIndex) const = 0;
 
 };
 
@@ -242,7 +250,7 @@ class INominalFeatureVector : virtual public IRandomAccessVector<uint8> {
  * Provides access to the information whether the features at specific indices are nominal or not, based on a
  * `BinaryDokVector` that stores the indices of all nominal features.
  */
-class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
+class DokNominalFeatureMaskImpl : virtual public INominalFeatureMask {
 
     private:
 
@@ -253,10 +261,8 @@ class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
         /**
          * @param vector A pointer to an object of type `BinaryDokVector`, storing the nominal attributes
          */
-        DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
+        DokNominalFeatureMaskImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
 
-        uint32 getNumElements() const override;
-
-        uint8 getValue(uint32 pos) const override;
+        bool isNominal(uint32 featureIndex) const override;
 
 };

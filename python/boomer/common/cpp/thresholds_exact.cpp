@@ -89,7 +89,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
             thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
         }
 
-        bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
+        bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
         std::unique_ptr<IHeadRefinement> headRefinementPtr =
             thresholds_.headRefinementFactoryPtr_->create(labelIndices);
         std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
@@ -237,10 +237,10 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 };
 
 ExactThresholds::ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                 std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                 std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                                  std::shared_ptr<AbstractStatistics> statisticsPtr,
                                  std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
-    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr) {
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr) {
 
 }
 

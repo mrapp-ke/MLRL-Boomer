@@ -10,7 +10,7 @@ cdef class ThresholdsFactory:
     A base class for all factories that allow to create instances of the class `AbstractThresholds`.
     """
 
-    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureVector nominal_feature_vector,
+    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
                                     StatisticsProvider statistics_provider,
                                     HeadRefinementFactory head_refinement_factory):
         """
@@ -18,7 +18,7 @@ cdef class ThresholdsFactory:
 
         :param feature_matrix:          A `FeatureMatrix` that provides access to the feature values of the training
                                         examples
-        :param nominal_feature_vector:  A `NominalFeatureVector` that provides access to the information whether
+        :param nominal_feature_mask:    A `NominalFeatureMask` that provides access to the information whether
                                         individual features are nominal or not
         :param statistics_provider:     A `StatisticsProvider` that provides access to statistics about the labels of
                                         training examples
