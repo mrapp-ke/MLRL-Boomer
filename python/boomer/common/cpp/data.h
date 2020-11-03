@@ -233,33 +233,9 @@ class BinaryDokMatrix {
 
         };
 
-        uint32 numRows_;
-
-        uint32 numCols_;
-
         std::unordered_set<Entry, HashFunction> data_;
 
     public:
-
-        /**
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
-         */
-        BinaryDokMatrix(uint32 numRows, uint32 numCols);
-
-        /**
-         * Returns the number of rows in the matrix.
-         *
-         * @return The number of rows
-         */
-        uint32 getNumRows() const;
-
-        /**
-         * Returns the number of columns in the matrix.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
 
         /**
          * Returns the value of the element at a specific position.

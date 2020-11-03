@@ -23,7 +23,7 @@ cdef class RandomAccessLabelMatrix(LabelMatrix):
 
 cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
     """
-    A wrapper for the C++ class `DenseLabelMatrix`.
+    A wrapper for the C++ class `DenseLabelMatrixImpl`.
     """
 
     def __cinit__(self, const uint8[:, ::1] y):
@@ -39,7 +39,7 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     """
-    A wrapper for the C++ class `DokLabelMatrix`.
+    A wrapper for the C++ class `DokLabelMatrixImpl`.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_labels, list[::1] rows):
@@ -49,7 +49,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
-        cdef unique_ptr[BinaryDokMatrix] matrix_ptr = make_unique[BinaryDokMatrix](num_examples, num_labels)
+        cdef unique_ptr[DokLabelMatrixImpl] ptr = make_unique[DokLabelMatrixImpl](num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
@@ -58,9 +58,9 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                matrix_ptr.get().setValue(r, c)
+                ptr.get().setValue(r, c)
 
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](move(matrix_ptr))
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>move(ptr)
 
 
 cdef class FeatureMatrix:

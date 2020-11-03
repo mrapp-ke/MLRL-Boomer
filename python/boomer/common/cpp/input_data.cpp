@@ -14,26 +14,30 @@ uint32 DenseLabelMatrixImpl::getNumLabels() const {
     return numLabels_;
 }
 
-uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
-    uint32 i = (row * numLabels_) + col;
+uint8 DenseLabelMatrixImpl::getValue(uint32 exampleIndex, uint32 labelIndex) const {
+    uint32 i = (exampleIndex * numLabels_) + labelIndex;
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr)
-    : matrixPtr_(std::move(matrixPtr)) {
+DokLabelMatrixImpl::DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels)
+    : numExamples_(numExamples), numLabels_(numLabels) {
 
 }
 
 uint32 DokLabelMatrixImpl::getNumExamples() const {
-    return matrixPtr_->getNumRows();
+    return numExamples_;
 }
 
 uint32 DokLabelMatrixImpl::getNumLabels() const {
-    return matrixPtr_->getNumCols();
+    return numLabels_;
 }
 
-uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
-    return matrixPtr_->getValue(row, col);
+uint8 DokLabelMatrixImpl::getValue(uint32 exampleIndex, uint32 labelIndex) const {
+    return matrix_.getValue(exampleIndex, labelIndex);
+}
+
+void DokLabelMatrixImpl::setValue(uint32 exampleIndex, uint32 labelIndex) {
+    matrix_.setValue(exampleIndex, labelIndex);
 }
 
 DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x)

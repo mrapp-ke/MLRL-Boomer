@@ -1,5 +1,4 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport BinaryDokMatrix
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
@@ -25,7 +24,11 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DokLabelMatrixImpl(unique_ptr[BinaryDokMatrix] matrixPtr) except +
+        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels) except +
+
+        # Functions:
+
+        void setValue(uint32 exampleIndex, uint32 rowIndex)
 
 
     cdef cppclass IFeatureMatrix:
@@ -62,7 +65,7 @@ cdef class LabelMatrix:
 
     # Attributes:
 
-        cdef shared_ptr[ILabelMatrix] label_matrix_ptr
+    cdef shared_ptr[ILabelMatrix] label_matrix_ptr
 
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
