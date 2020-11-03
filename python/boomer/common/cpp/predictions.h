@@ -61,7 +61,11 @@ class AbstractEvaluatedPrediction : public AbstractPrediction {
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class FullPrediction : public AbstractEvaluatedPrediction, public FullIndexVector {
+class FullPrediction : public AbstractEvaluatedPrediction {
+
+    private:
+
+        FullIndexVector indexVector_;
 
     public:
 
@@ -70,9 +74,36 @@ class FullPrediction : public AbstractEvaluatedPrediction, public FullIndexVecto
          */
         FullPrediction(uint32 numElements);
 
+        typedef FullIndexVector::index_const_iterator index_const_iterator;
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indices_cend() const;
+
         uint32 getNumElements() const override;
 
         void setNumElements(uint32 numElements) override;
+
+        bool isPartial() const override;
+
+        uint32 getIndex(uint32 pos) const override;
+
+        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+
+        std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                              uint32 featureIndex) const override;
+
+        std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
         void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
 
@@ -81,7 +112,11 @@ class FullPrediction : public AbstractEvaluatedPrediction, public FullIndexVecto
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
-class PartialPrediction : public AbstractEvaluatedPrediction, public PartialIndexVector {
+class PartialPrediction : public AbstractEvaluatedPrediction {
+
+    private:
+
+        PartialIndexVector indexVector_;
 
     public:
 
@@ -90,9 +125,52 @@ class PartialPrediction : public AbstractEvaluatedPrediction, public PartialInde
          */
         PartialPrediction(uint32 numElements);
 
+        typedef PartialIndexVector::index_iterator index_iterator;
+
+        typedef PartialIndexVector::index_const_iterator index_const_iterator;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the indices.
+         *
+         * @return An `index_iterator` to the beginning
+         */
+        index_iterator indices_begin();
+
+        /**
+         * Returns an `index_iterator` to the end of the indices.
+         *
+         * @return An `index_iterator` to the end
+         */
+        index_iterator indices_end();
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indices_cend() const;
+
         uint32 getNumElements() const override;
 
         void setNumElements(uint32 numElements) override;
+
+        bool isPartial() const override;
+
+        uint32 getIndex(uint32 pos) const override;
+
+        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+
+        std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                              uint32 featureIndex) const override;
+
+        std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
         void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
 
