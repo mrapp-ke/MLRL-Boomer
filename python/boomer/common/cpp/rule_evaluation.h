@@ -12,7 +12,11 @@
  * Stores the scores that are predicted by a rule, as well as a quality score that assesses the overall quality of the
  * rule.
  */
-class EvaluatedPrediction : public DenseVector<float64> {
+class EvaluatedPrediction {
+
+    private:
+
+        DenseVector<float64> predictedScoreVector_;
 
     public:
 
@@ -20,6 +24,45 @@ class EvaluatedPrediction : public DenseVector<float64> {
          * @param numElements The number of labels for which the rule predicts
          */
         EvaluatedPrediction(uint32 numElements);
+
+        typedef DenseVector<float64>::iterator iterator;
+
+        typedef DenseVector<float64>::const_iterator const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the predicted scores.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the predicted scores.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns a `const_iterator` to the beginning of the predicted scores.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the predicted scores.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        /**
+         * Returns the number of labels for which the rule predicts.
+         *
+         * @return The number of labels for which the rule predict
+         */
+        uint32 getNumElements() const;
 
         /**
          * A score that assesses the overall quality of the prediction.
@@ -36,7 +79,7 @@ class LabelWiseEvaluatedPrediction : public EvaluatedPrediction {
 
     private:
 
-        float64* qualityScores_;
+        DenseVector<float64> qualityScoreVector_;
 
     public:
 
@@ -45,11 +88,9 @@ class LabelWiseEvaluatedPrediction : public EvaluatedPrediction {
          */
         LabelWiseEvaluatedPrediction(uint32 numElements);
 
-        ~LabelWiseEvaluatedPrediction();
+        typedef DenseVector<float64>::iterator quality_score_iterator;
 
-        typedef float64* quality_score_iterator;
-
-        typedef const float64* quality_score_const_iterator;
+        typedef DenseVector<float64>::const_iterator quality_score_const_iterator;
 
         /**
          * Returns a `quality_score_iterator` to the beginning of the quality scores.
