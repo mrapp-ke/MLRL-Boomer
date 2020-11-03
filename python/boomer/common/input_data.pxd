@@ -53,10 +53,6 @@ cdef extern from "cpp/input_data.h" nogil:
 
     cdef cppclass DokNominalFeatureMaskImpl(INominalFeatureMask):
 
-        # Constructors:
-
-        DokNominalFeatureMaskImpl(uint32 numFeatures) except +
-
         # Functions:
 
         void setNominal(uint32 featureIndex)

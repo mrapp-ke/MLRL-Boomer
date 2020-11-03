@@ -188,20 +188,13 @@ class SparseArrayVector : virtual public IVector {
 /**
  * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector : virtual public IVector {
+class BinaryDokVector {
 
     private:
-
-        uint32 numElements_;
 
         std::unordered_set<uint32> data_;
 
     public:
-
-        /**
-         * @param numElements The number of elements in the vector
-         */
-        BinaryDokVector(uint32 numElements);
 
         /**
          * Returns the value of the element at a specific position.
@@ -217,9 +210,6 @@ class BinaryDokVector : virtual public IVector {
          * @param pos The position of the element. Must be in [0, getNumElements())
          */
         void setValue(uint32 pos);
-
-        uint32 getNumElements() const override;
-
 
 };
 

@@ -99,11 +99,6 @@ void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
     }
 }
 
-DokNominalFeatureMaskImpl::DokNominalFeatureMaskImpl(uint32 numFeatures)
-    : vector_(BinaryDokVector(numFeatures)) {
-
-}
-
 bool DokNominalFeatureMaskImpl::isNominal(uint32 featureIndex) const {
     return vector_.getValue(featureIndex) != 0;
 }

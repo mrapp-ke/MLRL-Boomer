@@ -130,7 +130,7 @@ cdef class DokNominalFeatureMask(NominalFeatureMask):
     """
     def __cinit__(self, list nominal_feature_indices):
         cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
-        cdef unique_ptr[DokNominalFeatureMaskImpl] ptr = make_unique[DokNominalFeatureMaskImpl](num_nominal_features)
+        cdef unique_ptr[DokNominalFeatureMaskImpl] ptr = make_unique[DokNominalFeatureMaskImpl]()
         cdef uint32 i
 
         if num_nominal_features > 0:
