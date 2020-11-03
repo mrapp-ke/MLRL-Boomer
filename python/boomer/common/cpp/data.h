@@ -202,7 +202,7 @@ class BinaryDokVector {
          * @param pos   The position of the element. Must be in [0, getNumElements())
          * @return      The value of the given element
          */
-        uint8 getValue(uint32 pos) const;
+        bool getValue(uint32 pos) const;
 
         /**
          * Sets a non-zero value to the element at a specific position.
@@ -244,7 +244,7 @@ class BinaryDokMatrix {
          * @param col   The column of the element. Must be in [0, getNumCols())
          * @return      The value of the given element
          */
-        uint8 getValue(uint32 row, uint32 col) const;
+        bool getValue(uint32 row, uint32 col) const;
 
         /**
          * Sets a non-zero value to the element at a specific position.

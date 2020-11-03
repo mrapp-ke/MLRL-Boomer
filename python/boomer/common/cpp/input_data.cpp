@@ -104,7 +104,7 @@ void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
 }
 
 bool DokNominalFeatureMaskImpl::isNominal(uint32 featureIndex) const {
-    return vector_.getValue(featureIndex) != 0;
+    return vector_.getValue(featureIndex);
 }
 
 void DokNominalFeatureMaskImpl::setNominal(uint32 featureIndex) {
