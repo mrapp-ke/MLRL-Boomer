@@ -122,7 +122,7 @@ void SparseArrayVector<T>::sortByValues() {
 template class SparseArrayVector<float32>;
 template class SparseArrayVector<float64>;
 
-uint8 BinaryDokVector::getValue(uint32 pos) const {
+bool BinaryDokVector::getValue(uint32 pos) const {
     return data_.find(pos) != data_.end();
 }
 
@@ -130,7 +130,7 @@ void BinaryDokVector::setValue(uint32 pos) {
     data_.insert(pos);
 }
 
-uint8 BinaryDokMatrix::getValue(uint32 row, uint32 column) const {
+bool BinaryDokMatrix::getValue(uint32 row, uint32 column) const {
     return data_.find(std::make_pair(row, column)) != data_.end();
 }
 
