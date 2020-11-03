@@ -31,8 +31,6 @@ class ApproximateThresholds : public AbstractThresholds {
 
         std::shared_ptr<IBinning> binningPtr_;
 
-        uint32 numBins_;
-
         std::unordered_map<uint32, BinCacheEntry> cache_;
 
     public:
@@ -49,13 +47,12 @@ class ApproximateThresholds : public AbstractThresholds {
          *                                  rules
          * @param binningPtr                A shared pointer to an object of type `IBinning` that implements the binning
          *                                  method to be used
-         * @param numBins                   The number of bins that should be used by the given binning method
          */
         ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                               std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
                               std::shared_ptr<AbstractStatistics> statisticsPtr,
                               std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                              std::shared_ptr<IBinning> binningPtr, uint32 numBins);
+                              std::shared_ptr<IBinning> binningPtr);
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
