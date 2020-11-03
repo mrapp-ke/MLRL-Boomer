@@ -116,96 +116,108 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
                                        intp conditionEnd, Comparator conditionComparator, bool covered,
                                        uint32 numConditions, CoverageMask& coverageMask, AbstractStatistics& statistics,
                                        const IWeightVector& weights) {
-    uint32 numTotalElements = vector.getNumElements();
-    typename T::const_iterator iterator = vector.cbegin();
-    bool descending = conditionEnd < conditionStart;
-
     // Determine the number of elements in the filtered vector...
-    uint32 numConditionSteps = abs(conditionStart - conditionEnd);
-    uint32 numElements = covered ? numConditionSteps :
-        (numTotalElements > numConditionSteps ? numTotalElements - numConditionSteps : 0);
+    uint32 numTotalElements = vector.getNumElements();
+    uint32 distance = abs(conditionStart - conditionEnd);
+    uint32 numElements = covered ? distance : (numTotalElements > distance ? numTotalElements - distance : 0);
 
-    // Create a new vector that will contain the filtered elements...
-    std::unique_ptr<FeatureVector> filteredVectorPtr = std::make_unique<FeatureVector>(numElements);
-    FeatureVector::iterator filteredIterator = filteredVectorPtr->begin();
+    // Create a new vector that will contain the filtered elements, if necessary...
+    T* filteredVector = cacheEntry.vectorPtr.get();
+
+    if (filteredVector == nullptr) {
+        cacheEntry.vectorPtr = std::make_unique<T>(numElements);
+        filteredVector = cacheEntry.vectorPtr.get();
+    }
+
+    typename T::const_iterator iterator = vector.cbegin();
+    FeatureVector::iterator filteredIterator = filteredVector->begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
-    intp direction;
-    uint32 i;
+    bool descending = conditionEnd < conditionStart;
+    intp start, end;
 
     if (descending) {
-        direction = -1;
-        i = numElements - 1;
+        start = conditionEnd + 1;
+        end = conditionStart + 1;
     } else {
-        direction = 1;
-        i = 0;
+        start = conditionStart;
+        end = conditionEnd;
     }
 
     if (covered) {
         coverageMask.target = numConditions;
         statistics.resetCoveredStatistics();
+        uint32 i = 0;
 
-        // Retain the indices at positions [conditionStart, conditionEnd) and set the corresponding values in the given
-        // `coverageMask` to `numConditions` to mark them as covered...
-        for (uint32 j = 0; j < numConditionSteps; j++) {
-            uint32 r = conditionStart + (j * direction);
+        // Retain the indices at positions [start, end) and set the corresponding values in the given `coverageMask` to
+        // `numConditions` to mark them as covered...
+        for (intp r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
             uint32 weight = weights.getValue(index);
             statistics.updateCoveredStatistic(index, weight, false);
-            i += direction;
+            i++;
         }
     } else {
-        intp start, end;
-
-        if (descending) {
-            start = numTotalElements - 1;
-            end = -1;
-        } else {
-            start = 0;
-            end = numTotalElements;
-        }
-
         if (conditionComparator == NEQ) {
-            // Retain the indices at positions [start, conditionStart), while leaving the corresponding values in
+            // Retain the indices at positions [currentStart, currentEnd), while leaving the corresponding values in
             // `coverageMask` untouched, such that all previously covered examples in said range are still marked
             // as covered, while previously uncovered examples are still marked as uncovered...
-            uint32 numSteps = abs(start - conditionStart);
+            intp currentStart, currentEnd;
+            uint32 i;
 
-            for (uint32 j = 0; j < numSteps; j++) {
-                uint32 r = start + (j * direction);
+            if (descending) {
+                currentStart = end;
+                currentEnd = numTotalElements;
+                i = start;
+            } else {
+                currentStart = 0;
+                currentEnd = start;
+                i = 0;
+            }
+
+            for (intp r = currentStart; r < currentEnd; r++) {
                 filteredIterator[i].index = iterator[r].index;
                 filteredIterator[i].value = iterator[r].value;
-                i += direction;
+                i++;
             }
         }
 
-        // Discard the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
-        // `coverageMask` to `numConditions`, which marks them as uncovered...
-        for (uint32 j = 0; j < numConditionSteps; j++) {
-            uint32 r = conditionStart + (j * direction);
+        // Discard the indices at positions [start, end) and set the corresponding values in `coverageMask` to
+        // `numConditions`, which marks them as uncovered...
+        for (intp r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
             uint32 weight = weights.getValue(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
 
-        // Retain the indices at positions [conditionEnd, end), while leaving the corresponding values in `coverageMask`
-        // untouched, such that all previously covered examples in said range are still marked as covered, while
-        // previously uncovered examples are still marked as uncovered...
-        uint32 numSteps = abs(conditionEnd - end);
+        // Retain the indices at positions [currentStart, currentEnd), while leaving the corresponding values in
+        // `coverageMask` untouched, such that all previously covered examples in said range are still marked as
+        // covered, while previously uncovered examples are still marked as uncovered...
+        intp currentStart, currentEnd;
+        uint32 i;
 
-        for (uint32 j = 0; j < numSteps; j++) {
-            uint32 r = conditionEnd + (j * direction);
+        if (descending) {
+            currentStart = 0;
+            currentEnd = start;
+            i = 0;
+        } else {
+            currentStart = end;
+            currentEnd = numTotalElements;
+            i = start;
+        }
+
+        for (intp r = currentStart; r < currentEnd; r++) {
             filteredIterator[i].index = iterator[r].index;
             filteredIterator[i].value = iterator[r].value;
-            i += direction;
+            i++;
         }
     }
 
-    cacheEntry.vectorPtr = std::move(filteredVectorPtr);
+    filteredVector->setNumElements(numElements);
     cacheEntry.numConditions = numConditions;
 }
 
@@ -222,13 +234,13 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
  *                              elements that are covered by the current rule
  */
 template<class T>
-static inline void filterAnyVector(T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
+static inline void filterAnyVector(const T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
                                    const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     T* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::move(std::make_unique<T>(maxElements));
+        cacheEntry.vectorPtr = std::make_unique<T>(maxElements);
         filteredVector = cacheEntry.vectorPtr.get();
     }
 
