@@ -35,7 +35,7 @@ class DenseWeightVector : public DenseVector<uint32>, virtual public IWeightVect
 /**
  * An one-dimensional that provides random access to a fixed number of equal weights.
  */
-class EqualWeightVector : virtual public IWeightVector {
+class EqualWeightVector : public IWeightVector {
 
     private:
 

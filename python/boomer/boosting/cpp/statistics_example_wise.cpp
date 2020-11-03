@@ -22,7 +22,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
          *           subset
          */
         template<class T>
-        class StatisticsSubset : virtual public IStatisticsSubset {
+        class StatisticsSubset : public IStatisticsSubset {
 
             private:
 
@@ -193,7 +193,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
          * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the class
          * `DenseExampleWiseStatistics`.
          */
-        class HistogramBuilder : virtual public IHistogramBuilder {
+        class HistogramBuilder : public IHistogramBuilder {
 
             private:
 

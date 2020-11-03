@@ -24,7 +24,7 @@ static inline std::unique_ptr<SparseArrayVector<float64>> argsort(const float64*
  *           for the best head
  */
 template<class T>
-class PartialHeadRefinement : virtual public IHeadRefinement {
+class PartialHeadRefinement : public IHeadRefinement {
 
     private:
 

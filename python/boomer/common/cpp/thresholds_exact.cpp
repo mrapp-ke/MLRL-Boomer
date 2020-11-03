@@ -6,7 +6,7 @@
 /**
  * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
  */
-class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
+class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 
     private:
 
@@ -14,7 +14,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
      * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved from the
      * cache. Otherwise, they are fetched from the feature matrix.
      */
-    class Callback : virtual public IRuleRefinementCallback<FeatureVector> {
+    class Callback : public IRuleRefinementCallback<FeatureVector> {
 
         private:
 

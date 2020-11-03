@@ -11,7 +11,7 @@ using namespace seco;
  * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
 template<class T>
-class HeuristicLabelWiseRuleEvaluation : virtual public ILabelWiseRuleEvaluation {
+class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
     private:
 

@@ -122,7 +122,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
          * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the class
          * `DenseLabelWiseStatistics`.
          */
-        class HistogramBuilder : virtual public AbstractStatistics::IHistogramBuilder {
+        class HistogramBuilder : public IHistogramBuilder {
 
             private:
 
