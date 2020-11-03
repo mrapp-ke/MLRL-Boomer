@@ -15,14 +15,7 @@ cdef extern from "cpp/data.h" nogil:
         uint32 getNumElements()
 
 
-    cdef cppclass IRandomAccessVector[T](IVector):
-
-        # Functions:
-
-        T getValue(uint32 pos)
-
-
-    cdef cppclass BinaryDokVector(IRandomAccessVector[uint8]):
+    cdef cppclass BinaryDokVector:
 
         # Constructors:
 

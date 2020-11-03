@@ -188,7 +188,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
             uint32 numExamples = thresholds_.getNumExamples();
 
             for (uint32 r = 0; r < numExamples; r++) {
-                if (weights_.getValue(r) == 0 && coverageMask.isCovered(r)) {
+                if (weights_.getWeight(r) == 0 && coverageMask.isCovered(r)) {
                     statisticsSubsetPtr->addToSubset(r, 1);
                 }
             }

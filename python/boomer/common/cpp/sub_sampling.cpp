@@ -5,9 +5,11 @@
 /**
  * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  */
-class DenseWeightVector : public DenseVector<uint32>, virtual public IWeightVector {
+class DenseWeightVector : virtual public IWeightVector {
 
     private:
+
+        DenseVector<uint32> vector_;
 
         uint32 sumOfWeights_;
 
@@ -18,12 +20,60 @@ class DenseWeightVector : public DenseVector<uint32>, virtual public IWeightVect
          * @param sumOfWeights  The sum of the weights in the vector
          */
         DenseWeightVector(uint32 numElements, uint32 sumOfWeights)
-            : DenseVector<uint32>(numElements, true), sumOfWeights_(sumOfWeights) {
+            : vector_(DenseVector<uint32>(numElements, true)), sumOfWeights_(sumOfWeights) {
 
+        }
+
+        typedef DenseVector<uint32>::iterator iterator;
+
+        typedef DenseVector<uint32>::const_iterator const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the vector.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin() {
+            return vector_.begin();
+        }
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end() {
+            return vector_.end();
+        }
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const {
+            return vector_.cbegin();
+        }
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const {
+            return vector_.cend();
+        }
+
+        uint32 getNumElements() const override {
+            return vector_.getNumElements();
         }
 
         bool hasZeroWeights() const override {
             return true;
+        }
+
+        uint32 getWeight(uint32 pos) const override {
+            return vector_.getValue(pos);
         }
 
         uint32 getSumOfWeights() const override {
@@ -59,7 +109,7 @@ class EqualWeightVector : public IWeightVector {
             return false;
         }
 
-        uint32 getValue(uint32 pos) const override {
+        uint32 getWeight(uint32 pos) const override {
             return 1;
         }
 
