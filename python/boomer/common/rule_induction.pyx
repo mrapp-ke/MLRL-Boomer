@@ -100,8 +100,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         if head_refinement_factory != NULL:
             statistics = statistics_provider.get()
-            num_statistics = statistics.getNumRows()
-            num_labels = statistics.getNumCols()
+            num_statistics = statistics.getNumStatistics()
+            num_labels = statistics.getNumLabels()
             label_indices_ptr = make_unique[FullIndexVector](num_labels)
             statistics.resetSampledStatistics()
 
@@ -127,9 +127,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                           Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
                           intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         # The total number of statistics
-        cdef uint32 num_examples = thresholds.getNumRows()
+        cdef uint32 num_examples = thresholds.getNumExamples()
         # The total number of features
-        cdef uint32 num_features = thresholds.getNumCols()
+        cdef uint32 num_features = thresholds.getNumFeatures()
         # The total number of labels
         cdef uint32 num_labels = thresholds.getNumLabels()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)

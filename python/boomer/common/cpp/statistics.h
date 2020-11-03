@@ -145,7 +145,7 @@ class AbstractDecomposableStatisticsSubset : public IStatisticsSubset {
  * An abstract base class for all classes that provide access to statistics about the labels of the training examples,
  * which serve as the basis for learning a new rule or refining an existing one.
  */
-class AbstractStatistics : public IMatrix {
+class AbstractStatistics {
 
     private:
 
@@ -306,8 +306,18 @@ class AbstractStatistics : public IMatrix {
          */
         virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const = 0;
 
-        uint32 getNumRows() const override;
+        /**
+         * Returns the number of available statistics.
+         *
+         * @return The number of statistics
+         */
+        uint32 getNumStatistics() const;
 
-        uint32 getNumCols() const override;
+        /**
+         * Returns the number of available labels.
+         *
+         * @return The number of labels
+         */
+        uint32 getNumLabels() const;
 
 };

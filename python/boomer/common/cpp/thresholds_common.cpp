@@ -28,7 +28,7 @@ struct FilteredCacheEntry {
  *                      individual training examples
  */
 static inline void updateSampledStatistics(AbstractStatistics& statistics, const IWeightVector& weights) {
-    uint32 numExamples = statistics.getNumRows();
+    uint32 numExamples = statistics.getNumStatistics();
     statistics.resetSampledStatistics();
 
     for (uint32 r = 0; r < numExamples; r++) {

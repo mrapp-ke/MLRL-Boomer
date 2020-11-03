@@ -1,12 +1,12 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport IRandomAccessVector, BinaryDokVector, IMatrix, BinaryDokMatrix
+from boomer.common._data cimport IRandomAccessVector, BinaryDokVector, BinaryDokMatrix
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/input_data.h" nogil:
 
-    cdef cppclass ILabelMatrix(IMatrix):
+    cdef cppclass ILabelMatrix:
         pass
 
 
@@ -28,7 +28,7 @@ cdef extern from "cpp/input_data.h" nogil:
         DokLabelMatrixImpl(unique_ptr[BinaryDokMatrix] matrixPtr) except +
 
 
-    cdef cppclass IFeatureMatrix(IMatrix):
+    cdef cppclass IFeatureMatrix:
         pass
 
 

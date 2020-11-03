@@ -105,7 +105,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
          *                      the individual training examples
          */
         ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
-            : thresholds_(thresholds), weights_(weights), coverageMask_(CoverageMask(thresholds.getNumRows())) {
+            : thresholds_(thresholds), weights_(weights), coverageMask_(CoverageMask(thresholds.getNumExamples())) {
             sumOfWeights_ = weights.getSumOfWeights();
             numModifications_ = 0;
         }
@@ -185,7 +185,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 
         float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
-            uint32 numExamples = thresholds_.getNumRows();
+            uint32 numExamples = thresholds_.getNumExamples();
 
             for (uint32 r = 0; r < numExamples; r++) {
                 if (weights_.getValue(r) == 0 && coverageMask.isCovered(r)) {
@@ -203,7 +203,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
         void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
             AbstractPrediction& head = *refinement.headPtr;
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
-            uint32 numExamples = thresholds_.getNumRows();
+            uint32 numExamples = thresholds_.getNumExamples();
 
             for (uint32 r = 0; r < numExamples; r++) {
                 if (coverageMask.isCovered(r)) {
@@ -225,7 +225,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
         }
 
         void applyPrediction(const AbstractPrediction& prediction) override {
-            uint32 numExamples = thresholds_.getNumRows();
+            uint32 numExamples = thresholds_.getNumExamples();
 
             for (uint32 r = 0; r < numExamples; r++) {
                 if (coverageMask_.isCovered(r)) {

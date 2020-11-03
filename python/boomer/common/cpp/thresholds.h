@@ -186,7 +186,7 @@ class IThresholdsSubset {
  * An abstract base class for all classes that provide access to thresholds that may be used by the first condition of a
  * rule that currently has an empty body and therefore covers the entire instance space.
  */
-class AbstractThresholds : public IMatrix {
+class AbstractThresholds {
 
     protected:
 
@@ -226,14 +226,24 @@ class AbstractThresholds : public IMatrix {
         virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
 
         /**
-         * Returns the total number of available labels.
+         * Returns the number of available examples.
          *
-         * @return The total number of available labels
+         * @return The number of examples
+         */
+        uint32 getNumExamples() const;
+
+        /**
+         * Returns the number of available features.
+         *
+         * @return The number of features
+         */
+        uint32 getNumFeatures() const;
+
+        /**
+         * Returns the number of available labels.
+         *
+         * @return The number of labels
          */
         uint32 getNumLabels() const;
-
-        uint32 getNumRows() const override;
-
-        uint32 getNumCols() const override;
 
 };
