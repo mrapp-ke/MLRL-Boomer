@@ -113,6 +113,7 @@ void SparseArrayVector<T>::sortByValues() {
 }
 
 template class SparseArrayVector<float32>;
+template class SparseArrayVector<float64>;
 
 BinaryDokVector::BinaryDokVector(uint32 numElements)
     : numElements_(numElements) {
