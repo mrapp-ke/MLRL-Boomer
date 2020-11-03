@@ -207,7 +207,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                                  std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                  std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
                                  float64* hessians, float64* currentScores)
-            : AbstractLabelWiseStatistics(labelMatrixPtr->getNumRows(), labelMatrixPtr->getNumCols(),
+            : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
               ruleEvaluationFactoryPtr), lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
               gradients_(gradients), hessians_(hessians), currentScores_(currentScores) {
             // The number of labels
@@ -335,9 +335,9 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 
 std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
     // The number of examples
-    uint32 numExamples = labelMatrixPtr_->getNumRows();
+    uint32 numExamples = labelMatrixPtr_->getNumExamples();
     // The number of labels
-    uint32 numLabels = labelMatrixPtr_->getNumCols();
+    uint32 numLabels = labelMatrixPtr_->getNumLabels();
     // A matrix that stores the gradients for each example and label
     float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // A matrix that stores the Hessians for each example and label

@@ -6,16 +6,16 @@ DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels,
 
 }
 
-uint32 DenseLabelMatrixImpl::getNumRows() const {
+uint32 DenseLabelMatrixImpl::getNumExamples() const {
     return numExamples_;
 }
 
-uint32 DenseLabelMatrixImpl::getNumCols() const {
+uint32 DenseLabelMatrixImpl::getNumLabels() const {
     return numLabels_;
 }
 
 uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
-    uint32 i = (row * this->getNumCols()) + col;
+    uint32 i = (row * numLabels_) + col;
     return y_[i];
 }
 
@@ -24,11 +24,11 @@ DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPt
 
 }
 
-uint32 DokLabelMatrixImpl::getNumRows() const {
+uint32 DokLabelMatrixImpl::getNumExamples() const {
     return matrixPtr_->getNumRows();
 }
 
-uint32 DokLabelMatrixImpl::getNumCols() const {
+uint32 DokLabelMatrixImpl::getNumLabels() const {
     return matrixPtr_->getNumCols();
 }
 
@@ -41,18 +41,18 @@ DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFea
 
 }
 
-uint32 DenseFeatureMatrixImpl::getNumRows() const {
+uint32 DenseFeatureMatrixImpl::getNumExamples() const {
     return numExamples_;
 }
 
-uint32 DenseFeatureMatrixImpl::getNumCols() const {
+uint32 DenseFeatureMatrixImpl::getNumFeatures() const {
     return numFeatures_;
 }
 
 void DenseFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
                                                 std::unique_ptr<FeatureVector>& featureVectorPtr) const {
     // The number of elements to be returned
-    uint32 numElements = this->getNumRows();
+    uint32 numElements = this->getNumExamples();
     // The first element in `x_` that corresponds to the given feature index
     uint32 offset = featureIndex * numElements;
 
@@ -72,11 +72,11 @@ CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeature
 
 }
 
-uint32 CscFeatureMatrixImpl::getNumRows() const {
+uint32 CscFeatureMatrixImpl::getNumExamples() const {
     return numExamples_;
 }
 
-uint32 CscFeatureMatrixImpl::getNumCols() const {
+uint32 CscFeatureMatrixImpl::getNumFeatures() const {
     return numFeatures_;
 }
 
