@@ -115,7 +115,7 @@ class DenseVector : virtual public IVector {
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class SparseArrayVector : virtual public IVector {
+class SparseArrayVector {
 
     public:
 
@@ -170,9 +170,11 @@ class SparseArrayVector : virtual public IVector {
         const_iterator cend() const;
 
         /**
-         * Sorts the elements in the vector in ascending order based on their values.
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
          */
-        void sortByValues();
+        uint32 getNumElements() const;
 
         /**
          * Sets the number of elements in the vector.
@@ -181,7 +183,10 @@ class SparseArrayVector : virtual public IVector {
          */
         void setNumElements(uint32 numElements);
 
-        uint32 getNumElements() const override;
+        /**
+         * Sorts the elements in the vector in ascending order based on their values.
+         */
+        void sortByValues();
 
 };
 
