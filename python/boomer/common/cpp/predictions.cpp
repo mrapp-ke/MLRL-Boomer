@@ -5,8 +5,32 @@
 
 
 AbstractPrediction::AbstractPrediction(uint32 numElements)
-    : DenseVector<float64>(numElements) {
+    : predictedScoreVector_(DenseVector<float64>(numElements)) {
 
+}
+
+uint32 AbstractPrediction::getNumElements() const {
+    return predictedScoreVector_.getNumElements();
+}
+
+void AbstractPrediction::setNumElements(uint32 numElements) {
+    predictedScoreVector_.setNumElements(numElements);
+}
+
+AbstractPrediction::iterator AbstractPrediction::begin() {
+    return predictedScoreVector_.begin();
+}
+
+AbstractPrediction::iterator AbstractPrediction::end() {
+    return predictedScoreVector_.end();
+}
+
+AbstractPrediction::const_iterator AbstractPrediction::cbegin() const {
+    return predictedScoreVector_.cbegin();
+}
+
+AbstractPrediction::const_iterator AbstractPrediction::cend() const {
+    return predictedScoreVector_.cend();
 }
 
 AbstractEvaluatedPrediction::AbstractEvaluatedPrediction(uint32 numElements)
@@ -27,12 +51,8 @@ FullPrediction::index_const_iterator FullPrediction::indices_cend() const {
     return indexVector_.indices_cend();
 }
 
-uint32 FullPrediction::getNumElements() const {
-    return DenseVector<float64>::getNumElements();
-}
-
 void FullPrediction::setNumElements(uint32 numElements) {
-    DenseVector<float64>::setNumElements(numElements);
+    AbstractPrediction::setNumElements(numElements);
     indexVector_.setNumElements(numElements);
 }
 
@@ -82,12 +102,8 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
     return indexVector_.indices_cend();
 }
 
-uint32 PartialPrediction::getNumElements() const {
-    return DenseVector<float64>::getNumElements();
-}
-
 void PartialPrediction::setNumElements(uint32 numElements) {
-    DenseVector<float64>::setNumElements(numElements);
+    AbstractPrediction::setNumElements(numElements);
     indexVector_.setNumElements(numElements);
 }
 

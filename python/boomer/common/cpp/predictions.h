@@ -15,7 +15,11 @@ class AbstractStatistics;
 /**
  * An abstract base class for all classes that store the scores that are predicted by a rule.
  */
-class AbstractPrediction : public DenseVector<float64>, virtual public IIndexVector {
+class AbstractPrediction : virtual public IIndexVector {
+
+    private:
+
+        DenseVector<float64> predictedScoreVector_;
 
     public:
 
@@ -23,6 +27,38 @@ class AbstractPrediction : public DenseVector<float64>, virtual public IIndexVec
          * @param numElements The number of labels for which the rule predicts
          */
         AbstractPrediction(uint32 numElements);
+
+        typedef DenseVector<float64>::iterator iterator;
+
+        typedef DenseVector<float64>::const_iterator const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the predicted scores.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the predicted scores.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns a `const_iterator` to the beginning of the predicted scores.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the predicted scores.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
 
         /**
          * Updates the given statistics by applying this prediction.
@@ -32,9 +68,12 @@ class AbstractPrediction : public DenseVector<float64>, virtual public IIndexVec
          */
         virtual void apply(AbstractStatistics& statistics, uint32 statisticIndex) const = 0;
 
-        virtual uint32 getNumElements() const override = 0;
+        /**
+         * TODO
+         */
+        virtual void setNumElements(uint32 numElements);
 
-        virtual void setNumElements(uint32 numElements) = 0;
+        uint32 getNumElements() const override;
 
 };
 
@@ -89,8 +128,6 @@ class FullPrediction : public AbstractEvaluatedPrediction {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const;
-
-        uint32 getNumElements() const override;
 
         void setNumElements(uint32 numElements) override;
 
@@ -156,8 +193,6 @@ class PartialPrediction : public AbstractEvaluatedPrediction {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const;
-
-        uint32 getNumElements() const override;
 
         void setNumElements(uint32 numElements) override;
 
