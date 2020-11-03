@@ -5,7 +5,6 @@
  */
 #pragma once
 
-#include "data.h"
 #include "indices.h"
 #include "random.h"
 #include <memory>
@@ -14,7 +13,7 @@
 /**
  * Defines an interface for one-dimensional vectors that provide access to weights.
  */
-class IWeightVector : virtual public IVector {
+class IWeightVector {
 
     public:
 
