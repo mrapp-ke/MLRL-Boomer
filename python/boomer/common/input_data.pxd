@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport IRandomAccessVector, BinaryDokVector, BinaryDokMatrix
+from boomer.common._data cimport BinaryDokVector, BinaryDokMatrix
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
