@@ -182,7 +182,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 // Only uncovered labels must be considered...
                 if (labelWeight > 0) {
-                    // Add the current example and label to the confusion matrix that corresponds to the current label...
+                    // Add the current example and label to the confusion matrix that corresponds to the current
+                    // label...
                     uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
                     uint8 predictedLabel = minorityLabels_[c];
                     uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
@@ -251,8 +252,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     if (labelWeight > 0) {
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
 
-                        // Decrement the total sum of uncovered labels, if the prediction for the current example and label is
-                        // correct...
+                        // Decrement the total sum of uncovered labels, if the prediction for the current example and
+                        // label is correct...
                         if (predictedLabel == trueLabel) {
                             sumUncoveredLabels_ -= labelWeight;
                         }
@@ -285,8 +286,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     if (labelWeight > 0) {
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, l);
 
-                        // Decrement the total sum of uncovered labels, if the prediction for the current example and label is
-                        // correct...
+                        // Decrement the total sum of uncovered labels, if the prediction for the current example and
+                        // label is correct...
                         if (predictedLabel == trueLabel) {
                             sumUncoveredLabels_ -= labelWeight;
                         }
