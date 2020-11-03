@@ -49,7 +49,7 @@ class IRandomAccessLabelMatrix : public ILabelMatrix {
         virtual ~IRandomAccessLabelMatrix() { };
 
         /**
-         * Returns the value of a label of an example.
+         * Returns the value of a specific label.
          *
          * @param exampleIndex  The index of the example
          * @param labelIndex    The index of the label
