@@ -49,13 +49,13 @@ class IRandomAccessLabelMatrix : public ILabelMatrix {
         virtual ~IRandomAccessLabelMatrix() { };
 
         /**
-         * Returns the value of the element at a specific position.
+         * Returns the value of a label of an example.
          *
-         * @param row   The row of the element. Must be in [0, getNumExamples())
-         * @param col   The column of the element. Must be in [0, getNumLabels())
-         * @return      The value of the given element
+         * @param exampleIndex  The index of the example
+         * @param labelIndex    The index of the label
+         * @return              The value of the label
          */
-        virtual uint8 getValue(uint32 row, uint32 col) const = 0;
+        virtual uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const = 0;
 
 };
 
@@ -86,7 +86,7 @@ class DenseLabelMatrixImpl : public IRandomAccessLabelMatrix {
 
         uint32 getNumLabels() const override;
 
-        uint8 getValue(uint32 row, uint32 col) const override;
+        uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
 };
 
@@ -98,21 +98,33 @@ class DokLabelMatrixImpl : public IRandomAccessLabelMatrix {
 
     private:
 
-        std::unique_ptr<BinaryDokMatrix> matrixPtr_;
+        uint32 numExamples_;
+
+        uint32 numLabels_;
+
+        BinaryDokMatrix matrix_;
 
     public:
 
         /**
-         * @param matrix An unique pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
-         *               training examples
+         * @param numExamples   The number of examples
+         * @param numLabels     The number of labels
          */
-        DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr);
+        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels);
+
+        /**
+         * Marks a label of an example as relevant.
+         *
+         * @param exampleIndex  The index of the example
+         * @param labelIndex    The index of the label
+         */
+        void setValue(uint32 exampleIndex, uint32 labelIndex);
 
         uint32 getNumExamples() const override;
 
         uint32 getNumLabels() const override;
 
-        uint8 getValue(uint32 row, uint32 col) const override;
+        uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
 };
 

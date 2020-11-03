@@ -130,19 +130,6 @@ void BinaryDokVector::setValue(uint32 pos) {
     data_.insert(pos);
 }
 
-BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols)
-    : numRows_(numRows), numCols_(numCols) {
-
-}
-
-uint32 BinaryDokMatrix::getNumRows() const {
-    return numRows_;
-}
-
-uint32 BinaryDokMatrix::getNumCols() const {
-    return numCols_;
-}
-
 uint8 BinaryDokMatrix::getValue(uint32 row, uint32 column) const {
     return data_.find(std::make_pair(row, column)) != data_.end();
 }
