@@ -229,8 +229,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
-            std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
-            return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr), labelIndices);
+            std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
+                ruleEvaluationFactoryPtr_->create(labelIndices);
+            return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
+                                                                          labelIndices);
         }
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
