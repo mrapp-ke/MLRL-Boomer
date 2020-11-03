@@ -34,7 +34,7 @@ class AbstractPrediction : public DenseVector<float64>, virtual public IIndexVec
 
         virtual uint32 getNumElements() const override = 0;
 
-        virtual void setNumElements(uint32 numElements) override = 0;
+        virtual void setNumElements(uint32 numElements) = 0;
 
 };
 
