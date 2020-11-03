@@ -139,11 +139,11 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 };
 
 ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                             std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                                              std::shared_ptr<AbstractStatistics> statisticsPtr,
                                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                              std::shared_ptr<IBinning> binningPtr)
-    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr),
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
       binningPtr_(binningPtr) {
 
 }

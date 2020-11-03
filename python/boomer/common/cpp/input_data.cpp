@@ -99,15 +99,11 @@ void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
     }
 }
 
-DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr)
+DokNominalFeatureMaskImpl::DokNominalFeatureMaskImpl(std::unique_ptr<BinaryDokVector> vectorPtr)
     : vectorPtr_(std::move(vectorPtr)) {
 
 }
 
-uint32 DokNominalFeatureVectorImpl::getNumElements() const {
-    return vectorPtr_->getNumElements();
-}
-
-uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) const {
-    return vectorPtr_->getValue(pos);
+bool DokNominalFeatureMaskImpl::isNominal(uint32 featureIndex) const {
+    return vectorPtr_->getValue(featureIndex) != 0;
 }

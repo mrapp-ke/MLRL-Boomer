@@ -112,16 +112,16 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                                                                                 &x_col_indices[0])
 
 
-cdef class NominalFeatureVector:
+cdef class NominalFeatureMask:
     """
-    A wrapper for the pure virtual C++ class `INominalFeatureVector`.
+    A wrapper for the pure virtual C++ class `INominalFeatureMask`.
     """
     pass
 
 
-cdef class DokNominalFeatureVector(NominalFeatureVector):
+cdef class DokNominalFeatureMask(NominalFeatureMask):
     """
-    A wrapper for the C++ class `DokNominalFeatureVectorImpl`.
+    A wrapper for the C++ class `DokNominalFeatureMaskImpl`.
     """
 
     """
@@ -137,5 +137,5 @@ cdef class DokNominalFeatureVector(NominalFeatureVector):
             for i in nominal_feature_indices:
                 vector_ptr.get().setValue(i)
 
-        self.nominal_feature_vector_ptr = <shared_ptr[INominalFeatureVector]>make_shared[DokNominalFeatureVectorImpl](
+        self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>make_shared[DokNominalFeatureMaskImpl](
             move(vector_ptr))

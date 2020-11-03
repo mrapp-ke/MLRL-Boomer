@@ -41,7 +41,7 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
+    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
@@ -51,8 +51,8 @@ cdef class RuleInduction:
 
         :param thresholds:              A pointer to an object of type `AbstractThresholds` that provides access to the
                                         thresholds that may be used by the conditions of rules
-        :param nominal_feature_vector:  A pointer to an object of type `INominalFeatureVector` that provides access to
-                                        the information whether individual features are nominal or not
+        :param nominal_feature_mask:    A pointer to an object of type `INominalFeatureMask` that provides access to the
+                                        information whether individual features are nominal or not
         :param feature_matrix:          A pointer to an object of type `IFeatureMatrix` that provides column-wise access
                                         to the feature values of the training examples
         :param label_sub_sampling:      A pointer to an object of type `ILabelSubSampling`, implementing the strategy
@@ -121,7 +121,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
+    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,

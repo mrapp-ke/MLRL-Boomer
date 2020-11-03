@@ -47,15 +47,15 @@ cdef extern from "cpp/input_data.h" nogil:
                              const uint32* xColIndices) except +
 
 
-    cdef cppclass INominalFeatureVector(IRandomAccessVector[uint8]):
+    cdef cppclass INominalFeatureMask:
         pass
 
 
-    cdef cppclass DokNominalFeatureVectorImpl(INominalFeatureVector):
+    cdef cppclass DokNominalFeatureMaskImpl(INominalFeatureMask):
 
         # Constructors:
 
-        DokNominalFeatureVectorImpl(unique_ptr[BinaryDokVector] dokVectorPtr) except +
+        DokNominalFeatureMaskImpl(unique_ptr[BinaryDokVector] dokVectorPtr) except +
 
 
 cdef class LabelMatrix:
@@ -92,12 +92,12 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     pass
 
 
-cdef class NominalFeatureVector:
+cdef class NominalFeatureMask:
 
     # Attributes:
 
-    cdef shared_ptr[INominalFeatureVector] nominal_feature_vector_ptr
+    cdef shared_ptr[INominalFeatureMask] nominal_feature_mask_ptr
 
 
-cdef class DokNominalFeatureVector(NominalFeatureVector):
+cdef class DokNominalFeatureMask(NominalFeatureMask):
     pass
