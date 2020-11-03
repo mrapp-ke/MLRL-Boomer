@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "arrays.h"
+#include "data.h"
 #include <memory>
 
 // Forward declarations
@@ -98,9 +98,7 @@ class PartialIndexVector : virtual public IIndexVector {
 
     private:
 
-        uint32 numElements_;
-
-        uint32* array_;
+        DenseVector<uint32> vector_;
 
     public:
 
@@ -109,11 +107,9 @@ class PartialIndexVector : virtual public IIndexVector {
          */
         PartialIndexVector(uint32 numElements);
 
-        ~PartialIndexVector();
+        typedef DenseVector<uint32>::iterator index_iterator;
 
-        typedef uint32* index_iterator;
-
-        typedef const uint32* index_const_iterator;
+        typedef DenseVector<uint32>::const_iterator index_const_iterator;
 
         /**
          * Returns an `index_iterator` to the beginning of the indices.
