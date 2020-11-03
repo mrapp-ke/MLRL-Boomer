@@ -15,17 +15,6 @@ cdef extern from "cpp/data.h" nogil:
         uint32 getNumElements()
 
 
-    cdef cppclass BinaryDokVector:
-
-        # Constructors:
-
-        BinaryDokVector(uint32 numElements) except +
-
-        # Functions:
-
-        void setValue(uint32 pos)
-
-
     cdef cppclass BinaryDokMatrix:
 
         # Constructors:

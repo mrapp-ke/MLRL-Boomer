@@ -130,12 +130,11 @@ cdef class DokNominalFeatureMask(NominalFeatureMask):
     """
     def __cinit__(self, list nominal_feature_indices):
         cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
-        cdef unique_ptr[BinaryDokVector] vector_ptr = make_unique[BinaryDokVector](num_nominal_features)
+        cdef unique_ptr[DokNominalFeatureMaskImpl] ptr = make_unique[DokNominalFeatureMaskImpl](num_nominal_features)
         cdef uint32 i
 
         if num_nominal_features > 0:
             for i in nominal_feature_indices:
-                vector_ptr.get().setValue(i)
+                ptr.get().setNominal(i)
 
-        self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>make_shared[DokNominalFeatureMaskImpl](
-            move(vector_ptr))
+        self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>move(ptr)

@@ -1,5 +1,5 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport BinaryDokVector, BinaryDokMatrix
+from boomer.common._data cimport BinaryDokMatrix
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
@@ -55,7 +55,11 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DokNominalFeatureMaskImpl(unique_ptr[BinaryDokVector] dokVectorPtr) except +
+        DokNominalFeatureMaskImpl(uint32 numFeatures) except +
+
+        # Functions:
+
+        void setNominal(uint32 featureIndex)
 
 
 cdef class LabelMatrix:

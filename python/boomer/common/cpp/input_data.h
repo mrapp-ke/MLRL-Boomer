@@ -254,14 +254,21 @@ class DokNominalFeatureMaskImpl : virtual public INominalFeatureMask {
 
     private:
 
-        std::unique_ptr<BinaryDokVector> vectorPtr_;
+        BinaryDokVector vector_;
 
     public:
 
         /**
-         * @param vector A pointer to an object of type `BinaryDokVector`, storing the nominal attributes
+         * @param numFeatures The number of available features
          */
-        DokNominalFeatureMaskImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
+        DokNominalFeatureMaskImpl(uint32 numFeatures);
+
+        /**
+         * Marks the feature at a specific index as nominal.
+         *
+         * @param featureIndex The index of the feature
+         */
+        void setNominal(uint32 featureIndex);
 
         bool isNominal(uint32 featureIndex) const override;
 
