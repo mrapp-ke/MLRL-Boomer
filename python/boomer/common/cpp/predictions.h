@@ -15,7 +15,7 @@ class AbstractStatistics;
 /**
  * An abstract base class for all classes that store the scores that are predicted by a rule.
  */
-class AbstractPrediction : virtual public IIndexVector {
+class AbstractPrediction : public IIndexVector {
 
     private:
 
