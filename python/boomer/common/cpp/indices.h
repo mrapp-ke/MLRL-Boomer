@@ -28,14 +28,6 @@ class IIndexVector {
         virtual ~IIndexVector() { };
 
         /**
-         * Returns whether the indices are partial, i.e., some indices in the range [0, getNumElements()) are missing,
-         * or not.
-         *
-         * @return True, if the indices are partial, false otherwise
-         */
-        virtual bool isPartial() const = 0;
-
-        /**
          * Returns the number of indices.
          *
          * @return The number of indices
@@ -43,11 +35,12 @@ class IIndexVector {
         virtual uint32 getNumElements() const = 0;
 
         /**
-         * Sets the number of indices.
+         * Returns whether the indices are partial, i.e., some indices in the range [0, getNumElements()) are missing,
+         * or not.
          *
-         * @param numElements The number of indices to be set
+         * @return True, if the indices are partial, false otherwise
          */
-        virtual void setNumElements(uint32 numElements) = 0;
+        virtual bool isPartial() const = 0;
 
         /**
          * Returns the index at a specific position.
@@ -139,11 +132,16 @@ class PartialIndexVector : virtual public IIndexVector {
          */
         index_const_iterator indices_cend() const;
 
-        bool isPartial() const override;
+        /**
+         * Sets the number of indices.
+         *
+         * @param numElements The number of indices to be set
+         */
+        void setNumElements(uint32 numElements);
 
         uint32 getNumElements() const override;
 
-        void setNumElements(uint32 numElements) override;
+        bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
 
@@ -211,11 +209,16 @@ class FullIndexVector : virtual public IIndexVector {
          */
         index_const_iterator indices_cend() const;
 
-        bool isPartial() const override;
+        /**
+         * Sets the number of indices.
+         *
+         * @param numElements The number of indices to be set
+         */
+        void setNumElements(uint32 numElements);
 
         uint32 getNumElements() const override;
 
-        void setNumElements(uint32 numElements) override;
+        bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
 
