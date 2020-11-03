@@ -24,18 +24,18 @@ class ILabelMatrix {
         virtual ~ILabelMatrix() { };
 
         /**
-         * Returns the number of rows in the matrix.
+         * Returns the number of available examples.
          *
-         * @return The number of rows
+         * @return The number of examples
          */
-        virtual uint32 getNumRows() const = 0;
+        virtual uint32 getNumExamples() const = 0;
 
         /**
-         * Returns the number of columns in the matrix.
+         * Returns the number of available labels.
          *
-         * @return The number of columns
+         * @return The number of labels
          */
-        virtual uint32 getNumCols() const = 0;
+        virtual uint32 getNumLabels() const = 0;
 
 };
 
@@ -51,8 +51,8 @@ class IRandomAccessLabelMatrix : public ILabelMatrix {
         /**
          * Returns the value of the element at a specific position.
          *
-         * @param row   The row of the element. Must be in [0, getNumRows())
-         * @param col   The column of the element. Must be in [0, getNumCols())
+         * @param row   The row of the element. Must be in [0, getNumExamples())
+         * @param col   The column of the element. Must be in [0, getNumLabels())
          * @return      The value of the given element
          */
         virtual uint8 getValue(uint32 row, uint32 col) const = 0;
@@ -82,9 +82,9 @@ class DenseLabelMatrixImpl : public IRandomAccessLabelMatrix {
          */
         DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y);
 
-        uint32 getNumRows() const override;
+        uint32 getNumExamples() const override;
 
-        uint32 getNumCols() const override;
+        uint32 getNumLabels() const override;
 
         uint8 getValue(uint32 row, uint32 col) const override;
 
@@ -108,9 +108,9 @@ class DokLabelMatrixImpl : public IRandomAccessLabelMatrix {
          */
         DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr);
 
-        uint32 getNumRows() const override;
+        uint32 getNumExamples() const override;
 
-        uint32 getNumCols() const override;
+        uint32 getNumLabels() const override;
 
         uint8 getValue(uint32 row, uint32 col) const override;
 
@@ -127,18 +127,18 @@ class IFeatureMatrix {
         virtual ~IFeatureMatrix() { };
 
         /**
-         * Returns the number of rows in the matrix.
+         * Returns the number of available examples.
          *
-         * @return The number of rows
+         * @return The number of examples
          */
-        virtual uint32 getNumRows() const = 0;
+        virtual uint32 getNumExamples() const = 0;
 
         /**
-         * Returns the number of columns in the matrix.
+         * Returns the number of available features.
          *
-         * @return The number of columns
+         * @return The number of features
          */
-        virtual uint32 getNumCols() const = 0;
+        virtual uint32 getNumFeatures() const = 0;
 
         /**
          * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,
@@ -176,9 +176,9 @@ class DenseFeatureMatrixImpl : public IFeatureMatrix {
          */
         DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x);
 
-        uint32 getNumRows() const override;
+        uint32 getNumExamples() const override;
 
-        uint32 getNumCols() const override;
+        uint32 getNumFeatures() const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
@@ -218,9 +218,9 @@ class CscFeatureMatrixImpl : public IFeatureMatrix {
         CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
                              const uint32* xColIndices);
 
-        uint32 getNumRows() const override;
+        uint32 getNumExamples() const override;
 
-        uint32 getNumCols() const override;
+        uint32 getNumFeatures() const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
