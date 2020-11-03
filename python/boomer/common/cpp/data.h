@@ -91,12 +91,11 @@ class DenseVector : virtual public IVector {
         const_iterator cend() const;
 
         /**
-         * Returns the value of the element at a specific position.
+         * Returns the number of elements in the vector.
          *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
+         * @return The number of elements in the vector
          */
-        T getValue(uint32 pos) const;
+        uint32 getNumElements() const;
 
         /**
          * Sets the number of elements in the vector.
@@ -105,7 +104,13 @@ class DenseVector : virtual public IVector {
          */
         void setNumElements(uint32 numElements);
 
-        uint32 getNumElements() const override;
+        /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
+         */
+        T getValue(uint32 pos) const;
 
 };
 
