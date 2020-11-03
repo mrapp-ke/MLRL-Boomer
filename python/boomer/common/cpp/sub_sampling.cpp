@@ -1,11 +1,12 @@
 #include "sub_sampling.h"
+#include "data.h"
 #include <math.h>
 
 
 /**
  * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  */
-class DenseWeightVector : virtual public IWeightVector {
+class DenseWeightVector : public IWeightVector {
 
     private:
 
@@ -64,10 +65,6 @@ class DenseWeightVector : virtual public IWeightVector {
             return vector_.cend();
         }
 
-        uint32 getNumElements() const override {
-            return vector_.getNumElements();
-        }
-
         bool hasZeroWeights() const override {
             return true;
         }
@@ -99,10 +96,6 @@ class EqualWeightVector : public IWeightVector {
         EqualWeightVector(uint32 numElements)
             : numElements_(numElements) {
 
-        }
-
-        uint32 getNumElements() const override {
-            return numElements_;
         }
 
         bool hasZeroWeights() const override {
