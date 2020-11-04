@@ -166,9 +166,15 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
                 featureVector = cacheIterator->second.get();
             }
 
-            // Identify the examples that are covered by the refined rule...
-            filterAnyVector(*featureVector, cacheEntry, condition, numModifications_, coverageMask_,
-                            *thresholds_.statisticsPtr_, weights_);
+            // Identify the examples that are covered by the condition...
+            if (numModifications_ > cacheEntry.numConditions) {
+                filterAnyVector<FeatureVector>(*featureVector, cacheEntry, numModifications_, coverageMask_);
+                featureVector = cacheEntry.vectorPtr.get();
+            }
+
+            filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, condition.start, condition.end,
+                                               condition.comparator, condition.covered, numModifications_,
+                                               coverageMask_, *thresholds_.statisticsPtr_, weights_);
         }
 
         void resetThresholds() override {

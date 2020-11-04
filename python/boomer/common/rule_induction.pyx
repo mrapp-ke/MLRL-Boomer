@@ -258,5 +258,8 @@ cdef inline Condition __create_condition(Refinement* refinement):
     condition.featureIndex = refinement.featureIndex
     condition.comparator = refinement.comparator
     condition.threshold = refinement.threshold
+    condition.start = refinement.start
+    condition.end = refinement.end
+    condition.covered = refinement.covered
     condition.coveredWeights = refinement.coveredWeights
     return condition
