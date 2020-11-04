@@ -1,7 +1,6 @@
 #include "predictions.h"
 #include "statistics.h"
 #include "thresholds.h"
-#include <cstdlib>
 
 
 AbstractPrediction::AbstractPrediction(uint32 numElements)
