@@ -18,9 +18,6 @@ cdef extern from "cpp/rules.h" nogil:
         uint32 featureIndex
         Comparator comparator
         float32 threshold
-        intp start
-        intp end
-        bool covered
         uint32 coveredWeights
 
 
