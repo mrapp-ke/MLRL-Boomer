@@ -67,7 +67,7 @@ namespace boosting {
     /**
      * A multi-label variant of the squared hinge loss that is applied label-wise.
      */
-    class LabelWiseSquaredHingeLossImpl : virtual public ILabelWiseLoss {
+    class LabelWiseSquaredHingeLossImpl : public ILabelWiseLoss {
 
         public:
 
