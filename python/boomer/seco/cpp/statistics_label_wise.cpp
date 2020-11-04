@@ -1,6 +1,6 @@
 #include "statistics_label_wise.h"
-#include "../../common/cpp/arrays.cpp"
-#include "confusion_matrices.cpp"
+#include "../../common/cpp/arrays.h"
+#include "confusion_matrices.h"
 #include <cstdlib>
 
 using namespace seco;

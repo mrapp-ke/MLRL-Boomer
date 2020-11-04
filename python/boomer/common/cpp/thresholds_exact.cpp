@@ -1,6 +1,6 @@
 #include "thresholds_exact.h"
-#include "thresholds_common.cpp"
-#include "rule_refinement_exact.cpp"
+#include "thresholds_common.h"
+#include "rule_refinement_exact.h"
 
 
 /**

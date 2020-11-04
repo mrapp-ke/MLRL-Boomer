@@ -1,5 +1,5 @@
 #include "statistics_label_wise.h"
-#include "../../common/cpp/arrays.cpp"
+#include "../../common/cpp/arrays.h"
 #include <cstdlib>
 
 using namespace boosting;

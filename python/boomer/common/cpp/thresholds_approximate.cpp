@@ -1,6 +1,6 @@
 #include "thresholds_approximate.h"
-#include "thresholds_common.cpp"
-#include "rule_refinement_approximate.cpp"
+#include "thresholds_common.h"
+#include "rule_refinement_approximate.h"
 
 
 /**
