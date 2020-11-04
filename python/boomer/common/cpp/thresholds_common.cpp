@@ -28,11 +28,11 @@ struct FilteredCacheEntry {
  *                      individual training examples
  */
 static inline void updateSampledStatistics(AbstractStatistics& statistics, const IWeightVector& weights) {
-    uint32 numExamples = statistics.getNumRows();
+    uint32 numExamples = statistics.getNumStatistics();
     statistics.resetSampledStatistics();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        uint32 weight = weights.getValue(r);
+        uint32 weight = weights.getWeight(r);
         statistics.addSampledStatistic(r, weight);
     }
 }
@@ -156,7 +156,7 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            uint32 weight = weights.getValue(index);
+            uint32 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, false);
             i++;
         }
@@ -190,7 +190,7 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
         for (intp r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getValue(index);
+            uint32 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
 

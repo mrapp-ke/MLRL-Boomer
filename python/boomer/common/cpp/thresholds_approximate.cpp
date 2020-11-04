@@ -7,7 +7,7 @@
  * Provides access to a subset of the thresholds that are stored by an instance of the class
  * `ApproximateThresholds`.
  */
-class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
+class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
     private:
 
@@ -16,7 +16,7 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
          * are retrieved from the cache. Otherwise, they are computed by fetching the feature values from the feature
          * matrix and applying a binning method.
          */
-        class Callback : virtual public IBinningObserver, virtual public IRuleRefinementCallback<BinVector> {
+        class Callback : public IBinningObserver, public IRuleRefinementCallback<BinVector> {
 
             private:
 
@@ -139,11 +139,11 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
 };
 
 ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                             std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                                              std::shared_ptr<AbstractStatistics> statisticsPtr,
                                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                              std::shared_ptr<IBinning> binningPtr)
-    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr),
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
       binningPtr_(binningPtr) {
 
 }

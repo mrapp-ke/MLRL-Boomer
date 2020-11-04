@@ -88,7 +88,7 @@ cdef class IREP(Pruning):
 
         # Tell the statistics about all examples in the prune set that are covered by the existing rule...
         for i in range(num_examples):
-            if weights.getValue(i) == 0:
+            if weights.getWeight(i) == 0:
                 statistics.addSampledStatistic(i, 1)
 
                 if covered_examples_mask[i] == covered_examples_target:
@@ -157,7 +157,7 @@ cdef class IREP(Pruning):
                 i = indexed_values[r].index
 
                 # We must only consider examples that are currently covered and contained in the prune set...
-                if current_covered_examples_mask[i] == current_covered_examples_target and weights.getValue(i) == 0:
+                if current_covered_examples_mask[i] == current_covered_examples_target and weights.getWeight(i) == 0:
                     statistics_subset_ptr.get().addToSubset(i, 1)
 
             # Check if the quality score of the current rule is better than the best quality score known so far
@@ -182,7 +182,7 @@ cdef class IREP(Pruning):
                 for r in range(start, end):
                     i = indexed_values[r].index
 
-                    if current_covered_examples_mask[i] == current_covered_examples_target and weights.getValue(i) == 0:
+                    if current_covered_examples_mask[i] == current_covered_examples_target and weights.getWeight(i) == 0:
                         statistics.updateCoveredStatistic(i, 1, uncovered)
                         current_covered_examples_mask[i] = n
 

@@ -42,7 +42,7 @@ namespace seco {
      * A lift function that monotonously increases until a certain number of labels, where the maximum lift is reached,
      * and monotonously decreases afterwards.
      */
-    class PeakLiftFunctionImpl : virtual public ILiftFunction {
+    class PeakLiftFunctionImpl : public ILiftFunction {
 
         private:
 

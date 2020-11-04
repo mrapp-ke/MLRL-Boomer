@@ -9,7 +9,7 @@
  *           for the best head
  */
 template<class T>
-class SingleLabelHeadRefinement : virtual public IHeadRefinement {
+class SingleLabelHeadRefinement : public IHeadRefinement {
 
     private:
 
@@ -50,16 +50,16 @@ class SingleLabelHeadRefinement : virtual public IHeadRefinement {
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
-                LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
-                typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+                LabelWiseEvaluatedPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
+                typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
                 if (headPtr_.get() == nullptr) {
                     headPtr_ = std::make_unique<PartialPrediction>(1);
                 }
 
-                PartialPrediction::iterator headValueIterator = headPtr_->begin();
+                PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                 PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
-                headValueIterator[0] = valueIterator[bestC];
+                headScoreIterator[0] = scoreIterator[bestC];
                 headIndexIterator[0] = indexIterator[bestC];
                 headPtr_->overallQualityScore = bestQualityScore;
                 return headPtr_.get();
@@ -86,7 +86,7 @@ class SingleLabelHeadRefinement : virtual public IHeadRefinement {
  *           for the best head
  */
 template<class T>
-class FullHeadRefinement : virtual public IHeadRefinement {
+class FullHeadRefinement : public IHeadRefinement {
 
     private:
 
@@ -108,18 +108,20 @@ class FullHeadRefinement : virtual public IHeadRefinement {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
+            const EvaluatedPrediction& prediction = statisticsSubset.calculateExampleWisePrediction(uncovered,
+                                                                                                    accumulated);
             float64 overallQualityScore = prediction.overallQualityScore;
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore) {
                 uint32 numPredictions = prediction.getNumElements();
-                EvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
+                EvaluatedPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
 
                 if (headPtr_.get() == nullptr) {
                     if (labelIndices_.isPartial()) {
-                        typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
-                        std::unique_ptr<PartialPrediction> headPtr = std::make_unique<PartialPrediction>(numPredictions);
+                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                        std::unique_ptr<PartialPrediction> headPtr =
+                            std::make_unique<PartialPrediction>(numPredictions);
                         PartialPrediction::index_iterator headIndexIterator = headPtr->indices_begin();
 
                         for (uint32 c = 0; c < numPredictions; c++) {
@@ -132,10 +134,10 @@ class FullHeadRefinement : virtual public IHeadRefinement {
                     }
                 }
 
-                AbstractEvaluatedPrediction::iterator headValueIterator = headPtr_->begin();
+                AbstractEvaluatedPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
 
                 for (uint32 c = 0; c < numPredictions; c++) {
-                    headValueIterator[c] = valueIterator[c];
+                    headScoreIterator[c] = scoreIterator[c];
                 }
 
                 headPtr_->overallQualityScore = overallQualityScore;

@@ -94,7 +94,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
      */
-    class RegularizedLabelWiseRuleEvaluationFactoryImpl : virtual public ILabelWiseRuleEvaluationFactory {
+    class RegularizedLabelWiseRuleEvaluationFactoryImpl : public ILabelWiseRuleEvaluationFactory {
 
         private:
 
