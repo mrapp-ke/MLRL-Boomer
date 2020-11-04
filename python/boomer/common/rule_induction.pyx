@@ -202,7 +202,11 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 del rule_refinement
 
             if found_refinement:
-                # If a refinement has been found, add the new condition...
+                # Filter the current subset of thresholds by applying the best refinement that has been found...
+                thresholds_subset_ptr.get().filterThresholds(dereference(best_refinement_ptr.get()))
+                num_covered_examples = best_refinement_ptr.get().coveredWeights
+
+                # Add the new condition...
                 conditions.push_back(__create_condition(best_refinement_ptr.get()))
                 num_conditions += 1
                 num_conditions_per_comparator[<uint32>best_refinement_ptr.get().comparator] += 1
@@ -210,10 +214,6 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                     # Keep the labels for which the rule predicts, if the head should not be further refined...
                     label_indices = <IIndexVector*>best_refinement_ptr.get().headPtr.get()
-
-                # Filter the current subset of thresholds by applying the best refinement that has been found...
-                thresholds_subset_ptr.get().filterThresholds(dereference(best_refinement_ptr.get()))
-                num_covered_examples = best_refinement_ptr.get().coveredWeights
 
                 if num_covered_examples <= min_coverage:
                     # Abort refinement process if the rule is not allowed to cover less examples...
