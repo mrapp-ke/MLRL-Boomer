@@ -1,5 +1,5 @@
 #include "rule_evaluation_label_wise.h"
-#include "confusion_matrices.cpp"
+#include "confusion_matrices.h"
 
 using namespace seco;
 
