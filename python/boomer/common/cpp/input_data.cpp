@@ -6,34 +6,38 @@ DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels,
 
 }
 
-uint32 DenseLabelMatrixImpl::getNumRows() const {
+uint32 DenseLabelMatrixImpl::getNumExamples() const {
     return numExamples_;
 }
 
-uint32 DenseLabelMatrixImpl::getNumCols() const {
+uint32 DenseLabelMatrixImpl::getNumLabels() const {
     return numLabels_;
 }
 
-uint8 DenseLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
-    uint32 i = (row * this->getNumCols()) + col;
+uint8 DenseLabelMatrixImpl::getValue(uint32 exampleIndex, uint32 labelIndex) const {
+    uint32 i = (exampleIndex * numLabels_) + labelIndex;
     return y_[i];
 }
 
-DokLabelMatrixImpl::DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr)
-    : matrixPtr_(std::move(matrixPtr)) {
+DokLabelMatrixImpl::DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels)
+    : numExamples_(numExamples), numLabels_(numLabels) {
 
 }
 
-uint32 DokLabelMatrixImpl::getNumRows() const {
-    return matrixPtr_->getNumRows();
+uint32 DokLabelMatrixImpl::getNumExamples() const {
+    return numExamples_;
 }
 
-uint32 DokLabelMatrixImpl::getNumCols() const {
-    return matrixPtr_->getNumCols();
+uint32 DokLabelMatrixImpl::getNumLabels() const {
+    return numLabels_;
 }
 
-uint8 DokLabelMatrixImpl::getValue(uint32 row, uint32 col) const {
-    return matrixPtr_->getValue(row, col);
+uint8 DokLabelMatrixImpl::getValue(uint32 exampleIndex, uint32 labelIndex) const {
+    return matrix_.getValue(exampleIndex, labelIndex);
+}
+
+void DokLabelMatrixImpl::setValue(uint32 exampleIndex, uint32 labelIndex) {
+    matrix_.setValue(exampleIndex, labelIndex);
 }
 
 DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x)
@@ -41,18 +45,18 @@ DenseFeatureMatrixImpl::DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFea
 
 }
 
-uint32 DenseFeatureMatrixImpl::getNumRows() const {
+uint32 DenseFeatureMatrixImpl::getNumExamples() const {
     return numExamples_;
 }
 
-uint32 DenseFeatureMatrixImpl::getNumCols() const {
+uint32 DenseFeatureMatrixImpl::getNumFeatures() const {
     return numFeatures_;
 }
 
 void DenseFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
                                                 std::unique_ptr<FeatureVector>& featureVectorPtr) const {
     // The number of elements to be returned
-    uint32 numElements = this->getNumRows();
+    uint32 numElements = this->getNumExamples();
     // The first element in `x_` that corresponds to the given feature index
     uint32 offset = featureIndex * numElements;
 
@@ -72,11 +76,11 @@ CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeature
 
 }
 
-uint32 CscFeatureMatrixImpl::getNumRows() const {
+uint32 CscFeatureMatrixImpl::getNumExamples() const {
     return numExamples_;
 }
 
-uint32 CscFeatureMatrixImpl::getNumCols() const {
+uint32 CscFeatureMatrixImpl::getNumFeatures() const {
     return numFeatures_;
 }
 
@@ -99,15 +103,10 @@ void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
     }
 }
 
-DokNominalFeatureVectorImpl::DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr)
-    : vectorPtr_(std::move(vectorPtr)) {
-
+bool DokNominalFeatureMaskImpl::isNominal(uint32 featureIndex) const {
+    return vector_.getValue(featureIndex);
 }
 
-uint32 DokNominalFeatureVectorImpl::getNumElements() const {
-    return vectorPtr_->getNumElements();
-}
-
-uint8 DokNominalFeatureVectorImpl::getValue(uint32 pos) const {
-    return vectorPtr_->getValue(pos);
+void DokNominalFeatureMaskImpl::setNominal(uint32 featureIndex) {
+    vector_.setValue(featureIndex);
 }

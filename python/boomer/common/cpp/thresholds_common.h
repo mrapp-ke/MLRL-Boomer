@@ -28,11 +28,11 @@ struct FilteredCacheEntry {
  *                      individual training examples
  */
 static inline void updateSampledStatistics(AbstractStatistics& statistics, const IWeightVector& weights) {
-    uint32 numExamples = statistics.getNumRows();
+    uint32 numExamples = statistics.getNumStatistics();
     statistics.resetSampledStatistics();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        uint32 weight = weights.getValue(r);
+        uint32 weight = weights.getWeight(r);
         statistics.addSampledStatistic(r, weight);
     }
 }
@@ -116,96 +116,108 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
                                        intp conditionEnd, Comparator conditionComparator, bool covered,
                                        uint32 numConditions, CoverageMask& coverageMask, AbstractStatistics& statistics,
                                        const IWeightVector& weights) {
-    uint32 numTotalElements = vector.getNumElements();
-    typename T::const_iterator iterator = vector.cbegin();
-    bool descending = conditionEnd < conditionStart;
-
     // Determine the number of elements in the filtered vector...
-    uint32 numConditionSteps = abs(conditionStart - conditionEnd);
-    uint32 numElements = covered ? numConditionSteps :
-        (numTotalElements > numConditionSteps ? numTotalElements - numConditionSteps : 0);
+    uint32 numTotalElements = vector.getNumElements();
+    uint32 distance = abs(conditionStart - conditionEnd);
+    uint32 numElements = covered ? distance : (numTotalElements > distance ? numTotalElements - distance : 0);
 
-    // Create a new vector that will contain the filtered elements...
-    std::unique_ptr<FeatureVector> filteredVectorPtr = std::make_unique<FeatureVector>(numElements);
-    FeatureVector::iterator filteredIterator = filteredVectorPtr->begin();
+    // Create a new vector that will contain the filtered elements, if necessary...
+    T* filteredVector = cacheEntry.vectorPtr.get();
+
+    if (filteredVector == nullptr) {
+        cacheEntry.vectorPtr = std::make_unique<T>(numElements);
+        filteredVector = cacheEntry.vectorPtr.get();
+    }
+
+    typename T::const_iterator iterator = vector.cbegin();
+    FeatureVector::iterator filteredIterator = filteredVector->begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
-    intp direction;
-    uint32 i;
+    bool descending = conditionEnd < conditionStart;
+    intp start, end;
 
     if (descending) {
-        direction = -1;
-        i = numElements - 1;
+        start = conditionEnd + 1;
+        end = conditionStart + 1;
     } else {
-        direction = 1;
-        i = 0;
+        start = conditionStart;
+        end = conditionEnd;
     }
 
     if (covered) {
         coverageMask.target = numConditions;
         statistics.resetCoveredStatistics();
+        uint32 i = 0;
 
-        // Retain the indices at positions [conditionStart, conditionEnd) and set the corresponding values in the given
-        // `coverageMask` to `numConditions` to mark them as covered...
-        for (uint32 j = 0; j < numConditionSteps; j++) {
-            uint32 r = conditionStart + (j * direction);
+        // Retain the indices at positions [start, end) and set the corresponding values in the given `coverageMask` to
+        // `numConditions` to mark them as covered...
+        for (intp r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            uint32 weight = weights.getValue(index);
+            uint32 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, false);
-            i += direction;
+            i++;
         }
     } else {
-        intp start, end;
-
-        if (descending) {
-            start = numTotalElements - 1;
-            end = -1;
-        } else {
-            start = 0;
-            end = numTotalElements;
-        }
-
         if (conditionComparator == NEQ) {
-            // Retain the indices at positions [start, conditionStart), while leaving the corresponding values in
+            // Retain the indices at positions [currentStart, currentEnd), while leaving the corresponding values in
             // `coverageMask` untouched, such that all previously covered examples in said range are still marked
             // as covered, while previously uncovered examples are still marked as uncovered...
-            uint32 numSteps = abs(start - conditionStart);
+            intp currentStart, currentEnd;
+            uint32 i;
 
-            for (uint32 j = 0; j < numSteps; j++) {
-                uint32 r = start + (j * direction);
+            if (descending) {
+                currentStart = end;
+                currentEnd = numTotalElements;
+                i = start;
+            } else {
+                currentStart = 0;
+                currentEnd = start;
+                i = 0;
+            }
+
+            for (intp r = currentStart; r < currentEnd; r++) {
                 filteredIterator[i].index = iterator[r].index;
                 filteredIterator[i].value = iterator[r].value;
-                i += direction;
+                i++;
             }
         }
 
-        // Discard the indices at positions [conditionStart, conditionEnd) and set the corresponding values in
-        // `coverageMask` to `numConditions`, which marks them as uncovered...
-        for (uint32 j = 0; j < numConditionSteps; j++) {
-            uint32 r = conditionStart + (j * direction);
+        // Discard the indices at positions [start, end) and set the corresponding values in `coverageMask` to
+        // `numConditions`, which marks them as uncovered...
+        for (intp r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getValue(index);
+            uint32 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
 
-        // Retain the indices at positions [conditionEnd, end), while leaving the corresponding values in `coverageMask`
-        // untouched, such that all previously covered examples in said range are still marked as covered, while
-        // previously uncovered examples are still marked as uncovered...
-        uint32 numSteps = abs(conditionEnd - end);
+        // Retain the indices at positions [currentStart, currentEnd), while leaving the corresponding values in
+        // `coverageMask` untouched, such that all previously covered examples in said range are still marked as
+        // covered, while previously uncovered examples are still marked as uncovered...
+        intp currentStart, currentEnd;
+        uint32 i;
 
-        for (uint32 j = 0; j < numSteps; j++) {
-            uint32 r = conditionEnd + (j * direction);
+        if (descending) {
+            currentStart = 0;
+            currentEnd = start;
+            i = 0;
+        } else {
+            currentStart = end;
+            currentEnd = numTotalElements;
+            i = start;
+        }
+
+        for (intp r = currentStart; r < currentEnd; r++) {
             filteredIterator[i].index = iterator[r].index;
             filteredIterator[i].value = iterator[r].value;
-            i += direction;
+            i++;
         }
     }
 
-    cacheEntry.vectorPtr = std::move(filteredVectorPtr);
+    filteredVector->setNumElements(numElements);
     cacheEntry.numConditions = numConditions;
 }
 
@@ -223,13 +235,13 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
  *                      are covered by the current rule
  */
 template<class T>
-static inline void filterAnyVector(T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
+static inline void filterAnyVector(const T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
                                    const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     T* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::move(std::make_unique<T>(maxElements));
+        cacheEntry.vectorPtr = std::make_unique<T>(maxElements);
         filteredVector = cacheEntry.vectorPtr.get();
     }
 
@@ -249,4 +261,117 @@ static inline void filterAnyVector(T& vector, FilteredCacheEntry<T>& cacheEntry,
 
     filteredVector->setNumElements(i);
     cacheEntry.numConditions = numConditions;
+}
+
+/**
+ * Returns an index in [0, max] that corresponds to the first element in a feature vector, whose value is greater than a
+ * specific threshold. If no such element within the range [0, max] is found, `max` is returned.
+ *
+ * @param featureVector A reference to an object of type `FeatureVector`
+ * @param max           The maximum index to be returned
+ * @param threshold     The threshold
+ * @return              An index in range [0, max] that corresponds to the first element in `featureVector` with
+ *                      `value > threshold` or `max`, if no such element is found
+ */
+static inline uint32 upperBound(const FeatureVector& featureVector, uint32 max, float32 threshold) {
+    uint32 first = 0;
+    uint32 last = max;
+    FeatureVector::const_iterator iterator = featureVector.cbegin();
+
+    while (first < last) {
+        uint32 pivot = first + ((last - first) / 2);
+        float32 value = iterator[pivot].value;
+
+        if (threshold >= value) {
+            first = pivot + 1;
+        } else {
+            last = pivot;
+        }
+    }
+
+    return first;
+}
+
+/**
+ * Returns an index in [0, max] that corresponds to the first element in a feature vector, whose value is greater than
+ * or equal to a specific threshold. If no such element within the range [0, max] is found, `max` is returned.
+ *
+ * @param featureVector A reference to an object of type `FeatureVector`
+ * @param max           The maximum index to be returned
+ * @param threshold     The threshold
+ * @return              An index in range [0, max] that corresponds to the first element in `featureVector` with
+ *                      `value >= threshold` or `max`, if no such element is found
+ */
+static inline uint32 lowerBound(const FeatureVector& featureVector, uint32 max, float32 threshold) {
+    uint32 first = 0;
+    uint32 last = max;
+    FeatureVector::const_iterator iterator = featureVector.cbegin();
+
+    while (first < last) {
+        uint32 pivot = first + ((last - first) / 2);
+        float32 value = iterator[pivot].value;
+
+        if (threshold <= value) {
+            last = pivot;
+        } else {
+            first = pivot + 1;
+        }
+    }
+
+    return first;
+}
+
+/**
+ * Filters a given feature vector, such that the filtered vector does only contain the elements that are covered by a
+ * specific condition. The filtered vector is stored in a given struct of type `FilteredCacheEntry`.
+ *
+ * @param vector        A reference to an object of type `FeatureVector` that should be filtered
+ * @param cacheEntry    A reference to a struct of type `FilteredCacheEntry` that should be used to store the filtered
+ *                      vector
+ * @param condition     A reference to an object of type `Condition` that stores information about the condition
+ * @param numConditions The total number of conditions in the current rule's body
+ * @param coverageMask  A reference to an object of type `CoverageMask` that is used to keep track of the elements that
+ *                      are covered by the current rule
+ * @param statistics    A reference to an object of type `AbstractStatistics` to be notified about the statistics that
+ *                      must be considered when searching for the next refinement, i.e., the statistics that are covered
+ *                      by the new rule
+ * @param weights       A reference to an an object of type `IWeightVector` that provides access to the weights of the
+ *                      individual training examples
+ */
+static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEntry<FeatureVector>& cacheEntry,
+                                   const Condition& condition, uint32 numConditions, CoverageMask& coverageMask,
+                                   AbstractStatistics& statistics, const IWeightVector& weights) {
+    float32 threshold = condition.threshold;
+    Comparator comparator = condition.comparator;
+
+    // Find the range [start, end) that either contains the examples that are covered, or uncovered, by the condition...
+    uint32 numElements = vector.getNumElements();
+    uint32 end = upperBound(vector, numElements, threshold);
+    uint32 start;
+    bool covered;
+
+    if (comparator == EQ || comparator == NEQ) {
+        start = lowerBound(vector, end, threshold);
+
+        if (end - start == 0) {
+            start = 0;
+            end = numElements;
+            covered = (comparator == NEQ);
+        } else {
+            covered = (comparator == EQ);
+        }
+    } else {
+        if (vector.cbegin()[end].value > 0) {
+            start = end;
+            end = numElements;
+            covered = (comparator == GR);
+        } else {
+            start = 0;
+            covered = (comparator == LEQ);
+        }
+    }
+
+    // Filter the feature vector...
+    filterCurrentVector<FeatureVector>(cacheEntry, vector, start, end, comparator, covered, numConditions, coverageMask,
+                                       statistics, weights);
 }

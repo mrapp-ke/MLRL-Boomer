@@ -186,13 +186,13 @@ class IThresholdsSubset {
  * An abstract base class for all classes that provide access to thresholds that may be used by the first condition of a
  * rule that currently has an empty body and therefore covers the entire instance space.
  */
-class AbstractThresholds : virtual public IMatrix {
+class AbstractThresholds {
 
     protected:
 
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr_;
 
-        std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr_;
+        std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr_;
 
         std::shared_ptr<AbstractStatistics> statisticsPtr_;
 
@@ -203,7 +203,7 @@ class AbstractThresholds : virtual public IMatrix {
         /**
          * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
          *                                  to the feature values of the training examples
-         * @param nominalFeatureVectorPtr   A shared pointer to an object of type `INominalFeatureVector` that provides
+         * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
          * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
          *                                  access to statistics about the labels of the training examples
@@ -212,7 +212,7 @@ class AbstractThresholds : virtual public IMatrix {
          *                                  rules
          */
         AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                           std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                           std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                            std::shared_ptr<AbstractStatistics> statisticsPtr,
                            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
@@ -226,14 +226,24 @@ class AbstractThresholds : virtual public IMatrix {
         virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
 
         /**
-         * Returns the total number of available labels.
+         * Returns the number of available examples.
          *
-         * @return The total number of available labels
+         * @return The number of examples
+         */
+        uint32 getNumExamples() const;
+
+        /**
+         * Returns the number of available features.
+         *
+         * @return The number of features
+         */
+        uint32 getNumFeatures() const;
+
+        /**
+         * Returns the number of available labels.
+         *
+         * @return The number of labels
          */
         uint32 getNumLabels() const;
-
-        uint32 getNumRows() const override;
-
-        uint32 getNumCols() const override;
 
 };

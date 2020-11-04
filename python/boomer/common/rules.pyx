@@ -617,7 +617,7 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef RuleList rule_list = RuleList.__new__(RuleList, use_mask)
         self.rule_list = rule_list
         cdef uint32 num_predictions, c
-        cdef AbstractPrediction.const_iterator value_iterator
+        cdef AbstractPrediction.score_const_iterator score_iterator
         cdef float64[::1] head_scores
         cdef FullHead head
         cdef EmptyBody body
@@ -625,11 +625,11 @@ cdef class RuleListBuilder(ModelBuilder):
 
         if prediction != NULL:
             num_predictions = prediction.getNumElements()
-            value_iterator = prediction.cbegin()
+            score_iterator = prediction.scores_cbegin()
             head_scores = array_float64(num_predictions)
 
             for c in range(num_predictions):
-                head_scores[c] = value_iterator[c]
+                head_scores[c] = score_iterator[c]
 
             head = FullHead.__new__(FullHead, head_scores)
             body = EmptyBody.__new__(EmptyBody)
@@ -690,12 +690,12 @@ cdef class RuleListBuilder(ModelBuilder):
                                                                  eq_thresholds, neq_feature_indices, neq_thresholds)
 
         cdef uint32 num_predictions = prediction.getNumElements()
-        cdef AbstractPrediction.const_iterator value_iterator = prediction.cbegin()
+        cdef AbstractPrediction.score_const_iterator score_iterator = prediction.scores_cbegin()
         cdef float64[::1] head_scores = array_float64(num_predictions)
         cdef uint32 c
 
         for c in range(num_predictions):
-            head_scores[c] = value_iterator[c]
+            head_scores[c] = score_iterator[c]
 
         cdef PartialPrediction.index_const_iterator index_iterator
         cdef uint32[::1] head_label_indices

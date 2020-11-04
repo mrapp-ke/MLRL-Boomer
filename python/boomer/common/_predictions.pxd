@@ -13,7 +13,7 @@ cdef extern from "cpp/predictions.h" nogil:
 
     cdef cppclass AbstractPrediction:
 
-        ctypedef float64* const_iterator
+        ctypedef float64* score_const_iterator
 
         # Functions:
 
@@ -21,9 +21,9 @@ cdef extern from "cpp/predictions.h" nogil:
 
         uint32 getNumElements()
 
-        const_iterator cbegin()
+        score_const_iterator scores_cbegin()
 
-        const_iterator cend()
+        score_const_iterator scores_cend()
 
         void apply(AbstractStatistics& statistics, uint32 statisticIndex)
 

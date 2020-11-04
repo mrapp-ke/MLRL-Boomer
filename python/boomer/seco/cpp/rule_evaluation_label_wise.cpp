@@ -1,5 +1,5 @@
 #include "rule_evaluation_label_wise.h"
-#include "confusion_matrices.cpp"
+#include "confusion_matrices.h"
 
 using namespace seco;
 
@@ -11,7 +11,7 @@ using namespace seco;
  * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
 template<class T>
-class HeuristicLabelWiseRuleEvaluation : virtual public ILabelWiseRuleEvaluation {
+class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
     private:
 
@@ -45,11 +45,11 @@ class HeuristicLabelWiseRuleEvaluation : virtual public ILabelWiseRuleEvaluation
                 const float64* confusionMatricesSubset, const float64* confusionMatricesCovered,
                 bool uncovered) override {
             uint32 numPredictions = prediction_.getNumElements();
-            LabelWiseEvaluatedPrediction::iterator valueIterator = prediction_.begin();
+            LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
             LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
                 prediction_.quality_scores_begin();
             float64 overallQualityScore = 0;
-            typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+            typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
             for (uint32 c = 0; c < numPredictions; c++) {
                 uint32 l = indexIterator[c];
@@ -57,7 +57,7 @@ class HeuristicLabelWiseRuleEvaluation : virtual public ILabelWiseRuleEvaluation
                 // Set the score to be predicted for the current label...
                 uint8 minorityLabel = minorityLabels[l];
                 float64 score = (float64) (predictMajority_ ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
-                valueIterator[c] = score;
+                scoreIterator[c] = score;
 
                 // Calculate the quality score for the current label...
                 uint32 offsetC = c * NUM_CONFUSION_MATRIX_ELEMENTS;

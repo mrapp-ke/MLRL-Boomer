@@ -41,7 +41,7 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
+    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
@@ -51,8 +51,8 @@ cdef class RuleInduction:
 
         :param thresholds:              A pointer to an object of type `AbstractThresholds` that provides access to the
                                         thresholds that may be used by the conditions of rules
-        :param nominal_feature_vector:  A pointer to an object of type `INominalFeatureVector` that provides access to
-                                        the information whether individual features are nominal or not
+        :param nominal_feature_mask:    A pointer to an object of type `INominalFeatureMask` that provides access to the
+                                        information whether individual features are nominal or not
         :param feature_matrix:          A pointer to an object of type `IFeatureMatrix` that provides column-wise access
                                         to the feature values of the training examples
         :param label_sub_sampling:      A pointer to an object of type `ILabelSubSampling`, implementing the strategy
@@ -100,8 +100,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
         if head_refinement_factory != NULL:
             statistics = statistics_provider.get()
-            num_statistics = statistics.getNumRows()
-            num_labels = statistics.getNumCols()
+            num_statistics = statistics.getNumStatistics()
+            num_labels = statistics.getNumLabels()
             label_indices_ptr = make_unique[FullIndexVector](num_labels)
             statistics.resetSampledStatistics()
 
@@ -121,15 +121,15 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
+    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
                           intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         # The total number of statistics
-        cdef uint32 num_examples = thresholds.getNumRows()
+        cdef uint32 num_examples = thresholds.getNumExamples()
         # The total number of features
-        cdef uint32 num_features = thresholds.getNumCols()
+        cdef uint32 num_features = thresholds.getNumFeatures()
         # The total number of labels
         cdef uint32 num_labels = thresholds.getNumLabels()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -258,8 +258,5 @@ cdef inline Condition __create_condition(Refinement* refinement):
     condition.featureIndex = refinement.featureIndex
     condition.comparator = refinement.comparator
     condition.threshold = refinement.threshold
-    condition.start = refinement.start
-    condition.end = refinement.end
-    condition.covered = refinement.covered
-    condition.coveredWeights = refinement.coveredWeights;
+    condition.coveredWeights = refinement.coveredWeights
     return condition

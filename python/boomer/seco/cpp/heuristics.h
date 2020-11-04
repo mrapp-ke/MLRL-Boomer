@@ -86,7 +86,7 @@ namespace seco {
     /**
      * A heuristic that measures the fraction of incorrectly predicted labels among all covered labels.
      */
-    class PrecisionImpl : virtual public IHeuristic {
+    class PrecisionImpl : public IHeuristic {
 
         public:
 
@@ -99,7 +99,7 @@ namespace seco {
      * A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is
      * (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
-    class RecallImpl : virtual public IHeuristic {
+    class RecallImpl : public IHeuristic {
 
         public:
 
@@ -111,7 +111,7 @@ namespace seco {
     /**
      * A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
      */
-    class WRAImpl : virtual public IHeuristic {
+    class WRAImpl : public IHeuristic {
 
         public:
 
@@ -123,7 +123,7 @@ namespace seco {
     /**
      * A heuristic that measures the fraction of incorrectly predicted labels among all labels.
      */
-    class HammingLossImpl : virtual public IHeuristic {
+    class HammingLossImpl : public IHeuristic {
 
         public:
 
@@ -138,7 +138,7 @@ namespace seco {
      * heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `PrecisionImpl`. As
      * `beta` approaches infinity, this heuristic becomes equivalent to the heuristic `RecallImpl`.
      */
-    class FMeasureImpl : virtual public IHeuristic {
+    class FMeasureImpl : public IHeuristic {
 
         private:
 
@@ -168,7 +168,7 @@ namespace seco {
      * heuristic `PrecisionImpl`. As `m` approaches infinity, the isometrics of this heuristic become equivalent to
      * those of the heuristic `WRAFunction`.
      */
-    class MEstimateImpl : virtual public IHeuristic {
+    class MEstimateImpl : public IHeuristic {
 
         private:
 

@@ -17,7 +17,7 @@
  *           allowed to predict
  */
 template<class T>
-class ExactRuleRefinement : virtual public IRuleRefinement {
+class ExactRuleRefinement : public IRuleRefinement {
 
     private:
 
@@ -96,7 +96,7 @@ class ExactRuleRefinement : virtual public IRuleRefinement {
 
                 lastNegativeR = r;
                 uint32 i = iterator[r].index;
-                uint32 weight = weights_.getValue(i);
+                uint32 weight = weights_.getWeight(i);
 
                 if (weight > 0) {
                     // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -121,7 +121,7 @@ class ExactRuleRefinement : virtual public IRuleRefinement {
 
                     lastNegativeR = r;
                     uint32 i = iterator[r].index;
-                    uint32 weight = weights_.getValue(i);
+                    uint32 weight = weights_.getWeight(i);
 
                     // Do only consider examples that are included in the current sub-sample...
                     if (weight > 0) {
@@ -246,7 +246,7 @@ class ExactRuleRefinement : virtual public IRuleRefinement {
             // encountered...
             for (r = firstR; r > lastNegativeR; r--) {
                 uint32 i = iterator[r].index;
-                uint32 weight = weights_.getValue(i);
+                uint32 weight = weights_.getWeight(i);
 
                 if (weight > 0) {
                     // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -264,7 +264,7 @@ class ExactRuleRefinement : virtual public IRuleRefinement {
             if (sumOfWeights > 0) {
                 for (r = r - 1; r > lastNegativeR; r--) {
                     uint32 i = iterator[r].index;
-                    uint32 weight = weights_.getValue(i);
+                    uint32 weight = weights_.getWeight(i);
 
                     // Do only consider examples that are included in the current sub-sample...
                     if (weight > 0) {
