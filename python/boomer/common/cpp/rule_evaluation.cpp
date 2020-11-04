@@ -6,19 +6,19 @@ EvaluatedPrediction::EvaluatedPrediction(uint32 numElements)
 
 }
 
-EvaluatedPrediction::iterator EvaluatedPrediction::begin() {
+EvaluatedPrediction::score_iterator EvaluatedPrediction::scores_begin() {
     return predictedScoreVector_.begin();
 }
 
-EvaluatedPrediction::iterator EvaluatedPrediction::end() {
+EvaluatedPrediction::score_iterator EvaluatedPrediction::scores_end() {
     return predictedScoreVector_.end();
 }
 
-EvaluatedPrediction::const_iterator EvaluatedPrediction::cbegin() const {
+EvaluatedPrediction::score_const_iterator EvaluatedPrediction::scores_cbegin() const {
     return predictedScoreVector_.cbegin();
 }
 
-EvaluatedPrediction::const_iterator EvaluatedPrediction::cend() const {
+EvaluatedPrediction::score_const_iterator EvaluatedPrediction::scores_cend() const {
     return predictedScoreVector_.cend();
 }
 

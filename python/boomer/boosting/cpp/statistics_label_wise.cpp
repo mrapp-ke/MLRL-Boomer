@@ -75,7 +75,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     // given weight) to the current sum of gradients and Hessians...
                     uint32 offset = statisticIndex * statistics_.getNumLabels();
                     uint32 numPredictions = labelIndices_.getNumElements();
-                    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+                    typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
                     for (uint32 c = 0; c < numPredictions; c++) {
                         uint32 l = indexIterator[c];
@@ -264,13 +264,13 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
             uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
-            FullPrediction::const_iterator valueIterator = prediction.cbegin();
+            FullPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
 
             // Only the labels that are predicted by the new rule must be considered...
             for (uint32 c = 0; c < numPredictions; c++) {
                 // Update the score that is currently predicted for the current example and label...
                 uint32 i = offset + c;
-                float64 updatedScore = currentScores_[i] + valueIterator[c];
+                float64 updatedScore = currentScores_[i] + scoreIterator[c];
                 currentScores_[i] = updatedScore;
 
                 // Update the gradient and Hessian for the current example and label...
@@ -286,7 +286,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
             uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
-            PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+            PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
             PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
 
             // Only the labels that are predicted by the new rule must be considered...
@@ -294,7 +294,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 // Update the score that is currently predicted for the current example and label...
                 uint32 l = indexIterator[c];
                 uint32 i = offset + l;
-                float64 updatedScore = currentScores_[i] + valueIterator[c];
+                float64 updatedScore = currentScores_[i] + scoreIterator[c];
                 currentScores_[i] = updatedScore;
 
                 // Update the gradient and Hessian for the current example and label...

@@ -25,19 +25,19 @@ uint32 PartialIndexVector::getIndex(uint32 pos) const {
     return vector_.getValue(pos);
 }
 
-PartialIndexVector::index_iterator PartialIndexVector::indices_begin() {
+PartialIndexVector::iterator PartialIndexVector::begin() {
     return vector_.begin();
 }
 
-PartialIndexVector::index_iterator PartialIndexVector::indices_end() {
+PartialIndexVector::iterator PartialIndexVector::end() {
     return vector_.end();
 }
 
-PartialIndexVector::index_const_iterator PartialIndexVector::indices_cbegin() const {
+PartialIndexVector::const_iterator PartialIndexVector::cbegin() const {
     return vector_.cbegin();
 }
 
-PartialIndexVector::index_const_iterator PartialIndexVector::indices_cend() const {
+PartialIndexVector::const_iterator PartialIndexVector::cend() const {
     return vector_.cend();
 }
 
@@ -95,11 +95,11 @@ uint32 FullIndexVector::getIndex(uint32 pos) const {
     return pos;
 }
 
-FullIndexVector::index_const_iterator FullIndexVector::indices_cbegin() const {
+FullIndexVector::const_iterator FullIndexVector::cbegin() const {
     return FullIndexVector::Iterator(0);
 }
 
-FullIndexVector::index_const_iterator FullIndexVector::indices_cend() const {
+FullIndexVector::const_iterator FullIndexVector::cend() const {
     return FullIndexVector::Iterator(numElements_);
 }
 

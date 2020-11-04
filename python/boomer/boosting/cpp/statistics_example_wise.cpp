@@ -105,7 +105,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     uint32 offsetGradients = statisticIndex * numLabels;
                     uint32 offsetHessians = statisticIndex * triangularNumber(numLabels);
                     uint32 numPredictions = labelIndices_.getNumElements();
-                    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+                    typename T::const_iterator indexIterator = labelIndices_.cbegin();
                     uint32 i = 0;
 
                     for (uint32 c = 0; c < numPredictions; c++) {
@@ -354,12 +354,12 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             uint32 numHessians = triangularNumber(numLabels);
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
-            FullPrediction::const_iterator valueIterator = prediction.cbegin();
+            FullPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
 
             // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for
             // the example at the given index...
             for (uint32 c = 0; c < numPredictions; c++) {
-                currentScores_[offset + c] += valueIterator[c];
+                currentScores_[offset + c] += scoreIterator[c];
             }
 
             // Update the gradients and Hessians for the example at the given index...
@@ -373,14 +373,14 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             uint32 numHessians = triangularNumber(numLabels);
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
-            PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+            PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
             PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
 
             // Traverse the labels for which the new rule predicts to update the scores that are currently predicted for
             // the example at the given index...
             for (uint32 c = 0; c < numPredictions; c++) {
                 uint32 l = indexIterator[c];
-                currentScores_[offset + l] += valueIterator[c];
+                currentScores_[offset + l] += scoreIterator[c];
             }
 
             // Update the gradients and Hessians for the example at the given index...

@@ -40,12 +40,12 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
                 const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
                 float64* sumsOfHessians, bool uncovered) override {
             uint32 numPredictions = prediction_.getNumElements();
-            LabelWiseEvaluatedPrediction::iterator valueIterator = prediction_.begin();
+            LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
             LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator = prediction_.quality_scores_begin();
             float64 overallQualityScore = 0;
 
             // For each label, calculate a score to be predicted, as well as a corresponding quality score...
-            typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+            typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
             for (uint32 c = 0; c < numPredictions; c++) {
                 float64 sumOfGradients = sumsOfGradients[c];
@@ -60,7 +60,7 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
                 // Calculate the score to be predicted for the current label...
                 float64 score = sumOfHessians + l2RegularizationWeight_;
                 score = score != 0 ? -sumOfGradients / score : 0;
-                valueIterator[c] = score;
+                scoreIterator[c] = score;
 
                 // Calculate the quality score for the current label...
                 float64 scorePow = pow(score, 2);
@@ -70,7 +70,7 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
             }
 
             // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(valueIterator, numPredictions);
+            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
             prediction_.overallQualityScore = overallQualityScore;
             return prediction_;
         }

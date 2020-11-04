@@ -215,8 +215,8 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
                 *thresholds_.headRefinementFactoryPtr_);
             const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
                                                                                            false);
-            const EvaluatedPrediction::const_iterator updatedIterator = prediction.cbegin();
-            AbstractPrediction::iterator iterator = head.begin();
+            const EvaluatedPrediction::score_const_iterator updatedIterator = prediction.scores_cbegin();
+            AbstractPrediction::score_iterator iterator = head.scores_begin();
             uint32 numElements = head.getNumElements();
 
             for (uint32 c = 0; c < numElements; c++) {

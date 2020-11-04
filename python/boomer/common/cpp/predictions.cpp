@@ -17,19 +17,19 @@ void AbstractPrediction::setNumElements(uint32 numElements) {
     predictedScoreVector_.setNumElements(numElements);
 }
 
-AbstractPrediction::iterator AbstractPrediction::begin() {
+AbstractPrediction::score_iterator AbstractPrediction::scores_begin() {
     return predictedScoreVector_.begin();
 }
 
-AbstractPrediction::iterator AbstractPrediction::end() {
+AbstractPrediction::score_iterator AbstractPrediction::scores_end() {
     return predictedScoreVector_.end();
 }
 
-AbstractPrediction::const_iterator AbstractPrediction::cbegin() const {
+AbstractPrediction::score_const_iterator AbstractPrediction::scores_cbegin() const {
     return predictedScoreVector_.cbegin();
 }
 
-AbstractPrediction::const_iterator AbstractPrediction::cend() const {
+AbstractPrediction::score_const_iterator AbstractPrediction::scores_cend() const {
     return predictedScoreVector_.cend();
 }
 
@@ -44,11 +44,11 @@ FullPrediction::FullPrediction(uint32 numElements)
 }
 
 FullPrediction::index_const_iterator FullPrediction::indices_cbegin() const {
-    return indexVector_.indices_cbegin();
+    return indexVector_.cbegin();
 }
 
 FullPrediction::index_const_iterator FullPrediction::indices_cend() const {
-    return indexVector_.indices_cend();
+    return indexVector_.cend();
 }
 
 void FullPrediction::setNumElements(uint32 numElements) {
@@ -87,19 +87,19 @@ PartialPrediction::PartialPrediction(uint32 numElements)
 }
 
 PartialPrediction::index_iterator PartialPrediction::indices_begin() {
-    return indexVector_.indices_begin();
+    return indexVector_.begin();
 }
 
 PartialPrediction::index_iterator PartialPrediction::indices_end() {
-    return indexVector_.indices_end();
+    return indexVector_.end();
 }
 
 PartialPrediction::index_const_iterator PartialPrediction::indices_cbegin() const {
-    return indexVector_.indices_cbegin();
+    return indexVector_.cbegin();
 }
 
 PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const {
-    return indexVector_.indices_cend();
+    return indexVector_.cend();
 }
 
 void PartialPrediction::setNumElements(uint32 numElements) {
