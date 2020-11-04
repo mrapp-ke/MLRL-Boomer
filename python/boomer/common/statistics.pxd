@@ -1,6 +1,4 @@
 from boomer.common._arrays cimport uint32
-from boomer.common._indices cimport FullIndexVector, PartialIndexVector
-from boomer.common._predictions cimport FullPrediction, PartialPrediction
 from boomer.common.input_data cimport LabelMatrix
 
 from libcpp cimport bool
