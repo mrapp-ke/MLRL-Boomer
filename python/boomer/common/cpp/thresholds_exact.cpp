@@ -167,9 +167,8 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
             }
 
             // Identify the examples that are covered by the refined rule...
-            filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, condition.start, condition.end,
-                                               condition.comparator, condition.covered, numModifications_,
-                                               coverageMask_, *thresholds_.statisticsPtr_, weights_);
+            filterAnyVector(*featureVector, cacheEntry, condition, numModifications_, coverageMask_,
+                            *thresholds_.statisticsPtr_, weights_);
         }
 
         void resetThresholds() override {
