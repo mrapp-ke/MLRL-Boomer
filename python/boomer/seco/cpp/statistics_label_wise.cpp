@@ -67,7 +67,7 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     uint32 numLabels = statistics_.getNumLabels();
                     uint32 offset = statisticIndex * numLabels;
                     uint32 numPredictions = labelIndices_.getNumElements();
-                    typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
+                    typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
                     for (uint32 c = 0; c < numPredictions; c++) {
                         uint32 l = indexIterator[c];
@@ -239,11 +239,11 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
             uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
-            FullPrediction::const_iterator valueIterator = prediction.cbegin();
+            FullPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
 
             // Only the labels that are predicted by the new rule must be considered...
             for (uint32 c = 0; c < numPredictions; c++) {
-                uint8 predictedLabel = valueIterator[c];
+                uint8 predictedLabel = scoreIterator[c];
                 uint8 minorityLabel = minorityLabels_[c];
 
                 // Do only consider predictions that are different from the default rule's predictions...
@@ -271,13 +271,13 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
             uint32 numLabels = this->getNumLabels();
             uint32 offset = statisticIndex * numLabels;
             uint32 numPredictions = prediction.getNumElements();
-            PartialPrediction::const_iterator valueIterator = prediction.cbegin();
+            PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
             PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
 
             // Only the labels that are predicted by the new rule must be considered...
             for (uint32 c = 0; c < numPredictions; c++) {
                 uint32 l = indexIterator[c];
-                uint8 predictedLabel = valueIterator[c];
+                uint8 predictedLabel = scoreIterator[c];
                 uint8 minorityLabel = minorityLabels_[l];
 
                 // Do only consider predictions that are different from the default rule's predictions...

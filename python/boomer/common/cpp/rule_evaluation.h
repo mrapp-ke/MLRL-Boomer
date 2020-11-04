@@ -25,37 +25,37 @@ class EvaluatedPrediction {
          */
         EvaluatedPrediction(uint32 numElements);
 
-        typedef DenseVector<float64>::iterator iterator;
+        typedef DenseVector<float64>::iterator score_iterator;
 
-        typedef DenseVector<float64>::const_iterator const_iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the predicted scores.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
+        typedef DenseVector<float64>::const_iterator score_const_iterator;
 
         /**
-         * Returns an `iterator` to the end of the predicted scores.
+         * Returns a `score_iterator` to the beginning of the predicted scores.
          *
-         * @return An `iterator` to the end
+         * @return A `score_iterator` to the beginning
          */
-        iterator end();
+        score_iterator scores_begin();
 
         /**
-         * Returns a `const_iterator` to the beginning of the predicted scores.
+         * Returns a `score_iterator` to the end of the predicted scores.
          *
-         * @return A `const_iterator` to the beginning
+         * @return A `score_iterator` to the end
          */
-        const_iterator cbegin() const;
+        score_iterator scores_end();
+
+        /**
+         * Returns a `score_const_iterator` to the beginning of the predicted scores.
+         *
+         * @return A `score_const_iterator` to the beginning
+         */
+        score_const_iterator scores_cbegin() const;
 
         /**
          * Returns a `const_iterator` to the end of the predicted scores.
          *
          * @return A `const_iterator` to the end
          */
-        const_iterator cend() const;
+        score_const_iterator scores_cend() const;
 
         /**
          * Returns the number of labels for which the rule predicts.

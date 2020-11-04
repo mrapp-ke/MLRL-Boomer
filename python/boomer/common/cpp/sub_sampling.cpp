@@ -216,7 +216,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
     std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numSamples);
-    PartialIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
+    PartialIndexVector::iterator iterator = indexVectorPtr->begin();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -248,7 +248,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
     std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numSamples);
-    PartialIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
+    PartialIndexVector::iterator iterator = indexVectorPtr->begin();
 
     for (uint32 i = 0; i < numSamples; i++) {
         iterator[i] = i;
@@ -279,7 +279,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
                                                                                                 uint32 numSamples,
                                                                                                 RNG& rng) {
     std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numSamples);
-    PartialIndexVector::index_iterator iterator = indexVectorPtr->indices_begin();
+    PartialIndexVector::iterator iterator = indexVectorPtr->begin();
     uint32 unusedIndices[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {

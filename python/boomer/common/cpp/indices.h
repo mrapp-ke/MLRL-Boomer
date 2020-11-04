@@ -100,37 +100,37 @@ class PartialIndexVector : public IIndexVector {
          */
         PartialIndexVector(uint32 numElements);
 
-        typedef DenseVector<uint32>::iterator index_iterator;
+        typedef DenseVector<uint32>::iterator iterator;
 
-        typedef DenseVector<uint32>::const_iterator index_const_iterator;
-
-        /**
-         * Returns an `index_iterator` to the beginning of the indices.
-         *
-         * @return An `index_iterator` to the beginning
-         */
-        index_iterator indices_begin();
+        typedef DenseVector<uint32>::const_iterator const_iterator;
 
         /**
-         * Returns an `index_iterator` to the end of the indices.
+         * Returns an `iterator` to the beginning of the indices.
          *
-         * @return An `index_iterator` to the end
+         * @return An `iterator` to the beginning
          */
-        index_iterator indices_end();
+        iterator begin();
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices.
+         * Returns an `iterator` to the end of the indices.
          *
-         * @return An `index_const_iterator` to the beginning
+         * @return An `iterator` to the end
          */
-        index_const_iterator indices_cbegin() const;
+        iterator end();
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices.
+         * Returns a `const_iterator` to the beginning of the indices.
          *
-         * @return An `index_const_iterator` to the end
+         * @return A `const_iterator` to the beginning
          */
-        index_const_iterator indices_cend() const;
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the indices.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
 
         /**
          * Sets the number of indices.
@@ -193,21 +193,21 @@ class FullIndexVector : public IIndexVector {
          */
         FullIndexVector(uint32 numElements);
 
-        typedef Iterator index_const_iterator;
+        typedef Iterator const_iterator;
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices.
+         * Returns a `const_iterator` to the beginning of the indices.
          *
-         * @return An `index_const_iterator` to the beginning
+         * @return A `const_iterator` to the beginning
          */
-        index_const_iterator indices_cbegin() const;
+        const_iterator cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices.
+         * Returns a `const_iterator` to the end of the indices.
          *
-         * @return An `index_const_iterator` to the end
+         * @return A `const_iterator` to the end
          */
-        index_const_iterator indices_cend() const;
+        const_iterator cend() const;
 
         /**
          * Sets the number of indices.

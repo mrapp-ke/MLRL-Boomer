@@ -28,37 +28,37 @@ class AbstractPrediction : public IIndexVector {
          */
         AbstractPrediction(uint32 numElements);
 
-        typedef DenseVector<float64>::iterator iterator;
+        typedef DenseVector<float64>::iterator score_iterator;
 
-        typedef DenseVector<float64>::const_iterator const_iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the predicted scores.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
+        typedef DenseVector<float64>::const_iterator score_const_iterator;
 
         /**
-         * Returns an `iterator` to the end of the predicted scores.
+         * Returns a `score_iterator` to the beginning of the predicted scores.
          *
-         * @return An `iterator` to the end
+         * @return A `score_iterator` to the beginning
          */
-        iterator end();
+        score_iterator scores_begin();
 
         /**
-         * Returns a `const_iterator` to the beginning of the predicted scores.
+         * Returns a `score_iterator` to the end of the predicted scores.
          *
-         * @return A `const_iterator` to the beginning
+         * @return A `score_iterator` to the end
          */
-        const_iterator cbegin() const;
+        score_iterator scores_end();
 
         /**
-         * Returns a `const_iterator` to the end of the predicted scores.
+         * Returns a `score_const_iterator` to the beginning of the predicted scores.
          *
-         * @return A `const_iterator` to the end
+         * @return A `score_const_iterator` to the beginning
          */
-        const_iterator cend() const;
+        score_const_iterator scores_cbegin() const;
+
+        /**
+         * Returns a `score_const_iterator` to the end of the predicted scores.
+         *
+         * @return A `score_const_iterator` to the end
+         */
+        score_const_iterator scores_cend() const;
 
         /**
          * Updates the given statistics by applying this prediction.
@@ -113,7 +113,7 @@ class FullPrediction : public AbstractEvaluatedPrediction {
          */
         FullPrediction(uint32 numElements);
 
-        typedef FullIndexVector::index_const_iterator index_const_iterator;
+        typedef FullIndexVector::const_iterator index_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices.
@@ -162,9 +162,9 @@ class PartialPrediction : public AbstractEvaluatedPrediction {
          */
         PartialPrediction(uint32 numElements);
 
-        typedef PartialIndexVector::index_iterator index_iterator;
+        typedef PartialIndexVector::iterator index_iterator;
 
-        typedef PartialIndexVector::index_const_iterator index_const_iterator;
+        typedef PartialIndexVector::const_iterator index_const_iterator;
 
         /**
          * Returns an `index_iterator` to the beginning of the indices.
