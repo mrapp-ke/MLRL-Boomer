@@ -1,5 +1,5 @@
 #include "rule_evaluation_example_wise.h"
-#include "linalg.cpp"
+#include "linalg.h"
 
 using namespace boosting;
 
