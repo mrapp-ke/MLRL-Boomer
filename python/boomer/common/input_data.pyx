@@ -23,7 +23,7 @@ cdef class RandomAccessLabelMatrix(LabelMatrix):
 
 cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
     """
-    A wrapper for the C++ class `DenseLabelMatrix`.
+    A wrapper for the C++ class `DenseLabelMatrixImpl`.
     """
 
     def __cinit__(self, const uint8[:, ::1] y):
@@ -39,7 +39,7 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     """
-    A wrapper for the C++ class `DokLabelMatrix`.
+    A wrapper for the C++ class `DokLabelMatrixImpl`.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_labels, list[::1] rows):
@@ -49,7 +49,7 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
                                 the column indices of all non-zero labels
         """
-        cdef unique_ptr[BinaryDokMatrix] matrix_ptr = make_unique[BinaryDokMatrix](num_examples, num_labels)
+        cdef unique_ptr[DokLabelMatrixImpl] ptr = make_unique[DokLabelMatrixImpl](num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
         cdef list col_indices
         cdef uint32 r, c
@@ -58,9 +58,9 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
             col_indices = rows[r]
 
             for c in col_indices:
-                matrix_ptr.get().setValue(r, c)
+                ptr.get().setValue(r, c)
 
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DokLabelMatrixImpl](move(matrix_ptr))
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>move(ptr)
 
 
 cdef class FeatureMatrix:
@@ -112,16 +112,16 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                                                                                 &x_col_indices[0])
 
 
-cdef class NominalFeatureVector:
+cdef class NominalFeatureMask:
     """
-    A wrapper for the pure virtual C++ class `INominalFeatureVector`.
+    A wrapper for the pure virtual C++ class `INominalFeatureMask`.
     """
     pass
 
 
-cdef class DokNominalFeatureVector(NominalFeatureVector):
+cdef class DokNominalFeatureMask(NominalFeatureMask):
     """
-    A wrapper for the C++ class `DokNominalFeatureVectorImpl`.
+    A wrapper for the C++ class `DokNominalFeatureMaskImpl`.
     """
 
     """
@@ -130,12 +130,11 @@ cdef class DokNominalFeatureVector(NominalFeatureVector):
     """
     def __cinit__(self, list nominal_feature_indices):
         cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
-        cdef unique_ptr[BinaryDokVector] vector_ptr = make_unique[BinaryDokVector](num_nominal_features)
+        cdef unique_ptr[DokNominalFeatureMaskImpl] ptr = make_unique[DokNominalFeatureMaskImpl]()
         cdef uint32 i
 
         if num_nominal_features > 0:
             for i in nominal_feature_indices:
-                vector_ptr.get().setValue(i)
+                ptr.get().setNominal(i)
 
-        self.nominal_feature_vector_ptr = <shared_ptr[INominalFeatureVector]>make_shared[DokNominalFeatureVectorImpl](
-            move(vector_ptr))
+        self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>move(ptr)

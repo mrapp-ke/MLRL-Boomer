@@ -133,7 +133,7 @@ class IStatisticsSubset {
  * instance of the class `AbstractStatistics` and allow to calculate the scores to be predicted by rules that cover such
  * a subset in the decomposable case, i.e., if the label-wise predictions are the same as the example-wise predictions.
  */
-class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
+class AbstractDecomposableStatisticsSubset : public IStatisticsSubset {
 
     public:
 
@@ -145,7 +145,7 @@ class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
  * An abstract base class for all classes that provide access to statistics about the labels of the training examples,
  * which serve as the basis for learning a new rule or refining an existing one.
  */
-class AbstractStatistics : virtual public IMatrix {
+class AbstractStatistics {
 
     private:
 
@@ -159,7 +159,7 @@ class AbstractStatistics : virtual public IMatrix {
          * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
          * correspond to the same bins.
          */
-        class IHistogramBuilder : virtual public IBinningObserver {
+        class IHistogramBuilder : public IBinningObserver {
 
             public:
 
@@ -306,8 +306,18 @@ class AbstractStatistics : virtual public IMatrix {
          */
         virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const = 0;
 
-        uint32 getNumRows() const override;
+        /**
+         * Returns the number of available statistics.
+         *
+         * @return The number of statistics
+         */
+        uint32 getNumStatistics() const;
 
-        uint32 getNumCols() const override;
+        /**
+         * Returns the number of available labels.
+         *
+         * @return The number of labels
+         */
+        uint32 getNumLabels() const;
 
 };

@@ -6,7 +6,7 @@
 /**
  * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
  */
-class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
+class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 
     private:
 
@@ -14,7 +14,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
      * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved from the
      * cache. Otherwise, they are fetched from the feature matrix.
      */
-    class Callback : virtual public IRuleRefinementCallback<FeatureVector> {
+    class Callback : public IRuleRefinementCallback<FeatureVector> {
 
         private:
 
@@ -89,7 +89,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
             thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
         }
 
-        bool nominal = thresholds_.nominalFeatureVectorPtr_->getValue(featureIndex);
+        bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
         std::unique_ptr<IHeadRefinement> headRefinementPtr =
             thresholds_.headRefinementFactoryPtr_->create(labelIndices);
         std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
@@ -105,7 +105,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
          *                      the individual training examples
          */
         ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
-            : thresholds_(thresholds), weights_(weights), coverageMask_(CoverageMask(thresholds.getNumRows())) {
+            : thresholds_(thresholds), weights_(weights), coverageMask_(CoverageMask(thresholds.getNumExamples())) {
             sumOfWeights_ = weights.getSumOfWeights();
             numModifications_ = 0;
         }
@@ -185,10 +185,10 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 
         float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
-            uint32 numExamples = thresholds_.getNumRows();
+            uint32 numExamples = thresholds_.getNumExamples();
 
             for (uint32 r = 0; r < numExamples; r++) {
-                if (weights_.getValue(r) == 0 && coverageMask.isCovered(r)) {
+                if (weights_.getWeight(r) == 0 && coverageMask.isCovered(r)) {
                     statisticsSubsetPtr->addToSubset(r, 1);
                 }
             }
@@ -203,7 +203,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
         void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
             AbstractPrediction& head = *refinement.headPtr;
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(*thresholds_.statisticsPtr_);
-            uint32 numExamples = thresholds_.getNumRows();
+            uint32 numExamples = thresholds_.getNumExamples();
 
             for (uint32 r = 0; r < numExamples; r++) {
                 if (coverageMask.isCovered(r)) {
@@ -215,8 +215,8 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
                 *thresholds_.headRefinementFactoryPtr_);
             const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
                                                                                            false);
-            const EvaluatedPrediction::const_iterator updatedIterator = prediction.cbegin();
-            AbstractPrediction::iterator iterator = head.begin();
+            const EvaluatedPrediction::score_const_iterator updatedIterator = prediction.scores_cbegin();
+            AbstractPrediction::score_iterator iterator = head.scores_begin();
             uint32 numElements = head.getNumElements();
 
             for (uint32 c = 0; c < numElements; c++) {
@@ -225,7 +225,7 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
         }
 
         void applyPrediction(const AbstractPrediction& prediction) override {
-            uint32 numExamples = thresholds_.getNumRows();
+            uint32 numExamples = thresholds_.getNumExamples();
 
             for (uint32 r = 0; r < numExamples; r++) {
                 if (coverageMask_.isCovered(r)) {
@@ -237,10 +237,10 @@ class ExactThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
 };
 
 ExactThresholds::ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                 std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                 std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                                  std::shared_ptr<AbstractStatistics> statisticsPtr,
                                  std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
-    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr) {
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr) {
 
 }
 

@@ -14,7 +14,7 @@ namespace boosting {
     /**
      * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
      */
-    class ConstantShrinkageImpl : virtual public IPostProcessor {
+    class ConstantShrinkageImpl : public IPostProcessor {
 
         private:
 

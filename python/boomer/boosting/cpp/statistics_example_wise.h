@@ -72,7 +72,7 @@ namespace boosting {
     /**
      * A factory that allows to create new instances of the class `DenseExampleWiseStatisticsImpl`.
      */
-    class DenseExampleWiseStatisticsFactoryImpl : virtual public IExampleWiseStatisticsFactory {
+    class DenseExampleWiseStatisticsFactoryImpl : public IExampleWiseStatisticsFactory {
 
         private:
 
