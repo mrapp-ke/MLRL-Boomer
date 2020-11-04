@@ -1,6 +1,6 @@
 #include "statistics_example_wise.h"
-#include "../../common/cpp/arrays.cpp"
-#include "linalg.cpp"
+#include "../../common/cpp/arrays.h"
+#include "linalg.h"
 #include <cstdlib>
 
 using namespace boosting;
