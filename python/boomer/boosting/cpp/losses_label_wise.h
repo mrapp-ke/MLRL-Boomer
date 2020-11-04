@@ -41,7 +41,7 @@ namespace boosting {
     /**
      * A multi-label variant of the logistic loss that is applied label-wise.
      */
-    class LabelWiseLogisticLossImpl : virtual public ILabelWiseLoss {
+    class LabelWiseLogisticLossImpl : public ILabelWiseLoss {
 
         public:
 
@@ -54,7 +54,7 @@ namespace boosting {
     /**
      * A multi-label variant of the squared error loss that is applied label-wise.
      */
-    class LabelWiseSquaredErrorLossImpl : virtual public ILabelWiseLoss {
+    class LabelWiseSquaredErrorLossImpl : public ILabelWiseLoss {
 
         public:
 

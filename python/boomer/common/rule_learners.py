@@ -15,7 +15,7 @@ import numpy as np
 from boomer.common.binning import EqualWidthBinning, EqualFrequencyBinning
 from boomer.common.input_data import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
-from boomer.common.input_data import DokNominalFeatureVector
+from boomer.common.input_data import DokNominalFeatureMask
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, IREP
 from boomer.common.rules import ModelBuilder
@@ -325,7 +325,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         self.num_labels_ = num_labels
 
         # Induce rules...
-        nominal_features = DokNominalFeatureVector(self.nominal_attribute_indices)
+        nominal_features = DokNominalFeatureMask(self.nominal_attribute_indices)
         sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
         model_builder = self._create_model_builder()
         return sequential_rule_induction.induce_rules(nominal_features, feature_matrix, label_matrix, self.random_state,

@@ -2,31 +2,47 @@
 
 
 EvaluatedPrediction::EvaluatedPrediction(uint32 numElements)
-    : DenseVector<float64>(numElements) {
+    : predictedScoreVector_(DenseVector<float64>(numElements)) {
 
+}
+
+EvaluatedPrediction::score_iterator EvaluatedPrediction::scores_begin() {
+    return predictedScoreVector_.begin();
+}
+
+EvaluatedPrediction::score_iterator EvaluatedPrediction::scores_end() {
+    return predictedScoreVector_.end();
+}
+
+EvaluatedPrediction::score_const_iterator EvaluatedPrediction::scores_cbegin() const {
+    return predictedScoreVector_.cbegin();
+}
+
+EvaluatedPrediction::score_const_iterator EvaluatedPrediction::scores_cend() const {
+    return predictedScoreVector_.cend();
+}
+
+uint32 EvaluatedPrediction::getNumElements() const {
+    return predictedScoreVector_.getNumElements();
 }
 
 LabelWiseEvaluatedPrediction::LabelWiseEvaluatedPrediction(uint32 numElements)
-    : EvaluatedPrediction(numElements), qualityScores_(new float64[numElements]) {
+    : EvaluatedPrediction(numElements), qualityScoreVector_(DenseVector<float64>(numElements)) {
 
-}
-
-LabelWiseEvaluatedPrediction::~LabelWiseEvaluatedPrediction() {
-    delete[] qualityScores_;
 }
 
 LabelWiseEvaluatedPrediction::quality_score_iterator LabelWiseEvaluatedPrediction::quality_scores_begin() {
-    return qualityScores_;
+    return qualityScoreVector_.begin();
 }
 
 LabelWiseEvaluatedPrediction::quality_score_iterator LabelWiseEvaluatedPrediction::quality_scores_end() {
-    return &qualityScores_[this->getNumElements()];
+    return qualityScoreVector_.end();
 }
 
 LabelWiseEvaluatedPrediction::quality_score_const_iterator LabelWiseEvaluatedPrediction::quality_scores_cbegin() const {
-    return qualityScores_;
+    return qualityScoreVector_.cbegin();
 }
 
 LabelWiseEvaluatedPrediction::quality_score_const_iterator LabelWiseEvaluatedPrediction::quality_scores_cend() const {
-    return &qualityScores_[this->getNumElements()];
+    return qualityScoreVector_.cend();
 }

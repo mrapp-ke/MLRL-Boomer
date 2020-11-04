@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "arrays.h"
+#include "data.h"
 #include <memory>
 
 // Forward declarations
@@ -28,14 +28,6 @@ class IIndexVector {
         virtual ~IIndexVector() { };
 
         /**
-         * Returns whether the indices are partial, i.e., some indices in the range [0, getNumElements()) are missing,
-         * or not.
-         *
-         * @return True, if the indices are partial, false otherwise
-         */
-        virtual bool isPartial() const = 0;
-
-        /**
          * Returns the number of indices.
          *
          * @return The number of indices
@@ -43,11 +35,12 @@ class IIndexVector {
         virtual uint32 getNumElements() const = 0;
 
         /**
-         * Sets the number of indices.
+         * Returns whether the indices are partial, i.e., some indices in the range [0, getNumElements()) are missing,
+         * or not.
          *
-         * @param numElements The number of indices to be set
+         * @return True, if the indices are partial, false otherwise
          */
-        virtual void setNumElements(uint32 numElements) = 0;
+        virtual bool isPartial() const = 0;
 
         /**
          * Returns the index at a specific position.
@@ -94,13 +87,11 @@ class IIndexVector {
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class PartialIndexVector : virtual public IIndexVector {
+class PartialIndexVector : public IIndexVector {
 
     private:
 
-        uint32 numElements_;
-
-        uint32* array_;
+        DenseVector<uint32> vector_;
 
     public:
 
@@ -109,45 +100,48 @@ class PartialIndexVector : virtual public IIndexVector {
          */
         PartialIndexVector(uint32 numElements);
 
-        ~PartialIndexVector();
+        typedef DenseVector<uint32>::iterator iterator;
 
-        typedef uint32* index_iterator;
-
-        typedef const uint32* index_const_iterator;
+        typedef DenseVector<uint32>::const_iterator const_iterator;
 
         /**
-         * Returns an `index_iterator` to the beginning of the indices.
+         * Returns an `iterator` to the beginning of the indices.
          *
-         * @return An `index_iterator` to the beginning
+         * @return An `iterator` to the beginning
          */
-        index_iterator indices_begin();
+        iterator begin();
 
         /**
-         * Returns an `index_iterator` to the end of the indices.
+         * Returns an `iterator` to the end of the indices.
          *
-         * @return An `index_iterator` to the end
+         * @return An `iterator` to the end
          */
-        index_iterator indices_end();
+        iterator end();
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices.
+         * Returns a `const_iterator` to the beginning of the indices.
          *
-         * @return An `index_const_iterator` to the beginning
+         * @return A `const_iterator` to the beginning
          */
-        index_const_iterator indices_cbegin() const;
+        const_iterator cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices.
+         * Returns a `const_iterator` to the end of the indices.
          *
-         * @return An `index_const_iterator` to the end
+         * @return A `const_iterator` to the end
          */
-        index_const_iterator indices_cend() const;
+        const_iterator cend() const;
 
-        bool isPartial() const override;
+        /**
+         * Sets the number of indices.
+         *
+         * @param numElements The number of indices to be set
+         */
+        void setNumElements(uint32 numElements);
 
         uint32 getNumElements() const override;
 
-        void setNumElements(uint32 numElements) override;
+        bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
 
@@ -163,7 +157,7 @@ class PartialIndexVector : virtual public IIndexVector {
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */
-class FullIndexVector : virtual public IIndexVector {
+class FullIndexVector : public IIndexVector {
 
     private:
 
@@ -199,27 +193,32 @@ class FullIndexVector : virtual public IIndexVector {
          */
         FullIndexVector(uint32 numElements);
 
-        typedef Iterator index_const_iterator;
+        typedef Iterator const_iterator;
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices.
+         * Returns a `const_iterator` to the beginning of the indices.
          *
-         * @return An `index_const_iterator` to the beginning
+         * @return A `const_iterator` to the beginning
          */
-        index_const_iterator indices_cbegin() const;
+        const_iterator cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices.
+         * Returns a `const_iterator` to the end of the indices.
          *
-         * @return An `index_const_iterator` to the end
+         * @return A `const_iterator` to the end
          */
-        index_const_iterator indices_cend() const;
+        const_iterator cend() const;
 
-        bool isPartial() const override;
+        /**
+         * Sets the number of indices.
+         *
+         * @param numElements The number of indices to be set
+         */
+        void setNumElements(uint32 numElements);
 
         uint32 getNumElements() const override;
 
-        void setNumElements(uint32 numElements) override;
+        bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
 

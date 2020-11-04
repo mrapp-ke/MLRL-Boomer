@@ -108,7 +108,7 @@ class IHeadRefinementFactory {
 /**
  * Allows to create instances of the class `SingleLabelHeadRefinementImpl`.
  */
-class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFactory {
+class SingleLabelHeadRefinementFactoryImpl : public IHeadRefinementFactory {
 
     public:
 
@@ -121,7 +121,7 @@ class SingleLabelHeadRefinementFactoryImpl : virtual public IHeadRefinementFacto
 /**
  * Allows to create instances of the class `FullHeadRefinementImpl`.
  */
-class FullHeadRefinementFactoryImpl : virtual public IHeadRefinementFactory {
+class FullHeadRefinementFactoryImpl : public IHeadRefinementFactory {
 
     public:
 
