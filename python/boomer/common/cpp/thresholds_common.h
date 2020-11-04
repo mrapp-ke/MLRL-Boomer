@@ -353,7 +353,7 @@ static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEnt
     if (comparator == EQ || comparator == NEQ) {
         start = lowerBound(vector, end, threshold);
 
-        if (end - start == 0) {
+        if (end == start) {
             start = 0;
             end = numElements;
             covered = (comparator == NEQ);
