@@ -1,12 +1,11 @@
 from boomer.common._arrays cimport uint8, uint32, float32
-from boomer.common._data cimport IRandomAccessVector, BinaryDokVector, IMatrix, BinaryDokMatrix
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/input_data.h" nogil:
 
-    cdef cppclass ILabelMatrix(IMatrix):
+    cdef cppclass ILabelMatrix:
         pass
 
 
@@ -25,10 +24,14 @@ cdef extern from "cpp/input_data.h" nogil:
 
         # Constructors:
 
-        DokLabelMatrixImpl(unique_ptr[BinaryDokMatrix] matrixPtr) except +
+        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels) except +
+
+        # Functions:
+
+        void setValue(uint32 exampleIndex, uint32 rowIndex)
 
 
-    cdef cppclass IFeatureMatrix(IMatrix):
+    cdef cppclass IFeatureMatrix:
         pass
 
 
@@ -47,22 +50,22 @@ cdef extern from "cpp/input_data.h" nogil:
                              const uint32* xColIndices) except +
 
 
-    cdef cppclass INominalFeatureVector(IRandomAccessVector[uint8]):
+    cdef cppclass INominalFeatureMask:
         pass
 
 
-    cdef cppclass DokNominalFeatureVectorImpl(INominalFeatureVector):
+    cdef cppclass DokNominalFeatureMaskImpl(INominalFeatureMask):
 
-        # Constructors:
+        # Functions:
 
-        DokNominalFeatureVectorImpl(unique_ptr[BinaryDokVector] dokVectorPtr) except +
+        void setNominal(uint32 featureIndex)
 
 
 cdef class LabelMatrix:
 
     # Attributes:
 
-        cdef shared_ptr[ILabelMatrix] label_matrix_ptr
+    cdef shared_ptr[ILabelMatrix] label_matrix_ptr
 
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
@@ -92,12 +95,12 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     pass
 
 
-cdef class NominalFeatureVector:
+cdef class NominalFeatureMask:
 
     # Attributes:
 
-    cdef shared_ptr[INominalFeatureVector] nominal_feature_vector_ptr
+    cdef shared_ptr[INominalFeatureMask] nominal_feature_mask_ptr
 
 
-cdef class DokNominalFeatureVector(NominalFeatureVector):
+cdef class DokNominalFeatureMask(NominalFeatureMask):
     pass

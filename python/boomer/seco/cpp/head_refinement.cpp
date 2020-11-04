@@ -24,7 +24,7 @@ static inline std::unique_ptr<SparseArrayVector<float64>> argsort(const float64*
  *           for the best head
  */
 template<class T>
-class PartialHeadRefinement : virtual public IHeadRefinement {
+class PartialHeadRefinement : public IHeadRefinement {
 
     private:
 
@@ -53,7 +53,7 @@ class PartialHeadRefinement : virtual public IHeadRefinement {
             const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                            accumulated);
             uint32 numPredictions = prediction.getNumElements();
-            LabelWiseEvaluatedPrediction::const_iterator valueIterator = prediction.cbegin();
+            LabelWiseEvaluatedPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
             LabelWiseEvaluatedPrediction::quality_score_const_iterator qualityScoreIterator =
                 prediction.quality_scores_cbegin();
             std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
@@ -97,14 +97,14 @@ class PartialHeadRefinement : virtual public IHeadRefinement {
                     headPtr_->setNumElements(bestNumPredictions);
                 }
 
-                typename T::index_const_iterator indexIterator = labelIndices_.indices_cbegin();
-                PartialPrediction::iterator headValueIterator = headPtr_->begin();
+                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                 PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
                 if (labelIndices_.isPartial()) {
                     for (uint32 c = 0; c < bestNumPredictions; c++) {
                         headIndexIterator[c] = indexIterator[c];
-                        headValueIterator[c] = valueIterator[c];
+                        headScoreIterator[c] = scoreIterator[c];
                     }
                 } else {
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
@@ -112,7 +112,7 @@ class PartialHeadRefinement : virtual public IHeadRefinement {
                     for (uint32 c = 0; c < bestNumPredictions; c++) {
                         uint32 i = sortedIterator[c].index;
                         headIndexIterator[c] = indexIterator[i];
-                        headValueIterator[c] = valueIterator[i];
+                        headScoreIterator[c] = scoreIterator[i];
                     }
                 }
 
