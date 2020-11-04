@@ -1,5 +1,5 @@
 #include "data.h"
-#include "tuples.cpp"
+#include <algorithm>
 #include <cstdlib>
 
 
@@ -109,21 +109,20 @@ typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cend() const
 
 template<class T>
 void SparseArrayVector<T>::sortByValues() {
-    qsort(array_, numElements_, sizeof(Entry), &compareIndexedValue<T>);
+    struct {
+
+        bool operator()(const SparseArrayVector<T>::Entry& a, const SparseArrayVector<T>::Entry& b) const {
+            return a.value < b.value;
+        }
+
+    } comparator;
+    std::sort(this->begin(), this->end(), comparator);
 }
 
 template class SparseArrayVector<float32>;
+template class SparseArrayVector<float64>;
 
-BinaryDokVector::BinaryDokVector(uint32 numElements)
-    : numElements_(numElements) {
-
-}
-
-uint32 BinaryDokVector::getNumElements() const {
-    return numElements_;
-}
-
-uint8 BinaryDokVector::getValue(uint32 pos) const {
+bool BinaryDokVector::getValue(uint32 pos) const {
     return data_.find(pos) != data_.end();
 }
 
@@ -131,20 +130,7 @@ void BinaryDokVector::setValue(uint32 pos) {
     data_.insert(pos);
 }
 
-BinaryDokMatrix::BinaryDokMatrix(uint32 numRows, uint32 numCols)
-    : numRows_(numRows), numCols_(numCols) {
-
-}
-
-uint32 BinaryDokMatrix::getNumRows() const {
-    return numRows_;
-}
-
-uint32 BinaryDokMatrix::getNumCols() const {
-    return numCols_;
-}
-
-uint8 BinaryDokMatrix::getValue(uint32 row, uint32 column) const {
+bool BinaryDokMatrix::getValue(uint32 row, uint32 column) const {
     return data_.find(std::make_pair(row, column)) != data_.end();
 }
 

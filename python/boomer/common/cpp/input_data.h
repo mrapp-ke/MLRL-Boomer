@@ -17,29 +17,52 @@ typedef SparseArrayVector<float32> FeatureVector;
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
-class ILabelMatrix : virtual public IMatrix {
+class ILabelMatrix {
 
     public:
 
         virtual ~ILabelMatrix() { };
+
+        /**
+         * Returns the number of available examples.
+         *
+         * @return The number of examples
+         */
+        virtual uint32 getNumExamples() const = 0;
+
+        /**
+         * Returns the number of available labels.
+         *
+         * @return The number of labels
+         */
+        virtual uint32 getNumLabels() const = 0;
 
 };
 
 /**
  * Defines an interface for all label matrices that provide random access to the labels of the training examples.
  */
-class IRandomAccessLabelMatrix : virtual public ILabelMatrix, virtual public IRandomAccessMatrix<uint8> {
+class IRandomAccessLabelMatrix : public ILabelMatrix {
 
     public:
 
         virtual ~IRandomAccessLabelMatrix() { };
+
+        /**
+         * Returns the value of a specific label.
+         *
+         * @param exampleIndex  The index of the example
+         * @param labelIndex    The index of the label
+         * @return              The value of the label
+         */
+        virtual uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const = 0;
 
 };
 
 /**
  * Implements random access to the labels of the training examples based on a C-contiguous array.
  */
-class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
+class DenseLabelMatrixImpl : public IRandomAccessLabelMatrix {
 
     private:
 
@@ -59,11 +82,11 @@ class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
          */
         DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y);
 
-        uint32 getNumRows() const override;
+        uint32 getNumExamples() const override;
 
-        uint32 getNumCols() const override;
+        uint32 getNumLabels() const override;
 
-        uint8 getValue(uint32 row, uint32 col) const override;
+        uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
 };
 
@@ -71,25 +94,37 @@ class DenseLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
  * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of keys
  * (DOK) format.
  */
-class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
+class DokLabelMatrixImpl : public IRandomAccessLabelMatrix {
 
     private:
 
-        std::unique_ptr<BinaryDokMatrix> matrixPtr_;
+        uint32 numExamples_;
+
+        uint32 numLabels_;
+
+        BinaryDokMatrix matrix_;
 
     public:
 
         /**
-         * @param matrix An unique pointer to an object of type `BinaryDokMatrix`, storing the relevant labels of the
-         *               training examples
+         * @param numExamples   The number of examples
+         * @param numLabels     The number of labels
          */
-        DokLabelMatrixImpl(std::unique_ptr<BinaryDokMatrix> matrixPtr);
+        DokLabelMatrixImpl(uint32 numExamples, uint32 numLabels);
 
-        uint32 getNumRows() const override;
+        /**
+         * Marks a label of an example as relevant.
+         *
+         * @param exampleIndex  The index of the example
+         * @param labelIndex    The index of the label
+         */
+        void setValue(uint32 exampleIndex, uint32 labelIndex);
 
-        uint32 getNumCols() const override;
+        uint32 getNumExamples() const override;
 
-        uint8 getValue(uint32 row, uint32 col) const override;
+        uint32 getNumLabels() const override;
+
+        uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
 };
 
@@ -97,11 +132,25 @@ class DokLabelMatrixImpl : virtual public IRandomAccessLabelMatrix {
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of the training
  * examples.
  */
-class IFeatureMatrix : virtual public IMatrix {
+class IFeatureMatrix {
 
     public:
 
         virtual ~IFeatureMatrix() { };
+
+        /**
+         * Returns the number of available examples.
+         *
+         * @return The number of examples
+         */
+        virtual uint32 getNumExamples() const = 0;
+
+        /**
+         * Returns the number of available features.
+         *
+         * @return The number of features
+         */
+        virtual uint32 getNumFeatures() const = 0;
 
         /**
          * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,
@@ -119,7 +168,7 @@ class IFeatureMatrix : virtual public IMatrix {
 /**
  * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
  */
-class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
+class DenseFeatureMatrixImpl : public IFeatureMatrix {
 
     private:
 
@@ -139,9 +188,9 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
          */
         DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x);
 
-        uint32 getNumRows() const override;
+        uint32 getNumExamples() const override;
 
-        uint32 getNumCols() const override;
+        uint32 getNumFeatures() const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
@@ -151,7 +200,7 @@ class DenseFeatureMatrixImpl : virtual public IFeatureMatrix {
  * Implements column-wise access to the feature values of the training examples based on a sparse matrix in the
  * compressed sparse column (CSC) format.
  */
-class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
+class CscFeatureMatrixImpl : public IFeatureMatrix {
 
     private:
 
@@ -181,23 +230,31 @@ class CscFeatureMatrixImpl : virtual public IFeatureMatrix {
         CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
                              const uint32* xColIndices);
 
-        uint32 getNumRows() const override;
+        uint32 getNumExamples() const override;
 
-        uint32 getNumCols() const override;
+        uint32 getNumFeatures() const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
 };
 
 /**
- * Defines an interface for all vectors that provide access to the information whether the features at specific indices
+ * Defines an interface for all classes that provide access to the information whether the features at specific indices
  * are nominal or not.
  */
-class INominalFeatureVector : virtual public IRandomAccessVector<uint8> {
+class INominalFeatureMask {
 
     public:
 
-        virtual ~INominalFeatureVector() { };
+        virtual ~INominalFeatureMask() { };
+
+        /**
+         * Returns whether the feature at a specific index is nominal or not.
+         *
+         * @param featureIndex  The index of the feature
+         * @return              True, if the feature at the given index is nominal, false otherwise
+         */
+        virtual bool isNominal(uint32 featureIndex) const = 0;
 
 };
 
@@ -205,21 +262,21 @@ class INominalFeatureVector : virtual public IRandomAccessVector<uint8> {
  * Provides access to the information whether the features at specific indices are nominal or not, based on a
  * `BinaryDokVector` that stores the indices of all nominal features.
  */
-class DokNominalFeatureVectorImpl : virtual public INominalFeatureVector {
+class DokNominalFeatureMaskImpl : virtual public INominalFeatureMask {
 
     private:
 
-        std::unique_ptr<BinaryDokVector> vectorPtr_;
+        BinaryDokVector vector_;
 
     public:
 
         /**
-         * @param vector A pointer to an object of type `BinaryDokVector`, storing the nominal attributes
+         * Marks the feature at a specific index as nominal.
+         *
+         * @param featureIndex The index of the feature
          */
-        DokNominalFeatureVectorImpl(std::unique_ptr<BinaryDokVector> vectorPtr);
+        void setNominal(uint32 featureIndex);
 
-        uint32 getNumElements() const override;
-
-        uint8 getValue(uint32 pos) const override;
+        bool isNominal(uint32 featureIndex) const override;
 
 };

@@ -39,6 +39,14 @@ class IBinning {
         virtual ~IBinning() { };
 
         /**
+         * Returns the number of bins that should be used to assign the values in a specific array to.
+         *
+         * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
+         * @return              The number of bins to be used
+         */
+        virtual uint32 getNumBins(const FeatureVector& featureVector) const = 0;
+
+        /**
          * Assigns the values in an array to bins.
          *
          * @param numBins       The number of bins to be used
@@ -47,28 +55,52 @@ class IBinning {
          * @param observer      A reference to an object of type `IBinningObserver`, which should be notified when a
          *                      value is assigned to a bin
          */
-        virtual void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) = 0;
+        virtual void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const = 0;
 
 };
 
 /**
  * Assigns floating point values to bins in a way such that each bin contains approximately the same number of values.
  */
-class EqualFrequencyBinningImpl : virtual public IBinning {
+class EqualFrequencyBinningImpl : public IBinning {
+
+    private:
+
+        float32 binRatio_;
 
     public:
 
-        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
+        /**
+         * @param binRatio A percentage that specifies how many bins should be used to assign the values in an array to,
+         *                 e.g., if 100 values are available, 0.5 means that `ceil(0.5 * 100) = 50` bins should be used
+         */
+        EqualFrequencyBinningImpl(float32 binRatio);
+
+        uint32 getNumBins(const FeatureVector& featureVector) const override;
+
+        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const override;
 
 };
 
 /**
  * Assigns floating point values to bins in a way such that each bin contains values from equally sized value ranges.
  */
-class EqualWidthBinningImpl : virtual public IBinning {
+class EqualWidthBinningImpl : public IBinning {
+
+    private:
+
+        float32 binRatio_;
 
     public:
 
-        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) override;
+        /**
+         * @param binRatio A percentage that specifies how many bins should be used to assign the values in an array to,
+         *                 e.g., if 100 values are available, 0.5 means that `ceil(0.5 * 100) = 50` bins should be used
+         */
+        EqualWidthBinningImpl(float32 binRatio);
+
+        uint32 getNumBins(const FeatureVector& featureVector) const override;
+
+        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const override;
 
 };

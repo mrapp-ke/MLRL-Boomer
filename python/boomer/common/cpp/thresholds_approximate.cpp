@@ -1,13 +1,13 @@
 #include "thresholds_approximate.h"
-#include "thresholds_common.cpp"
-#include "rule_refinement_approximate.cpp"
+#include "thresholds_common.h"
+#include "rule_refinement_approximate.h"
 
 
 /**
  * Provides access to a subset of the thresholds that are stored by an instance of the class
  * `ApproximateThresholds`.
  */
-class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset {
+class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
     private:
 
@@ -16,7 +16,7 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
          * are retrieved from the cache. Otherwise, they are computed by fetching the feature values from the feature
          * matrix and applying a binning method.
          */
-        class Callback : virtual public IBinningObserver, virtual public IRuleRefinementCallback<BinVector> {
+        class Callback : public IBinningObserver, public IRuleRefinementCallback<BinVector> {
 
             private:
 
@@ -45,8 +45,9 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
 
                     if (binCacheEntry.binVectorPtr.get() == nullptr) {
                         std::unique_ptr<FeatureVector> featureVectorPtr;
-                        thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_, featureVectorPtr);
-                        uint32 numBins = thresholdsSubset_.thresholds_.numBins_;
+                        thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
+                                                                                            featureVectorPtr);
+                        uint32 numBins = thresholdsSubset_.thresholds_.binningPtr_->getNumBins(*featureVectorPtr);
                         binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVector>(numBins, true));
                         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                         currentBinVector_ = binCacheEntry.binVectorPtr.get();
@@ -138,12 +139,12 @@ class ApproximateThresholds::ThresholdsSubset : virtual public IThresholdsSubset
 };
 
 ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                             std::shared_ptr<INominalFeatureVector> nominalFeatureVectorPtr,
+                                             std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                                              std::shared_ptr<AbstractStatistics> statisticsPtr,
                                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                             std::shared_ptr<IBinning> binningPtr, uint32 numBins)
-    : AbstractThresholds(featureMatrixPtr, nominalFeatureVectorPtr, statisticsPtr, headRefinementFactoryPtr),
-      binningPtr_(binningPtr), numBins_(numBins) {
+                                             std::shared_ptr<IBinning> binningPtr)
+    : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
+      binningPtr_(binningPtr) {
 
 }
 

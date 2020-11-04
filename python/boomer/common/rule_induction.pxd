@@ -1,7 +1,7 @@
 from boomer.common._arrays cimport uint32, intp
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
-from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureVector
+from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.thresholds cimport AbstractThresholds
 from boomer.common.sub_sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling
@@ -17,7 +17,7 @@ cdef class RuleInduction:
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
+    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
@@ -31,7 +31,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder)
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureVector* nominal_feature_vector,
+    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,

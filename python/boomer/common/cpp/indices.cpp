@@ -2,16 +2,11 @@
 #include "statistics.h"
 #include "sub_sampling.h"
 #include "thresholds.h"
-#include <cstdlib>
 
 
 PartialIndexVector::PartialIndexVector(uint32 numElements)
-    : numElements_(numElements), array_((uint32*) malloc(numElements * sizeof(uint32))) {
+    : vector_(DenseVector<uint32>(numElements)) {
 
-}
-
-PartialIndexVector::~PartialIndexVector() {
-    free(array_);
 }
 
 bool PartialIndexVector::isPartial() const {
@@ -19,34 +14,31 @@ bool PartialIndexVector::isPartial() const {
 }
 
 uint32 PartialIndexVector::getNumElements() const {
-    return numElements_;
+    return vector_.getNumElements();
 }
 
 void PartialIndexVector::setNumElements(uint32 numElements) {
-    if (numElements != numElements_) {
-        numElements_ = numElements;
-        array_ = (uint32*) realloc(array_, numElements * sizeof(uint32));
-    }
+    vector_.setNumElements(numElements);
 }
 
 uint32 PartialIndexVector::getIndex(uint32 pos) const {
-    return array_[pos];
+    return vector_.getValue(pos);
 }
 
-PartialIndexVector::index_iterator PartialIndexVector::indices_begin() {
-    return array_;
+PartialIndexVector::iterator PartialIndexVector::begin() {
+    return vector_.begin();
 }
 
-PartialIndexVector::index_iterator PartialIndexVector::indices_end() {
-    return &array_[numElements_];
+PartialIndexVector::iterator PartialIndexVector::end() {
+    return vector_.end();
 }
 
-PartialIndexVector::index_const_iterator PartialIndexVector::indices_cbegin() const {
-    return array_;
+PartialIndexVector::const_iterator PartialIndexVector::cbegin() const {
+    return vector_.cbegin();
 }
 
-PartialIndexVector::index_const_iterator PartialIndexVector::indices_cend() const {
-    return &array_[numElements_];
+PartialIndexVector::const_iterator PartialIndexVector::cend() const {
+    return vector_.cend();
 }
 
 std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const AbstractStatistics& statistics) const {
@@ -103,11 +95,11 @@ uint32 FullIndexVector::getIndex(uint32 pos) const {
     return pos;
 }
 
-FullIndexVector::index_const_iterator FullIndexVector::indices_cbegin() const {
+FullIndexVector::const_iterator FullIndexVector::cbegin() const {
     return FullIndexVector::Iterator(0);
 }
 
-FullIndexVector::index_const_iterator FullIndexVector::indices_cend() const {
+FullIndexVector::const_iterator FullIndexVector::cend() const {
     return FullIndexVector::Iterator(numElements_);
 }
 

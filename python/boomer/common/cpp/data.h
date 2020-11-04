@@ -12,52 +12,12 @@
 
 
 /**
- * Defines an interface for all one-dimensional vectors.
- */
-class IVector {
-
-    public:
-
-        virtual ~IVector() { };
-
-        /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements
-         */
-        virtual uint32 getNumElements() const = 0;
-
-};
-
-/**
- * Defines an interface for all one-dimensional vectors that provide random access to their elements.
- *
- * @tparam T The type of the data that is stored in the vector
- */
-template<class T>
-class IRandomAccessVector : virtual public IVector {
-
-    public:
-
-        virtual ~IRandomAccessVector() { };
-
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
-         */
-        virtual T getValue(uint32 pos) const = 0;
-
-};
-
-/**
  * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
  *
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class DenseVector : virtual public IRandomAccessVector<T> {
+class DenseVector {
 
     private:
 
@@ -113,15 +73,26 @@ class DenseVector : virtual public IRandomAccessVector<T> {
         const_iterator cend() const;
 
         /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
+         */
+        uint32 getNumElements() const;
+
+        /**
          * Sets the number of elements in the vector.
          *
          * @param numElements The number of elements to be set
          */
         void setNumElements(uint32 numElements);
 
-        uint32 getNumElements() const override;
-
-        T getValue(uint32 pos) const override;
+        /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
+         */
+        T getValue(uint32 pos) const;
 
 };
 
@@ -131,7 +102,7 @@ class DenseVector : virtual public IRandomAccessVector<T> {
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class SparseArrayVector : virtual public IVector {
+class SparseArrayVector {
 
     public:
 
@@ -186,9 +157,11 @@ class SparseArrayVector : virtual public IVector {
         const_iterator cend() const;
 
         /**
-         * Sorts the elements in the vector in ascending order based on their values.
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
          */
-        void sortByValues();
+        uint32 getNumElements() const;
 
         /**
          * Sets the number of elements in the vector.
@@ -197,27 +170,31 @@ class SparseArrayVector : virtual public IVector {
          */
         void setNumElements(uint32 numElements);
 
-        uint32 getNumElements() const override;
+        /**
+         * Sorts the elements in the vector in ascending order based on their values.
+         */
+        void sortByValues();
 
 };
 
 /**
  * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
+class BinaryDokVector {
 
     private:
-
-        uint32 numElements_;
 
         std::unordered_set<uint32> data_;
 
     public:
 
         /**
-         * @param numElements The number of elements in the vector
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
          */
-        BinaryDokVector(uint32 numElements);
+        bool getValue(uint32 pos) const;
 
         /**
          * Sets a non-zero value to the element at a specific position.
@@ -226,64 +203,12 @@ class BinaryDokVector : virtual public IRandomAccessVector<uint8> {
          */
         void setValue(uint32 pos);
 
-        uint32 getNumElements() const override;
-
-        uint8 getValue(uint32 pos) const override;
-
-};
-
-/**
- * Defines an interface for all two-dimensional matrices.
- */
-class IMatrix {
-
-    public:
-
-        virtual ~IMatrix() { };
-
-        /**
-         * Returns the number of rows in the matrix.
-         *
-         * @return The number of rows
-         */
-        virtual uint32 getNumRows() const = 0;
-
-        /**
-         * Returns the number of columns in the matrix.
-         *
-         * @return The number of columns
-         */
-        virtual uint32 getNumCols() const = 0;
-
-};
-
-/**
- * Defines an interface for all two-dimensional matrices that provide random access to their elements.
- *
- * @tparam T The type of the data that is stored in the matrix
- */
-template<class T>
-class IRandomAccessMatrix : virtual public IMatrix {
-
-    public:
-
-        virtual ~IRandomAccessMatrix() { };
-
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param row   The row of the element. Must be in [0, getNumRows())
-         * @param col   The column of the element. Must be in [0, getNumCols())
-         * @return      The value of the given element
-         */
-        virtual T getValue(uint32 row, uint32 col) const = 0;
-
 };
 
 /**
  * A sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
+class BinaryDokMatrix {
 
     private:
 
@@ -300,19 +225,18 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
 
         };
 
-        uint32 numRows_;
-
-        uint32 numCols_;
-
         std::unordered_set<Entry, HashFunction> data_;
 
     public:
 
         /**
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
+         * Returns the value of the element at a specific position.
+         *
+         * @param row   The row of the element. Must be in [0, getNumRows())
+         * @param col   The column of the element. Must be in [0, getNumCols())
+         * @return      The value of the given element
          */
-        BinaryDokMatrix(uint32 numRows, uint32 numCols);
+        bool getValue(uint32 row, uint32 col) const;
 
         /**
          * Sets a non-zero value to the element at a specific position.
@@ -321,11 +245,5 @@ class BinaryDokMatrix : virtual public IRandomAccessMatrix<uint8> {
          * @param column    The column of the element. Must be in [0, getNumCols())
          */
         void setValue(uint32 row, uint32 column);
-
-        uint8 getValue(uint32 row, uint32 col) const override;
-
-        uint32 getNumRows() const override;
-
-        uint32 getNumCols() const override;
 
 };

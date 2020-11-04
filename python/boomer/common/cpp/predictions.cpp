@@ -1,11 +1,35 @@
 #include "predictions.h"
 #include "statistics.h"
-#include <cstdlib>
+#include "thresholds.h"
 
 
 AbstractPrediction::AbstractPrediction(uint32 numElements)
-    : DenseVector<float64>(numElements) {
+    : predictedScoreVector_(DenseVector<float64>(numElements)) {
 
+}
+
+uint32 AbstractPrediction::getNumElements() const {
+    return predictedScoreVector_.getNumElements();
+}
+
+void AbstractPrediction::setNumElements(uint32 numElements) {
+    predictedScoreVector_.setNumElements(numElements);
+}
+
+AbstractPrediction::score_iterator AbstractPrediction::scores_begin() {
+    return predictedScoreVector_.begin();
+}
+
+AbstractPrediction::score_iterator AbstractPrediction::scores_end() {
+    return predictedScoreVector_.end();
+}
+
+AbstractPrediction::score_const_iterator AbstractPrediction::scores_cbegin() const {
+    return predictedScoreVector_.cbegin();
+}
+
+AbstractPrediction::score_const_iterator AbstractPrediction::scores_cend() const {
+    return predictedScoreVector_.cend();
 }
 
 AbstractEvaluatedPrediction::AbstractEvaluatedPrediction(uint32 numElements)
@@ -14,17 +38,42 @@ AbstractEvaluatedPrediction::AbstractEvaluatedPrediction(uint32 numElements)
 }
 
 FullPrediction::FullPrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), FullIndexVector(numElements) {
+    : AbstractEvaluatedPrediction(numElements), indexVector_(FullIndexVector(numElements)) {
 
 }
 
-uint32 FullPrediction::getNumElements() const {
-    return DenseVector<float64>::getNumElements();
+FullPrediction::index_const_iterator FullPrediction::indices_cbegin() const {
+    return indexVector_.cbegin();
+}
+
+FullPrediction::index_const_iterator FullPrediction::indices_cend() const {
+    return indexVector_.cend();
 }
 
 void FullPrediction::setNumElements(uint32 numElements) {
-    DenseVector<float64>::setNumElements(numElements);
-    FullIndexVector::setNumElements(numElements);
+    AbstractPrediction::setNumElements(numElements);
+    indexVector_.setNumElements(numElements);
+}
+
+bool FullPrediction::isPartial() const {
+    return false;
+}
+
+uint32 FullPrediction::getIndex(uint32 pos) const {
+    return indexVector_.getIndex(pos);
+}
+
+std::unique_ptr<IStatisticsSubset> FullPrediction::createSubset(const AbstractStatistics& statistics) const {
+    return indexVector_.createSubset(statistics);
+}
+
+std::unique_ptr<IRuleRefinement> FullPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                                         uint32 featureIndex) const {
+    return indexVector_.createRuleRefinement(thresholdsSubset, featureIndex);
+}
+
+std::unique_ptr<IHeadRefinement> FullPrediction::createHeadRefinement(const IHeadRefinementFactory& factory) const {
+    return indexVector_.createHeadRefinement(factory);
 }
 
 void FullPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {
@@ -32,17 +81,50 @@ void FullPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex
 }
 
 PartialPrediction::PartialPrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), PartialIndexVector(numElements) {
+    : AbstractEvaluatedPrediction(numElements), indexVector_(PartialIndexVector(numElements)) {
 
 }
 
-uint32 PartialPrediction::getNumElements() const {
-    return DenseVector<float64>::getNumElements();
+PartialPrediction::index_iterator PartialPrediction::indices_begin() {
+    return indexVector_.begin();
+}
+
+PartialPrediction::index_iterator PartialPrediction::indices_end() {
+    return indexVector_.end();
+}
+
+PartialPrediction::index_const_iterator PartialPrediction::indices_cbegin() const {
+    return indexVector_.cbegin();
+}
+
+PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const {
+    return indexVector_.cend();
 }
 
 void PartialPrediction::setNumElements(uint32 numElements) {
-    DenseVector<float64>::setNumElements(numElements);
-    PartialIndexVector::setNumElements(numElements);
+    AbstractPrediction::setNumElements(numElements);
+    indexVector_.setNumElements(numElements);
+}
+
+bool PartialPrediction::isPartial() const {
+    return true;
+}
+
+uint32 PartialPrediction::getIndex(uint32 pos) const {
+    return indexVector_.getIndex(pos);
+}
+
+std::unique_ptr<IStatisticsSubset> PartialPrediction::createSubset(const AbstractStatistics& statistics) const {
+    return indexVector_.createSubset(statistics);
+}
+
+std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+                                                                         uint32 featureIndex) const {
+    return indexVector_.createRuleRefinement(thresholdsSubset, featureIndex);
+}
+
+std::unique_ptr<IHeadRefinement> PartialPrediction::createHeadRefinement(const IHeadRefinementFactory& factory) const {
+    return indexVector_.createHeadRefinement(factory);
 }
 
 void PartialPrediction::apply(AbstractStatistics& statistics, uint32 statisticIndex) const {

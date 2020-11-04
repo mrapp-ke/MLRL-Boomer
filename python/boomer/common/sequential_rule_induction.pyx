@@ -4,7 +4,7 @@
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common._random cimport RNG
-from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureVector
+from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
@@ -84,12 +84,12 @@ cdef class SequentialRuleInduction:
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
 
-    cpdef RuleModel induce_rules(self, NominalFeatureVector nominal_feature_vector, FeatureMatrix feature_matrix,
+    cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         """
         Creates and returns a model that consists of several classification rules.
 
-        :param nominal_feature_vector:  A `NominalFeatureVector` that provides access to the information whether
+        :param nominal_feature_mask:    A `NominalFeatureMask` that provides access to the information whether
                                         individual features are nominal or not
         :param feature_matrix:          The `FeatureMatrix` that provides column-wise access to the feature values of
                                         the training examples
@@ -133,18 +133,18 @@ cdef class SequentialRuleInduction:
 
         # Induce the remaining rules...
         cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
-        cdef shared_ptr[INominalFeatureVector] nominal_feature_vector_ptr = nominal_feature_vector.nominal_feature_vector_ptr
+        cdef shared_ptr[INominalFeatureMask] nominal_feature_mask_ptr = nominal_feature_mask.nominal_feature_mask_ptr
         cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr = label_sub_sampling.label_sub_sampling_ptr
         cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr = feature_sub_sampling.feature_sub_sampling_ptr
         cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
         cdef shared_ptr[IPruning] pruning_ptr = pruning.pruning_ptr
         cdef shared_ptr[IPostProcessor] post_processor_ptr = post_processor.post_processor_ptr
         cdef unique_ptr[AbstractThresholds] thresholds_ptr
-        thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_vector, statistics_provider,
+        thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_mask, statistics_provider,
                                                        head_refinement_factory))
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
-            success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_vector_ptr.get(),
+            success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_mask_ptr.get(),
                                                  feature_matrix_ptr.get(), label_sub_sampling_ptr.get(),
                                                  instance_sub_sampling_ptr.get(), feature_sub_sampling_ptr.get(),
                                                  pruning_ptr.get(), post_processor_ptr.get(), min_coverage,

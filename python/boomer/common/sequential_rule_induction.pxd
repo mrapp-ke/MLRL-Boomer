@@ -4,7 +4,7 @@ from boomer.common.rule_induction cimport RuleInduction
 from boomer.common.statistics cimport StatisticsProviderFactory
 from boomer.common.thresholds cimport ThresholdsFactory
 from boomer.common.head_refinement cimport HeadRefinementFactory
-from boomer.common.input_data cimport LabelMatrix, FeatureMatrix, NominalFeatureVector
+from boomer.common.input_data cimport LabelMatrix, FeatureMatrix, NominalFeatureMask
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
@@ -46,5 +46,5 @@ cdef class SequentialRuleInduction:
 
     # Functions:
 
-    cpdef RuleModel induce_rules(self, NominalFeatureVector nominal_feature_vector, FeatureMatrix feature_matrix,
+    cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder)
