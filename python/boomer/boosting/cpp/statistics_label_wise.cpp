@@ -1,5 +1,5 @@
 #include "statistics_label_wise.h"
-#include "../../common/cpp/arrays.h"
+#include "../../common/cpp/data_numeric.h"
 #include <cstdlib>
 
 using namespace boosting;
@@ -130,8 +130,12 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 uint32 numBins_;
 
-                float64* gradients_;
+                DenseFloat64Matrix* gradientsM_;
 
+                DenseFloat64Matrix* hessiansM_;
+
+                // TODO Remove
+                float64* gradients_;
                 float64* hessians_;
 
             public:
@@ -143,9 +147,13 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                  */
                 HistogramBuilder(const DenseLabelWiseStatistics& statistics, uint32 numBins)
                     : statistics_(statistics), numBins_(numBins) {
-                    uint32 numLabels = numBins_ * statistics.getNumLabels();
-                    gradients_ = (float64*) calloc(numLabels, sizeof(float64));
-                    hessians_ = (float64*) calloc(numLabels, sizeof(float64));
+                    uint32 numLabels = statistics.getNumLabels();
+                    gradientsM_ = new DenseFloat64Matrix(numBins, numLabels, true);
+                    hessiansM_ = new DenseFloat64Matrix(numBins, numLabels, true);
+
+                    // TODO Remove
+                    gradients_ = gradientsM_->begin();
+                    hessians_ = hessiansM_->begin();
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
@@ -165,8 +173,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 std::unique_ptr<AbstractStatistics> build() const override {
                     return std::make_unique<DenseLabelWiseStatistics>(statistics_.lossFunctionPtr_,
                                                                       statistics_.ruleEvaluationFactoryPtr_,
-                                                                      statistics_.labelMatrixPtr_, gradients_,
-                                                                      hessians_, statistics_.currentScores_);
+                                                                      statistics_.labelMatrixPtr_, gradientsM_,
+                                                                      hessiansM_, statistics_.currentScoresM_);
                 }
 
         };
@@ -176,10 +184,15 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
+        DenseFloat64Matrix* gradientsM_;
+
+        DenseFloat64Matrix* hessiansM_;
+
+        DenseFloat64Matrix* currentScoresM_;
+
+        // TODO Remove
         float64* gradients_;
-
         float64* hessians_;
-
         float64* currentScores_;
 
         float64* totalSumsOfGradients_;
@@ -205,11 +218,18 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
          */
         DenseLabelWiseStatistics(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                                  std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
-                                 float64* hessians, float64* currentScores)
+                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                                 DenseFloat64Matrix* gradients, DenseFloat64Matrix* hessians,
+                                 DenseFloat64Matrix* currentScores)
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
-              ruleEvaluationFactoryPtr), lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
-              gradients_(gradients), hessians_(hessians), currentScores_(currentScores) {
+                                          ruleEvaluationFactoryPtr),
+              lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), gradientsM_(gradients),
+              hessiansM_(hessians), currentScoresM_(currentScores) {
+            // TODO Remove
+            gradients_ = gradients->begin();
+            hessians_ = hessians->begin();
+            currentScores_ = currentScores->begin();
+
             // The number of labels
             uint32 numLabels = this->getNumLabels();
             // An array that stores the column-wise sums of the matrix of gradients
@@ -219,10 +239,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         ~DenseLabelWiseStatistics() {
-            free(currentScores_);
-            free(gradients_);
+            delete gradientsM_;
+            delete hessiansM_;
+            delete currentScoresM_;
             free(totalSumsOfGradients_);
-            free(hessians_);
             free(totalSumsOfHessians_);
         }
 
@@ -334,30 +354,21 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 }
 
 std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
-    // The number of examples
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
-    // The number of labels
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
-    // A matrix that stores the gradients for each example and label
-    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // A matrix that stores the Hessians for each example and label
-    float64* hessians = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // A matrix that stores the currently predicted scores for each example and label
-    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    DenseFloat64Matrix* gradients = new DenseFloat64Matrix(numExamples, numLabels);
+    DenseFloat64Matrix* hessians = new DenseFloat64Matrix(numExamples, numLabels);
+    DenseFloat64Matrix* currentScores = new DenseFloat64Matrix(numExamples, numLabels, true);
 
     for (uint32 r = 0; r < numExamples; r++) {
-        uint32 offset = r * numLabels;
+        DenseFloat64Matrix::iterator gradientIterator = gradients->row_begin(r);
+        DenseFloat64Matrix::iterator hessianIterator = hessians->row_begin(r);
 
         for (uint32 c = 0; c < numLabels; c++) {
-            uint32 i = offset + c;
-
             // Calculate the initial gradient and Hessian for the current example and label...
             std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_, r, c, 0);
-            gradients[i] = pair.first;
-            hessians[i] = pair.second;
-
-            // Store the score that is initially predicted for the current example and label...
-            currentScores[i] = 0;
+            gradientIterator[c] = pair.first;
+            hessianIterator[c] = pair.second;
         }
     }
 
