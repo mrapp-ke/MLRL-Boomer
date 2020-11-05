@@ -38,3 +38,35 @@ class DenseNumericVector : public DenseVector<T> {
 };
 
 typedef DenseNumericVector<float64> DenseFloat64Vector;
+
+/**
+ * A two-dimensional matrix that provides random access to a fixed number of numbers stored in a C-contiguous array.
+ *
+ * @tparam T The type of the numbers that are stored in the matrix
+ */
+template<class T>
+class DenseNumericMatrix : public DenseMatrix<T> {
+
+    public:
+
+        /**
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
+         */
+        DenseNumericMatrix(uint32 numRows, uint32 numCols);
+
+        /**
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
+         * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
+         */
+        DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init);
+
+        /**
+         * Sets the values of all elements in the matrix to zero.
+         */
+        void setAllToZero();
+
+};
+
+typedef DenseNumericMatrix<float64> DenseFloat64Matrix;

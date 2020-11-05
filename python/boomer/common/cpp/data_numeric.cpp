@@ -23,3 +23,26 @@ void DenseNumericVector<T>::setAllToZero() {
 }
 
 template class DenseNumericVector<float64>;
+
+template<class T>
+DenseNumericMatrix<T>::DenseNumericMatrix(uint32 numRows, uint32 numCols)
+    : DenseMatrix<T>(numRows, numCols) {
+
+}
+
+template<class T>
+DenseNumericMatrix<T>::DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init)
+    : DenseMatrix<T>(numRows, numCols, init) {
+
+}
+
+template<class T>
+void DenseNumericMatrix<T>::setAllToZero() {
+    auto end = this->end();
+
+    for (auto iterator = this->begin(); iterator != end; iterator++) {
+        *iterator = 0;
+    }
+}
+
+template class DenseNumericMatrix<float64>;
