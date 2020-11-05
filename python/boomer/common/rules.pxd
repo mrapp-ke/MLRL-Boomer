@@ -18,7 +18,25 @@ cdef extern from "cpp/rules.h" nogil:
         uint32 featureIndex
         Comparator comparator
         float32 threshold
+        intp start
+        intp end
+        bool covered
         uint32 coveredWeights
+
+
+    cdef cppclass ConditionList:
+
+        ctypedef double_linked_list[Condition].const_iterator const_iterator;
+
+        # Functions:
+
+        const_iterator cbegin()
+
+        const_iterator cend()
+
+        uint32 getNumConditions(Comparator comparator)
+
+        void append(Condition condition)
 
 
 cdef class Body:
@@ -153,8 +171,7 @@ cdef class ModelBuilder:
 
     cdef void set_default_rule(self, AbstractPrediction* prediction)
 
-    cdef void add_rule(self, AbstractPrediction* prediction, double_linked_list[Condition] conditions,
-                       uint32[::1] num_conditions_per_comparator)
+    cdef void add_rule(self, AbstractPrediction* prediction, ConditionList& conditions)
 
     cdef RuleModel build_model(self)
 
@@ -175,7 +192,6 @@ cdef class RuleListBuilder(ModelBuilder):
 
     cdef void set_default_rule(self, AbstractPrediction* prediction)
 
-    cdef void add_rule(self, AbstractPrediction* prediction, double_linked_list[Condition] conditions,
-                       uint32[::1] num_conditions_per_comparator)
+    cdef void add_rule(self, AbstractPrediction* prediction, ConditionList& conditions)
 
     cdef RuleModel build_model(self)

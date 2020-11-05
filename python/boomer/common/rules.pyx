@@ -578,14 +578,14 @@ cdef class ModelBuilder:
         """
         pass
 
-    cdef void add_rule(self, AbstractPrediction* prediction, double_linked_list[Condition] conditions,
-                       uint32[::1] num_conditions_per_comparator):
+    cdef void add_rule(self, AbstractPrediction* prediction, ConditionList& conditions):
         """
         Adds a new rule to the model.
 
         :param prediction:                      A pointer to an object of type `AbstractPrediction` that stores the
                                                 scores that are predicted by the rule
-        :param conditions:                      A list that contains the rule's conditions
+        :param conditions:                      A reference to an object of type `ConditionList` that stores the rule's
+                                                conditions
         :param num_conditions_per_comparator:   An array of type `uint32`, shape `(4)`, representing the number of
                                                 conditions that use a specific operator
         """
@@ -640,21 +640,20 @@ cdef class RuleListBuilder(ModelBuilder):
             else:
                 rule_list.add_rule(default_rule)
 
-    cdef void add_rule(self, AbstractPrediction* prediction, double_linked_list[Condition] conditions,
-                       uint32[::1] num_conditions_per_comparator):
-        cdef uint32 num_conditions = num_conditions_per_comparator[<uint32>Comparator.LEQ]
+    cdef void add_rule(self, AbstractPrediction* prediction, ConditionList& conditions):
+        cdef uint32 num_conditions = conditions.getNumConditions(Comparator.LEQ)
         cdef uint32[::1] leq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] leq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-        num_conditions = num_conditions_per_comparator[<uint32>Comparator.GR]
+        num_conditions = conditions.getNumConditions(Comparator.GR)
         cdef uint32[::1] gr_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] gr_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-        num_conditions = num_conditions_per_comparator[<uint32>Comparator.EQ]
+        num_conditions = conditions.getNumConditions(Comparator.EQ)
         cdef uint32[::1] eq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] eq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-        num_conditions = num_conditions_per_comparator[<uint32>Comparator.NEQ]
+        num_conditions = conditions.getNumConditions(Comparator.NEQ)
         cdef uint32[::1] neq_feature_indices = array_uint32(num_conditions) if num_conditions > 0 else None
         cdef float32[::1] neq_thresholds = array_float32(num_conditions) if num_conditions > 0 else None
-        cdef double_linked_list[Condition].iterator iterator = conditions.begin()
+        cdef ConditionList.const_iterator iterator = conditions.cbegin()
         cdef uint32 leq_i = 0
         cdef uint32 gr_i = 0
         cdef uint32 eq_i = 0
@@ -662,7 +661,7 @@ cdef class RuleListBuilder(ModelBuilder):
         cdef Condition condition
         cdef Comparator comparator
 
-        while iterator != conditions.end():
+        while iterator != conditions.cend():
             condition = dereference(iterator)
             comparator = condition.comparator
 
