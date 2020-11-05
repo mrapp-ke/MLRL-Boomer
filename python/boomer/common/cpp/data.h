@@ -211,7 +211,7 @@ class BinaryDokVector {
  * @tparam T The type of the data that is stored in the matrix
  */
 template<class T>
-class DenseMatrix : virtual public IRandomAccessMatrix<T> {
+class DenseMatrix {
 
     private:
 
@@ -302,11 +302,19 @@ class DenseMatrix : virtual public IRandomAccessMatrix<T> {
          */
         const_iterator row_cend(uint32 row) const;
 
-        uint32 getNumRows() const override;
+        /**
+         * Returns the number of rows in the matrix.
+         *
+         * @return The number of rows in the matrix
+         */
+        uint32 getNumRows() const;
 
-        uint32 getNumCols() const override;
-
-        T getValue(uint32 row, uint32 col) const override;
+        /**
+         * Returns the number of columns in the matrix.
+         *
+         * @return The number of columns in the matrix
+         */
+        uint32 getNumCols() const;
 
 };
 
