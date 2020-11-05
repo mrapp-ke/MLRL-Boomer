@@ -1,14 +1,14 @@
 #include "pruning.h"
 
 
-std::unique_ptr<CoverageMask> NoPruningImpl::prune(IThresholdsSubset& thresholdsSubset, std::list<Condition>& conditions,
+std::unique_ptr<CoverageMask> NoPruningImpl::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
                                                    const AbstractPrediction& head) const {
     return nullptr;
 }
 
-std::unique_ptr<CoverageMask> IREPImpl::prune(IThresholdsSubset& thresholdsSubset, std::list<Condition>& conditions,
+std::unique_ptr<CoverageMask> IREPImpl::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
                                               const AbstractPrediction& head) const {
-    std::list<Condition>::size_type numConditions = conditions.size();
+    ConditionList::size_type numConditions = conditions.getNumConditions();
     std::unique_ptr<CoverageMask> bestCoverageMaskPtr;
 
     // Only rules with more than one condition can be pruned...
@@ -26,8 +26,8 @@ std::unique_ptr<CoverageMask> IREPImpl::prune(IThresholdsSubset& thresholdsSubse
         // We process the existing rule's conditions (except for the last one) in the order they have been learned. At
         // each iteration, we calculate the quality score of a rule that only contains the conditions processed so far
         // and keep track of the best rule...
-        std::list<Condition>::const_iterator conditionIterator = conditions.cbegin();
-        std::list<Condition>::size_type numPrunedConditions = 0;
+        ConditionList::const_iterator conditionIterator = conditions.cbegin();
+        ConditionList::size_type numPrunedConditions = 0;
 
         for (std::list<Condition>::size_type n = 1; n < numConditions; n++) {
             // Filter the thresholds by applying the current condition...
@@ -51,7 +51,7 @@ std::unique_ptr<CoverageMask> IREPImpl::prune(IThresholdsSubset& thresholdsSubse
 
         // Remove the pruned conditions...
         while (numPrunedConditions > 0) {
-            conditions.pop_back();
+            conditions.removeLast();
             numPrunedConditions--;
         }
     }
