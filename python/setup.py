@@ -18,6 +18,7 @@ sources = [
     'boomer/common/cpp/indices.cpp',
     'boomer/common/cpp/input_data.cpp',
     'boomer/common/cpp/predictions.cpp',
+    'boomer/common/cpp/rules.cpp',
     'boomer/common/cpp/post_processing.cpp',
     'boomer/common/cpp/rule_evaluation.cpp',
     'boomer/common/cpp/sub_sampling.cpp',
