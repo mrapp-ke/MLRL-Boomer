@@ -1,5 +1,6 @@
 #include "statistics_label_wise.h"
 #include "../../common/cpp/data_numeric.h"
+#include "../../common/cpp/data_operations.h"
 #include <cstdlib>
 
 using namespace boosting;
@@ -199,6 +200,29 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         float64* totalSumsOfHessians_;
 
+        template<class T>
+        void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
+            // Update the scores that are currently predicted for the example at the given index...
+            add<float64>(prediction.scores_cbegin(), currentScoresM_->row_begin(statisticIndex),
+                         prediction.indices_cbegin(), prediction.indices_cend());
+
+            DenseFloat64Matrix::iterator gradientIterator = gradientsM_->row_begin(statisticIndex);
+            DenseFloat64Matrix::iterator hessianIterator = hessiansM_->row_begin(statisticIndex);
+            DenseFloat64Matrix::const_iterator scoreIterator = currentScoresM_->row_cbegin(statisticIndex);
+
+            // Update the gradients and Hessians of the example at the given index...
+            for (auto indexIterator = prediction.indices_cbegin(); indexIterator != prediction.indices_cend(); indexIterator++) {
+                uint32 labelIndex = *indexIterator;
+                float64 predictedScore = scoreIterator[labelIndex];
+                std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_,
+                                                                                                 statisticIndex,
+                                                                                                 labelIndex,
+                                                                                                 predictedScore);
+                gradientIterator[labelIndex] = pair.first;
+                hessianIterator[labelIndex] = pair.second;
+            }
+        }
+
     public:
 
         /**
@@ -281,49 +305,11 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-            uint32 numLabels = this->getNumLabels();
-            uint32 offset = statisticIndex * numLabels;
-            uint32 numPredictions = prediction.getNumElements();
-            FullPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
-
-            // Only the labels that are predicted by the new rule must be considered...
-            for (uint32 c = 0; c < numPredictions; c++) {
-                // Update the score that is currently predicted for the current example and label...
-                uint32 i = offset + c;
-                float64 updatedScore = currentScores_[i] + scoreIterator[c];
-                currentScores_[i] = updatedScore;
-
-                // Update the gradient and Hessian for the current example and label...
-                std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_,
-                                                                                                 statisticIndex, c,
-                                                                                                 updatedScore);
-                gradients_[i] = pair.first;
-                hessians_[i] = pair.second;
-            }
+            this->applyPredictionInternally<FullPrediction>(statisticIndex, prediction);
         }
 
         void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-            uint32 numLabels = this->getNumLabels();
-            uint32 offset = statisticIndex * numLabels;
-            uint32 numPredictions = prediction.getNumElements();
-            PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
-            PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
-
-            // Only the labels that are predicted by the new rule must be considered...
-            for (uint32 c = 0; c < numPredictions; c++) {
-                // Update the score that is currently predicted for the current example and label...
-                uint32 l = indexIterator[c];
-                uint32 i = offset + l;
-                float64 updatedScore = currentScores_[i] + scoreIterator[c];
-                currentScores_[i] = updatedScore;
-
-                // Update the gradient and Hessian for the current example and label...
-                std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_,
-                                                                                                 statisticIndex, l,
-                                                                                                 updatedScore);
-                gradients_[i] = pair.first;
-                hessians_[i] = pair.second;
-            }
+            this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
         }
 
         std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override {
