@@ -4,10 +4,9 @@
 classes that store the predictions of rules, as well as corresponding quality scores.
 """
 from boomer.common._arrays cimport uint32, float64
-from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
+from boomer.common.statistics cimport AbstractStatistics
 
 from libcpp cimport bool
-from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "cpp/predictions.h" nogil:
@@ -26,16 +25,10 @@ cdef extern from "cpp/predictions.h" nogil:
 
         score_const_iterator scores_cend()
 
-        unique_ptr[IStatisticsSubset] createSubset(const AbstractStatistics& statistics)
-
         void apply(AbstractStatistics& statistics, uint32 statisticIndex)
 
 
     cdef cppclass AbstractEvaluatedPrediction(AbstractPrediction):
-        pass
-
-
-    cdef cppclass FullPrediction(AbstractEvaluatedPrediction):
         pass
 
 
