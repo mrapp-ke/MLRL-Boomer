@@ -130,6 +130,81 @@ void BinaryDokVector::setValue(uint32 pos) {
     data_.insert(pos);
 }
 
+template<class T>
+DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols)
+    : DenseMatrix<T>(numRows, numCols, false) {
+
+}
+
+template<class T>
+DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols, bool init)
+    : array_((T*) (init ? calloc(numRows * numCols, sizeof(T)) : malloc(numRows * numCols * sizeof(T)))),
+      numRows_(numRows), numCols_(numCols) {
+
+}
+
+template<class T>
+DenseMatrix<T>::~DenseMatrix() {
+    free(array_);
+}
+
+template<class T>
+uint32 DenseMatrix<T>::getNumRows() const {
+    return numRows_;
+}
+
+template<class T>
+uint32 DenseMatrix<T>::getNumCols() const {
+    return numCols_;
+}
+
+template<class T>
+T DenseMatrix<T>::getValue(uint32 row, uint32 col) const {
+    return array_[(row * numCols_) + col];
+}
+
+template<class T>
+typename DenseMatrix<T>::iterator DenseMatrix<T>::begin() {
+    return array_;
+}
+
+template<class T>
+typename DenseMatrix<T>::iterator DenseMatrix<T>::end() {
+    return &array_[numRows_ * numCols_];
+}
+
+template<class T>
+typename DenseMatrix<T>::const_iterator DenseMatrix<T>::cbegin() const {
+    return array_;
+}
+
+template<class T>
+typename DenseMatrix<T>::const_iterator DenseMatrix<T>::cend() const {
+    return &array_[numRows_ * numCols_];
+}
+
+template<class T>
+typename DenseMatrix<T>::iterator DenseMatrix<T>::row_begin(uint32 row) {
+    return &array_[row * numCols_];
+}
+
+template<class T>
+typename DenseMatrix<T>::iterator DenseMatrix<T>::row_end(uint32 row) {
+    return &array_[row * (numCols_ + 1)];
+}
+
+template<class T>
+typename DenseMatrix<T>::const_iterator DenseMatrix<T>::row_cbegin(uint32 row) const {
+    return &array_[row * numCols_];
+}
+
+template<class T>
+typename DenseMatrix<T>::const_iterator DenseMatrix<T>::row_cend(uint32 row) const {
+    return &array_[row * (numCols_ + 1)];
+}
+
+template class DenseMatrix<float64>;
+
 bool BinaryDokMatrix::getValue(uint32 row, uint32 column) const {
     return data_.find(std::make_pair(row, column)) != data_.end();
 }

@@ -206,6 +206,111 @@ class BinaryDokVector {
 };
 
 /**
+ * A two-dimensional matrix that provides random access to a fixed number of elements stored in a C-contiguous array.
+ *
+ * @tparam T The type of the data that is stored in the matrix
+ */
+template<class T>
+class DenseMatrix : virtual public IRandomAccessMatrix<T> {
+
+    private:
+
+        T* array_;
+
+        uint32 numRows_;
+
+        uint32 numCols_;
+
+    public:
+
+        /**
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
+         */
+        DenseMatrix(uint32 numRows, uint32 numCols);
+
+        /**
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
+         * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
+         */
+        DenseMatrix(uint32 numRows, uint32 numCols, bool init);
+
+        ~DenseMatrix();
+
+        typedef typename DenseVector<T>::iterator iterator;
+
+        typedef typename DenseVector<T>::const_iterator const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the matrix.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the matrix.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns a `const_iterator` to the beginning of the matrix.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the matrix.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        /**
+         * Returns an `iterator` to the beginning of a specific row.
+         *
+         * @param row   The row
+         * @return      An `iterator` to the beginning of the given row
+         */
+        iterator row_begin(uint32 row);
+
+        /**
+         * Returns an `iterator` to the end of a specific row.
+         *
+         * @param row   The row
+         * @return      An `iterator` to the end of the given row
+         */
+        iterator row_end(uint32 row);
+
+        /**
+         * Returns a `const_iterator` to the beginning of a specific row.
+         *
+         * @param row   The row
+         * @return      A `const_iterator` to the beginning of the given row
+         */
+        const_iterator row_cbegin(uint32 row) const;
+
+        /**
+         * Returns a `const_iterator` to the end of a specific row.
+         *
+         * @param row   The row
+         * @return      A `const_iterator` to the end of the given row
+         */
+        const_iterator row_cend(uint32 row) const;
+
+        uint32 getNumRows() const override;
+
+        uint32 getNumCols() const override;
+
+        T getValue(uint32 row, uint32 col) const override;
+
+};
+
+/**
  * A sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokMatrix {
