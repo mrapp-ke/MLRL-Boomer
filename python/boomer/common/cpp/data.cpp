@@ -159,11 +159,6 @@ uint32 DenseMatrix<T>::getNumCols() const {
 }
 
 template<class T>
-T DenseMatrix<T>::getValue(uint32 row, uint32 col) const {
-    return array_[(row * numCols_) + col];
-}
-
-template<class T>
 typename DenseMatrix<T>::iterator DenseMatrix<T>::begin() {
     return array_;
 }
