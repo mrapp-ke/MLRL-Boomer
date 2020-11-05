@@ -6,7 +6,6 @@
 #pragma once
 
 #include "thresholds.h"
-#include <list>
 
 
 /**
@@ -28,14 +27,14 @@ class IPruning {
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset`, which contains the thresholds
          *                          that correspond to the subspace of the instance space that is covered by the
          *                          existing rule
-         * @param conditions        A reference to a list that contains the conditions of the existing rule
+         * @param conditions        A reference to an object of type `ConditionList` that stores the conditions of the
+         *                          existing rule
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the existing rule
          * @return                  An unique pointer to an object of type `CoverageMask` that specifies the examples
          *                          that are covered by the pruned rule or a null pointer if the rule was not pruned
          */
-        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset,
-                                                    std::list<Condition>& conditions,
+        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
                                                     const AbstractPrediction& head) const = 0;
 
 };
@@ -47,8 +46,7 @@ class NoPruningImpl : virtual public IPruning {
 
     public:
 
-        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset,
-                                                    std::list<Condition>& conditions,
+        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
                                                     const AbstractPrediction& head) const override;
 
 };
@@ -64,8 +62,7 @@ class IREPImpl : virtual public IPruning {
 
     public:
 
-        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset,
-                                                    std::list<Condition>& conditions,
+        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
                                                     const AbstractPrediction& head) const override;
 
 };

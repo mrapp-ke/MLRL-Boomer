@@ -1,9 +1,8 @@
 from boomer.common._predictions cimport AbstractPrediction
-from boomer.common.rules cimport Condition
+from boomer.common.rules cimport Condition, ConditionList
 from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 
 from libcpp.memory cimport unique_ptr, shared_ptr
-from libcpp.list cimport list as double_linked_list
 
 
 cdef extern from "cpp/pruning.h" nogil:
@@ -12,7 +11,7 @@ cdef extern from "cpp/pruning.h" nogil:
 
         # Functions:
 
-        unique_ptr[CoverageMask] prune(IThresholdsSubset& thresholdsSubset, double_linked_list[Condition]& conditions,
+        unique_ptr[CoverageMask] prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
                                        const AbstractPrediction& head)
 
 

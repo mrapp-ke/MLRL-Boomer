@@ -3,18 +3,17 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport float32, array_uint32
+from boomer.common._arrays cimport float32
 from boomer.common._indices cimport IIndexVector, FullIndexVector
 from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.head_refinement cimport IHeadRefinement
-from boomer.common.rules cimport Condition, Comparator
+from boomer.common.rules cimport Condition, Comparator, ConditionList
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector
 from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 
 from libcpp.unordered_map cimport unordered_map
-from libcpp.list cimport list as double_linked_list
 from libcpp.memory cimport unique_ptr, make_unique
 from libcpp.utility cimport move
 
@@ -133,12 +132,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # The total number of labels
         cdef uint32 num_labels = thresholds.getNumLabels()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
-        cdef double_linked_list[Condition] conditions
+        cdef ConditionList conditions
         # The total number of conditions
         cdef uint32 num_conditions = 0
-        # An array representing the number of conditions per type of operator
-        cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
-        num_conditions_per_comparator[:] = 0
         # A map that stores a pointer to an object of type `IRuleRefinement` for each feature
         cdef unordered_map[uint32, IRuleRefinement*] rule_refinements  # Stack-allocated map
         # An unique pointer to the best refinement of the current rule
@@ -207,9 +203,8 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 num_covered_examples = best_refinement_ptr.get().coveredWeights
 
                 # Add the new condition...
-                conditions.push_back(__create_condition(best_refinement_ptr.get()))
+                conditions.append(__create_condition(best_refinement_ptr.get()))
                 num_conditions += 1
-                num_conditions_per_comparator[<uint32>best_refinement_ptr.get().comparator] += 1
 
                 if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                     # Keep the labels for which the rule predicts, if the head should not be further refined...
@@ -244,7 +239,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement_ptr.get().headPtr.get()))
 
             # Add the induced rule to the model...
-            model_builder.add_rule(best_refinement_ptr.get().headPtr.get(), conditions, num_conditions_per_comparator)
+            model_builder.add_rule(best_refinement_ptr.get().headPtr.get(), conditions)
             return True
 
 
