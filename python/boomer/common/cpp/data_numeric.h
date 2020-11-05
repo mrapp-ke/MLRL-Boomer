@@ -1,5 +1,5 @@
 /**
- * Provides classes and functions that implement operations on numeric data that is stored in matrices or vectors.
+ * Provides classes that provide access to numerical data that is stored in matrices or vectors.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
