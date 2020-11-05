@@ -274,6 +274,20 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
         'Matrix of type ' + type(m).__name__ + ' cannot be converted to format \'' + str(sparse_format) + '\'')
 
 
+def enforce_dense(x, order: str):
+    """
+    Converts a given matrix into a `np.ndarray`, if necessary, and enforces a specific memory layout.
+
+    :param x:       A `np.ndarray` or `scipy.sparse.matrix` to be converted
+    :param order:   The memory layout to be used. Must be `C` or `F`
+    :return:        A `np.ndarray` that uses the given memory layout
+    """
+    if issparse(x):
+        return x.toarray(order=order)
+    else:
+        return np.require(requirements=[order])
+
+
 class MLRuleLearner(Learner, NominalAttributeLearner):
     """
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
@@ -298,7 +312,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x_sparse_format = 'csc'
         x_sparse_policy = create_sparse_policy(self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy)
-        x = self._validate_data((x if x_enforce_sparse else x.toarray(order='F')),
+        x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F')),
                                 accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32)
 
         if issparse(x):
@@ -335,7 +349,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         sparse_format = 'csr'
         sparse_policy = create_sparse_policy(self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy)
-        x = self._validate_data((x if enforce_sparse else x.toarray(order='C')), reset=False,
+        x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C'), reset=False,
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
         num_labels = self.num_labels_
         model = self.model_
