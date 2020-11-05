@@ -1,5 +1,4 @@
 from boomer.common._indices cimport FullIndexVector, PartialIndexVector
-from boomer.common._rule_evaluation cimport EvaluatedPrediction
 from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.statistics cimport IStatisticsSubset
 
@@ -16,8 +15,6 @@ cdef extern from "cpp/head_refinement.h" nogil:
                                                     bool accumulated)
 
         unique_ptr[AbstractEvaluatedPrediction] pollHead()
-
-        EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered, bool accumulated)
 
 
     cdef cppclass IHeadRefinementFactory:

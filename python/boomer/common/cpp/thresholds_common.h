@@ -226,12 +226,13 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
  * elements that are covered by the current rule. The filtered vector is stored in a given struct of type
  * `FilteredCacheEntry`.
  *
- * @param vector                A reference to an object of template type `T` that should be filtered
- * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the
- *                              filtered vector
- * @param numConditions         The total number of conditions in the current rule's body
- * @param coverageMask          A reference to an object of type `CoverageMask` that is used to keep track of the
- *                              elements that are covered by the current rule
+ * @tparam T            The type of the vector to be filtered
+ * @param vector        A reference to an object of template type `T` that should be filtered
+ * @param cacheEntry    A reference to a struct of type `FilteredCacheEntry` that should be used to store the filtered
+ *                      vector
+ * @param numConditions The total number of conditions in the current rule's body
+ * @param coverageMask  A reference to an object of type `CoverageMask` that is used to keep track of the elements that
+ *                      are covered by the current rule
  */
 template<class T>
 static inline void filterAnyVector(const T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,

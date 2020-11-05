@@ -3,18 +3,17 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport float32, array_uint32
+from boomer.common._arrays cimport float32
 from boomer.common._indices cimport IIndexVector, FullIndexVector
 from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.head_refinement cimport IHeadRefinement
-from boomer.common.rules cimport Condition, Comparator
+from boomer.common.rules cimport Condition, Comparator, ConditionList
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector
 from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 
 from libcpp.unordered_map cimport unordered_map
-from libcpp.list cimport list as double_linked_list
 from libcpp.memory cimport unique_ptr, make_unique
 from libcpp.utility cimport move
 
@@ -44,7 +43,7 @@ cdef class RuleInduction:
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
-                          Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
+                          IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
                           intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         """
         Induces a new classification rule.
@@ -61,8 +60,8 @@ cdef class RuleInduction:
                                         that should be used to sub-sample the training examples
         :param feature_sub_sampling:    A pointer to an object of type `IFeatureSubSampling`, implementing the strategy
                                         that should be used to sub-sample the available features
-        :param pruning:                 The strategy that should be used to prune rules or None, if no pruning should be
-                                        used
+        :param pruning:                 A pointer to an object of type `IPruning`, implementing the strategy that should
+                                        be used to prune the rule
         :param post_processor:          A pointer to an object of type `IPostProcessor`, implementing the post-processor
                                         that should be used to post-process the rules once they have been learned
         :param min_coverage:            The minimum number of training examples that must be covered by the rule. Must
@@ -124,7 +123,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
-                          Pruning pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
+                          IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
                           intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
         # The total number of statistics
         cdef uint32 num_examples = thresholds.getNumExamples()
@@ -133,12 +132,9 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         # The total number of labels
         cdef uint32 num_labels = thresholds.getNumLabels()
         # A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
-        cdef double_linked_list[Condition] conditions
+        cdef ConditionList conditions
         # The total number of conditions
         cdef uint32 num_conditions = 0
-        # An array representing the number of conditions per type of operator
-        cdef uint32[::1] num_conditions_per_comparator = array_uint32(4)
-        num_conditions_per_comparator[:] = 0
         # A map that stores a pointer to an object of type `IRuleRefinement` for each feature
         cdef unordered_map[uint32, IRuleRefinement*] rule_refinements  # Stack-allocated map
         # An unique pointer to the best refinement of the current rule
@@ -152,6 +148,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef IRuleRefinement* rule_refinement
         cdef unique_ptr[IIndexVector] sampled_feature_indices_ptr
         cdef uint32 num_covered_examples, num_sampled_features, weight, f
+        cdef unique_ptr[CoverageMask] coverage_mask_ptr
         cdef const CoverageMask* coverage_mask
         cdef intp c
 
@@ -201,18 +198,17 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                 del rule_refinement
 
             if found_refinement:
-                # If a refinement has been found, add the new condition...
-                conditions.push_back(__create_condition(best_refinement_ptr.get()))
+                # Filter the current subset of thresholds by applying the best refinement that has been found...
+                thresholds_subset_ptr.get().filterThresholds(dereference(best_refinement_ptr.get()))
+                num_covered_examples = best_refinement_ptr.get().coveredWeights
+
+                # Add the new condition...
+                conditions.append(__create_condition(best_refinement_ptr.get()))
                 num_conditions += 1
-                num_conditions_per_comparator[<uint32>best_refinement_ptr.get().comparator] += 1
 
                 if max_head_refinements > 0 and num_conditions >= max_head_refinements:
                     # Keep the labels for which the rule predicts, if the head should not be further refined...
                     label_indices = <IIndexVector*>best_refinement_ptr.get().headPtr.get()
-
-                # Filter the current subset of thresholds by applying the best refinement that has been found...
-                thresholds_subset_ptr.get().filterThresholds(dereference(best_refinement_ptr.get()))
-                num_covered_examples = best_refinement_ptr.get().coveredWeights
 
                 if num_covered_examples <= min_coverage:
                     # Abort refinement process if the rule is not allowed to cover less examples...
@@ -224,18 +220,15 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             return False
         else:
             if instance_sub_sampling_used:
-                coverage_mask = &thresholds_subset_ptr.get().getCoverageMask()
-                # TODO Reactivate pruning
-                # Prune rule, if necessary (a rule can only be pruned if it contains more than one condition)...
-                # if pruning is not None and num_conditions > 1:
-                #     uint32_array_scalar_pair = pruning.prune(cache_global, conditions, best_refinement.head,
-                #                                              covered_statistics_mask, covered_statistics_target,
-                #                                              weights_ptr.get(), statistics, head_refinement)
-                #     covered_statistics_mask = uint32_array_scalar_pair.first
-                #     covered_statistics_target = uint32_array_scalar_pair.second
+                # Prune rule...
+                coverage_mask_ptr = pruning.prune(dereference(thresholds_subset_ptr.get()), conditions,
+                                                  dereference(best_refinement_ptr.get().headPtr.get()))
+                coverage_mask = coverage_mask_ptr.get()
 
-                # If instance sub-sampling is used, we must re-calculate the scores in the head based on the entire
-                # training data...
+                # Re-calculate the scores in the head based on the entire training data...
+                if coverage_mask == NULL:
+                    coverage_mask = &thresholds_subset_ptr.get().getCoverageMask()
+
                 thresholds_subset_ptr.get().recalculatePrediction(dereference(coverage_mask),
                                                                   dereference(best_refinement_ptr.get()))
 
@@ -246,7 +239,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement_ptr.get().headPtr.get()))
 
             # Add the induced rule to the model...
-            model_builder.add_rule(best_refinement_ptr.get().headPtr.get(), conditions, num_conditions_per_comparator)
+            model_builder.add_rule(best_refinement_ptr.get().headPtr.get(), conditions)
             return True
 
 
@@ -263,5 +256,5 @@ cdef inline Condition __create_condition(Refinement* refinement):
     condition.start = refinement.start
     condition.end = refinement.end
     condition.covered = refinement.covered
-    condition.coveredWeights = refinement.coveredWeights;
+    condition.coveredWeights = refinement.coveredWeights
     return condition
