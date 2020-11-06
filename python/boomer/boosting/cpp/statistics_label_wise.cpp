@@ -86,11 +86,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                     // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums
                     // of gradients and hessians...
-                    vector::add<float64>(sumsOfGradients_.cbegin(), sumsOfGradients_.cend(),
-                                         accumulatedSumsOfGradients_->begin());
+                    accumulatedSumsOfGradients_->add(sumsOfGradients_.cbegin(), sumsOfGradients_.cend());
                     sumsOfGradients_.setAllToZero();
-                    vector::add<float64>(sumsOfHessians_.cbegin(), sumsOfHessians_.cend(),
-                                         accumulatedSumsOfHessians_->begin());
+                    accumulatedSumsOfHessians_->add(sumsOfHessians_.cbegin(), sumsOfHessians_.cend());
                     sumsOfHessians_.setAllToZero();
                 }
 
@@ -229,10 +227,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            vector::add<float64>(gradients_->row_cbegin(statisticIndex), gradients_->row_cend(statisticIndex),
-                                 totalSumsOfGradients_.begin(), signedWeight);
-            vector::add<float64>(hessians_->row_cbegin(statisticIndex), hessians_->row_cend(statisticIndex),
-                                 totalSumsOfHessians_.begin(), signedWeight);
+            totalSumsOfGradients_.add(gradients_->row_cbegin(statisticIndex), gradients_->row_cend(statisticIndex),
+                                      signedWeight);
+            totalSumsOfHessians_.add(hessians_->row_cbegin(statisticIndex), hessians_->row_cend(statisticIndex),
+                                     signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
