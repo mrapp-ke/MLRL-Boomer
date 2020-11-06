@@ -109,6 +109,46 @@ class DenseNumericMatrix : public DenseMatrix<T> {
          */
         void setAllToZero();
 
+        /**
+         * Adds all numbers in a vector to a specific row of this matrix.
+         *
+         * @param row   The row
+         * @param begin A `DenseVector<T>::const_iterator` to the beginning of the vector
+         * @param end   A `DenseVector<T>::const_iterator` to the end of the vector
+         */
+        void addToRow(uint32 row, typename DenseVector<T>::const_iterator begin,
+                      typename DenseVector<T>::const_iterator end);
+
+        /**
+         * Adds all numbers in another vector to certain elements, whose positions are given as a `FullIndexVector`, at
+         * a specific row of this matrix.
+         *
+         * @param row           The row
+         * @param begin         A `DenseVector<T>::const_iterator` to the beginning of the vector
+         * @param end           A `DenseVector<T>::const_iterator` to the end of the vector
+         * @param indicesBegin  A `FullIndexVector::const_iterator` to the beginning of the indices
+         * @param indicesEnd    A `FullIndexVector::const_iterator` to the end of the indices
+         */
+        void addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
+                                typename DenseVector<T>::const_iterator end,
+                                FullIndexVector::const_iterator indicesBegin,
+                                FullIndexVector::const_iterator indicesEnd);
+
+        /**
+         * Adds all numbers in another vector to certain elements, whose positions are given as a `PartialIndexVector`,
+         * at a specific row of this matrix.
+         *
+         * @param row           The row
+         * @param begin         A `DenseVector<T>::const_iterator` to the beginning of the vector
+         * @param end           A `DenseVector<T>::const_iterator` to the end of the vector
+         * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the indices
+         * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the indices
+         */
+        void addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
+                                typename DenseVector<T>::const_iterator end,
+                                PartialIndexVector::const_iterator indicesBegin,
+                                PartialIndexVector::const_iterator indicesEnd);
+
 };
 
 typedef DenseNumericMatrix<float64> DenseFloat64Matrix;
