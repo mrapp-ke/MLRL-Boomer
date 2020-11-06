@@ -32,13 +32,17 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 const T& labelIndices_;
 
-                float64* sumsOfGradients_;
+                DenseFloat64Vector sumsOfGradientsV_;
+
+                DenseFloat64Vector sumsOfHessiansV_;
 
                 float64* accumulatedSumsOfGradients_;
 
-                float64* sumsOfHessians_;
-
                 float64* accumulatedSumsOfHessians_;
+
+                // TODO Remove
+                float64* sumsOfGradients_;
+                float64* sumsOfHessians_;
 
             public:
 
@@ -54,20 +58,19 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 StatisticsSubset(const DenseLabelWiseStatistics& statistics,
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
-                      labelIndices_(labelIndices) {
-                    uint32 numPredictions = labelIndices.getNumElements();
-                    sumsOfGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                    setToZeros(sumsOfGradients_, numPredictions);
+                      labelIndices_(labelIndices),
+                      sumsOfGradientsV_(DenseFloat64Vector(labelIndices.getNumElements(), true)),
+                      sumsOfHessiansV_(DenseFloat64Vector(labelIndices.getNumElements(), true)) {
                     accumulatedSumsOfGradients_ = nullptr;
-                    sumsOfHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
-                    setToZeros(sumsOfHessians_, numPredictions);
                     accumulatedSumsOfHessians_ = nullptr;
+
+                    // TODO Remove
+                    sumsOfGradients_ = sumsOfGradientsV_.begin();
+                    sumsOfHessians_ = sumsOfHessiansV_.begin();
                 }
 
                 ~StatisticsSubset() {
-                    free(sumsOfGradients_);
                     free(accumulatedSumsOfGradients_);
-                    free(sumsOfHessians_);
                     free(accumulatedSumsOfHessians_);
                 }
 
