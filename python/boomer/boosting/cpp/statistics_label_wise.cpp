@@ -273,17 +273,11 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
-            uint32 numLabels = this->getNumLabels();
-            uint32 offset = statisticIndex * numLabels;
             float64 signedWeight = remove ? -((float64) weight) : weight;
-
-            // For each label, add the gradient and Hessian of the example at the given index (weighted by the given
-            // weight) to the total sums of gradients and Hessians...
-            for (uint32 c = 0; c < numLabels; c++) {
-                uint32 i = offset + c;
-                totalSumsOfGradients_[c] += (signedWeight * gradients_[i]);
-                totalSumsOfHessians_[c] += (signedWeight * hessians_[i]);
-            }
+            add<float64>(gradientsM_->row_cbegin(statisticIndex), gradientsM_->row_cend(statisticIndex),
+                         totalSumsOfGradientsV_.begin(), signedWeight);
+            add<float64>(hessiansM_->row_cbegin(statisticIndex), hessiansM_->row_cend(statisticIndex),
+                         totalSumsOfHessiansV_.begin(), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
