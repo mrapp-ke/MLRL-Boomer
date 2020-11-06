@@ -19,7 +19,7 @@
 template<class T>
 class DenseVector {
 
-    private:
+    protected:
 
         T* array_;
 
@@ -213,7 +213,7 @@ class BinaryDokVector {
 template<class T>
 class DenseMatrix {
 
-    private:
+    protected:
 
         T* array_;
 
