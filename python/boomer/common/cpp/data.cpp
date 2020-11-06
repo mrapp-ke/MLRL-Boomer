@@ -185,7 +185,7 @@ typename DenseMatrix<T>::iterator DenseMatrix<T>::row_begin(uint32 row) {
 
 template<class T>
 typename DenseMatrix<T>::iterator DenseMatrix<T>::row_end(uint32 row) {
-    return &array_[row * (numCols_ + 1)];
+    return &array_[(row + 1) * numCols_];
 }
 
 template<class T>
@@ -195,7 +195,7 @@ typename DenseMatrix<T>::const_iterator DenseMatrix<T>::row_cbegin(uint32 row) c
 
 template<class T>
 typename DenseMatrix<T>::const_iterator DenseMatrix<T>::row_cend(uint32 row) const {
-    return &array_[row * (numCols_ + 1)];
+    return &array_[(row + 1) * numCols_];
 }
 
 template class DenseMatrix<float64>;
