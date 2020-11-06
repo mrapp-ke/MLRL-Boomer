@@ -170,20 +170,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                                                prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians of the example at the given index...
-            DenseFloat64Matrix::iterator gradientIterator = gradients_->row_begin(statisticIndex);
-            DenseFloat64Matrix::iterator hessianIterator = hessians_->row_begin(statisticIndex);
-            DenseFloat64Matrix::const_iterator scoreIterator = currentScores_->row_cbegin(statisticIndex);
-
-            for (auto indexIterator = prediction.indices_cbegin(); indexIterator != prediction.indices_cend(); indexIterator++) {
-                uint32 labelIndex = *indexIterator;
-                float64 predictedScore = scoreIterator[labelIndex];
-                std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_,
-                                                                                                 statisticIndex,
-                                                                                                 labelIndex,
-                                                                                                 predictedScore);
-                gradientIterator[labelIndex] = pair.first;
-                hessianIterator[labelIndex] = pair.second;
-            }
+            lossFunctionPtr_->updateGradientsAndHessians(*gradients_, *hessians_, *currentScores_, *labelMatrixPtr_,
+                                                         statisticIndex, prediction.indices_cbegin(),
+                                                         prediction.indices_cend());
         }
 
     public:
@@ -290,17 +279,13 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
     DenseFloat64Matrix* gradients = new DenseFloat64Matrix(numExamples, numLabels);
     DenseFloat64Matrix* hessians = new DenseFloat64Matrix(numExamples, numLabels);
     DenseFloat64Matrix* currentScores = new DenseFloat64Matrix(numExamples, numLabels, true);
+    FullIndexVector labelIndices(numLabels);
+    FullIndexVector::const_iterator labelIndicesBegin = labelIndices.cbegin();
+    FullIndexVector::const_iterator labelIndicesEnd = labelIndices.cend();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        DenseFloat64Matrix::iterator gradientIterator = gradients->row_begin(r);
-        DenseFloat64Matrix::iterator hessianIterator = hessians->row_begin(r);
-
-        for (uint32 c = 0; c < numLabels; c++) {
-            // Calculate the initial gradient and Hessian for the current example and label...
-            std::pair<float64, float64> pair = lossFunctionPtr_->calculateGradientAndHessian(*labelMatrixPtr_, r, c, 0);
-            gradientIterator[c] = pair.first;
-            hessianIterator[c] = pair.second;
-        }
+        lossFunctionPtr_->updateGradientsAndHessians(*gradients, *hessians, *currentScores, *labelMatrixPtr_, r,
+                                                     labelIndicesBegin, labelIndicesEnd);
     }
 
     return std::make_unique<DenseLabelWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_,
