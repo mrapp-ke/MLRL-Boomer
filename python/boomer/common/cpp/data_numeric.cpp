@@ -15,10 +15,8 @@ DenseNumericVector<T>::DenseNumericVector(uint32 numElements, bool init)
 
 template<class T>
 void DenseNumericVector<T>::setAllToZero() {
-    auto end = this->end();
-
-    for (auto iterator = this->begin(); iterator != end; iterator++) {
-        *iterator = 0;
+    for (uint32 i = 0; i < DenseVector<T>::numElements_; i++) {
+        DenseVector<T>::array_[i] = 0;
     }
 }
 
@@ -38,10 +36,8 @@ DenseNumericMatrix<T>::DenseNumericMatrix(uint32 numRows, uint32 numCols, bool i
 
 template<class T>
 void DenseNumericMatrix<T>::setAllToZero() {
-    auto end = this->end();
-
-    for (auto iterator = this->begin(); iterator != end; iterator++) {
-        *iterator = 0;
+    for (uint32 i = 0; i < DenseMatrix<T>::numRows_ * DenseMatrix<T>::numCols_; i++) {
+        DenseMatrix<T>::array_[i] = 0;
     }
 }
 
