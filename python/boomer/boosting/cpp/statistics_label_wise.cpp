@@ -67,12 +67,12 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    vector::addToSubset<float64>(statistics_.gradients_->row_cbegin(statisticIndex),
-                                                 sumsOfGradients_.begin(), labelIndices_.cbegin(),
-                                                 labelIndices_.cend(), weight);
-                    vector::addToSubset<float64>(statistics_.hessians_->row_cbegin(statisticIndex),
-                                                 sumsOfHessians_.begin(), labelIndices_.cbegin(), labelIndices_.cend(),
+                    sumsOfGradients_.addToSubset(statistics_.gradients_->row_cbegin(statisticIndex),
+                                                 statistics_.gradients_->row_cend(statisticIndex), labelIndices_,
                                                  weight);
+                    sumsOfHessians_.addToSubset(statistics_.hessians_->row_cbegin(statisticIndex),
+                                                statistics_.hessians_->row_cend(statisticIndex), labelIndices_,
+                                                weight);
                 }
 
                 void resetSubset() override {
