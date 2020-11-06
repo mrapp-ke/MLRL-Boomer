@@ -82,4 +82,44 @@ void DenseNumericMatrix<T>::setAllToZero() {
     }
 }
 
+template<class T>
+void DenseNumericMatrix<T>::addToRow(uint32 row, typename DenseVector<T>::const_iterator begin,
+                                     typename DenseVector<T>::const_iterator end) {
+    uint32 offset = row * DenseMatrix<T>::numCols_;
+
+    for (uint32 i = 0; i < DenseMatrix<T>::numCols_; i++) {
+        T value = begin[i];
+        DenseMatrix<T>::array_[offset + i] += value;
+    }
+}
+
+template<class T>
+void DenseNumericMatrix<T>::addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
+                                               typename DenseVector<T>::const_iterator end,
+                                               FullIndexVector::const_iterator indicesBegin,
+                                               FullIndexVector::const_iterator indicesEnd) {
+    uint32 offset = row * DenseMatrix<T>::numCols_;
+
+    for (uint32 i = 0; i < DenseMatrix<T>::numCols_; i++) {
+        T value = begin[i];
+        DenseMatrix<T>::array_[offset + i] += value;
+    }
+}
+
+template<class T>
+void DenseNumericMatrix<T>::addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
+                                               typename DenseVector<T>::const_iterator end,
+                                               PartialIndexVector::const_iterator indicesBegin,
+                                               PartialIndexVector::const_iterator indicesEnd) {
+    uint32 offset = row * DenseMatrix<T>::numCols_;
+    typename DenseVector<T>::const_iterator valueIterator = begin;
+
+    for (auto indexIterator = indicesBegin; indexIterator != indicesEnd; indexIterator++) {
+        uint32 index = *indexIterator;
+        T value = *valueIterator;
+        DenseMatrix<T>::array_[offset + index] += value;
+        valueIterator++;
+    }
+}
+
 template class DenseNumericMatrix<float64>;
