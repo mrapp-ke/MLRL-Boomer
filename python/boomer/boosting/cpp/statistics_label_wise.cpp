@@ -133,8 +133,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
                     uint32 index = entry.index;
-                    vector::add<float64>(statistics_.gradients_->row_cbegin(index),
-                                         statistics_.gradients_->row_cend(index), gradients_->row_begin(binIndex));
+                    gradients_->addToRow(binIndex, statistics_.gradients_->row_cbegin(index),
+                                         statistics_.gradients_->row_cend(index));
+                    hessians_->addToRow(binIndex, statistics_.hessians_->row_cbegin(index),
+                                        statistics_.hessians_->row_cend(index));
                 }
 
                 std::unique_ptr<AbstractStatistics> build() const override {
@@ -164,14 +166,14 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
             // Update the scores that are currently predicted for the example at the given index...
-            vector::addFromSubset<float64>(prediction.scores_cbegin(), currentScores_->row_begin(statisticIndex),
-                                           prediction.indices_cbegin(), prediction.indices_cend());
+            currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+                                               prediction.indices_cbegin(), prediction.indices_cend());
 
+            // Update the gradients and Hessians of the example at the given index...
             DenseFloat64Matrix::iterator gradientIterator = gradients_->row_begin(statisticIndex);
             DenseFloat64Matrix::iterator hessianIterator = hessians_->row_begin(statisticIndex);
             DenseFloat64Matrix::const_iterator scoreIterator = currentScores_->row_cbegin(statisticIndex);
 
-            // Update the gradients and Hessians of the example at the given index...
             for (auto indexIterator = prediction.indices_cbegin(); indexIterator != prediction.indices_cend(); indexIterator++) {
                 uint32 labelIndex = *indexIterator;
                 float64 predictedScore = scoreIterator[labelIndex];
