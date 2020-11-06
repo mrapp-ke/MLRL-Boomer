@@ -268,9 +268,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         void resetCoveredStatistics() override {
-            uint32 numLabels = this->getNumLabels();
-            setToZeros(totalSumsOfGradients_, numLabels);
-            setToZeros(totalSumsOfHessians_, numLabels);
+            totalSumsOfGradientsV_.setAllToZero();
+            totalSumsOfHessiansV_.setAllToZero();
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
