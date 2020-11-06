@@ -13,6 +13,27 @@
 namespace vector {
 
     /**
+     * Adds all numeric data in a vector to another vector of equal length.
+     *
+     * @tparam T        The type of the numeric data
+     * @param fromBegin A `DenseVector<T>::const_iterator` to the beginning of the values in the vector, the values
+     *                  should be taken from
+     * @param fromEnd   A `DenseVector<T>::const_iterator` to the end of the values in the vector, the values should be
+     *                  taken from
+     * @param to        A `DenseVector<T>::iterator` to the beginning of the values in the vector, the values should be
+     *                  added to
+     */
+    template<class T>
+    static inline void add(typename DenseVector<T>::const_iterator fromBegin,
+                           typename DenseVector<T>::const_iterator fromEnd, typename DenseVector<T>::iterator to) {
+        for (auto fromIterator = fromBegin; fromIterator != fromEnd; fromIterator++) {
+            T value = *fromIterator;
+            *to += value;
+            to++;
+        }
+    }
+
+    /**
      * Adds all numeric data in a vector to another vector of equal length. The values to be added are multiplied by a
      * specific weight.
      *
