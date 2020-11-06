@@ -20,6 +20,29 @@ void DenseNumericVector<T>::setAllToZero() {
     }
 }
 
+template<class T>
+void DenseNumericVector<T>::addToSubset(typename DenseVector<T>::const_iterator begin,
+                                        typename DenseVector<T>::const_iterator end,
+                                        const FullIndexVector& indices, T weight) {
+    for (uint32 i = 0; i < DenseVector<T>::numElements_; i++) {
+        T value = begin[i];
+        DenseVector<T>::array_[i] += (value * weight);
+    }
+}
+
+template<class T>
+void DenseNumericVector<T>::addToSubset(typename DenseVector<T>::const_iterator begin,
+                                        typename DenseVector<T>::const_iterator end,
+                                        const PartialIndexVector& indices, T weight) {
+    PartialIndexVector::const_iterator indexIterator = indices.cbegin();
+
+    for (uint32 i = 0; i < DenseVector<T>::numElements_; i++) {
+        uint32 index = indexIterator[i];
+        T value = begin[index];
+        DenseVector<T>::array_[i] += (value * weight);
+    }
+}
+
 template class DenseNumericVector<float64>;
 
 template<class T>
