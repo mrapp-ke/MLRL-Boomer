@@ -54,26 +54,24 @@ class DenseNumericVector : public DenseVector<T> {
         void add(typename DenseVector<T>::const_iterator begin, typename DenseVector<T>::const_iterator end, T weight);
 
         /**
-         * Adds the numbers in another vector to certain elements of this vector, whose positions are given as a
-         * `FullIndexVector`. The numbers to be added are multiplied by a specific weight.
+         * Adds certain numbers in another vector, whose positions are given as a `FullIndexVector`, to this vector. The
+         * numbers to be added are multiplied by a specific weight.
          *
          * @param begin     A `DenseVector<T>::const_iterator` to the beginning of the other vector
          * @param end       A `DenseVector<T>::const_iterator` to the end of the other vector
-         * @param indices   A reference to a `FullIndexVector' that provides access to the indices of the elements, the
-         *                  numbers should be added to
+         * @param indices   A reference to a `FullIndexVector' that provides access to the indices
          * @param weight    The weight, the numbers should be multiplied by
          */
         void addToSubset(typename DenseVector<T>::const_iterator begin, typename DenseVector<T>::const_iterator end,
                          const FullIndexVector& indices, T weight);
 
         /**
-         * Adds the numbers in another vector to certain elements of this vector, whose positions are given as a
-         * `PartialIndexVector`. The numbers to be added are multiplied by a specific weight.
+         * Adds certain numbers in another vector, whose positions are given as a `PartialIndexVector`, to this vector.
+         * The numbers to be added are multiplied by a specific weight.
          *
          * @param begin     A `DenseVector<T>::const_iterator` to the beginning of the other vector
          * @param end       A `DenseVector<T>::const_iterator` to the end of the other vector
-         * @param indices   A reference to a `PartialIndexVector' that provides access to the indices of the elements,
-         *                  the numbers should be added to
+         * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
          * @param weight    The weight, the numbers should be multiplied by
          */
         void addToSubset(typename DenseVector<T>::const_iterator begin, typename DenseVector<T>::const_iterator end,
