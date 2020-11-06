@@ -75,18 +75,12 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    // For each label, add the gradient and Hessian of the example at the given index (weighted by the
-                    // given weight) to the current sum of gradients and Hessians...
-                    uint32 offset = statisticIndex * statistics_.getNumLabels();
-                    uint32 numPredictions = labelIndices_.getNumElements();
-                    typename T::const_iterator indexIterator = labelIndices_.cbegin();
-
-                    for (uint32 c = 0; c < numPredictions; c++) {
-                        uint32 l = indexIterator[c];
-                        uint32 i = offset + l;
-                        sumsOfGradients_[c] += (weight * statistics_.gradients_[i]);
-                        sumsOfHessians_[c] += (weight * statistics_.hessians_[i]);
-                    }
+                    vector::addToSubset<float64>(statistics_.gradientsM_->row_cbegin(statisticIndex),
+                                                 sumsOfGradientsV_.begin(), labelIndices_.cbegin(),
+                                                 labelIndices_.cend(), weight);
+                    vector::addToSubset<float64>(statistics_.hessiansM_->row_cbegin(statisticIndex),
+                                                 sumsOfHessiansV_.begin(), labelIndices_.cbegin(), labelIndices_.cend(),
+                                                 weight);
                 }
 
                 void resetSubset() override {
@@ -208,8 +202,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
             // Update the scores that are currently predicted for the example at the given index...
-            add<float64>(prediction.scores_cbegin(), currentScoresM_->row_begin(statisticIndex),
-                         prediction.indices_cbegin(), prediction.indices_cend());
+            vector::addFromSubset<float64>(prediction.scores_cbegin(), currentScoresM_->row_begin(statisticIndex),
+                                           prediction.indices_cbegin(), prediction.indices_cend());
 
             DenseFloat64Matrix::iterator gradientIterator = gradientsM_->row_begin(statisticIndex);
             DenseFloat64Matrix::iterator hessianIterator = hessiansM_->row_begin(statisticIndex);
@@ -277,10 +271,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            add<float64>(gradientsM_->row_cbegin(statisticIndex), gradientsM_->row_cend(statisticIndex),
-                         totalSumsOfGradientsV_.begin(), signedWeight);
-            add<float64>(hessiansM_->row_cbegin(statisticIndex), hessiansM_->row_cend(statisticIndex),
-                         totalSumsOfHessiansV_.begin(), signedWeight);
+            vector::add<float64>(gradientsM_->row_cbegin(statisticIndex), gradientsM_->row_cend(statisticIndex),
+                                 totalSumsOfGradientsV_.begin(), signedWeight);
+            vector::add<float64>(hessiansM_->row_cbegin(statisticIndex), hessiansM_->row_cend(statisticIndex),
+                                 totalSumsOfHessiansV_.begin(), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
