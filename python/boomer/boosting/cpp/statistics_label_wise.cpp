@@ -191,13 +191,15 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         DenseFloat64Matrix* currentScoresM_;
 
+        DenseFloat64Vector totalSumsOfGradientsV_;
+
+        DenseFloat64Vector totalSumsOfHessiansV_;
+
         // TODO Remove
         float64* gradients_;
         float64* hessians_;
         float64* currentScores_;
-
         float64* totalSumsOfGradients_;
-
         float64* totalSumsOfHessians_;
 
         template<class T>
@@ -248,26 +250,21 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                           ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), gradientsM_(gradients),
-              hessiansM_(hessians), currentScoresM_(currentScores) {
+              hessiansM_(hessians), currentScoresM_(currentScores),
+              totalSumsOfGradientsV_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())),
+              totalSumsOfHessiansV_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())) {
             // TODO Remove
             gradients_ = gradients->begin();
             hessians_ = hessians->begin();
             currentScores_ = currentScores->begin();
-
-            // The number of labels
-            uint32 numLabels = this->getNumLabels();
-            // An array that stores the column-wise sums of the matrix of gradients
-            totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
-            // An array that stores the column-wise sums of the matrix of hessians
-            totalSumsOfHessians_ = (float64*) malloc(numLabels * sizeof(float64));
+            totalSumsOfGradients_ = totalSumsOfGradientsV_.begin();
+            totalSumsOfHessians_ = totalSumsOfHessiansV_.begin();
         }
 
         ~DenseLabelWiseStatistics() {
             delete gradientsM_;
             delete hessiansM_;
             delete currentScoresM_;
-            free(totalSumsOfGradients_);
-            free(totalSumsOfHessians_);
         }
 
         void resetCoveredStatistics() override {
