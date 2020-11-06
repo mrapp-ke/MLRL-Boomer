@@ -124,15 +124,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 const DenseLabelWiseStatistics& statistics_;
 
-                uint32 numBins_;
+                DenseFloat64Matrix* gradients_;
 
-                DenseFloat64Matrix* gradientsM_;
-
-                DenseFloat64Matrix* hessiansM_;
-
-                // TODO Remove
-                float64* gradients_;
-                float64* hessians_;
+                DenseFloat64Matrix* hessians_;
 
             public:
 
@@ -142,35 +136,22 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                  * @param numBins       The number of bins, the histogram should consist of
                  */
                 HistogramBuilder(const DenseLabelWiseStatistics& statistics, uint32 numBins)
-                    : statistics_(statistics), numBins_(numBins) {
-                    uint32 numLabels = statistics.getNumLabels();
-                    gradientsM_ = new DenseFloat64Matrix(numBins, numLabels, true);
-                    hessiansM_ = new DenseFloat64Matrix(numBins, numLabels, true);
+                    : statistics_(statistics), gradients_(new DenseFloat64Matrix(numBins, true)),
+                      hessians_(new DenseFloat64Matrix(numBins, true)) {
 
-                    // TODO Remove
-                    gradients_ = gradientsM_->begin();
-                    hessians_ = hessiansM_->begin();
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
-                    uint32 numLabels = statistics_.getNumLabels();
                     uint32 index = entry.index;
-                    uint32 offset = index * numLabels;
-                    uint32 binOffset = binIndex * numLabels;
-
-                    for(uint32 c = 0; c < numLabels; c++) {
-                        float64 gradient = statistics_.gradients_[offset + c];
-                        float64 hessian = statistics_.hessians_[offset + c];
-                        gradients_[binOffset + c] += gradient;
-                        hessians_[binOffset + c] += hessian;
-                    }
+                    vector::add<float64>(statistics_.gradientsM_->row_cbegin(index),
+                                         statistics_.gradientsM_->row_cend(index), gradients_->row_begin(binIndex));
                 }
 
                 std::unique_ptr<AbstractStatistics> build() const override {
                     return std::make_unique<DenseLabelWiseStatistics>(statistics_.lossFunctionPtr_,
                                                                       statistics_.ruleEvaluationFactoryPtr_,
-                                                                      statistics_.labelMatrixPtr_, gradientsM_,
-                                                                      hessiansM_, statistics_.currentScoresM_);
+                                                                      statistics_.labelMatrixPtr_, gradients_,
+                                                                      hessians_, statistics_.currentScoresM_);
                 }
 
         };
