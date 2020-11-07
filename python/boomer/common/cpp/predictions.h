@@ -69,7 +69,9 @@ class AbstractPrediction : public IIndexVector {
         virtual void apply(AbstractStatistics& statistics, uint32 statisticIndex) const = 0;
 
         /**
-         * TODO
+         * Sets the number of labels for which the rule predict.
+         *
+         * @param The number of labels to be set
          */
         virtual void setNumElements(uint32 numElements);
 
