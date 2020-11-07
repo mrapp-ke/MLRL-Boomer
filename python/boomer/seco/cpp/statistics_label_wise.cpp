@@ -36,6 +36,10 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
                 float64* accumulatedConfusionMatricesCovered_;
 
+                float64* confusionMatricesSubset_;
+
+                float64* confusionMatricesCoverableSubset_;
+
             public:
 
                 /**
@@ -56,15 +60,47 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                         (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
                     setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
                     accumulatedConfusionMatricesCovered_ = nullptr;
+                    confusionMatricesSubset_ = statistics_.confusionMatricesSubset_;
+                    confusionMatricesCoverableSubset_ = nullptr;
                 }
 
                 ~StatisticsSubset() {
                     free(confusionMatricesCovered_);
                     free(accumulatedConfusionMatricesCovered_);
+                    free(confusionMatricesCoverableSubset_);
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
-                    // TODO
+                    uint32 numLabels = statistics_.getNumLabels();
+
+                    // Allocate arrays for storing the totals sums of gradients and Hessians, if necessary...
+                    if (confusionMatricesCoverableSubset_ == nullptr) {
+                        confusionMatricesCoverableSubset_ = (float64*) malloc(numLabels * sizeof(float64));
+
+                        for (uint32 c = 0; c < numLabels; c++) {
+                            confusionMatricesCoverableSubset_[c] = confusionMatricesSubset_[c];
+                        }
+
+                        confusionMatricesSubset_ = confusionMatricesCoverableSubset_;
+                    }
+
+                    // For each label, subtract the gradient and Hessian of the example at the given index (weighted by
+                    // the given weight) from the total sum of gradients and Hessians...
+                    uint32 offset = statisticIndex * numLabels;
+
+                    for (uint32 c = 0; c < numLabels; c++) {
+                        float64 labelWeight = statistics_.uncoveredLabels_[offset + c];
+
+                        // Only uncovered labels must be considered...
+                        if (labelWeight > 0) {
+                            // Remove the current example and label from the confusion matrix that corresponds to the
+                            // current label...
+                            uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
+                            uint8 predictedLabel = statistics_.minorityLabels_[c];
+                            uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
+                            confusionMatricesSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] -= weight;
+                        }
+                    }
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
@@ -117,7 +153,7 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                         accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.minorityLabels_,
                                                                             statistics_.confusionMatricesTotal_,
-                                                                            statistics_.confusionMatricesSubset_,
+                                                                            confusionMatricesSubset_,
                                                                             confusionMatricesCovered, uncovered);
                 }
 
