@@ -188,6 +188,22 @@ class BinaryDokVector {
 
     public:
 
+        typedef std::unordered_set<uint32>::const_iterator index_const_iterator;
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indices_cbegin();
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indices_cend();
+
         /**
          * Returns the value of the element at a specific position.
          *
