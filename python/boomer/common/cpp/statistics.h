@@ -25,6 +25,16 @@ class IStatisticsSubset {
         virtual ~IStatisticsSubset() { };
 
         /**
+         * Marks the statistics at a specific index as missing, i.e., no condition that will be considered in the
+         * following for refining a rule will be able to cover it and consequently the function `addToSubset` will never
+         * be called for the given `statisticIndex`.
+         *
+         * @param statisticIndex    The index of the missing statistic
+         * @param weight            The weight of the missing statistic
+         */
+        virtual void addToMissing(uint32 statisticIndex, uint32 weight) = 0;
+
+        /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
          * currently considered for refining a rule.
          *

@@ -98,6 +98,10 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     free(dspmvTmpArray_);
                 }
 
+                void addToMissing(uint32 statisticIndex, uint32 weight) override {
+                    // TODO
+                }
+
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
                     // Add the gradients and Hessians of the example at the given index (weighted by the given weight)
                     // to the current sum of gradients and Hessians...
