@@ -13,7 +13,23 @@ from typing import List, Dict, Set
 import numpy as np
 import sklearn.metrics as metrics
 
+from boomer.common.arrays import enforce_dense
 from boomer.io import open_writable_csv_file, create_csv_dict_writer, create_csv_writer, clear_directory
+
+# The name of the accuracy metric
+ACCURACY = 'Acc.'
+
+# The name of the 0/1 loss metric.
+ZERO_ONE_LOSS = '0/1 Loss'
+
+# The name of the precision metric
+PRECISION = 'Prec.'
+
+# The name of the recall metric
+RECALL = 'Rec.'
+
+# The name of the F1 metric
+F1 = 'F1'
 
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
@@ -356,6 +372,26 @@ class AbstractEvaluation(Evaluation):
         if num_folds == 1 or (current_fold == last_fold and abs(last_fold - first_fold) > 0):
             for output in self.outputs:
                 output.write_evaluation_results(experiment_name, result, num_folds)
+
+
+class BinaryClassificationEvaluation(AbstractEvaluation):
+    """
+    Evaluates the predictions of a binary classifier according to commonly used measures.
+    """
+
+    def __init__(self, *args: EvaluationOutput):
+        super().__init__(*args)
+
+    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
+        predictions = np.ravel(enforce_dense(predictions, order='C'))
+        ground_truth = np.ravel(enforce_dense(ground_truth, order='C'))
+        accuracy = metrics.accuracy_score(ground_truth, predictions)
+        result.put(ACCURACY, accuracy, current_fold, num_folds)
+        result.put(ZERO_ONE_LOSS, 1 - accuracy, current_fold, num_folds)
+        result.put(PRECISION, metrics.precision_score(ground_truth, predictions, zero_division=1), current_fold,
+                   num_folds)
+        result.put(RECALL, metrics.recall_score(ground_truth, predictions, zero_division=1), current_fold, num_folds)
+        result.put(F1, metrics.f1_score(ground_truth, predictions, zero_division=1), current_fold, num_folds)
 
 
 class MLClassificationEvaluation(AbstractEvaluation):
