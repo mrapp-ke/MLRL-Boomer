@@ -19,6 +19,7 @@ The algorithm that is provided by this project currently supports the following 
 * Hyper-parameters that provide fine-grained control over the specificity/generality of rules are available.
 * The conditions of rules can be pruned based on a hold-out set.  
 * The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
+* The algorithm is able to deal with missing feature values, i.e., occurrences of NaN in the feature matrix.
 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
  
