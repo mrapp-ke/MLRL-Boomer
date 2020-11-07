@@ -360,7 +360,7 @@ class AbstractEvaluation(Evaluation):
 
 class ClassificationEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a classifier according to commonly used bipartition measures.
+    Evaluates the predictions of a multi-label classifier according to commonly used bipartition measures.
     """
 
     def __init__(self, *args: EvaluationOutput):
@@ -395,7 +395,7 @@ class ClassificationEvaluation(AbstractEvaluation):
 
 class RankingEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a ranker according to commonly used ranking measures.
+    Evaluates the predictions of a multi-label ranker according to commonly used ranking measures.
     """
 
     def __init__(self, *args: EvaluationOutput):
