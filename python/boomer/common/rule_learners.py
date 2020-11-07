@@ -31,6 +31,7 @@ from boomer.common.thresholds_exact import ExactThresholdsFactory
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
+from boomer.common.arrays import enforce_dense
 from boomer.common.learners import Learner, NominalAttributeLearner
 from boomer.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
@@ -273,20 +274,6 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
 
     raise ValueError(
         'Matrix of type ' + type(m).__name__ + ' cannot be converted to format \'' + str(sparse_format) + '\'')
-
-
-def enforce_dense(x, order: str):
-    """
-    Converts a given matrix into a `np.ndarray`, if necessary, and enforces a specific memory layout.
-
-    :param x:       A `np.ndarray` or `scipy.sparse.matrix` to be converted
-    :param order:   The memory layout to be used. Must be `C` or `F`
-    :return:        A `np.ndarray` that uses the given memory layout
-    """
-    if issparse(x):
-        return x.toarray(order=order)
-    else:
-        return np.require(requirements=[order])
 
 
 class MLRuleLearner(Learner, NominalAttributeLearner):
