@@ -18,6 +18,10 @@ void FeatureVector::addMissingIndex(uint32 index) {
     missingIndices_.setValue(index);
 }
 
+void FeatureVector::clearMissingIndices() {
+    missingIndices_.setAllToZero();
+}
+
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y)
     : numExamples_(numExamples), numLabels_(numLabels), y_(y) {
 
