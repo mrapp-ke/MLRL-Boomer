@@ -97,7 +97,8 @@ class DenseVector {
 };
 
 /**
- * A sparse vector that stores a fixed number of elements, consisting of an index and a value, in a C-contiguous array.
+ * An one-dimensional sparse vector that stores a fixed number of elements, consisting of an index and a value, in a
+ * C-contiguous array.
  *
  * @tparam T The type of the data that is stored in the vector
  */
@@ -178,7 +179,7 @@ class SparseArrayVector {
 };
 
 /**
- * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
+ * An one-dimensional sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokVector {
 
@@ -222,7 +223,7 @@ class BinaryDokVector {
 };
 
 /**
- * A sparse matrix that stores binary data using the dictionary of keys (DOK) format.
+ * A two-dimensional sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokMatrix {
 
