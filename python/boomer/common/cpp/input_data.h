@@ -49,6 +49,11 @@ class FeatureVector : public SparseArrayVector<float32> {
          */
         void addMissingIndex(uint32 index);
 
+        /**
+         * Removes all indices of examples with missing feature values.
+         */
+        void clearMissingIndices();
+
 };
 
 /**
