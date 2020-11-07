@@ -19,7 +19,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from skmultilearn.dataset import save_to_arff
 
-from boomer.common.arrays import DTYPE_UINT8, DTYPE_FLOAT32
+from boomer.common.types import DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.io import write_xml_file
 
 

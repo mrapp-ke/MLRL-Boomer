@@ -31,8 +31,9 @@ from boomer.common.thresholds_exact import ExactThresholdsFactory
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
-from boomer.common.arrays import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
+from boomer.common.arrays import enforce_dense
 from boomer.common.learners import Learner, NominalAttributeLearner
+from boomer.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 
@@ -225,10 +226,11 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
     `scipy.sparse.csc_matrix` or `scipy.sparse.dok_matrix`, depending on the format of the given matrix and a given
     `SparsePolicy`:
 
-    - If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if possible,
-    if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the matrix into a
-    sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix` or `scipy.sparse.coo_matrix`. If
-    the given sparse format is `csr` or `csc` and the matrix is a already in that format, it will not be converted.
+    - If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if
+      possible, if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the
+      matrix into a sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix` or
+      `scipy.sparse.coo_matrix`. If the given sparse format is `csr` or `csc` and the matrix is a already in that
+      format, it will not be converted.
 
     - If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into the specified sparse
     format, if possible.
@@ -298,7 +300,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x_sparse_format = 'csc'
         x_sparse_policy = create_sparse_policy(self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy)
-        x = self._validate_data((x if x_enforce_sparse else x.toarray(order='F')),
+        x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F')),
                                 accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32)
 
         if issparse(x):
@@ -335,7 +337,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         sparse_format = 'csr'
         sparse_policy = create_sparse_policy(self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy)
-        x = self._validate_data((x if enforce_sparse else x.toarray(order='C')), reset=False,
+        x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C'), reset=False,
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32)
         num_labels = self.num_labels_
         model = self.model_
