@@ -369,7 +369,7 @@ class ClassificationEvaluation(AbstractEvaluation):
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         hamming_loss = metrics.hamming_loss(ground_truth, predictions)
         result.put(HAMMING_LOSS, hamming_loss, current_fold, num_folds)
-        result.put(HAMMING_ACCURACY, 1 - metrics.hamming_loss(ground_truth, predictions), current_fold, num_folds)
+        result.put(HAMMING_ACCURACY, 1 - hamming_loss, current_fold, num_folds)
         subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
         result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, num_folds)
         result.put(SUBSET_ZERO_ONE_LOSS, 1 - subset_accuracy, current_fold, num_folds)
