@@ -31,8 +31,8 @@ from boomer.common.thresholds_exact import ExactThresholdsFactory
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
-from boomer.common.arrays import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from boomer.common.learners import Learner, NominalAttributeLearner
+from boomer.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 

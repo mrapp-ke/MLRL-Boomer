@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides type definitions for arrays.
+Provides type definitions.
 """
 import numpy as np
 
