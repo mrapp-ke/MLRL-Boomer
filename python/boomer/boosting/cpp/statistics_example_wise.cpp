@@ -87,7 +87,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     accumulatedSumsOfHessians_ = nullptr;
                     totalSumsOfGradients_ = statistics_.totalSumsOfGradients_;
                     totalSumsOfCoverableGradients_ = nullptr;
-                    totalSumsOfGradients_ = statistics_.totalSumsOfHessians_;
+                    totalSumsOfHessians_ = statistics_.totalSumsOfHessians_;
                     totalSumsOfCoverableHessians_ = nullptr;
                     tmpGradients_ = nullptr;
                     tmpHessians_ = nullptr;
