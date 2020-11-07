@@ -71,7 +71,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     accumulatedSumsOfHessians_ = nullptr;
                     totalSumsOfGradients_ = statistics_.totalSumsOfGradients_;
                     totalSumsOfCoverableGradients_ = nullptr;
-                    totalSumsOfGradients_ = statistics_.totalSumsOfHessians_;
+                    totalSumsOfHessians_ = statistics_.totalSumsOfHessians_;
                     totalSumsOfCoverableHessians_ = nullptr;
                 }
 
