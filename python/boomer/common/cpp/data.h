@@ -220,6 +220,11 @@ class BinaryDokVector {
          */
         void setValue(uint32 pos);
 
+        /**
+         * Sets the values of all elements to zero.
+         */
+        void setAllToZero();
+
 };
 
 /**
@@ -262,5 +267,10 @@ class BinaryDokMatrix {
          * @param column    The column of the element. Must be in [0, getNumCols())
          */
         void setValue(uint32 row, uint32 column);
+
+        /**
+         * Sets the values of all elements to zero.
+         */
+        void setAllToZero();
 
 };
