@@ -86,15 +86,14 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
 }
 
 /**
- * Filters a given vector, containing e.g. feature values or bins, which contains the elements for a certain feature
- * that are covered by the previous rule, after a new condition that corresponds to said feature has been added, such
- * that the filtered vector does only contain the elements that are covered by the new rule. The filtered vector is
- * stored in a given struct of type `FilteredCacheEntry` and the given statistics are updated accordingly.
+ * Filters a given feature vector, which contains the elements for a certain feature that are covered by the previous
+ * rule, after a new condition that corresponds to said feature has been added, such that the filtered vector does only
+ * contain the elements that are covered by the new rule. The filtered vector is stored in a given struct of type
+ * `FilteredCacheEntry` and the given statistics are updated accordingly.
  *
- * @tparam T                    The type of the vector to be filtered
+ * @param vector                A reference to an object of type `FeatureVector` that should be filtered
  * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the
  *                              filtered feature vector
- * @param vector                A reference to an object of template type `T` that should be filtered
  * @param conditionStart        The element in `vector` that corresponds to the first statistic (inclusive) included in
  *                              the `IStatisticsSubset` that is covered by the new condition
  * @param conditionEnd          The element in `vector` that corresponds to the last statistic (exclusive)
@@ -111,25 +110,24 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
  *                              of the individual training examples
  */
-template<class T>
-static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const T& vector, intp conditionStart,
-                                       intp conditionEnd, Comparator conditionComparator, bool covered,
-                                       uint32 numConditions, CoverageMask& coverageMask, AbstractStatistics& statistics,
-                                       const IWeightVector& weights) {
+static inline void filterCurrentVector(const FeatureVector& vector, FilteredCacheEntry<FeatureVector>& cacheEntry,
+                                       intp conditionStart, intp conditionEnd, Comparator conditionComparator,
+                                       bool covered, uint32 numConditions, CoverageMask& coverageMask,
+                                       AbstractStatistics& statistics, const IWeightVector& weights) {
     // Determine the number of elements in the filtered vector...
     uint32 numTotalElements = vector.getNumElements();
     uint32 distance = abs(conditionStart - conditionEnd);
     uint32 numElements = covered ? distance : (numTotalElements > distance ? numTotalElements - distance : 0);
 
     // Create a new vector that will contain the filtered elements, if necessary...
-    T* filteredVector = cacheEntry.vectorPtr.get();
+    FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::make_unique<T>(numElements);
+        cacheEntry.vectorPtr = std::make_unique<FeatureVector>(numElements);
         filteredVector = cacheEntry.vectorPtr.get();
     }
 
-    typename T::const_iterator iterator = vector.cbegin();
+    typename FeatureVector::const_iterator iterator = vector.cbegin();
     FeatureVector::iterator filteredIterator = filteredVector->begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
@@ -215,6 +213,15 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
             filteredIterator[i].value = iterator[r].value;
             i++;
         }
+
+        // Iterate the indices of examples with missing feature values and set the corresponding values in
+        // `coverageMask` to `numConditions`, which marks them as uncovered...
+        for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
+            uint32 index = *it;
+            coverageMaskIterator[index] = numConditions;
+            uint32 weight = weights.getWeight(index);
+            statistics.updateCoveredStatistic(index, weight, true);
+        }
     }
 
     filteredVector->setNumElements(numElements);
@@ -222,31 +229,40 @@ static inline void filterCurrentVector(FilteredCacheEntry<T>& cacheEntry, const 
 }
 
 /**
- * Filters a given vector, containing e.g. feature values or bins, such that the filtered vector does only contain the
- * elements that are covered by the current rule. The filtered vector is stored in a given struct of type
- * `FilteredCacheEntry`.
+ * Filters a given feature vector, such that the filtered vector does only contain the elements that are covered by the
+ * current rule. The filtered vector is stored in a given struct of type `FilteredCacheEntry`.
  *
- * @tparam T            The type of the vector to be filtered
- * @param vector        A reference to an object of template type `T` that should be filtered
+ * @param vector        A reference to an object of type `FeatureVector` that should be filtered
  * @param cacheEntry    A reference to a struct of type `FilteredCacheEntry` that should be used to store the filtered
  *                      vector
  * @param numConditions The total number of conditions in the current rule's body
  * @param coverageMask  A reference to an object of type `CoverageMask` that is used to keep track of the elements that
  *                      are covered by the current rule
  */
-template<class T>
-static inline void filterAnyVector(const T& vector, FilteredCacheEntry<T>& cacheEntry, uint32 numConditions,
-                                   const CoverageMask& coverageMask) {
+static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEntry<FeatureVector>& cacheEntry,
+                                   uint32 numConditions, const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
-    T* filteredVector = cacheEntry.vectorPtr.get();
+    FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::make_unique<T>(maxElements);
+        cacheEntry.vectorPtr = std::make_unique<FeatureVector>(maxElements);
         filteredVector = cacheEntry.vectorPtr.get();
+    } else {
+        filteredVector->clearMissingIndices();
     }
 
-    typename T::const_iterator iterator = vector.cbegin();
-    typename T::iterator filteredIterator = filteredVector->begin();
+    // Filter the missing indices...
+    for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
+        uint32 index = *it;
+
+        if (coverageMask.isCovered(index)) {
+            filteredVector->addMissingIndex(index);
+        }
+    }
+
+    // Filter the feature values...
+    typename FeatureVector::const_iterator iterator = vector.cbegin();
+    typename FeatureVector::iterator filteredIterator = filteredVector->begin();
     uint32 i = 0;
 
     for (uint32 r = 0; r < maxElements; r++) {
