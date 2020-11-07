@@ -79,11 +79,22 @@ void DenseFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
 
     featureVectorPtr = std::make_unique<FeatureVector>(numElements);
     FeatureVector::iterator iterator = featureVectorPtr->begin();
+    uint32 i = 0;
 
-    for (uint32 i = 0; i < numElements; i++) {
-        iterator[i].index = i;
-        iterator[i].value = x_[offset + i];
+    for (uint32 j = 0; j < numElements; j++) {
+        float32 value = x_[offset + j];
+
+        if (value != value) {
+            // The value is NaN (because comparisons to NaN always evaluate to false)...
+            featureVectorPtr->addMissingIndex(j);
+        } else {
+            iterator[i].index = j;
+            iterator[i].value = value;
+            i++;
+        }
     }
+
+    featureVectorPtr->setNumElements(i);
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
@@ -112,12 +123,23 @@ void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
 
     featureVectorPtr = std::make_unique<FeatureVector>(numElements);
     FeatureVector::iterator iterator = featureVectorPtr->begin();
+    uint32 i = 0;
 
     for (uint32 j = start; j < end; j++) {
-        iterator->index = xRowIndices_[j];
-        iterator->value = xData_[j];
-        iterator++;
+        uint32 index = xRowIndices_[j];
+        float32 value = xData_[j];
+
+        if (value != value) {
+            // The value is NaN (because comparisons to NaN always evaluate to false)...
+            featureVectorPtr->addMissingIndex(index);
+        } else {
+            iterator[i].index = index;
+            iterator[i].value = value;
+            i++;
+        }
     }
+
+    featureVectorPtr->setNumElements(i);
 }
 
 bool DokNominalFeatureMaskImpl::isNominal(uint32 featureIndex) const {
