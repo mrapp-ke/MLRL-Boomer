@@ -122,6 +122,14 @@ void SparseArrayVector<T>::sortByValues() {
 template class SparseArrayVector<float32>;
 template class SparseArrayVector<float64>;
 
+BinaryDokVector::index_const_iterator BinaryDokVector::indices_cbegin() {
+    return data_.cbegin();
+}
+
+BinaryDokVector::index_const_iterator BinaryDokVector::indices_cend() {
+    return data_.cend();
+}
+
 bool BinaryDokVector::getValue(uint32 pos) const {
     return data_.find(pos) != data_.end();
 }
