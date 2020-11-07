@@ -10,7 +10,7 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
-from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from boomer.evaluation import MLClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.experiments import Experiment
 from boomer.parameters import ParameterCsvInput
 from boomer.persistence import ModelPersistence
@@ -77,8 +77,8 @@ class RuleLearnerRunnable(Runnable, ABC):
         learner = self._create_learner(args)
         parameter_input = parameter_input
         model_printer = RulePrinter(*model_printer_outputs) if len(model_printer_outputs) > 0 else None
-        train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
-        test_evaluation = ClassificationEvaluation(*evaluation_outputs)
+        train_evaluation = MLClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
+        test_evaluation = MLClassificationEvaluation(*evaluation_outputs)
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
         experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,

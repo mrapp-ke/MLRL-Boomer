@@ -358,7 +358,7 @@ class AbstractEvaluation(Evaluation):
                 output.write_evaluation_results(experiment_name, result, num_folds)
 
 
-class ClassificationEvaluation(AbstractEvaluation):
+class MLClassificationEvaluation(AbstractEvaluation):
     """
     Evaluates the predictions of a multi-label classifier according to commonly used bipartition measures.
     """
@@ -393,7 +393,7 @@ class ClassificationEvaluation(AbstractEvaluation):
                    current_fold, num_folds)
 
 
-class RankingEvaluation(AbstractEvaluation):
+class MLRankingEvaluation(AbstractEvaluation):
     """
     Evaluates the predictions of a multi-label ranker according to commonly used ranking measures.
     """
