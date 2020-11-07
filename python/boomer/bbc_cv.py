@@ -17,7 +17,7 @@ from sklearn.utils import check_random_state
 from boomer.common.learners import Learner
 from boomer.common.types import DTYPE_UINT8, DTYPE_UINT32
 from boomer.data import MetaData
-from boomer.evaluation import MLClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from boomer.interfaces import Randomized
 from boomer.persistence import ModelPersistence
 from boomer.training import CrossValidation, DataSet
@@ -158,7 +158,7 @@ class DefaultBbcCvObserver(BbcCvObserver):
         if output_dir is not None:
             evaluation_outputs.append(EvaluationCsvOutput(output_dir=output_dir, output_individual_folds=False))
 
-        self.evaluation = MLClassificationEvaluation(*evaluation_outputs)
+        self.evaluation = ClassificationEvaluation(*evaluation_outputs)
 
     def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
                  ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
