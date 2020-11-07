@@ -114,14 +114,18 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
                     uint32 numLabels = statistics_.getNumLabels();
+                    uint32 numHessians = triangularNumber(numLabels);
 
                     // Allocate arrays for storing the totals sums of gradients and Hessians, if necessary...
                     if (totalSumsOfCoverableGradients_ == nullptr) {
                         totalSumsOfCoverableGradients_ = (float64*) malloc(numLabels * sizeof(float64));
-                        totalSumsOfCoverableHessians_ = (float64*) malloc(numLabels * sizeof(float64));
+                        totalSumsOfCoverableHessians_ = (float64*) malloc(numHessians * sizeof(float64));
 
                         for (uint32 c = 0; c < numLabels; c++) {
                             totalSumsOfCoverableGradients_[c] = totalSumsOfGradients_[c];
+                        }
+
+                        for (uint32 c = 0; c < numHessians; c++) {
                             totalSumsOfCoverableHessians_[c] = totalSumsOfHessians_[c];
                         }
 
@@ -134,9 +138,13 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     uint32 offset = statisticIndex * numLabels;
 
                     for (uint32 c = 0; c < numLabels; c++) {
-                        uint32 i = offset + c;
-                        totalSumsOfGradients_[c] -= (weight * statistics_.gradients_[i]);
-                        totalSumsOfHessians_[c] -= (weight * statistics_.hessians_[i]);
+                        totalSumsOfGradients_[c] -= (weight * statistics_.gradients_[offset + c]);
+                    }
+
+                    offset = statisticIndex * numHessians;
+
+                    for (uint32 c = 0; c < numHessians; c++) {
+                        totalSumsOfHessians_[c] -= (weight * statistics_.hessians_[offset + c]);
                     }
                 }
 
