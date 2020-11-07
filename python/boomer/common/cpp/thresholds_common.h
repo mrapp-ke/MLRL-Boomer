@@ -213,6 +213,15 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             filteredIterator[i].value = iterator[r].value;
             i++;
         }
+
+        // Iterate the indices of examples with missing feature values and set the corresponding values in
+        // `coverageMask` to `numConditions`, which marks them as uncovered...
+        for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
+            uint32 index = *it;
+            coverageMaskIterator[index] = numConditions;
+            uint32 weight = weights.getWeight(index);
+            statistics.updateCoveredStatistic(index, weight, true);
+        }
     }
 
     filteredVector->setNumElements(numElements);
