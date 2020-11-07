@@ -22,7 +22,7 @@ HAMMING_LOSS = 'Hamm. Loss'
 HAMMING_ACCURACY = 'Hamm. Acc.'
 
 # The name of the subset 0/1 loss metric
-SUBSET_01_LOSS = 'Subs. 0/1 Loss'
+SUBSET_ZERO_ONE_LOSS = 'Subs. 0/1 Loss'
 
 # The name of the subset accuracy metric
 SUBSET_ACCURACY = 'Subs. Acc.'
@@ -372,7 +372,7 @@ class ClassificationEvaluation(AbstractEvaluation):
         result.put(HAMMING_ACCURACY, 1 - metrics.hamming_loss(ground_truth, predictions), current_fold, num_folds)
         subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
         result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, num_folds)
-        result.put(SUBSET_01_LOSS, 1 - subset_accuracy, current_fold, num_folds)
+        result.put(SUBSET_ZERO_ONE_LOSS, 1 - subset_accuracy, current_fold, num_folds)
         result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro',
                                                             zero_division=1), current_fold, num_folds)
         result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro', zero_division=1),
