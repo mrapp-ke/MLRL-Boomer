@@ -3,16 +3,21 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides type definitions for arrays.
+Provides utility functions for handling arrays.
 """
 import numpy as np
+from scipy.sparse import issparse
 
-DTYPE_INTP = np.intp
 
-DTYPE_UINT8 = np.uint8
+def enforce_dense(a, order: str):
+    """
+    Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout.
 
-DTYPE_UINT32 = np.uint32
-
-DTYPE_FLOAT32 = np.float32
-
-DTYPE_FLOAT64 = np.float64
+    :param a:       A `np.ndarray` or `scipy.sparse.matrix` to be converted
+    :param order:   The memory layout to be used. Must be `C` or `F`
+    :return:        A `np.ndarray` that uses the given memory layout
+    """
+    if issparse(a):
+        return a.toarray(order=order)
+    else:
+        return np.require(a, requirements=[order])
