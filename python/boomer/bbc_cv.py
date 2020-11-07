@@ -158,7 +158,7 @@ class DefaultBbcCvObserver(BbcCvObserver):
         if output_dir is not None:
             evaluation_outputs.append(EvaluationCsvOutput(output_dir=output_dir, output_individual_folds=False))
 
-        self.evaluation = ClassificationEvaluation(*evaluation_outputs)
+        self.evaluation = MLClassificationEvaluation(*evaluation_outputs)
 
     def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
                  ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
