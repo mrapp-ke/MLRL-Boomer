@@ -377,8 +377,7 @@ class AbstractEvaluation(Evaluation):
 
 class ClassificationEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a multi-label or single-label classifier according to commonly used bipartition
-    measures.
+    Evaluates the predictions of a single- or multi-label classifier according to commonly used bipartition measures.
     """
 
     def __init__(self, *args: EvaluationOutput):
