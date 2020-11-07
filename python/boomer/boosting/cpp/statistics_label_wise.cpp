@@ -70,6 +70,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     free(accumulatedSumsOfHessians_);
                 }
 
+                void addToMissing(uint32 statisticIndex, uint32 weight) override {
+                    // TODO
+                }
+
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
                     // For each label, add the gradient and Hessian of the example at the given index (weighted by the
                     // given weight) to the current sum of gradients and Hessians...

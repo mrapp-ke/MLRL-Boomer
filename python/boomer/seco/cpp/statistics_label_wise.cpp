@@ -63,6 +63,10 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     free(accumulatedConfusionMatricesCovered_);
                 }
 
+                void addToMissing(uint32 statisticIndex, uint32 weight) override {
+                    // TODO
+                }
+
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
                     uint32 numLabels = statistics_.getNumLabels();
                     uint32 offset = statisticIndex * numLabels;
