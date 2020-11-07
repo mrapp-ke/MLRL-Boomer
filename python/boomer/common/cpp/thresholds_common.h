@@ -247,8 +247,20 @@ static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEnt
     if (filteredVector == nullptr) {
         cacheEntry.vectorPtr = std::make_unique<FeatureVector>(maxElements);
         filteredVector = cacheEntry.vectorPtr.get();
+    } else {
+        filteredVector->clearMissingIndices();
     }
 
+    // Filter the missing indices...
+    for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
+        uint32 index = *it;
+
+        if (coverageMask.isCovered(index)) {
+            filteredVector->addMissingIndex(index);
+        }
+    }
+
+    // Filter the feature values...
     typename FeatureVector::const_iterator iterator = vector.cbegin();
     typename FeatureVector::iterator filteredIterator = filteredVector->begin();
     uint32 i = 0;
