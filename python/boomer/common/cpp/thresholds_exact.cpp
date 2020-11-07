@@ -55,8 +55,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
                 uint32 numConditions = thresholdsSubset_.numModifications_;
 
                 if (numConditions > cacheEntry.numConditions) {
-                    filterAnyVector<FeatureVector>(*featureVector, cacheEntry, numConditions,
-                                                   thresholdsSubset_.coverageMask_);
+                    filterAnyVector(*featureVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
                     featureVector = cacheEntry.vectorPtr.get();
                 }
 
@@ -146,9 +145,9 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
             }
 
             // Identify the examples that are covered by the refined rule...
-            filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, refinement.start, refinement.end,
-                                               refinement.comparator, refinement.covered, numModifications_,
-                                               coverageMask_, *thresholds_.statisticsPtr_, weights_);
+            filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end, refinement.comparator,
+                                refinement.covered, numModifications_, coverageMask_, *thresholds_.statisticsPtr_,
+                                weights_);
         }
 
         void filterThresholds(const Condition& condition) override {
@@ -168,13 +167,13 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 
             // Identify the examples that are covered by the condition...
             if (numModifications_ > cacheEntry.numConditions) {
-                filterAnyVector<FeatureVector>(*featureVector, cacheEntry, numModifications_, coverageMask_);
+                filterAnyVector(*featureVector, cacheEntry, numModifications_, coverageMask_);
                 featureVector = cacheEntry.vectorPtr.get();
             }
 
-            filterCurrentVector<FeatureVector>(cacheEntry, *featureVector, condition.start, condition.end,
-                                               condition.comparator, condition.covered, numModifications_,
-                                               coverageMask_, *thresholds_.statisticsPtr_, weights_);
+            filterCurrentVector(*featureVector, cacheEntry, condition.start, condition.end, condition.comparator,
+                                condition.covered, numModifications_, coverageMask_, *thresholds_.statisticsPtr_,
+                                weights_);
         }
 
         void resetThresholds() override {
