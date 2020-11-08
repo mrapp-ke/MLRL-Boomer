@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint32, intp
+from boomer.common._types cimport uint32, intp
 from boomer.common.rules cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport RuleInduction
 from boomer.common.statistics cimport StatisticsProviderFactory

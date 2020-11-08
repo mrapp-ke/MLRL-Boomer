@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport float64
+from boomer.common._types cimport float64
 from boomer.common.post_processing cimport PostProcessor, IPostProcessor
 
 from libcpp.memory cimport shared_ptr

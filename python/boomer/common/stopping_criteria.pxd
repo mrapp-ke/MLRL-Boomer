@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint32
+from boomer.common._types cimport uint32
 from boomer.common.statistics cimport AbstractStatistics
 
 

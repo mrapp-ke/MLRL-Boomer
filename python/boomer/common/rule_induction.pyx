@@ -3,7 +3,7 @@
 
 Provides classes that implement algorithms for inducing individual classification rules.
 """
-from boomer.common._arrays cimport float32
+from boomer.common._types cimport float32
 from boomer.common._indices cimport IIndexVector, FullIndexVector
 from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.head_refinement cimport IHeadRefinement
