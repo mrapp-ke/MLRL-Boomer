@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport float64
+from boomer.common._types cimport float64
 from boomer.boosting._blas cimport Blas
 from boomer.boosting._lapack cimport Lapack
 

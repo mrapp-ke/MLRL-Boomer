@@ -3,7 +3,7 @@
 
 Provides Cython wrappers for classes that provide access to data that is stored in matrices or vectors.
 """
-from boomer.common._arrays cimport uint32
+from boomer.common._types cimport uint32
 from boomer.common.rule_refinement cimport IRuleRefinement
 from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
 from boomer.common.thresholds cimport IThresholdsSubset

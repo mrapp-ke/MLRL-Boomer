@@ -3,7 +3,7 @@
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
-#include "../../common/cpp/arrays.h"
+#include "../../common/cpp/types.h"
 #include <math.h>
 
 

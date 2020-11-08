@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint32, intp
+from boomer.common._types cimport uint32, intp
 from boomer.common._random cimport RNG
 from boomer.common.rules cimport ModelBuilder
 from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
