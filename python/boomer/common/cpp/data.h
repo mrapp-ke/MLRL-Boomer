@@ -38,6 +38,11 @@ class DenseVector {
          */
         DenseVector(uint32 numElements, bool init);
 
+        /**
+         * @param vector A reference to an object of type `DenseVector` to be copied
+         */
+        DenseVector(const DenseVector<T>& vector);
+
         ~DenseVector();
 
         typedef T* iterator;
@@ -257,6 +262,11 @@ class DenseMatrix {
          * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
          */
         DenseMatrix(uint32 numRows, uint32 numCols, bool init);
+
+        /**
+         * @param matrix A reference to an object of type `DenseMatrix` to be copied
+         */
+        DenseMatrix(const DenseMatrix<T>& matrix);
 
         ~DenseMatrix();
 

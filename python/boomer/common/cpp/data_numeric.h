@@ -31,6 +31,11 @@ class DenseNumericVector : public DenseVector<T> {
         DenseNumericVector(uint32 numElements, bool init);
 
         /**
+         * @param vector A reference to an object of type `DenseNumericVector` to be copied
+         */
+        DenseNumericVector(const DenseNumericVector<T>& vector);
+
+        /**
          * Sets the values of all elements in the vector to zero.
          */
         void setAllToZero();
@@ -103,6 +108,11 @@ class DenseNumericMatrix : public DenseMatrix<T> {
          * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
          */
         DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init);
+
+        /**
+         * @param matrix A reference to an object of type `DenseNumericMatrix` to be copied
+         */
+        DenseNumericMatrix(const DenseNumericMatrix<T>& matrix);
 
         /**
          * Sets the values of all elements in the matrix to zero.
