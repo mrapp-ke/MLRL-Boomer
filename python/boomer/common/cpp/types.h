@@ -1,6 +1,5 @@
 /**
- * Provides type definitions consistent to those used in `arrays.pxd`, as well as utility functions for allocating
- * arrays.
+ * Provides commonly used type definitions.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
