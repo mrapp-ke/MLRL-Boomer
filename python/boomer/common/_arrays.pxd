@@ -1,17 +1,11 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides type definitions and utility functions for one- and two-dimensional arrays.
+Provides utility functions for creating arrays.
 """
+from boomer.common._types cimport uint8, uint32, float32, float64
+
 from cython.view cimport array as cvarray
-
-cimport numpy as npc
-
-ctypedef Py_ssize_t intp
-ctypedef npc.uint8_t uint8
-ctypedef npc.uint32_t uint32
-ctypedef npc.float32_t float32
-ctypedef npc.float64_t float64
 
 DEF MODE_C_CONTIGUOUS = 'c'
 
