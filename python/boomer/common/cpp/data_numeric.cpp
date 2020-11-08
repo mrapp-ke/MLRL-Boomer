@@ -45,6 +45,15 @@ void DenseNumericVector<T>::add(typename DenseVector<T>::const_iterator begin,
 }
 
 template<class T>
+void DenseNumericVector<T>::subtract(typename DenseVector<T>::const_iterator begin,
+                                     typename DenseVector<T>::const_iterator end, T weight) {
+    for (uint32 i = 0; i < DenseVector<T>::numElements_; i++) {
+        T value = begin[i];
+        DenseVector<T>::array_[i] -= (value * weight);
+    }
+}
+
+template<class T>
 void DenseNumericVector<T>::addToSubset(typename DenseVector<T>::const_iterator begin,
                                         typename DenseVector<T>::const_iterator end,
                                         const FullIndexVector& indices, T weight) {
