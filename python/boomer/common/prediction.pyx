@@ -3,7 +3,8 @@
 
 Provides classes for making predictions using rule-based models.
 """
-from boomer.common._arrays cimport uint8, c_matrix_uint8
+from boomer.common._types cimport uint8
+from boomer.common._arrays cimport c_matrix_uint8
 
 import numpy as np
 
