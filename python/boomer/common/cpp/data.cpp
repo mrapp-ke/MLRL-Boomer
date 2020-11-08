@@ -17,6 +17,14 @@ DenseVector<T>::DenseVector(uint32 numElements, bool init)
 }
 
 template<class T>
+DenseVector<T>::DenseVector(const DenseVector<T>& vector)
+    : DenseVector<T>(vector.numElements_) {
+    for (uint32 i = 0; i < numElements_; i++) {
+        array_[i] = vector.array_[i];
+    }
+}
+
+template<class T>
 DenseVector<T>::~DenseVector() {
     free(array_);
 }
@@ -153,6 +161,14 @@ DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols, bool init)
     : array_((T*) (init ? calloc(numRows * numCols, sizeof(T)) : malloc(numRows * numCols * sizeof(T)))),
       numRows_(numRows), numCols_(numCols) {
 
+}
+
+template<class T>
+DenseMatrix<T>::DenseMatrix(const DenseMatrix<T>& matrix)
+    : DenseMatrix<T>(matrix.numRows_, matrix.numCols_) {
+    for (uint32 i = 0; i < numRows_ * numCols_; i++) {
+        array_[i] = matrix.array_[i];
+    }
 }
 
 template<class T>
