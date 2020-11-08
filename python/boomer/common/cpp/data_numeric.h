@@ -67,7 +67,7 @@ class DenseNumericVector : public DenseVector<T> {
          * @param weight    The weight, the numbers should be multiplied by
          */
         void subtract(typename DenseVector<T>::const_iterator begin, typename DenseVector<T>::const_iterator end,
-                      weight);
+                      T weight);
 
         /**
          * Adds certain numbers in another vector, whose positions are given as a `FullIndexVector`, to this vector. The
