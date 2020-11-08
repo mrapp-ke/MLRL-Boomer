@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint32, float32, float64
+from boomer.common._types cimport uint32, float32, float64
 from boomer.common.rules cimport RuleModel
 
 
