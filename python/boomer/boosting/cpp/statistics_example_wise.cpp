@@ -40,6 +40,14 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 float64* accumulatedSumsOfHessians_;
 
+                float64* totalSumsOfGradients_;
+
+                float64* totalSumsOfCoverableGradients_;
+
+                float64* totalSumsOfHessians_;
+
+                float64* totalSumsOfCoverableHessians_;
+
                 float64* tmpGradients_;
 
                 float64* tmpHessians_;
@@ -77,6 +85,10 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     sumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
                     setToZeros(sumsOfHessians_, numHessians);
                     accumulatedSumsOfHessians_ = nullptr;
+                    totalSumsOfGradients_ = statistics_.totalSumsOfGradients_;
+                    totalSumsOfCoverableGradients_ = nullptr;
+                    totalSumsOfHessians_ = statistics_.totalSumsOfHessians_;
+                    totalSumsOfCoverableHessians_ = nullptr;
                     tmpGradients_ = nullptr;
                     tmpHessians_ = nullptr;
                     dsysvTmpArray1_ = nullptr;
@@ -90,12 +102,50 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     free(accumulatedSumsOfGradients_);
                     free(sumsOfHessians_);
                     free(accumulatedSumsOfHessians_);
+                    free(totalSumsOfCoverableGradients_);
+                    free(totalSumsOfCoverableHessians_);
                     free(tmpGradients_);
                     free(tmpHessians_);
                     free(dsysvTmpArray1_);
                     free(dsysvTmpArray2_);
                     free(dsysvTmpArray3_);
                     free(dspmvTmpArray_);
+                }
+
+                void addToMissing(uint32 statisticIndex, uint32 weight) override {
+                    uint32 numLabels = statistics_.getNumLabels();
+                    uint32 numHessians = triangularNumber(numLabels);
+
+                    // Allocate arrays for storing the totals sums of gradients and Hessians, if necessary...
+                    if (totalSumsOfCoverableGradients_ == nullptr) {
+                        totalSumsOfCoverableGradients_ = (float64*) malloc(numLabels * sizeof(float64));
+                        totalSumsOfCoverableHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+
+                        for (uint32 c = 0; c < numLabels; c++) {
+                            totalSumsOfCoverableGradients_[c] = totalSumsOfGradients_[c];
+                        }
+
+                        for (uint32 c = 0; c < numHessians; c++) {
+                            totalSumsOfCoverableHessians_[c] = totalSumsOfHessians_[c];
+                        }
+
+                        totalSumsOfGradients_ = totalSumsOfCoverableGradients_;
+                        totalSumsOfHessians_ = totalSumsOfCoverableHessians_;
+                    }
+
+                    // For each label, subtract the gradient and Hessian of the example at the given index (weighted by
+                    // the given weight) from the total sum of gradients and Hessians...
+                    uint32 offset = statisticIndex * numLabels;
+
+                    for (uint32 c = 0; c < numLabels; c++) {
+                        totalSumsOfGradients_[c] -= (weight * statistics_.gradients_[offset + c]);
+                    }
+
+                    offset = statisticIndex * numHessians;
+
+                    for (uint32 c = 0; c < numHessians; c++) {
+                        totalSumsOfHessians_[c] -= (weight * statistics_.hessians_[offset + c]);
+                    }
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
@@ -150,10 +200,9 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                                                                                  bool accumulated) override {
                     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
                     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.totalSumsOfGradients_,
-                                                                            sumsOfGradients,
-                                                                            statistics_.totalSumsOfHessians_,
-                                                                            sumsOfHessians, uncovered);
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(totalSumsOfGradients_, sumsOfGradients,
+                                                                            totalSumsOfHessians_, sumsOfHessians,
+                                                                            uncovered);
                 }
 
                 const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
@@ -177,11 +226,9 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
                     }
 
-                    return ruleEvaluationPtr_->calculateExampleWisePrediction(statistics_.totalSumsOfGradients_,
-                                                                              sumsOfGradients,
-                                                                              statistics_.totalSumsOfHessians_,
-                                                                              sumsOfHessians, tmpGradients_,
-                                                                              tmpHessians_, dsysvLwork_,
+                    return ruleEvaluationPtr_->calculateExampleWisePrediction(totalSumsOfGradients_, sumsOfGradients,
+                                                                              totalSumsOfHessians_, sumsOfHessians,
+                                                                              tmpGradients_, tmpHessians_, dsysvLwork_,
                                                                               dsysvTmpArray1_, dsysvTmpArray2_,
                                                                               dsysvTmpArray3_, dspmvTmpArray_,
                                                                               uncovered);
