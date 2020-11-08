@@ -203,8 +203,8 @@ class ExactRuleRefinement : public IRuleRefinement {
                 // conditions `f == previous_threshold` and `f != previous_threshold`...
                 if (nominal_ && sumOfWeights > 0 && (sumOfWeights < accumulatedSumOfWeights
                                                      || accumulatedSumOfWeights < totalSumOfWeights_)) {
-                    // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
-                    // used...
+                    // Find and evaluate the best head for the current refinement, if a condition that uses the ==
+                    // operator is used...
                     const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead,
                                                                                            *statisticsSubsetPtr,
                                                                                            false, false);
