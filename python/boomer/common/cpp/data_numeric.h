@@ -59,6 +59,17 @@ class DenseNumericVector : public DenseVector<T> {
         void add(typename DenseVector<T>::const_iterator begin, typename DenseVector<T>::const_iterator end, T weight);
 
         /**
+         * Subtracts all numbers in another vector from this vector. The numbers to be subtracted are multiplied by a
+         * specific weight.
+         *
+         * @param begin     A `DenseVector<T>::const_iterator` to the beginning of the other vector
+         * @param end       A `DenseVector<T>::const_iterator` to the end of the other vector
+         * @param weight    The weight, the numbers should be multiplied by
+         */
+        void subtract(typename DenseVector<T>::const_iterator begin, typename DenseVector<T>::const_iterator end,
+                      weight);
+
+        /**
          * Adds certain numbers in another vector, whose positions are given as a `FullIndexVector`, to this vector. The
          * numbers to be added are multiplied by a specific weight.
          *
