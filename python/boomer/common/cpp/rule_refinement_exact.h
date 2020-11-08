@@ -77,6 +77,12 @@ class ExactRuleRefinement : public IRuleRefinement {
             // Create a new, empty subset of the statistics...
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
 
+            for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
+                uint32 i = *it;
+                uint32 weight = weights_.getWeight(i);
+                statisticsSubsetPtr->addToMissing(i, weight);
+            }
+
             // In the following, we start by processing all examples with feature values < 0...
             uint32 sumOfWeights = 0;
             intp firstR = 0;

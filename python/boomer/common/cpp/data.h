@@ -97,7 +97,8 @@ class DenseVector {
 };
 
 /**
- * A sparse vector that stores a fixed number of elements, consisting of an index and a value, in a C-contiguous array.
+ * An one-dimensional sparse vector that stores a fixed number of elements, consisting of an index and a value, in a
+ * C-contiguous array.
  *
  * @tparam T The type of the data that is stored in the vector
  */
@@ -178,7 +179,7 @@ class SparseArrayVector {
 };
 
 /**
- * A sparse vector that stores binary data using the dictionary of keys (DOK) format.
+ * An one-dimensional sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokVector {
 
@@ -187,6 +188,22 @@ class BinaryDokVector {
         std::unordered_set<uint32> data_;
 
     public:
+
+        typedef std::unordered_set<uint32>::const_iterator index_const_iterator;
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indices_cend() const;
 
         /**
          * Returns the value of the element at a specific position.
@@ -202,6 +219,11 @@ class BinaryDokVector {
          * @param pos The position of the element. Must be in [0, getNumElements())
          */
         void setValue(uint32 pos);
+
+        /**
+         * Sets the values of all elements to zero.
+         */
+        void setAllToZero();
 
 };
 
@@ -319,7 +341,7 @@ class DenseMatrix {
 };
 
 /**
- * A sparse matrix that stores binary data using the dictionary of keys (DOK) format.
+ * A two-dimensional sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
 class BinaryDokMatrix {
 
@@ -358,5 +380,10 @@ class BinaryDokMatrix {
          * @param column    The column of the element. Must be in [0, getNumCols())
          */
         void setValue(uint32 row, uint32 column);
+
+        /**
+         * Sets the values of all elements to zero.
+         */
+        void setAllToZero();
 
 };

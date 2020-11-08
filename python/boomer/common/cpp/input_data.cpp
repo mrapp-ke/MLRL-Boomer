@@ -1,6 +1,27 @@
 #include "input_data.h"
 
 
+FeatureVector::FeatureVector(uint32 numElements)
+    : SparseArrayVector<float32>(numElements) {
+
+}
+
+FeatureVector::missing_index_const_iterator FeatureVector::missing_indices_cbegin() const {
+    return missingIndices_.indices_cbegin();
+}
+
+FeatureVector::missing_index_const_iterator FeatureVector::missing_indices_cend() const {
+    return missingIndices_.indices_cend();
+}
+
+void FeatureVector::addMissingIndex(uint32 index) {
+    missingIndices_.setValue(index);
+}
+
+void FeatureVector::clearMissingIndices() {
+    missingIndices_.setAllToZero();
+}
+
 DenseLabelMatrixImpl::DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y)
     : numExamples_(numExamples), numLabels_(numLabels), y_(y) {
 
@@ -62,11 +83,22 @@ void DenseFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
 
     featureVectorPtr = std::make_unique<FeatureVector>(numElements);
     FeatureVector::iterator iterator = featureVectorPtr->begin();
+    uint32 i = 0;
 
-    for (uint32 i = 0; i < numElements; i++) {
-        iterator[i].index = i;
-        iterator[i].value = x_[offset + i];
+    for (uint32 j = 0; j < numElements; j++) {
+        float32 value = x_[offset + j];
+
+        if (value != value) {
+            // The value is NaN (because comparisons to NaN always evaluate to false)...
+            featureVectorPtr->addMissingIndex(j);
+        } else {
+            iterator[i].index = j;
+            iterator[i].value = value;
+            i++;
+        }
     }
+
+    featureVectorPtr->setNumElements(i);
 }
 
 CscFeatureMatrixImpl::CscFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* xData,
@@ -95,12 +127,23 @@ void CscFeatureMatrixImpl::fetchFeatureVector(uint32 featureIndex,
 
     featureVectorPtr = std::make_unique<FeatureVector>(numElements);
     FeatureVector::iterator iterator = featureVectorPtr->begin();
+    uint32 i = 0;
 
     for (uint32 j = start; j < end; j++) {
-        iterator->index = xRowIndices_[j];
-        iterator->value = xData_[j];
-        iterator++;
+        uint32 index = xRowIndices_[j];
+        float32 value = xData_[j];
+
+        if (value != value) {
+            // The value is NaN (because comparisons to NaN always evaluate to false)...
+            featureVectorPtr->addMissingIndex(index);
+        } else {
+            iterator[i].index = index;
+            iterator[i].value = value;
+            i++;
+        }
     }
+
+    featureVectorPtr->setNumElements(i);
 }
 
 bool DokNominalFeatureMaskImpl::isNominal(uint32 featureIndex) const {

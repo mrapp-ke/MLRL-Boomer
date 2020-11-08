@@ -12,8 +12,25 @@ from typing import List, Dict, Set
 
 import numpy as np
 import sklearn.metrics as metrics
+from sklearn.utils.multiclass import is_multilabel
 
+from boomer.common.arrays import enforce_dense
 from boomer.io import open_writable_csv_file, create_csv_dict_writer, create_csv_writer, clear_directory
+
+# The name of the accuracy metric
+ACCURACY = 'Acc.'
+
+# The name of the 0/1 loss metric.
+ZERO_ONE_LOSS = '0/1 Loss'
+
+# The name of the precision metric
+PRECISION = 'Prec.'
+
+# The name of the recall metric
+RECALL = 'Rec.'
+
+# The name of the F1 metric
+F1 = 'F1'
 
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
@@ -22,7 +39,7 @@ HAMMING_LOSS = 'Hamm. Loss'
 HAMMING_ACCURACY = 'Hamm. Acc.'
 
 # The name of the subset 0/1 loss metric
-SUBSET_01_LOSS = 'Subs. 0/1 Loss'
+SUBSET_ZERO_ONE_LOSS = 'Subs. 0/1 Loss'
 
 # The name of the subset accuracy metric
 SUBSET_ACCURACY = 'Subs. Acc.'
@@ -360,42 +377,54 @@ class AbstractEvaluation(Evaluation):
 
 class ClassificationEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a classifier according to commonly used bipartition measures.
+    Evaluates the predictions of a single- or multi-label classifier according to commonly used bipartition measures.
     """
 
     def __init__(self, *args: EvaluationOutput):
         super().__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
-        hamming_loss = metrics.hamming_loss(ground_truth, predictions)
-        result.put(HAMMING_LOSS, hamming_loss, current_fold, num_folds)
-        result.put(HAMMING_ACCURACY, 1 - metrics.hamming_loss(ground_truth, predictions), current_fold, num_folds)
-        subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
-        result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, num_folds)
-        result.put(SUBSET_01_LOSS, 1 - subset_accuracy, current_fold, num_folds)
-        result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro',
-                                                            zero_division=1), current_fold, num_folds)
-        result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
-                                                            zero_division=1), current_fold, num_folds)
-        result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro', zero_division=1),
-                   current_fold, num_folds)
-        result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples',
-                                                               zero_division=1), current_fold, num_folds)
-        result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples', zero_division=1),
-                   current_fold, num_folds)
-        result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples', zero_division=1),
-                   current_fold, num_folds)
+        if is_multilabel(ground_truth):
+            hamming_loss = metrics.hamming_loss(ground_truth, predictions)
+            result.put(HAMMING_LOSS, hamming_loss, current_fold, num_folds)
+            result.put(HAMMING_ACCURACY, 1 - hamming_loss, current_fold, num_folds)
+            subset_accuracy = metrics.accuracy_score(ground_truth, predictions)
+            result.put(SUBSET_ACCURACY, subset_accuracy, current_fold, num_folds)
+            result.put(SUBSET_ZERO_ONE_LOSS, 1 - subset_accuracy, current_fold, num_folds)
+            result.put(MICRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='micro',
+                                                                zero_division=1), current_fold, num_folds)
+            result.put(MICRO_RECALL, metrics.recall_score(ground_truth, predictions, average='micro', zero_division=1),
+                       current_fold, num_folds)
+            result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro', zero_division=1),
+                       current_fold, num_folds)
+            result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
+                                                                zero_division=1), current_fold, num_folds)
+            result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro', zero_division=1),
+                       current_fold, num_folds)
+            result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro', zero_division=1),
+                       current_fold, num_folds)
+            result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples',
+                                                                   zero_division=1), current_fold, num_folds)
+            result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples',
+                                                             zero_division=1), current_fold, num_folds)
+            result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples', zero_division=1),
+                       current_fold, num_folds)
+        else:
+            predictions = np.ravel(enforce_dense(predictions, order='C'))
+            ground_truth = np.ravel(enforce_dense(ground_truth, order='C'))
+            accuracy = metrics.accuracy_score(ground_truth, predictions)
+            result.put(ACCURACY, accuracy, current_fold, num_folds)
+            result.put(ZERO_ONE_LOSS, 1 - accuracy, current_fold, num_folds)
+            result.put(PRECISION, metrics.precision_score(ground_truth, predictions, zero_division=1), current_fold,
+                       num_folds)
+            result.put(RECALL, metrics.recall_score(ground_truth, predictions, zero_division=1), current_fold,
+                       num_folds)
+            result.put(F1, metrics.f1_score(ground_truth, predictions, zero_division=1), current_fold, num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a ranker according to commonly used ranking measures.
+    Evaluates the predictions of a multi-label ranker according to commonly used ranking measures.
     """
 
     def __init__(self, *args: EvaluationOutput):
