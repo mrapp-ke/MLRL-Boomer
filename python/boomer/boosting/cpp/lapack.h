@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/arrays.h"
+#include "../../common/cpp/types.h"
 
 // A function pointer to the DSYSV routine
 typedef void (*dsysv_t)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info);

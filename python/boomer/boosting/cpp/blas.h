@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/arrays.h"
+#include "../../common/cpp/types.h"
 
 // A function pointer to the DDOT routine
 typedef double (*ddot_t)(int* n, double* dx, int* incx, double* dy, int* incy);
