@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport float32
+from boomer.common._types cimport float32
 
 from libcpp.memory cimport shared_ptr
 

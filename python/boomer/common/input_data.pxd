@@ -1,4 +1,4 @@
-from boomer.common._arrays cimport uint8, uint32, float32
+from boomer.common._types cimport uint8, uint32, float32
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 

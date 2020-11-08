@@ -4,7 +4,7 @@
  * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
-#include "../../common/cpp/arrays.h"
+#include "../../common/cpp/types.h"
 
 
 namespace seco {
