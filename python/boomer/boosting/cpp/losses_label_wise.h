@@ -12,7 +12,7 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all (decomposable) loss functions that are applied label-wise.
+     * An abstract base class for all (decomposable) loss functions that are applied label-wise.
      */
     class AbstractLabelWiseLoss {
 
