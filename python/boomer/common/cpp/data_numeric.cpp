@@ -76,6 +76,44 @@ void DenseNumericVector<T>::addToSubset(typename DenseVector<T>::const_iterator 
     }
 }
 
+template<class T>
+void DenseNumericVector<T>::difference(typename DenseVector<T>::const_iterator firstBegin,
+                                       typename DenseVector<T>::const_iterator firstEnd,
+                                       typename DenseVector<T>::const_iterator secondBegin,
+                                       typename DenseVector<T>::const_iterator secondEnd) {
+    for (uint32 i = 0; i < DenseVector<T>::numElements_; i++) {
+        T difference = firstBegin[i] - secondBegin[i];
+        DenseVector<T>::array_[i] = difference;
+    }
+}
+
+template<class T>
+void DenseNumericVector<T>::difference(typename DenseVector<T>::const_iterator firstBegin,
+                                       typename DenseVector<T>::const_iterator firstEnd,
+                                       const FullIndexVector& firstIndices,
+                                       typename DenseVector<T>::const_iterator secondBegin,
+                                       typename DenseVector<T>::const_iterator secondEnd) {
+    for (uint32 i = 0; i < DenseVector<T>::numElements_; i++) {
+        T difference = firstBegin[i] - secondBegin[i];
+        DenseVector<T>::array_[i] = difference;
+    }
+}
+
+template<class T>
+void DenseNumericVector<T>::difference(typename DenseVector<T>::const_iterator firstBegin,
+                                       typename DenseVector<T>::const_iterator firstEnd,
+                                       const PartialIndexVector& firstIndices,
+                                       typename DenseVector<T>::const_iterator secondBegin,
+                                       typename DenseVector<T>::const_iterator secondEnd) {
+    PartialIndexVector::const_iterator firstIndexIterator = firstIndices.cbegin();
+
+    for (uint32 i = 0; i < DenseVector<T>::numElements_; i++) {
+        uint32 firstIndex = firstIndexIterator[i];
+        T difference = firstBegin[firstIndex] - secondBegin[i];
+        DenseVector<T>::array_[i] = difference;
+    }
+}
+
 template class DenseNumericVector<float64>;
 
 template<class T>

@@ -93,6 +93,51 @@ class DenseNumericVector : public DenseVector<T> {
         void addToSubset(typename DenseVector<T>::const_iterator begin, typename DenseVector<T>::const_iterator end,
                          const PartialIndexVector& indices, T weight);
 
+        /**
+         * Sets the elements in this vector the difference `first - second` between the elements in two other vectors.
+         *
+         * @param firstBegin    A `DenseVector<T>::const_iterator` to the beginning of the first vector
+         * @param firstEnd      A `DenseVector<T>::const_iterator` to the end of the first vector
+         * @param secondBegin   A `DenseVector<T>::const_iterator` to the beginning of the second vector
+         * @param secondEnd     A `DenseVector<T>::const_iterator` to the end of the second vector
+         */
+        void difference(typename DenseVector<T>::const_iterator firstBegin,
+                        typename DenseVector<T>::const_iterator firstEnd,
+                        typename DenseVector<T>::const_iterator secondBegin,
+                        typename DenseVector<T>::const_iterator secondEnd);
+
+        /**
+         * Sets the elements in this vector the difference `first - second` between the elements in two other vectors,
+         * where only a subset of the elements in the first vector are considered.
+         *
+         * @param firstBegin    A `DenseVector<T>::const_iterator` to the beginning of the first vector
+         * @param firstEnd      A `DenseVector<T>::const_iterator` to the end of the first vector
+         * @pram firstIndices   A reference to an object of type `FullIndexVector` that stores the indices of the
+         *                      elements in the first vector to be considered
+         * @param secondBegin   A `DenseVector<T>::const_iterator` to the beginning of the second vector
+         * @param secondEnd     A `DenseVector<T>::const_iterator` to the end of the second vector
+         */
+        void difference(typename DenseVector<T>::const_iterator firstBegin,
+                        typename DenseVector<T>::const_iterator firstEnd, const FullIndexVector& firstIndices,
+                        typename DenseVector<T>::const_iterator secondBegin,
+                        typename DenseVector<T>::const_iterator secondEnd);
+
+        /**
+         * Sets the elements in this vector the difference `first - second` between the elements in two other vectors,
+         * where only a subset of the elements in the first vector are considered.
+         *
+         * @param firstBegin    A `DenseVector<T>::const_iterator` to the beginning of the first vector
+         * @param firstEnd      A `DenseVector<T>::const_iterator` to the end of the first vector
+         * @pram firstIndices   A reference to an object of type `PartialIndexVector` that stores the indices of the
+         *                      elements in the first vector to be considered
+         * @param secondBegin   A `DenseVector<T>::const_iterator` to the beginning of the second vector
+         * @param secondEnd     A `DenseVector<T>::const_iterator` to the end of the second vector
+         */
+        void difference(typename DenseVector<T>::const_iterator firstBegin,
+                        typename DenseVector<T>::const_iterator firstEnd, const PartialIndexVector& firstIndices,
+                        typename DenseVector<T>::const_iterator secondBegin,
+                        typename DenseVector<T>::const_iterator secondEnd);
+
 };
 
 typedef DenseNumericVector<float64> DenseFloat64Vector;
