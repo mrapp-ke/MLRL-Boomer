@@ -47,9 +47,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 DenseFloat64Vector* totalSumsOfCoverableHessians_;
 
-                float64* tmpGradients_;
+                DenseFloat64Vector* tmpGradients_;
 
-                float64* tmpHessians_;
+                DenseFloat64Vector* tmpHessians_;
 
             public:
 
@@ -83,8 +83,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     delete accumulatedSumsOfHessians_;
                     delete totalSumsOfCoverableGradients_;
                     delete totalSumsOfCoverableHessians_;
-                    free(tmpGradients_);
-                    free(tmpHessians_);
+                    delete tmpGradients_;
+                    delete tmpHessians_;
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
@@ -132,13 +132,6 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                  bool accumulated) override {
-                    // Initialize temporary vectors, if necessary...
-                    if (tmpGradients_ == nullptr) {
-                        uint32 numPredictions = labelIndices_.getNumElements();
-                        tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                        tmpHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
-                    }
-
                     const DenseFloat64Vector& sumsOfGradients =
                         accumulated ? *accumulatedSumsOfGradients_ : sumsOfGradients_;
                     const DenseFloat64Vector& sumsOfHessians =
@@ -146,19 +139,28 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                     if (uncovered) {
                         uint32 numPredictions = labelIndices_.getNumElements();
+
+                        // Initialize temporary vectors, if necessary...
+                        if (tmpGradients_ == nullptr) {
+                            tmpGradients_ = new DenseFloat64Vector(numPredictions);
+                            tmpHessians_ = new DenseFloat64Vector(numPredictions);
+                        }
+
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
                         DenseFloat64Vector::const_iterator totalSumsOfGradients = totalSumsOfGradients_->cbegin();
                         DenseFloat64Vector::const_iterator totalSumsOfHessians = totalSumsOfHessians_->cbegin();
                         DenseFloat64Vector::const_iterator sumsOfGradientsIterator = sumsOfGradients.cbegin();
                         DenseFloat64Vector::const_iterator sumsOfHessiansIterator = sumsOfHessians.cbegin();
+                        DenseFloat64Vector::iterator tmpGradientsIterator = tmpGradients_->begin();
+                        DenseFloat64Vector::iterator tmpHessiansIterator = tmpHessians_->begin();
 
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 l = indexIterator[c];
-                            tmpGradients_[c] = totalSumsOfGradients[l] - sumsOfGradientsIterator[c];
-                            tmpHessians_[c] = totalSumsOfHessians[l] - sumsOfHessiansIterator[c];
+                            tmpGradientsIterator[c] = totalSumsOfGradients[l] - sumsOfGradientsIterator[c];
+                            tmpHessiansIterator[c] = totalSumsOfHessians[l] - sumsOfHessiansIterator[c];
                         }
 
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_, tmpHessians_);
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_->cbegin(), tmpHessians_->cbegin());
                     }
 
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients.cbegin(), sumsOfHessians.cbegin());
