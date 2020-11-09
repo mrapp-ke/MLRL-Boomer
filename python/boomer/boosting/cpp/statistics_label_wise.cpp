@@ -257,6 +257,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
               hessians_(hessians), currentScores_(currentScores),
               totalSumsOfGradients_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())),
               totalSumsOfHessians_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())) {
+
         }
 
         ~DenseLabelWiseStatistics() {
