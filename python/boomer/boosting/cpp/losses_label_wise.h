@@ -14,8 +14,7 @@ namespace boosting {
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
-    // TODO Rename to AbstractLabelWiseLoss
-    class ILabelWiseLoss {
+    class AbstractLabelWiseLoss {
 
         protected:
 
@@ -34,7 +33,7 @@ namespace boosting {
 
         public:
 
-            virtual ~ILabelWiseLoss() { };
+            virtual ~AbstractLabelWiseLoss() { };
 
             /**
              * Calculates the gradients and Hessians of the example at a specific index and the labels, whose indices
@@ -81,7 +80,7 @@ namespace boosting {
     /**
      * A multi-label variant of the logistic loss that is applied label-wise.
      */
-    class LabelWiseLogisticLossImpl : public ILabelWiseLoss {
+    class LabelWiseLogisticLossImpl : public AbstractLabelWiseLoss {
 
         protected:
 
@@ -94,7 +93,7 @@ namespace boosting {
     /**
      * A multi-label variant of the squared error loss that is applied label-wise.
      */
-    class LabelWiseSquaredErrorLossImpl : public ILabelWiseLoss {
+    class LabelWiseSquaredErrorLossImpl : public AbstractLabelWiseLoss {
 
         protected:
 
