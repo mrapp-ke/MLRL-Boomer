@@ -179,8 +179,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                  * @param numBins       The number of bins, the histogram should consist of
                  */
                 HistogramBuilder(const DenseLabelWiseStatistics& statistics, uint32 numBins)
-                    : statistics_(statistics), gradients_(new DenseFloat64Matrix(numBins, true)),
-                      hessians_(new DenseFloat64Matrix(numBins, true)) {
+                    : statistics_(statistics),
+                      gradients_(new DenseFloat64Matrix(numBins, statistics.getNumLabels(), true)),
+                      hessians_(new DenseFloat64Matrix(numBins, statistics.getNumLabels(), true)) {
 
                 }
 
