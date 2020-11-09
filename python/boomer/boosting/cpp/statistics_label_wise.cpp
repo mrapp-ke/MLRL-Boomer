@@ -139,27 +139,29 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                         tmpHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
                     }
 
-                    const float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_->cbegin() : sumsOfGradients_.cbegin();
-                    const float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_->cbegin() : sumsOfHessians_.cbegin();
+                    const DenseFloat64Vector& sumsOfGradients =
+                        accumulated ? *accumulatedSumsOfGradients_ : sumsOfGradients_;
+                    const DenseFloat64Vector& sumsOfHessians =
+                        accumulated ? *accumulatedSumsOfHessians_ : sumsOfHessians_;
 
                     if (uncovered) {
                         uint32 numPredictions = labelIndices_.getNumElements();
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                        const float64* totalSumsOfGradients = totalSumsOfGradients_->cbegin();
-                        const float64* totalSumsOfHessians = totalSumsOfHessians_->cbegin();
-
+                        DenseFloat64Vector::const_iterator totalSumsOfGradients = totalSumsOfGradients_->cbegin();
+                        DenseFloat64Vector::const_iterator totalSumsOfHessians = totalSumsOfHessians_->cbegin();
+                        DenseFloat64Vector::const_iterator sumsOfGradientsIterator = sumsOfGradients.cbegin();
+                        DenseFloat64Vector::const_iterator sumsOfHessiansIterator = sumsOfHessians.cbegin();
 
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 l = indexIterator[c];
-                            tmpGradients_[c] = totalSumsOfGradients[l] - sumsOfGradients[c];
-                            tmpHessians_[c] = totalSumsOfHessians[l] - sumsOfHessians[c];
+                            tmpGradients_[c] = totalSumsOfGradients[l] - sumsOfGradientsIterator[c];
+                            tmpHessians_[c] = totalSumsOfHessians[l] - sumsOfHessiansIterator[c];
                         }
 
-                        sumsOfGradients = tmpGradients_;
-                        sumsOfHessians = tmpHessians_;
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_, tmpHessians_);
                     }
 
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients, sumsOfHessians);
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients.cbegin(), sumsOfHessians.cbegin());
                 }
 
         };
