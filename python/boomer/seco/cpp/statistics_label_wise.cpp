@@ -294,11 +294,8 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     if (labelWeight > 0) {
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
 
-                        // Decrement the total sum of uncovered labels, if the prediction for the current example and
-                        // label is correct...
-                        if (predictedLabel == trueLabel) {
-                            sumUncoveredLabels_ -= labelWeight;
-                        }
+                        // Decrement the total sum of uncovered labels...
+                        sumUncoveredLabels_ -= labelWeight;
 
                         // Mark the current example and label as covered...
                         uncoveredLabels_[i] = 0;
@@ -328,11 +325,8 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     if (labelWeight > 0) {
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, l);
 
-                        // Decrement the total sum of uncovered labels, if the prediction for the current example and
-                        // label is correct...
-                        if (predictedLabel == trueLabel) {
-                            sumUncoveredLabels_ -= labelWeight;
-                        }
+                        // Decrement the total sum of uncovered labels...
+                        sumUncoveredLabels_ -= labelWeight;
 
                         // Mark the current example and label as covered...
                         uncoveredLabels_[i] = 0;
