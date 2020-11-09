@@ -4,11 +4,11 @@
 using namespace boosting;
 
 
-void ILabelWiseLoss::updateGradientsAndHessians(DenseMatrix<float64>& gradients, DenseMatrix<float64>& hessians,
-                                                const DenseMatrix<float64>& predictedScores,
-                                                const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                                const FullIndexVector::const_iterator labelIndicesBegin,
-                                                const FullIndexVector::const_iterator labelIndicesEnd) const {
+void AbstractLabelWiseLoss::updateGradientsAndHessians(DenseMatrix<float64>& gradients, DenseMatrix<float64>& hessians,
+                                                       const DenseMatrix<float64>& predictedScores,
+                                                       const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
+                                                       const FullIndexVector::const_iterator labelIndicesBegin,
+                                                       const FullIndexVector::const_iterator labelIndicesEnd) const {
     uint32 numLabels = labelMatrix.getNumLabels();
     DenseVector<float64>::iterator gradientIterator = gradients.row_begin(exampleIndex);
     DenseVector<float64>::iterator hessianIterator = hessians.row_begin(exampleIndex);
@@ -21,11 +21,11 @@ void ILabelWiseLoss::updateGradientsAndHessians(DenseMatrix<float64>& gradients,
     }
 }
 
-void ILabelWiseLoss::updateGradientsAndHessians(DenseMatrix<float64>& gradients, DenseMatrix<float64>& hessians,
-                                                const DenseMatrix<float64>& predictedScores,
-                                                const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                                const PartialIndexVector::const_iterator labelIndicesBegin,
-                                                const PartialIndexVector::const_iterator labelIndicesEnd) const {
+void AbstractLabelWiseLoss::updateGradientsAndHessians(DenseMatrix<float64>& gradients, DenseMatrix<float64>& hessians,
+                                                       const DenseMatrix<float64>& predictedScores,
+                                                       const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
+                                                       const PartialIndexVector::const_iterator labelIndicesBegin,
+                                                       const PartialIndexVector::const_iterator labelIndicesEnd) const {
     DenseVector<float64>::iterator gradientIterator = gradients.row_begin(exampleIndex);
     DenseVector<float64>::iterator hessianIterator = hessians.row_begin(exampleIndex);
     DenseVector<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
