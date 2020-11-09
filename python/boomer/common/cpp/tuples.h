@@ -9,6 +9,8 @@
 #include "types.h"
 #include <limits>
 
+// Forward declarations
+class BinaryDokVector;
 
 /**
  * A tuple that consists of an index and a value.
@@ -28,4 +30,5 @@ struct Bin {
     uint32 numExamples;
     float32 minValue;
     float32 maxValue;
+    BinaryDokVector exampleSet;
 };
