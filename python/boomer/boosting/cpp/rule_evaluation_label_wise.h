@@ -38,7 +38,7 @@ namespace boosting {
              *                          predicted scores and quality scores
              */
             virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const float64* sumsOfGradients, const float64* sumsOfHessians) = 0;
+                const DenseFloat64Vector& sumsOfGradients, const DenseFloat64Vector& sumsOfHessians) = 0;
 
     };
 
