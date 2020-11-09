@@ -310,13 +310,15 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         DenseFloat64Matrix* currentScoresM_;
 
+        DenseFloat64Vector totalSumsOfGradientsV_;
+
+        DenseFloat64Vector totalSumsOfHessiansV_;
+
         // TODO Remove
         float64* gradients_;
         float64* hessians_;
         float64* currentScores_;
-
         float64* totalSumsOfGradients_;
-
         float64* totalSumsOfHessians_;
 
     public:
@@ -348,35 +350,26 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             : AbstractExampleWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                             ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
-              gradientsM_(gradients), hessiansM_(hessians), currentScoresM_(currentScores) {
+              gradientsM_(gradients), hessiansM_(hessians), currentScoresM_(currentScores),
+              totalSumsOfGradientsV_(labelMatrixPtr->getNumLabels()),
+              totalSumsOfHessiansV_(triangularNumber(labelMatrixPtr->getNumLabels())) {
             // TODO Remove
             gradients_ = gradientsM_->begin();
             hessians_ = hessiansM_->begin();
             currentScores_ = currentScoresM_->begin();
-
-            // The number of labels
-            uint32 numLabels = this->getNumLabels();
-            // The number of hessians
-            uint32 numHessians = triangularNumber(numLabels);
-            // An array that stores the column-wise sums of the matrix of gradients
-            totalSumsOfGradients_ = (float64*) malloc(numLabels * sizeof(float64));
-            // An array that stores the column-wise sums of the matrix of Hessians
-            totalSumsOfHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+            totalSumsOfGradients_ = totalSumsOfGradientsV_.begin();
+            totalSumsOfHessians_ = totalSumsOfHessiansV_.begin();
         }
 
         ~DenseExampleWiseStatistics() {
             delete gradients_;
             delete hessians_;
             delete currentScores_;
-            free(totalSumsOfGradients_);
-            free(totalSumsOfHessians_);
         }
 
         void resetCoveredStatistics() override {
-            uint32 numLabels = this->getNumLabels();
-            setToZeros(totalSumsOfGradients_, numLabels);
-            uint32 numHessians = triangularNumber(numLabels);
-            setToZeros(totalSumsOfHessians_, numHessians);
+            totalSumsOfGradientsV_.setAllToZero();
+            totalSumsOfHessiansV_.setAllToZero();
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
