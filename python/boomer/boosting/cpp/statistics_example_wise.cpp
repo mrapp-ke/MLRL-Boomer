@@ -1,5 +1,6 @@
 #include "statistics_example_wise.h"
 #include "../../common/cpp/arrays.h"
+#include "../../common/cpp/data_numeric.h"
 #include "linalg.h"
 #include <cstdlib>
 
@@ -246,10 +247,15 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 const DenseExampleWiseStatistics& statistics_;
 
+                // TODO Remove
                 uint32 numBins_;
 
-                float64* gradients_;
+                DenseFloat64Matrix* gradientsM_;
 
+                DenseFloat64Matrix* hessiansM_;
+
+                // TODO Remove
+                float64* gradients_;
                 float64* hessians_;
 
             public:
@@ -260,11 +266,12 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
              * @param numBins       The number of bins, the histogram should consist of
              */
             HistogramBuilder(const DenseExampleWiseStatistics& statistics, uint32 numBins)
-                : statistics_(statistics), numBins_(numBins) {
-                uint32 numGradients = statistics.getNumLabels();
-                uint32 numHessians = triangularNumber(numGradients);
-                gradients_ = (float64*) calloc((numBins_ * numGradients), sizeof(float64));
-                hessians_ = (float64*) calloc((numBins_ * numHessians), sizeof(float64));
+                : statistics_(statistics), numBins_(numBins),
+                  gradientsM_(new DenseFloat64Matrix(numBins, statistics.getNumLabels(), true)),
+                  hessiansM_(new DenseFloat64Matrix(numBins, triangularNumber(statistics.getNumLabels()), true)) {
+                // TODO Remove
+                gradients_ = gradientsM_->begin();
+                hessians_ = hessiansM_->begin();
             }
 
             void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
@@ -286,7 +293,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 return std::make_unique<DenseExampleWiseStatistics>(statistics_.lossFunctionPtr_,
                                                                     statistics_.ruleEvaluationFactoryPtr_,
                                                                     statistics_.lapackPtr_, statistics_.labelMatrixPtr_,
-                                                                    gradients_, hessians_, statistics_.currentScores_);
+                                                                    gradientsM_, hessiansM_, statistics_.currentScoresM_);
             }
 
         };
@@ -297,10 +304,15 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
+        DenseFloat64Matrix* gradientsM_;
+
+        DenseFloat64Matrix* hessiansM_;
+
+        DenseFloat64Matrix* currentScoresM_;
+
+        // TODO Remove
         float64* gradients_;
-
         float64* hessians_;
-
         float64* currentScores_;
 
         float64* totalSumsOfGradients_;
@@ -330,12 +342,18 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         DenseExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                    std::shared_ptr<Lapack> lapackPtr,
-                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
-                                   float64* hessians, float64* currentScores)
+                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                                   DenseFloat64Matrix* gradients, DenseFloat64Matrix* hessians,
+                                   DenseFloat64Matrix* currentScores)
             : AbstractExampleWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                             ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
-              gradients_(gradients), hessians_(hessians), currentScores_(currentScores) {
+              gradientsM_(gradients), hessiansM_(hessians), currentScoresM_(currentScores) {
+            // TODO Remove
+            gradients_ = gradientsM_->begin();
+            hessians_ = hessiansM_->begin();
+            currentScores_ = currentScoresM_->begin();
+
             // The number of labels
             uint32 numLabels = this->getNumLabels();
             // The number of hessians
@@ -347,10 +365,10 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         }
 
         ~DenseExampleWiseStatistics() {
-            free(currentScores_);
-            free(gradients_);
+            delete gradients_;
+            delete hessians_;
+            delete currentScores_;
             free(totalSumsOfGradients_);
-            free(hessians_);
             free(totalSumsOfHessians_);
         }
 
@@ -465,30 +483,19 @@ DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
 }
 
 std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::create() const {
-    // The number of examples
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
-    // The number of labels
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
-    // The number of hessians
     uint32 numHessians = triangularNumber(numLabels);
-    // A matrix that stores the gradients for each example
-    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    // A matrix that stores the Hessians for each example
-    float64* hessians = (float64*) malloc(numExamples * numHessians * sizeof(float64));
-    // A matrix that stores the currently predicted scores for each example and label
-    float64* currentScores = (float64*) malloc(numExamples * numLabels * sizeof(float64));
+    DenseFloat64Matrix* gradients = new DenseFloat64Matrix(numExamples, numLabels);
+    DenseFloat64Matrix* hessians = new DenseFloat64Matrix(numExamples, numHessians);
+    DenseFloat64Matrix* currentScores = new DenseFloat64Matrix(numExamples, numLabels, true);
 
     for (uint32 r = 0; r < numExamples; r++) {
-        uint32 offset = r * numLabels;
-
-        for (uint32 c = 0; c < numLabels; c++) {
-            // Store the score that is initially predicted for the current example and label...
-            currentScores[offset + c] = 0;
-        }
-
-        // Calculate the initial gradients and Hessians for the current example...
-        lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, r, &currentScores[offset], &gradients[offset],
-                                                        &hessians[r * numHessians]);
+        DenseFloat64Vector::const_iterator scoreIterator = currentScores->row_cbegin(r);
+        DenseFloat64Vector::iterator gradientIterator = gradients->row_begin(r);
+        DenseFloat64Vector::iterator hessianIterator = hessians->row_begin(r);
+        lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, r, scoreIterator, gradientIterator,
+                                                        hessianIterator);
     }
 
     return std::make_unique<DenseExampleWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_,
