@@ -18,7 +18,7 @@ void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featur
     //Sorting the array
     featureVector.sortByValues();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
-    uint32 numElementsPerBin = (intp) round((float) length / (float) numBins);
+    uint32 numElementsPerBin = (intp) ceil((float) length / (float) numBins);
     //looping over bins
     uint32 binIndex = 0;  //Has to be initialized for the first iteration
     float32 previousValue = 0.0;  //Has to be initialized for the first iteration
