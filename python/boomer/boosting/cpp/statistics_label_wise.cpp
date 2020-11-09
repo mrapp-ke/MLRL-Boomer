@@ -1,6 +1,5 @@
 #include "statistics_label_wise.h"
 #include "../../common/cpp/data_numeric.h"
-#include <cstdlib>
 
 using namespace boosting;
 
