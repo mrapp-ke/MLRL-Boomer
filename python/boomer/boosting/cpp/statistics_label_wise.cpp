@@ -146,20 +146,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                             tmpHessians_ = new DenseFloat64Vector(numPredictions);
                         }
 
-                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                        DenseFloat64Vector::const_iterator totalSumsOfGradients = totalSumsOfGradients_->cbegin();
-                        DenseFloat64Vector::const_iterator totalSumsOfHessians = totalSumsOfHessians_->cbegin();
-                        DenseFloat64Vector::const_iterator sumsOfGradientsIterator = sumsOfGradients.cbegin();
-                        DenseFloat64Vector::const_iterator sumsOfHessiansIterator = sumsOfHessians.cbegin();
-                        DenseFloat64Vector::iterator tmpGradientsIterator = tmpGradients_->begin();
-                        DenseFloat64Vector::iterator tmpHessiansIterator = tmpHessians_->begin();
-
-                        for (uint32 c = 0; c < numPredictions; c++) {
-                            uint32 l = indexIterator[c];
-                            tmpGradientsIterator[c] = totalSumsOfGradients[l] - sumsOfGradientsIterator[c];
-                            tmpHessiansIterator[c] = totalSumsOfHessians[l] - sumsOfHessiansIterator[c];
-                        }
-
+                        tmpGradients_->difference(totalSumsOfGradients_->cbegin(), totalSumsOfGradients_->cend(),
+                                                  labelIndices_, sumsOfGradients.cbegin(), sumsOfGradients.cend());
+                        tmpHessians_->difference(totalSumsOfHessians_->cbegin(), totalSumsOfHessians_->cend(),
+                                                 labelIndices_, sumsOfHessians.cbegin(), sumsOfHessians.cend());
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpGradients_, *tmpHessians_);
                     }
 
