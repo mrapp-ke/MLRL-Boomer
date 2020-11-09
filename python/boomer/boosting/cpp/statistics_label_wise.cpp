@@ -160,10 +160,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                             tmpHessiansIterator[c] = totalSumsOfHessians[l] - sumsOfHessiansIterator[c];
                         }
 
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_->cbegin(), tmpHessians_->cbegin());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpGradients_, *tmpHessians_);
                     }
 
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients.cbegin(), sumsOfHessians.cbegin());
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients, sumsOfHessians);
                 }
 
         };
