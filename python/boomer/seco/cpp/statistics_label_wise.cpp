@@ -292,8 +292,6 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     float64 labelWeight = uncoveredLabels_[i];
 
                     if (labelWeight > 0) {
-                        uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-
                         // Decrement the total sum of uncovered labels...
                         sumUncoveredLabels_ -= labelWeight;
 
@@ -323,8 +321,6 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     float64 labelWeight = uncoveredLabels_[i];
 
                     if (labelWeight > 0) {
-                        uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, l);
-
                         // Decrement the total sum of uncovered labels...
                         sumUncoveredLabels_ -= labelWeight;
 
