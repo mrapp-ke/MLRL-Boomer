@@ -36,8 +36,7 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
         }
 
         const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, bool uncovered) override {
+                const float64* sumsOfGradients, const float64* sumsOfHessians) override {
             uint32 numPredictions = prediction_.getNumElements();
             LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
             LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
@@ -45,17 +44,9 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
             float64 overallQualityScore = 0;
 
             // For each label, calculate a score to be predicted, as well as a corresponding quality score...
-            typename T::const_iterator indexIterator = labelIndices_.cbegin();
-
             for (uint32 c = 0; c < numPredictions; c++) {
                 float64 sumOfGradients = sumsOfGradients[c];
                 float64 sumOfHessians =  sumsOfHessians[c];
-
-                if (uncovered) {
-                    uint32 l = indexIterator[c];
-                    sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
-                    sumOfHessians = totalSumsOfHessians[l] - sumOfHessians;
-                }
 
                 // Calculate the score to be predicted for the current label...
                 float64 score = sumOfHessians + l2RegularizationWeight_;

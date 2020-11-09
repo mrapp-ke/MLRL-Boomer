@@ -1,5 +1,6 @@
 #include "statistics_label_wise.h"
 #include "../../common/cpp/data_numeric.h"
+#include <cstdlib>
 
 using namespace boosting;
 
@@ -46,6 +47,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 DenseFloat64Vector* totalSumsOfCoverableHessians_;
 
+                float64* tmpGradients_;
+
+                float64* tmpHessians_;
+
             public:
 
                 /**
@@ -69,6 +74,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     accumulatedSumsOfHessians_ = nullptr;
                     totalSumsOfCoverableGradients_ = nullptr;
                     totalSumsOfCoverableHessians_ = nullptr;
+                    tmpGradients_ = nullptr;
+                    tmpHessians_ = nullptr;
                 }
 
                 ~StatisticsSubset() {
@@ -76,6 +83,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     delete accumulatedSumsOfHessians_;
                     delete totalSumsOfCoverableGradients_;
                     delete totalSumsOfCoverableHessians_;
+                    free(tmpGradients_);
+                    free(tmpHessians_);
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
@@ -123,12 +132,34 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                  bool accumulated) override {
-                    DenseFloat64Vector& sumsOfGradients = accumulated ? *accumulatedSumsOfGradients_ : sumsOfGradients_;
-                    DenseFloat64Vector& sumsOfHessians = accumulated ? *accumulatedSumsOfHessians_ : sumsOfHessians_;
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(totalSumsOfGradients_->cbegin(),
-                                                                            sumsOfGradients.begin(),
-                                                                            totalSumsOfHessians_->cbegin(),
-                                                                            sumsOfHessians.begin(), uncovered);
+                    // Initialize temporary vectors, if necessary...
+                    if (tmpGradients_ == nullptr) {
+                        uint32 numPredictions = labelIndices_.getNumElements();
+                        tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
+                        tmpHessians_ = (float64*) malloc(numPredictions * sizeof(float64));
+                    }
+
+                    const float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_->cbegin() : sumsOfGradients_.cbegin();
+                    const float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_->cbegin() : sumsOfHessians_.cbegin();
+
+                    if (uncovered) {
+                        uint32 numPredictions = labelIndices_.getNumElements();
+                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                        const float64* totalSumsOfGradients = totalSumsOfGradients_->cbegin();
+                        const float64* totalSumsOfHessians = totalSumsOfHessians_->cbegin();
+
+
+                        for (uint32 c = 0; c < numPredictions; c++) {
+                            uint32 l = indexIterator[c];
+                            tmpGradients_[c] = totalSumsOfGradients[l] - sumsOfGradients[c];
+                            tmpHessians_[c] = totalSumsOfHessians[l] - sumsOfHessians[c];
+                        }
+
+                        sumsOfGradients = tmpGradients_;
+                        sumsOfHessians = tmpHessians_;
+                    }
+
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients, sumsOfHessians);
                 }
 
         };
