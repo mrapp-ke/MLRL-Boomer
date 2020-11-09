@@ -40,7 +40,8 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
                 float64* sumsOfHessians, bool uncovered) override {
             uint32 numPredictions = prediction_.getNumElements();
             LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
-            LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator = prediction_.quality_scores_begin();
+            LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
+                prediction_.quality_scores_begin();
             float64 overallQualityScore = 0;
 
             // For each label, calculate a score to be predicted, as well as a corresponding quality score...
