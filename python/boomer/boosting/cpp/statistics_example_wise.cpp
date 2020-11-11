@@ -136,37 +136,37 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                     // For each label, subtract the gradient and Hessian of the example at the given index (weighted by
                     // the given weight) from the total sum of gradients and Hessians...
-                    uint32 offset = statisticIndex * numLabels;
+                    DenseExampleWiseStatisticsMatrix::gradient_const_iterator gradientIterator = statistics_.statistics_->gradients_row_cbegin(statisticIndex);
 
                     for (uint32 c = 0; c < numLabels; c++) {
-                        totalSumsOfGradients_[c] -= (weight * statistics_.gradients_[offset + c]);
+                        totalSumsOfGradients_[c] -= (weight * gradientIterator[c]);
                     }
 
-                    offset = statisticIndex * numHessians;
+                    DenseExampleWiseStatisticsMatrix::hessian_const_iterator hessianIterator = statistics_.statistics_->hessians_row_cbegin(statisticIndex);
 
                     for (uint32 c = 0; c < numHessians; c++) {
-                        totalSumsOfHessians_[c] -= (weight * statistics_.hessians_[offset + c]);
+                        totalSumsOfHessians_[c] -= (weight * hessianIterator[c]);
                     }
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
                     // Add the gradients and Hessians of the example at the given index (weighted by the given weight)
                     // to the current sum of gradients and Hessians...
-                    uint32 numLabels = statistics_.getNumLabels();
-                    uint32 offsetGradients = statisticIndex * numLabels;
-                    uint32 offsetHessians = statisticIndex * triangularNumber(numLabels);
                     uint32 numPredictions = labelIndices_.getNumElements();
                     typename T::const_iterator indexIterator = labelIndices_.cbegin();
                     uint32 i = 0;
 
+                    DenseExampleWiseStatisticsMatrix::gradient_const_iterator gradientIterator = statistics_.statistics_->gradients_row_cbegin(statisticIndex);
+                    DenseExampleWiseStatisticsMatrix::hessian_const_iterator hessianIterator = statistics_.statistics_->hessians_row_cbegin(statisticIndex);
+
                     for (uint32 c = 0; c < numPredictions; c++) {
                         uint32 l = indexIterator[c];
-                        sumsOfGradients_[c] += (weight * statistics_.gradients_[offsetGradients + l]);
+                        sumsOfGradients_[c] += (weight * gradientIterator[l]);
                         uint32 offset = triangularNumber(l);
 
                         for (uint32 c2 = 0; c2 < c + 1; c2++) {
                             uint32 l2 = offset + indexIterator[c2];
-                            sumsOfHessians_[i] += (weight * statistics_.hessians_[offsetHessians + l2]);
+                            sumsOfHessians_[i] += (weight * hessianIterator[l2]);
                             i++;
                         }
                     }
@@ -245,13 +245,11 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
             private:
 
-                const DenseExampleWiseStatistics& statistics_;
+                const DenseExampleWiseStatistics& originalStatistics_;
 
                 uint32 numBins_;
 
-                float64* gradients_;
-
-                float64* hessians_;
+                DenseExampleWiseStatisticsMatrix* statistics_;
 
             public:
 
@@ -261,33 +259,37 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
              * @param numBins       The number of bins, the histogram should consist of
              */
             HistogramBuilder(const DenseExampleWiseStatistics& statistics, uint32 numBins)
-                : statistics_(statistics), numBins_(numBins) {
-                uint32 numGradients = statistics.getNumLabels();
-                uint32 numHessians = triangularNumber(numGradients);
-                gradients_ = (float64*) calloc((numBins_ * numGradients), sizeof(float64));
-                hessians_ = (float64*) calloc((numBins_ * numHessians), sizeof(float64));
+                : originalStatistics_(statistics), numBins_(numBins),
+                  statistics_(new DenseExampleWiseStatisticsMatrix(numBins, statistics.getNumLabels(), true)) {
+
             }
 
             void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
-                uint32 numLabels = statistics_.getNumLabels();
+                uint32 numLabels = originalStatistics_.getNumLabels();
+                uint32 numHessians = triangularNumber(numLabels);
                 uint32 index = entry.index;
-                uint32 offset = index * numLabels;
-                uint32 gradientOffset = binIndex * numLabels;
-                uint32 hessianOffset = binIndex * triangularNumber(numLabels);
+
+                DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics_->gradients_row_begin(index);
+                DenseExampleWiseStatisticsMatrix::gradient_const_iterator originalGradientIterator = originalStatistics_.statistics_->gradients_row_cbegin(index);
 
                 for(uint32 c = 0; c < numLabels; c++) {
-                    float64 gradient = statistics_.gradients_[offset + c];
-                    float64 hessian = statistics_.hessians_[offset + c];
-                    gradients_[gradientOffset + c] += gradient;
-                    hessians_[hessianOffset + c] += hessian;
+                    gradientIterator[c] += originalGradientIterator[c];
+                }
+
+                DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics_->hessians_row_begin(index);
+                DenseExampleWiseStatisticsMatrix::hessian_const_iterator originalHessianIterator = originalStatistics_.statistics_->hessians_row_cbegin(index);
+
+                for (uint32 c = 0; c < numHessians; c++) {
+                    hessianIterator[c] += originalHessianIterator[c];
                 }
             }
 
             std::unique_ptr<AbstractStatistics> build() const override {
-                return std::make_unique<DenseExampleWiseStatistics>(statistics_.lossFunctionPtr_,
-                                                                    statistics_.ruleEvaluationFactoryPtr_,
-                                                                    statistics_.lapackPtr_, statistics_.labelMatrixPtr_,
-                                                                    gradients_, hessians_, statistics_.currentScores_);
+                return std::make_unique<DenseExampleWiseStatistics>(originalStatistics_.lossFunctionPtr_,
+                                                                    originalStatistics_.ruleEvaluationFactoryPtr_,
+                                                                    originalStatistics_.lapackPtr_,
+                                                                    originalStatistics_.labelMatrixPtr_, statistics_,
+                                                                    originalStatistics_.currentScores_);
             }
 
         };
@@ -298,9 +300,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-        float64* gradients_;
-
-        float64* hessians_;
+        DenseExampleWiseStatisticsMatrix* statistics_;
 
         DenseNumericMatrix<float64>* currentScores_;
 
@@ -331,12 +331,13 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         DenseExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                    std::shared_ptr<Lapack> lapackPtr,
-                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* gradients,
-                                   float64* hessians, DenseNumericMatrix<float64>* currentScores)
+                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                                   DenseExampleWiseStatisticsMatrix* statistics,
+                                   DenseNumericMatrix<float64>* currentScores)
             : AbstractExampleWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                             ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
-              gradients_(gradients), hessians_(hessians), currentScores_(currentScores) {
+              statistics_(statistics), currentScores_(currentScores) {
             // The number of labels
             uint32 numLabels = this->getNumLabels();
             // The number of hessians
@@ -348,10 +349,9 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         }
 
         ~DenseExampleWiseStatistics() {
+            delete statistics_;
             delete currentScores_;
-            free(gradients_);
             free(totalSumsOfGradients_);
-            free(hessians_);
             free(totalSumsOfHessians_);
         }
 
@@ -365,21 +365,22 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
             uint32 numLabels = this->getNumLabels();
-            uint32 offset = statisticIndex * numLabels;
 
             // Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
             // gradients...
+            DenseExampleWiseStatisticsMatrix::gradient_const_iterator gradientIterator = statistics_->gradients_row_cbegin(statisticIndex);
+
             for (uint32 c = 0; c < numLabels; c++) {
-                totalSumsOfGradients_[c] += (signedWeight * gradients_[offset + c]);
+                totalSumsOfGradients_[c] += (signedWeight * gradientIterator[c]);
             }
 
             uint32 numHessians = triangularNumber(numLabels);
-            offset = statisticIndex * numHessians;
+            DenseExampleWiseStatisticsMatrix::hessian_const_iterator hessianIterator = statistics_->hessians_row_cbegin(statisticIndex);
 
             // Add the Hessians of the example at the given index (weighted by the given weight) to the total sums of
             // Hessians...
             for (uint32 c = 0; c < numHessians; c++) {
-                totalSumsOfHessians_[c] += (signedWeight * hessians_[offset + c]);
+                totalSumsOfHessians_[c] += (signedWeight * hessianIterator[c]);
             }
         }
 
@@ -398,31 +399,27 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         }
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-            uint32 numLabels = this->getNumLabels();
-            uint32 numHessians = triangularNumber(numLabels);
-            uint32 offset = statisticIndex * numLabels;
-
             // Update the scores that are currently predicted for the example at the given index...
             currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                                prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, &gradients_[offset],
-                                               &hessians_[statisticIndex * numHessians]);
+            DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics_->gradients_row_begin(statisticIndex);
+            DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics_->hessians_row_begin(statisticIndex);
+            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, gradientIterator,
+                                               hessianIterator);
         }
 
         void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-            uint32 numLabels = this->getNumLabels();
-            uint32 numHessians = triangularNumber(numLabels);
-            uint32 offset = statisticIndex * numLabels;
-
             // Update the scores that are currently predicted for the example at the given index...
             currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                                prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, &gradients_[offset],
-                                               &hessians_[statisticIndex * numHessians]);
+            DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics_->gradients_row_begin(statisticIndex);
+            DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics_->hessians_row_begin(statisticIndex);
+            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, gradientIterator,
+                                               hessianIterator);
         }
 
         std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override {
@@ -456,17 +453,15 @@ DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
 std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::create() const {
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
-    uint32 numHessians = triangularNumber(numLabels);
-    float64* gradients = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-    float64* hessians = (float64*) malloc(numExamples * numHessians * sizeof(float64));
+    DenseExampleWiseStatisticsMatrix* statistics = new DenseExampleWiseStatisticsMatrix(numExamples, numLabels);
     DenseNumericMatrix<float64>* currentScores = new DenseNumericMatrix<float64>(numExamples, numLabels, true);
 
     for (uint32 r = 0; r < numExamples; r++) {
-        uint32 offset = r * numLabels;
-        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *currentScores, &gradients[offset],
-                                           &hessians[r * numHessians]);
+        DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics->gradients_row_begin(r);
+        DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics->hessians_row_begin(r);
+        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *currentScores, gradientIterator, hessianIterator);
     }
 
     return std::make_unique<DenseExampleWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_,
-                                                        labelMatrixPtr_, gradients, hessians, currentScores);
+                                                        labelMatrixPtr_, statistics, currentScores);
 }
