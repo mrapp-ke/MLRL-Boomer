@@ -48,6 +48,17 @@ namespace boosting {
 
             }
 
+            /**
+             * @param vector A reference to an object of type `DenseLabelWiseStatisticsVector` to be copied
+             */
+            DenseLabelWiseStatisticsVector(const DenseLabelWiseStatisticsVector& vector)
+                : DenseLabelWiseStatisticsVector(vector.numElements_) {
+                for (uint32 i = 0; i < numElements_; i++) {
+                    gradients_[i] = vector.gradients_[i];
+                    hessians_[i] = vector.hessians_[i];
+                }
+            }
+
             ~DenseLabelWiseStatisticsVector() {
                 free(gradients_);
                 free(hessians_);
