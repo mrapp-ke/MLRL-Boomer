@@ -6,7 +6,9 @@ using namespace boosting;
 
 void ExampleWiseLogisticLossImpl::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                                    const DenseNumericMatrix<float64>& predictedScores,
-                                                   float64* gradients, float64* hessians) const {
+                                                   DenseExampleWiseStatisticsMatrix& statistics) const {
+    DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
+    DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
     DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumLabels();
     float64 sumOfExponentials = 1;
@@ -16,7 +18,7 @@ void ExampleWiseLogisticLossImpl::updateStatistics(uint32 exampleIndex, const IR
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 predictedScore = scoreIterator[c];
         float64 exponential = exp(-expectedScore * predictedScore);
-        gradients[c] = exponential;  // Temporarily store the exponential in the existing output array
+        gradientIterator[c] = exponential;  // Temporarily store the exponential in the existing output array
         sumOfExponentials += exponential;
     }
 
@@ -27,9 +29,9 @@ void ExampleWiseLogisticLossImpl::updateStatistics(uint32 exampleIndex, const IR
         uint8 trueLabel = labelMatrix.getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 predictedScore = scoreIterator[c];
-        float64 exponential = gradients[c];
+        float64 exponential = gradientIterator[c];
         float64 tmp = (-expectedScore * exponential) / sumOfExponentials;
-        gradients[c] = tmp;
+        gradientIterator[c] = tmp;
 
         for (uint32 c2 = 0; c2 < c; c2++) {
             trueLabel = labelMatrix.getValue(exampleIndex, c2);
@@ -38,13 +40,13 @@ void ExampleWiseLogisticLossImpl::updateStatistics(uint32 exampleIndex, const IR
             tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
             tmp *= -expectedScore2 * expectedScore;
             tmp /= sumOfExponentialsPow;
-            hessians[i] = tmp;
+            hessianIterator[i] = tmp;
             i++;
         }
 
         tmp = expectedScore * expectedScore * exponential * (sumOfExponentials - exponential);
         tmp /= sumOfExponentialsPow;
-        hessians[i] = tmp;
+        hessianIterator[i] = tmp;
         i++;
     }
 }
