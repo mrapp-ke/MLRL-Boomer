@@ -1,5 +1,6 @@
 #include "statistics_label_wise.h"
 #include "../../common/cpp/data_numeric.h"
+#include "data_label_wise.h"
 
 using namespace boosting;
 
@@ -97,19 +98,21 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                     // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                     // weight) from the total sum of gradients and Hessians...
-                    totalSumsOfCoverableGradients_->subtract(statistics_.gradients_->row_cbegin(statisticIndex),
-                                                             statistics_.gradients_->row_cend(statisticIndex), weight);
-                    totalSumsOfCoverableHessians_->subtract(statistics_.hessians_->row_cbegin(statisticIndex),
-                                                            statistics_.hessians_->row_cend(statisticIndex), weight);
+                    totalSumsOfCoverableGradients_->subtract(
+                        statistics_.statistics_->gradients_row_cbegin(statisticIndex),
+                        statistics_.statistics_->gradients_row_cend(statisticIndex), weight);
+                    totalSumsOfCoverableHessians_->subtract(
+                        statistics_.statistics_->hessians_row_cbegin(statisticIndex),
+                        statistics_.statistics_->hessians_row_cend(statisticIndex), weight);
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    sumsOfGradients_.addToSubset(statistics_.gradients_->row_cbegin(statisticIndex),
-                                                 statistics_.gradients_->row_cend(statisticIndex), labelIndices_,
-                                                 weight);
-                    sumsOfHessians_.addToSubset(statistics_.hessians_->row_cbegin(statisticIndex),
-                                                statistics_.hessians_->row_cend(statisticIndex), labelIndices_,
-                                                weight);
+                    sumsOfGradients_.addToSubset(statistics_.statistics_->gradients_row_cbegin(statisticIndex),
+                                                 statistics_.statistics_->gradients_row_cend(statisticIndex),
+                                                 labelIndices_, weight);
+                    sumsOfHessians_.addToSubset(statistics_.statistics_->hessians_row_cbegin(statisticIndex),
+                                                statistics_.statistics_->hessians_row_cend(statisticIndex),
+                                                labelIndices_, weight);
                 }
 
                 void resetSubset() override {
@@ -165,11 +168,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
             private:
 
-                const DenseLabelWiseStatistics& statistics_;
+                const DenseLabelWiseStatistics& originalStatistics_;
 
-                DenseFloat64Matrix* gradients_;
-
-                DenseFloat64Matrix* hessians_;
+                DenseLabelWiseStatisticsMatrix* statistics_;
 
             public:
 
@@ -179,25 +180,24 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                  * @param numBins       The number of bins, the histogram should consist of
                  */
                 HistogramBuilder(const DenseLabelWiseStatistics& statistics, uint32 numBins)
-                    : statistics_(statistics),
-                      gradients_(new DenseFloat64Matrix(numBins, statistics.getNumLabels(), true)),
-                      hessians_(new DenseFloat64Matrix(numBins, statistics.getNumLabels(), true)) {
+                    : originalStatistics_(statistics),
+                      statistics_(new DenseLabelWiseStatisticsMatrix(numBins, statistics.getNumLabels(), true)) {
 
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
                     uint32 index = entry.index;
-                    gradients_->addToRow(binIndex, statistics_.gradients_->row_cbegin(index),
-                                         statistics_.gradients_->row_cend(index));
-                    hessians_->addToRow(binIndex, statistics_.hessians_->row_cbegin(index),
-                                        statistics_.hessians_->row_cend(index));
+                    statistics_->addToRow(binIndex, originalStatistics_.statistics_->gradients_row_cbegin(index),
+                                          originalStatistics_.statistics_->gradients_row_cend(index),
+                                          originalStatistics_.statistics_->hessians_row_cbegin(index),
+                                          originalStatistics_.statistics_->hessians_row_cend(index));
                 }
 
                 std::unique_ptr<AbstractStatistics> build() const override {
-                    return std::make_unique<DenseLabelWiseStatistics>(statistics_.lossFunctionPtr_,
-                                                                      statistics_.ruleEvaluationFactoryPtr_,
-                                                                      statistics_.labelMatrixPtr_, gradients_,
-                                                                      hessians_, statistics_.currentScores_);
+                    return std::make_unique<DenseLabelWiseStatistics>(originalStatistics_.lossFunctionPtr_,
+                                                                      originalStatistics_.ruleEvaluationFactoryPtr_,
+                                                                      originalStatistics_.labelMatrixPtr_, statistics_,
+                                                                      originalStatistics_.currentScores_);
                 }
 
         };
@@ -207,9 +207,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-        DenseFloat64Matrix* gradients_;
-
-        DenseFloat64Matrix* hessians_;
+        DenseLabelWiseStatisticsMatrix* statistics_;
 
         DenseFloat64Matrix* currentScores_;
 
@@ -224,7 +222,12 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                                                prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians of the example at the given index...
-            lossFunctionPtr_->updateGradientsAndHessians(*gradients_, *hessians_, *currentScores_, *labelMatrixPtr_,
+            lossFunctionPtr_->updateGradientsAndHessians(statistics_->gradients_row_begin(statisticIndex),
+                                                         statistics_->gradients_row_end(statisticIndex),
+                                                         statistics_->hessians_row_begin(statisticIndex),
+                                                         statistics_->hessians_row_end(statisticIndex),
+                                                         currentScores_->row_cbegin(statisticIndex),
+                                                         currentScores_->row_cend(statisticIndex), *labelMatrixPtr_,
                                                          statisticIndex, prediction.indices_cbegin(),
                                                          prediction.indices_cend());
         }
@@ -239,30 +242,26 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
          *                                  the predictions, as well as corresponding quality scores, of rules
          * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
          *                                  provides random access to the labels of the training examples
-         * @param gradients                 A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-         *                                  representing the gradients
-         * @param hessians                  A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
+         * @param statistics                A pointer to an object of type `DenseLabelWiseStatisticsMatrix` that stores
+         *                                  the gradients and Hessians
          *                                  representing the Hessians
-         * @param currentScores             A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-         *                                  representing the currently predicted scores
+         * @param currentScores             A pointer to an object of type `DenseFloat64Vector` that stores the
+         *                                  currently predicted scores
          */
         DenseLabelWiseStatistics(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
                                  std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                  std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                 DenseFloat64Matrix* gradients, DenseFloat64Matrix* hessians,
-                                 DenseFloat64Matrix* currentScores)
+                                 DenseLabelWiseStatisticsMatrix* statistics, DenseFloat64Matrix* currentScores)
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                           ruleEvaluationFactoryPtr),
-              lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), gradients_(gradients),
-              hessians_(hessians), currentScores_(currentScores),
-              totalSumsOfGradients_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())),
+              lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), statistics_(statistics),
+              currentScores_(currentScores), totalSumsOfGradients_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())),
               totalSumsOfHessians_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())) {
 
         }
 
         ~DenseLabelWiseStatistics() {
-            delete gradients_;
-            delete hessians_;
+            delete statistics_;
             delete currentScores_;
         }
 
@@ -273,10 +272,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            totalSumsOfGradients_.add(gradients_->row_cbegin(statisticIndex), gradients_->row_cend(statisticIndex),
-                                      signedWeight);
-            totalSumsOfHessians_.add(hessians_->row_cbegin(statisticIndex), hessians_->row_cend(statisticIndex),
-                                     signedWeight);
+            totalSumsOfGradients_.add(statistics_->gradients_row_cbegin(statisticIndex),
+                                      statistics_->gradients_row_cend(statisticIndex), signedWeight);
+            totalSumsOfHessians_.add(statistics_->hessians_row_cbegin(statisticIndex),
+                                     statistics_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
@@ -331,18 +330,20 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
-    DenseFloat64Matrix* gradients = new DenseFloat64Matrix(numExamples, numLabels);
-    DenseFloat64Matrix* hessians = new DenseFloat64Matrix(numExamples, numLabels);
+    DenseLabelWiseStatisticsMatrix* statistics = new DenseLabelWiseStatisticsMatrix(numExamples, numLabels);
     DenseFloat64Matrix* currentScores = new DenseFloat64Matrix(numExamples, numLabels, true);
     FullIndexVector labelIndices(numLabels);
     FullIndexVector::const_iterator labelIndicesBegin = labelIndices.cbegin();
     FullIndexVector::const_iterator labelIndicesEnd = labelIndices.cend();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        lossFunctionPtr_->updateGradientsAndHessians(*gradients, *hessians, *currentScores, *labelMatrixPtr_, r,
-                                                     labelIndicesBegin, labelIndicesEnd);
+        lossFunctionPtr_->updateGradientsAndHessians(statistics->gradients_row_begin(r),
+                                                     statistics->gradients_row_end(r),
+                                                     statistics->hessians_row_begin(r), statistics->hessians_row_end(r),
+                                                     currentScores->row_cbegin(r), currentScores->row_cend(r),
+                                                     *labelMatrixPtr_, r, labelIndicesBegin, labelIndicesEnd);
     }
 
     return std::make_unique<DenseLabelWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_,
-                                                      gradients, hessians, currentScores);
+                                                      statistics, currentScores);
 }

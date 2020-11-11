@@ -39,18 +39,24 @@ namespace boosting {
              * Calculates the gradients and Hessians of the example at a specific index and the labels, whose indices
              * are provided by a `FullIndexVector`, and updates the gradient and Hessian matrix accordingly.
              *
-             * @param gradients         A reference to an object of type `DenseMatrix` that stores the gradients
-             * @param hessians          A reference to an object of type `DenseMatrix` that stores the Hessians
-             * @param predictedScores   A reference to an object of type `DenseMatrix` that stores the scores that are
-             *                          currently predicted
+             * @param gradientsBegin    TODO
+             * @param gradientsEnd      TODO
+             * @param hessiansBegin     TODO
+             * @param hessiansEnd       TODO
+             * @param scoresBegin       TODO
+             * @param scoresEnd         TODO
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
              * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
              */
-            void updateGradientsAndHessians(DenseMatrix<float64>& gradients, DenseMatrix<float64>& hessians,
-                                            const DenseMatrix<float64>& predictedScores,
+            void updateGradientsAndHessians(DenseVector<float64>::iterator gradientsBegin,
+                                            DenseVector<float64>::iterator gradientsEnd,
+                                            DenseVector<float64>::iterator hessiansBegin,
+                                            DenseVector<float64>::iterator hessiansEnd,
+                                            DenseVector<float64>::const_iterator scoresBegin,
+                                            DenseVector<float64>::const_iterator scoresEnd,
                                             const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                             FullIndexVector::const_iterator labelIndicesBegin,
                                             FullIndexVector::const_iterator labelIndicesEnd) const;
@@ -59,9 +65,12 @@ namespace boosting {
              * Calculates the gradients and Hessians of the example at a specific index and the labels, whose indices
              * are provided by a `PartialIndexVector`, and updates the gradient and Hessian matrix accordingly.
              *
-             * @param gradients         A reference to an object of type `DenseMatrix` that stores the gradients
-             * @param hessians          A reference to an object of type `DenseMatrix` that stores the Hessians
-             * @param predictedScores   A reference to an object of type `DenseMatrix` that stores the scores that are
+             * @param gradientsBegin    TODO
+             * @param gradientsEnd      TODO
+             * @param hessiansBegin     TODO
+             * @param hessiansEnd       TODO
+             * @param scoresBegin       TODO
+             * @param scoresEnd         TODO
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
              *                          currently predicted
@@ -69,8 +78,12 @@ namespace boosting {
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
              */
-            void updateGradientsAndHessians(DenseMatrix<float64>& gradients, DenseMatrix<float64>& hessians,
-                                            const DenseMatrix<float64>& predictedScores,
+            void updateGradientsAndHessians(DenseVector<float64>::iterator gradientsBegin,
+                                            DenseVector<float64>::iterator gradientsEnd,
+                                            DenseVector<float64>::iterator hessiansBegin,
+                                            DenseVector<float64>::iterator hessiansEnd,
+                                            DenseVector<float64>::const_iterator scoresBegin,
+                                            DenseVector<float64>::const_iterator scoresEnd,
                                             const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                             PartialIndexVector::const_iterator labelIndicesBegin,
                                             PartialIndexVector::const_iterator labelIndicesEnd) const;
