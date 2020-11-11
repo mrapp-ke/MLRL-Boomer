@@ -255,9 +255,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
             totalSumsOfStatistics_.add(statistics_->gradients_row_cbegin(statisticIndex),
-                                      statistics_->gradients_row_cend(statisticIndex),
-                                      statistics_->hessians_row_cbegin(statisticIndex),
-                                      statistics_->hessians_row_cend(statisticIndex), signedWeight);
+                                       statistics_->gradients_row_cend(statisticIndex),
+                                       statistics_->hessians_row_cbegin(statisticIndex),
+                                       statistics_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
