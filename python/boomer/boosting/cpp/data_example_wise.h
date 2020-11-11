@@ -23,6 +23,167 @@ namespace boosting {
     }
 
     /**
+     * An one-dimensional vector that stores gradients and Hessians in C-contiguous arrays.
+     */
+    class DenseExampleWiseStatisticsVector {
+
+        private:
+
+            uint32 numElements_;
+
+            uint32 numHessians_;
+
+            float64* gradients_;
+
+            float64* hessians_;
+
+        public:
+
+            /**
+             * @param numElements The number of gradients and Hessians in the vector
+             */
+            DenseExampleWiseStatisticsVector(uint32 numElements)
+                : DenseExampleWiseStatisticsVector(numElements, false) {
+
+            }
+
+            /**
+             * @param numElements The number of gradients in the vector
+             * @param True, if all gradients and Hessians in the vector should be initialized with zero, false otherwise
+             */
+            DenseExampleWiseStatisticsVector(uint32 numElements, bool init)
+                : numElements_(numElements), numHessians_(triangularNumber(numElements)),
+                  gradients_((float64*) (init ? calloc(numElements, sizeof(float64))
+                                              : malloc(numElements * sizeof(float64)))),
+                  hessians_((float64*) (init ? calloc(numHessians_, sizeof(float64))
+                                             : malloc(numHessians_ * sizeof(float64)))) {
+
+            }
+
+            /**
+             * @param vector A reference to an object of type `DenseExampleWiseStatisticsVector` to be copied
+             */
+            DenseExampleWiseStatisticsVector(const DenseExampleWiseStatisticsVector& vector)
+                : DenseExampleWiseStatisticsVector(vector.numElements_) {
+                for (uint32 i = 0; i < numElements_; i++) {
+                    gradients_[i] = vector.gradients_[i];
+                }
+
+                for (uint32 i = 0; i < numHessians_; i++) {
+                    hessians_[i] = vector.hessians_[i];
+                }
+            }
+
+            ~DenseExampleWiseStatisticsVector() {
+                free(gradients_);
+                free(hessians_);
+            }
+
+            typedef float64* gradient_iterator;
+
+            typedef const float64* gradient_const_iterator;
+
+            typedef float64* hessian_iterator;
+
+            typedef const float64* hessian_const_iterator;
+
+            /**
+             * Returns a `gradient_iterator` to the beginning of the gradients.
+             *
+             * @return A `gradient_iterator` to the beginning
+             */
+            gradient_iterator gradients_begin() {
+                return gradients_;
+            }
+
+            /**
+             * Returns a `gradient_iterator` to the end of the gradients.
+             *
+             * @return A `gradient_iterator` to the end
+             */
+            gradient_iterator gradients_end() {
+                return &gradients_[numElements_];
+            }
+
+            /**
+             * Returns a `gradient_const_iterator` to the beginning of the gradients.
+             *
+             * @return A `gradient_const_iterator` to the beginning
+             */
+            gradient_const_iterator gradients_cbegin() const {
+                return gradients_;
+            }
+
+            /**
+             * Returns a `gradient_const_iterator` to the end of the gradients.
+             *
+             * @return A `gradient_const_iterator` to the end
+             */
+            gradient_const_iterator gradients_cend() const {
+                return &gradients_[numElements_];
+            }
+
+            /**
+             * Returns a `hessian_iterator` to the beginning of the Hessians.
+             *
+             * @return A `hessian_iterator` to the beginning
+             */
+            hessian_iterator hessians_begin() {
+                return hessians_;
+            }
+
+            /**
+             * Returns a `hessian_iterator` to the end of the Hessians.
+             *
+             * @return A `hessian_iterator` to the end
+             */
+            hessian_iterator hessians_end() {
+                return &hessians_[numHessians_];
+            }
+
+            /**
+             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
+             *
+             * @return A `hessian_const_iterator` to the beginning
+             */
+            hessian_const_iterator hessians_cbegin() const {
+                return hessians_;
+            }
+
+            /**
+             * Returns a `hessian_const_iterator` to the end of the Hessians.
+             *
+             * @return A `hessian_const_iterator` to the end
+             */
+            hessian_const_iterator hessians_cend() const {
+                return &hessians_[numHessians_];
+            }
+
+            /**
+             * Returns the number of gradients and Hessians in the vector.
+             *
+             * @return The number of gradients and Hessians in the vector
+             */
+            uint32 getNumElements() const {
+                return numElements_;
+            }
+
+            /**
+             * Sets all gradients and Hessians in the vector to zero.
+             */
+            void setAllToZero() {
+                for (uint32 i = 0; i < numElements_; i++) {
+                    gradients_[i] = 0;
+                }
+
+                for (uint32 i = 0; i< numHessians_; i++) {
+                    hessians_[i] = 0;
+                }
+            }
+
+    };
+
+    /**
      * A two-dimensional matrix that stores gradients and Hessians in C-contiguous arrays.
      */
     class DenseExampleWiseStatisticsMatrix {
