@@ -131,16 +131,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                                                    sumsOfStatistics.gradients_cend(),
                                                    sumsOfStatistics.hessians_cbegin(),
                                                    sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpStatistics_->gradients_cbegin(),
-                                                                                tmpStatistics_->gradients_cend(),
-                                                                                tmpStatistics_->hessians_cbegin(),
-                                                                                tmpStatistics_->hessians_cend());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpStatistics_);
                     }
 
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics.gradients_cbegin(),
-                                                                            sumsOfStatistics.gradients_cend(),
-                                                                            sumsOfStatistics.hessians_cbegin(),
-                                                                            sumsOfStatistics.hessians_cend());
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
                 }
 
         };

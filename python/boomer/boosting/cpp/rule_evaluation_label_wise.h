@@ -8,6 +8,7 @@
 
 #include "../../common/cpp/rule_evaluation.h"
 #include "../../common/cpp/indices.h"
+#include "data_label_wise.h"
 #include <memory>
 
 
@@ -29,18 +30,13 @@ namespace boosting {
              * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
              * scores are stored in a given object of type `LabelWiseEvaluatedPrediction`.
              *
-             * @param gradientsBegin    A `DenseVector::const_iterator` to the beginning of the gradients
-             * @param gradientsEnd      A `DenseVector::const_iterator` to the end of the gradients
-             * @param hessiansBegin     A `DenseVector::const_iterator` to the beginning of the Hessians
-             * @param hessiansEnd       A `DenseVector::const_iterator` to the end of the Hessians
-             * @return                  A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
-             *                          predicted scores and quality scores
+             * @param statistics    A reference to an object of type `DenseLabelWiseStatisticsVector` that stores the
+             *                      gradients and Hessians
+             * @return              A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
+             *                      predicted scores and quality scores
              */
             virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                DenseVector<float64>::const_iterator gradientsBegin,
-                DenseVector<float64>::const_iterator gradientsEnd,
-                DenseVector<float64>::const_iterator hessiansBegin,
-                DenseVector<float64>::const_iterator hessiansEnd) = 0;
+                const DenseLabelWiseStatisticsVector& statistics) = 0;
 
     };
 
