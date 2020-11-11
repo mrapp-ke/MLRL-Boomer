@@ -57,7 +57,7 @@ namespace boosting {
              *                  otherwise
              */
             DenseExampleWiseStatisticsMatrix(uint32 numRows, uint32 numCols, bool init)
-                : numRows_(numRows), numCols_(numCols), numHessians_(triangularNumber(numCols))
+                : numRows_(numRows), numCols_(numCols), numHessians_(triangularNumber(numCols)),
                   gradients_((float64*) (init ? calloc(numRows * numCols, sizeof(float64))
                                               : malloc(numRows * numCols * sizeof(float64)))),
                   hessians_((float64*) (init ? calloc(numRows * numHessians_, sizeof(float64))
@@ -65,7 +65,7 @@ namespace boosting {
 
             }
             
-            ~DenseLabelWiseStatisticsMatrix() {
+            ~DenseExampleWiseStatisticsMatrix() {
                 free(gradients_);
                 free(hessians_);
             }
