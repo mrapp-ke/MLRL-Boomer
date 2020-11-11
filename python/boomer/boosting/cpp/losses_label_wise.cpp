@@ -4,13 +4,13 @@
 using namespace boosting;
 
 
-void AbstractLabelWiseLoss::updateGradientsAndHessians(DenseVector<float64>::iterator gradientsBegin,
+void AbstractLabelWiseLoss::updateGradientsAndHessians(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                       DenseVector<float64>::iterator gradientsBegin,
                                                        DenseVector<float64>::iterator gradientsEnd,
                                                        DenseVector<float64>::iterator hessiansBegin,
                                                        DenseVector<float64>::iterator hessiansEnd,
                                                        DenseVector<float64>::const_iterator scoresBegin,
                                                        DenseVector<float64>::const_iterator scoresEnd,
-                                                       const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                                        const FullIndexVector::const_iterator labelIndicesBegin,
                                                        const FullIndexVector::const_iterator labelIndicesEnd) const {
     uint32 numLabels = labelMatrix.getNumLabels();
@@ -22,13 +22,13 @@ void AbstractLabelWiseLoss::updateGradientsAndHessians(DenseVector<float64>::ite
     }
 }
 
-void AbstractLabelWiseLoss::updateGradientsAndHessians(DenseVector<float64>::iterator gradientsBegin,
+void AbstractLabelWiseLoss::updateGradientsAndHessians(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                       DenseVector<float64>::iterator gradientsBegin,
                                                        DenseVector<float64>::iterator gradientsEnd,
                                                        DenseVector<float64>::iterator hessiansBegin,
                                                        DenseVector<float64>::iterator hessiansEnd,
                                                        DenseVector<float64>::const_iterator scoresBegin,
                                                        DenseVector<float64>::const_iterator scoresEnd,
-                                                       const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
                                                        const PartialIndexVector::const_iterator labelIndicesBegin,
                                                        const PartialIndexVector::const_iterator labelIndicesEnd) const {
     for (auto indexIterator = labelIndicesBegin; indexIterator != labelIndicesEnd; indexIterator++) {
