@@ -4,10 +4,9 @@
 using namespace boosting;
 
 
-void ExampleWiseLogisticLossImpl::updateGradientsAndHessians(uint32 exampleIndex,
-                                                             const IRandomAccessLabelMatrix& labelMatrix,
-                                                             const DenseNumericMatrix<float64>& predictedScores,
-                                                             float64* gradients, float64* hessians) const {
+void ExampleWiseLogisticLossImpl::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                   const DenseNumericMatrix<float64>& predictedScores,
+                                                   float64* gradients, float64* hessians) const {
     DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumLabels();
     float64 sumOfExponentials = 1;
