@@ -171,10 +171,8 @@ namespace boosting {
              * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
              * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
              */
-            void add(DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsBegin,
-                     DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsEnd,
-                     DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansBegin,
-                     DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansEnd) {
+            void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
                 for (uint32 i = 0; i < numElements_; i++) {
                     gradients_[i] += gradientsBegin[i];
                     hessians_[i] += hessiansBegin[i];
@@ -191,10 +189,8 @@ namespace boosting {
              * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
              * @param weight            The weight, the gradients and Hessians should be multiplied by
              */
-            void add(DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsBegin,
-                     DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsEnd,
-                     DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansBegin,
-                     DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansEnd, float64 weight) {
+            void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight) {
                 for (uint32 i = 0; i < numElements_; i++) {
                     gradients_[i] += (gradientsBegin[i] * weight);
                     hessians_[i] += (hessiansBegin[i] * weight);
@@ -211,10 +207,8 @@ namespace boosting {
              * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
              * @param weight            The weight, the gradients and Hessians should be multiplied by
              */
-            void subtract(DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsBegin,
-                          DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsEnd,
-                          DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansBegin,
-                          DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansEnd, float64 weight) {
+            void subtract(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight) {
                 for (uint32 i = 0; i < numElements_; i++) {
                     gradients_[i] -= (gradientsBegin[i] * weight);
                     hessians_[i] -= (hessiansBegin[i] * weight);
@@ -232,10 +226,8 @@ namespace boosting {
              * @param indices           A reference to a `FullIndexVector' that provides access to the indices
              * @param weight            The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsBegin,
-                             DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsEnd,
-                             DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansBegin,
-                             DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansEnd,
+            void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                             hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
                              const FullIndexVector& indices, float64 weight) {
                 for (uint32 i = 0; i < numElements_; i++) {
                     gradients_[i] += (gradientsBegin[i] * weight);
@@ -255,10 +247,8 @@ namespace boosting {
              * @param indices           A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight            The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsBegin,
-                             DenseLabelWiseStatisticsVector::gradient_const_iterator gradientsEnd,
-                             DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansBegin,
-                             DenseLabelWiseStatisticsVector::hessian_const_iterator hessiansEnd,
+            void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                             hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
                              const PartialIndexVector& indices, float64 weight) {
                 PartialIndexVector::const_iterator indexIterator = indices.cbegin();
 
@@ -282,14 +272,10 @@ namespace boosting {
              * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
              * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
              */
-            void difference(DenseLabelWiseStatisticsVector::gradient_const_iterator firstGradientsBegin,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator firstGradientsEnd,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator firstHessiansBegin,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator firstHessiansEnd,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator secondGradientsBegin,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator secondGradientsEnd,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator secondHessiansBegin,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator secondHessiansEnd) {
+            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
+                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
+                            gradient_const_iterator secondGradientsBegin, gradient_const_iterator secondGradientsEnd,
+                            hessian_const_iterator secondHessiansBegin, hessian_const_iterator secondHessiansEnd) {
                 for (uint32 i = 0; i < numElements_; i++) {
                     gradients_[i] = firstGradientsBegin[i] - secondGradientsBegin[i];
                     hessians_[i] = firstHessiansBegin[i] - secondHessiansBegin[i];
@@ -312,15 +298,11 @@ namespace boosting {
              * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
              * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
              */
-            void difference(DenseLabelWiseStatisticsVector::gradient_const_iterator firstGradientsBegin,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator firstGradientsEnd,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator firstHessiansBegin,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator firstHessiansEnd,
-                            const FullIndexVector& firstIndices,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator secondGradientsBegin,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator secondGradientsEnd,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator secondHessiansBegin,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator secondHessiansEnd) {
+            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
+                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
+                            const FullIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
+                            gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
+                            hessian_const_iterator secondHessiansEnd) {
                 for (uint32 i = 0; i < numElements_; i++) {
                     gradients_[i] = firstGradientsBegin[i] - secondGradientsBegin[i];
                     hessians_[i] = firstHessiansBegin[i] - secondHessiansBegin[i];
@@ -343,15 +325,11 @@ namespace boosting {
              * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
              * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
              */
-            void difference(DenseLabelWiseStatisticsVector::gradient_const_iterator firstGradientsBegin,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator firstGradientsEnd,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator firstHessiansBegin,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator firstHessiansEnd,
-                            const PartialIndexVector& firstIndices,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator secondGradientsBegin,
-                            DenseLabelWiseStatisticsVector::gradient_const_iterator secondGradientsEnd,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator secondHessiansBegin,
-                            DenseLabelWiseStatisticsVector::hessian_const_iterator secondHessiansEnd) {
+            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
+                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
+                            const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
+                            gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
+                            hessian_const_iterator secondHessiansEnd) {
                 PartialIndexVector::const_iterator firstIndexIterator = firstIndices.cbegin();
 
                 for (uint32 i = 0; i < numElements_; i++) {
