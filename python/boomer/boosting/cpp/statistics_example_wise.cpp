@@ -410,9 +410,8 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             }
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
-                                                            &gradients_[offset],
-                                                            &hessians_[statisticIndex * numHessians]);
+            lossFunctionPtr_->updateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
+                                                         &gradients_[offset], &hessians_[statisticIndex * numHessians]);
         }
 
         void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
@@ -431,9 +430,8 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             }
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
-                                                            &gradients_[offset],
-                                                            &hessians_[statisticIndex * numHessians]);
+            lossFunctionPtr_->updateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
+                                                         &gradients_[offset], &hessians_[statisticIndex * numHessians]);
         }
 
         std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override {
@@ -487,8 +485,8 @@ std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactory
         }
 
         // Calculate the initial gradients and Hessians for the current example...
-        lossFunctionPtr_->calculateGradientsAndHessians(*labelMatrixPtr_, r, &currentScores[offset], &gradients[offset],
-                                                        &hessians[r * numHessians]);
+        lossFunctionPtr_->updateGradientsAndHessians(*labelMatrixPtr_, r, &currentScores[offset], &gradients[offset],
+                                                     &hessians[r * numHessians]);
     }
 
     return std::make_unique<DenseExampleWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_,

@@ -35,9 +35,9 @@ namespace boosting {
              *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
              *                          should be written to. May contain arbitrary values
              */
-            virtual void calculateGradientsAndHessians(const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                                       const float64* predictedScores, float64* gradients,
-                                                       float64* hessians) const = 0;
+            virtual void updateGradientsAndHessians(const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
+                                                    const float64* predictedScores, float64* gradients,
+                                                    float64* hessians) const = 0;
 
     };
 
@@ -48,9 +48,9 @@ namespace boosting {
 
         public:
 
-            void calculateGradientsAndHessians(const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                               const float64* predictedScores, float64* gradients,
-                                               float64* hessians) const override;
+            void updateGradientsAndHessians(const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
+                                            const float64* predictedScores, float64* gradients,
+                                            float64* hessians) const override;
 
     };
 
