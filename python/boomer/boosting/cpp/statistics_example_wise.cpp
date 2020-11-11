@@ -1,7 +1,7 @@
 #include "statistics_example_wise.h"
 #include "../../common/cpp/arrays.h"
 #include "data.h"
-#include "linalg.h"
+#include "data_example_wise.h"
 #include <cstdlib>
 
 using namespace boosting;
