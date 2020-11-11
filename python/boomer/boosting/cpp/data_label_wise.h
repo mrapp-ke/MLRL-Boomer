@@ -260,29 +260,6 @@ namespace boosting {
             }
 
             /**
-             * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
-             * and Hessians in two other vectors.
-             *
-             * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
-             * @param firstGradientsEnd     A `gradient_const_iterator` to the end of the first gradients
-             * @param firstHessiansBegin    A `hessian_const_iterator` to the beginning of the first Hessians
-             * @param firstHessiansEnd      A `hessian_const_iterator` to the end of the first Hessians
-             * @param secondGradientsBegin  A `gradient_const_iterator` to the beginning of the second gradients
-             * @param secondGradientsEnd    A `gradient_const_iterator` to the end of the second gradients
-             * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
-             * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
-             */
-            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
-                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
-                            gradient_const_iterator secondGradientsBegin, gradient_const_iterator secondGradientsEnd,
-                            hessian_const_iterator secondHessiansBegin, hessian_const_iterator secondHessiansEnd) {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] = firstGradientsBegin[i] - secondGradientsBegin[i];
-                    hessians_[i] = firstHessiansBegin[i] - secondHessiansBegin[i];
-                }
-            }
-
-            /**
              * Sets the gradients and Hessians in this vector the difference `first - second` between the gradients and
              * Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `FullIndexVector`.
@@ -494,16 +471,6 @@ namespace boosting {
             }
 
             /**
-             * Sets all gradients and Hessians in the matrix to zero.
-             */
-            void setAllToZero() {
-                for (uint32 i = 0; i < numRows_ * numCols_; i++) {
-                    gradients_[i] = 0;
-                    hessians_[i] = 0;
-                }
-            }
-
-            /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix.
              *
              * @param row   The row
@@ -520,60 +487,6 @@ namespace boosting {
                     uint32 index = offset + i;
                     gradients_[index] += gradientsBegin[i];
                     hessians_[index] += hessiansBegin[i];
-                }
-            }
-
-            /**
-             * Adds all gradients and Hessians in a vector to a specific row of this matrix, considering only the
-             * gradients and Hessians in that row that correspond to the positions provided by a `FullIndexVector`.
-             *
-             * @param row               The row
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients in the vector
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients in the vector
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians in the vector
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians in the vector
-             * @param indicesBegin      A `FullIndexVector::const_iterator` to the beginning of the indices
-             * @param indicesEnd        A `FullIndexVector::const_iterator` to the end of the indices
-             */
-            void addToRowFromSubset(uint32 row, gradient_const_iterator gradientsBegin,
-                                    gradient_const_iterator gradientsEnd, hessian_const_iterator hessiansBegin,
-                                    hessian_const_iterator hessiansEnd, FullIndexVector::const_iterator indicesBegin,
-                                    FullIndexVector::const_iterator indicesEnd) {
-                uint32 offset = row * numCols_;
-
-                for (uint32 i = 0; i < numCols_; i++) {
-                    uint32 index = offset + i;
-                    gradients_[index] += gradientsBegin[i];
-                    hessians_[index] += hessiansBegin[i];
-                }
-            }
-
-            /**
-             * Adds all gradients and Hessians in a vector to a specific row of this matrix, considering only the
-             * gradients and Hessians in that row that correspond to the positions provided by a `PartialIndexVector`.
-             *
-             * @param row               The row
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients in the vector
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients in the vector
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians in the vector
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians in the vector
-             * @param indicesBegin      A `PartialIndexVector::const_iterator` to the beginning of the indices
-             * @param indicesEnd        A `PartialIndexVector::const_iterator` to the end of the indices
-             */
-            void addToRowFromSubset(uint32 row, gradient_const_iterator gradientsBegin,
-                                    gradient_const_iterator gradientsEnd, hessian_const_iterator hessiansBegin,
-                                    hessian_const_iterator hessiansEnd, PartialIndexVector::const_iterator indicesBegin,
-                                    PartialIndexVector::const_iterator indicesEnd) {
-                gradient_const_iterator gradientIterator = gradientsBegin;
-                hessian_const_iterator hessianIterator = hessiansBegin;
-                uint32 offset = row * numCols_;
-
-                for (auto indexIterator = indicesBegin; indexIterator != indicesEnd; indexIterator++) {
-                    uint32 index = offset + *indexIterator;
-                    gradients_[index] += *gradientIterator;
-                    hessians_[index] += *hessianIterator;
-                    gradientIterator++;
-                    hessianIterator++;
                 }
             }
 
