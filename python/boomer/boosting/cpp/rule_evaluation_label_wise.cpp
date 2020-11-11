@@ -30,10 +30,9 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
         }
 
         const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                DenseVector<float64>::const_iterator gradientsBegin,
-                DenseVector<float64>::const_iterator gradientsEnd,
-                DenseVector<float64>::const_iterator hessiansBegin,
-                DenseVector<float64>::const_iterator hessiansEnd) override {
+                const DenseLabelWiseStatisticsVector& statistics) override {
+            DenseLabelWiseStatisticsVector::gradient_const_iterator gradientIterator = statistics.gradients_cbegin();
+            DenseLabelWiseStatisticsVector::hessian_const_iterator hessianIterator = statistics.hessians_cbegin();
             uint32 numPredictions = prediction_.getNumElements();
             LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
             LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
@@ -42,8 +41,8 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
             // For each label, calculate a score to be predicted, as well as a corresponding quality score...
             for (uint32 c = 0; c < numPredictions; c++) {
-                float64 sumOfGradients = gradientsBegin[c];
-                float64 sumOfHessians =  hessiansBegin[c];
+                float64 sumOfGradients = gradientIterator[c];
+                float64 sumOfHessians =  hessianIterator[c];
 
                 // Calculate the score to be predicted for the current label...
                 float64 score = sumOfHessians + l2RegularizationWeight_;
