@@ -7,6 +7,7 @@
 
 #include "../../common/cpp/input_data.h"
 #include "data.h"
+#include "data_example_wise.h"
 
 
 namespace boosting {
@@ -30,15 +31,12 @@ namespace boosting {
              *                          access to the labels of the training examples
              * @param predictedScores   A reference to an object of type `DenseNumericMatrix` that stores the currently
              *                          predicted scores
-             * @param gradients         A pointer to an array of type `float64`, shape `(num_labels)`, the gradients
-             *                          that have been calculated should be written to. May contain arbitrary values
-             * @param hessians          A pointer to an array of type `float64`, shape
-             *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
-             *                          should be written to. May contain arbitrary values
+             * @param statistics        A reference to an object of type `DenseExampleWiseStatisticsMatrix` to be
+             *                          updated
              */
             virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                          const DenseNumericMatrix<float64>& predictedScores, float64* gradients,
-                                          float64* hessians) const = 0;
+                                          const DenseNumericMatrix<float64>& predictedScores,
+                                          DenseExampleWiseStatisticsMatrix& statistics) const = 0;
 
     };
 
@@ -50,8 +48,8 @@ namespace boosting {
         public:
 
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                  const DenseNumericMatrix<float64>& predictedScores, float64* gradients,
-                                  float64* hessians) const override;
+                                  const DenseNumericMatrix<float64>& predictedScores,
+                                  DenseExampleWiseStatisticsMatrix& statistics) const override;
 
     };
 
