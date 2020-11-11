@@ -342,26 +342,10 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            uint32 numLabels = this->getNumLabels();
-
-            // Add the gradients of the example at the given index (weighted by the given weight) to the total sums of
-            // gradients...
-            DenseExampleWiseStatisticsMatrix::gradient_const_iterator gradientIterator = statistics_->gradients_row_cbegin(statisticIndex);
-            DenseExampleWiseStatisticsVector::gradient_iterator gradientSumIterator = totalSumsOfStatistics_.gradients_begin();
-
-            for (uint32 c = 0; c < numLabels; c++) {
-                gradientSumIterator[c] += (signedWeight * gradientIterator[c]);
-            }
-
-            uint32 numHessians = triangularNumber(numLabels);
-            DenseExampleWiseStatisticsMatrix::hessian_const_iterator hessianIterator = statistics_->hessians_row_cbegin(statisticIndex);
-            DenseExampleWiseStatisticsVector::hessian_iterator hessianSumIterator = totalSumsOfStatistics_.hessians_begin();
-
-            // Add the Hessians of the example at the given index (weighted by the given weight) to the total sums of
-            // Hessians...
-            for (uint32 c = 0; c < numHessians; c++) {
-                hessianSumIterator[c] += (signedWeight * hessianIterator[c]);
-            }
+            totalSumsOfStatistics_.add(statistics_->gradients_row_cbegin(statisticIndex),
+                                       statistics_->gradients_row_cend(statisticIndex),
+                                       statistics_->hessians_row_cbegin(statisticIndex),
+                                       statistics_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
