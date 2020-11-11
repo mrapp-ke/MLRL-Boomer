@@ -39,13 +39,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 DenseFloat64Vector* accumulatedSumsOfHessians_;
 
-                const DenseFloat64Vector* totalSumsOfGradients_;
+                const DenseLabelWiseStatisticsVector* totalSumsOfStatistics_;
 
-                DenseFloat64Vector* totalSumsOfCoverableGradients_;
-
-                const DenseFloat64Vector* totalSumsOfHessians_;
-
-                DenseFloat64Vector* totalSumsOfCoverableHessians_;
+                DenseLabelWiseStatisticsVector* totalSumsOfCoverableStatistics_;
 
                 DenseFloat64Vector* tmpGradients_;
 
@@ -68,12 +64,10 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                       labelIndices_(labelIndices),
                       sumsOfGradients_(DenseFloat64Vector(labelIndices.getNumElements(), true)),
                       sumsOfHessians_(DenseFloat64Vector(labelIndices.getNumElements(), true)),
-                      totalSumsOfGradients_(&statistics_.totalSumsOfGradients_),
-                      totalSumsOfHessians_(&statistics_.totalSumsOfHessians_) {
+                      totalSumsOfStatistics_(&statistics_.totalSumsOfStatistics_) {
                     accumulatedSumsOfGradients_ = nullptr;
                     accumulatedSumsOfHessians_ = nullptr;
-                    totalSumsOfCoverableGradients_ = nullptr;
-                    totalSumsOfCoverableHessians_ = nullptr;
+                    totalSumsOfCoverableStatistics_ = nullptr;
                     tmpGradients_ = nullptr;
                     tmpHessians_ = nullptr;
                 }
@@ -81,27 +75,23 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 ~StatisticsSubset() {
                     delete accumulatedSumsOfGradients_;
                     delete accumulatedSumsOfHessians_;
-                    delete totalSumsOfCoverableGradients_;
-                    delete totalSumsOfCoverableHessians_;
+                    delete totalSumsOfCoverableStatistics_;
                     delete tmpGradients_;
                     delete tmpHessians_;
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
                     // Create vectors for storing the totals sums of gradients and Hessians, if necessary...
-                    if (totalSumsOfCoverableGradients_ == nullptr) {
-                        totalSumsOfCoverableGradients_ = new DenseFloat64Vector(*totalSumsOfGradients_);
-                        totalSumsOfCoverableHessians_ = new DenseFloat64Vector(*totalSumsOfHessians_);
-                        totalSumsOfGradients_ = totalSumsOfCoverableGradients_;
-                        totalSumsOfHessians_ = totalSumsOfCoverableHessians_;
+                    if (totalSumsOfCoverableStatistics_ == nullptr) {
+                        totalSumsOfCoverableStatistics_ = new DenseLabelWiseStatisticsVector(*totalSumsOfStatistics_);
+                        totalSumsOfStatistics_ = totalSumsOfCoverableStatistics_;
                     }
 
                     // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                     // weight) from the total sum of gradients and Hessians...
-                    totalSumsOfCoverableGradients_->subtract(
+                    totalSumsOfCoverableStatistics_->subtract(
                         statistics_.statistics_->gradients_row_cbegin(statisticIndex),
-                        statistics_.statistics_->gradients_row_cend(statisticIndex), weight);
-                    totalSumsOfCoverableHessians_->subtract(
+                        statistics_.statistics_->gradients_row_cend(statisticIndex),
                         statistics_.statistics_->hessians_row_cbegin(statisticIndex),
                         statistics_.statistics_->hessians_row_cend(statisticIndex), weight);
                 }
@@ -148,10 +138,12 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                             tmpHessians_ = new DenseFloat64Vector(numPredictions);
                         }
 
-                        tmpGradients_->difference(totalSumsOfGradients_->cbegin(), totalSumsOfGradients_->cend(),
-                                                  labelIndices_, sumsOfGradients.cbegin(), sumsOfGradients.cend());
-                        tmpHessians_->difference(totalSumsOfHessians_->cbegin(), totalSumsOfHessians_->cend(),
-                                                 labelIndices_, sumsOfHessians.cbegin(), sumsOfHessians.cend());
+                        tmpGradients_->difference(totalSumsOfStatistics_->gradients_cbegin(),
+                                                  totalSumsOfStatistics_->gradients_cend(), labelIndices_,
+                                                  sumsOfGradients.cbegin(), sumsOfGradients.cend());
+                        tmpHessians_->difference(totalSumsOfStatistics_->hessians_cbegin(),
+                                                 totalSumsOfStatistics_->hessians_cend(), labelIndices_,
+                                                 sumsOfHessians.cbegin(), sumsOfHessians.cend());
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpGradients_, *tmpHessians_);
                     }
 
@@ -211,9 +203,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         DenseFloat64Matrix* currentScores_;
 
-        DenseFloat64Vector totalSumsOfGradients_;
-
-        DenseFloat64Vector totalSumsOfHessians_;
+        DenseLabelWiseStatisticsVector totalSumsOfStatistics_;
 
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -255,8 +245,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                           ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), statistics_(statistics),
-              currentScores_(currentScores), totalSumsOfGradients_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())),
-              totalSumsOfHessians_(DenseFloat64Vector(labelMatrixPtr->getNumLabels())) {
+              currentScores_(currentScores),
+              totalSumsOfStatistics_(DenseLabelWiseStatisticsVector(labelMatrixPtr->getNumLabels())) {
 
         }
 
@@ -266,16 +256,15 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
         }
 
         void resetCoveredStatistics() override {
-            totalSumsOfGradients_.setAllToZero();
-            totalSumsOfHessians_.setAllToZero();
+            totalSumsOfStatistics_.setAllToZero();
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            totalSumsOfGradients_.add(statistics_->gradients_row_cbegin(statisticIndex),
-                                      statistics_->gradients_row_cend(statisticIndex), signedWeight);
-            totalSumsOfHessians_.add(statistics_->hessians_row_cbegin(statisticIndex),
-                                     statistics_->hessians_row_cend(statisticIndex), signedWeight);
+            totalSumsOfStatistics_.add(statistics_->gradients_row_cbegin(statisticIndex),
+                                      statistics_->gradients_row_cend(statisticIndex),
+                                      statistics_->hessians_row_cbegin(statisticIndex),
+                                      statistics_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
