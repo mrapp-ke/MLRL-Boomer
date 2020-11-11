@@ -31,21 +31,15 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 const T& labelIndices_;
 
-                DenseFloat64Vector sumsOfGradients_;
+                DenseLabelWiseStatisticsVector sumsOfStatistics_;
 
-                DenseFloat64Vector sumsOfHessians_;
-
-                DenseFloat64Vector* accumulatedSumsOfGradients_;
-
-                DenseFloat64Vector* accumulatedSumsOfHessians_;
+                DenseLabelWiseStatisticsVector* accumulatedSumsOfStatistics_;
 
                 const DenseLabelWiseStatisticsVector* totalSumsOfStatistics_;
 
                 DenseLabelWiseStatisticsVector* totalSumsOfCoverableStatistics_;
 
-                DenseFloat64Vector* tmpGradients_;
-
-                DenseFloat64Vector* tmpHessians_;
+                DenseLabelWiseStatisticsVector* tmpStatistics_;
 
             public:
 
@@ -62,22 +56,17 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices),
-                      sumsOfGradients_(DenseFloat64Vector(labelIndices.getNumElements(), true)),
-                      sumsOfHessians_(DenseFloat64Vector(labelIndices.getNumElements(), true)),
+                      sumsOfStatistics_(DenseLabelWiseStatisticsVector(labelIndices.getNumElements(), true)),
                       totalSumsOfStatistics_(&statistics_.totalSumsOfStatistics_) {
-                    accumulatedSumsOfGradients_ = nullptr;
-                    accumulatedSumsOfHessians_ = nullptr;
+                    accumulatedSumsOfStatistics_ = nullptr;
                     totalSumsOfCoverableStatistics_ = nullptr;
-                    tmpGradients_ = nullptr;
-                    tmpHessians_ = nullptr;
+                    tmpStatistics_ = nullptr;
                 }
 
                 ~StatisticsSubset() {
-                    delete accumulatedSumsOfGradients_;
-                    delete accumulatedSumsOfHessians_;
+                    delete accumulatedSumsOfStatistics_;
                     delete totalSumsOfCoverableStatistics_;
-                    delete tmpGradients_;
-                    delete tmpHessians_;
+                    delete tmpStatistics_;
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
@@ -97,63 +86,61 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    sumsOfGradients_.addToSubset(statistics_.statistics_->gradients_row_cbegin(statisticIndex),
-                                                 statistics_.statistics_->gradients_row_cend(statisticIndex),
-                                                 labelIndices_, weight);
-                    sumsOfHessians_.addToSubset(statistics_.statistics_->hessians_row_cbegin(statisticIndex),
-                                                statistics_.statistics_->hessians_row_cend(statisticIndex),
-                                                labelIndices_, weight);
+                    sumsOfStatistics_.addToSubset(statistics_.statistics_->gradients_row_cbegin(statisticIndex),
+                                                  statistics_.statistics_->gradients_row_cend(statisticIndex),
+                                                  statistics_.statistics_->hessians_row_cbegin(statisticIndex),
+                                                  statistics_.statistics_->hessians_row_cend(statisticIndex),
+                                                  labelIndices_, weight);
                 }
 
                 void resetSubset() override {
                     uint32 numPredictions = labelIndices_.getNumElements();
 
                     // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
-                    if (accumulatedSumsOfGradients_ == nullptr) {
-                        accumulatedSumsOfGradients_ = new DenseFloat64Vector(numPredictions, true);
-                        accumulatedSumsOfHessians_ = new DenseFloat64Vector(numPredictions, true);
+                    if (accumulatedSumsOfStatistics_ == nullptr) {
+                        accumulatedSumsOfStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions, true);
                     }
 
                     // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums
                     // of gradients and hessians...
-                    accumulatedSumsOfGradients_->add(sumsOfGradients_.cbegin(), sumsOfGradients_.cend());
-                    sumsOfGradients_.setAllToZero();
-                    accumulatedSumsOfHessians_->add(sumsOfHessians_.cbegin(), sumsOfHessians_.cend());
-                    sumsOfHessians_.setAllToZero();
+                    accumulatedSumsOfStatistics_->add(sumsOfStatistics_.gradients_cbegin(),
+                                                      sumsOfStatistics_.gradients_cend(),
+                                                      sumsOfStatistics_.hessians_cbegin(),
+                                                      sumsOfStatistics_.hessians_cend());
+                    sumsOfStatistics_.setAllToZero();
                 }
 
                 const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                  bool accumulated) override {
-                    const DenseFloat64Vector& sumsOfGradients =
-                        accumulated ? *accumulatedSumsOfGradients_ : sumsOfGradients_;
-                    const DenseFloat64Vector& sumsOfHessians =
-                        accumulated ? *accumulatedSumsOfHessians_ : sumsOfHessians_;
+                    const DenseLabelWiseStatisticsVector& sumsOfStatistics =
+                        accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
 
                     if (uncovered) {
                         uint32 numPredictions = labelIndices_.getNumElements();
 
                         // Initialize temporary vectors, if necessary...
-                        if (tmpGradients_ == nullptr) {
-                            tmpGradients_ = new DenseFloat64Vector(numPredictions);
-                            tmpHessians_ = new DenseFloat64Vector(numPredictions);
+                        if (tmpStatistics_ == nullptr) {
+                            tmpStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions);
                         }
 
-                        tmpGradients_->difference(totalSumsOfStatistics_->gradients_cbegin(),
-                                                  totalSumsOfStatistics_->gradients_cend(), labelIndices_,
-                                                  sumsOfGradients.cbegin(), sumsOfGradients.cend());
-                        tmpHessians_->difference(totalSumsOfStatistics_->hessians_cbegin(),
-                                                 totalSumsOfStatistics_->hessians_cend(), labelIndices_,
-                                                 sumsOfHessians.cbegin(), sumsOfHessians.cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_->cbegin(),
-                                                                                tmpGradients_->cend(),
-                                                                                tmpHessians_->cbegin(),
-                                                                                tmpHessians_->cend());
+                        tmpStatistics_->difference(totalSumsOfStatistics_->gradients_cbegin(),
+                                                   totalSumsOfStatistics_->gradients_cend(),
+                                                   totalSumsOfStatistics_->hessians_cbegin(),
+                                                   totalSumsOfStatistics_->hessians_cend(), labelIndices_,
+                                                   sumsOfStatistics.gradients_cbegin(),
+                                                   sumsOfStatistics.gradients_cend(),
+                                                   sumsOfStatistics.hessians_cbegin(),
+                                                   sumsOfStatistics.hessians_cend());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpStatistics_->gradients_cbegin(),
+                                                                                tmpStatistics_->gradients_cend(),
+                                                                                tmpStatistics_->hessians_cbegin(),
+                                                                                tmpStatistics_->hessians_cend());
                     }
 
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients.cbegin(),
-                                                                            sumsOfGradients.cend(),
-                                                                            sumsOfHessians.cbegin(),
-                                                                            sumsOfHessians.cend());
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics.gradients_cbegin(),
+                                                                            sumsOfStatistics.gradients_cend(),
+                                                                            sumsOfStatistics.hessians_cbegin(),
+                                                                            sumsOfStatistics.hessians_cend());
                 }
 
         };
