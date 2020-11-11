@@ -1,5 +1,5 @@
 #include "statistics_label_wise.h"
-#include "../../common/cpp/data_numeric.h"
+#include "data.h"
 #include "data_label_wise.h"
 
 using namespace boosting;
@@ -194,7 +194,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         DenseLabelWiseStatisticsMatrix* statistics_;
 
-        DenseFloat64Matrix* currentScores_;
+        DenseNumericMatrix<float64>* currentScores_;
 
         DenseLabelWiseStatisticsVector totalSumsOfStatistics_;
 
@@ -228,13 +228,13 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
          * @param statistics                A pointer to an object of type `DenseLabelWiseStatisticsMatrix` that stores
          *                                  the gradients and Hessians
          *                                  representing the Hessians
-         * @param currentScores             A pointer to an object of type `DenseFloat64Vector` that stores the
+         * @param currentScores             A pointer to an object of type `DenseNumericMatrix` that stores the
          *                                  currently predicted scores
          */
         DenseLabelWiseStatistics(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
                                  std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                  std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                 DenseLabelWiseStatisticsMatrix* statistics, DenseFloat64Matrix* currentScores)
+                                 DenseLabelWiseStatisticsMatrix* statistics, DenseNumericMatrix<float64>* currentScores)
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                           ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), statistics_(statistics),
@@ -313,7 +313,7 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
     DenseLabelWiseStatisticsMatrix* statistics = new DenseLabelWiseStatisticsMatrix(numExamples, numLabels);
-    DenseFloat64Matrix* currentScores = new DenseFloat64Matrix(numExamples, numLabels, true);
+    DenseNumericMatrix<float64>* currentScores = new DenseNumericMatrix<float64>(numExamples, numLabels, true);
     FullIndexVector labelIndices(numLabels);
     FullIndexVector::const_iterator labelIndicesBegin = labelIndices.cbegin();
     FullIndexVector::const_iterator labelIndicesEnd = labelIndices.cend();
