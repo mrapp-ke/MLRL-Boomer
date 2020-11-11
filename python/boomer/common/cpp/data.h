@@ -265,34 +265,6 @@ class DenseMatrix {
         typedef typename DenseVector<T>::const_iterator const_iterator;
 
         /**
-         * Returns an `iterator` to the beginning of the matrix.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the matrix.
-         *
-         * @return An `iterator` to the end
-         */
-        iterator end();
-
-        /**
-         * Returns a `const_iterator` to the beginning of the matrix.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const;
-
-        /**
-         * Returns a `const_iterator` to the end of the matrix.
-         *
-         * @return A `const_iterator` to the end
-         */
-        const_iterator cend() const;
-
-        /**
          * Returns an `iterator` to the beginning of a specific row.
          *
          * @param row   The row

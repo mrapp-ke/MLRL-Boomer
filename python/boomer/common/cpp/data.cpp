@@ -171,26 +171,6 @@ uint32 DenseMatrix<T>::getNumCols() const {
 }
 
 template<class T>
-typename DenseMatrix<T>::iterator DenseMatrix<T>::begin() {
-    return array_;
-}
-
-template<class T>
-typename DenseMatrix<T>::iterator DenseMatrix<T>::end() {
-    return &array_[numRows_ * numCols_];
-}
-
-template<class T>
-typename DenseMatrix<T>::const_iterator DenseMatrix<T>::cbegin() const {
-    return array_;
-}
-
-template<class T>
-typename DenseMatrix<T>::const_iterator DenseMatrix<T>::cend() const {
-    return &array_[numRows_ * numCols_];
-}
-
-template<class T>
 typename DenseMatrix<T>::iterator DenseMatrix<T>::row_begin(uint32 row) {
     return &array_[row * numCols_];
 }
