@@ -410,7 +410,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             }
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
+            lossFunctionPtr_->updateGradientsAndHessians(statisticIndex, *labelMatrixPtr_, &currentScores_[offset],
                                                          &gradients_[offset], &hessians_[statisticIndex * numHessians]);
         }
 
@@ -430,7 +430,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             }
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateGradientsAndHessians(*labelMatrixPtr_, statisticIndex, &currentScores_[offset],
+            lossFunctionPtr_->updateGradientsAndHessians(statisticIndex, *labelMatrixPtr_,&currentScores_[offset],
                                                          &gradients_[offset], &hessians_[statisticIndex * numHessians]);
         }
 
@@ -485,7 +485,7 @@ std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactory
         }
 
         // Calculate the initial gradients and Hessians for the current example...
-        lossFunctionPtr_->updateGradientsAndHessians(*labelMatrixPtr_, r, &currentScores[offset], &gradients[offset],
+        lossFunctionPtr_->updateGradientsAndHessians(r, *labelMatrixPtr_, &currentScores[offset], &gradients[offset],
                                                      &hessians[r * numHessians]);
     }
 
