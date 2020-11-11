@@ -39,12 +39,12 @@ namespace boosting {
              * Calculates the gradients and Hessians of the example at a specific index and the labels, whose indices
              * are provided by a `FullIndexVector`, and updates the gradient and Hessian matrix accordingly.
              *
-             * @param gradientsBegin    TODO
-             * @param gradientsEnd      TODO
-             * @param hessiansBegin     TODO
-             * @param hessiansEnd       TODO
-             * @param scoresBegin       TODO
-             * @param scoresEnd         TODO
+             * @param gradientsBegin    A `DenseVector::iterator` to the beginning of the gradients
+             * @param gradientsEnd      A `DenseVector::iterator` to the end of the gradients
+             * @param hessiansBegin     A `DenseVector::iterator` to the beginning of the Hessians
+             * @param hessiansEnd       A `DenseVector::iterator` to the end of the Hessians
+             * @param scoresBegin       A `DenseVector::const_iterator` to the beginning of the predicted scores
+             * @param scoresEnd         A `DenseVector::const_iterator` to the end of the predicted scores
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
@@ -65,12 +65,12 @@ namespace boosting {
              * Calculates the gradients and Hessians of the example at a specific index and the labels, whose indices
              * are provided by a `PartialIndexVector`, and updates the gradient and Hessian matrix accordingly.
              *
-             * @param gradientsBegin    TODO
-             * @param gradientsEnd      TODO
-             * @param hessiansBegin     TODO
-             * @param hessiansEnd       TODO
-             * @param scoresBegin       TODO
-             * @param scoresEnd         TODO
+             * @param gradientsBegin    A `DenseVector::iterator` to the beginning of the gradients
+             * @param gradientsEnd      A `DenseVector::iterator` to the end of the gradients
+             * @param hessiansBegin     A `DenseVector::iterator` to the beginning of the Hessians
+             * @param hessiansEnd       A `DenseVector::iterator` to the end of the Hessians
+             * @param scoresBegin       A `DenseVector::const_iterator` to the beginning of the predicted scores
+             * @param scoresEnd         A `DenseVector::const_iterator` to the end of the predicted scores
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
              *                          currently predicted
