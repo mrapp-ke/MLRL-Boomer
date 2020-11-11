@@ -205,14 +205,8 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                                                prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians of the example at the given index...
-            lossFunctionPtr_->updateGradientsAndHessians(statisticIndex, *labelMatrixPtr_,
-                                                         statistics_->gradients_row_begin(statisticIndex),
-                                                         statistics_->gradients_row_end(statisticIndex),
-                                                         statistics_->hessians_row_begin(statisticIndex),
-                                                         statistics_->hessians_row_end(statisticIndex),
-                                                         currentScores_->row_cbegin(statisticIndex),
-                                                         currentScores_->row_cend(statisticIndex),
-                                                         prediction.indices_cbegin(), prediction.indices_cend());
+            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_,
+                                               prediction.indices_cbegin(), prediction.indices_cend(), *statistics_);
         }
 
     public:
@@ -319,11 +313,8 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
     FullIndexVector::const_iterator labelIndicesEnd = labelIndices.cend();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        lossFunctionPtr_->updateGradientsAndHessians(r, *labelMatrixPtr_, statistics->gradients_row_begin(r),
-                                                     statistics->gradients_row_end(r),
-                                                     statistics->hessians_row_begin(r), statistics->hessians_row_end(r),
-                                                     currentScores->row_cbegin(r), currentScores->row_cend(r),
-                                                     labelIndicesBegin, labelIndicesEnd);
+        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *currentScores, labelIndicesBegin, labelIndicesEnd,
+                                           *statistics);
     }
 
     return std::make_unique<DenseLabelWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_,
