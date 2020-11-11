@@ -144,10 +144,16 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                         tmpHessians_->difference(totalSumsOfStatistics_->hessians_cbegin(),
                                                  totalSumsOfStatistics_->hessians_cend(), labelIndices_,
                                                  sumsOfHessians.cbegin(), sumsOfHessians.cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpGradients_, *tmpHessians_);
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_->cbegin(),
+                                                                                tmpGradients_->cend(),
+                                                                                tmpHessians_->cbegin(),
+                                                                                tmpHessians_->cend());
                     }
 
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients, sumsOfHessians);
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients.cbegin(),
+                                                                            sumsOfGradients.cend(),
+                                                                            sumsOfHessians.cbegin(),
+                                                                            sumsOfHessians.cend());
                 }
 
         };
