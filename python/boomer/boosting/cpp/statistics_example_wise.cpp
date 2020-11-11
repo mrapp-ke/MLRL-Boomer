@@ -287,6 +287,16 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         DenseExampleWiseStatisticsVector totalSumsOfStatistics_;
 
+        template<class T>
+        void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
+            // Update the scores that are currently predicted for the example at the given index...
+            currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+                                               prediction.indices_cbegin(), prediction.indices_cend());
+
+            // Update the gradients and Hessians for the example at the given index...
+            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, *statistics_);
+        }
+
     public:
 
         /**
@@ -369,21 +379,11 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
         }
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-            // Update the scores that are currently predicted for the example at the given index...
-            currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
-                                               prediction.indices_cbegin(), prediction.indices_cend());
-
-            // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, *statistics_);
+            this->applyPredictionInternally<FullPrediction>(statisticIndex, prediction);
         }
 
         void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-            // Update the scores that are currently predicted for the example at the given index...
-            currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
-                                               prediction.indices_cbegin(), prediction.indices_cend());
-
-            // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, *statistics_);
+            this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
         }
 
         std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override {
