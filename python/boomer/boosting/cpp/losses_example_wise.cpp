@@ -6,15 +6,16 @@ using namespace boosting;
 
 void ExampleWiseLogisticLossImpl::updateGradientsAndHessians(uint32 exampleIndex,
                                                              const IRandomAccessLabelMatrix& labelMatrix,
-                                                             float64* gradients, float64* hessians,
-                                                             const float64* predictedScores) const {
+                                                             const DenseNumericMatrix<float64>& predictedScores,
+                                                             float64* gradients, float64* hessians) const {
+    DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumLabels();
     float64 sumOfExponentials = 1;
 
     for (uint32 c = 0; c < numLabels; c++) {
         uint8 trueLabel = labelMatrix.getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
-        float64 predictedScore = predictedScores[c];
+        float64 predictedScore = scoreIterator[c];
         float64 exponential = exp(-expectedScore * predictedScore);
         gradients[c] = exponential;  // Temporarily store the exponential in the existing output array
         sumOfExponentials += exponential;
@@ -26,7 +27,7 @@ void ExampleWiseLogisticLossImpl::updateGradientsAndHessians(uint32 exampleIndex
     for (uint32 c = 0; c < numLabels; c++) {
         uint8 trueLabel = labelMatrix.getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
-        float64 predictedScore = predictedScores[c];
+        float64 predictedScore = scoreIterator[c];
         float64 exponential = gradients[c];
         float64 tmp = (-expectedScore * exponential) / sumOfExponentials;
         gradients[c] = tmp;
@@ -34,7 +35,7 @@ void ExampleWiseLogisticLossImpl::updateGradientsAndHessians(uint32 exampleIndex
         for (uint32 c2 = 0; c2 < c; c2++) {
             trueLabel = labelMatrix.getValue(exampleIndex, c2);
             float64 expectedScore2 = trueLabel ? 1 : -1;
-            float64 predictedScore2 = predictedScores[c2];
+            float64 predictedScore2 = scoreIterator[c2];
             tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
             tmp *= -expectedScore2 * expectedScore;
             tmp /= sumOfExponentialsPow;
