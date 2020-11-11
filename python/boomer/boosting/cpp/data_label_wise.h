@@ -441,7 +441,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_iterator` to the beginning of the given row 
              */
-            hessian_iterator Hessians_row_begin(uint32 row) {
+            hessian_iterator hessians_row_begin(uint32 row) {
                 return &hessians_[row * numCols_];
             }
             
@@ -451,7 +451,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_iterator` to the end of the given row 
              */
-            hessian_iterator Hessians_row_end(uint32 row) {
+            hessian_iterator hessians_row_end(uint32 row) {
                 return &hessians_[(row + 1) * numCols_];
             }
             
@@ -461,7 +461,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_const_iterator` to the beginning of the given row 
              */
-            hessian_const_iterator Hessians_row_cbegin(uint32 row) const {
+            hessian_const_iterator hessians_row_cbegin(uint32 row) const {
                 return &hessians_[row * numCols_];
             }
             
@@ -471,7 +471,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_const_iterator` to the end of the given row 
              */
-            hessian_const_iterator Hessians_row_cend(uint32 row) const {
+            hessian_const_iterator hessians_row_cend(uint32 row) const {
                 return &hessians_[(row + 1) * numCols_];
             }
 
