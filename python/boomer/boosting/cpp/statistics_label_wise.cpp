@@ -96,13 +96,13 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 void resetSubset() override {
                     uint32 numPredictions = labelIndices_.getNumElements();
 
-                    // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
+                    // Allocate vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumsOfStatistics_ == nullptr) {
                         accumulatedSumsOfStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions, true);
                     }
 
-                    // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums
-                    // of gradients and hessians...
+                    // Reset the sum of gradients and Hessians to zero and add it to the accumulated sums of gradients
+                    // and hessians...
                     accumulatedSumsOfStatistics_->add(sumsOfStatistics_.gradients_cbegin(),
                                                       sumsOfStatistics_.gradients_cend(),
                                                       sumsOfStatistics_.hessians_cbegin(),
