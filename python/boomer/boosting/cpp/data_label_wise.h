@@ -48,6 +48,11 @@ namespace boosting {
 
             }
 
+            ~DenseLabelWiseStatisticsVector() {
+                free(gradients_);
+                free(hessians_);
+            }
+
             typedef float64* gradient_iterator;
 
             typedef const float64* gradient_const_iterator;
