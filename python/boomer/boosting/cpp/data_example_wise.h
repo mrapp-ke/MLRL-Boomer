@@ -181,6 +181,27 @@ namespace boosting {
                 }
             }
 
+            /**
+             * Adds all gradients and Hessians in another vector to this vector. The gradients and Hessians to be added
+             * are multiplied by a specific weight.
+             *
+             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
+             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
+             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
+             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
+             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             */
+            void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight) {
+                for (uint32 i = 0; i < numElements_; i++) {
+                    gradients_[i] += (gradientsBegin[i] * weight);
+                }
+
+                for (uint32 i = 0; i < numHessians_; i++) {
+                    hessians_[i] += (hessiansBegin[i] * weight);
+                }
+            }
+
     };
 
     /**
