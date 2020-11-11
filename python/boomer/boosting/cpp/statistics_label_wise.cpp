@@ -101,7 +101,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                         accumulatedSumsOfStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions, true);
                     }
 
-                    // Reset the sum of gradients and Hessians to zero and add it to the accumulated sums of gradients
+                    // Reset the sums of gradients and Hessians to zero and add it to the accumulated sums of gradients
                     // and hessians...
                     accumulatedSumsOfStatistics_->add(sumsOfStatistics_.gradients_cbegin(),
                                                       sumsOfStatistics_.gradients_cend(),
