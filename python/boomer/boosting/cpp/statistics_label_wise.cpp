@@ -77,7 +77,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     }
 
                     // Subtract the gradients and Hessians of the example at the given index (weighted by the given
-                    // weight) from the total sum of gradients and Hessians...
+                    // weight) from the total sums of gradients and Hessians...
                     totalSumsOfCoverableStatistics_->subtract(
                         statistics_.statistics_->gradients_row_cbegin(statisticIndex),
                         statistics_.statistics_->gradients_row_cend(statisticIndex),
