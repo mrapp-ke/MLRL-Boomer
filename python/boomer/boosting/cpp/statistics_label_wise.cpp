@@ -7,15 +7,20 @@ using namespace boosting;
 
 /**
  * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
- * applied label-wise using dense data structures.
+ * applied label-wise.
+ *
+ * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
+ * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+ * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
-class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
+template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
+class LabelWiseStatistics : public AbstractLabelWiseStatistics {
 
     private:
 
         /**
          * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
-         * `DenseLabelWiseStatistics`.
+         * `LabelWiseStatistics`.
          *
          * @tparam T The type of the vector that provides access to the indices of the labels that are included in the
          *           subset
@@ -25,26 +30,26 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
             private:
 
-                const DenseLabelWiseStatistics& statistics_;
+                const LabelWiseStatistics& statistics_;
 
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
                 const T& labelIndices_;
 
-                DenseLabelWiseStatisticsVector sumsOfStatistics_;
+                StatisticVector sumsOfStatistics_;
 
-                DenseLabelWiseStatisticsVector* accumulatedSumsOfStatistics_;
+                StatisticVector* accumulatedSumsOfStatistics_;
 
-                const DenseLabelWiseStatisticsVector* totalSumsOfStatistics_;
+                const StatisticVector* totalSumsOfStatistics_;
 
-                DenseLabelWiseStatisticsVector* totalSumsOfCoverableStatistics_;
+                StatisticVector* totalSumsOfCoverableStatistics_;
 
-                DenseLabelWiseStatisticsVector* tmpStatistics_;
+                StatisticVector* tmpStatistics_;
 
             public:
 
                 /**
-                 * @param statistics        A reference to an object of type `DenseLabelWiseStatistics` that stores the
+                 * @param statistics        A reference to an object of type `LabelWiseStatistics` that stores the
                  *                          gradients and Hessians
                  * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                  *                          should be used to calculate the predictions, as well as corresponding
@@ -52,11 +57,11 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                  * @param labelIndices      A reference to an object of template type `T` that provides access to the
                  *                          indices of the labels that are included in the subset
                  */
-                StatisticsSubset(const DenseLabelWiseStatistics& statistics,
+                StatisticsSubset(const LabelWiseStatistics& statistics,
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices),
-                      sumsOfStatistics_(DenseLabelWiseStatisticsVector(labelIndices.getNumElements(), true)),
+                      sumsOfStatistics_(StatisticVector(labelIndices.getNumElements(), true)),
                       totalSumsOfStatistics_(&statistics_.totalSumsOfStatistics_) {
                     accumulatedSumsOfStatistics_ = nullptr;
                     totalSumsOfCoverableStatistics_ = nullptr;
@@ -72,7 +77,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
                     // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                     if (totalSumsOfCoverableStatistics_ == nullptr) {
-                        totalSumsOfCoverableStatistics_ = new DenseLabelWiseStatisticsVector(*totalSumsOfStatistics_);
+                        totalSumsOfCoverableStatistics_ = new StatisticVector(*totalSumsOfStatistics_);
                         totalSumsOfStatistics_ = totalSumsOfCoverableStatistics_;
                     }
 
@@ -98,7 +103,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                     // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumsOfStatistics_ == nullptr) {
-                        accumulatedSumsOfStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions, true);
+                        accumulatedSumsOfStatistics_ = new StatisticVector(numPredictions, true);
                     }
 
                     // Reset the sums of gradients and Hessians to zero and add it to the accumulated sums of gradients
@@ -112,7 +117,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                  bool accumulated) override {
-                    const DenseLabelWiseStatisticsVector& sumsOfStatistics =
+                    const StatisticVector& sumsOfStatistics =
                         accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
 
                     if (uncovered) {
@@ -120,7 +125,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                         // Initialize temporary vector, if necessary...
                         if (tmpStatistics_ == nullptr) {
-                            tmpStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions);
+                            tmpStatistics_ = new StatisticVector(numPredictions);
                         }
 
                         tmpStatistics_->difference(totalSumsOfStatistics_->gradients_cbegin(),
@@ -141,26 +146,26 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         /**
          * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the class
-         * `DenseLabelWiseStatistics`.
+         * `LabelWiseStatistics`.
          */
         class HistogramBuilder : public IHistogramBuilder {
 
             private:
 
-                const DenseLabelWiseStatistics& originalStatistics_;
+                const LabelWiseStatistics& originalStatistics_;
 
-                DenseLabelWiseStatisticsMatrix* statistics_;
+                StatisticMatrix* statistics_;
 
             public:
 
                 /**
-                 * @param statistics    A reference to an object of type `DenseLabelWiseStatistics` that stores the
-                 *                      gradients and Hessians
+                 * @param statistics    A reference to an object of type `LabelWiseStatistics` that stores the gradients
+                 *                      and Hessians
                  * @param numBins       The number of bins, the histogram should consist of
                  */
-                HistogramBuilder(const DenseLabelWiseStatistics& statistics, uint32 numBins)
+                HistogramBuilder(const LabelWiseStatistics& statistics, uint32 numBins)
                     : originalStatistics_(statistics),
-                      statistics_(new DenseLabelWiseStatisticsMatrix(numBins, statistics.getNumLabels(), true)) {
+                      statistics_(new StatisticMatrix(numBins, statistics.getNumLabels(), true)) {
 
                 }
 
@@ -173,10 +178,9 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 }
 
                 std::unique_ptr<AbstractStatistics> build() const override {
-                    return std::make_unique<DenseLabelWiseStatistics>(originalStatistics_.lossFunctionPtr_,
-                                                                      originalStatistics_.ruleEvaluationFactoryPtr_,
-                                                                      originalStatistics_.labelMatrixPtr_, statistics_,
-                                                                      originalStatistics_.currentScores_);
+                    return std::make_unique<LabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
+                        originalStatistics_.lossFunctionPtr_, originalStatistics_.ruleEvaluationFactoryPtr_,
+                        originalStatistics_.labelMatrixPtr_, statistics_, originalStatistics_.currentScores_);
                 }
 
         };
@@ -186,11 +190,11 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-        DenseLabelWiseStatisticsMatrix* statistics_;
+        StatisticMatrix* statistics_;
 
-        DenseNumericMatrix<float64>* currentScores_;
+        ScoreMatrix* currentScores_;
 
-        DenseLabelWiseStatisticsVector totalSumsOfStatistics_;
+        StatisticVector totalSumsOfStatistics_;
 
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -213,25 +217,24 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
          *                                  the predictions, as well as corresponding quality scores, of rules
          * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
          *                                  provides random access to the labels of the training examples
-         * @param statistics                A pointer to an object of type `DenseLabelWiseStatisticsMatrix` that stores
-         *                                  the gradients and Hessians
+         * @param statistics                A pointer to an object of template type `StatisticMatrix` that stores the
+         *                                  gradients and Hessians
          *                                  representing the Hessians
-         * @param currentScores             A pointer to an object of type `DenseNumericMatrix` that stores the
+         * @param currentScores             A pointer to an object of template type `ScoreMatrix` that stores the
          *                                  currently predicted scores
          */
-        DenseLabelWiseStatistics(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
-                                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                 DenseLabelWiseStatisticsMatrix* statistics, DenseNumericMatrix<float64>* currentScores)
+        LabelWiseStatistics(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+                            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, StatisticMatrix* statistics,
+                            ScoreMatrix* currentScores)
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                           ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), statistics_(statistics),
-              currentScores_(currentScores),
-              totalSumsOfStatistics_(DenseLabelWiseStatisticsVector(labelMatrixPtr->getNumLabels())) {
+              currentScores_(currentScores), totalSumsOfStatistics_(StatisticVector(labelMatrixPtr->getNumLabels())) {
 
         }
 
-        ~DenseLabelWiseStatistics() {
+        ~LabelWiseStatistics() {
             delete statistics_;
             delete currentScores_;
         }
@@ -311,6 +314,6 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
                                            *statistics);
     }
 
-    return std::make_unique<DenseLabelWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_,
-                                                      statistics, currentScores);
+    return std::make_unique<LabelWiseStatistics<DenseLabelWiseStatisticsVector, DenseLabelWiseStatisticsMatrix, DenseNumericMatrix<float64>>>(
+        lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, statistics, currentScores);
 }
