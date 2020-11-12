@@ -385,7 +385,7 @@ namespace boosting {
 
             uint32 numRows_;
 
-            uint32 numCols_;
+            uint32 numGradients_;
 
             uint32 numHessians_;
 
@@ -396,24 +396,24 @@ namespace boosting {
         public:
 
             /**
-             * @param numRows   The number of rows in the matrix
-             * @param numCols   The number of columns in the matrix
+             * @param numRows       The number of rows in the matrix
+             * @param numGradients  The number of gradients per row
              */
-            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : DenseExampleWiseStatisticMatrix(numRows, numCols, false) {
+            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
+                : DenseExampleWiseStatisticMatrix(numRows, numGradients, false) {
 
             }
 
             /**
-             * @param numRows   The number of rows in the matrix
-             * @param numCols   The number of columns in the matrix
-             * @param init      True, if all gradients and Hessians in the matrix should be initialized with zero, false
-             *                  otherwise
+             * @param numRows       The number of rows in the matrix
+             * @param numGradients  The number of gradients per row
+             * @param init          True, if all gradients and Hessians in the matrix should be initialized with zero,
+             *                      false otherwise
              */
-            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols, bool init)
-                : numRows_(numRows), numCols_(numCols), numHessians_(triangularNumber(numCols)),
-                  gradients_((float64*) (init ? calloc(numRows * numCols, sizeof(float64))
-                                              : malloc(numRows * numCols * sizeof(float64)))),
+            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients, bool init)
+                : numRows_(numRows), numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
+                  gradients_((float64*) (init ? calloc(numRows * numGradients, sizeof(float64))
+                                              : malloc(numRows * numGradients * sizeof(float64)))),
                   hessians_((float64*) (init ? calloc(numRows * numHessians_, sizeof(float64))
                                              : malloc(numRows * numHessians_ * sizeof(float64)))) {
 
@@ -439,7 +439,7 @@ namespace boosting {
              * @return      A `gradient_iterator` to the beginning of the given row 
              */
             gradient_iterator gradients_row_begin(uint32 row) {
-                return &gradients_[row * numCols_];
+                return &gradients_[row * numGradients_];
             }
             
             /**
@@ -449,7 +449,7 @@ namespace boosting {
              * @return      A `gradient_iterator` to the end of the given row 
              */
             gradient_iterator gradients_row_end(uint32 row) {
-                return &gradients_[(row + 1) * numCols_];
+                return &gradients_[(row + 1) * numGradients_];
             }
             
             /**
@@ -459,7 +459,7 @@ namespace boosting {
              * @return      A `gradient_const_iterator` to the beginning of the given row 
              */
             gradient_const_iterator gradients_row_cbegin(uint32 row) const {
-                return &gradients_[row * numCols_];
+                return &gradients_[row * numGradients_];
             }
             
             /**
@@ -469,7 +469,7 @@ namespace boosting {
              * @return      A `gradient_const_iterator` to the end of the given row 
              */
             gradient_const_iterator gradients_row_cend(uint32 row) const {
-                return &gradients_[(row + 1) * numCols_];   
+                return &gradients_[(row + 1) * numGradients_];
             }
 
             /**
@@ -523,9 +523,9 @@ namespace boosting {
              */
             void addToRow(uint32 row, gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                           hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
-                uint32 offset = row * numCols_;
+                uint32 offset = row * numGradients_;
 
-                for (uint32 i = 0; i < numCols_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[offset + i] += gradientsBegin[i];
                 }
 
