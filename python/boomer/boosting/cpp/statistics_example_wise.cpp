@@ -176,12 +176,10 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                             hessianTmpIterator[c2] = hessianTotalIterator[l2] - hessianSumIterator[c2];
                         }
 
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpStatistics_->gradients_begin(),
-                                                                                tmpStatistics_->hessians_begin());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpStatistics_);
                     }
 
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics.gradients_cbegin(),
-                                                                            sumsOfStatistics.hessians_cbegin());
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
                 }
 
                 const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {

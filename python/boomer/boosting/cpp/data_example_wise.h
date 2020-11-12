@@ -160,6 +160,50 @@ namespace boosting {
             }
 
             /**
+             * Returns a `hessian_iterator` to the beginning of the Hessians on the diagonal that correspond to a
+             * specific row.
+             *
+             * @param row   The row
+             * @return      A `hessian_iterator` to the beginning
+             */
+            hessian_iterator hessians_diagonal_begin(uint32 row) {
+                return &hessians_[triangularNumber(row + 1) - 1];
+            }
+
+            /**
+             * Returns a `hessian_iterator` to the end of the Hessians on the diagonal that correspond to a specific
+             * row.
+             *
+             * @param row   The row
+             * @return      A `hessian_iterator` to the end
+             */
+            hessian_iterator hessians_diagonal_end(uint32 row) {
+                return &hessians_[triangularNumber(row + 1)];
+            }
+
+            /**
+             * Returns a `hessian_const_iterator` to the beginning of the Hessians on the diagonal that correspond to a
+             * specific row.
+             *
+             * @param row   The row
+             * @return      A `hessian_const_iterator` to the beginning
+             */
+            hessian_const_iterator hessians_diagonal_cbegin(uint32 row) const {
+                return &hessians_[triangularNumber(row + 1) - 1];
+            }
+
+            /**
+             * Returns a `hessian_const_iterator` to the end of the Hessians on the diagonal that correspond to a
+             * specific row.
+             *
+             * @param row   The row
+             * @return      A `hessian_const_iterator` to the end
+             */
+            hessian_const_iterator hessians_diagonal_cend(uint32 row) const {
+                return &hessians_[triangularNumber(row + 1)];
+            }
+
+            /**
              * Returns the number of gradients and Hessians in the vector.
              *
              * @return The number of gradients and Hessians in the vector

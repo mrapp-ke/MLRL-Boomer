@@ -8,6 +8,7 @@
 
 #include "../../common/cpp/rule_evaluation.h"
 #include "../../common/cpp/indices.h"
+#include "data_example_wise.h"
 #include "blas.h"
 #include "lapack.h"
 #include <memory>
@@ -31,16 +32,13 @@ namespace boosting {
              * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
              * scores are stored in a given object of type `LabelWiseEvaluatedPrediction`.
              *
-             * @param gradients A pointer to an array of type `float64`, shape `(prediction.numPredictions_),
-             *                  representing the total sums of gradients
-             * @param hessians  A pointer to an array of type `float64`, shape
-             *                  `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)`, representing the
-             *                  sums of Hessians
-             * @param return    A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
-             *                  predicted scores and quality scores
+             * @param statistics    A reference to an object of type `DenseExampleWiseStatisticsVector` that stores the
+             *                      gradients and Hessians
+             * @param return        A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
+             *                      predicted scores and quality scores
              */
-            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(const float64* gradients,
-                                                                                     const float64* hessians) = 0;
+            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+                const DenseExampleWiseStatisticsVector& statistics) = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
