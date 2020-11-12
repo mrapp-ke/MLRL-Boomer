@@ -1,6 +1,6 @@
 /**
- * Provides classes that store the gradients and Hessians, that have been calculated using a label-wise decomposable
- * loss function, in matrices or vectors.
+ * Provides classes that store the gradients and Hessians that have been calculated using a label-wise decomposable
+ * loss function in matrices or vectors.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -12,7 +12,9 @@
 namespace boosting {
 
     /**
-     * An one-dimensional vector that stores gradients and Hessians in C-contiguous arrays.
+     * An one-dimensional vector that stores gradients and Hessians that have been calculated using a label-wise
+     * decomposable loss function in C-contiguous arrays. For each element in the vector a single gradient and Hessian
+     * is stored.
      */
     class DenseLabelWiseStatisticVector {
 
@@ -235,7 +237,9 @@ namespace boosting {
     };
 
     /**
-     * A two-dimensional matrix that stores gradients and Hessians in C-contiguous arrays.
+     * A two-dimensional matrix that stores gradients and Hessians that have been calculated using a label-wise
+     * decomposable loss function in C-contiguous arrays. For each element of a certain row a single gradient and
+     * Hessian is stored.
      */
     class DenseLabelWiseStatisticMatrix {
 
