@@ -41,3 +41,5 @@ void DenseNumericMatrix<T>::addToRowFromSubset(uint32 row, typename DenseVector<
         valueIterator++;
     }
 }
+
+template class DenseNumericMatrix<float64>;
