@@ -260,8 +260,8 @@ namespace boosting {
             }
 
             /**
-             * Sets the gradients and Hessians in this vector the difference `first - second` between the gradients and
-             * Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
+             * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
+             * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `FullIndexVector`.
              *
              * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
@@ -287,8 +287,8 @@ namespace boosting {
             }
 
             /**
-             * Sets the gradients and Hessians in this vector the difference `first - second` between the gradients and
-             * Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
+             * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
+             * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
              * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
