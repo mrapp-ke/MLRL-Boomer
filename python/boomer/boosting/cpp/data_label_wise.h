@@ -473,7 +473,7 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix.
              *
-             * @param row   The row
+             * @param row               The row
              * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients in the vector
              * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients in the vector
              * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians in the vector
