@@ -53,8 +53,9 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             delete labelWisePrediction_;
         }
 
-        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(const float64* gradients,
-                                                                         const float64* hessians) override {
+        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+                const DenseExampleWiseStatisticsVector& statistics) override {
+            DenseExampleWiseStatisticsVector::gradient_const_iterator gradientIterator = statistics.gradients_cbegin();
             uint32 numPredictions = labelIndices_.getNumElements();
 
             if (labelWisePrediction_ == nullptr) {
@@ -68,9 +69,8 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
             // For each label, calculate the score to be predicted, as well as a quality score...
             for (uint32 c = 0; c < numPredictions; c++) {
-                float64 sumOfGradients = gradients[c];
-                uint32 c2 = triangularNumber(c + 1) - 1;
-                float64 sumOfHessians = hessians[c2];
+                float64 sumOfGradients = gradientIterator[c];
+                float64 sumOfHessians = *statistics.hessians_diagonal_cbegin(c);
 
                 // Calculate the score to be predicted for the current label...
                 float64 score = sumOfHessians + l2RegularizationWeight_;
