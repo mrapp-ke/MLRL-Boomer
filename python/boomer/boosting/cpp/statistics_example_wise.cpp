@@ -45,9 +45,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 DenseExampleWiseStatisticsVector* totalSumsOfCoverableStatistics_;
 
-                float64* tmpGradients_;
-
-                float64* tmpHessians_;
+                DenseExampleWiseStatisticsVector* tmpStatistics_;
 
                 int dsysvLwork_;
 
@@ -83,8 +81,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     setToZeros(sumsOfHessians_, numHessians);
                     accumulatedSumsOfHessians_ = nullptr;
                     totalSumsOfCoverableStatistics_ = nullptr;
-                    tmpGradients_ = nullptr;
-                    tmpHessians_ = nullptr;
+                    tmpStatistics_ = nullptr;
                     dsysvTmpArray1_ = nullptr;
                     dsysvTmpArray2_ = nullptr;
                     dsysvTmpArray3_ = nullptr;
@@ -97,8 +94,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     free(sumsOfHessians_);
                     free(accumulatedSumsOfHessians_);
                     delete totalSumsOfCoverableStatistics_;
-                    free(tmpGradients_);
-                    free(tmpHessians_);
+                    delete tmpStatistics_;
                     free(dsysvTmpArray1_);
                     free(dsysvTmpArray2_);
                     free(dsysvTmpArray3_);
@@ -187,27 +183,28 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                     if (uncovered) {
                         uint32 numPredictions = labelIndices_.getNumElements();
-                        uint32 numHessians = triangularNumber(numPredictions);
 
                         // Initialize temporary vector, if necessary...
-                        if (tmpGradients_ == nullptr) {
-                            tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                            tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+                        if (tmpStatistics_ == nullptr) {
+                            tmpStatistics_ = new DenseExampleWiseStatisticsVector(numPredictions);
                         }
 
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                        DenseExampleWiseStatisticsVector::gradient_iterator gradientTmpIterator = tmpStatistics_->gradients_begin();
                         DenseExampleWiseStatisticsVector::gradient_const_iterator gradientTotalIterator = totalSumsOfStatistics_->gradients_cbegin();
+                        DenseExampleWiseStatisticsVector::hessian_iterator hessianTmpIterator = tmpStatistics_->hessians_begin();
                         DenseExampleWiseStatisticsVector::hessian_const_iterator hessianTotalIterator = totalSumsOfStatistics_->hessians_cbegin();
 
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 l = indexIterator[c];
-                            tmpGradients_[c] = gradientTotalIterator[l] - sumsOfGradients[c];
+                            gradientTmpIterator[c] = gradientTotalIterator[l] - sumsOfGradients[c];
                             uint32 c2 = triangularNumber(c + 1) - 1;
                             uint32 l2 = triangularNumber(l + 1) - 1;
-                            tmpHessians_[c2] = hessianTotalIterator[l2] - sumsOfHessians[c2];
+                            hessianTmpIterator[c2] = hessianTotalIterator[l2] - sumsOfHessians[c2];
                         }
 
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_, tmpHessians_);
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpStatistics_->gradients_begin(),
+                                                                                tmpStatistics_->hessians_begin());
                     }
 
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients, sumsOfHessians);
@@ -226,39 +223,40 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                         dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
 
                         // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
-                        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, tmpGradients_,
+                        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_,
                                                                                        numPredictions);
                         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
                     }
 
                     if (uncovered) {
                         uint32 numPredictions = labelIndices_.getNumElements();
-                        uint32 numHessians = triangularNumber(numPredictions);
 
                         // Initialize temporary vector, if necessary...
-                        if (tmpGradients_ == nullptr) {
-                            tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                            tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+                        if (tmpStatistics_ == nullptr) {
+                            tmpStatistics_ = new DenseExampleWiseStatisticsVector(numPredictions);
                         }
 
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                        DenseExampleWiseStatisticsVector::gradient_iterator gradientTmpIterator = tmpStatistics_->gradients_begin();
                         DenseExampleWiseStatisticsVector::gradient_const_iterator gradientTotalIterator = totalSumsOfStatistics_->gradients_cbegin();
+                        DenseExampleWiseStatisticsVector::hessian_iterator hessianTmpIterator = tmpStatistics_->hessians_begin();
                         DenseExampleWiseStatisticsVector::hessian_const_iterator hessianTotalIterator = totalSumsOfStatistics_->hessians_cbegin();
                         uint32 i = 0;
 
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 l = indexIterator[c];
-                            tmpGradients_[c] = gradientTotalIterator[l] - sumsOfGradients[c];
+                            gradientTmpIterator[c] = gradientTotalIterator[l] - sumsOfGradients[c];
                             uint32 offset = triangularNumber(l);
 
                             for (uint32 c2 = 0; c2 < c + 1; c2++) {
                                 uint32 l2 = offset + indexIterator[c2];
-                                tmpHessians_[i] = hessianTotalIterator[l2] - sumsOfHessians[i];
+                                hessianTmpIterator[i] = hessianTotalIterator[l2] - sumsOfHessians[i];
                                 i++;
                             }
                         }
 
-                        return ruleEvaluationPtr_->calculateExampleWisePrediction(tmpGradients_, tmpHessians_,
+                        return ruleEvaluationPtr_->calculateExampleWisePrediction(tmpStatistics_->gradients_begin(),
+                                                                                  tmpStatistics_->hessians_begin(),
                                                                                   dsysvLwork_, dsysvTmpArray1_,
                                                                                   dsysvTmpArray2_, dsysvTmpArray3_,
                                                                                   dspmvTmpArray_);
