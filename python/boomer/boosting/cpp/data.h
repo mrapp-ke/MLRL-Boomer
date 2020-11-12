@@ -25,20 +25,14 @@ namespace boosting {
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            DenseNumericMatrix(uint32 numRows, uint32 numCols)
-                : DenseMatrix<T>(numRows, numCols) {
-
-            }
+            DenseNumericMatrix(uint32 numRows, uint32 numCols);
 
             /**
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
              */
-            DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init)
-                : DenseMatrix<T>(numRows, numCols, init) {
-
-            }
+            DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init);
 
             /**
              * Adds all numbers in another vector to certain elements, whose positions are given as a `FullIndexVector`,
@@ -53,13 +47,7 @@ namespace boosting {
             void addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
                                     typename DenseVector<T>::const_iterator end,
                                     FullIndexVector::const_iterator indicesBegin,
-                                    FullIndexVector::const_iterator indicesEnd) {
-                uint32 offset = row * DenseMatrix<T>::numCols_;
-
-                for (uint32 i = 0; i < DenseMatrix<T>::numCols_; i++) {
-                    DenseMatrix<T>::array_[offset + i] += begin[i];
-                }
-            }
+                                    FullIndexVector::const_iterator indicesEnd);
 
             /**
              * Adds all numbers in another vector to certain elements, whose positions are given as a
@@ -74,16 +62,7 @@ namespace boosting {
             void addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
                                     typename DenseVector<T>::const_iterator end,
                                     PartialIndexVector::const_iterator indicesBegin,
-                                    PartialIndexVector::const_iterator indicesEnd) {
-                uint32 offset = row * DenseMatrix<T>::numCols_;
-                typename DenseVector<T>::const_iterator valueIterator = begin;
-
-                for (auto indexIterator = indicesBegin; indexIterator != indicesEnd; indexIterator++) {
-                    uint32 index = *indexIterator;
-                    DenseMatrix<T>::array_[offset + index] += *valueIterator;
-                    valueIterator++;
-                }
-            }
+                                    PartialIndexVector::const_iterator indicesEnd);
 
     };
 
