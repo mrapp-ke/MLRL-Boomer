@@ -5,11 +5,13 @@ using namespace boosting;
 
 
 void ExampleWiseLogisticLossImpl::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                                   const DenseNumericMatrix<float64>& predictedScores,
-                                                   DenseExampleWiseStatisticsMatrix& statistics) const {
-    DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
-    DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
-    DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
+                                                   const DenseNumericMatrix<float64>& scoreMatrix,
+                                                   DenseExampleWiseStatisticsMatrix& statisticMatrix) const {
+    DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator =
+        statisticMatrix.gradients_row_begin(exampleIndex);
+    DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator =
+        statisticMatrix.hessians_row_begin(exampleIndex);
+    DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumLabels();
     float64 sumOfExponentials = 1;
 
