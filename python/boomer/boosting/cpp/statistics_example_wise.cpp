@@ -282,8 +282,6 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 const DenseExampleWiseStatistics& originalStatistics_;
 
-                uint32 numBins_;
-
                 DenseExampleWiseStatisticsMatrix* statistics_;
 
             public:
@@ -294,29 +292,17 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
              * @param numBins       The number of bins, the histogram should consist of
              */
             HistogramBuilder(const DenseExampleWiseStatistics& statistics, uint32 numBins)
-                : originalStatistics_(statistics), numBins_(numBins),
+                : originalStatistics_(statistics),
                   statistics_(new DenseExampleWiseStatisticsMatrix(numBins, statistics.getNumLabels(), true)) {
 
             }
 
             void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
-                uint32 numLabels = originalStatistics_.getNumLabels();
-                uint32 numHessians = triangularNumber(numLabels);
                 uint32 index = entry.index;
-
-                DenseExampleWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics_->gradients_row_begin(index);
-                DenseExampleWiseStatisticsMatrix::gradient_const_iterator originalGradientIterator = originalStatistics_.statistics_->gradients_row_cbegin(index);
-
-                for(uint32 c = 0; c < numLabels; c++) {
-                    gradientIterator[c] += originalGradientIterator[c];
-                }
-
-                DenseExampleWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics_->hessians_row_begin(index);
-                DenseExampleWiseStatisticsMatrix::hessian_const_iterator originalHessianIterator = originalStatistics_.statistics_->hessians_row_cbegin(index);
-
-                for (uint32 c = 0; c < numHessians; c++) {
-                    hessianIterator[c] += originalHessianIterator[c];
-                }
+                statistics_->addToRow(binIndex, originalStatistics_.statistics_->gradients_row_cbegin(index),
+                                      originalStatistics_.statistics_->gradients_row_cend(index),
+                                      originalStatistics_.statistics_->hessians_row_cbegin(index),
+                                      originalStatistics_.statistics_->hessians_row_cend(index));
             }
 
             std::unique_ptr<AbstractStatistics> build() const override {
