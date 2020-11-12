@@ -14,7 +14,7 @@ namespace boosting {
     /**
      * An one-dimensional vector that stores gradients and Hessians in C-contiguous arrays.
      */
-    class DenseLabelWiseStatisticsVector {
+    class DenseLabelWiseStatisticVector {
 
         private:
 
@@ -29,20 +29,20 @@ namespace boosting {
             /**
              * @param numElements The number of gradients and Hessians in the vector
              */
-            DenseLabelWiseStatisticsVector(uint32 numElements);
+            DenseLabelWiseStatisticVector(uint32 numElements);
 
             /**
              * @param numElements The number of gradients and Hessians in the vector
              * @param True, if all gradients and Hessians in the vector should be initialized with zero, false otherwise
              */
-            DenseLabelWiseStatisticsVector(uint32 numElements, bool init);
+            DenseLabelWiseStatisticVector(uint32 numElements, bool init);
 
             /**
-             * @param vector A reference to an object of type `DenseLabelWiseStatisticsVector` to be copied
+             * @param vector A reference to an object of type `DenseLabelWiseStatisticVector` to be copied
              */
-            DenseLabelWiseStatisticsVector(const DenseLabelWiseStatisticsVector& vector);
+            DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector);
 
-            ~DenseLabelWiseStatisticsVector();
+            ~DenseLabelWiseStatisticVector();
 
             typedef float64* gradient_iterator;
 
@@ -237,7 +237,7 @@ namespace boosting {
     /**
      * A two-dimensional matrix that stores gradients and Hessians in C-contiguous arrays.
      */
-    class DenseLabelWiseStatisticsMatrix {
+    class DenseLabelWiseStatisticMatrix {
 
         private:
 
@@ -255,7 +255,7 @@ namespace boosting {
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            DenseLabelWiseStatisticsMatrix(uint32 numRows, uint32 numCols);
+            DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols);
 
             /**
              * @param numRows   The number of rows in the matrix
@@ -263,9 +263,9 @@ namespace boosting {
              * @param init      True, if all gradients and Hessians in the matrix should be initialized with zero, false
              *                  otherwise
              */
-            DenseLabelWiseStatisticsMatrix(uint32 numRows, uint32 numCols, bool init);
+            DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols, bool init);
             
-            ~DenseLabelWiseStatisticsMatrix();
+            ~DenseLabelWiseStatisticMatrix();
             
             typedef float64* gradient_iterator;
             
