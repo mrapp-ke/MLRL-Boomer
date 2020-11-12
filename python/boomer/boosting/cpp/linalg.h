@@ -4,7 +4,6 @@
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #include "../../common/cpp/types.h"
-#include <math.h>
 
 
 /**
@@ -19,7 +18,8 @@ static inline float64 l2NormPow(const float64* a, uint32 n) {
     float64 result = 0;
 
     for (uint32 i = 0; i < n; i++) {
-        result += pow(a[i], 2);
+        float64 value = a[i];
+        result += (value * value);
     }
 
     return result;
