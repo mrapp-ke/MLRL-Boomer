@@ -6,7 +6,6 @@
 #pragma once
 
 #include "../../common/cpp/input_data.h"
-#include "../../common/cpp/indices.h"
 #include "data.h"
 #include "data_label_wise.h"
 
