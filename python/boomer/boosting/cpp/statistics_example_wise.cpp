@@ -229,18 +229,14 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                             }
                         }
 
-                        return ruleEvaluationPtr_->calculateExampleWisePrediction(tmpStatistics_->gradients_begin(),
-                                                                                  tmpStatistics_->hessians_begin(),
-                                                                                  dsysvLwork_, dsysvTmpArray1_,
-                                                                                  dsysvTmpArray2_, dsysvTmpArray3_,
-                                                                                  dspmvTmpArray_);
+                        return ruleEvaluationPtr_->calculateExampleWisePrediction(*tmpStatistics_, dsysvLwork_,
+                                                                                  dsysvTmpArray1_, dsysvTmpArray2_,
+                                                                                  dsysvTmpArray3_, dspmvTmpArray_);
                     }
 
-                    return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfStatistics.gradients_begin(),
-                                                                              sumsOfStatistics.hessians_begin(),
-                                                                              dsysvLwork_, dsysvTmpArray1_,
-                                                                              dsysvTmpArray2_, dsysvTmpArray3_,
-                                                                              dspmvTmpArray_);
+                    return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfStatistics, dsysvLwork_,
+                                                                              dsysvTmpArray1_, dsysvTmpArray2_,
+                                                                              dsysvTmpArray3_, dspmvTmpArray_);
                 }
 
         };
