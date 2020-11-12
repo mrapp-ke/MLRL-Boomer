@@ -70,7 +70,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
-                    // Create vectors for storing the totals sums of gradients and Hessians, if necessary...
+                    // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                     if (totalSumsOfCoverableStatistics_ == nullptr) {
                         totalSumsOfCoverableStatistics_ = new DenseLabelWiseStatisticsVector(*totalSumsOfStatistics_);
                         totalSumsOfStatistics_ = totalSumsOfCoverableStatistics_;
@@ -96,7 +96,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                 void resetSubset() override {
                     uint32 numPredictions = labelIndices_.getNumElements();
 
-                    // Allocate vector for storing the accumulated sums of gradients and Hessians, if necessary...
+                    // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumsOfStatistics_ == nullptr) {
                         accumulatedSumsOfStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions, true);
                     }
