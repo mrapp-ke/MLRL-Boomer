@@ -47,13 +47,13 @@ namespace boosting {
              *                          predicted scores
              * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
-             * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsMatrix` to be updated
+             * @param statistics        A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
              */
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                   const DenseNumericMatrix<float64>& predictedScores,
                                   FullIndexVector::const_iterator labelIndicesBegin,
                                   FullIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticsMatrix& statistics) const;
+                                  DenseLabelWiseStatisticMatrix& statistics) const;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -66,13 +66,13 @@ namespace boosting {
              *                          predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statistics        A reference to an object of type `DenseLabelWiseStatisticsMatrix` to be updated
+             * @param statistics        A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
              */
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                   const DenseNumericMatrix<float64>& predictedScores,
                                   PartialIndexVector::const_iterator labelIndicesBegin,
                                   PartialIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticsMatrix& statistics) const;
+                                  DenseLabelWiseStatisticMatrix& statistics) const;
 
     };
 

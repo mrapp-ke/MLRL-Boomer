@@ -303,7 +303,7 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
-    DenseLabelWiseStatisticsMatrix* statistics = new DenseLabelWiseStatisticsMatrix(numExamples, numLabels);
+    DenseLabelWiseStatisticMatrix* statistics = new DenseLabelWiseStatisticMatrix(numExamples, numLabels);
     DenseNumericMatrix<float64>* currentScores = new DenseNumericMatrix<float64>(numExamples, numLabels, true);
     FullIndexVector labelIndices(numLabels);
     FullIndexVector::const_iterator labelIndicesBegin = labelIndices.cbegin();
@@ -314,6 +314,6 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
                                            *statistics);
     }
 
-    return std::make_unique<LabelWiseStatistics<DenseLabelWiseStatisticsVector, DenseLabelWiseStatisticsMatrix, DenseNumericMatrix<float64>>>(
+    return std::make_unique<LabelWiseStatistics<DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
         lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, statistics, currentScores);
 }

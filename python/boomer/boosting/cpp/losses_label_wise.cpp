@@ -8,9 +8,9 @@ void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomA
                                              const DenseNumericMatrix<float64>& predictedScores,
                                              const FullIndexVector::const_iterator labelIndicesBegin,
                                              const FullIndexVector::const_iterator labelIndicesEnd,
-                                             DenseLabelWiseStatisticsMatrix& statistics) const {
-    DenseLabelWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
-    DenseLabelWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
+                                             DenseLabelWiseStatisticMatrix& statistics) const {
+    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
+    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
     DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumLabels();
 
@@ -25,9 +25,9 @@ void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomA
                                              const DenseNumericMatrix<float64>& predictedScores,
                                              const PartialIndexVector::const_iterator labelIndicesBegin,
                                              const PartialIndexVector::const_iterator labelIndicesEnd,
-                                             DenseLabelWiseStatisticsMatrix& statistics) const {
-    DenseLabelWiseStatisticsMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
-    DenseLabelWiseStatisticsMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
+                                             DenseLabelWiseStatisticMatrix& statistics) const {
+    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
+    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
     DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
 
     for (auto indexIterator = labelIndicesBegin; indexIterator != labelIndicesEnd; indexIterator++) {

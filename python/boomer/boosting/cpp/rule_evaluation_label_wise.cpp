@@ -30,9 +30,9 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
         }
 
         const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const DenseLabelWiseStatisticsVector& statistics) override {
-            DenseLabelWiseStatisticsVector::gradient_const_iterator gradientIterator = statistics.gradients_cbegin();
-            DenseLabelWiseStatisticsVector::hessian_const_iterator hessianIterator = statistics.hessians_cbegin();
+                const DenseLabelWiseStatisticVector& statistics) override {
+            DenseLabelWiseStatisticVector::gradient_const_iterator gradientIterator = statistics.gradients_cbegin();
+            DenseLabelWiseStatisticVector::hessian_const_iterator hessianIterator = statistics.hessians_cbegin();
             uint32 numPredictions = prediction_.getNumElements();
             LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
             LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
