@@ -25,7 +25,7 @@ namespace boosting {
     /**
      * An one-dimensional vector that stores gradients and Hessians in C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticsVector {
+    class DenseExampleWiseStatisticVector {
 
         private:
 
@@ -42,8 +42,8 @@ namespace boosting {
             /**
              * @param numElements The number of gradients and Hessians in the vector
              */
-            DenseExampleWiseStatisticsVector(uint32 numElements)
-                : DenseExampleWiseStatisticsVector(numElements, false) {
+            DenseExampleWiseStatisticVector(uint32 numElements)
+                : DenseExampleWiseStatisticVector(numElements, false) {
 
             }
 
@@ -51,7 +51,7 @@ namespace boosting {
              * @param numElements The number of gradients in the vector
              * @param True, if all gradients and Hessians in the vector should be initialized with zero, false otherwise
              */
-            DenseExampleWiseStatisticsVector(uint32 numElements, bool init)
+            DenseExampleWiseStatisticVector(uint32 numElements, bool init)
                 : numElements_(numElements), numHessians_(triangularNumber(numElements)),
                   gradients_((float64*) (init ? calloc(numElements, sizeof(float64))
                                               : malloc(numElements * sizeof(float64)))),
@@ -61,10 +61,10 @@ namespace boosting {
             }
 
             /**
-             * @param vector A reference to an object of type `DenseExampleWiseStatisticsVector` to be copied
+             * @param vector A reference to an object of type `DenseExampleWiseStatisticVector` to be copied
              */
-            DenseExampleWiseStatisticsVector(const DenseExampleWiseStatisticsVector& vector)
-                : DenseExampleWiseStatisticsVector(vector.numElements_) {
+            DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
+                : DenseExampleWiseStatisticVector(vector.numElements_) {
                 for (uint32 i = 0; i < numElements_; i++) {
                     gradients_[i] = vector.gradients_[i];
                 }
@@ -74,7 +74,7 @@ namespace boosting {
                 }
             }
 
-            ~DenseExampleWiseStatisticsVector() {
+            ~DenseExampleWiseStatisticVector() {
                 free(gradients_);
                 free(hessians_);
             }
@@ -291,7 +291,7 @@ namespace boosting {
     /**
      * A two-dimensional matrix that stores gradients and Hessians in C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticsMatrix {
+    class DenseExampleWiseStatisticMatrix {
 
         private:
 
@@ -311,8 +311,8 @@ namespace boosting {
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            DenseExampleWiseStatisticsMatrix(uint32 numRows, uint32 numCols)
-                : DenseExampleWiseStatisticsMatrix(numRows, numCols, false) {
+            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols)
+                : DenseExampleWiseStatisticMatrix(numRows, numCols, false) {
 
             }
 
@@ -322,7 +322,7 @@ namespace boosting {
              * @param init      True, if all gradients and Hessians in the matrix should be initialized with zero, false
              *                  otherwise
              */
-            DenseExampleWiseStatisticsMatrix(uint32 numRows, uint32 numCols, bool init)
+            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols, bool init)
                 : numRows_(numRows), numCols_(numCols), numHessians_(triangularNumber(numCols)),
                   gradients_((float64*) (init ? calloc(numRows * numCols, sizeof(float64))
                                               : malloc(numRows * numCols * sizeof(float64)))),
@@ -331,7 +331,7 @@ namespace boosting {
 
             }
             
-            ~DenseExampleWiseStatisticsMatrix() {
+            ~DenseExampleWiseStatisticMatrix() {
                 free(gradients_);
                 free(hessians_);
             }
