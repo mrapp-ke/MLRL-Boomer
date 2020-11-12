@@ -118,7 +118,7 @@ class DenseLabelWiseStatistics : public AbstractLabelWiseStatistics {
                     if (uncovered) {
                         uint32 numPredictions = labelIndices_.getNumElements();
 
-                        // Initialize temporary vectors, if necessary...
+                        // Initialize temporary vector, if necessary...
                         if (tmpStatistics_ == nullptr) {
                             tmpStatistics_ = new DenseLabelWiseStatisticsVector(numPredictions);
                         }
