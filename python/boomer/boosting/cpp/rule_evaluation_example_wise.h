@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../../common/cpp/rule_evaluation.h"
-#include "../../common/cpp/indices.h"
 #include "data_example_wise.h"
 #include "blas.h"
 #include "lapack.h"
