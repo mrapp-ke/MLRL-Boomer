@@ -53,9 +53,8 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             delete labelWisePrediction_;
         }
 
-        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, bool uncovered) override {
+        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(const float64* gradients,
+                                                                         const float64* hessians) override {
             uint32 numPredictions = labelIndices_.getNumElements();
 
             if (labelWisePrediction_ == nullptr) {
@@ -68,19 +67,10 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             float64 overallQualityScore = 0;
 
             // For each label, calculate the score to be predicted, as well as a quality score...
-            typename T::const_iterator indexIterator = labelIndices_.cbegin();
-
             for (uint32 c = 0; c < numPredictions; c++) {
-                float64 sumOfGradients = sumsOfGradients[c];
+                float64 sumOfGradients = gradients[c];
                 uint32 c2 = triangularNumber(c + 1) - 1;
-                float64 sumOfHessians = sumsOfHessians[c2];
-
-                if (uncovered) {
-                    uint32 l = indexIterator[c];
-                    sumOfGradients = totalSumsOfGradients[l] - sumOfGradients;
-                    uint32 l2 = triangularNumber(l + 1) - 1;
-                    sumOfHessians = totalSumsOfHessians[l2] - sumOfHessians;
-                }
+                float64 sumOfHessians = hessians[c2];
 
                 // Calculate the score to be predicted for the current label...
                 float64 score = sumOfHessians + l2RegularizationWeight_;

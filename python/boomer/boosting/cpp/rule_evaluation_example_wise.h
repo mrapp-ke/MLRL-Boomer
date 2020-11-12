@@ -31,32 +31,16 @@ namespace boosting {
              * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
              * scores are stored in a given object of type `LabelWiseEvaluatedPrediction`.
              *
-             * If the argument `uncovered` is True, the rule is considered to cover the difference between the sums of
-             * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
-             * `totalSumsOfHessians` and `sumsOfHessians`, respectively.
-             *
-             * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels), representing
-             *                              the total sums of gradients for individual labels
-             * @param sumsOfGradients       A pointer to an array of type `float64`, shape
-             *                              `(prediction.numPredictions_)`, representing the sums of gradients for
-             *                              individual labels
-             * @param totalSumsOfHessians   A pointer to an array of type `float64`, shape
-             *                              `((num_labels * (num_labels + 1)) / 2)`, representing the total sums of
-             *                              Hessians for individual labels
-             * @param sumsOfHessians        A pointer to an array of type `float64`, shape
-             *                              `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)`,
-             *                              representing the sums of Hessians for individual labels
-             * @param uncovered             False, if the rule covers the sums of gradient and Hessians that are stored
-             *                              in the array `sumsOfGradients` and `sumsOfHessians`, True, if the rule
-             *                              covers the difference between the sums of gradients and Hessians that are
-             *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
-             *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param return                A reference to an object of type `LabelWiseEvaluatedPrediction` that stores
-             *                              the predicted scores and quality scores
+             * @param gradients A pointer to an array of type `float64`, shape `(prediction.numPredictions_),
+             *                  representing the total sums of gradients
+             * @param hessians  A pointer to an array of type `float64`, shape
+             *                  `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)`, representing the
+             *                  sums of Hessians
+             * @param return    A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
+             *                  predicted scores and quality scores
              */
-            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, bool uncovered) = 0;
+            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(const float64* gradients,
+                                                                                     const float64* hessians) = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
