@@ -307,6 +307,75 @@ namespace boosting {
                 }
             }
 
+            /**
+             * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
+             * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
+             * correspond to the positions provided by a `FullIndexVector`.
+             *
+             * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
+             * @param firstGradientsEnd     A `gradient_const_iterator` to the end of the first gradients
+             * @param firstHessiansBegin    A `hessian_const_iterator` to the beginning of the first Hessians
+             * @param firstHessiansEnd      A `hessian_const_iterator` to the end of the first Hessians
+             * @param firstIndices          A reference to an object of type `FullIndexVector` that provides access to
+             *                              the indices
+             * @param secondGradientsBegin  A `gradient_const_iterator` to the beginning of the second gradients
+             * @param secondGradientsEnd    A `gradient_const_iterator` to the end of the second gradients
+             * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
+             * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
+             */
+            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
+                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
+                            const FullIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
+                            gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
+                            hessian_const_iterator secondHessiansEnd) {
+                for (uint32 i = 0; i < numElements_; i++) {
+                    gradients_[i] = firstGradientsBegin[i] - secondGradientsBegin[i];
+                }
+
+                for (uint32 i = 0; i < numHessians_; i++) {
+                    hessians_[i] = firstHessiansBegin[i] - secondHessiansBegin[i];
+                }
+            }
+
+            /**
+             * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
+             * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
+             * correspond to the positions provided by a `PartialIndexVector`.
+             *
+             * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
+             * @param firstGradientsEnd     A `gradient_const_iterator` to the end of the first gradients
+             * @param firstHessiansBegin    A `hessian_const_iterator` to the beginning of the first Hessians
+             * @param firstHessiansEnd      A `hessian_const_iterator` to the end of the first Hessians
+             * @param firstIndices          A reference to an object of type `PartialIndexVector` that provides access
+             *                              to the indices
+             * @param secondGradientsBegin  A `gradient_const_iterator` to the beginning of the second gradients
+             * @param secondGradientsEnd    A `gradient_const_iterator` to the end of the second gradients
+             * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
+             * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
+             */
+            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
+                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
+                            const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
+                            gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
+                            hessian_const_iterator secondHessiansEnd) {
+                PartialIndexVector::const_iterator firstIndexIterator = firstIndices.cbegin();
+                hessian_iterator hessianIterator = hessians_;
+                hessian_const_iterator secondHessianIterator = secondHessiansBegin;
+
+                for (uint32 i = 0; i < numElements_; i++) {
+                    uint32 firstIndex = firstIndexIterator[i];
+                    gradients_[i] = firstGradientsBegin[firstIndex] - secondGradientsBegin[i];
+                    uint32 offset = triangularNumber(firstIndex);
+
+                    for (uint32 j = 0; j < i + 1; j++) {
+                        uint32 firstIndex2 = firstIndexIterator[j];
+                        *hessianIterator = firstHessiansBegin[offset + firstIndex2] - *secondHessianIterator;
+                        hessianIterator++;
+                        secondHessianIterator++;
+                    }
+                }
+            }
+
     };
 
     /**

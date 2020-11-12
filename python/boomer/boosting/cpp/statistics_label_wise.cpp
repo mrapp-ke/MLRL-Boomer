@@ -98,10 +98,9 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                 }
 
                 void resetSubset() override {
-                    uint32 numPredictions = labelIndices_.getNumElements();
-
                     // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumVector_ == nullptr) {
+                        uint32 numPredictions = labelIndices_.getNumElements();
                         accumulatedSumVector_ = new StatisticVector(numPredictions, true);
                     }
 
@@ -117,10 +116,9 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                     const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
-                        uint32 numPredictions = labelIndices_.getNumElements();
-
                         // Initialize temporary vector, if necessary...
                         if (tmpVector_ == nullptr) {
+                            uint32 numPredictions = labelIndices_.getNumElements();
                             tmpVector_ = new StatisticVector(numPredictions);
                         }
 

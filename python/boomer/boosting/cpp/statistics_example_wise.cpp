@@ -135,29 +135,21 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                         accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
 
                     if (uncovered) {
-                        uint32 numPredictions = labelIndices_.getNumElements();
 
                         // Initialize temporary vector, if necessary...
                         if (tmpStatistics_ == nullptr) {
+                            uint32 numPredictions = labelIndices_.getNumElements();
                             tmpStatistics_ = new DenseExampleWiseStatisticVector(numPredictions);
                         }
 
-                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                        DenseExampleWiseStatisticVector::gradient_iterator gradientTmpIterator = tmpStatistics_->gradients_begin();
-                        DenseExampleWiseStatisticVector::gradient_const_iterator gradientTotalIterator = totalSumsOfStatistics_->gradients_cbegin();
-                        DenseExampleWiseStatisticVector::hessian_iterator hessianTmpIterator = tmpStatistics_->hessians_begin();
-                        DenseExampleWiseStatisticVector::hessian_const_iterator hessianTotalIterator = totalSumsOfStatistics_->hessians_cbegin();
-                        DenseExampleWiseStatisticVector::gradient_const_iterator gradientSumIterator = sumsOfStatistics.gradients_cbegin();
-                        DenseExampleWiseStatisticVector::hessian_const_iterator hessianSumIterator = sumsOfStatistics.hessians_cbegin();
-
-                        for (uint32 c = 0; c < numPredictions; c++) {
-                            uint32 l = indexIterator[c];
-                            gradientTmpIterator[c] = gradientTotalIterator[l] - gradientSumIterator[c];
-                            uint32 c2 = triangularNumber(c + 1) - 1;
-                            uint32 l2 = triangularNumber(l + 1) - 1;
-                            hessianTmpIterator[c2] = hessianTotalIterator[l2] - hessianSumIterator[c2];
-                        }
-
+                        tmpStatistics_->difference(totalSumsOfStatistics_->gradients_cbegin(),
+                                                   totalSumsOfStatistics_->gradients_cend(),
+                                                   totalSumsOfStatistics_->hessians_cbegin(),
+                                                   totalSumsOfStatistics_->hessians_cend(), labelIndices_,
+                                                   sumsOfStatistics.gradients_cbegin(),
+                                                   sumsOfStatistics.gradients_cend(),
+                                                   sumsOfStatistics.hessians_cbegin(),
+                                                   sumsOfStatistics.hessians_cend());
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpStatistics_);
                     }
 
@@ -165,9 +157,6 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 }
 
                 const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
-                    DenseExampleWiseStatisticVector& sumsOfStatistics =
-                        accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
-
                     // To avoid array recreation each time this function is called, the temporary arrays are only
                     // initialized if they have not been initialized yet
                     if (dsysvTmpArray1_ == nullptr) {
@@ -182,35 +171,25 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
                     }
 
+                    DenseExampleWiseStatisticVector& sumsOfStatistics =
+                        accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
+
                     if (uncovered) {
-                        uint32 numPredictions = labelIndices_.getNumElements();
 
                         // Initialize temporary vector, if necessary...
                         if (tmpStatistics_ == nullptr) {
+                            uint32 numPredictions = labelIndices_.getNumElements();
                             tmpStatistics_ = new DenseExampleWiseStatisticVector(numPredictions);
                         }
 
-                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                        DenseExampleWiseStatisticVector::gradient_iterator gradientTmpIterator = tmpStatistics_->gradients_begin();
-                        DenseExampleWiseStatisticVector::gradient_const_iterator gradientTotalIterator = totalSumsOfStatistics_->gradients_cbegin();
-                        DenseExampleWiseStatisticVector::hessian_iterator hessianTmpIterator = tmpStatistics_->hessians_begin();
-                        DenseExampleWiseStatisticVector::hessian_const_iterator hessianTotalIterator = totalSumsOfStatistics_->hessians_cbegin();
-                        DenseExampleWiseStatisticVector::gradient_const_iterator gradientSumIterator = sumsOfStatistics.gradients_cbegin();
-                        DenseExampleWiseStatisticVector::hessian_const_iterator hessianSumIterator = sumsOfStatistics.hessians_cbegin();
-                        uint32 i = 0;
-
-                        for (uint32 c = 0; c < numPredictions; c++) {
-                            uint32 l = indexIterator[c];
-                            gradientTmpIterator[c] = gradientTotalIterator[l] - gradientSumIterator[c];
-                            uint32 offset = triangularNumber(l);
-
-                            for (uint32 c2 = 0; c2 < c + 1; c2++) {
-                                uint32 l2 = offset + indexIterator[c2];
-                                hessianTmpIterator[i] = hessianTotalIterator[l2] - hessianSumIterator[i];
-                                i++;
-                            }
-                        }
-
+                        tmpStatistics_->difference(totalSumsOfStatistics_->gradients_cbegin(),
+                                                   totalSumsOfStatistics_->gradients_cend(),
+                                                   totalSumsOfStatistics_->hessians_cbegin(),
+                                                   totalSumsOfStatistics_->hessians_cend(), labelIndices_,
+                                                   sumsOfStatistics.gradients_cbegin(),
+                                                   sumsOfStatistics.gradients_cend(),
+                                                   sumsOfStatistics.hessians_cbegin(),
+                                                   sumsOfStatistics.hessians_cend());
                         return ruleEvaluationPtr_->calculateExampleWisePrediction(*tmpStatistics_, dsysvLwork_,
                                                                                   dsysvTmpArray1_, dsysvTmpArray2_,
                                                                                   dsysvTmpArray3_, dspmvTmpArray_);
