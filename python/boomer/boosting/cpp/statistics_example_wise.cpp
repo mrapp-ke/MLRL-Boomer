@@ -204,7 +204,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                         dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
                         dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
 
-                        // Query the optimal "lwork" parameter to be used by LAPACK'S DSYSV routine...
+                        // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
                         dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, tmpGradients_,
                                                                                        numPredictions);
                         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
