@@ -1,6 +1,6 @@
 /**
- * Provides classes that store the gradients and Hessians, that have been calculated using a label-wise decomposable
- * loss function, in matrices or vectors.
+ * Provides classes that store the gradients and Hessians that have been calculated using a non-decomposable loss
+ * function in matrices or vectors.
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -23,7 +23,10 @@ namespace boosting {
     }
 
     /**
-     * An one-dimensional vector that stores gradients and Hessians in C-contiguous arrays.
+     * An one-dimensional vector that stores gradients and Hessians that have been calculated using a non-decomposable
+     * loss function in C-contiguous arrays. For each element in the vector a single gradient, but multiple Hessians are
+     * stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be viewed
+     * as a symmetric Hessian matrix with `n` rows and columns.
      */
     class DenseExampleWiseStatisticVector {
 
@@ -379,7 +382,10 @@ namespace boosting {
     };
 
     /**
-     * A two-dimensional matrix that stores gradients and Hessians in C-contiguous arrays.
+     * A two-dimensional matrix that stores gradients and Hessians that have been calculated using a non-decomposable
+     * loss function in C-contiguous arrays. For each element at a certain row a single gradient, but multiple Hessians
+     * are stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be
+     * viewed as a symmetric Hessian matrix with `n` rows and columns.
      */
     class DenseExampleWiseStatisticMatrix {
 
