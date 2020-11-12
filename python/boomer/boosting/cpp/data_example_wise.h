@@ -160,47 +160,14 @@ namespace boosting {
             }
 
             /**
-             * Returns a `hessian_iterator` to the beginning of the Hessians on the diagonal that correspond to a
-             * specific row.
+             * Returns a Hessian on the diagonal of the Hessian matrix that corresponds to the label at a specific
+             * position.
              *
-             * @param row   The row
-             * @return      A `hessian_iterator` to the beginning
+             * @param row   The position
+             * @return      The Hessian that corresponds to the given position
              */
-            hessian_iterator hessians_diagonal_begin(uint32 row) {
-                return &hessians_[triangularNumber(row + 1) - 1];
-            }
-
-            /**
-             * Returns a `hessian_iterator` to the end of the Hessians on the diagonal that correspond to a specific
-             * row.
-             *
-             * @param row   The row
-             * @return      A `hessian_iterator` to the end
-             */
-            hessian_iterator hessians_diagonal_end(uint32 row) {
-                return &hessians_[triangularNumber(row + 1)];
-            }
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians on the diagonal that correspond to a
-             * specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_const_iterator` to the beginning
-             */
-            hessian_const_iterator hessians_diagonal_cbegin(uint32 row) const {
-                return &hessians_[triangularNumber(row + 1) - 1];
-            }
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians on the diagonal that correspond to a
-             * specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_const_iterator` to the end
-             */
-            hessian_const_iterator hessians_diagonal_cend(uint32 row) const {
-                return &hessians_[triangularNumber(row + 1)];
+            float64 hessian_diagonal(uint32 pos) const {
+                return hessians_[triangularNumber(pos + 1) - 1];
             }
 
             /**

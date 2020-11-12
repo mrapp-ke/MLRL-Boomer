@@ -50,12 +50,13 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
         }
 
         const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const DenseExampleWiseStatisticVector& statistics) override {
+                const DenseExampleWiseStatisticVector& statisticVector) override {
             if (labelWisePrediction_ == nullptr) {
                 labelWisePrediction_ = new LabelWiseEvaluatedPrediction(numPredictions_);
             }
 
-            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statistics.gradients_cbegin();
+            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
+                statisticVector.gradients_cbegin();
             LabelWiseEvaluatedPrediction::score_iterator scoreIterator = labelWisePrediction_->scores_begin();
             LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
                 labelWisePrediction_->quality_scores_begin();
@@ -64,7 +65,7 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             // For each label, calculate the score to be predicted, as well as a quality score...
             for (uint32 c = 0; c < numPredictions_; c++) {
                 float64 sumOfGradients = gradientIterator[c];
-                float64 sumOfHessians = *statistics.hessians_diagonal_cbegin(c);
+                float64 sumOfHessians = statisticVector.hessian_diagonal(c);
 
                 // Calculate the score to be predicted for the current label...
                 float64 score = sumOfHessians + l2RegularizationWeight_;
@@ -84,7 +85,7 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             return *labelWisePrediction_;
         }
 
-        const EvaluatedPrediction& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statistics,
+        const EvaluatedPrediction& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
                                                                   int dsysvLwork, float64* dsysvTmpArray1,
                                                                   int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                                   float64* dspmvTmpArray) override {
@@ -93,8 +94,8 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             }
 
             EvaluatedPrediction::score_iterator scoreIterator = prediction_->scores_begin();
-            DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statistics.gradients_begin();
-            DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statistics.hessians_begin();
+            DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statisticVector.gradients_begin();
+            DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statisticVector.hessians_begin();
 
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
             lapackPtr_->dsysv(hessianIterator, gradientIterator, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,
