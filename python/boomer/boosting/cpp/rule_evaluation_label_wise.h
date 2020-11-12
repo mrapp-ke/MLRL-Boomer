@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../../common/cpp/rule_evaluation.h"
-#include "../../common/cpp/indices.h"
 #include "data_label_wise.h"
 #include <memory>
 
