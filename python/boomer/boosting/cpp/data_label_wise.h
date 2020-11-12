@@ -34,8 +34,9 @@ namespace boosting {
             DenseLabelWiseStatisticVector(uint32 numElements);
 
             /**
-             * @param numElements The number of gradients and Hessians in the vector
-             * @param True, if all gradients and Hessians in the vector should be initialized with zero, false otherwise
+             * @param numElements   The number of gradients and Hessians in the vector
+             * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
+             *                      false otherwise
              */
             DenseLabelWiseStatisticVector(uint32 numElements, bool init);
 
