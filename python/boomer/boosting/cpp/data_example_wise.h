@@ -358,6 +358,30 @@ namespace boosting {
                 return numCols_;
             }
 
+            /**
+             * Adds all gradients and Hessians in a vector to a specific row of this matrix.
+             *
+             * @param row               The row
+             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients in the vector
+             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients in the vector
+             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians in the vector
+             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians in the vector
+             */
+            void addToRow(uint32 row, gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
+                uint32 offset = row * numCols_;
+
+                for (uint32 i = 0; i < numCols_; i++) {
+                    gradients_[offset + i] += gradientsBegin[i];
+                }
+
+                offset = row * numHessians_;
+
+                for (uint32 i = 0; i < numHessians_; i++) {
+                    hessians_[offset + i] += hessiansBegin[i];
+                }
+            }
+
     };
 
 }
