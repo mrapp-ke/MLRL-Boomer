@@ -214,16 +214,13 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 }
 
                 const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
-                    uint32 numPredictions = labelIndices_.getNumElements();
                     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
                     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
 
                     // To avoid array recreation each time this function is called, the temporary arrays are only
                     // initialized if they have not been initialized yet
-                    if (tmpGradients_ == nullptr) {
-                        tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
-                        uint32 numHessians = triangularNumber(numPredictions);
-                        tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+                    if (dsysvTmpArray1_ == nullptr) {
+                        uint32 numPredictions = labelIndices_.getNumElements();
                         dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
                         dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
                         dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
@@ -234,10 +231,43 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
                     }
 
-                    return ruleEvaluationPtr_->calculateExampleWisePrediction(
-                        totalSumsOfStatistics_->gradients_cbegin(), sumsOfGradients,
-                        totalSumsOfStatistics_->hessians_cbegin(), sumsOfHessians, tmpGradients_, tmpHessians_,
-                        dsysvLwork_, dsysvTmpArray1_, dsysvTmpArray2_, dsysvTmpArray3_, dspmvTmpArray_, uncovered);
+                    if (uncovered) {
+                        uint32 numPredictions = labelIndices_.getNumElements();
+                        uint32 numHessians = triangularNumber(numPredictions);
+
+                        // Initialize temporary vector, if necessary...
+                        if (tmpGradients_ == nullptr) {
+                            tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
+                            tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+                        }
+
+                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                        DenseExampleWiseStatisticsVector::gradient_const_iterator gradientTotalIterator = totalSumsOfStatistics_->gradients_cbegin();
+                        DenseExampleWiseStatisticsVector::hessian_const_iterator hessianTotalIterator = totalSumsOfStatistics_->hessians_cbegin();
+                        uint32 i = 0;
+
+                        for (uint32 c = 0; c < numPredictions; c++) {
+                            uint32 l = indexIterator[c];
+                            tmpGradients_[c] = gradientTotalIterator[l] - sumsOfGradients[c];
+                            uint32 offset = triangularNumber(l);
+
+                            for (uint32 c2 = 0; c2 < c + 1; c2++) {
+                                uint32 l2 = offset + indexIterator[c2];
+                                tmpHessians_[i] = hessianTotalIterator[l2] - sumsOfHessians[i];
+                                i++;
+                            }
+                        }
+
+                        return ruleEvaluationPtr_->calculateExampleWisePrediction(tmpGradients_, tmpHessians_,
+                                                                                  dsysvLwork_, dsysvTmpArray1_,
+                                                                                  dsysvTmpArray2_, dsysvTmpArray3_,
+                                                                                  dspmvTmpArray_);
+                    }
+
+                    return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfGradients, sumsOfHessians,
+                                                                              dsysvLwork_, dsysvTmpArray1_,
+                                                                              dsysvTmpArray2_, dsysvTmpArray3_,
+                                                                              dspmvTmpArray_);
                 }
 
         };
