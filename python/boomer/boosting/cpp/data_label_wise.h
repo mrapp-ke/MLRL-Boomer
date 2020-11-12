@@ -112,13 +112,6 @@ namespace boosting {
             hessian_const_iterator hessians_cend() const;
 
             /**
-             * Returns the number of gradients and Hessians in the vector.
-             *
-             * @return The number of gradients and Hessians in the vector
-             */
-            uint32 getNumElements() const;
-
-            /**
              * Sets all gradients and Hessians in the vector to zero.
              */
             void setAllToZero();
@@ -343,20 +336,6 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the end of the given row 
              */
             hessian_const_iterator hessians_row_cend(uint32 row) const;
-
-            /**
-             * Returns the number of rows in the matrix.
-             *
-             * @return The number of rows in the matrix
-             */
-            uint32 getNumRows() const;
-
-            /**
-             * Returns the number of columns in the matrix.
-             *
-             * @return The number of columns in the matrix
-             */
-            uint32 getNumCols() const;
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix.
