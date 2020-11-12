@@ -90,9 +90,9 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             return *labelWisePrediction_;
         }
 
-        const EvaluatedPrediction& calculateExampleWisePrediction(float64* gradients, float64* hessians, int dsysvLwork,
-                                                                  float64* dsysvTmpArray1, int* dsysvTmpArray2,
-                                                                  double* dsysvTmpArray3,
+        const EvaluatedPrediction& calculateExampleWisePrediction(DenseExampleWiseStatisticsVector& statistics,
+                                                                  int dsysvLwork, float64* dsysvTmpArray1,
+                                                                  int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                                   float64* dspmvTmpArray) override {
             uint32 numPredictions = labelIndices_.getNumElements();
 
@@ -101,14 +101,16 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             }
 
             EvaluatedPrediction::score_iterator scoreIterator = prediction_->scores_begin();
+            DenseExampleWiseStatisticsVector::gradient_iterator gradientIterator = statistics.gradients_begin();
+            DenseExampleWiseStatisticsVector::hessian_iterator hessianIterator = statistics.hessians_begin();
 
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-            lapackPtr_->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scoreIterator,
-                              numPredictions, dsysvLwork, l2RegularizationWeight_);
+            lapackPtr_->dsysv(hessianIterator, gradientIterator, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,
+                              scoreIterator, numPredictions, dsysvLwork, l2RegularizationWeight_);
 
             // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-            float64 overallQualityScore = blasPtr_->ddot(scoreIterator, gradients, numPredictions);
-            blasPtr_->dspmv(hessians, scoreIterator, dspmvTmpArray, numPredictions);
+            float64 overallQualityScore = blasPtr_->ddot(scoreIterator, gradientIterator, numPredictions);
+            blasPtr_->dspmv(hessianIterator, scoreIterator, dspmvTmpArray, numPredictions);
             overallQualityScore += 0.5 * blasPtr_->ddot(scoreIterator, dspmvTmpArray, numPredictions);
 
             // Add the L2 regularization term to the overall quality score...

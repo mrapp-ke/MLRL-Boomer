@@ -45,11 +45,8 @@ namespace boosting {
              * of gradients and Hessians that are covered by the rule. The predicted scores and quality scores are
              * stored in a given object of type `EvaluatedPrediction`.
              *
-             * @param gradients         A pointer to an array of type `float64`, shape `(prediction.numPredictions_),
-             *                          representing the total sums of gradients
-             * @param hessians          A pointer to an array of type `float64`, shape
-             *                          `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)`,
-             *                          representing the sums of Hessians
+             * @param statistics        A reference to an object of type `DenseExampleWiseStatisticsVector` that stores
+             *                          the gradients and Hessians
              * @param dsysvLwork        The value for the parameter "lwork" to be used by Lapack's DSYSV routine
              * @param dsysvTmpArray1    A pointer to an array of type `float64`, shape
              *                          `(prediction.numPredictions_, prediction.numPredictions_)` that will be used to
@@ -67,11 +64,9 @@ namespace boosting {
              * @param prediction        A reference to an object of type `EvaluatedPrediction` that should be used to
              *                          store the predicted scores and quality score
              */
-            virtual const EvaluatedPrediction& calculateExampleWisePrediction(float64* gradients, float64* hessians,
-                                                                              int dsysvLwork, float64* dsysvTmpArray1,
-                                                                              int* dsysvTmpArray2,
-                                                                              double* dsysvTmpArray3,
-                                                                              float64* dspmvTmpArray) = 0;
+            virtual const EvaluatedPrediction& calculateExampleWisePrediction(
+                DenseExampleWiseStatisticsVector& statistics, int dsysvLwork, float64* dsysvTmpArray1,
+                int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray) = 0;
 
     };
 
