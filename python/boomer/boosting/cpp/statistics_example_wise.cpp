@@ -106,29 +106,11 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    // Add the gradients and Hessians of the example at the given index (weighted by the given weight)
-                    // to the current sum of gradients and Hessians...
-                    uint32 numPredictions = labelIndices_.getNumElements();
-                    typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                    uint32 i = 0;
-
-                    DenseExampleWiseStatisticMatrix::gradient_const_iterator gradientIterator = statistics_.statistics_->gradients_row_cbegin(statisticIndex);
-                    DenseExampleWiseStatisticMatrix::hessian_const_iterator hessianIterator = statistics_.statistics_->hessians_row_cbegin(statisticIndex);
-
-                    DenseExampleWiseStatisticVector::gradient_iterator gradientSumIterator = sumsOfStatistics_.gradients_begin();
-                    DenseExampleWiseStatisticVector::hessian_iterator hessianSumIterator = sumsOfStatistics_.hessians_begin();
-
-                    for (uint32 c = 0; c < numPredictions; c++) {
-                        uint32 l = indexIterator[c];
-                        gradientSumIterator[c] += (weight * gradientIterator[l]);
-                        uint32 offset = triangularNumber(l);
-
-                        for (uint32 c2 = 0; c2 < c + 1; c2++) {
-                            uint32 l2 = offset + indexIterator[c2];
-                            hessianSumIterator[i] += (weight * hessianIterator[l2]);
-                            i++;
-                        }
-                    }
+                    sumsOfStatistics_.addToSubset(statistics_.statistics_->gradients_row_cbegin(statisticIndex),
+                                                  statistics_.statistics_->gradients_row_cend(statisticIndex),
+                                                  statistics_.statistics_->hessians_row_cbegin(statisticIndex),
+                                                  statistics_.statistics_->hessians_row_cend(statisticIndex),
+                                                  labelIndices_, weight);
                 }
 
                 void resetSubset() override {
