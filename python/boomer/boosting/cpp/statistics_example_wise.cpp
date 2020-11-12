@@ -33,15 +33,15 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 const T& labelIndices_;
 
-                DenseExampleWiseStatisticVector sumsOfStatistics_;
+                DenseExampleWiseStatisticVector sumVector_;
 
-                DenseExampleWiseStatisticVector* accumulatedSumsOfStatistics_;
+                DenseExampleWiseStatisticVector* accumulatedSumVector_;
 
-                const DenseExampleWiseStatisticVector* totalSumsOfStatistics_;
+                const DenseExampleWiseStatisticVector* totalSumVector_;
 
-                DenseExampleWiseStatisticVector* totalSumsOfCoverableStatistics_;
+                DenseExampleWiseStatisticVector* totalCoverableSumVector_;
 
-                DenseExampleWiseStatisticVector* tmpStatistics_;
+                DenseExampleWiseStatisticVector* tmpVector_;
 
                 int dsysvLwork_;
 
@@ -68,11 +68,11 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                                  std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices),
-                      sumsOfStatistics_(DenseExampleWiseStatisticVector(labelIndices.getNumElements(), true)),
-                      totalSumsOfStatistics_(&statistics.totalSumsOfStatistics_) {
-                    accumulatedSumsOfStatistics_ = nullptr;
-                    totalSumsOfCoverableStatistics_ = nullptr;
-                    tmpStatistics_ = nullptr;
+                      sumVector_(DenseExampleWiseStatisticVector(labelIndices.getNumElements(), true)),
+                      totalSumVector_(&statistics.totalSumVector_) {
+                    accumulatedSumVector_ = nullptr;
+                    totalCoverableSumVector_ = nullptr;
+                    tmpVector_ = nullptr;
                     dsysvTmpArray1_ = nullptr;
                     dsysvTmpArray2_ = nullptr;
                     dsysvTmpArray3_ = nullptr;
@@ -80,9 +80,9 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 }
 
                 ~StatisticsSubset() {
-                    delete accumulatedSumsOfStatistics_;
-                    delete totalSumsOfCoverableStatistics_;
-                    delete tmpStatistics_;
+                    delete accumulatedSumVector_;
+                    delete totalCoverableSumVector_;
+                    delete tmpVector_;
                     free(dsysvTmpArray1_);
                     free(dsysvTmpArray2_);
                     free(dsysvTmpArray3_);
@@ -91,66 +91,61 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
                     // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                    if (totalSumsOfCoverableStatistics_ == nullptr) {
-                        totalSumsOfCoverableStatistics_ = new DenseExampleWiseStatisticVector(*totalSumsOfStatistics_);
-                        totalSumsOfStatistics_ = totalSumsOfCoverableStatistics_;
+                    if (totalCoverableSumVector_ == nullptr) {
+                        totalCoverableSumVector_ = new DenseExampleWiseStatisticVector(*totalSumVector_);
+                        totalSumVector_ = totalCoverableSumVector_;
                     }
 
                     // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                     // weight) from the total sums of gradients and Hessians...
-                    totalSumsOfCoverableStatistics_->subtract(
-                        statistics_.statistics_->gradients_row_cbegin(statisticIndex),
-                        statistics_.statistics_->gradients_row_cend(statisticIndex),
-                        statistics_.statistics_->hessians_row_cbegin(statisticIndex),
-                        statistics_.statistics_->hessians_row_cend(statisticIndex), weight);
+                    totalCoverableSumVector_->subtract(
+                        statistics_.statisticMatrix_->gradients_row_cbegin(statisticIndex),
+                        statistics_.statisticMatrix_->gradients_row_cend(statisticIndex),
+                        statistics_.statisticMatrix_->hessians_row_cbegin(statisticIndex),
+                        statistics_.statisticMatrix_->hessians_row_cend(statisticIndex), weight);
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    sumsOfStatistics_.addToSubset(statistics_.statistics_->gradients_row_cbegin(statisticIndex),
-                                                  statistics_.statistics_->gradients_row_cend(statisticIndex),
-                                                  statistics_.statistics_->hessians_row_cbegin(statisticIndex),
-                                                  statistics_.statistics_->hessians_row_cend(statisticIndex),
-                                                  labelIndices_, weight);
+                    sumVector_.addToSubset(statistics_.statisticMatrix_->gradients_row_cbegin(statisticIndex),
+                                           statistics_.statisticMatrix_->gradients_row_cend(statisticIndex),
+                                           statistics_.statisticMatrix_->hessians_row_cbegin(statisticIndex),
+                                           statistics_.statisticMatrix_->hessians_row_cend(statisticIndex),
+                                           labelIndices_, weight);
                 }
 
                 void resetSubset() override {
                     // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
-                    if (accumulatedSumsOfStatistics_ == nullptr) {
+                    if (accumulatedSumVector_ == nullptr) {
                         uint32 numPredictions = labelIndices_.getNumElements();
-                        accumulatedSumsOfStatistics_ = new DenseExampleWiseStatisticVector(numPredictions, true);
+                        accumulatedSumVector_ = new DenseExampleWiseStatisticVector(numPredictions, true);
                     }
 
                     // Reset the sum of gradients and Hessians to zero and add it to the accumulated sums of gradients
                     // and Hessians...
-                    accumulatedSumsOfStatistics_->add(sumsOfStatistics_.gradients_cbegin(),
-                                                      sumsOfStatistics_.gradients_cend(),
-                                                      sumsOfStatistics_.hessians_cbegin(),
-                                                      sumsOfStatistics_.hessians_cend());
-                    sumsOfStatistics_.setAllToZero();
+                    accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
+                                               sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                    sumVector_.setAllToZero();
                 }
 
                 const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                  bool accumulated) override {
                     const DenseExampleWiseStatisticVector& sumsOfStatistics =
-                        accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
+                        accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
 
                         // Initialize temporary vector, if necessary...
-                        if (tmpStatistics_ == nullptr) {
+                        if (tmpVector_ == nullptr) {
                             uint32 numPredictions = labelIndices_.getNumElements();
-                            tmpStatistics_ = new DenseExampleWiseStatisticVector(numPredictions);
+                            tmpVector_ = new DenseExampleWiseStatisticVector(numPredictions);
                         }
 
-                        tmpStatistics_->difference(totalSumsOfStatistics_->gradients_cbegin(),
-                                                   totalSumsOfStatistics_->gradients_cend(),
-                                                   totalSumsOfStatistics_->hessians_cbegin(),
-                                                   totalSumsOfStatistics_->hessians_cend(), labelIndices_,
-                                                   sumsOfStatistics.gradients_cbegin(),
-                                                   sumsOfStatistics.gradients_cend(),
-                                                   sumsOfStatistics.hessians_cbegin(),
-                                                   sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpStatistics_);
+                        tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
+                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
+                                               sumsOfStatistics.hessians_cend());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpVector_);
                     }
 
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
@@ -172,25 +167,22 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     }
 
                     DenseExampleWiseStatisticVector& sumsOfStatistics =
-                        accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
+                        accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
 
                         // Initialize temporary vector, if necessary...
-                        if (tmpStatistics_ == nullptr) {
+                        if (tmpVector_ == nullptr) {
                             uint32 numPredictions = labelIndices_.getNumElements();
-                            tmpStatistics_ = new DenseExampleWiseStatisticVector(numPredictions);
+                            tmpVector_ = new DenseExampleWiseStatisticVector(numPredictions);
                         }
 
-                        tmpStatistics_->difference(totalSumsOfStatistics_->gradients_cbegin(),
-                                                   totalSumsOfStatistics_->gradients_cend(),
-                                                   totalSumsOfStatistics_->hessians_cbegin(),
-                                                   totalSumsOfStatistics_->hessians_cend(), labelIndices_,
-                                                   sumsOfStatistics.gradients_cbegin(),
-                                                   sumsOfStatistics.gradients_cend(),
-                                                   sumsOfStatistics.hessians_cbegin(),
-                                                   sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateExampleWisePrediction(*tmpStatistics_, dsysvLwork_,
+                        tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
+                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
+                                               sumsOfStatistics.hessians_cend());
+                        return ruleEvaluationPtr_->calculateExampleWisePrediction(*tmpVector_, dsysvLwork_,
                                                                                   dsysvTmpArray1_, dsysvTmpArray2_,
                                                                                   dsysvTmpArray3_, dspmvTmpArray_);
                     }
@@ -210,9 +202,9 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
             private:
 
-                const DenseExampleWiseStatistics& originalStatistics_;
+                const DenseExampleWiseStatistics& statistics_;
 
-                DenseExampleWiseStatisticMatrix* statistics_;
+                DenseExampleWiseStatisticMatrix* statisticMatrix_;
 
             public:
 
@@ -222,25 +214,24 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
              * @param numBins       The number of bins, the histogram should consist of
              */
             HistogramBuilder(const DenseExampleWiseStatistics& statistics, uint32 numBins)
-                : originalStatistics_(statistics),
-                  statistics_(new DenseExampleWiseStatisticMatrix(numBins, statistics.getNumLabels(), true)) {
+                : statistics_(statistics),
+                  statisticMatrix_(new DenseExampleWiseStatisticMatrix(numBins, statistics.getNumLabels(), true)) {
 
             }
 
             void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
                 uint32 index = entry.index;
-                statistics_->addToRow(binIndex, originalStatistics_.statistics_->gradients_row_cbegin(index),
-                                      originalStatistics_.statistics_->gradients_row_cend(index),
-                                      originalStatistics_.statistics_->hessians_row_cbegin(index),
-                                      originalStatistics_.statistics_->hessians_row_cend(index));
+                statisticMatrix_->addToRow(binIndex, statistics_.statisticMatrix_->gradients_row_cbegin(index),
+                                           statistics_.statisticMatrix_->gradients_row_cend(index),
+                                           statistics_.statisticMatrix_->hessians_row_cbegin(index),
+                                           statistics_.statisticMatrix_->hessians_row_cend(index));
             }
 
             std::unique_ptr<AbstractStatistics> build() const override {
-                return std::make_unique<DenseExampleWiseStatistics>(originalStatistics_.lossFunctionPtr_,
-                                                                    originalStatistics_.ruleEvaluationFactoryPtr_,
-                                                                    originalStatistics_.lapackPtr_,
-                                                                    originalStatistics_.labelMatrixPtr_, statistics_,
-                                                                    originalStatistics_.currentScores_);
+                return std::make_unique<DenseExampleWiseStatistics>(statistics_.lossFunctionPtr_,
+                                                                    statistics_.ruleEvaluationFactoryPtr_,
+                                                                    statistics_.lapackPtr_, statistics_.labelMatrixPtr_,
+                                                                    statisticMatrix_, statistics_.scoreMatrix_);
             }
 
         };
@@ -251,20 +242,20 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-        DenseExampleWiseStatisticMatrix* statistics_;
+        DenseExampleWiseStatisticMatrix* statisticMatrix_;
 
-        DenseNumericMatrix<float64>* currentScores_;
+        DenseNumericMatrix<float64>* scoreMatrix_;
 
-        DenseExampleWiseStatisticVector totalSumsOfStatistics_;
+        DenseExampleWiseStatisticVector totalSumVector_;
 
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
             // Update the scores that are currently predicted for the example at the given index...
-            currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+            scoreMatrix_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                                prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_, *statistics_);
+            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrix_, *statisticMatrix_);
         }
 
     public:
@@ -279,43 +270,40 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
          *                                  different Lapack routines
          * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
          *                                  provides random access to the labels of the training examples
-         * @param gradients                 A pointer to an array of type `float64`, shape `(num_examples, num_labels)`,
-         *                                  representing the gradients
-         * @param hessians                  A pointer to an array of type `float64`, shape
-         *                                  `(num_examples, num_labels + (num_labels + 1) // 2)`, representing the
-         *                                  Hessians
-         * @param currentScores             A pointer to an array of type `float64`, shape `(num_examples, num_labels`),
-         *                                  representing the currently predicted scores
+         * @param statisticMatrix           A pointer to an object of type `DenseExampleWiseStatisticMatrix` that stores
+         *                                  the gradients and Hessians
+         * @param scoreMatrix               A pointer to an object of type `DenseNumericMatrix` that stores the
+         *                                  currently predicted scores
          */
         DenseExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                    std::shared_ptr<Lapack> lapackPtr,
                                    std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                   DenseExampleWiseStatisticMatrix* statistics,
-                                   DenseNumericMatrix<float64>* currentScores)
+                                   DenseExampleWiseStatisticMatrix* statisticMatrix,
+                                   DenseNumericMatrix<float64>* scoreMatrix)
             : AbstractExampleWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                             ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
-              statistics_(statistics), currentScores_(currentScores),
-              totalSumsOfStatistics_(DenseExampleWiseStatisticVector(labelMatrixPtr->getNumLabels())) {
+              statisticMatrix_(statisticMatrix), scoreMatrix_(scoreMatrix),
+              totalSumVector_(DenseExampleWiseStatisticVector(labelMatrixPtr->getNumLabels())) {
 
         }
 
         ~DenseExampleWiseStatistics() {
-            delete statistics_;
-            delete currentScores_;
+            delete statisticMatrix_;
+            delete scoreMatrix_;
         }
 
         void resetCoveredStatistics() override {
-            totalSumsOfStatistics_.setAllToZero();
+            totalSumVector_.setAllToZero();
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            totalSumsOfStatistics_.add(statistics_->gradients_row_cbegin(statisticIndex),
-                                       statistics_->gradients_row_cend(statisticIndex),
-                                       statistics_->hessians_row_cbegin(statisticIndex),
-                                       statistics_->hessians_row_cend(statisticIndex), signedWeight);
+            totalSumVector_.add(statisticMatrix_->gradients_row_cbegin(statisticIndex),
+                                statisticMatrix_->gradients_row_cend(statisticIndex),
+                                statisticMatrix_->hessians_row_cbegin(statisticIndex),
+                                statisticMatrix_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
@@ -371,13 +359,13 @@ DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
 std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::create() const {
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
-    DenseExampleWiseStatisticMatrix* statistics = new DenseExampleWiseStatisticMatrix(numExamples, numLabels);
-    DenseNumericMatrix<float64>* currentScores = new DenseNumericMatrix<float64>(numExamples, numLabels, true);
+    DenseExampleWiseStatisticMatrix* statisticMatrix = new DenseExampleWiseStatisticMatrix(numExamples, numLabels);
+    DenseNumericMatrix<float64>* scoreMatrix = new DenseNumericMatrix<float64>(numExamples, numLabels, true);
 
     for (uint32 r = 0; r < numExamples; r++) {
-        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *currentScores, *statistics);
+        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *scoreMatrix, *statisticMatrix);
     }
 
     return std::make_unique<DenseExampleWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_,
-                                                        labelMatrixPtr_, statistics, currentScores);
+                                                        labelMatrixPtr_, statisticMatrix, scoreMatrix);
 }
