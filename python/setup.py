@@ -32,6 +32,7 @@ sources = [
     'boomer/common/cpp/binning.cpp',
     'boomer/boosting/cpp/blas.cpp',
     'boomer/boosting/cpp/lapack.cpp',
+    'boomer/boosting/cpp/data.cpp',
     'boomer/boosting/cpp/post_processing.cpp',
     'boomer/boosting/cpp/losses_label_wise.cpp',
     'boomer/boosting/cpp/losses_example_wise.cpp',
