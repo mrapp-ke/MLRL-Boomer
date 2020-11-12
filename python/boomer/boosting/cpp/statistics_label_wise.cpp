@@ -36,15 +36,15 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
 
                 const T& labelIndices_;
 
-                StatisticVector sumsOfStatistics_;
+                StatisticVector sumVector_;
 
-                StatisticVector* accumulatedSumsOfStatistics_;
+                StatisticVector* accumulatedSumVector_;
 
-                const StatisticVector* totalSumsOfStatistics_;
+                const StatisticVector* totalSumVector_;
 
-                StatisticVector* totalSumsOfCoverableStatistics_;
+                StatisticVector* totalCoverableSumVector_;
 
-                StatisticVector* tmpStatistics_;
+                StatisticVector* tmpVector_;
 
             public:
 
@@ -60,83 +60,76 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                 StatisticsSubset(const LabelWiseStatistics& statistics,
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
-                      labelIndices_(labelIndices),
-                      sumsOfStatistics_(StatisticVector(labelIndices.getNumElements(), true)),
-                      totalSumsOfStatistics_(&statistics_.totalSumsOfStatistics_) {
-                    accumulatedSumsOfStatistics_ = nullptr;
-                    totalSumsOfCoverableStatistics_ = nullptr;
-                    tmpStatistics_ = nullptr;
+                      labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
+                      totalSumVector_(&statistics_.totalSumVector_) {
+                    accumulatedSumVector_ = nullptr;
+                    totalCoverableSumVector_ = nullptr;
+                    tmpVector_ = nullptr;
                 }
 
                 ~StatisticsSubset() {
-                    delete accumulatedSumsOfStatistics_;
-                    delete totalSumsOfCoverableStatistics_;
-                    delete tmpStatistics_;
+                    delete accumulatedSumVector_;
+                    delete totalCoverableSumVector_;
+                    delete tmpVector_;
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
                     // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                    if (totalSumsOfCoverableStatistics_ == nullptr) {
-                        totalSumsOfCoverableStatistics_ = new StatisticVector(*totalSumsOfStatistics_);
-                        totalSumsOfStatistics_ = totalSumsOfCoverableStatistics_;
+                    if (totalCoverableSumVector_ == nullptr) {
+                        totalCoverableSumVector_ = new StatisticVector(*totalSumVector_);
+                        totalSumVector_ = totalCoverableSumVector_;
                     }
 
                     // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                     // weight) from the total sums of gradients and Hessians...
-                    totalSumsOfCoverableStatistics_->subtract(
-                        statistics_.statistics_->gradients_row_cbegin(statisticIndex),
-                        statistics_.statistics_->gradients_row_cend(statisticIndex),
-                        statistics_.statistics_->hessians_row_cbegin(statisticIndex),
-                        statistics_.statistics_->hessians_row_cend(statisticIndex), weight);
+                    totalCoverableSumVector_->subtract(
+                        statistics_.statisticMatrix_->gradients_row_cbegin(statisticIndex),
+                        statistics_.statisticMatrix_->gradients_row_cend(statisticIndex),
+                        statistics_.statisticMatrix_->hessians_row_cbegin(statisticIndex),
+                        statistics_.statisticMatrix_->hessians_row_cend(statisticIndex), weight);
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    sumsOfStatistics_.addToSubset(statistics_.statistics_->gradients_row_cbegin(statisticIndex),
-                                                  statistics_.statistics_->gradients_row_cend(statisticIndex),
-                                                  statistics_.statistics_->hessians_row_cbegin(statisticIndex),
-                                                  statistics_.statistics_->hessians_row_cend(statisticIndex),
-                                                  labelIndices_, weight);
+                    sumVector_.addToSubset(statistics_.statisticMatrix_->gradients_row_cbegin(statisticIndex),
+                                           statistics_.statisticMatrix_->gradients_row_cend(statisticIndex),
+                                           statistics_.statisticMatrix_->hessians_row_cbegin(statisticIndex),
+                                           statistics_.statisticMatrix_->hessians_row_cend(statisticIndex),
+                                           labelIndices_, weight);
                 }
 
                 void resetSubset() override {
                     uint32 numPredictions = labelIndices_.getNumElements();
 
                     // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
-                    if (accumulatedSumsOfStatistics_ == nullptr) {
-                        accumulatedSumsOfStatistics_ = new StatisticVector(numPredictions, true);
+                    if (accumulatedSumVector_ == nullptr) {
+                        accumulatedSumVector_ = new StatisticVector(numPredictions, true);
                     }
 
                     // Reset the sums of gradients and Hessians to zero and add it to the accumulated sums of gradients
                     // and hessians...
-                    accumulatedSumsOfStatistics_->add(sumsOfStatistics_.gradients_cbegin(),
-                                                      sumsOfStatistics_.gradients_cend(),
-                                                      sumsOfStatistics_.hessians_cbegin(),
-                                                      sumsOfStatistics_.hessians_cend());
-                    sumsOfStatistics_.setAllToZero();
+                    accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
+                                               sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                    sumVector_.setAllToZero();
                 }
 
                 const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                  bool accumulated) override {
-                    const StatisticVector& sumsOfStatistics =
-                        accumulated ? *accumulatedSumsOfStatistics_ : sumsOfStatistics_;
+                    const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
                         uint32 numPredictions = labelIndices_.getNumElements();
 
                         // Initialize temporary vector, if necessary...
-                        if (tmpStatistics_ == nullptr) {
-                            tmpStatistics_ = new StatisticVector(numPredictions);
+                        if (tmpVector_ == nullptr) {
+                            tmpVector_ = new StatisticVector(numPredictions);
                         }
 
-                        tmpStatistics_->difference(totalSumsOfStatistics_->gradients_cbegin(),
-                                                   totalSumsOfStatistics_->gradients_cend(),
-                                                   totalSumsOfStatistics_->hessians_cbegin(),
-                                                   totalSumsOfStatistics_->hessians_cend(), labelIndices_,
-                                                   sumsOfStatistics.gradients_cbegin(),
-                                                   sumsOfStatistics.gradients_cend(),
-                                                   sumsOfStatistics.hessians_cbegin(),
-                                                   sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpStatistics_);
+                        tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
+                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
+                                               sumsOfStatistics.hessians_cend());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpVector_);
                     }
 
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
@@ -152,9 +145,9 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
 
             private:
 
-                const LabelWiseStatistics& originalStatistics_;
+                const LabelWiseStatistics& statistics_;
 
-                StatisticMatrix* statistics_;
+                StatisticMatrix* statisticMatrix_;
 
             public:
 
@@ -164,23 +157,23 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                  * @param numBins       The number of bins, the histogram should consist of
                  */
                 HistogramBuilder(const LabelWiseStatistics& statistics, uint32 numBins)
-                    : originalStatistics_(statistics),
-                      statistics_(new StatisticMatrix(numBins, statistics.getNumLabels(), true)) {
+                    : statistics_(statistics),
+                      statisticMatrix_(new StatisticMatrix(numBins, statistics.getNumLabels(), true)) {
 
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
                     uint32 index = entry.index;
-                    statistics_->addToRow(binIndex, originalStatistics_.statistics_->gradients_row_cbegin(index),
-                                          originalStatistics_.statistics_->gradients_row_cend(index),
-                                          originalStatistics_.statistics_->hessians_row_cbegin(index),
-                                          originalStatistics_.statistics_->hessians_row_cend(index));
+                    statisticMatrix_->addToRow(binIndex, statistics_.statisticMatrix_->gradients_row_cbegin(index),
+                                               statistics_.statisticMatrix_->gradients_row_cend(index),
+                                               statistics_.statisticMatrix_->hessians_row_cbegin(index),
+                                               statistics_.statisticMatrix_->hessians_row_cend(index));
                 }
 
                 std::unique_ptr<AbstractStatistics> build() const override {
                     return std::make_unique<LabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                        originalStatistics_.lossFunctionPtr_, originalStatistics_.ruleEvaluationFactoryPtr_,
-                        originalStatistics_.labelMatrixPtr_, statistics_, originalStatistics_.currentScores_);
+                        statistics_.lossFunctionPtr_, statistics_.ruleEvaluationFactoryPtr_,
+                        statistics_.labelMatrixPtr_, statisticMatrix_, statistics_.scoreMatrix_);
                 }
 
         };
@@ -190,21 +183,22 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-        StatisticMatrix* statistics_;
+        StatisticMatrix* statisticMatrix_;
 
-        ScoreMatrix* currentScores_;
+        ScoreMatrix* scoreMatrix_;
 
-        StatisticVector totalSumsOfStatistics_;
+        StatisticVector totalSumVector_;
 
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
             // Update the scores that are currently predicted for the example at the given index...
-            currentScores_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
-                                               prediction.indices_cbegin(), prediction.indices_cend());
+            scoreMatrix_->addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+                                             prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians of the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *currentScores_,
-                                               prediction.indices_cbegin(), prediction.indices_cend(), *statistics_);
+            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrix_,
+                                               prediction.indices_cbegin(), prediction.indices_cend(),
+                                               *statisticMatrix_);
         }
 
     public:
@@ -217,38 +211,38 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
          *                                  the predictions, as well as corresponding quality scores, of rules
          * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
          *                                  provides random access to the labels of the training examples
-         * @param statistics                A pointer to an object of template type `StatisticMatrix` that stores the
+         * @param statisticMatrix           A pointer to an object of template type `StatisticMatrix` that stores the
          *                                  gradients and Hessians
          *                                  representing the Hessians
-         * @param currentScores             A pointer to an object of template type `ScoreMatrix` that stores the
+         * @param scoreMatrix               A pointer to an object of template type `ScoreMatrix` that stores the
          *                                  currently predicted scores
          */
         LabelWiseStatistics(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
                             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, StatisticMatrix* statistics,
-                            ScoreMatrix* currentScores)
+                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, StatisticMatrix* statisticMatrix,
+                            ScoreMatrix* scoreMatrix)
             : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                           ruleEvaluationFactoryPtr),
-              lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), statistics_(statistics),
-              currentScores_(currentScores), totalSumsOfStatistics_(StatisticVector(labelMatrixPtr->getNumLabels())) {
+              lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr), statisticMatrix_(statisticMatrix),
+              scoreMatrix_(scoreMatrix), totalSumVector_(StatisticVector(labelMatrixPtr->getNumLabels())) {
 
         }
 
         ~LabelWiseStatistics() {
-            delete statistics_;
-            delete currentScores_;
+            delete statisticMatrix_;
+            delete scoreMatrix_;
         }
 
         void resetCoveredStatistics() override {
-            totalSumsOfStatistics_.setAllToZero();
+            totalSumVector_.setAllToZero();
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            totalSumsOfStatistics_.add(statistics_->gradients_row_cbegin(statisticIndex),
-                                       statistics_->gradients_row_cend(statisticIndex),
-                                       statistics_->hessians_row_cbegin(statisticIndex),
-                                       statistics_->hessians_row_cend(statisticIndex), signedWeight);
+            totalSumVector_.add(statisticMatrix_->gradients_row_cbegin(statisticIndex),
+                                statisticMatrix_->gradients_row_cend(statisticIndex),
+                                statisticMatrix_->hessians_row_cbegin(statisticIndex),
+                                statisticMatrix_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
@@ -303,17 +297,17 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
-    DenseLabelWiseStatisticMatrix* statistics = new DenseLabelWiseStatisticMatrix(numExamples, numLabels);
-    DenseNumericMatrix<float64>* currentScores = new DenseNumericMatrix<float64>(numExamples, numLabels, true);
+    DenseLabelWiseStatisticMatrix* statisticMatrix = new DenseLabelWiseStatisticMatrix(numExamples, numLabels);
+    DenseNumericMatrix<float64>* scoreMatrix = new DenseNumericMatrix<float64>(numExamples, numLabels, true);
     FullIndexVector labelIndices(numLabels);
     FullIndexVector::const_iterator labelIndicesBegin = labelIndices.cbegin();
     FullIndexVector::const_iterator labelIndicesEnd = labelIndices.cend();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *currentScores, labelIndicesBegin, labelIndicesEnd,
-                                           *statistics);
+        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *scoreMatrix, labelIndicesBegin, labelIndicesEnd,
+                                           *statisticMatrix);
     }
 
     return std::make_unique<LabelWiseStatistics<DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
-        lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, statistics, currentScores);
+        lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, statisticMatrix, scoreMatrix);
 }
