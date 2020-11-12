@@ -50,12 +50,12 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
         }
 
         const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const DenseExampleWiseStatisticsVector& statistics) override {
+                const DenseExampleWiseStatisticVector& statistics) override {
             if (labelWisePrediction_ == nullptr) {
                 labelWisePrediction_ = new LabelWiseEvaluatedPrediction(numPredictions_);
             }
 
-            DenseExampleWiseStatisticsVector::gradient_const_iterator gradientIterator = statistics.gradients_cbegin();
+            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statistics.gradients_cbegin();
             LabelWiseEvaluatedPrediction::score_iterator scoreIterator = labelWisePrediction_->scores_begin();
             LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
                 labelWisePrediction_->quality_scores_begin();
@@ -84,7 +84,7 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             return *labelWisePrediction_;
         }
 
-        const EvaluatedPrediction& calculateExampleWisePrediction(DenseExampleWiseStatisticsVector& statistics,
+        const EvaluatedPrediction& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statistics,
                                                                   int dsysvLwork, float64* dsysvTmpArray1,
                                                                   int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                                   float64* dspmvTmpArray) override {
@@ -93,8 +93,8 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             }
 
             EvaluatedPrediction::score_iterator scoreIterator = prediction_->scores_begin();
-            DenseExampleWiseStatisticsVector::gradient_iterator gradientIterator = statistics.gradients_begin();
-            DenseExampleWiseStatisticsVector::hessian_iterator hessianIterator = statistics.hessians_begin();
+            DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statistics.gradients_begin();
+            DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statistics.hessians_begin();
 
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
             lapackPtr_->dsysv(hessianIterator, gradientIterator, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,

@@ -31,12 +31,12 @@ namespace boosting {
              *                          access to the labels of the training examples
              * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
              *                          predicted scores
-             * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticsMatrix` to be
+             * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticMatrix` to be
              *                          updated
              */
             virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                           const DenseNumericMatrix<float64>& scoreMatrix,
-                                          DenseExampleWiseStatisticsMatrix& statisticMatrix) const = 0;
+                                          DenseExampleWiseStatisticMatrix& statisticMatrix) const = 0;
 
     };
 
@@ -49,7 +49,7 @@ namespace boosting {
 
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                   const DenseNumericMatrix<float64>& scoreMatrix,
-                                  DenseExampleWiseStatisticsMatrix& statisticMatrix) const override;
+                                  DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
     };
 
