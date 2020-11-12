@@ -184,9 +184,33 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                                                                                  bool accumulated) override {
                     float64* sumsOfGradients = accumulated ? accumulatedSumsOfGradients_ : sumsOfGradients_;
                     float64* sumsOfHessians = accumulated ? accumulatedSumsOfHessians_ : sumsOfHessians_;
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(
-                        totalSumsOfStatistics_->gradients_cbegin(), sumsOfGradients,
-                        totalSumsOfStatistics_->hessians_cbegin(), sumsOfHessians, uncovered);
+
+                    if (uncovered) {
+                        uint32 numPredictions = labelIndices_.getNumElements();
+                        uint32 numHessians = triangularNumber(numPredictions);
+
+                        // Initialize temporary vector, if necessary...
+                        if (tmpGradients_ == nullptr) {
+                            tmpGradients_ = (float64*) malloc(numPredictions * sizeof(float64));
+                            tmpHessians_ = (float64*) malloc(numHessians * sizeof(float64));
+                        }
+
+                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                        DenseExampleWiseStatisticsVector::gradient_const_iterator gradientTotalIterator = totalSumsOfStatistics_->gradients_cbegin();
+                        DenseExampleWiseStatisticsVector::hessian_const_iterator hessianTotalIterator = totalSumsOfStatistics_->hessians_cbegin();
+
+                        for (uint32 c = 0; c < numPredictions; c++) {
+                            uint32 l = indexIterator[c];
+                            tmpGradients_[c] = gradientTotalIterator[l] - sumsOfGradients[c];
+                            uint32 c2 = triangularNumber(c + 1) - 1;
+                            uint32 l2 = triangularNumber(l + 1) - 1;
+                            tmpHessians_[c2] = hessianTotalIterator[l2] - sumsOfHessians[c2];
+                        }
+
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpGradients_, tmpHessians_);
+                    }
+
+                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfGradients, sumsOfHessians);
                 }
 
                 const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
