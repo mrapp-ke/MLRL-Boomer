@@ -6,8 +6,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/types.h"
-#include <cstdlib>
+#include "../../common/cpp/indices.h"
 
 
 namespace boosting {
@@ -30,39 +29,20 @@ namespace boosting {
             /**
              * @param numElements The number of gradients and Hessians in the vector
              */
-            DenseLabelWiseStatisticsVector(uint32 numElements)
-                : DenseLabelWiseStatisticsVector(numElements, false) {
-
-            }
+            DenseLabelWiseStatisticsVector(uint32 numElements);
 
             /**
              * @param numElements The number of gradients and Hessians in the vector
              * @param True, if all gradients and Hessians in the vector should be initialized with zero, false otherwise
              */
-            DenseLabelWiseStatisticsVector(uint32 numElements, bool init)
-                : numElements_(numElements),
-                  gradients_((float64*) (init ? calloc(numElements, sizeof(float64))
-                                              : malloc(numElements * sizeof(float64)))),
-                  hessians_((float64*) (init ? calloc(numElements, sizeof(float64))
-                                             : malloc(numElements * sizeof(float64)))) {
-
-            }
+            DenseLabelWiseStatisticsVector(uint32 numElements, bool init);
 
             /**
              * @param vector A reference to an object of type `DenseLabelWiseStatisticsVector` to be copied
              */
-            DenseLabelWiseStatisticsVector(const DenseLabelWiseStatisticsVector& vector)
-                : DenseLabelWiseStatisticsVector(vector.numElements_) {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] = vector.gradients_[i];
-                    hessians_[i] = vector.hessians_[i];
-                }
-            }
+            DenseLabelWiseStatisticsVector(const DenseLabelWiseStatisticsVector& vector);
 
-            ~DenseLabelWiseStatisticsVector() {
-                free(gradients_);
-                free(hessians_);
-            }
+            ~DenseLabelWiseStatisticsVector();
 
             typedef float64* gradient_iterator;
 
@@ -77,91 +57,68 @@ namespace boosting {
              *
              * @return A `gradient_iterator` to the beginning
              */
-            gradient_iterator gradients_begin() {
-                return gradients_;
-            }
+            gradient_iterator gradients_begin();
 
             /**
              * Returns a `gradient_iterator` to the end of the gradients.
              *
              * @return A `gradient_iterator` to the end
              */
-            gradient_iterator gradients_end() {
-                return &gradients_[numElements_];
-            }
+            gradient_iterator gradients_end();
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients.
              *
              * @return A `gradient_const_iterator` to the beginning
              */
-            gradient_const_iterator gradients_cbegin() const {
-                return gradients_;
-            }
+            gradient_const_iterator gradients_cbegin() const;
 
             /**
              * Returns a `gradient_const_iterator` to the end of the gradients.
              *
              * @return A `gradient_const_iterator` to the end
              */
-            gradient_const_iterator gradients_cend() const {
-                return &gradients_[numElements_];
-            }
+            gradient_const_iterator gradients_cend() const;
 
             /**
              * Returns a `hessian_iterator` to the beginning of the Hessians.
              *
              * @return A `hessian_iterator` to the beginning
              */
-            hessian_iterator hessians_begin() {
-                return hessians_;
-            }
+            hessian_iterator hessians_begin();
 
             /**
              * Returns a `hessian_iterator` to the end of the Hessians.
              *
              * @return A `hessian_iterator` to the end
              */
-            hessian_iterator hessians_end() {
-                return &hessians_[numElements_];
-            }
+            hessian_iterator hessians_end();
 
             /**
              * Returns a `hessian_const_iterator` to the beginning of the Hessians.
              *
              * @return A `hessian_const_iterator` to the beginning
              */
-            hessian_const_iterator hessians_cbegin() const {
-                return hessians_;
-            }
+            hessian_const_iterator hessians_cbegin() const;
 
             /**
              * Returns a `hessian_const_iterator` to the end of the Hessians.
              *
              * @return A `hessian_const_iterator` to the end
              */
-            hessian_const_iterator hessians_cend() const {
-                return &hessians_[numElements_];
-            }
+            hessian_const_iterator hessians_cend() const;
 
             /**
              * Returns the number of gradients and Hessians in the vector.
              *
              * @return The number of gradients and Hessians in the vector
              */
-            uint32 getNumElements() const {
-                return numElements_;
-            }
+            uint32 getNumElements() const;
 
             /**
              * Sets all gradients and Hessians in the vector to zero.
              */
-            void setAllToZero() {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] = 0;
-                    hessians_[i] = 0;
-                }
-            }
+            void setAllToZero();
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.
@@ -172,12 +129,7 @@ namespace boosting {
              * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
              */
             void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] += gradientsBegin[i];
-                    hessians_[i] += hessiansBegin[i];
-                }
-            }
+                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector. The gradients and Hessians to be added
@@ -190,12 +142,7 @@ namespace boosting {
              * @param weight            The weight, the gradients and Hessians should be multiplied by
              */
             void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight) {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] += (gradientsBegin[i] * weight);
-                    hessians_[i] += (hessiansBegin[i] * weight);
-                }
-            }
+                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
 
             /**
              * Subtracts all gradients and Hessians in another vector from this vector. The gradients and Hessians to be
@@ -208,12 +155,7 @@ namespace boosting {
              * @param weight            The weight, the gradients and Hessians should be multiplied by
              */
             void subtract(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight) {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] -= (gradientsBegin[i] * weight);
-                    hessians_[i] -= (hessiansBegin[i] * weight);
-                }
-            }
+                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a `FullIndexVector`,
@@ -228,12 +170,7 @@ namespace boosting {
              */
             void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                              hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
-                             const FullIndexVector& indices, float64 weight) {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] += (gradientsBegin[i] * weight);
-                    hessians_[i] += (hessiansBegin[i] * weight);
-                }
-            }
+                             const FullIndexVector& indices, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -249,15 +186,7 @@ namespace boosting {
              */
             void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                              hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
-                             const PartialIndexVector& indices, float64 weight) {
-                PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-
-                for (uint32 i = 0; i < numElements_; i++) {
-                    uint32 index = indexIterator[i];
-                    gradients_[i] += (gradientsBegin[index] * weight);
-                    hessians_[i] += (hessiansBegin[index] * weight);
-                }
-            }
+                             const PartialIndexVector& indices, float64 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -279,12 +208,7 @@ namespace boosting {
                             hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
                             const FullIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
                             gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
-                            hessian_const_iterator secondHessiansEnd) {
-                for (uint32 i = 0; i < numElements_; i++) {
-                    gradients_[i] = firstGradientsBegin[i] - secondGradientsBegin[i];
-                    hessians_[i] = firstHessiansBegin[i] - secondHessiansBegin[i];
-                }
-            }
+                            hessian_const_iterator secondHessiansEnd);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -306,15 +230,7 @@ namespace boosting {
                             hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
                             const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
                             gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
-                            hessian_const_iterator secondHessiansEnd) {
-                PartialIndexVector::const_iterator firstIndexIterator = firstIndices.cbegin();
-
-                for (uint32 i = 0; i < numElements_; i++) {
-                    uint32 firstIndex = firstIndexIterator[i];
-                    gradients_[i] = firstGradientsBegin[firstIndex] - secondGradientsBegin[i];
-                    hessians_[i] = firstHessiansBegin[firstIndex] - secondHessiansBegin[i];
-                }
-            }
+                            hessian_const_iterator secondHessiansEnd);
 
     };
 
@@ -339,10 +255,7 @@ namespace boosting {
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            DenseLabelWiseStatisticsMatrix(uint32 numRows, uint32 numCols)
-                : DenseLabelWiseStatisticsMatrix(numRows, numCols, false) {
-
-            }
+            DenseLabelWiseStatisticsMatrix(uint32 numRows, uint32 numCols);
 
             /**
              * @param numRows   The number of rows in the matrix
@@ -350,19 +263,9 @@ namespace boosting {
              * @param init      True, if all gradients and Hessians in the matrix should be initialized with zero, false
              *                  otherwise
              */
-            DenseLabelWiseStatisticsMatrix(uint32 numRows, uint32 numCols, bool init)
-                : numRows_(numRows), numCols_(numCols),
-                  gradients_((float64*) (init ? calloc(numRows * numCols, sizeof(float64))
-                                              : malloc(numRows * numCols * sizeof(float64)))),
-                  hessians_((float64*) (init ? calloc(numRows * numCols, sizeof(float64))
-                                             : malloc(numRows * numCols * sizeof(float64)))) {
-
-            }
+            DenseLabelWiseStatisticsMatrix(uint32 numRows, uint32 numCols, bool init);
             
-            ~DenseLabelWiseStatisticsMatrix() {
-                free(gradients_);
-                free(hessians_);
-            }
+            ~DenseLabelWiseStatisticsMatrix();
             
             typedef float64* gradient_iterator;
             
@@ -378,9 +281,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `gradient_iterator` to the beginning of the given row 
              */
-            gradient_iterator gradients_row_begin(uint32 row) {
-                return &gradients_[row * numCols_];
-            }
+            gradient_iterator gradients_row_begin(uint32 row);
             
             /**
              * Returns a `gradient_iterator` to the end of the gradients at a specific row.
@@ -388,9 +289,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `gradient_iterator` to the end of the given row 
              */
-            gradient_iterator gradients_row_end(uint32 row) {
-                return &gradients_[(row + 1) * numCols_];
-            }
+            gradient_iterator gradients_row_end(uint32 row);
             
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.
@@ -398,9 +297,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `gradient_const_iterator` to the beginning of the given row 
              */
-            gradient_const_iterator gradients_row_cbegin(uint32 row) const {
-                return &gradients_[row * numCols_];
-            }
+            gradient_const_iterator gradients_row_cbegin(uint32 row) const;
             
             /**
              * Returns a `gradient_const_iterator` to the end of the gradients at a specific row.
@@ -408,9 +305,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `gradient_const_iterator` to the end of the given row 
              */
-            gradient_const_iterator gradients_row_cend(uint32 row) const {
-                return &gradients_[(row + 1) * numCols_];   
-            }
+            gradient_const_iterator gradients_row_cend(uint32 row) const;
 
             /**
              * Returns a `hessian_iterator` to the beginning of the Hessians at a specific row.
@@ -418,9 +313,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_iterator` to the beginning of the given row 
              */
-            hessian_iterator hessians_row_begin(uint32 row) {
-                return &hessians_[row * numCols_];
-            }
+            hessian_iterator hessians_row_begin(uint32 row);
             
             /**
              * Returns a `hessian_iterator` to the end of the Hessians at a specific row.
@@ -428,9 +321,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_iterator` to the end of the given row 
              */
-            hessian_iterator hessians_row_end(uint32 row) {
-                return &hessians_[(row + 1) * numCols_];
-            }
+            hessian_iterator hessians_row_end(uint32 row);
             
             /**
              * Returns a `hessian_const_iterator` to the beginning of the Hessians at a specific row.
@@ -438,9 +329,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_const_iterator` to the beginning of the given row 
              */
-            hessian_const_iterator hessians_row_cbegin(uint32 row) const {
-                return &hessians_[row * numCols_];
-            }
+            hessian_const_iterator hessians_row_cbegin(uint32 row) const;
             
             /**
              * Returns a `hessian_const_iterator` to the end of the Hessians at a specific row.
@@ -448,27 +337,21 @@ namespace boosting {
              * @param row   The row
              * @return      A `hessian_const_iterator` to the end of the given row 
              */
-            hessian_const_iterator hessians_row_cend(uint32 row) const {
-                return &hessians_[(row + 1) * numCols_];
-            }
+            hessian_const_iterator hessians_row_cend(uint32 row) const;
 
             /**
              * Returns the number of rows in the matrix.
              *
              * @return The number of rows in the matrix
              */
-            uint32 getNumRows() const {
-                return numRows_;
-            }
+            uint32 getNumRows() const;
 
             /**
              * Returns the number of columns in the matrix.
              *
              * @return The number of columns in the matrix
              */
-            uint32 getNumCols() const {
-                return numCols_;
-            }
+            uint32 getNumCols() const;
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix.
@@ -480,15 +363,7 @@ namespace boosting {
              * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians in the vector
              */
             void addToRow(uint32 row, gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
-                uint32 offset = row * numCols_;
-
-                for (uint32 i = 0; i < numCols_; i++) {
-                    uint32 index = offset + i;
-                    gradients_[index] += gradientsBegin[i];
-                    hessians_[index] += hessiansBegin[i];
-                }
-            }
+                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd);
 
     };
 
