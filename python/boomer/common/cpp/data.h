@@ -19,7 +19,7 @@
 template<class T>
 class DenseVector {
 
-    protected:
+    private:
 
         T* array_;
 
