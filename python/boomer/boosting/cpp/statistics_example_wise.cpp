@@ -90,30 +90,19 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
-                    uint32 numLabels = statistics_.getNumLabels();
-                    uint32 numHessians = triangularNumber(numLabels);
-
-                    // Allocate arrays for storing the totals sums of gradients and Hessians, if necessary...
+                    // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                     if (totalSumsOfCoverableStatistics_ == nullptr) {
                         totalSumsOfCoverableStatistics_ = new DenseExampleWiseStatisticsVector(*totalSumsOfStatistics_);
                         totalSumsOfStatistics_ = totalSumsOfCoverableStatistics_;
                     }
 
-                    // For each label, subtract the gradient and Hessian of the example at the given index (weighted by
-                    // the given weight) from the total sum of gradients and Hessians...
-                    DenseExampleWiseStatisticsMatrix::gradient_const_iterator gradientIterator = statistics_.statistics_->gradients_row_cbegin(statisticIndex);
-                    DenseExampleWiseStatisticsVector::gradient_iterator gradientSumIterator = totalSumsOfCoverableStatistics_->gradients_begin();
-
-                    for (uint32 c = 0; c < numLabels; c++) {
-                        gradientSumIterator[c] -= (weight * gradientIterator[c]);
-                    }
-
-                    DenseExampleWiseStatisticsMatrix::hessian_const_iterator hessianIterator = statistics_.statistics_->hessians_row_cbegin(statisticIndex);
-                    DenseExampleWiseStatisticsVector::hessian_iterator hessianSumIterator = totalSumsOfCoverableStatistics_->hessians_begin();
-
-                    for (uint32 c = 0; c < numHessians; c++) {
-                        hessianSumIterator[c] -= (weight * hessianIterator[c]);
-                    }
+                    // Subtract the gradients and Hessians of the example at the given index (weighted by the given
+                    // weight) from the total sums of gradients and Hessians...
+                    totalSumsOfCoverableStatistics_->subtract(
+                        statistics_.statistics_->gradients_row_cbegin(statisticIndex),
+                        statistics_.statistics_->gradients_row_cend(statisticIndex),
+                        statistics_.statistics_->hessians_row_cbegin(statisticIndex),
+                        statistics_.statistics_->hessians_row_cend(statisticIndex), weight);
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
@@ -143,7 +132,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 }
 
                 void resetSubset() override {
-                    // Allocate vector for storing the accumulated sums of gradients and Hessians, if necessary...
+                    // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumsOfStatistics_ == nullptr) {
                         uint32 numPredictions = labelIndices_.getNumElements();
                         accumulatedSumsOfStatistics_ = new DenseExampleWiseStatisticsVector(numPredictions, true);
