@@ -1,5 +1,4 @@
 #include "statistics_example_wise.h"
-#include "../../common/cpp/arrays.h"
 #include "data.h"
 #include "data_example_wise.h"
 #include <cstdlib>
