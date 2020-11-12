@@ -143,30 +143,18 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 }
 
                 void resetSubset() override {
-                    uint32 numPredictions = labelIndices_.getNumElements();
-                    uint32 numHessians = triangularNumber(numPredictions);
-
-                    // Allocate arrays for storing the accumulated sums of gradients and Hessians, if necessary...
+                    // Allocate vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumsOfStatistics_ == nullptr) {
+                        uint32 numPredictions = labelIndices_.getNumElements();
                         accumulatedSumsOfStatistics_ = new DenseExampleWiseStatisticsVector(numPredictions, true);
                     }
 
-                    // Reset the sum of gradients and Hessians for each label to zero and add it to the accumulated sums
-                    // of gradients and Hessians...
-                    DenseExampleWiseStatisticsVector::gradient_const_iterator gradientIterator = sumsOfStatistics_.gradients_cbegin();
-                    DenseExampleWiseStatisticsVector::gradient_iterator gradientAccIterator = accumulatedSumsOfStatistics_->gradients_begin();
-
-                    for (uint32 c = 0; c < numPredictions; c++) {
-                        gradientAccIterator[c] += gradientIterator[c];
-                    }
-
-                    DenseExampleWiseStatisticsVector::hessian_const_iterator hessianIterator = sumsOfStatistics_.hessians_cbegin();
-                    DenseExampleWiseStatisticsVector::hessian_iterator hessianAccIterator = accumulatedSumsOfStatistics_->hessians_begin();
-
-                    for (uint32 c = 0; c < numHessians; c++) {
-                        hessianAccIterator[c] += hessianIterator[c];
-                    }
-
+                    // Reset the sum of gradients and Hessians to zero and add it to the accumulated sums of gradients
+                    // and Hessians...
+                    accumulatedSumsOfStatistics_->add(sumsOfStatistics_.gradients_cbegin(),
+                                                      sumsOfStatistics_.gradients_cend(),
+                                                      sumsOfStatistics_.hessians_cbegin(),
+                                                      sumsOfStatistics_.hessians_cend());
                     sumsOfStatistics_.setAllToZero();
                 }
 
