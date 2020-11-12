@@ -32,7 +32,7 @@ namespace boosting {
 
         private:
 
-            uint32 numElements_;
+            uint32 numGradients_;
 
             uint32 numHessians_;
 
@@ -43,21 +43,22 @@ namespace boosting {
         public:
 
             /**
-             * @param numElements The number of gradients and Hessians in the vector
+             * @param numGradients The number of gradients in the vector
              */
-            DenseExampleWiseStatisticVector(uint32 numElements)
-                : DenseExampleWiseStatisticVector(numElements, false) {
+            DenseExampleWiseStatisticVector(uint32 numGradients)
+                : DenseExampleWiseStatisticVector(numGradients, false) {
 
             }
 
             /**
-             * @param numElements The number of gradients in the vector
-             * @param True, if all gradients and Hessians in the vector should be initialized with zero, false otherwise
+             * @param numGradients The number of gradients in the vector
+             * @param init         True, if all gradients and Hessians in the vector should be initialized with zero,
+             *                     false otherwise
              */
-            DenseExampleWiseStatisticVector(uint32 numElements, bool init)
-                : numElements_(numElements), numHessians_(triangularNumber(numElements)),
-                  gradients_((float64*) (init ? calloc(numElements, sizeof(float64))
-                                              : malloc(numElements * sizeof(float64)))),
+            DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
+                : numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
+                  gradients_((float64*) (init ? calloc(numGradients, sizeof(float64))
+                                              : malloc(numGradients * sizeof(float64)))),
                   hessians_((float64*) (init ? calloc(numHessians_, sizeof(float64))
                                              : malloc(numHessians_ * sizeof(float64)))) {
 
@@ -67,8 +68,8 @@ namespace boosting {
              * @param vector A reference to an object of type `DenseExampleWiseStatisticVector` to be copied
              */
             DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
-                : DenseExampleWiseStatisticVector(vector.numElements_) {
-                for (uint32 i = 0; i < numElements_; i++) {
+                : DenseExampleWiseStatisticVector(vector.numGradients_) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[i] = vector.gradients_[i];
                 }
 
@@ -105,7 +106,7 @@ namespace boosting {
              * @return A `gradient_iterator` to the end
              */
             gradient_iterator gradients_end() {
-                return &gradients_[numElements_];
+                return &gradients_[numGradients_];
             }
 
             /**
@@ -123,7 +124,7 @@ namespace boosting {
              * @return A `gradient_const_iterator` to the end
              */
             gradient_const_iterator gradients_cend() const {
-                return &gradients_[numElements_];
+                return &gradients_[numGradients_];
             }
 
             /**
@@ -179,14 +180,14 @@ namespace boosting {
              * @return The number of gradients and Hessians in the vector
              */
             uint32 getNumElements() const {
-                return numElements_;
+                return numGradients_;
             }
 
             /**
              * Sets all gradients and Hessians in the vector to zero.
              */
             void setAllToZero() {
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[i] = 0;
                 }
 
@@ -205,7 +206,7 @@ namespace boosting {
              */
             void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                      hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[i] += gradientsBegin[i];
                 }
 
@@ -226,7 +227,7 @@ namespace boosting {
              */
             void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                      hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight) {
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[i] += (gradientsBegin[i] * weight);
                 }
 
@@ -247,7 +248,7 @@ namespace boosting {
              */
             void subtract(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                           hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight) {
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[i] -= (gradientsBegin[i] * weight);
                 }
 
@@ -270,7 +271,7 @@ namespace boosting {
             void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                              hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
                              const FullIndexVector& indices, float64 weight) {
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[i] += (gradientsBegin[i] * weight);
                 }
 
@@ -297,7 +298,7 @@ namespace boosting {
                 PartialIndexVector::const_iterator indexIterator = indices.cbegin();
                 hessian_iterator hessianIterator = hessians_;
 
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     uint32 index = indexIterator[i];
                     gradients_[i] += (gradientsBegin[index] * weight);
                     uint32 offset = triangularNumber(index);
@@ -331,7 +332,7 @@ namespace boosting {
                             const FullIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
                             gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
                             hessian_const_iterator secondHessiansEnd) {
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     gradients_[i] = firstGradientsBegin[i] - secondGradientsBegin[i];
                 }
 
@@ -365,7 +366,7 @@ namespace boosting {
                 hessian_iterator hessianIterator = hessians_;
                 hessian_const_iterator secondHessianIterator = secondHessiansBegin;
 
-                for (uint32 i = 0; i < numElements_; i++) {
+                for (uint32 i = 0; i < numGradients_; i++) {
                     uint32 firstIndex = firstIndexIterator[i];
                     gradients_[i] = firstGradientsBegin[firstIndex] - secondGradientsBegin[i];
                     uint32 offset = triangularNumber(firstIndex);
