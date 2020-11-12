@@ -9,15 +9,20 @@ using namespace boosting;
 
 /**
  * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
- * applied example-wise using dense data structures.
+ * applied example-wise.
+ *
+ * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
+ * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+ * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
-class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
+template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
+class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
     private:
 
         /**
          * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
-         * `DenseExampleWiseStatistics`.
+         * `ExampleWiseStatistics`.
          *
          * @tparam T The type of the vector that provides access to the indices of the labels that are included in the
          *           subset
@@ -27,21 +32,21 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
             private:
 
-                const DenseExampleWiseStatistics& statistics_;
+                const ExampleWiseStatistics& statistics_;
 
                 std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
 
                 const T& labelIndices_;
 
-                DenseExampleWiseStatisticVector sumVector_;
+                StatisticVector sumVector_;
 
-                DenseExampleWiseStatisticVector* accumulatedSumVector_;
+                StatisticVector* accumulatedSumVector_;
 
-                const DenseExampleWiseStatisticVector* totalSumVector_;
+                const StatisticVector* totalSumVector_;
 
-                DenseExampleWiseStatisticVector* totalCoverableSumVector_;
+                StatisticVector* totalCoverableSumVector_;
 
-                DenseExampleWiseStatisticVector* tmpVector_;
+                StatisticVector* tmpVector_;
 
                 int dsysvLwork_;
 
@@ -56,19 +61,18 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             public:
 
                 /**
-                 * @param statistics        A reference to an object of type `DenseExampleWiseStatistics` that stores
-                 *                          the gradients and Hessians
+                 * @param statistics        A reference to an object of type `ExampleWiseStatistics` that stores the
+                 *                          gradients and Hessians
                  * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
                  *                          should be used to calculate the predictions, as well as corresponding
                  *                          quality scores, of rules
                  * @param labelIndices      A reference to an object of template type `T` that provides access to the
                  *                          indices of the labels that are included in the subset
                  */
-                StatisticsSubset(const DenseExampleWiseStatistics& statistics,
+                StatisticsSubset(const ExampleWiseStatistics& statistics,
                                  std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
-                      labelIndices_(labelIndices),
-                      sumVector_(DenseExampleWiseStatisticVector(labelIndices.getNumElements(), true)),
+                      labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
                       totalSumVector_(&statistics.totalSumVector_) {
                     accumulatedSumVector_ = nullptr;
                     totalCoverableSumVector_ = nullptr;
@@ -92,7 +96,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
                     // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                     if (totalCoverableSumVector_ == nullptr) {
-                        totalCoverableSumVector_ = new DenseExampleWiseStatisticVector(*totalSumVector_);
+                        totalCoverableSumVector_ = new StatisticVector(*totalSumVector_);
                         totalSumVector_ = totalCoverableSumVector_;
                     }
 
@@ -117,7 +121,7 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                     // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
                     if (accumulatedSumVector_ == nullptr) {
                         uint32 numPredictions = labelIndices_.getNumElements();
-                        accumulatedSumVector_ = new DenseExampleWiseStatisticVector(numPredictions, true);
+                        accumulatedSumVector_ = new StatisticVector(numPredictions, true);
                     }
 
                     // Reset the sum of gradients and Hessians to zero and add it to the accumulated sums of gradients
@@ -129,15 +133,14 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
                 const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
                                                                                  bool accumulated) override {
-                    const DenseExampleWiseStatisticVector& sumsOfStatistics =
-                        accumulated ? *accumulatedSumVector_ : sumVector_;
+                    const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
 
                         // Initialize temporary vector, if necessary...
                         if (tmpVector_ == nullptr) {
                             uint32 numPredictions = labelIndices_.getNumElements();
-                            tmpVector_ = new DenseExampleWiseStatisticVector(numPredictions);
+                            tmpVector_ = new StatisticVector(numPredictions);
                         }
 
                         tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
@@ -166,15 +169,13 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
                         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
                     }
 
-                    DenseExampleWiseStatisticVector& sumsOfStatistics =
-                        accumulated ? *accumulatedSumVector_ : sumVector_;
+                    StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
-
                         // Initialize temporary vector, if necessary...
                         if (tmpVector_ == nullptr) {
                             uint32 numPredictions = labelIndices_.getNumElements();
-                            tmpVector_ = new DenseExampleWiseStatisticVector(numPredictions);
+                            tmpVector_ = new StatisticVector(numPredictions);
                         }
 
                         tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
@@ -196,26 +197,26 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         /**
          * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the class
-         * `DenseExampleWiseStatistics`.
+         * `ExampleWiseStatistics`.
          */
         class HistogramBuilder : public IHistogramBuilder {
 
             private:
 
-                const DenseExampleWiseStatistics& statistics_;
+                const ExampleWiseStatistics& statistics_;
 
-                DenseExampleWiseStatisticMatrix* statisticMatrix_;
+                StatisticMatrix* statisticMatrix_;
 
             public:
 
             /**
-             * @param statistics    A reference to an object of type `DenseExampleWiseStatistics` that stores the
-             *                      gradients and Hessians
+             * @param statistics    A reference to an object of type `ExampleWiseStatistics` that stores the gradients
+             *                      and Hessians
              * @param numBins       The number of bins, the histogram should consist of
              */
-            HistogramBuilder(const DenseExampleWiseStatistics& statistics, uint32 numBins)
+            HistogramBuilder(const ExampleWiseStatistics& statistics, uint32 numBins)
                 : statistics_(statistics),
-                  statisticMatrix_(new DenseExampleWiseStatisticMatrix(numBins, statistics.getNumLabels(), true)) {
+                  statisticMatrix_(new StatisticMatrix(numBins, statistics.getNumLabels(), true)) {
 
             }
 
@@ -228,10 +229,9 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
             }
 
             std::unique_ptr<AbstractStatistics> build() const override {
-                return std::make_unique<DenseExampleWiseStatistics>(statistics_.lossFunctionPtr_,
-                                                                    statistics_.ruleEvaluationFactoryPtr_,
-                                                                    statistics_.lapackPtr_, statistics_.labelMatrixPtr_,
-                                                                    statisticMatrix_, statistics_.scoreMatrix_);
+                return std::make_unique<ExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
+                    statistics_.lossFunctionPtr_, statistics_.ruleEvaluationFactoryPtr_, statistics_.lapackPtr_,
+                    statistics_.labelMatrixPtr_, statisticMatrix_, statistics_.scoreMatrix_);
             }
 
         };
@@ -242,11 +242,11 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-        DenseExampleWiseStatisticMatrix* statisticMatrix_;
+        StatisticMatrix* statisticMatrix_;
 
-        DenseNumericMatrix<float64>* scoreMatrix_;
+        ScoreMatrix* scoreMatrix_;
 
-        DenseExampleWiseStatisticVector totalSumVector_;
+        StatisticVector totalSumVector_;
 
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -270,26 +270,25 @@ class DenseExampleWiseStatistics : public AbstractExampleWiseStatistics {
          *                                  different Lapack routines
          * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
          *                                  provides random access to the labels of the training examples
-         * @param statisticMatrix           A pointer to an object of type `DenseExampleWiseStatisticMatrix` that stores
-         *                                  the gradients and Hessians
-         * @param scoreMatrix               A pointer to an object of type `DenseNumericMatrix` that stores the
+         * @param statisticMatrix           A pointer to an object of template type `StatisticMatrix` that stores the
+         *                                  gradients and Hessians
+         * @param scoreMatrix               A pointer to an object of template type `ScoreMatrix` that stores the
          *                                  currently predicted scores
          */
-        DenseExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-                                   std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                   std::shared_ptr<Lapack> lapackPtr,
-                                   std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                   DenseExampleWiseStatisticMatrix* statisticMatrix,
-                                   DenseNumericMatrix<float64>* scoreMatrix)
+        ExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+                              std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                              std::shared_ptr<Lapack> lapackPtr,
+                              std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                              StatisticMatrix* statisticMatrix, ScoreMatrix* scoreMatrix)
             : AbstractExampleWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
                                             ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
               statisticMatrix_(statisticMatrix), scoreMatrix_(scoreMatrix),
-              totalSumVector_(DenseExampleWiseStatisticVector(labelMatrixPtr->getNumLabels())) {
+              totalSumVector_(StatisticVector(labelMatrixPtr->getNumLabels())) {
 
         }
 
-        ~DenseExampleWiseStatistics() {
+        ~ExampleWiseStatistics() {
             delete statisticMatrix_;
             delete scoreMatrix_;
         }
@@ -366,6 +365,6 @@ std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactory
         lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *scoreMatrix, *statisticMatrix);
     }
 
-    return std::make_unique<DenseExampleWiseStatistics>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_,
-                                                        labelMatrixPtr_, statisticMatrix, scoreMatrix);
+    return std::make_unique<ExampleWiseStatistics<DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
+        lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_, labelMatrixPtr_, statisticMatrix, scoreMatrix);
 }
