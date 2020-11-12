@@ -90,11 +90,10 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             return *labelWisePrediction_;
         }
 
-        const EvaluatedPrediction& calculateExampleWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians, int dsysvLwork,
-                float64* dsysvTmpArray1, int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray,
-                bool uncovered) override {
+        const EvaluatedPrediction& calculateExampleWisePrediction(float64* gradients, float64* hessians, int dsysvLwork,
+                                                                  float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                                                  double* dsysvTmpArray3,
+                                                                  float64* dspmvTmpArray) override {
             uint32 numPredictions = labelIndices_.getNumElements();
 
             if (prediction_ == nullptr) {
@@ -102,31 +101,6 @@ class RegularizedExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             }
 
             EvaluatedPrediction::score_iterator scoreIterator = prediction_->scores_begin();
-
-            float64* gradients;
-            float64* hessians;
-
-            if (uncovered) {
-                gradients = tmpGradients;
-                hessians = tmpHessians;
-                uint32 i = 0;
-                typename T::const_iterator indexIterator = labelIndices_.cbegin();
-
-                for (uint32 c = 0; c < numPredictions; c++) {
-                    uint32 l = indexIterator[c];
-                    gradients[c] = totalSumsOfGradients[l] - sumsOfGradients[c];
-                    uint32 offset = triangularNumber(l);
-
-                    for (uint32 c2 = 0; c2 < c + 1; c2++) {
-                        uint32 l2 = offset + indexIterator[c2];
-                        hessians[i] = totalSumsOfHessians[l2] - sumsOfHessians[i];
-                        i++;
-                    }
-                }
-            } else {
-                gradients = sumsOfGradients;
-                hessians = sumsOfHessians;
-            }
 
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
             lapackPtr_->dsysv(hessians, gradients, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scoreIterator,

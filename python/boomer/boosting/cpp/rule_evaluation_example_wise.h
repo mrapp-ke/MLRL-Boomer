@@ -47,57 +47,33 @@ namespace boosting {
              * of gradients and Hessians that are covered by the rule. The predicted scores and quality scores are
              * stored in a given object of type `EvaluatedPrediction`.
              *
-             * If the argument `uncovered` is True, the rule is considered to cover the difference between the sums of
-             * gradients and Hessians that are stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
-             * `totalSumsOfHessians` and `sumsOfHessians`, respectively.
-             *
-             * @param labelIndices          A pointer to an array of type `uint32`, shape
-             *                              `(prediction.numPredictions_)`, representing the indices of the labels for
-             *                              which the rule should predict or a null pointer, if the rule should predict
-             *                              for all labels
-             * @param totalSumsOfGradients  A pointer to an array of type `float64`, shape `(num_labels), representing
-             *                              the total sums of gradients for individual labels
-             * @param sumsOfGradients       A pointer to an array of type `float64`, shape
-             *                              `(prediction.numPredictions_)`, representing the sums of gradients for
-             *                              individual labels
-             * @param totalSumsOfHessians   A pointer to an array of type `float64`, shape
-             *                              `((num_Labels * (num_labels + 1)) / 2)`, representing the total sums of
-             *                              Hessians for individual labels
-             * @param sumsOfHessians        A pointer to an array of type `float64`, shape
-             *                              `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)`,
-             *                              representing the sums of Hessians for individual labels
-             * @param tmpGradients          A pointer to an array of type `float64`, shape `(num_labels)` that will be
-             *                              used to temporarily store gradients. May contain arbitrary values
-             * @param tmpHessians           A pointer to an array of type `float64`, shape
-             *                              `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)` that
-             *                              will be used to temporarily store Hessians. May contain arbitrary values
-             * @param dsysvLwork            The value for the parameter "lwork" to be used by Lapack's DSYSV routine
-             * @param dsysvTmpArray1        A pointer to an array of type `float64`, shape
-             *                              `(prediction.numPredictions_, prediction.numPredictions_)` that will be used
-             *                              to temporarily store values computed by Lapack's DSYSV routine. May contain
-             *                              arbitrary values
-             * @param dsysvTmpArray2        A pointer to an array of type `int`, shape `(prediction.numPredictions_)`
-             *                              that will be used to temporarily store values computed by Lapack's DSYSV
-             *                              routine. May contain arbitrary values
-             * @param dsysvTmpArray3        A pointer to an array of type `double`, shape `(lwork)` that will be used to
-             *                              temporarily store values computed by Lapack's DSYSV routine. May contain
-             *                              arbitrary values
-             * @param dspmvTmpArray         A pointer to an array of type `float64`, shape
-             *                              `(prediction.numPredictions_)` that will be used to temporarily store values
-             *                              computed by Blas' DSPMV routine. May contain arbitrary values
-             * @param uncovered             False, if the rule covers the sums of gradient and Hessians that are stored
-             *                              in the array `sumsOfGradients` and `sumsOfHessians`, True, if the rule
-             *                              covers the difference between the sums of gradients and Hessians that are
-             *                              stored in the arrays `totalSumsOfGradients` and `sumsOfGradients` and
-             *                              `totalSumsOfHessians` and `sumsOfHessians`, respectively
-             * @param prediction            A reference to an object of type `EvaluatedPrediction` that should be used
-             *                              to store the predicted scores and quality score
+             * @param gradients         A pointer to an array of type `float64`, shape `(prediction.numPredictions_),
+             *                          representing the total sums of gradients
+             * @param hessians          A pointer to an array of type `float64`, shape
+             *                          `(prediction.numPredictions_ * (prediction.numPredictions_ + 1) / 2)`,
+             *                          representing the sums of Hessians
+             * @param dsysvLwork        The value for the parameter "lwork" to be used by Lapack's DSYSV routine
+             * @param dsysvTmpArray1    A pointer to an array of type `float64`, shape
+             *                          `(prediction.numPredictions_, prediction.numPredictions_)` that will be used to
+             *                          temporarily store values computed by Lapack's DSYSV routine. May contain
+             *                          arbitrary values
+             * @param dsysvTmpArray2    A pointer to an array of type `int`, shape `(prediction.numPredictions_)` that
+             *                          will be used to temporarily store values computed by Lapack's DSYSV routine. May
+             *                          contain arbitrary values
+             * @param dsysvTmpArray3    A pointer to an array of type `double`, shape `(lwork)` that will be used to
+             *                          temporarily store values computed by Lapack's DSYSV routine. May contain
+             *                          arbitrary values
+             * @param dspmvTmpArray     A pointer to an array of type `float64`, shape `(prediction.numPredictions_)`
+             *                          that will be used to temporarily store values computed by Blas' DSPMV routine.
+             *                          May contain arbitrary values
+             * @param prediction        A reference to an object of type `EvaluatedPrediction` that should be used to
+             *                          store the predicted scores and quality score
              */
-            virtual const EvaluatedPrediction& calculateExampleWisePrediction(
-                const float64* totalSumsOfGradients, float64* sumsOfGradients, const float64* totalSumsOfHessians,
-                float64* sumsOfHessians, float64* tmpGradients, float64* tmpHessians, int dsysvLwork,
-                float64* dsysvTmpArray1, int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray,
-                bool uncovered) = 0;
+            virtual const EvaluatedPrediction& calculateExampleWisePrediction(float64* gradients, float64* hessians,
+                                                                              int dsysvLwork, float64* dsysvTmpArray1,
+                                                                              int* dsysvTmpArray2,
+                                                                              double* dsysvTmpArray3,
+                                                                              float64* dspmvTmpArray) = 0;
 
     };
 
