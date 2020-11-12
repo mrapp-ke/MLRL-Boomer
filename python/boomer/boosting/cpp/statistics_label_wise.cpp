@@ -105,7 +105,7 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                     }
 
                     // Reset the sums of gradients and Hessians to zero and add it to the accumulated sums of gradients
-                    // and hessians...
+                    // and Hessians...
                     accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
                                                sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
                     sumVector_.setAllToZero();
