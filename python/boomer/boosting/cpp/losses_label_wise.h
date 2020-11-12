@@ -43,17 +43,17 @@ namespace boosting {
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
-             * @param predictedScores   A reference to an object of type `DenseNumericMatrix` that stores the currently
+             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
              *                          predicted scores
              * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
-             * @param statistics        A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
              */
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                  const DenseNumericMatrix<float64>& predictedScores,
+                                  const DenseNumericMatrix<float64>& scoreMatrix,
                                   FullIndexVector::const_iterator labelIndicesBegin,
                                   FullIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticMatrix& statistics) const;
+                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -62,17 +62,17 @@ namespace boosting {
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
-             * @param predictedScores   A reference to an object of type `DenseNumericMatrix` that stores the currently
+             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
              *                          predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statistics        A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
              */
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                  const DenseNumericMatrix<float64>& predictedScores,
+                                  const DenseNumericMatrix<float64>& scoreMatrix,
                                   PartialIndexVector::const_iterator labelIndicesBegin,
                                   PartialIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticMatrix& statistics) const;
+                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const;
 
     };
 

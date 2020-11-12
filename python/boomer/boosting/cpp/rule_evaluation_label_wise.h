@@ -29,13 +29,13 @@ namespace boosting {
              * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
              * scores are stored in a given object of type `LabelWiseEvaluatedPrediction`.
              *
-             * @param statistics    A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
-             *                      gradients and Hessians
-             * @return              A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
-             *                      predicted scores and quality scores
+             * @param statisticVector   A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
+             *                          gradients and Hessians
+             * @return                  A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
+             *                          predicted scores and quality scores
              */
             virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
-                const DenseLabelWiseStatisticVector& statistics) = 0;
+                const DenseLabelWiseStatisticVector& statisticVector) = 0;
 
     };
 

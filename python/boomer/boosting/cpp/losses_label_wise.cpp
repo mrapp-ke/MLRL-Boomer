@@ -5,13 +5,14 @@ using namespace boosting;
 
 
 void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                             const DenseNumericMatrix<float64>& predictedScores,
+                                             const DenseNumericMatrix<float64>& scoreMatrix,
                                              const FullIndexVector::const_iterator labelIndicesBegin,
                                              const FullIndexVector::const_iterator labelIndicesEnd,
-                                             DenseLabelWiseStatisticMatrix& statistics) const {
-    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
-    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
-    DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
+                                             DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+        statisticMatrix.gradients_row_begin(exampleIndex);
+    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statisticMatrix.hessians_row_begin(exampleIndex);
+    DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumLabels();
 
     for (uint32 i = 0; i < numLabels; i++) {
@@ -22,13 +23,14 @@ void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomA
 }
 
 void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                             const DenseNumericMatrix<float64>& predictedScores,
+                                             const DenseNumericMatrix<float64>& scoreMatrix,
                                              const PartialIndexVector::const_iterator labelIndicesBegin,
                                              const PartialIndexVector::const_iterator labelIndicesEnd,
-                                             DenseLabelWiseStatisticMatrix& statistics) const {
-    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator = statistics.gradients_row_begin(exampleIndex);
-    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statistics.hessians_row_begin(exampleIndex);
-    DenseNumericMatrix<float64>::const_iterator scoreIterator = predictedScores.row_cbegin(exampleIndex);
+                                             DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+        statisticMatrix.gradients_row_begin(exampleIndex);
+    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statisticMatrix.hessians_row_begin(exampleIndex);
+    DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
 
     for (auto indexIterator = labelIndicesBegin; indexIterator != labelIndicesEnd; indexIterator++) {
         uint32 labelIndex = *indexIterator;
