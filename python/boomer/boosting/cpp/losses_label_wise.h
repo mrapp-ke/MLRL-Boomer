@@ -13,9 +13,58 @@
 namespace boosting {
 
     /**
+     * Defines an interface for all (decomposable) loss functions that are applied label-wise.
+     */
+    class ILabelWiseLoss {
+
+        public:
+
+            virtual ~ILabelWiseLoss() { };
+
+            /**
+             * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
+             * provided by a `FullIndexVector`.
+             *
+             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
+             *                          access to the labels of the training examples
+             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
+             *                          predicted scores
+             * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
+             * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
+             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             */
+            virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                          const DenseNumericMatrix<float64>& scoreMatrix,
+                                          FullIndexVector::const_iterator labelIndicesBegin,
+                                          FullIndexVector::const_iterator labelIndicesEnd,
+                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+
+            /**
+             * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
+             * provided by a `PartialIndexVector`.
+             *
+             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
+             *                          access to the labels of the training examples
+             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
+             *                          predicted scores
+             * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
+             * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
+             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             */
+            virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                          const DenseNumericMatrix<float64>& scoreMatrix,
+                                          PartialIndexVector::const_iterator labelIndicesBegin,
+                                          PartialIndexVector::const_iterator labelIndicesEnd,
+                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+
+    };
+
+    /**
      * An abstract base class for all (decomposable) loss functions that are applied label-wise.
      */
-    class AbstractLabelWiseLoss {
+    class AbstractLabelWiseLoss : public ILabelWiseLoss {
 
         protected:
 
@@ -36,43 +85,17 @@ namespace boosting {
 
             virtual ~AbstractLabelWiseLoss() { };
 
-            /**
-             * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
-             * provided by a `FullIndexVector`.
-             *
-             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
-             *                          access to the labels of the training examples
-             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
-             *                          predicted scores
-             * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
-             * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
-             */
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                   const DenseNumericMatrix<float64>& scoreMatrix,
                                   FullIndexVector::const_iterator labelIndicesBegin,
                                   FullIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const;
+                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
 
-            /**
-             * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
-             * provided by a `PartialIndexVector`.
-             *
-             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
-             *                          access to the labels of the training examples
-             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
-             *                          predicted scores
-             * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
-             * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
-             */
             void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                   const DenseNumericMatrix<float64>& scoreMatrix,
                                   PartialIndexVector::const_iterator labelIndicesBegin,
                                   PartialIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const;
+                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
 
     };
 

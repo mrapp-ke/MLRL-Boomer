@@ -179,7 +179,7 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
         };
 
 
-        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr_;
+        std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
@@ -204,8 +204,8 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
     public:
 
         /**
-         * @param lossFunctionPtr           A shared pointer to an object of type `AbstractLabelWiseLoss`, representing
-         *                                  the loss function to be used for calculating gradients and Hessians
+         * @param lossFunctionPtr           A shared pointer to an object of type `ILabelWiseLoss`, representing the
+         *                                  loss function to be used for calculating gradients and Hessians
          * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`,
          *                                  that allows to create instances of the class that is used for calculating
          *                                  the predictions, as well as corresponding quality scores, of rules
@@ -216,7 +216,7 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
          * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that stores
          *                                  the currently predicted scores
          */
-        LabelWiseStatistics(std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+        LabelWiseStatistics(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                             std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
@@ -282,7 +282,7 @@ void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
 }
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
-        std::shared_ptr<AbstractLabelWiseLoss> lossFunctionPtr,
+        std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
     : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
