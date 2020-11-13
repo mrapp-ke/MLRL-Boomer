@@ -4,9 +4,10 @@
 using namespace boosting;
 
 
-void ExampleWiseLogisticLossImpl::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                                   const DenseNumericMatrix<float64>& scoreMatrix,
-                                                   DenseExampleWiseStatisticMatrix& statisticMatrix) const {
+void ExampleWiseLogisticLossImpl::updateExampleWiseStatistics(uint32 exampleIndex,
+                                                              const IRandomAccessLabelMatrix& labelMatrix,
+                                                              const DenseNumericMatrix<float64>& scoreMatrix,
+                                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const {
     DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
         statisticMatrix.gradients_row_begin(exampleIndex);
     DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =

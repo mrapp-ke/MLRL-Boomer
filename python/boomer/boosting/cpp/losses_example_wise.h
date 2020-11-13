@@ -34,9 +34,9 @@ namespace boosting {
              * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticMatrix` to be
              *                          updated
              */
-            virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                          const DenseNumericMatrix<float64>& scoreMatrix,
-                                          DenseExampleWiseStatisticMatrix& statisticMatrix) const = 0;
+            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                     const DenseNumericMatrix<float64>& scoreMatrix,
+                                                     DenseExampleWiseStatisticMatrix& statisticMatrix) const = 0;
 
     };
 
@@ -47,9 +47,9 @@ namespace boosting {
 
         public:
 
-            void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                  const DenseNumericMatrix<float64>& scoreMatrix,
-                                  DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
+            void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                             const DenseNumericMatrix<float64>& scoreMatrix,
+                                             DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
     };
 
