@@ -254,8 +254,8 @@ class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
                                                 prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians for the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_,
-                                               *statisticMatrixPtr_);
+            lossFunctionPtr_->updateExampleWiseStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_,
+                                                          *statisticMatrixPtr_);
         }
 
     public:
@@ -360,7 +360,7 @@ std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactory
         std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
 
     for (uint32 r = 0; r < numExamples; r++) {
-        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *scoreMatrixPtr, *statisticMatrixPtr);
+        lossFunctionPtr_->updateExampleWiseStatistics(r, *labelMatrixPtr_, *scoreMatrixPtr, *statisticMatrixPtr);
     }
 
     return std::make_unique<ExampleWiseStatistics<DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
