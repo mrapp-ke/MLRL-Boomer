@@ -6,6 +6,8 @@
 #pragma once
 
 #include "../../common/cpp/input_data.h"
+#include "data.h"
+#include "data_example_wise.h"
 
 
 namespace boosting {
@@ -23,21 +25,18 @@ namespace boosting {
              * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
              * derivatives) of the loss function for each label of a certain example.
              *
-             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
-             *                          access to the labels of the training examples
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be
              *                          calculated
-             * @param predictedScore    A pointer to an array of type `float64`, shape `(num_labels)`, representing the
-             *                          scores that are predicted for each label of the respective example
-             * @param gradients         A pointer to an array of type `float64`, shape `(num_labels)`, the gradients
-             *                          that have been calculated should be written to. May contain arbitrary values
-             * @param hessians          A pointer to an array of type `float64`, shape
-             *                          `(num_labels * (num_labels + 1) / 2)` the Hessians that have been calculated
-             *                          should be written to. May contain arbitrary values
+             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
+             *                          access to the labels of the training examples
+             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
+             *                          predicted scores
+             * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticMatrix` to be
+             *                          updated
              */
-            virtual void calculateGradientsAndHessians(const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                                       const float64* predictedScores, float64* gradients,
-                                                       float64* hessians) const = 0;
+            virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                          const DenseNumericMatrix<float64>& scoreMatrix,
+                                          DenseExampleWiseStatisticMatrix& statisticMatrix) const = 0;
 
     };
 
@@ -48,9 +47,9 @@ namespace boosting {
 
         public:
 
-            void calculateGradientsAndHessians(const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                               const float64* predictedScores, float64* gradients,
-                                               float64* hessians) const override;
+            void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                  const DenseNumericMatrix<float64>& scoreMatrix,
+                                  DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
     };
 
