@@ -27,7 +27,7 @@ class ApproximateThresholds : public AbstractThresholds {
          */
         struct BinCacheEntry {
             std::unique_ptr<AbstractStatistics> statisticsPtr;
-            std::unique_ptr<BinVectorNew> binVectorPtr;
+            std::unique_ptr<BinVectorNew2> binVectorPtr;
         };
 
         std::shared_ptr<IBinning> binningPtr_;

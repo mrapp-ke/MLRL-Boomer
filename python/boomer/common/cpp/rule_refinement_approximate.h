@@ -258,7 +258,7 @@ class ApproximateRuleRefinement : public IRuleRefinement {
 
         uint32 featureIndex_;
 
-        std::unique_ptr<IRuleRefinementCallback<BinVectorNew>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<BinVectorNew2>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
 
@@ -274,7 +274,7 @@ class ApproximateRuleRefinement : public IRuleRefinement {
          *                          allows to retrieve the bins for a certain feature
          */
         ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                                  uint32 featureIndex, std::unique_ptr<IRuleRefinementCallback<BinVectorNew>> callbackPtr)
+                                  uint32 featureIndex, std::unique_ptr<IRuleRefinementCallback<BinVectorNew2>> callbackPtr)
             : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices),
               featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
 
@@ -287,10 +287,10 @@ class ApproximateRuleRefinement : public IRuleRefinement {
             const AbstractEvaluatedPrediction* bestHead = currentHead;
 
             // Invoke the callback...
-            std::unique_ptr<IRuleRefinementCallback<BinVectorNew>::Result> callbackResultPtr = callbackPtr_->get();
+            std::unique_ptr<IRuleRefinementCallback<BinVectorNew2>::Result> callbackResultPtr = callbackPtr_->get();
             const AbstractStatistics& statistics = callbackResultPtr->first;
-            const BinVectorNew& binVector = callbackResultPtr->second;
-            BinVectorNew::const_iterator iterator = binVector.cbegin();
+            const BinVectorNew2& binVector = callbackResultPtr->second;
+            BinVectorNew2::const_iterator iterator = binVector.cbegin();
             uint32 numBins = binVector.getNumElements();
 
             // Create a new, empty subset of the current statistics when processing a new feature...

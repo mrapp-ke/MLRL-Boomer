@@ -16,7 +16,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
          * are retrieved from the cache. Otherwise, they are computed by fetching the feature values from the feature
          * matrix and applying a binning method.
          */
-        class Callback : public IBinningObserver, public IRuleRefinementCallback<BinVectorNew> {
+        class Callback : public IBinningObserver, public IRuleRefinementCallback<BinVectorNew2> {
 
             private:
 
@@ -26,7 +26,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
                 std::unique_ptr<AbstractStatistics::IHistogramBuilder> histogramBuilderPtr_;
 
-                BinVectorNew* currentBinVector_;
+                BinVectorNew2* currentBinVector_;
 
             public:
 
@@ -48,7 +48,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                         thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                             featureVectorPtr);
                         uint32 numBins = thresholdsSubset_.thresholds_.binningPtr_->getNumBins(*featureVectorPtr);
-                        binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVectorNew>(numBins));
+                        binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVectorNew2>(numBins));
                         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                         currentBinVector_ = binCacheEntry.binVectorPtr.get();
                         thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
@@ -59,7 +59,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
-                    BinVectorNew::iterator binIterator = currentBinVector_->begin();
+                    BinVectorNew2::iterator binIterator = currentBinVector_->begin();
                     binIterator[binIndex].numExamples += 1;
                     float32 currentValue = entry.value;
 
