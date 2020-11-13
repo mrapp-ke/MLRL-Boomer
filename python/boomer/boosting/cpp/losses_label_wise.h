@@ -128,13 +128,13 @@ namespace boosting {
     /**
      * A multi-label variant of the squared hinge loss that is applied label-wise.
      */
-    class LabelWiseSquaredHingeLossImpl : public ILabelWiseLoss {
+    class LabelWiseSquaredHingeLossImpl : public AbstractLabelWiseLoss {
 
         public:
 
-            std::pair<float64, float64> calculateGradientAndHessian(const IRandomAccessLabelMatrix& labelMatrix,
-                                                                    uint32 exampleIndex, uint32 labelIndex,
-                                                                    float64 predictedScore) const override;
+            void updateGradientAndHessian(DenseVector<float64>::iterator gradient,
+                                          DenseVector<float64>::iterator hessian, bool trueLabel,
+                                          float64 predictedScore) const override;
 
     };
 
