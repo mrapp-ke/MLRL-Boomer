@@ -1,6 +1,6 @@
 #include "thresholds_approximate.h"
 #include "thresholds_common.h"
-#include "rule_refinement_approximate.h"
+
 
 
 /**
@@ -16,7 +16,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
          * are retrieved from the cache. Otherwise, they are computed by fetching the feature values from the feature
          * matrix and applying a binning method.
          */
-        class Callback : public IBinningObserver, public IRuleRefinementCallback<BinVector> {
+        class Callback : public IBinningObserver, public IRuleRefinementCallback<BinVectorNew> {
 
             private:
 
@@ -26,7 +26,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
                 std::unique_ptr<AbstractStatistics::IHistogramBuilder> histogramBuilderPtr_;
 
-                BinVector* currentBinVector_;
+                BinVectorNew* currentBinVector_;
 
             public:
 
@@ -48,7 +48,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                         thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                             featureVectorPtr);
                         uint32 numBins = thresholdsSubset_.thresholds_.binningPtr_->getNumBins(*featureVectorPtr);
-                        binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVector>(numBins, true));
+                        binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVectorNew>(numBins));
                         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                         currentBinVector_ = binCacheEntry.binVectorPtr.get();
                         thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
@@ -59,7 +59,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
-                    BinVector::iterator binIterator = currentBinVector_->begin();
+                    BinVectorNew::iterator binIterator = currentBinVector_->begin();
                     binIterator[binIndex].numExamples += 1;
                     float32 currentValue = entry.value;
 
@@ -70,8 +70,6 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                     if (binIterator[binIndex].maxValue < currentValue) {
                         binIterator[binIndex].maxValue = currentValue;
                     }
-
-                    binIterator[binIndex].exampleIndices.insert(entry.index);
 
                     histogramBuilderPtr_->onBinUpdate(binIndex, entry);
                 }
