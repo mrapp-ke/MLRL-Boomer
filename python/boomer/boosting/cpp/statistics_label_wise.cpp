@@ -196,9 +196,9 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                                                 prediction.indices_cbegin(), prediction.indices_cend());
 
             // Update the gradients and Hessians of the example at the given index...
-            lossFunctionPtr_->updateStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_,
-                                               prediction.indices_cbegin(), prediction.indices_cend(),
-                                               *statisticMatrixPtr_);
+            lossFunctionPtr_->updateLabelWiseStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_,
+                                                        prediction.indices_cbegin(), prediction.indices_cend(),
+                                                        *statisticMatrixPtr_);
         }
 
     public:
@@ -302,8 +302,8 @@ std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl
     FullIndexVector::const_iterator labelIndicesEnd = labelIndices.cend();
 
     for (uint32 r = 0; r < numExamples; r++) {
-        lossFunctionPtr_->updateStatistics(r, *labelMatrixPtr_, *scoreMatrixPtr, labelIndicesBegin, labelIndicesEnd,
-                                           *statisticMatrixPtr);
+        lossFunctionPtr_->updateLabelWiseStatistics(r, *labelMatrixPtr_, *scoreMatrixPtr, labelIndicesBegin,
+                                                    labelIndicesEnd, *statisticMatrixPtr);
     }
 
     return std::make_unique<LabelWiseStatistics<DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(

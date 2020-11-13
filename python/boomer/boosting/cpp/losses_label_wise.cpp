@@ -4,11 +4,11 @@
 using namespace boosting;
 
 
-void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                             const DenseNumericMatrix<float64>& scoreMatrix,
-                                             const FullIndexVector::const_iterator labelIndicesBegin,
-                                             const FullIndexVector::const_iterator labelIndicesEnd,
-                                             DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                      const DenseNumericMatrix<float64>& scoreMatrix,
+                                                      const FullIndexVector::const_iterator labelIndicesBegin,
+                                                      const FullIndexVector::const_iterator labelIndicesEnd,
+                                                      DenseLabelWiseStatisticMatrix& statisticMatrix) const {
     DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
         statisticMatrix.gradients_row_begin(exampleIndex);
     DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statisticMatrix.hessians_row_begin(exampleIndex);
@@ -22,11 +22,11 @@ void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomA
     }
 }
 
-void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                             const DenseNumericMatrix<float64>& scoreMatrix,
-                                             const PartialIndexVector::const_iterator labelIndicesBegin,
-                                             const PartialIndexVector::const_iterator labelIndicesEnd,
-                                             DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                      const DenseNumericMatrix<float64>& scoreMatrix,
+                                                      const PartialIndexVector::const_iterator labelIndicesBegin,
+                                                      const PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      DenseLabelWiseStatisticMatrix& statisticMatrix) const {
     DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
         statisticMatrix.gradients_row_begin(exampleIndex);
     DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statisticMatrix.hessians_row_begin(exampleIndex);
