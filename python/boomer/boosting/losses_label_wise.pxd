@@ -3,15 +3,15 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/losses_label_wise.h" namespace "boosting" nogil:
 
-    cdef cppclass ILabelWiseLoss:
+    cdef cppclass AbstractLabelWiseLoss:
         pass
 
 
-    cdef cppclass LabelWiseLogisticLossImpl(ILabelWiseLoss):
+    cdef cppclass LabelWiseLogisticLossImpl(AbstractLabelWiseLoss):
         pass
 
 
-    cdef cppclass LabelWiseSquaredErrorLossImpl(ILabelWiseLoss):
+    cdef cppclass LabelWiseSquaredErrorLossImpl(AbstractLabelWiseLoss):
         pass
 
 
@@ -19,7 +19,7 @@ cdef class LabelWiseLoss:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelWiseLoss] loss_function_ptr
+    cdef shared_ptr[AbstractLabelWiseLoss] loss_function_ptr
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
