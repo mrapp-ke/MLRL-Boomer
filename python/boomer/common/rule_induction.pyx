@@ -9,7 +9,7 @@ from boomer.common._predictions cimport AbstractEvaluatedPrediction
 from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.rules cimport Condition, Comparator, ConditionList
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
-from boomer.common.statistics cimport AbstractStatistics, IStatisticsSubset
+from boomer.common.statistics cimport IStatistics, IStatisticsSubset
 from boomer.common.sub_sampling cimport IWeightVector
 from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 
@@ -94,7 +94,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef unique_ptr[AbstractEvaluatedPrediction] default_prediction_ptr
         cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
         cdef unique_ptr[FullIndexVector] label_indices_ptr
-        cdef AbstractStatistics* statistics
+        cdef IStatistics* statistics
         cdef uint32 num_statistics, num_labels, i
 
         if head_refinement_factory != NULL:

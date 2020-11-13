@@ -55,17 +55,17 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
         :param rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` to switch to when invoking the function
                                         `switch_rule_evaluation`
         """
-        cdef unique_ptr[AbstractStatistics] statistics_ptr = <unique_ptr[AbstractStatistics]>statistics_factory.create()
-        self.statistics_ptr = <shared_ptr[AbstractStatistics]>move(statistics_ptr)
+        cdef unique_ptr[IStatistics] statistics_ptr = <unique_ptr[IStatistics]>statistics_factory.create()
+        self.statistics_ptr = <shared_ptr[IStatistics]>move(statistics_ptr)
         self.rule_evaluation_factory = rule_evaluation_factory
 
-    cdef AbstractStatistics* get(self):
+    cdef IStatistics* get(self):
         return self.statistics_ptr.get()
 
     cdef void switch_rule_evaluation(self):
         cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory = self.rule_evaluation_factory
         cdef shared_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr = rule_evaluation_factory.rule_evaluation_factory_ptr
-        dynamic_pointer_cast[AbstractLabelWiseStatistics, AbstractStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
+        dynamic_pointer_cast[AbstractLabelWiseStatistics, IStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
             rule_evaluation_factory_ptr)
 
 

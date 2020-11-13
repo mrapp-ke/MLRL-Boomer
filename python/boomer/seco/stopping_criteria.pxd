@@ -1,5 +1,5 @@
 from boomer.common._types cimport uint32, float64
-from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.statistics cimport IStatistics
 from boomer.common.stopping_criteria cimport StoppingCriterion
 
 
@@ -11,4 +11,4 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
 
     # Functions:
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules)
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)

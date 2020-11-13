@@ -15,7 +15,13 @@ namespace boosting {
     /**
      * An abstract base class for all classes that store gradient statistics.
      */
-    class AbstractGradientStatistics : public AbstractStatistics {
+    class AbstractGradientStatistics : public IStatistics {
+
+        private:
+
+            uint32 numStatistics_;
+
+            uint32 numLabels_;
 
         public:
 
@@ -24,6 +30,10 @@ namespace boosting {
              * @param numLabels     The number of labels
              */
             AbstractGradientStatistics(uint32 numStatistics, uint32 numLabels);
+
+            uint32 getNumStatistics() const override;
+
+            uint32 getNumLabels() const override;
 
             void resetSampledStatistics() override;
 

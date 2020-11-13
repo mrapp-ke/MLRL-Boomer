@@ -69,7 +69,7 @@ class ExactRuleRefinement : public IRuleRefinement {
 
             // Invoke the callback...
             std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
-            const AbstractStatistics& statistics = callbackResultPtr->first;
+            const IStatistics& statistics = callbackResultPtr->first;
             const FeatureVector& featureVector = callbackResultPtr->second;
             FeatureVector::const_iterator iterator = featureVector.cbegin();
             uint32 numElements = featureVector.getNumElements();

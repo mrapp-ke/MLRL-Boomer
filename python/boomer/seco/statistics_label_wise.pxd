@@ -1,5 +1,5 @@
 from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
-from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
+from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, IStatistics
 from boomer.seco.statistics cimport AbstractCoverageStatistics
 from boomer.seco.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
 
@@ -56,7 +56,7 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     # Functions:
 
-    cdef AbstractStatistics* get(self)
+    cdef IStatistics* get(self)
 
 
 cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):

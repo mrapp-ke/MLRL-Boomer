@@ -5,6 +5,14 @@ using namespace seco;
 
 AbstractCoverageStatistics::AbstractCoverageStatistics(uint32 numStatistics, uint32 numLabels,
                                                        float64 sumUncoveredLabels)
-    : AbstractStatistics(numStatistics, numLabels), sumUncoveredLabels_(sumUncoveredLabels) {
+    : numStatistics_(numStatistics), numLabels_(numLabels), sumUncoveredLabels_(sumUncoveredLabels) {
 
+}
+
+uint32 AbstractCoverageStatistics::getNumStatistics() const {
+    return numStatistics_;
+}
+
+uint32 AbstractCoverageStatistics::getNumLabels() const {
+    return numLabels_;
 }

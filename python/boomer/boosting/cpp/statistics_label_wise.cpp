@@ -170,7 +170,7 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                                                   statistics_.statisticMatrixPtr_->hessians_row_cend(index));
                 }
 
-                std::unique_ptr<AbstractStatistics> build() override {
+                std::unique_ptr<IStatistics> build() override {
                     return std::make_unique<LabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
                         statistics_.lossFunctionPtr_, statistics_.ruleEvaluationFactoryPtr_,
                         statistics_.labelMatrixPtr_, std::move(statisticMatrixPtr_), nullptr);

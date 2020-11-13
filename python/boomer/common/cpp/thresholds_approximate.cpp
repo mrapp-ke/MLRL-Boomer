@@ -23,7 +23,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
                 uint32 featureIndex_;
 
-                std::unique_ptr<AbstractStatistics::IHistogramBuilder> histogramBuilderPtr_;
+                std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr_;
 
                 BinVector* currentBinVector_;
 
@@ -139,7 +139,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
 ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                              std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                                             std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                             std::shared_ptr<IStatistics> statisticsPtr,
                                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                              std::shared_ptr<IBinning> binningPtr)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
