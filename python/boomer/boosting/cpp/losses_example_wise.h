@@ -13,7 +13,7 @@
 namespace boosting {
 
     /**
-     * A base class for all (non-decomposable) loss functions that are applied example-wise.
+     * Defines an interface for all (non-decomposable) loss functions that are applied example-wise.
      */
     class IExampleWiseLoss {
 
@@ -22,17 +22,14 @@ namespace boosting {
             virtual ~IExampleWiseLoss() { };
 
             /**
-             * Must be implemented by subclasses to calculate the gradients (first derivatives) and Hessians (second
-             * derivatives) of the loss function for each label of a certain example.
+             * Updates the statistics of the example at a specific index.
              *
-             * @param exampleIndex      The index of the example for which the gradients and Hessians should be
-             *                          calculated
+             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
              * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
              *                          predicted scores
-             * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticMatrix` to be
-             *                          updated
+             * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticMatrix` to be updated
              */
             virtual void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                                      const DenseNumericMatrix<float64>& scoreMatrix,
