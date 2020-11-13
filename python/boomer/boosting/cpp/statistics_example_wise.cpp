@@ -227,7 +227,7 @@ class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
                                               statistics_.statisticMatrixPtr_->hessians_row_cend(index));
             }
 
-            std::unique_ptr<AbstractStatistics> build() override {
+            std::unique_ptr<IStatistics> build() override {
                 return std::make_unique<ExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
                     statistics_.lossFunctionPtr_, statistics_.ruleEvaluationFactoryPtr_, statistics_.lapackPtr_,
                     statistics_.labelMatrixPtr_, std::move(statisticMatrixPtr_), nullptr);

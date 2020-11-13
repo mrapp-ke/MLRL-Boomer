@@ -12,7 +12,7 @@
 // Forward declarations
 class IRuleRefinement;
 class IThresholdsSubset;
-class AbstractStatistics;
+class IStatistics;
 class IStatisticsSubset;
 class IHeadRefinement;
 class IHeadRefinementFactory;
@@ -54,11 +54,10 @@ class IIndexVector {
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
          * stored in this vector.
          *
-         * @param statistics    A reference to an object of type `AbstractStatistics` that should be used to create the
-         *                      subset
+         * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const = 0;
 
         /**
          * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
@@ -145,7 +144,7 @@ class PartialIndexVector : public IIndexVector {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
@@ -222,7 +221,7 @@ class FullIndexVector : public IIndexVector {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;

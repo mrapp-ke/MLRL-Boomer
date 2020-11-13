@@ -1,6 +1,6 @@
 from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureMask, INominalFeatureMask
-from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
+from boomer.common.statistics cimport StatisticsProvider, IStatistics
 from boomer.common.thresholds cimport ThresholdsFactory, AbstractThresholds
 
 from libcpp.memory cimport shared_ptr
@@ -14,7 +14,7 @@ cdef extern from "cpp/thresholds_exact.h" nogil:
 
         ExactThresholds(shared_ptr[IFeatureMatrix] featureMatrixPtr,
                         shared_ptr[INominalFeatureMask] nominalFeatureMaskPtr,
-                        shared_ptr[AbstractStatistics] statisticsPtr,
+                        shared_ptr[IStatistics] statisticsPtr,
                         shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
 
 

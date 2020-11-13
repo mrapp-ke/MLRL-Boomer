@@ -41,7 +41,7 @@ PartialIndexVector::const_iterator PartialIndexVector::cend() const {
     return vector_.cend();
 }
 
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const AbstractStatistics& statistics) const {
+std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const IStatistics& statistics) const {
     return statistics.createSubset(*this);
 }
 
@@ -103,7 +103,7 @@ FullIndexVector::const_iterator FullIndexVector::cend() const {
     return FullIndexVector::Iterator(numElements_);
 }
 
-std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const AbstractStatistics& statistics) const {
+std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const IStatistics& statistics) const {
     return statistics.createSubset(*this);
 }
 

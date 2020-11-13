@@ -19,7 +19,7 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
         """
         self.threshold = threshold
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules):
         cdef AbstractCoverageStatistics* coverage_statistics = <AbstractCoverageStatistics*>statistics
         cdef float64 sum_uncovered_labels = coverage_statistics.sumUncoveredLabels_
         cdef float64 threshold = self.threshold

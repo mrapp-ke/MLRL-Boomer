@@ -57,7 +57,7 @@ class ApproximateRuleRefinement : public IRuleRefinement {
 
             // Invoke the callback...
             std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
-            const AbstractStatistics& statistics = callbackResultPtr->first;
+            const IStatistics& statistics = callbackResultPtr->first;
             const BinVector& binVector = callbackResultPtr->second;
             BinVector::const_iterator iterator = binVector.cbegin();
             uint32 numBins = binVector.getNumElements();

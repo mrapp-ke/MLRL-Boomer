@@ -9,7 +9,7 @@
 #include "indices.h"
 
 // Forward declarations
-class AbstractStatistics;
+class IStatistics;
 
 
 /**
@@ -63,10 +63,10 @@ class AbstractPrediction : public IIndexVector {
         /**
          * Updates the given statistics by applying this prediction.
          *
-         * @param statistics        A reference to an object of type `AbstractStatistics` to be updated
+         * @param statistics        A reference to an object of type `IStatistics` to be updated
          * @param statisticIndex    The index of the statistic to be updated
          */
-        virtual void apply(AbstractStatistics& statistics, uint32 statisticIndex) const = 0;
+        virtual void apply(IStatistics& statistics, uint32 statisticIndex) const = 0;
 
         /**
          * Sets the number of labels for which the rule predict.
@@ -137,14 +137,14 @@ class FullPrediction : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
 
         std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
-        void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
+        void apply(IStatistics& statistics, uint32 statisticIndex) const override;
 
 };
 
@@ -202,13 +202,13 @@ class PartialPrediction : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const AbstractStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
 
         std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
 
-        void apply(AbstractStatistics& statistics, uint32 statisticIndex) const override;
+        void apply(IStatistics& statistics, uint32 statisticIndex) const override;
 
 };

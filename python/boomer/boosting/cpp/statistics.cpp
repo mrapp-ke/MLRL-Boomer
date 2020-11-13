@@ -4,8 +4,16 @@ using namespace boosting;
 
 
 AbstractGradientStatistics::AbstractGradientStatistics(uint32 numStatistics, uint32 numLabels)
-    : AbstractStatistics(numStatistics, numLabels) {
+    : numStatistics_(numStatistics), numLabels_(numLabels) {
 
+}
+
+uint32 AbstractGradientStatistics::getNumStatistics() const {
+    return numStatistics_;
+}
+
+uint32 AbstractGradientStatistics::getNumLabels() const {
+    return numLabels_;
 }
 
 void AbstractGradientStatistics::resetSampledStatistics() {
