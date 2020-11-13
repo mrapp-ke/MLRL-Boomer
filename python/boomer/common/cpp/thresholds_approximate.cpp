@@ -1,5 +1,4 @@
 #include "thresholds_approximate.h"
-#include "thresholds_common.h"
 #include "rule_refinement_approximate.h"
 
 
@@ -149,6 +148,5 @@ ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> fea
 }
 
 std::unique_ptr<IThresholdsSubset> ApproximateThresholds::createSubset(const IWeightVector& weights) {
-    updateSampledStatistics(*statisticsPtr_, weights);
     return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this);
 }
