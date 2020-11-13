@@ -4,25 +4,58 @@
 using namespace boosting;
 
 
-std::pair<float64, float64> LabelWiseLogisticLossImpl::calculateGradientAndHessian(
-        const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex,
-        float64 predictedScore) const {
-    uint8 trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
-    float64 expectedScore = trueLabel ? 1 : -1;
-    float64 exponential = exp(expectedScore * predictedScore);
-    float64 gradient = -expectedScore / (1 + exponential);
-    float64 hessian = (pow(expectedScore, 2) * exponential) / pow(1 + exponential, 2);
-    return std::make_pair(gradient, hessian);
+void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                             const DenseNumericMatrix<float64>& scoreMatrix,
+                                             const FullIndexVector::const_iterator labelIndicesBegin,
+                                             const FullIndexVector::const_iterator labelIndicesEnd,
+                                             DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+        statisticMatrix.gradients_row_begin(exampleIndex);
+    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statisticMatrix.hessians_row_begin(exampleIndex);
+    DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+    uint32 numLabels = labelMatrix.getNumLabels();
+
+    for (uint32 i = 0; i < numLabels; i++) {
+        bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+        float64 predictedScore = scoreIterator[i];
+        this->updateGradientAndHessian(&gradientIterator[i], &hessianIterator[i], trueLabel, predictedScore);
+    }
 }
 
-std::pair<float64, float64> LabelWiseSquaredErrorLossImpl::calculateGradientAndHessian(
-        const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex,
-        float64 predictedScore) const {
-    uint8 trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
+void AbstractLabelWiseLoss::updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                             const DenseNumericMatrix<float64>& scoreMatrix,
+                                             const PartialIndexVector::const_iterator labelIndicesBegin,
+                                             const PartialIndexVector::const_iterator labelIndicesEnd,
+                                             DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+    DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+        statisticMatrix.gradients_row_begin(exampleIndex);
+    DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator = statisticMatrix.hessians_row_begin(exampleIndex);
+    DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+
+    for (auto indexIterator = labelIndicesBegin; indexIterator != labelIndicesEnd; indexIterator++) {
+        uint32 labelIndex = *indexIterator;
+        bool trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
+        float64 predictedScore = scoreIterator[labelIndex];
+        this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,
+                                       predictedScore);
+    }
+}
+
+void LabelWiseLogisticLossImpl::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
+                                                         DenseVector<float64>::iterator hessian, bool trueLabel,
+                                                         float64 predictedScore) const {
     float64 expectedScore = trueLabel ? 1 : -1;
-    float64 gradient = (2 * predictedScore) - (2 * expectedScore);
-    float64 hessian = 2;
-    return std::make_pair(gradient, hessian);
+    float64 exponential = exp(expectedScore * predictedScore);
+    *gradient = -expectedScore / (1 + exponential);
+    *hessian = (pow(expectedScore, 2) * exponential) / pow(1 + exponential, 2);
+}
+
+void LabelWiseSquaredErrorLossImpl::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
+                                                             DenseVector<float64>::iterator hessian, bool trueLabel,
+                                                             float64 predictedScore) const {
+    float64 expectedScore = trueLabel ? 1 : -1;
+    *gradient = (2 * predictedScore) - (2 * expectedScore);
+    *hessian = 2;
 }
 
 std::pair<float64, float64> LabelWiseSquaredHingeLossImpl::calculateGradientAndHessian(

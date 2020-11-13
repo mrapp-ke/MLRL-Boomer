@@ -181,7 +181,7 @@ class AbstractStatistics {
                  *
                  * @return An unique pointer to an object of type `AbstractStatistics` that has been created
                  */
-                virtual std::unique_ptr<AbstractStatistics> build() const = 0;
+                virtual std::unique_ptr<AbstractStatistics> build() = 0;
 
         };
 
