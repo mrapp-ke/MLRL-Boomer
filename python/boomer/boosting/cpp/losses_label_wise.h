@@ -34,11 +34,11 @@ namespace boosting {
              * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
              * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
              */
-            virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                          const DenseNumericMatrix<float64>& scoreMatrix,
-                                          FullIndexVector::const_iterator labelIndicesBegin,
-                                          FullIndexVector::const_iterator labelIndicesEnd,
-                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                   const DenseNumericMatrix<float64>& scoreMatrix,
+                                                   FullIndexVector::const_iterator labelIndicesBegin,
+                                                   FullIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -53,11 +53,11 @@ namespace boosting {
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
              * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
              */
-            virtual void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                          const DenseNumericMatrix<float64>& scoreMatrix,
-                                          PartialIndexVector::const_iterator labelIndicesBegin,
-                                          PartialIndexVector::const_iterator labelIndicesEnd,
-                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                                   const DenseNumericMatrix<float64>& scoreMatrix,
+                                                   PartialIndexVector::const_iterator labelIndicesBegin,
+                                                   PartialIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
 
     };
 
@@ -85,17 +85,17 @@ namespace boosting {
 
             virtual ~AbstractLabelWiseLoss() { };
 
-            void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                  const DenseNumericMatrix<float64>& scoreMatrix,
-                                  FullIndexVector::const_iterator labelIndicesBegin,
-                                  FullIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
+            void updateLabelWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                           const DenseNumericMatrix<float64>& scoreMatrix,
+                                           FullIndexVector::const_iterator labelIndicesBegin,
+                                           FullIndexVector::const_iterator labelIndicesEnd,
+                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
 
-            void updateStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                  const DenseNumericMatrix<float64>& scoreMatrix,
-                                  PartialIndexVector::const_iterator labelIndicesBegin,
-                                  PartialIndexVector::const_iterator labelIndicesEnd,
-                                  DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
+            void updateLabelWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                           const DenseNumericMatrix<float64>& scoreMatrix,
+                                           PartialIndexVector::const_iterator labelIndicesBegin,
+                                           PartialIndexVector::const_iterator labelIndicesEnd,
+                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
 
     };
 
