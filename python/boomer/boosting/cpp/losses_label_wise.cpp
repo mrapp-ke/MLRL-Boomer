@@ -58,30 +58,24 @@ void LabelWiseSquaredErrorLossImpl::updateGradientAndHessian(DenseVector<float64
     *hessian = 2;
 }
 
-std::pair<float64, float64> LabelWiseSquaredHingeLossImpl::calculateGradientAndHessian(
-        const IRandomAccessLabelMatrix& labelMatrix, uint32 exampleIndex, uint32 labelIndex,
-        float64 predictedScore) const {
-    uint8 trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
-    float64 gradient;
-    float64 hessian;
-
+void LabelWiseSquaredErrorLossImpl::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
+                                                             DenseVector<float64>::iterator hessian, bool trueLabel,
+                                                             float64 predictedScore) const {
     if (trueLabel) {
         if (predictedScore < 1) {
-            gradient = 2 * (predictedScore - 1);
-            hessian = 2;
+            *gradient = 2 * (predictedScore - 1);
+            *hessian = 2;
         } else {
-            gradient = 0;
-            hessian = 0;
+            *gradient = 0;
+            *hessian = 0;
         }
     } else {
         if (predictedScore > 0) {
-            gradient = 2 * predictedScore;
-            hessian = 2;
+            *gradient = 2 * predictedScore;
+            *hessian = 2;
         } else {
-            gradient = 0;
-            hessian = 0;
+            *gradient = 0;
+            *hessian = 0;
         }
     }
-
-    return std::make_pair(gradient, hessian);
 }
