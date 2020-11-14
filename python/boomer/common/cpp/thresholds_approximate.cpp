@@ -71,6 +71,11 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                         binIterator[binIndex].maxValue = currentValue;
                     }
 
+                    IndexedValue<float32> example;
+                    example.index = entry.index;
+                    example.value = entry.value;
+                    currentBinVector_->addExample(binIndex, example);
+
                     histogramBuilderPtr_->onBinUpdate(binIndex, entry);
                 }
 
