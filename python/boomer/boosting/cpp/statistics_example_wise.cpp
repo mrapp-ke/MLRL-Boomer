@@ -15,7 +15,7 @@ using namespace boosting;
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
+class ExampleWiseStatistics : public IExampleWiseStatistics {
 
     private:
 
@@ -235,6 +235,12 @@ class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
         };
 
+        uint32 numStatistics_;
+
+        uint32 numLabels_;
+
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
 
         std::shared_ptr<Lapack> lapackPtr_;
@@ -281,12 +287,34 @@ class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
                               std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-            : AbstractExampleWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
-                                            ruleEvaluationFactoryPtr),
-              lossFunctionPtr_(lossFunctionPtr), lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
+            : numStatistics_(labelMatrixPtr->getNumExamples()), numLabels_(labelMatrixPtr->getNumLabels()),
+              ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), lossFunctionPtr_(lossFunctionPtr),
+              lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
               statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)),
               totalSumVector_(StatisticVector(labelMatrixPtr->getNumLabels())) {
 
+        }
+
+        uint32 getNumStatistics() const override {
+            return numStatistics_;
+        }
+
+        uint32 getNumLabels() const override {
+            return numLabels_;
+        }
+
+        void setRuleEvaluationFactory(std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
+            ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
+        }
+
+        void resetSampledStatistics() override {
+            // This function is equivalent to the function `resetCoveredStatistics`...
+            this->resetCoveredStatistics();
+        }
+
+        void addSampledStatistic(uint32 statisticIndex, uint32 weight) override {
+            // This function is equivalent to the function `updateCoveredStatistic`...
+            this->updateCoveredStatistic(statisticIndex, weight, false);
         }
 
         void resetCoveredStatistics() override {
@@ -329,36 +357,6 @@ class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
 
 };
 
-AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
-        uint32 numStatistics, uint32 numLabels,
-        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-    : numStatistics_(numStatistics), numLabels_(numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
-
-}
-
-void AbstractExampleWiseStatistics::setRuleEvaluationFactory(
-        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
-    ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
-}
-
-uint32 AbstractExampleWiseStatistics::getNumStatistics() const {
-    return numStatistics_;
-}
-
-uint32 AbstractExampleWiseStatistics::getNumLabels() const {
-    return numLabels_;
-}
-
-void AbstractExampleWiseStatistics::resetSampledStatistics() {
-    // This function is equivalent to the function `resetCoveredStatistics`...
-    this->resetCoveredStatistics();
-}
-
-void AbstractExampleWiseStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
-    // This function is equivalent to the function `updateCoveredStatistic`...
-    this->updateCoveredStatistic(statisticIndex, weight, false);
-}
-
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, std::unique_ptr<Lapack> lapackPtr,
@@ -369,7 +367,7 @@ DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
     labelMatrixPtr_ = labelMatrixPtr;
 }
 
-std::unique_ptr<AbstractExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::create() const {
+std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::create() const {
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
     std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
