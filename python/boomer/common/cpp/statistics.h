@@ -15,7 +15,8 @@
 
 /**
  * Defines an interface for all classes that provide access to a subset of the statistics that are stored by an instance
- * of the class `IStatistics` and allows to calculate the scores to be predicted by rules that cover such a subset.
+ * of the class `IHistogram` or `IStatistics` and allows to calculate the scores to be predicted by rules that cover
+ * such a subset.
  */
 class IStatisticsSubset {
 
@@ -207,10 +208,8 @@ class IHistogram {
 };
 
 /**
- * Defines an interface for all classes that provide access to statistics about the labels of the training examples,
- * which serve as the basis for learning a new rule or refining an existing one. In addition to `IHistogram`, this class
- * does also provide functions that allow to only use a sub-sample of the available statistics, as well as for updating
- * the statistics after a new rule has been learned.
+ * Defines an interface for all classes that inherit from `IHistogram`, but do also provide functions that allow to only
+ * use a sub-sample of the available statistics, as well as to update the statistics after a new rule has been learned.
  */
 class IStatistics : public IHistogram {
 
