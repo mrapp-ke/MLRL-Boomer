@@ -16,11 +16,11 @@ cdef class LabelWiseStatisticsFactory:
     A wrapper for the pure virtual C++ class `ILabelWiseStatisticsFactory`.
     """
 
-    cdef unique_ptr[AbstractLabelWiseStatistics] create(self):
+    cdef unique_ptr[ILabelWiseStatistics] create(self):
         """
-        Creates a new instance of the class `AbstractLabelWiseStatistics`.
+        Creates a new instance of the class `ILabelWiseStatistics`.
 
-        :return: An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+        :return: An unique pointer to an object of type `ILabelWiseStatistics` that has been created
         """
         return self.statistics_factory_ptr.get().create()
 
@@ -45,13 +45,13 @@ cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
 
 cdef class LabelWiseStatisticsProvider(StatisticsProvider):
     """
-    Provides access to an object of type `AbstractLabelWiseStatistics`.
+    Provides access to an object of type `ILabelWiseStatistics`.
     """
 
     def __cinit__(self, LabelWiseStatisticsFactory statistics_factory,
                   LabelWiseRuleEvaluationFactory rule_evaluation_factory):
         """
-        :param statistics_factory:      A factory that allows to create a new object of type `AbstractLabelWiseStatistics`
+        :param statistics_factory:      A factory that allows to create a new object of type `ILabelWiseStatistics`
         :param rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` to switch to when invoking the function
                                         `switch_rule_evaluation`
         """
@@ -65,7 +65,7 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
     cdef void switch_rule_evaluation(self):
         cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory = self.rule_evaluation_factory
         cdef shared_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr = rule_evaluation_factory.rule_evaluation_factory_ptr
-        dynamic_pointer_cast[AbstractLabelWiseStatistics, IStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
+        dynamic_pointer_cast[ILabelWiseStatistics, IStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
             rule_evaluation_factory_ptr)
 
 
