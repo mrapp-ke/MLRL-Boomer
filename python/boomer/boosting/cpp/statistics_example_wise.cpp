@@ -303,7 +303,8 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
             return numLabels_;
         }
 
-        void setRuleEvaluationFactory(std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
+        void setRuleEvaluationFactory(
+                std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
             ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
         }
 
