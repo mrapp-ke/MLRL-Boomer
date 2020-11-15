@@ -170,7 +170,7 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                                                   statistics_.statisticMatrixPtr_->hessians_row_cend(index));
                 }
 
-                std::unique_ptr<IStatistics> build() override {
+                std::unique_ptr<IHistogram> build() override {
                     return std::make_unique<LabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
                         statistics_.lossFunctionPtr_, statistics_.ruleEvaluationFactoryPtr_,
                         statistics_.labelMatrixPtr_, std::move(statisticMatrixPtr_), nullptr);
@@ -272,13 +272,31 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
         uint32 numStatistics, uint32 numLabels,
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+    : numStatistics_(numStatistics), numLabels_(numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
 }
 
 void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
     ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
+}
+
+uint32 AbstractLabelWiseStatistics::getNumStatistics() const {
+    return numStatistics_;
+}
+
+uint32 AbstractLabelWiseStatistics::getNumLabels() const {
+    return numLabels_;
+}
+
+void AbstractLabelWiseStatistics::resetSampledStatistics() {
+    // This function is equivalent to the function `resetCoveredStatistics`...
+    this->resetCoveredStatistics();
+}
+
+void AbstractLabelWiseStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
+    // This function is equivalent to the function `updateCoveredStatistic`...
+    this->updateCoveredStatistic(statisticIndex, weight, false);
 }
 
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(

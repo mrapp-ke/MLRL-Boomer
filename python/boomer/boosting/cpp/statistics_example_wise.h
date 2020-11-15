@@ -10,7 +10,6 @@
 #include "../../common/cpp/statistics.h"
 #include "rule_evaluation_example_wise.h"
 #include "losses_example_wise.h"
-#include "statistics.h"
 #include "lapack.h"
 
 
@@ -20,7 +19,13 @@ namespace boosting {
      * An abstract base class for all classes that allow to store gradients and Hessians that are calculated according
      * to a differentiable loss function that is applied example-wise.
      */
-    class AbstractExampleWiseStatistics : public AbstractGradientStatistics {
+    class AbstractExampleWiseStatistics : public IStatistics {
+
+        private:
+
+            uint32 numStatistics_;
+
+            uint32 numLabels_;
 
         protected:
 
@@ -47,6 +52,14 @@ namespace boosting {
              *                                 to be set
              */
             void setRuleEvaluationFactory(std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+
+            uint32 getNumStatistics() const override;
+
+            uint32 getNumLabels() const override;
+
+            void resetSampledStatistics() override;
+
+            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override;
 
     };
 

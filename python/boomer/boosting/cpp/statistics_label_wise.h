@@ -10,7 +10,6 @@
 #include "../../common/cpp/statistics.h"
 #include "rule_evaluation_label_wise.h"
 #include "losses_label_wise.h"
-#include "statistics.h"
 
 
 namespace boosting {
@@ -19,7 +18,13 @@ namespace boosting {
      * An abstract base class for all classes that store gradients and Hessians that are calculated according to a
      * differentiable loss function that is applied label-wise.
      */
-    class AbstractLabelWiseStatistics : public AbstractGradientStatistics {
+    class AbstractLabelWiseStatistics : public IStatistics {
+
+        private:
+
+            uint32 numStatistics_;
+
+            uint32 numLabels_;
 
         protected:
 
@@ -46,6 +51,14 @@ namespace boosting {
              *                                 to be set
              */
             void setRuleEvaluationFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+
+            uint32 getNumStatistics() const override;
+
+            uint32 getNumLabels() const override;
+
+            void resetSampledStatistics() override;
+
+            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override;
 
     };
 

@@ -63,8 +63,8 @@ uint32 FullPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> FullPrediction::createSubset(const IStatistics& statistics) const {
-    return indexVector_.createSubset(statistics);
+std::unique_ptr<IStatisticsSubset> FullPrediction::createSubset(const IHistogram& histogram) const {
+    return indexVector_.createSubset(histogram);
 }
 
 std::unique_ptr<IRuleRefinement> FullPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
@@ -114,8 +114,8 @@ uint32 PartialPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> PartialPrediction::createSubset(const IStatistics& statistics) const {
-    return indexVector_.createSubset(statistics);
+std::unique_ptr<IStatisticsSubset> PartialPrediction::createSubset(const IHistogram& histogram) const {
+    return indexVector_.createSubset(histogram);
 }
 
 std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,

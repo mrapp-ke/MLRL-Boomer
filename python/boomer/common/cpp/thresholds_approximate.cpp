@@ -51,10 +51,10 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                         currentBinVector_ = binCacheEntry.binVectorPtr.get();
                         thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
-                        binCacheEntry.statisticsPtr = std::move(histogramBuilderPtr_->build());
+                        binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
                     }
 
-                    return std::make_unique<Result>(*binCacheEntry.statisticsPtr, *binCacheEntry.binVectorPtr);
+                    return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binCacheEntry.binVectorPtr);
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {

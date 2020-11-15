@@ -25,7 +25,7 @@ class ApproximateThresholds : public AbstractThresholds {
          * A wrapper for statistics and bins that is stored in the cache.
          */
         struct BinCacheEntry {
-            std::unique_ptr<IStatistics> statisticsPtr;
+            std::unique_ptr<IHistogram> histogramPtr;
             std::unique_ptr<BinVector> binVectorPtr;
         };
 
