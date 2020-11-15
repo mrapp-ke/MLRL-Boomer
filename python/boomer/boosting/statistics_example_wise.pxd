@@ -10,7 +10,7 @@ from libcpp.memory cimport unique_ptr, shared_ptr
 
 cdef extern from "cpp/statistics_example_wise.h" namespace "boosting" nogil:
 
-    cdef cppclass AbstractExampleWiseStatistics(IStatistics):
+    cdef cppclass IExampleWiseStatistics(IStatistics):
 
         # Functions:
 
@@ -21,7 +21,7 @@ cdef extern from "cpp/statistics_example_wise.h" namespace "boosting" nogil:
 
         # Functions:
 
-        unique_ptr[AbstractExampleWiseStatistics] create()
+        unique_ptr[IExampleWiseStatistics] create()
 
 
     cdef cppclass DenseExampleWiseStatisticsFactoryImpl(IExampleWiseStatisticsFactory):
@@ -42,14 +42,14 @@ cdef class ExampleWiseStatisticsFactory:
 
     # Functions:
 
-    cdef unique_ptr[AbstractExampleWiseStatistics] create(self)
+    cdef unique_ptr[IExampleWiseStatistics] create(self)
 
 
 cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
 
     # Functions:
 
-    cdef unique_ptr[AbstractExampleWiseStatistics] create(self)
+    cdef unique_ptr[IExampleWiseStatistics] create(self)
 
 
 cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
