@@ -15,7 +15,7 @@ using namespace boosting;
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class LabelWiseStatistics : public AbstractLabelWiseStatistics {
+class LabelWiseStatistics : public ILabelWiseStatistics {
 
     private:
 
@@ -178,6 +178,11 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
 
         };
 
+        uint32 numStatistics_;
+
+        uint32 numLabels_;
+
+        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
         std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
@@ -221,12 +226,35 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
                             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                             std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                             std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-            : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
-                                          ruleEvaluationFactoryPtr),
-              lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
-              statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)),
+            : numStatistics_(labelMatrixPtr->getNumExamples()), numLabels_(labelMatrixPtr->getNumLabels()),
+              ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), lossFunctionPtr_(lossFunctionPtr),
+              labelMatrixPtr_(labelMatrixPtr), statisticMatrixPtr_(std::move(statisticMatrixPtr)),
+              scoreMatrixPtr_(std::move(scoreMatrixPtr)),
               totalSumVector_(StatisticVector(labelMatrixPtr->getNumLabels())) {
 
+        }
+
+        uint32 getNumStatistics() const override {
+            return numStatistics_;
+        }
+
+        uint32 getNumLabels() const override {
+            return numLabels_;
+        }
+
+        void setRuleEvaluationFactory(
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
+            ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
+        }
+
+        void resetSampledStatistics() override {
+            // This function is equivalent to the function `resetCoveredStatistics`...
+            this->resetCoveredStatistics();
+        }
+
+        void addSampledStatistic(uint32 statisticIndex, uint32 weight) override {
+            // This function is equivalent to the function `updateCoveredStatistic`...
+            this->updateCoveredStatistic(statisticIndex, weight, false);
         }
 
         void resetCoveredStatistics() override {
@@ -269,36 +297,6 @@ class LabelWiseStatistics : public AbstractLabelWiseStatistics {
 
 };
 
-AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        uint32 numStatistics, uint32 numLabels,
-        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-    : numStatistics_(numStatistics), numLabels_(numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
-
-}
-
-void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
-        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
-    ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
-}
-
-uint32 AbstractLabelWiseStatistics::getNumStatistics() const {
-    return numStatistics_;
-}
-
-uint32 AbstractLabelWiseStatistics::getNumLabels() const {
-    return numLabels_;
-}
-
-void AbstractLabelWiseStatistics::resetSampledStatistics() {
-    // This function is equivalent to the function `resetCoveredStatistics`...
-    this->resetCoveredStatistics();
-}
-
-void AbstractLabelWiseStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
-    // This function is equivalent to the function `updateCoveredStatistic`...
-    this->updateCoveredStatistic(statisticIndex, weight, false);
-}
-
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
@@ -308,7 +306,7 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 
 }
 
-std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
+std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     uint32 numLabels = labelMatrixPtr_->getNumLabels();
     std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
