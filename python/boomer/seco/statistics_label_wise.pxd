@@ -8,7 +8,7 @@ from libcpp.memory cimport unique_ptr, shared_ptr
 
 cdef extern from "cpp/statistics_label_wise.h" namespace "seco" nogil:
 
-    cdef cppclass AbstractLabelWiseStatistics(ICoverageStatistics):
+    cdef cppclass ILabelWiseStatistics(ICoverageStatistics):
 
         # Functions:
 
@@ -19,7 +19,7 @@ cdef extern from "cpp/statistics_label_wise.h" namespace "seco" nogil:
 
         # Functions:
 
-        unique_ptr[AbstractLabelWiseStatistics] create()
+        unique_ptr[ILabelWiseStatistics] create()
 
 
     cdef cppclass DenseLabelWiseStatisticsFactoryImpl(ILabelWiseStatisticsFactory):
@@ -38,14 +38,14 @@ cdef class LabelWiseStatisticsFactory:
 
     # Functions:
 
-    cdef unique_ptr[AbstractLabelWiseStatistics] create(self)
+    cdef unique_ptr[ILabelWiseStatistics] create(self)
 
 
 cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
 
     # Functions:
 
-    cdef unique_ptr[AbstractLabelWiseStatistics] create(self)
+    cdef unique_ptr[ILabelWiseStatistics] create(self)
 
 
 cdef class LabelWiseStatisticsProvider(StatisticsProvider):

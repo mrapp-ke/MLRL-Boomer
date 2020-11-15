@@ -17,36 +17,14 @@
 namespace seco {
 
     /**
-     * An abstract base class for all classes that allow to store the elements of confusion matrices that are computed
+     * Defines an interface for all classes that allow to store the elements of confusion matrices that are computed
      * independently for each label.
      */
-    class AbstractLabelWiseStatistics : public ICoverageStatistics {
-
-        private:
-
-            uint32 numStatistics_;
-
-            uint32 numLabels_;
-
-        protected:
-
-            float64 sumUncoveredLabels_;
-
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+    class ILabelWiseStatistics : public ICoverageStatistics {
 
         public:
 
-            /**
-             * @param numStatistics             The number of statistics
-             * @param numLabels                 The number of labels
-             * @param sumUncoveredLabels        The sum of weights of all labels that remain to be covered, initially
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
-             *                                  that allows to create instances of the class that is used for
-             *                                  calculating the predictions, as well as corresponding quality scores, of
-             *                                  rules
-             */
-            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels,
-                                        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+            virtual ~ILabelWiseStatistics() { };
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the
@@ -55,19 +33,13 @@ namespace seco {
              * @param ruleEvaluationFactoryPtr A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
              *                                 to be set
              */
-            void setRuleEvaluationFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
-
-            uint32 getNumStatistics() const override;
-
-            uint32 getNumLabels() const override;
-
-            float64 getSumOfUncoveredLabels() const override;
+            virtual void setRuleEvaluationFactory(
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) = 0;
 
     };
 
     /**
-     * Defines an interface for all classes that allow to create new instances of the class
-     * `AbstractLabelWiseStatistics`.
+     * Defines an interface for all classes that allow to create new instances of the class ILabelWiseStatistics`.
      */
     class ILabelWiseStatisticsFactory {
 
@@ -76,11 +48,11 @@ namespace seco {
             virtual ~ILabelWiseStatisticsFactory() { };
 
             /**
-             * Creates a new instance of the class `AbstractLabelWiseStatistics`.
+             * Creates a new instance of the class `ILabelWiseStatistics`.
              *
-             * @return An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+             * @return An unique pointer to an object of type `ILabelWiseStatistics` that has been created
              */
-            virtual std::unique_ptr<AbstractLabelWiseStatistics> create() const = 0;
+            virtual std::unique_ptr<ILabelWiseStatistics> create() const = 0;
 
     };
 
@@ -109,7 +81,7 @@ namespace seco {
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            std::unique_ptr<AbstractLabelWiseStatistics> create() const override;
+            std::unique_ptr<ILabelWiseStatistics> create() const override;
 
     };
 
