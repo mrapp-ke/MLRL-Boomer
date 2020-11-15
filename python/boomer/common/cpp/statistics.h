@@ -227,12 +227,11 @@ class IStatistics : public IHistogram {
                 virtual ~IHistogramBuilder() { };
 
                 /**
-                 * Creates and returns a new instance of the class `IStatistics` that stores the histogram that has been
-                 * built.
+                 * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.
                  *
-                 * @return An unique pointer to an object of type `IStatistics` that has been created
+                 * @return An unique pointer to an object of type `IHistogram` that has been created
                  */
-                virtual std::unique_ptr<IStatistics> build() = 0;
+                virtual std::unique_ptr<IHistogram> build() = 0;
 
         };
 

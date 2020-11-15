@@ -9,6 +9,7 @@
 #include "indices.h"
 
 // Forward declarations
+class IHistogram;
 class IStatistics;
 
 
@@ -137,7 +138,7 @@ class FullPrediction : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IHistogram& histogram) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
@@ -202,7 +203,7 @@ class PartialPrediction : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IHistogram& histogram) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;

@@ -227,7 +227,7 @@ class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
                                               statistics_.statisticMatrixPtr_->hessians_row_cend(index));
             }
 
-            std::unique_ptr<IStatistics> build() override {
+            std::unique_ptr<IHistogram> build() override {
                 return std::make_unique<ExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
                     statistics_.lossFunctionPtr_, statistics_.ruleEvaluationFactoryPtr_, statistics_.lapackPtr_,
                     statistics_.labelMatrixPtr_, std::move(statisticMatrixPtr_), nullptr);
@@ -332,13 +332,31 @@ class ExampleWiseStatistics : public AbstractExampleWiseStatistics {
 AbstractExampleWiseStatistics::AbstractExampleWiseStatistics(
         uint32 numStatistics, uint32 numLabels,
         std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-    : AbstractGradientStatistics(numStatistics, numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+    : numStatistics_(numStatistics), numLabels_(numLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
 }
 
 void AbstractExampleWiseStatistics::setRuleEvaluationFactory(
         std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
     ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
+}
+
+uint32 AbstractExampleWiseStatistics::getNumStatistics() const {
+    return numStatistics_;
+}
+
+uint32 AbstractExampleWiseStatistics::getNumLabels() const {
+    return numLabels_;
+}
+
+void AbstractExampleWiseStatistics::resetSampledStatistics() {
+    // This function is equivalent to the function `resetCoveredStatistics`...
+    this->resetCoveredStatistics();
+}
+
+void AbstractExampleWiseStatistics::addSampledStatistic(uint32 statisticIndex, uint32 weight) {
+    // This function is equivalent to the function `updateCoveredStatistic`...
+    this->updateCoveredStatistic(statisticIndex, weight, false);
 }
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(

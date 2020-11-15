@@ -37,7 +37,6 @@ sources = [
     'boomer/boosting/cpp/data_example_wise.cpp',
     'boomer/boosting/cpp/losses_label_wise.cpp',
     'boomer/boosting/cpp/losses_example_wise.cpp',
-    'boomer/boosting/cpp/statistics.cpp',
     'boomer/boosting/cpp/statistics_label_wise.cpp',
     'boomer/boosting/cpp/statistics_example_wise.cpp',
     'boomer/boosting/cpp/rule_evaluation_label_wise.cpp',
