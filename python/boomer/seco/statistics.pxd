@@ -4,8 +4,8 @@ from boomer.common.statistics cimport IStatistics
 
 cdef extern from "cpp/statistics.h" namespace "seco" nogil:
 
-    cdef cppclass AbstractCoverageStatistics(IStatistics):
+    cdef cppclass ICoverageStatistics(IStatistics):
 
-        # Attributes:
+        # Functions:
 
-        float64 sumUncoveredLabels_;
+        float64 getSumOfUncoveredLabels()
