@@ -20,9 +20,17 @@ namespace seco {
      * An abstract base class for all classes that allow to store the elements of confusion matrices that are computed
      * independently for each label.
      */
-    class AbstractLabelWiseStatistics : public AbstractCoverageStatistics {
+    class AbstractLabelWiseStatistics : public ICoverageStatistics {
+
+        private:
+
+            uint32 numStatistics_;
+
+            uint32 numLabels_;
 
         protected:
+
+            float64 sumUncoveredLabels_;
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
@@ -48,6 +56,12 @@ namespace seco {
              *                                 to be set
              */
             void setRuleEvaluationFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+
+            uint32 getNumStatistics() const override;
+
+            uint32 getNumLabels() const override;
+
+            float64 getSumOfUncoveredLabels() const override;
 
     };
 

@@ -342,9 +342,21 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
         uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels,
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-    : AbstractCoverageStatistics(numStatistics, numLabels, sumUncoveredLabels),
+    : numStatistics_(numStatistics), numLabels_(numLabels), sumUncoveredLabels_(sumUncoveredLabels),
       ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
+}
+
+uint32 AbstractLabelWiseStatistics::getNumStatistics() const {
+    return numStatistics_;
+}
+
+uint32 AbstractLabelWiseStatistics::getNumLabels() const {
+    return numLabels_;
+}
+
+float64 AbstractLabelWiseStatistics::getSumOfUncoveredLabels() const {
+    return sumUncoveredLabels_;
 }
 
 void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
