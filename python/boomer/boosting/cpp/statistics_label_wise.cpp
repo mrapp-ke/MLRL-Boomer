@@ -62,7 +62,7 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                      totalSumVector_(&statistics_.totalSumVector_) {
+                      totalSumVector_(statistics_.totalSumVectorPtr_.get()) {
                     accumulatedSumVector_ = nullptr;
                     totalCoverableSumVector_ = nullptr;
                     tmpVector_ = nullptr;
@@ -192,7 +192,7 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
 
         std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
 
-        StatisticVector totalSumVector_;
+        std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -230,7 +230,7 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
               ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), lossFunctionPtr_(lossFunctionPtr),
               labelMatrixPtr_(labelMatrixPtr), statisticMatrixPtr_(std::move(statisticMatrixPtr)),
               scoreMatrixPtr_(std::move(scoreMatrixPtr)),
-              totalSumVector_(StatisticVector(labelMatrixPtr->getNumLabels())) {
+              totalSumVectorPtr_(std::make_unique<StatisticVector>(labelMatrixPtr->getNumLabels())) {
 
         }
 
@@ -258,15 +258,15 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
         }
 
         void resetCoveredStatistics() override {
-            totalSumVector_.setAllToZero();
+            totalSumVectorPtr_->setAllToZero();
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            totalSumVector_.add(statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                                statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                                statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                statisticMatrixPtr_->hessians_row_cend(statisticIndex), signedWeight);
+            totalSumVectorPtr_->add(statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                                    statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                                    statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                                    statisticMatrixPtr_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
