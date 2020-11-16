@@ -6,7 +6,8 @@
  */
 #pragma once
 
-#include "indices.h"
+#include "indices/index_vector_full.h"
+#include "indices/index_vector_partial.h"
 #include "rule_evaluation.h"
 #include "predictions.h"
 #include "binning.h"

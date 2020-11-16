@@ -6,7 +6,8 @@
 #pragma once
 
 #include "data/vector_dense.h"
-#include "indices.h"
+#include "indices/index_vector_full.h"
+#include "indices/index_vector_partial.h"
 
 // Forward declarations
 class IHistogram;

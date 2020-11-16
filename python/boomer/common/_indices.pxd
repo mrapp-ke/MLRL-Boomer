@@ -11,7 +11,7 @@ from boomer.common.thresholds cimport IThresholdsSubset
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "cpp/indices.h" nogil:
+cdef extern from "cpp/indices/index_vector.h" nogil:
 
     cdef cppclass IIndexVector:
 
@@ -26,9 +26,13 @@ cdef extern from "cpp/indices.h" nogil:
         unique_ptr[IRuleRefinement] createRuleRefinement(IThresholdsSubset& thresholds, uint32 featureIndex)
 
 
+cdef extern from "cpp/indices/index_vector_full.h" nogil:
+
     cdef cppclass FullIndexVector(IIndexVector):
         pass
 
+
+cdef extern from "cpp/indices/index_vector_partial.h" nogil:
 
     cdef cppclass PartialIndexVector(IIndexVector):
         pass
