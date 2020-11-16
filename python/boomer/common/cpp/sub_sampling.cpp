@@ -1,5 +1,6 @@
 #include "sub_sampling.h"
-#include "data.h"
+#include "data/vector_dense.h"
+#include <unordered_set>
 #include <math.h>
 
 

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../../common/cpp/rule_evaluation.h"
-#include "data_label_wise.h"
+#include "data/vector_dense_label_wise.h"
 #include <memory>
 
 

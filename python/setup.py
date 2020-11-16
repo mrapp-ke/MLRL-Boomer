@@ -13,8 +13,12 @@ DEBUG = False
 # The compiler/linker argument to enable OpenMP support
 sources = [
     '**/*.pyx',
+    'boomer/common/cpp/data/matrix_dense.cpp',
+    'boomer/common/cpp/data/matrix_dok_binary.cpp',
+    'boomer/common/cpp/data/vector_dense.cpp',
+    'boomer/common/cpp/data/vector_dok_binary.cpp',
+    'boomer/common/cpp/data/vector_sparse_array.cpp',
     'boomer/common/cpp/random.cpp',
-    'boomer/common/cpp/data.cpp',
     'boomer/common/cpp/indices.cpp',
     'boomer/common/cpp/input_data.cpp',
     'boomer/common/cpp/predictions.cpp',
@@ -30,11 +34,13 @@ sources = [
     'boomer/common/cpp/rule_refinement.cpp',
     'boomer/common/cpp/pruning.cpp',
     'boomer/common/cpp/binning.cpp',
+    'boomer/boosting/cpp/data/matrix_dense_numeric.cpp',
+    'boomer/boosting/cpp/data/matrix_dense_label_wise.cpp',
+    'boomer/boosting/cpp/data/matrix_dense_example_wise.cpp',
+    'boomer/boosting/cpp/data/vector_dense_label_wise.cpp',
+    'boomer/boosting/cpp/data/vector_dense_example_wise.cpp',
     'boomer/boosting/cpp/blas.cpp',
     'boomer/boosting/cpp/lapack.cpp',
-    'boomer/boosting/cpp/data.cpp',
-    'boomer/boosting/cpp/data_label_wise.cpp',
-    'boomer/boosting/cpp/data_example_wise.cpp',
     'boomer/boosting/cpp/losses_label_wise.cpp',
     'boomer/boosting/cpp/losses_example_wise.cpp',
     'boomer/boosting/cpp/statistics_label_wise.cpp',
@@ -48,8 +54,8 @@ sources = [
     'boomer/seco/cpp/statistics_label_wise.cpp',
     'boomer/seco/cpp/rule_evaluation_label_wise.cpp'
 ]
-COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
 
+COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
 
 extensions = [
     Extension(name='*', sources=sources, language='c++', extra_compile_args=[COMPILE_FLAG_OPEN_MP],
