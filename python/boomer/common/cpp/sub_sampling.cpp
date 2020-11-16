@@ -1,5 +1,7 @@
 #include "sub_sampling.h"
 #include "data/vector_dense.h"
+#include "indices/index_vector_full.h"
+#include "indices/index_vector_partial.h"
 #include <unordered_set>
 #include <math.h>
 

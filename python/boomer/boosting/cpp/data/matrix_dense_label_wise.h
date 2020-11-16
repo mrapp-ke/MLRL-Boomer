@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../../../common/cpp/indices.h"
+#include "../../../common/cpp/data/types.h"
 
 
 namespace boosting {
