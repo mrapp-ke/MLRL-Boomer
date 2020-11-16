@@ -4,7 +4,9 @@
 #pragma once
 
 #include "../../../common/cpp/data/matrix_dense.h"
-#include "../../../common/cpp/indices.h"
+#include "../../../common/cpp/indices/index_vector.h"
+#include "../../../common/cpp/indices/index_vector_full.h"
+#include "../../../common/cpp/indices/index_vector_partial.h"
 
 
 namespace boosting {
