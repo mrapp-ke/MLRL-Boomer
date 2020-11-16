@@ -7,77 +7,9 @@
  */
 #pragma once
 
+#include "data/vector_bin.h"
 #include "rule_refinement.h"
-#include <forward_list>
-#include <unordered_map>
 
-
-/**
- * TODO
- */
-class BinVector : public DenseVector<Bin> {
-
-    public:
-
-        typedef IndexedValue<float32> Example;
-
-    private:
-
-        std::unordered_map<uint32, std::forward_list<Example>> examplesPerBin_;
-
-    public:
-
-        /**
-         * @param numElements TODO
-         */
-        BinVector(uint32 numElements)
-            : DenseVector<Bin>(numElements, true) {
-
-        }
-
-        typedef std::forward_list<Example>::const_iterator example_const_iterator;
-
-        /**
-         * TODO
-         *
-         * @param binIndex  TODO
-         * @return          TODO
-         */
-        example_const_iterator examples_cbegin(uint32 binIndex) {
-            std::forward_list<Example>& examples = examplesPerBin_[binIndex];
-            return examples.cbegin();
-        }
-
-        /**
-         * TODO
-         *
-         * @param binIndex  TODO
-         * @return          TODO
-         */
-        example_const_iterator examples_cend(uint32 binIndex) {
-            std::forward_list<Example>& examples = examplesPerBin_[binIndex];
-            return examples.cend();
-        }
-
-        /**
-         * TODO
-         *
-         * @param binIndex  TODO
-         * @param example   TODO
-         */
-        void addExample(uint32 binIndex, Example example) {
-            std::forward_list<Example>& examples = examplesPerBin_[binIndex];
-            examples.push_front(example);
-        }
-
-        /**
-         * TODO
-         */
-        void clearAllExamples() {
-            examplesPerBin_.clear();
-        }
-
-};
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
