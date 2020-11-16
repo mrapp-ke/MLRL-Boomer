@@ -18,7 +18,7 @@ namespace boosting {
      * Defines an interface for all classes that store gradients and Hessians that have been calculated according to a
      * differentiable loss function that is applied label-wise.
      */
-    class ILabelWiseStatistics : public IStatistics {
+    class ILabelWiseStatistics : virtual public IStatistics {
 
         public:
 
