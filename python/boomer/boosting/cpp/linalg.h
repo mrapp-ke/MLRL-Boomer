@@ -3,7 +3,7 @@
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
-#include "../../common/cpp/types.h"
+#include "../../common/cpp/data/types.h"
 
 
 /**

@@ -1,12 +1,10 @@
 /**
- * Provides classes that provide access to numerical data that is stored in matrices or vectors.
- *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "../../common/cpp/data.h"
-#include "../../common/cpp/indices.h"
+#include "../../../common/cpp/data/matrix_dense.h"
+#include "../../../common/cpp/indices.h"
 
 
 namespace boosting {

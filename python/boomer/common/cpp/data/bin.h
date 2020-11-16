@@ -1,7 +1,4 @@
 /**
- * Provides type definitions of commonly used tuples.
- *
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
@@ -9,15 +6,6 @@
 #include "types.h"
 #include <limits>
 
-
-/**
- * A tuple that consists of an index and a value.
- */
-template<class T>
-struct IndexedValue {
-    uint32 index;
-    T value;
-};
 
 /**
  *  A struct that stores information about the examples that are contained by a bin.

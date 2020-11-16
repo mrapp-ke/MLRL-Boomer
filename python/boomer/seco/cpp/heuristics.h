@@ -13,7 +13,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/types.h"
+#include "../../common/cpp/data/types.h"
 
 
 namespace seco {
