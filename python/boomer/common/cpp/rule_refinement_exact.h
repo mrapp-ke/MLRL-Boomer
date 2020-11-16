@@ -69,13 +69,13 @@ class ExactRuleRefinement : public IRuleRefinement {
 
             // Invoke the callback...
             std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
-            const AbstractStatistics& statistics = callbackResultPtr->first;
+            const IHistogram& histogram = callbackResultPtr->first;
             const FeatureVector& featureVector = callbackResultPtr->second;
             FeatureVector::const_iterator iterator = featureVector.cbegin();
             uint32 numElements = featureVector.getNumElements();
 
             // Create a new, empty subset of the statistics...
-            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
+            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(histogram);
 
             for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
                 uint32 i = *it;

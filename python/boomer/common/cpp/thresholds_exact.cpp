@@ -70,16 +70,16 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @param numConditions         The total number of conditions in the rule's body (including the new one)
  * @param coverageMask          A reference to an object of type `CoverageMask` that is used to keep track of the
  *                              elements that are covered by the previous rule. It will be updated by this function
- * @param statistics            A reference to an object of type `AbstractStatistics` to be notified about the
- *                              statistics that must be considered when searching for the next refinement, i.e., the
- *                              statistics that are covered by the new rule
+ * @param statistics            A reference to an object of type `IStatistics` to be notified about the statistics that
+ *                              must be considered when searching for the next refinement, i.e., the statistics that are
+ *                              covered by the new rule
  * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
  *                              of the individual training examples
  */
 static inline void filterCurrentVector(const FeatureVector& vector, FilteredCacheEntry<FeatureVector>& cacheEntry,
                                        intp conditionStart, intp conditionEnd, Comparator conditionComparator,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask,
-                                       AbstractStatistics& statistics, const IWeightVector& weights) {
+                                       IStatistics& statistics, const IWeightVector& weights) {
     // Determine the number of elements in the filtered vector...
     uint32 numTotalElements = vector.getNumElements();
     uint32 distance = abs(conditionStart - conditionEnd);
@@ -484,7 +484,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 
 ExactThresholds::ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                  std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                                 std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                 std::shared_ptr<IStatistics> statisticsPtr,
                                  std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr) {
 

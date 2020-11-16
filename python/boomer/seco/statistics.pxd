@@ -1,11 +1,11 @@
 from boomer.common._types cimport float64
-from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.statistics cimport IStatistics
 
 
 cdef extern from "cpp/statistics.h" namespace "seco" nogil:
 
-    cdef cppclass AbstractCoverageStatistics(AbstractStatistics):
+    cdef cppclass ICoverageStatistics(IStatistics):
 
-        # Attributes:
+        # Functions:
 
-        float64 sumUncoveredLabels_;
+        float64 getSumOfUncoveredLabels()

@@ -41,8 +41,8 @@ PartialIndexVector::const_iterator PartialIndexVector::cend() const {
     return vector_.cend();
 }
 
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const AbstractStatistics& statistics) const {
-    return statistics.createSubset(*this);
+std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const IHistogram& histogram) const {
+    return histogram.createSubset(*this);
 }
 
 std::unique_ptr<IRuleRefinement> PartialIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
@@ -103,8 +103,8 @@ FullIndexVector::const_iterator FullIndexVector::cend() const {
     return FullIndexVector::Iterator(numElements_);
 }
 
-std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const AbstractStatistics& statistics) const {
-    return statistics.createSubset(*this);
+std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const IHistogram& histogram) const {
+    return histogram.createSubset(*this);
 }
 
 std::unique_ptr<IRuleRefinement> FullIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,

@@ -1,6 +1,5 @@
 from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
-from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
-from boomer.boosting.statistics cimport AbstractGradientStatistics
+from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, IStatistics
 from boomer.boosting.losses_label_wise cimport LabelWiseLoss, ILabelWiseLoss
 from boomer.boosting.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
 
@@ -9,7 +8,7 @@ from libcpp.memory cimport unique_ptr, shared_ptr
 
 cdef extern from "cpp/statistics_label_wise.h" namespace "boosting" nogil:
 
-    cdef cppclass AbstractLabelWiseStatistics(AbstractGradientStatistics):
+    cdef cppclass ILabelWiseStatistics(IStatistics):
 
         # Functions:
 
@@ -20,7 +19,7 @@ cdef extern from "cpp/statistics_label_wise.h" namespace "boosting" nogil:
 
         # Functions:
 
-        unique_ptr[AbstractLabelWiseStatistics] create()
+        unique_ptr[ILabelWiseStatistics] create()
 
 
     cdef cppclass DenseLabelWiseStatisticsFactoryImpl(ILabelWiseStatisticsFactory):
@@ -40,14 +39,14 @@ cdef class LabelWiseStatisticsFactory:
 
     # Functions:
 
-    cdef unique_ptr[AbstractLabelWiseStatistics] create(self)
+    cdef unique_ptr[ILabelWiseStatistics] create(self)
 
 
 cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
 
     # Functions:
 
-    cdef unique_ptr[AbstractLabelWiseStatistics] create(self)
+    cdef unique_ptr[ILabelWiseStatistics] create(self)
 
 
 cdef class LabelWiseStatisticsProvider(StatisticsProvider):
@@ -58,7 +57,7 @@ cdef class LabelWiseStatisticsProvider(StatisticsProvider):
 
     # Functions:
 
-    cdef AbstractStatistics* get(self)
+    cdef IStatistics* get(self)
 
 
 cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):

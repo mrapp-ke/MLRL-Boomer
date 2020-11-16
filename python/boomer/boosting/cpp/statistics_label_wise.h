@@ -10,33 +10,19 @@
 #include "../../common/cpp/statistics.h"
 #include "rule_evaluation_label_wise.h"
 #include "losses_label_wise.h"
-#include "statistics.h"
 
 
 namespace boosting {
 
     /**
-     * An abstract base class for all classes that store gradients and Hessians that are calculated according to a
+     * Defines an interface for all classes that store gradients and Hessians that have been calculated according to a
      * differentiable loss function that is applied label-wise.
      */
-    class AbstractLabelWiseStatistics : public AbstractGradientStatistics {
-
-        protected:
-
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+    class ILabelWiseStatistics : virtual public IStatistics {
 
         public:
 
-            /**
-             * @param numStatistics             The number of statistics
-             * @param numLabels                 The number of labels
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`,
-             *                                  that allows to create instances of the class that is used for
-             *                                  calculating the predictions, as well as corresponding quality scores, of
-             *                                  rules
-             */
-            AbstractLabelWiseStatistics(uint32 numStatistics, uint32 numLabels,
-                                        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+            virtual ~ILabelWiseStatistics() { };
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the
@@ -45,13 +31,13 @@ namespace boosting {
              * @param ruleEvaluationFactoryPtr A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
              *                                 to be set
              */
-            void setRuleEvaluationFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+            virtual void setRuleEvaluationFactory(
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) = 0;
 
     };
 
     /**
-     * Defines an interface for all classes that allow to create new instances of the class
-     * `AbstractLabelWiseStatistics`.
+     * Defines an interface for all classes that allow to create new instances of the type `ILabelWiseStatistics`.
      */
     class ILabelWiseStatisticsFactory {
 
@@ -60,11 +46,11 @@ namespace boosting {
             virtual ~ILabelWiseStatisticsFactory() { };
 
             /**
-             * Creates a new instance of the class `AbstractLabelWiseStatistics`.
+             * Creates a new instance of the type `ILabelWiseStatistics`.
              *
-             * @return An unique pointer to an object of type `AbstractLabelWiseStatistics` that has been created
+             * @return An unique pointer to an object of type `ILabelWiseStatistics` that has been created
              */
-            virtual std::unique_ptr<AbstractLabelWiseStatistics> create() const = 0;
+            virtual std::unique_ptr<ILabelWiseStatistics> create() const = 0;
 
     };
 
@@ -97,7 +83,7 @@ namespace boosting {
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            std::unique_ptr<AbstractLabelWiseStatistics> create() const override;
+            std::unique_ptr<ILabelWiseStatistics> create() const override;
 
     };
 

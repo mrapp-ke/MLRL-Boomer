@@ -4,7 +4,7 @@
 classes that store the predictions of rules, as well as corresponding quality scores.
 """
 from boomer.common._types cimport uint32, float64
-from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.statistics cimport IStatistics
 
 from libcpp cimport bool
 
@@ -25,7 +25,7 @@ cdef extern from "cpp/predictions.h" nogil:
 
         score_const_iterator scores_cend()
 
-        void apply(AbstractStatistics& statistics, uint32 statisticIndex)
+        void apply(IStatistics& statistics, uint32 statisticIndex)
 
 
     cdef cppclass AbstractEvaluatedPrediction(AbstractPrediction):

@@ -15,8 +15,8 @@
 
 /**
  * Defines an interface for all classes that provide access to a subset of the statistics that are stored by an instance
- * of the class `AbstractStatistics` and allows to calculate the scores to be predicted by rules that cover such a
- * subset.
+ * of the class `IHistogram` or `IStatistics` and allows to calculate the scores to be predicted by rules that cover
+ * such a subset.
  */
 class IStatisticsSubset {
 
@@ -140,8 +140,9 @@ class IStatisticsSubset {
 
 /**
  * An abstract base class for all classes that provide access to a subset of the statistics that are stores by an
- * instance of the class `AbstractStatistics` and allow to calculate the scores to be predicted by rules that cover such
- * a subset in the decomposable case, i.e., if the label-wise predictions are the same as the example-wise predictions.
+ * instance of the class `IHistogram` or `IStatistics` and allow to calculate the scores to be predicted by rules that
+ * cover such a subset in the decomposable case, i.e., if the label-wise predictions are the same as the example-wise
+ * predictions.
  */
 class AbstractDecomposableStatisticsSubset : public IStatisticsSubset {
 
@@ -152,16 +153,66 @@ class AbstractDecomposableStatisticsSubset : public IStatisticsSubset {
 };
 
 /**
- * An abstract base class for all classes that provide access to statistics about the labels of the training examples,
+ * Defines an interface for all classes that provide access to statistics about the labels of the training examples,
  * which serve as the basis for learning a new rule or refining an existing one.
  */
-class AbstractStatistics {
+class IHistogram {
 
-    private:
+    public:
 
-        uint32 numStatistics_;
+        virtual ~IHistogram() { };
 
-        uint32 numLabels_;
+        /**
+         * Returns the number of available statistics.
+         *
+         * @return The number of statistics
+         */
+        virtual uint32 getNumStatistics() const = 0;
+
+        /**
+         * Returns the number of available labels.
+         *
+         * @return The number of labels
+         */
+        virtual uint32 getNumLabels() const = 0;
+
+        /**
+         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
+         * a specific `FullIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
+         * to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         *
+         * This function, or the function `createSubset(PartialIndexVector&)` must be called each time a new refinement
+         * is considered, unless the refinement covers all statistics previously provided via calls to the function
+         * `IStatisticsSubset#addToSubset`.
+         *
+         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
+         *                      of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const = 0;
+
+        /**
+         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
+         * a specific `PartialIndexVector`. Individual statistics that are covered by a refinement of a rule can be
+         * added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         *
+         * This function, or the function `createSubset(FullIndexVector&)` must be called each time a new refinement is
+         * considered, unless the refinement covers all statistics previously provided via calls to the function
+         * `IStatisticsSubset#addToSubset`.
+         *
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that inherit from `IHistogram`, but do also provide functions that allow to only
+ * use a sub-sample of the available statistics, as well as to update the statistics after a new rule has been learned.
+ */
+class IStatistics : virtual public IHistogram {
 
     public:
 
@@ -176,19 +227,15 @@ class AbstractStatistics {
                 virtual ~IHistogramBuilder() { };
 
                 /**
-                 * Creates and returns a new instance of the class `AbstractStatistics` that stores the histogram that
-                 * has been built.
+                 * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.
                  *
-                 * @return An unique pointer to an object of type `AbstractStatistics` that has been created
+                 * @return An unique pointer to an object of type `IHistogram` that has been created
                  */
-                virtual std::unique_ptr<AbstractStatistics> build() = 0;
+                virtual std::unique_ptr<IHistogram> build() = 0;
 
         };
 
-        /**
-         * @param numStatistics The number of statistics
-         */
-        AbstractStatistics(uint32 numStatistics, uint32 numLabels);
+        virtual ~IStatistics() { };
 
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the
@@ -254,36 +301,6 @@ class AbstractStatistics {
         virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) = 0;
 
         /**
-         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
-         * a specific `FullIndexVector`. Individual statistics that are covered by a refinement of a rule can be added
-         * to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
-         *
-         * This function, or the function `createSubset(PartialIndexVector&)` must be called each time a new refinement
-         * is considered, unless the refinement covers all statistics previously provided via calls to the function
-         * `IStatisticsSubset#addToSubset`.
-         *
-         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
-         *                      of the labels that should be included in the subset
-         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
-         */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const = 0;
-
-        /**
-         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
-         * a specific `PartialIndexVector`. Individual statistics that are covered by a refinement of a rule can be
-         * added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
-         *
-         * This function, or the function `createSubset(FullIndexVector&)` must be called each time a new refinement is
-         * considered, unless the refinement covers all statistics previously provided via calls to the function
-         * `IStatisticsSubset#addToSubset`.
-         *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
-         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
-         */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const = 0;
-
-        /**
          * Updates a specific statistic based on the prediction of a rule that predicts for all available labels.
          *
          * This function must be called for each statistic that is covered by the new rule before learning the next
@@ -315,19 +332,5 @@ class AbstractStatistics {
          * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
          */
         virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const = 0;
-
-        /**
-         * Returns the number of available statistics.
-         *
-         * @return The number of statistics
-         */
-        uint32 getNumStatistics() const;
-
-        /**
-         * Returns the number of available labels.
-         *
-         * @return The number of labels
-         */
-        uint32 getNumLabels() const;
 
 };
