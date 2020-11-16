@@ -151,17 +151,13 @@ class LabelWiseHistogram : virtual public IHistogram {
     public:
 
         /**
-         * @param lossFunctionPtr           A shared pointer to an object of type `ILabelWiseLoss`, representing the
-         *                                  loss function to be used for calculating gradients and Hessians
+         * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
+         *                                  stores the gradients and Hessians
+         * @param totalSumVectorPtr         An unique pointer to an object of template type `StatisticVector` that
+         *                                  stores the total sums of gradients and Hessians
          * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`,
          *                                  that allows to create instances of the class that is used for calculating
          *                                  the predictions, as well as corresponding quality scores, of rules
-         * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
-         *                                  provides random access to the labels of the training examples
-         * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
-         *                                  stores the gradients and Hessians
-         * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that stores
-         *                                  the currently predicted scores
          */
         LabelWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                            std::unique_ptr<StatisticVector> totalSumVectorPtr,
