@@ -1,3 +1,4 @@
+#include "head_refinement.h"
 #include "indices.h"
 #include "statistics.h"
 #include "sub_sampling.h"

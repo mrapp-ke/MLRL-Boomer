@@ -5,7 +5,10 @@
  */
 #pragma once
 
+#include "input_data.h"
 #include "rule_refinement.h"
+#include "sub_sampling.h"
+#include "statistics.h"
 
 
 /**
