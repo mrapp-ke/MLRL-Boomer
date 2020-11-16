@@ -5,7 +5,8 @@
  */
 #pragma once
 
-#include "data.h"
+#include "data/bin.h"
+#include "data/vector_dense.h"
 #include "predictions.h"
 #include "rules.h"
 #include <memory>

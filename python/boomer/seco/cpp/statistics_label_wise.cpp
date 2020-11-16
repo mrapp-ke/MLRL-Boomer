@@ -1,10 +1,23 @@
 #include "statistics_label_wise.h"
-#include "../../common/cpp/arrays.h"
 #include "confusion_matrices.h"
 #include <cstdlib>
 
 using namespace seco;
 
+
+/**
+ * Sets all elements in an one- or two-dimensional array to zero.
+ *
+ * @tparam T            The type of the array
+ * @param a             A pointer to an array of template type `T`
+ * @param numElements   The number of elements in the array
+ */
+template<typename T>
+static inline void setToZeros(T* a, uint32 numElements) {
+    for (uint32 i = 0; i < numElements; i++) {
+        a[i] = 0;
+    }
+}
 
 /**
  * Provides access to the elements of confusion matrices that are computed independently for each label using dense data
