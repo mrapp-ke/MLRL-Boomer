@@ -13,7 +13,7 @@
 /**
  * TODO
  */
-class BinVectorNew2 : public DenseVector<Bin> {
+class BinVector : public DenseVector<Bin> {
 
     public:
 
@@ -28,7 +28,7 @@ class BinVectorNew2 : public DenseVector<Bin> {
         /**
          * @param numElements TODO
          */
-        BinVectorNew2(uint32 numElements)
+        BinVector(uint32 numElements)
             : DenseVector<Bin>(numElements, true) {
 
         }
@@ -96,7 +96,7 @@ class ApproximateRuleRefinement : public IRuleRefinement {
 
         uint32 featureIndex_;
 
-        std::unique_ptr<IRuleRefinementCallback<BinVectorNew2>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
 
@@ -112,7 +112,7 @@ class ApproximateRuleRefinement : public IRuleRefinement {
          *                          allows to retrieve the bins for a certain feature
          */
         ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                                  uint32 featureIndex, std::unique_ptr<IRuleRefinementCallback<BinVectorNew2>> callbackPtr)
+                                  uint32 featureIndex, std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
             : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices),
               featureIndex_(featureIndex), callbackPtr_(std::move(callbackPtr)) {
 
@@ -125,10 +125,10 @@ class ApproximateRuleRefinement : public IRuleRefinement {
             const AbstractEvaluatedPrediction* bestHead = currentHead;
 
             // Invoke the callback...
-            std::unique_ptr<IRuleRefinementCallback<BinVectorNew2>::Result> callbackResultPtr = callbackPtr_->get();
+            std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
             const IHistogram& histogram = callbackResultPtr->first;
-            const BinVectorNew2& binVector = callbackResultPtr->second;
-            BinVectorNew2::const_iterator iterator = binVector.cbegin();
+            const BinVector& binVector = callbackResultPtr->second;
+            BinVector::const_iterator iterator = binVector.cbegin();
             uint32 numBins = binVector.getNumElements();
 
             // Create a new, empty subset of the current statistics when processing a new feature...
