@@ -8,7 +8,7 @@ from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
-from boomer.common.statistics cimport StatisticsProvider, AbstractStatistics
+from boomer.common.statistics cimport StatisticsProvider, IStatistics
 from boomer.common.thresholds cimport AbstractThresholds
 from boomer.common.stopping_criteria cimport StoppingCriterion
 from boomer.common.sub_sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling
@@ -160,14 +160,14 @@ cdef class SequentialRuleInduction:
         return model_builder.build_model()
 
 
-cdef inline bint __should_continue(list stopping_criteria, AbstractStatistics* statistics, uint32 num_rules):
+cdef inline bint __should_continue(list stopping_criteria, IStatistics* statistics, uint32 num_rules):
     """
     Returns whether additional rules should be induced, according to some stopping criteria, or not.
 
     :param stopping_criteria:   A list that contains the stopping criteria that should be used to decide whether
                                 additional rules should be induced or not
-    :param statistics:          A pointer to an object of type `AbstractStatistics` which will serve as the basis for
-                                learning the next rule
+    :param statistics:          A pointer to an object of type `IStatistics` which will serve as the basis for learning
+                                the next rule
     :param num_rules:           The number of rules induced so far (including the default rule)
     :return:                    True, if additional rules should be induced, False otherwise
     """

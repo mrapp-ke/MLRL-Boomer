@@ -37,7 +37,6 @@ sources = [
     'boomer/boosting/cpp/data_example_wise.cpp',
     'boomer/boosting/cpp/losses_label_wise.cpp',
     'boomer/boosting/cpp/losses_example_wise.cpp',
-    'boomer/boosting/cpp/statistics.cpp',
     'boomer/boosting/cpp/statistics_label_wise.cpp',
     'boomer/boosting/cpp/statistics_example_wise.cpp',
     'boomer/boosting/cpp/rule_evaluation_label_wise.cpp',
@@ -46,7 +45,6 @@ sources = [
     'boomer/seco/cpp/heuristics.cpp',
     'boomer/seco/cpp/lift_functions.cpp',
     'boomer/seco/cpp/head_refinement.cpp',
-    'boomer/seco/cpp/statistics.cpp',
     'boomer/seco/cpp/statistics_label_wise.cpp',
     'boomer/seco/cpp/rule_evaluation_label_wise.cpp'
 ]
