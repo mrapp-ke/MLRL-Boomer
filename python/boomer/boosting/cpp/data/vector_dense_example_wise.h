@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "../../../common/cpp/indices.h"
+#include "../../../common/cpp/indices/index_vector_full.h"
+#include "../../../common/cpp/indices/index_vector_partial.h"
 
 
 namespace boosting {
