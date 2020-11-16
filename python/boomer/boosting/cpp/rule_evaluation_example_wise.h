@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../../common/cpp/rule_evaluation.h"
-#include "data_example_wise.h"
+#include "data/vector_dense_example_wise.h"
 #include "blas.h"
 #include "lapack.h"
 #include <memory>
