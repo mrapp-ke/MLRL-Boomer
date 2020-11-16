@@ -5,16 +5,10 @@
  */
 #pragma once
 
-#include "data.h"
 #include "predictions.h"
 #include "rules.h"
 #include <memory>
 
-
-/**
- * Typedef for a vector that stores bins.
- */
-typedef DenseVector<Bin> BinVector;
 
 /**
  * Stores information about a potential refinement of a rule.
