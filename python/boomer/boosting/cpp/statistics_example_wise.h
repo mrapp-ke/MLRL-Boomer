@@ -19,7 +19,7 @@ namespace boosting {
      * Defines an interface for all classes that store gradients and Hessians that have been calculated according to a
      * differentiable loss-function that is applied example-wise.
      */
-    class IExampleWiseStatistics : public IStatistics {
+    class IExampleWiseStatistics : virtual public IStatistics {
 
         public:
 

@@ -15,7 +15,7 @@ using namespace boosting;
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class ExampleWiseStatistics : public IExampleWiseStatistics {
+class ExampleWiseHistogram : virtual public IHistogram {
 
     private:
 
@@ -31,7 +31,7 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
 
             private:
 
-                const ExampleWiseStatistics& statistics_;
+                const ExampleWiseHistogram& histogram_;
 
                 std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr_;
 
@@ -60,7 +60,7 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
             public:
 
                 /**
-                 * @param statistics        A reference to an object of type `ExampleWiseStatistics` that stores the
+                 * @param histogram         A reference to an object of type `ExampleWiseHistogram` that stores the
                  *                          gradients and Hessians
                  * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
                  *                          should be used to calculate the predictions, as well as corresponding
@@ -68,11 +68,11 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
                  * @param labelIndices      A reference to an object of template type `T` that provides access to the
                  *                          indices of the labels that are included in the subset
                  */
-                StatisticsSubset(const ExampleWiseStatistics& statistics,
+                StatisticsSubset(const ExampleWiseHistogram& histogram,
                                  std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
-                    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
+                    : histogram_(histogram), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                      totalSumVector_(statistics.totalSumVectorPtr_.get()) {
+                      totalSumVector_(histogram.totalSumVectorPtr_.get()) {
                     accumulatedSumVector_ = nullptr;
                     totalCoverableSumVector_ = nullptr;
                     tmpVector_ = nullptr;
@@ -102,17 +102,17 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
                     // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                     // weight) from the total sums of gradients and Hessians...
                     totalCoverableSumVector_->subtract(
-                        statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                        statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                        statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                        statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), weight);
+                        histogram_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                        histogram_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                        histogram_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                        histogram_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), weight);
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    sumVector_.addToSubset(statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                                           statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                                           statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                           statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
+                    sumVector_.addToSubset(histogram_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                                           histogram_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                                           histogram_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                                           histogram_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
                                            labelIndices_, weight);
                 }
 
@@ -163,8 +163,8 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
                         dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
 
                         // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
-                        dsysvLwork_ = statistics_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_,
-                                                                                       numPredictions);
+                        dsysvLwork_ = histogram_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_,
+                                                                                      numPredictions);
                         dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
                     }
 
@@ -193,6 +193,82 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
                 }
 
         };
+
+        uint32 numStatistics_;
+
+        uint32 numLabels_;
+
+    protected:
+
+
+        std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
+
+        std::unique_ptr<StatisticVector> totalSumVectorPtr_;
+
+        std::shared_ptr<Lapack> lapackPtr_;
+
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+
+    public:
+
+        /**
+         * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
+         *                                  stores the gradients and Hessians
+         * @param totalSumVectorPtr         An unique pointer to an object of template type `StatisticVector` that
+         *                                  stores the total sums of gradients and Hessians
+         * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory`,
+         *                                  to be used for calculating the predictions, as well as corresponding quality
+         *                                  scores, of rules
+         * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+         *                                  different Lapack routines
+         */
+        ExampleWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                             std::unique_ptr<StatisticVector> totalSumVectorPtr,
+                             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                             std::shared_ptr<Lapack> lapackPtr)
+            : numStatistics_(statisticMatrixPtr->getNumRows()), numLabels_(statisticMatrixPtr->getNumCols()),
+              statisticMatrixPtr_(std::move(statisticMatrixPtr)), totalSumVectorPtr_(std::move(totalSumVectorPtr)),
+              lapackPtr_(lapackPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+
+        }
+
+        uint32 getNumStatistics() const override {
+            return numStatistics_;
+        }
+
+        uint32 getNumLabels() const override {
+            return numLabels_;
+        }
+
+        std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
+            std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
+                ruleEvaluationFactoryPtr_->create(labelIndices);
+            return std::make_unique<StatisticsSubset<FullIndexVector>>(*this, std::move(ruleEvaluationPtr),
+                                                                       labelIndices);
+        }
+
+        std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
+            std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
+                ruleEvaluationFactoryPtr_->create(labelIndices);
+            return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
+                                                                          labelIndices);
+        }
+
+};
+
+/**
+ * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
+ * applied example-wise and allows to update the gradients and Hessians after a new rule has been learned.
+ *
+ * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
+ * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+ * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
+ */
+template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
+class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>,
+                              virtual public IExampleWiseStatistics {
+
+    private:
 
         /**
          * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the class
@@ -228,30 +304,29 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
             }
 
             std::unique_ptr<IHistogram> build() override {
-                return std::make_unique<ExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                    statistics_.lossFunctionPtr_, statistics_.ruleEvaluationFactoryPtr_, statistics_.lapackPtr_,
-                    statistics_.labelMatrixPtr_, std::move(statisticMatrixPtr_), nullptr);
+                std::unique_ptr<StatisticVector> totalSumVectorPtr =
+                    std::make_unique<StatisticVector>(statistics_.getNumLabels(), true);
+                uint32 numBins = statisticMatrixPtr_->getNumRows();
+
+                for (uint32 i = 0; i < numBins; i++) {
+                    totalSumVectorPtr->add(statisticMatrixPtr_->gradients_row_cbegin(i),
+                                           statisticMatrixPtr_->gradients_row_cend(i),
+                                           statisticMatrixPtr_->hessians_row_cbegin(i),
+                                           statisticMatrixPtr_->hessians_row_cend(i));
+                }
+
+                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
+                    std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
+                    statistics_.ruleEvaluationFactoryPtr_, statistics_.lapackPtr_);
             }
 
         };
 
-        uint32 numStatistics_;
-
-        uint32 numLabels_;
-
-        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
-
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
-
-        std::shared_ptr<Lapack> lapackPtr_;
 
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-        std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
-
         std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
-
-        std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         template<class T>
         void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -261,7 +336,7 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
 
             // Update the gradients and Hessians for the example at the given index...
             lossFunctionPtr_->updateExampleWiseStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_,
-                                                          *statisticMatrixPtr_);
+                                                          *this->statisticMatrixPtr_);
         }
 
     public:
@@ -287,25 +362,18 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
                               std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-            : numStatistics_(labelMatrixPtr->getNumExamples()), numLabels_(labelMatrixPtr->getNumLabels()),
-              ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), lossFunctionPtr_(lossFunctionPtr),
-              lapackPtr_(lapackPtr), labelMatrixPtr_(labelMatrixPtr),
-              statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)),
-              totalSumVectorPtr_(std::make_unique<StatisticVector>(labelMatrixPtr->getNumLabels())) {
+            : ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>(
+                  std::move(statisticMatrixPtr),
+                  std::make_unique<StatisticVector>(statisticMatrixPtr->getNumCols()), ruleEvaluationFactoryPtr,
+                  lapackPtr),
+              lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
+              scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
 
-        }
-
-        uint32 getNumStatistics() const override {
-            return numStatistics_;
-        }
-
-        uint32 getNumLabels() const override {
-            return numLabels_;
         }
 
         void setRuleEvaluationFactory(
                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
-            ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
+            this->ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
         }
 
         void resetSampledStatistics() override {
@@ -319,29 +387,15 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
         }
 
         void resetCoveredStatistics() override {
-            totalSumVectorPtr_->setAllToZero();
+            this->totalSumVectorPtr_->setAllToZero();
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
             float64 signedWeight = remove ? -((float64) weight) : weight;
-            totalSumVectorPtr_->add(statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                                    statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                                    statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                    statisticMatrixPtr_->hessians_row_cend(statisticIndex), signedWeight);
-        }
-
-        std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
-            std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
-                ruleEvaluationFactoryPtr_->create(labelIndices);
-            return std::make_unique<StatisticsSubset<FullIndexVector>>(*this, std::move(ruleEvaluationPtr),
-                                                                       labelIndices);
-        }
-
-        std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
-            std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
-                ruleEvaluationFactoryPtr_->create(labelIndices);
-            return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
-                                                                          labelIndices);
+            this->totalSumVectorPtr_->add(this->statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                                          this->statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                                          this->statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                                          this->statisticMatrixPtr_->hessians_row_cend(statisticIndex), signedWeight);
         }
 
         void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
@@ -361,11 +415,10 @@ class ExampleWiseStatistics : public IExampleWiseStatistics {
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
         std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, std::unique_ptr<Lapack> lapackPtr,
-        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) {
-    lossFunctionPtr_ = lossFunctionPtr;
-    ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
-    lapackPtr_ = std::move(lapackPtr);
-    labelMatrixPtr_ = labelMatrixPtr;
+        std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
+    : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
+      lapackPtr_(std::move(lapackPtr)), labelMatrixPtr_(labelMatrixPtr) {
+
 }
 
 std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::create() const {
