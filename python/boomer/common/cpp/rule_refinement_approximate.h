@@ -5,6 +5,8 @@
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
+#pragma once
+
 #include "rule_refinement.h"
 #include <forward_list>
 #include <unordered_map>

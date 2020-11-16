@@ -1,3 +1,4 @@
+#include "head_refinement.h"
 #include "predictions.h"
 #include "statistics.h"
 #include "thresholds.h"
