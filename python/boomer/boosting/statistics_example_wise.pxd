@@ -1,7 +1,6 @@
 from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
-from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, AbstractStatistics
+from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, IStatistics
 from boomer.boosting._lapack cimport Lapack
-from boomer.boosting.statistics cimport AbstractGradientStatistics
 from boomer.boosting.losses_example_wise cimport ExampleWiseLoss, IExampleWiseLoss
 from boomer.boosting.rule_evaluation_example_wise cimport ExampleWiseRuleEvaluationFactory, \
     IExampleWiseRuleEvaluationFactory
@@ -11,7 +10,7 @@ from libcpp.memory cimport unique_ptr, shared_ptr
 
 cdef extern from "cpp/statistics_example_wise.h" namespace "boosting" nogil:
 
-    cdef cppclass AbstractExampleWiseStatistics(AbstractGradientStatistics):
+    cdef cppclass IExampleWiseStatistics(IStatistics):
 
         # Functions:
 
@@ -22,7 +21,7 @@ cdef extern from "cpp/statistics_example_wise.h" namespace "boosting" nogil:
 
         # Functions:
 
-        unique_ptr[AbstractExampleWiseStatistics] create()
+        unique_ptr[IExampleWiseStatistics] create()
 
 
     cdef cppclass DenseExampleWiseStatisticsFactoryImpl(IExampleWiseStatisticsFactory):
@@ -43,14 +42,14 @@ cdef class ExampleWiseStatisticsFactory:
 
     # Functions:
 
-    cdef unique_ptr[AbstractExampleWiseStatistics] create(self)
+    cdef unique_ptr[IExampleWiseStatistics] create(self)
 
 
 cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
 
     # Functions:
 
-    cdef unique_ptr[AbstractExampleWiseStatistics] create(self)
+    cdef unique_ptr[IExampleWiseStatistics] create(self)
 
 
 cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
@@ -61,7 +60,7 @@ cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
 
     # Functions:
 
-    cdef AbstractStatistics* get(self)
+    cdef IStatistics* get(self)
 
 
 cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):

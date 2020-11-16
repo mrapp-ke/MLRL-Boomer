@@ -4,13 +4,13 @@
 
 Provides classes that implement different stopping criteria for separate-and-conquer algorithms.
 """
-from boomer.seco.statistics cimport AbstractCoverageStatistics
+from boomer.seco.statistics cimport ICoverageStatistics
 
 
 cdef class UncoveredLabelsCriterion(StoppingCriterion):
     """
-    A stopping criterion that stops when the sum of the weight matrix stored by `AbstractCoverageStatistics` is smaller
-    than or equal to a certain threshold.
+    A stopping criterion that stops when the sum of the weight matrix stored by `ICoverageStatistics` is smaller than or
+    equal to a certain threshold.
     """
 
     def __cinit__(self, float64 threshold):
@@ -19,8 +19,8 @@ cdef class UncoveredLabelsCriterion(StoppingCriterion):
         """
         self.threshold = threshold
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
-        cdef AbstractCoverageStatistics* coverage_statistics = <AbstractCoverageStatistics*>statistics
-        cdef float64 sum_uncovered_labels = coverage_statistics.sumUncoveredLabels_
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules):
+        cdef ICoverageStatistics* coverage_statistics = <ICoverageStatistics*>statistics
+        cdef float64 sum_uncovered_labels = coverage_statistics.getSumOfUncoveredLabels()
         cdef float64 threshold = self.threshold
         return sum_uncovered_labels > threshold

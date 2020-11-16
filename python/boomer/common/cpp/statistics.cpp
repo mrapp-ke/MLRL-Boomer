@@ -6,16 +6,3 @@ const EvaluatedPrediction& AbstractDecomposableStatisticsSubset::calculateExampl
     // In the decomposable case, the example-wise predictions are the same as the label-wise predictions...
     return this->calculateLabelWisePrediction(uncovered, accumulated);
 }
-
-AbstractStatistics::AbstractStatistics(uint32 numStatistics, uint32 numLabels)
-    : numStatistics_(numStatistics), numLabels_(numLabels) {
-
-}
-
-uint32 AbstractStatistics::getNumStatistics() const {
-    return numStatistics_;
-}
-
-uint32 AbstractStatistics::getNumLabels() const {
-    return numLabels_;
-}

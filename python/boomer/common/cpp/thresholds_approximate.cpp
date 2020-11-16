@@ -1,6 +1,5 @@
 #include "thresholds_approximate.h"
-#include "thresholds_common.h"
-
+#include "rule_refinement_approximate.h"
 
 
 /**
@@ -24,7 +23,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
                 uint32 featureIndex_;
 
-                std::unique_ptr<AbstractStatistics::IHistogramBuilder> histogramBuilderPtr_;
+                std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr_;
 
                 BinVectorNew2* currentBinVector_;
 
@@ -52,10 +51,10 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                         currentBinVector_ = binCacheEntry.binVectorPtr.get();
                         thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
-                        binCacheEntry.statisticsPtr = std::move(histogramBuilderPtr_->build());
+                        binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
                     }
 
-                    return std::make_unique<Result>(*binCacheEntry.statisticsPtr, *binCacheEntry.binVectorPtr);
+                    return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binCacheEntry.binVectorPtr);
                 }
 
                 void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
@@ -145,7 +144,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
 ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                              std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                                             std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                             std::shared_ptr<IStatistics> statisticsPtr,
                                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                              std::shared_ptr<IBinning> binningPtr)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
@@ -154,6 +153,5 @@ ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> fea
 }
 
 std::unique_ptr<IThresholdsSubset> ApproximateThresholds::createSubset(const IWeightVector& weights) {
-    updateSampledStatistics(*statisticsPtr_, weights);
     return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this);
 }
