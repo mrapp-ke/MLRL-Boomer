@@ -1,12 +1,12 @@
 from boomer.common._types cimport uint32
-from boomer.common.statistics cimport AbstractStatistics
+from boomer.common.statistics cimport IStatistics
 
 
 cdef class StoppingCriterion:
 
     # Functions:
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules)
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)
 
 
 cdef class SizeStoppingCriterion(StoppingCriterion):
@@ -17,7 +17,7 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
 
     # Functions:
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules)
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)
 
 
 cdef class TimeStoppingCriterion(StoppingCriterion):
@@ -30,4 +30,4 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
 
     # Functions:
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules)
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)

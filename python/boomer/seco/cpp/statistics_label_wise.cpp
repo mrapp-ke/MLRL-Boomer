@@ -10,7 +10,7 @@ using namespace seco;
  * Provides access to the elements of confusion matrices that are computed independently for each label using dense data
  * structures.
  */
-class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
+class DenseLabelWiseStatisticsImpl : public ILabelWiseStatistics {
 
     private:
 
@@ -159,6 +159,14 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
         };
 
+        uint32 numStatistics_;
+
+        uint32 numLabels_;
+
+        float64 sumUncoveredLabels_;
+
+        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
         float64* uncoveredLabels_;
@@ -187,8 +195,8 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
         DenseLabelWiseStatisticsImpl(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                      std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
                                      float64 sumUncoveredLabels, uint8* minorityLabels)
-            : AbstractLabelWiseStatistics(labelMatrixPtr->getNumExamples(), labelMatrixPtr->getNumLabels(),
-                                          sumUncoveredLabels, ruleEvaluationFactoryPtr),
+            : numStatistics_(labelMatrixPtr->getNumExamples()), numLabels_(labelMatrixPtr->getNumLabels()),
+              sumUncoveredLabels_(sumUncoveredLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
               labelMatrixPtr_(labelMatrixPtr), uncoveredLabels_(uncoveredLabels), minorityLabels_(minorityLabels) {
             // The number of labels
             uint32 numLabels = this->getNumLabels();
@@ -204,6 +212,23 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
             free(minorityLabels_);
             free(confusionMatricesTotal_);
             free(confusionMatricesSubset_);
+        }
+
+        uint32 getNumStatistics() const override {
+            return numStatistics_;
+        }
+
+        uint32 getNumLabels() const override {
+            return numLabels_;
+        }
+
+        float64 getSumOfUncoveredLabels() const override {
+            return sumUncoveredLabels_;
+        }
+
+        void setRuleEvaluationFactory(
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
+            ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
         }
 
         void resetSampledStatistics() override {
@@ -292,8 +317,6 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     float64 labelWeight = uncoveredLabels_[i];
 
                     if (labelWeight > 0) {
-                        uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-
                         // Decrement the total sum of uncovered labels...
                         sumUncoveredLabels_ -= labelWeight;
 
@@ -323,8 +346,6 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
                     float64 labelWeight = uncoveredLabels_[i];
 
                     if (labelWeight > 0) {
-                        uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, l);
-
                         // Decrement the total sum of uncovered labels...
                         sumUncoveredLabels_ -= labelWeight;
 
@@ -343,19 +364,6 @@ class DenseLabelWiseStatisticsImpl : public AbstractLabelWiseStatistics {
 
 };
 
-AbstractLabelWiseStatistics::AbstractLabelWiseStatistics(
-        uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels,
-        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-    : AbstractCoverageStatistics(numStatistics, numLabels, sumUncoveredLabels),
-      ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
-
-}
-
-void AbstractLabelWiseStatistics::setRuleEvaluationFactory(
-        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) {
-    ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
-}
-
 DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
         std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
@@ -363,7 +371,7 @@ DenseLabelWiseStatisticsFactoryImpl::DenseLabelWiseStatisticsFactoryImpl(
 
 }
 
-std::unique_ptr<AbstractLabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
+std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactoryImpl::create() const {
     // The number of examples
     uint32 numExamples = labelMatrixPtr_->getNumExamples();
     // The number of labels

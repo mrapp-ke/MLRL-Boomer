@@ -4,18 +4,24 @@
 using namespace boosting;
 
 
-void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(const IRandomAccessLabelMatrix& labelMatrix,
-                                                                uint32 exampleIndex, const float64* predictedScores,
-                                                                float64* gradients, float64* hessians) const {
+void ExampleWiseLogisticLossImpl::updateExampleWiseStatistics(uint32 exampleIndex,
+                                                              const IRandomAccessLabelMatrix& labelMatrix,
+                                                              const DenseNumericMatrix<float64>& scoreMatrix,
+                                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const {
+    DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
+        statisticMatrix.gradients_row_begin(exampleIndex);
+    DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =
+        statisticMatrix.hessians_row_begin(exampleIndex);
+    DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumLabels();
     float64 sumOfExponentials = 1;
 
     for (uint32 c = 0; c < numLabels; c++) {
         uint8 trueLabel = labelMatrix.getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
-        float64 predictedScore = predictedScores[c];
+        float64 predictedScore = scoreIterator[c];
         float64 exponential = exp(-expectedScore * predictedScore);
-        gradients[c] = exponential;  // Temporarily store the exponential in the existing output array
+        gradientIterator[c] = exponential;  // Temporarily store the exponential in the existing output array
         sumOfExponentials += exponential;
     }
 
@@ -25,25 +31,25 @@ void ExampleWiseLogisticLossImpl::calculateGradientsAndHessians(const IRandomAcc
     for (uint32 c = 0; c < numLabels; c++) {
         uint8 trueLabel = labelMatrix.getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
-        float64 predictedScore = predictedScores[c];
-        float64 exponential = gradients[c];
+        float64 predictedScore = scoreIterator[c];
+        float64 exponential = gradientIterator[c];
         float64 tmp = (-expectedScore * exponential) / sumOfExponentials;
-        gradients[c] = tmp;
+        gradientIterator[c] = tmp;
 
         for (uint32 c2 = 0; c2 < c; c2++) {
             trueLabel = labelMatrix.getValue(exampleIndex, c2);
             float64 expectedScore2 = trueLabel ? 1 : -1;
-            float64 predictedScore2 = predictedScores[c2];
+            float64 predictedScore2 = scoreIterator[c2];
             tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
             tmp *= -expectedScore2 * expectedScore;
             tmp /= sumOfExponentialsPow;
-            hessians[i] = tmp;
+            hessianIterator[i] = tmp;
             i++;
         }
 
         tmp = expectedScore * expectedScore * exponential * (sumOfExponentials - exponential);
         tmp /= sumOfExponentialsPow;
-        hessians[i] = tmp;
+        hessianIterator[i] = tmp;
         i++;
     }
 }

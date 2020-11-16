@@ -10,34 +10,20 @@
 #include "../../common/cpp/statistics.h"
 #include "rule_evaluation_example_wise.h"
 #include "losses_example_wise.h"
-#include "statistics.h"
 #include "lapack.h"
 
 
 namespace boosting {
 
     /**
-     * An abstract base class for all classes that allow to store gradients and Hessians that are calculated according
-     * to a differentiable loss function that is applied example-wise.
+     * Defines an interface for all classes that store gradients and Hessians that have been calculated according to a
+     * differentiable loss-function that is applied example-wise.
      */
-    class AbstractExampleWiseStatistics : public AbstractGradientStatistics {
-
-        protected:
-
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+    class IExampleWiseStatistics : virtual public IStatistics {
 
         public:
 
-            /**
-             * @param numStatistics             The number of statistics
-             * @param numLabels                 The number of labels
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
-             *                                  `IExampleWiseRuleEvaluationFactory` that allows to create instances of
-             *                                  the class that is used for calculating the predictions, as well as
-             *                                  corresponding quality scores, of rules
-             */
-            AbstractExampleWiseStatistics(uint32 numStatistics, uint32 numLabels,
-                                          std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+            virtual ~IExampleWiseStatistics() { };
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the
@@ -46,13 +32,13 @@ namespace boosting {
              * @param ruleEvaluationFactoryPtr A shared pointer to an object of type `IExampleWiseRuleFactoryEvaluation`
              *                                 to be set
              */
-            void setRuleEvaluationFactory(std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+            virtual void setRuleEvaluationFactory(
+                std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) = 0;
 
     };
 
     /**
-     * Defines an interface for all classes that allow to create new instances of the class
-     * `AbstractExampleWiseStatistics`.
+     * Defines an interface for all classes that allow to create new instances of the class `IExampleWiseStatistics`.
      */
     class IExampleWiseStatisticsFactory {
 
@@ -61,11 +47,11 @@ namespace boosting {
             virtual ~IExampleWiseStatisticsFactory() { };
 
             /**
-             * Creates a new instance of the class `AbstractExampleWiseStatistics`.
+             * Creates a new instance of the type `IExampleWiseStatistics`.
              *
-             * @return An unique pointer to an object of type `AbstractExampleWiseStatistics` that has been created
+             * @return An unique pointer to an object of type `IExampleWiseStatistics` that has been created
              */
-            virtual std::unique_ptr<AbstractExampleWiseStatistics> create() const = 0;
+            virtual std::unique_ptr<IExampleWiseStatistics> create() const = 0;
 
     };
 
@@ -102,7 +88,7 @@ namespace boosting {
                     std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                     std::unique_ptr<Lapack> lapackPtr, std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
-            std::unique_ptr<AbstractExampleWiseStatistics> create() const override;
+            std::unique_ptr<IExampleWiseStatistics> create() const override;
 
     };
 
