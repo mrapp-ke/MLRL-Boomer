@@ -5,7 +5,9 @@
  */
 #pragma once
 
-#include "data.h"
+#include "data/matrix_dok_binary.h"
+#include "data/vector_dok_binary.h"
+#include "data/vector_sparse_array.h"
 #include <memory>
 
 

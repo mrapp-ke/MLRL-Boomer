@@ -1,6 +1,7 @@
 #include "statistics_example_wise.h"
-#include "data.h"
-#include "data_example_wise.h"
+#include "data/matrix_dense_numeric.h"
+#include "data/matrix_dense_example_wise.h"
+#include "data/vector_dense_example_wise.h"
 #include <cstdlib>
 
 using namespace boosting;
