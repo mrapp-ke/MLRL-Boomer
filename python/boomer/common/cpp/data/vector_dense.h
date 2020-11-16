@@ -1,0 +1,92 @@
+/**
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
+#pragma once
+
+#include "types.h"
+
+
+/**
+ * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
+ *
+ * @tparam T The type of the data that is stored in the vector
+ */
+template<class T>
+class DenseVector {
+
+    private:
+
+        T* array_;
+
+        uint32 numElements_;
+
+    public:
+
+        /**
+         * @param numElements The number of elements in the vector
+         */
+        DenseVector(uint32 numElements);
+
+        /**
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        DenseVector(uint32 numElements, bool init);
+
+        ~DenseVector();
+
+        typedef T* iterator;
+
+        typedef const T* const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the vector.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
+         */
+        uint32 getNumElements() const;
+
+        /**
+         * Sets the number of elements in the vector.
+         *
+         * @param numElements The number of elements to be set
+         */
+        void setNumElements(uint32 numElements);
+
+        /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
+         */
+        T getValue(uint32 pos) const;
+
+};

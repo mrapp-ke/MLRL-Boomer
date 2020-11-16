@@ -7,6 +7,7 @@
 #pragma once
 
 #include "thresholds.h"
+#include "head_refinement.h"
 #include <unordered_map>
 
 
