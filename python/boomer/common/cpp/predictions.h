@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include "data.h"
+#include "data/vector_dense.h"
 #include "indices.h"
 
 // Forward declarations

@@ -1,17 +1,9 @@
-#include "data_example_wise.h"
+#include "vector_dense_example_wise.h"
+#include "triangular_number.h"
 #include <cstdlib>
 
 using namespace boosting;
 
-/**
- * Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
- *
- * @param n A scalar of type `uint32`, representing the order of the triangular number
- * @return  A scalar of type `uint32`, representing the n-th triangular number
- */
-static inline uint32 triangularNumber(uint32 n) {
-    return (n * (n + 1)) / 2;
-}
 
 DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients)
     : DenseExampleWiseStatisticVector(numGradients, false) {
@@ -204,85 +196,5 @@ void DenseExampleWiseStatisticVector::difference(gradient_const_iterator firstGr
             hessianIterator++;
             secondHessianIterator++;
         }
-    }
-}
-
-DenseExampleWiseStatisticMatrix::DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
-    : DenseExampleWiseStatisticMatrix(numRows, numGradients, false) {
-
-}
-
-DenseExampleWiseStatisticMatrix::DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients, bool init)
-    : numRows_(numRows), numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
-      gradients_((float64*) (init ? calloc(numRows * numGradients, sizeof(float64))
-                                  : malloc(numRows * numGradients * sizeof(float64)))),
-      hessians_((float64*) (init ? calloc(numRows * numHessians_, sizeof(float64))
-                                 : malloc(numRows * numHessians_ * sizeof(float64)))) {
-
-}
-            
-DenseExampleWiseStatisticMatrix::~DenseExampleWiseStatisticMatrix() {
-    free(gradients_);
-    free(hessians_);
-}
-
-DenseExampleWiseStatisticMatrix::gradient_iterator DenseExampleWiseStatisticMatrix::gradients_row_begin(uint32 row) {
-    return &gradients_[row * numGradients_];
-}
-            
-DenseExampleWiseStatisticMatrix::gradient_iterator DenseExampleWiseStatisticMatrix::gradients_row_end(uint32 row) {
-    return &gradients_[(row + 1) * numGradients_];
-}
-            
-DenseExampleWiseStatisticMatrix::gradient_const_iterator DenseExampleWiseStatisticMatrix::gradients_row_cbegin(
-        uint32 row) const {
-    return &gradients_[row * numGradients_];
-}
-            
-DenseExampleWiseStatisticMatrix::gradient_const_iterator DenseExampleWiseStatisticMatrix::gradients_row_cend(
-        uint32 row) const {
-    return &gradients_[(row + 1) * numGradients_];
-}
-
-DenseExampleWiseStatisticMatrix::hessian_iterator DenseExampleWiseStatisticMatrix::hessians_row_begin(uint32 row) {
-    return &hessians_[row * numHessians_];
-}
-            
-DenseExampleWiseStatisticMatrix::hessian_iterator DenseExampleWiseStatisticMatrix::hessians_row_end(uint32 row) {
-    return &hessians_[(row + 1) * numHessians_];
-}
-            
-DenseExampleWiseStatisticMatrix::hessian_const_iterator DenseExampleWiseStatisticMatrix::hessians_row_cbegin(
-        uint32 row) const {
-    return &hessians_[row * numHessians_];
-}
-            
-DenseExampleWiseStatisticMatrix::hessian_const_iterator DenseExampleWiseStatisticMatrix::hessians_row_cend(
-        uint32 row) const {
-    return &hessians_[(row + 1) * numHessians_];
-}
-
-uint32 DenseExampleWiseStatisticMatrix::getNumRows() const {
-    return numRows_;
-}
-
-uint32 DenseExampleWiseStatisticMatrix::getNumCols() const {
-    return numGradients_;
-}
-
-void DenseExampleWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
-                                               gradient_const_iterator gradientsEnd,
-                                               hessian_const_iterator hessiansBegin,
-                                               hessian_const_iterator hessiansEnd) {
-    uint32 offset = row * numGradients_;
-
-    for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[offset + i] += gradientsBegin[i];
-    }
-
-    offset = row * numHessians_;
-
-    for (uint32 i = 0; i < numHessians_; i++) {
-        hessians_[offset + i] += hessiansBegin[i];
     }
 }
