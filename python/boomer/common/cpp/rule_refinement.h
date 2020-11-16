@@ -50,7 +50,7 @@ class IRuleRefinementCallback {
 
         virtual ~IRuleRefinementCallback() { };
 
-        typedef std::pair<const AbstractStatistics&, const T&> Result;
+        typedef std::pair<const IHistogram&, const T&> Result;
 
         /**
          * Invokes the callback and returns its result.

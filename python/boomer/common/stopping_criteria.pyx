@@ -13,12 +13,12 @@ cdef class StoppingCriterion:
     not.
     """
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules):
         """
         Returns, whether more rules should be induced, or not.
 
-        :param statistics:  A pointer to an object of type `AbstractStatistics` which will serve as the basis for
-                            learning the next rule
+        :param statistics:  A pointer to an object of type `IStatistics` which will serve as the basis for learning the
+                            next rule
         :param num_rules:   The number of rules induced so far
         :return:            True, if more rules should be induced, False otherwise
         """
@@ -36,7 +36,7 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
         """
         self.max_rules = max_rules
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules):
         cdef uint32 max_rules = self.max_rules
         return num_rules < max_rules
 
@@ -53,7 +53,7 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
         self.time_limit = time_limit
         self.start_time = -1
 
-    cdef bint should_continue(self, AbstractStatistics* statistics, uint32 num_rules):
+    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules):
         cdef long start_time = self.start_time
         cdef long current_time
         cdef uint32 time_limit

@@ -16,11 +16,11 @@ cdef class ExampleWiseStatisticsFactory:
     A wrapper for the pure virtual C++ class `IExampleWiseStatisticsFactory`.
     """
 
-    cdef unique_ptr[AbstractExampleWiseStatistics] create(self):
+    cdef unique_ptr[IExampleWiseStatistics] create(self):
         """
-        Creates a new instance of the class `AbstractExampleWiseStatistics`.
+        Creates a new instance of the class `IExampleWiseStatistics`.
 
-        :return: An unique pointer to an object of type `AbstractExampleWiseStatistics` that has been created
+        :return: An unique pointer to an object of type `IExampleWiseStatistics` that has been created
         """
         return self.statistics_factory_ptr.get().create()
 
@@ -48,28 +48,27 @@ cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
 
 cdef class ExampleWiseStatisticsProvider(StatisticsProvider):
     """
-    Provides access to an object of type `AbstractExampleWiseStatistics`.
+    Provides access to an object of type `IExampleWiseStatistics`.
     """
 
     def __cinit__(self, ExampleWiseStatisticsFactory statistics_factory,
                   ExampleWiseRuleEvaluationFactory rule_evaluation_factory):
         """
-        :param statistics_factory:      A factory that allows to create a new object of type
-                                        `AbstractExampleWiseStatistics`
+        :param statistics_factory:      A factory that allows to create a new object of type `IExampleWiseStatistics`
         :param rule_evaluation_factory: The `ExampleWiseRuleEvaluationFactory` to switch to when invoking the function
                                         `switch_rule_evaluation`
         """
-        cdef unique_ptr[AbstractStatistics] statistics_ptr = <unique_ptr[AbstractStatistics]>statistics_factory.create()
-        self.statistics_ptr = <shared_ptr[AbstractStatistics]>move(statistics_ptr)
+        cdef unique_ptr[IStatistics] statistics_ptr = <unique_ptr[IStatistics]>statistics_factory.create()
+        self.statistics_ptr = <shared_ptr[IStatistics]>move(statistics_ptr)
         self.rule_evaluation_factory = rule_evaluation_factory
 
-    cdef AbstractStatistics* get(self):
+    cdef IStatistics* get(self):
         return self.statistics_ptr.get()
 
     cdef void switch_rule_evaluation(self):
         cdef ExampleWiseRuleEvaluationFactory rule_evaluation_factory = self.rule_evaluation_factory
         cdef shared_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr = rule_evaluation_factory.rule_evaluation_factory_ptr
-        dynamic_pointer_cast[AbstractExampleWiseStatistics, AbstractStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
+        dynamic_pointer_cast[IExampleWiseStatistics, IStatistics](self.statistics_ptr).get().setRuleEvaluationFactory(
             rule_evaluation_factory_ptr)
 
 

@@ -77,6 +77,10 @@ float64 DenseExampleWiseStatisticVector::hessian_diagonal(uint32 pos) const {
     return hessians_[triangularNumber(pos + 1) - 1];
 }
 
+uint32 DenseExampleWiseStatisticVector::getNumElements() const {
+    return numGradients_;
+}
+
 void DenseExampleWiseStatisticVector::setAllToZero() {
     for (uint32 i = 0; i < numGradients_; i++) {
         gradients_[i] = 0;
@@ -256,6 +260,14 @@ DenseExampleWiseStatisticMatrix::hessian_const_iterator DenseExampleWiseStatisti
 DenseExampleWiseStatisticMatrix::hessian_const_iterator DenseExampleWiseStatisticMatrix::hessians_row_cend(
         uint32 row) const {
     return &hessians_[(row + 1) * numHessians_];
+}
+
+uint32 DenseExampleWiseStatisticMatrix::getNumRows() const {
+    return numRows_;
+}
+
+uint32 DenseExampleWiseStatisticMatrix::getNumCols() const {
+    return numGradients_;
 }
 
 void DenseExampleWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator gradientsBegin,

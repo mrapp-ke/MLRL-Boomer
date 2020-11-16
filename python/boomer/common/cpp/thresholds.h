@@ -194,7 +194,7 @@ class AbstractThresholds {
 
         std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr_;
 
-        std::shared_ptr<AbstractStatistics> statisticsPtr_;
+        std::shared_ptr<IStatistics> statisticsPtr_;
 
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
 
@@ -205,15 +205,15 @@ class AbstractThresholds {
          *                                  to the feature values of the training examples
          * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `AbstractStatistics` that provides
-         *                                  access to statistics about the labels of the training examples
+         * @param statisticsPtr             A shared pointer to an object of type `IStatistics` that provides access to
+         *                                  statistics about the labels of the training examples
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
          */
         AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                            std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                           std::shared_ptr<AbstractStatistics> statisticsPtr,
+                           std::shared_ptr<IStatistics> statisticsPtr,
                            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
         /**

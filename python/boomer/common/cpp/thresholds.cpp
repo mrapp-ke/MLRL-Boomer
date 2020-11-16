@@ -40,7 +40,7 @@ bool CoverageMask::isCovered(uint32 pos) const {
 
 AbstractThresholds::AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                                        std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                                       std::shared_ptr<AbstractStatistics> statisticsPtr,
+                                       std::shared_ptr<IStatistics> statisticsPtr,
                                        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
     : featureMatrixPtr_(featureMatrixPtr), nominalFeatureMaskPtr_(nominalFeatureMaskPtr),
       statisticsPtr_(statisticsPtr), headRefinementFactoryPtr_(headRefinementFactoryPtr) {
