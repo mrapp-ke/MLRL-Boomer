@@ -4,7 +4,10 @@
  *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
+#pragma once
+
 #include "rule_refinement.h"
+#include "head_refinement.h"
 #include <cmath>
 
 
