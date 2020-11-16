@@ -6,9 +6,10 @@
  */
 #pragma once
 
+#include "data/vector_bin.h"
 #include "thresholds.h"
 #include "head_refinement.h"
-#include "rule_refinement_approximate.h"
+#include <unordered_map>
 
 
 /**
