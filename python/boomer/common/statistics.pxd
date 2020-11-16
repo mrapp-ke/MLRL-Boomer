@@ -15,7 +15,7 @@ cdef extern from "cpp/statistics.h" nogil:
         pass
 
 
-    cdef cppclass AbstractStatistics:
+    cdef cppclass IStatistics:
 
         # Functions:
 
@@ -32,11 +32,11 @@ cdef class StatisticsProvider:
 
     # Attributes:
 
-    cdef shared_ptr[AbstractStatistics] statistics_ptr
+    cdef shared_ptr[IStatistics] statistics_ptr
 
     # Functions:
 
-    cdef AbstractStatistics* get(self)
+    cdef IStatistics* get(self)
 
     cdef void switch_rule_evaluation(self)
 

@@ -7,14 +7,14 @@ Provides wrappers for classes that allow to store statistics about the labels of
 
 cdef class StatisticsProvider:
     """
-    Provides access to an object of type `AbstractStatistics`.
+    Provides access to an object of type `IStatistics`.
     """
 
-    cdef AbstractStatistics* get(self):
+    cdef IStatistics* get(self):
         """
-        Returns a pointer to an object of type `AbstractStatistics`.
+        Returns a pointer to an object of type `IStatistics`.
 
-        :return: A pointer to an object of type `AbstractStatistics`
+        :return: A pointer to an object of type `IStatistics`
         """
         pass
 

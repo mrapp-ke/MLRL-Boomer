@@ -57,13 +57,13 @@ class ApproximateRuleRefinement : public IRuleRefinement {
 
             // Invoke the callback...
             std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
-            const AbstractStatistics& statistics = callbackResultPtr->first;
+            const IHistogram& histogram = callbackResultPtr->first;
             const BinVector& binVector = callbackResultPtr->second;
             BinVector::const_iterator iterator = binVector.cbegin();
             uint32 numBins = binVector.getNumElements();
 
             // Create a new, empty subset of the current statistics when processing a new feature...
-            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
+            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(histogram);
 
             // Search for the first non-empty bin...
             uint32 r = 0;

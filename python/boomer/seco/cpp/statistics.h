@@ -13,24 +13,21 @@
 namespace seco {
 
     /**
-     * An abstract base class for all classes that allow to store the elements of confusion matrices that are computed
-     * based on a weight matrix and the ground truth labels of the training examples.
+     * Defines an interface for all classes that allow to store the elements of confusion matrices that have been
+     * computed based on a weight matrix and the ground truth labels of the training examples.
      */
-    class AbstractCoverageStatistics : public AbstractStatistics {
+    class ICoverageStatistics : public IStatistics {
 
         public:
 
-            /**
-             * @param numStatistics         The number of statistics
-             * @param numLabels             The number of labels
-             * @param sumUncoveredLabels    The sum of weights of all labels that remain to be covered, initially
-             */
-            AbstractCoverageStatistics(uint32 numStatistics, uint32 numLabels, float64 sumUncoveredLabels);
+            virtual ~ICoverageStatistics() { };
 
             /**
-             * The sum of weights of all labels that remain to be covered.
+             * Returns the sum of the weights of all labels that remain to be covered.
+             *
+             * @return The sum of the weights
              */
-            float64 sumUncoveredLabels_;
+            virtual float64 getSumOfUncoveredLabels() const = 0;
 
     };
 

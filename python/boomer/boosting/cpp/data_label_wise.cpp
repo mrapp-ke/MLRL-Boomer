@@ -61,6 +61,10 @@ DenseLabelWiseStatisticVector::hessian_const_iterator DenseLabelWiseStatisticVec
     return &hessians_[numElements_];
 }
 
+uint32 DenseLabelWiseStatisticVector::getNumElements() const {
+    return numElements_;
+}
+
 void DenseLabelWiseStatisticVector::setAllToZero() {
     for (uint32 i = 0; i < numElements_; i++) {
         gradients_[i] = 0;
@@ -206,6 +210,14 @@ DenseLabelWiseStatisticMatrix::hessian_const_iterator DenseLabelWiseStatisticMat
 DenseLabelWiseStatisticMatrix::hessian_const_iterator DenseLabelWiseStatisticMatrix::hessians_row_cend(
         uint32 row) const {
     return &hessians_[(row + 1) * numCols_];
+}
+
+uint32 DenseLabelWiseStatisticMatrix::getNumRows() const {
+    return numRows_;
+}
+
+uint32 DenseLabelWiseStatisticMatrix::getNumCols() const {
+    return numCols_;
 }
 
 void DenseLabelWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
