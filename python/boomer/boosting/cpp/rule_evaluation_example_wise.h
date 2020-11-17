@@ -46,26 +46,11 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores
              *                          the gradients and Hessians
-             * @param dsysvLwork        The value for the parameter "lwork" to be used by Lapack's DSYSV routine
-             * @param dsysvTmpArray1    A pointer to an array of type `float64`, shape
-             *                          `(prediction.numPredictions_, prediction.numPredictions_)` that will be used to
-             *                          temporarily store values computed by Lapack's DSYSV routine. May contain
-             *                          arbitrary values
-             * @param dsysvTmpArray2    A pointer to an array of type `int`, shape `(prediction.numPredictions_)` that
-             *                          will be used to temporarily store values computed by Lapack's DSYSV routine. May
-             *                          contain arbitrary values
-             * @param dsysvTmpArray3    A pointer to an array of type `double`, shape `(lwork)` that will be used to
-             *                          temporarily store values computed by Lapack's DSYSV routine. May contain
-             *                          arbitrary values
-             * @param dspmvTmpArray     A pointer to an array of type `float64`, shape `(prediction.numPredictions_)`
-             *                          that will be used to temporarily store values computed by Blas' DSPMV routine.
-             *                          May contain arbitrary values
              * @param prediction        A reference to an object of type `EvaluatedPrediction` that should be used to
              *                          store the predicted scores and quality score
              */
             virtual const EvaluatedPrediction& calculateExampleWisePrediction(
-                DenseExampleWiseStatisticVector& statisticVector, int dsysvLwork, float64* dsysvTmpArray1,
-                int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray) = 0;
+                DenseExampleWiseStatisticVector& statisticVector) = 0;
 
     };
 
