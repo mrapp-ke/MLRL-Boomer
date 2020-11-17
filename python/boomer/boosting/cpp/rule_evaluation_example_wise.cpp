@@ -184,6 +184,61 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
 };
 
+/**
+ * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
+ * Hessians that have been calculated according to a loss function that is applied example wise using L2 regularization.
+ * The labels are assigned to bins based on the corresponding gradients.
+ */
+class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation {
+
+    private:
+
+        float64 l2RegularizationWeight_;
+
+        uint32 numPositiveBins_;
+
+        uint32 numNegativeBins_;
+
+        std::shared_ptr<Blas> blasPtr_;
+
+    protected:
+
+        void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
+                                          LabelWiseEvaluatedPrediction& prediction) override {
+            // TODO
+        }
+
+        void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
+                                            EvaluatedPrediction& prediction, int dsysvLwork, float64* dsysvTmpArray1,
+                                            int* dsysvTmpArray2, double* dsysvTmpArray3,
+                                            float64* dspmvTmpArray) override {
+            // TODO
+        }
+
+    public:
+
+        /**
+         * @param numPositiveBins           The number of bins to be used for labels that should be predicted as
+         *                                  positive. Must be at least 1
+         * @param numNegativeBins           The number of bins to be used for labels that should be predicted as
+         *                                  negative. Must be at least 1
+         * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+         *                                  scores to be predicted by rules
+         * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
+         *                                  different BLAS routines
+         * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+         *                                  different LAPACK routines
+         */
+        BinningExampleWiseRuleEvaluation(uint32 numPositiveBins, uint32 numNegativeBins, float64 l2RegularizationWeight,
+                                         std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
+            : AbstractExampleWiseRuleEvaluation(lapackPtr, numPositiveBins + numNegativeBins),
+              l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
+              numNegativeBins_(numNegativeBins), blasPtr_(blasPtr) {
+
+        }
+
+};
+
 RegularizedExampleWiseRuleEvaluationFactoryImpl::RegularizedExampleWiseRuleEvaluationFactoryImpl(
         float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
     : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
