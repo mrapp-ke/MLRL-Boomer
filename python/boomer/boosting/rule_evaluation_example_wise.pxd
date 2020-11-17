@@ -1,4 +1,4 @@
-from boomer.common._types cimport float64
+from boomer.common._types cimport uint32, float64
 from boomer.boosting._blas cimport Blas
 from boomer.boosting._lapack cimport Lapack
 
@@ -19,6 +19,14 @@ cdef extern from "cpp/rule_evaluation_example_wise.h" namespace "boosting" nogil
                                                         shared_ptr[Lapack] lapackPtr) except +
 
 
+    cdef cppclass BinningExampleWiseRuleEvaluationFactoryImpl(IExampleWiseRuleEvaluationFactory):
+
+        # Constructors:
+
+        BinningExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, uint32 numBins,
+                                                    shared_ptr[Blas] blasPtr, shared_ptr[Lapack] lapackPtr) except +
+
+
 cdef class ExampleWiseRuleEvaluationFactory:
 
     # Attributes:
@@ -27,4 +35,8 @@ cdef class ExampleWiseRuleEvaluationFactory:
 
 
 cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
+    pass
+
+
+cdef class BinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     pass
