@@ -172,8 +172,7 @@ class Boomer(MLRuleLearner):
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(loss_function)
         l2_regularization_weight = self.__create_l2_regularization_weight()
-        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight,
-                                                                        self.label_binning)
+        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads = create_num_threads(self.num_threads)
         thresholds_factory = create_thresholds_factory(self.feature_binning)
@@ -203,7 +202,7 @@ class Boomer(MLRuleLearner):
             return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float, label_binning: str):
+    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float):
         if isinstance(loss_function, LabelWiseLoss):
             return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
         else:
