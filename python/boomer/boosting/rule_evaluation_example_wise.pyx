@@ -32,3 +32,23 @@ cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluation
         cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())
         self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[RegularizedExampleWiseRuleEvaluationFactoryImpl](
             l2_regularization_weight, blas_ptr, lapack_ptr)
+
+
+cdef class BinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
+    """
+    A wrapper for the C++ class `BinningExampleWiseRuleEvaluationFactoryImpl`.
+    """
+
+    def __cinit__(self, float64 l2_regularization_weight, uint32 num_positive_bins, uint32 num_negative_bins):
+        """
+        :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
+                                            scores to be predicted by rules
+        :param num_positive_bins:           The number of bins to be used for labels that should be predicted as
+                                            positive
+        :param num_negative_bins:           The number of bins to be used for labels that should be predicted as
+                                            negative
+        """
+        cdef shared_ptr[Blas] blas_ptr = <shared_ptr[Blas]>move(init_blas())
+        cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())
+        self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[BinningExampleWiseRuleEvaluationFactoryImpl](
+            l2_regularization_weight, num_positive_bins, num_negative_bins, blas_ptr, lapack_ptr)
