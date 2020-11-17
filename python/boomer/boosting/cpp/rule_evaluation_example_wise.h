@@ -140,16 +140,16 @@ namespace boosting {
         public:
 
             /**
-             * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
-             *                               scores to be predicted by rules
-             * @param numPositiveBins        The number of bins to be used for labels that should be predicted as
-             *                               positive
-             * @param numNegativeBins        The number of bins to be used for labels that should be predicted as
-             *                               negative
-             * @param blasPtr                A shared pointer to an object of type `Blas` that allows to execute
-             *                               different BLAS routines
-             * @param lapackPtr              A shared pointer to an object of type `Lapack` that allows to execute
-             *                               different LAPACK routines
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             * @param numPositiveBins           The number of bins to be used for labels that should be predicted
+             *                                  positively
+             * @param numNegativeBins           The number of bins to be used for labels that should be predicted
+             *                                  negatively
+             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
+             *                                  different BLAS routines
+             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             *                                  different LAPACK routines
              */
             BinningExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, uint32 numPositiveBins,
                                                         uint32 numNegativeBins, std::shared_ptr<Blas> blasPtr,

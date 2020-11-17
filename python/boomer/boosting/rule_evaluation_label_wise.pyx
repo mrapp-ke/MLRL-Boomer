@@ -37,10 +37,8 @@ cdef class BinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory)
         """
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by rules
-        :param num_positive_bins:           The number of bins to be used for labels that should be predicted as
-                                            positive
-        :param num_negative_bins:           The number of bins to be used for labels that should be predicted as
-                                            negative
+        :param num_positive_bins:           The number of bins to be used for labels that should be predicted positively
+        :param num_negative_bins:           The number of bins to be used for labels that should be predicted negatively
         """
         self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[BinningLabelWiseRuleEvaluationFactoryImpl](
             l2_regularization_weight, num_positive_bins, num_negative_bins)

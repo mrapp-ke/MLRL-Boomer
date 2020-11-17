@@ -43,10 +43,8 @@ cdef class BinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFact
         """
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by rules
-        :param num_positive_bins:           The number of bins to be used for labels that should be predicted as
-                                            positive
-        :param num_negative_bins:           The number of bins to be used for labels that should be predicted as
-                                            negative
+        :param num_positive_bins:           The number of bins to be used for labels that should be predicted positively
+        :param num_negative_bins:           The number of bins to be used for labels that should be predicted negatively
         """
         cdef shared_ptr[Blas] blas_ptr = <shared_ptr[Blas]>move(init_blas())
         cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())

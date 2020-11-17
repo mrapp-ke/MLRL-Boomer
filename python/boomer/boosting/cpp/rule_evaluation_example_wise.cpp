@@ -218,10 +218,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
     public:
 
         /**
-         * @param numPositiveBins           The number of bins to be used for labels that should be predicted as
-         *                                  positive. Must be at least 1
-         * @param numNegativeBins           The number of bins to be used for labels that should be predicted as
-         *                                  negative. Must be at least 1
+         * @param numPositiveBins           The number of bins to be used for labels that should be predicted
+         *                                  positively. Must be at least 1
+         * @param numNegativeBins           The number of bins to be used for labels that should be predicted
+         *                                  negatively. Must be at least 1
          * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
          *                                  scores to be predicted by rules
          * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
