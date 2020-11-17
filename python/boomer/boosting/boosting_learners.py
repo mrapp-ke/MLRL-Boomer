@@ -84,7 +84,7 @@ class Boomer(MLRuleLearner):
         :param label_binning:                       The strategy that is used for assigning labels to bins. Must be
                                                     `equal-width` or None, if no label binning should be used.
                                                     Additional arguments may be provided as a dictionary, e.g.
-                                                    `equal-width{\"num_bins\":8}`
+                                                    `equal-width{\"num_positive_bins\":8, \"num_negative_bins\":8}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
