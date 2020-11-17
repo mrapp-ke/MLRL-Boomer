@@ -1,6 +1,5 @@
 from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, IStatistics
-from boomer.boosting._lapack cimport Lapack
 from boomer.boosting.losses_example_wise cimport ExampleWiseLoss, IExampleWiseLoss
 from boomer.boosting.rule_evaluation_example_wise cimport ExampleWiseRuleEvaluationFactory, \
     IExampleWiseRuleEvaluationFactory
@@ -30,7 +29,6 @@ cdef extern from "cpp/statistics_example_wise.h" namespace "boosting" nogil:
 
         DenseExampleWiseStatisticsFactoryImpl(shared_ptr[IExampleWiseLoss] lossFunctionPtr,
                                               shared_ptr[IExampleWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr,
-                                              unique_ptr[Lapack] lapackPtr,
                                               shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
 
 

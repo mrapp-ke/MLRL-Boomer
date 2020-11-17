@@ -10,7 +10,6 @@
 #include "../../common/cpp/statistics.h"
 #include "rule_evaluation_example_wise.h"
 #include "losses_example_wise.h"
-#include "lapack.h"
 
 
 namespace boosting {
@@ -66,8 +65,6 @@ namespace boosting {
 
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
-            std::shared_ptr<Lapack> lapackPtr_;
-
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
         public:
@@ -78,15 +75,13 @@ namespace boosting {
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
-             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
-             *                                  different Lapack routines
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
              */
             DenseExampleWiseStatisticsFactoryImpl(
                     std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                     std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                    std::unique_ptr<Lapack> lapackPtr, std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
+                    std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
             std::unique_ptr<IExampleWiseStatistics> create() const override;
 
