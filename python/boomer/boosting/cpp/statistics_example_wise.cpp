@@ -155,8 +155,6 @@ class ExampleWiseHistogram : virtual public IHistogram {
 
         std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
-        std::shared_ptr<Lapack> lapackPtr_;
-
         std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
     public:
@@ -169,16 +167,13 @@ class ExampleWiseHistogram : virtual public IHistogram {
          * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory`,
          *                                  to be used for calculating the predictions, as well as corresponding quality
          *                                  scores, of rules
-         * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
-         *                                  different Lapack routines
          */
         ExampleWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                              std::unique_ptr<StatisticVector> totalSumVectorPtr,
-                             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                             std::shared_ptr<Lapack> lapackPtr)
+                             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
             : numStatistics_(statisticMatrixPtr->getNumRows()), numLabels_(statisticMatrixPtr->getNumCols()),
               statisticMatrixPtr_(std::move(statisticMatrixPtr)), totalSumVectorPtr_(std::move(totalSumVectorPtr)),
-              lapackPtr_(lapackPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+              ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
         }
 
@@ -267,7 +262,7 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
 
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
                     std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
-                    statistics_.ruleEvaluationFactoryPtr_, statistics_.lapackPtr_);
+                    statistics_.ruleEvaluationFactoryPtr_);
             }
 
         };
@@ -297,8 +292,6 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
          * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory`,
          *                                  to be used for calculating the predictions, as well as corresponding quality
          *                                  scores, of rules
-         * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
-         *                                  different Lapack routines
          * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
          *                                  provides random access to the labels of the training examples
          * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
@@ -308,14 +301,12 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
          */
         ExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                               std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                              std::shared_ptr<Lapack> lapackPtr,
                               std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
             : ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>(
                   std::move(statisticMatrixPtr),
-                  std::make_unique<StatisticVector>(statisticMatrixPtr->getNumCols()), ruleEvaluationFactoryPtr,
-                  lapackPtr),
+                  std::make_unique<StatisticVector>(statisticMatrixPtr->getNumCols()), ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
               scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
 
@@ -364,10 +355,10 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, std::unique_ptr<Lapack> lapackPtr,
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
     : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-      lapackPtr_(std::move(lapackPtr)), labelMatrixPtr_(labelMatrixPtr) {
+      labelMatrixPtr_(labelMatrixPtr) {
 
 }
 
@@ -384,6 +375,6 @@ std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::c
     }
 
     return std::make_unique<ExampleWiseStatistics<DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
-        lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
+        lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
         std::move(scoreMatrixPtr));
 }
