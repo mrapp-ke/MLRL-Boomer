@@ -256,3 +256,23 @@ std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluation
     return std::make_unique<RegularizedExampleWiseRuleEvaluation>(indexVector.getNumElements(), l2RegularizationWeight_,
                                                                   blasPtr_, lapackPtr_);
 }
+
+BinningExampleWiseRuleEvaluationFactoryImpl::BinningExampleWiseRuleEvaluationFactoryImpl(
+        float64 l2RegularizationWeight, uint32 numPositiveBins, uint32 numNegativeBins, std::shared_ptr<Blas> blasPtr,
+        std::shared_ptr<Lapack> lapackPtr)
+    : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
+      numNegativeBins_(numNegativeBins), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
+
+}
+
+std::unique_ptr<IExampleWiseRuleEvaluation> BinningExampleWiseRuleEvaluationFactoryImpl::create(
+        const FullIndexVector& indexVector) const {
+    return std::make_unique<BinningExampleWiseRuleEvaluation>(numPositiveBins_, numNegativeBins_,
+                                                              l2RegularizationWeight_, blasPtr_, lapackPtr_);
+}
+
+std::unique_ptr<IExampleWiseRuleEvaluation> BinningExampleWiseRuleEvaluationFactoryImpl::create(
+        const PartialIndexVector& indexVector) const {
+    return std::make_unique<BinningExampleWiseRuleEvaluation>(numPositiveBins_, numNegativeBins_,
+                                                              l2RegularizationWeight_, blasPtr_, lapackPtr_);
+}
