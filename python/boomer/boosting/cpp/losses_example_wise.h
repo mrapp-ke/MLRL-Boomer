@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/input_data.h"
+#include "../../common/cpp/input/label_matrix.h"
 #include "data/matrix_dense_numeric.h"
 #include "data/matrix_dense_example_wise.h"
 

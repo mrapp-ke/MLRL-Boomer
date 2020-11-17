@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "input_data.h"
+#include "input/feature_vector.h"
 
 
 /**
