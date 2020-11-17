@@ -1,4 +1,4 @@
-from boomer.common._types cimport float64
+from boomer.common._types cimport uint32, float64
 
 from libcpp.memory cimport shared_ptr
 
@@ -16,6 +16,14 @@ cdef extern from "cpp/rule_evaluation_label_wise.h" namespace "boosting" nogil:
         RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
 
 
+    cdef cppclass BinningLabelWiseRuleEvaluationFactoryImpl(ILabelWiseRuleEvaluationFactory):
+
+        # Constructors:
+
+        BinningLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, uint32 numPositiveBins,
+                                                  uint32 numNegativeBins) except +
+
+
 cdef class LabelWiseRuleEvaluationFactory:
 
     # Attributes:
@@ -24,4 +32,8 @@ cdef class LabelWiseRuleEvaluationFactory:
 
 
 cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    pass
+
+
+cdef class BinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass
