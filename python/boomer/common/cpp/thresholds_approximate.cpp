@@ -4,14 +4,10 @@
 
 
 static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEntry<BinVector>& BinCacheEntry,
-                                       intp conditionStart, intp conditionEnd, Comparator conditionComparator,
-                                       bool covered, uint32 numConditions, CoverageMask& coverageMask,
-                                       IStatistics& statistics)
+                                       intp conditionStart, intp conditionEnd, uint32 numConditions,
+                                       CoverageMask& coverageMask, IStatistics& statistics)
 {
     //TODO: in this PR
-    uint32 numTotalElements = vector.getNumElements();
-    uint32 distance = abs(conditionStart - conditionEnd);
-    uint32 numElements = covered ? distance : (numTotalElements > distance ? numTotalElements - distance : 0);
 
     BinVector* filteredVector = BinCacheEntry.vectorPtr.get();
 
@@ -28,6 +24,16 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
     } else {
         start = conditionStart;
         end = conditionEnd;
+    }
+
+    uint32 i = 0;
+
+    for (intp r = start; r < end; r++) {
+        coverageMaskIterator[r] = numConditions;
+        filteredIterator[i].numExamples = iterator[r].numExamples;
+        filteredIterator[i].minValue = iterator[r].minValue;
+        filteredIterator[i].maxValue = iterator[r].maxValue;
+        i++;
     }
 
 }
@@ -157,8 +163,8 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
             FilteredCacheEntry<BinVector>& BinCacheEntry = cacheFilteredIterator->second;
             BinVector* binVector = BinCacheEntry.vectorPtr.get();
 
-            filterCurrentVector(*binVector, BinCacheEntry, refinement.start, refinement.end, refinement.comparator,
-                                refinement.covered, numModifications_, coverageMask_, *thresholds_.statisticsPtr_);
+            filterCurrentVector(*binVector, BinCacheEntry, refinement.start, refinement.end,
+                                numModifications_, coverageMask_, *thresholds_.statisticsPtr_);
         }
 
         void filterThresholds(const Condition& condition) override {
