@@ -96,4 +96,36 @@ namespace boosting {
 
     };
 
+    /**
+     * Allows to create instances of the class `BinningLabelWiseRuleEvaluation`.
+     */
+    class BinningLabelWiseRuleEvaluationFactoryImpl : public ILabelWiseRuleEvaluationFactory {
+
+        private:
+
+            float64 l2RegularizationWeight_;
+
+            uint32 numPositiveBins_;
+
+            uint32 numNegativeBins_;
+
+        public:
+
+            /**
+             * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
+             *                               scores to be predicted by rules
+             * @param numPositiveBins        The number of bins to be used for labels that should be predicted as
+             *                               positive
+             * @param numNegativeBins        The number of bins to be used for label that should be predicted as
+             *                               negative
+             */
+            BinningLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, uint32 numPositiveBins,
+                                                      uint32 numNegativeBins);
+
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
+
+            std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
+
+    };
+
 }

@@ -122,3 +122,22 @@ std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFact
         const PartialIndexVector& indexVector) const {
     return std::make_unique<RegularizedLabelWiseRuleEvaluation>(indexVector.getNumElements(), l2RegularizationWeight_);
 }
+
+BinningLabelWiseRuleEvaluationFactoryImpl::BinningLabelWiseRuleEvaluationFactoryImpl(
+        float64 l2RegularizationWeight, uint32 numPositiveBins, uint32 numNegativeBins)
+    : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
+      numNegativeBins_(numNegativeBins) {
+
+}
+
+std::unique_ptr<ILabelWiseRuleEvaluation> BinningLabelWiseRuleEvaluationFactoryImpl::create(
+        const FullIndexVector& indexVector) const {
+    return std::make_unique<BinningLabelWiseRuleEvaluation>(numPositiveBins_, numNegativeBins_,
+                                                            l2RegularizationWeight_);
+}
+
+std::unique_ptr<ILabelWiseRuleEvaluation> BinningLabelWiseRuleEvaluationFactoryImpl::create(
+        const PartialIndexVector& indexVector) const {
+    return std::make_unique<BinningLabelWiseRuleEvaluation>(numPositiveBins_, numNegativeBins_,
+                                                            l2RegularizationWeight_);
+}
