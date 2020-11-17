@@ -1,8 +1,12 @@
+#include "thresholds_common.h"
 #include "thresholds_approximate.h"
 #include "rule_refinement_approximate.h"
 
 
-static inline void filterCurrentVector()
+static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEntry<BinVector>& BinCacheEntry,
+                                       intp conditionStart, intp conditionEnd, Comparator conditionComparator,
+                                       bool covered, uint32 numConditions, CoverageMask& coverageMask,
+                                       IStatistics& statistics)
 {
     //TODO: in this PR
 }
@@ -99,6 +103,10 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
         CoverageMask coverageMask_;
 
+        uint32 numModifications_;
+
+        std::unordered_map<uint32, FilteredCacheEntry<BinVector>> cacheFiltered_;
+
     public:
 
         /**
@@ -106,7 +114,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
          */
         ThresholdsSubset(ApproximateThresholds& thresholds)
             : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())) {
-
+            numModifications_ = 0;
         }
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
@@ -121,7 +129,15 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
         void filterThresholds(Refinement& refinement) override {
             //TODO: In this Branch
+            numModifications_++;
 
+            uint32 featureIndex = refinement.featureIndex;
+            auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
+            FilteredCacheEntry<BinVector>& BinCacheEntry = cacheFilteredIterator->second;
+            BinVector* binVector = BinCacheEntry.vectorPtr.get();
+
+            filterCurrentVector(*binVector, BinCacheEntry, refinement.start, refinement.end, refinement.comparator,
+                                refinement.covered, numModifications_, coverageMask_, *thresholds_.statisticsPtr_);
         }
 
         void filterThresholds(const Condition& condition) override {
