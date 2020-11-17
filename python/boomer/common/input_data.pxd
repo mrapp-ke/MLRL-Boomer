@@ -3,7 +3,7 @@ from boomer.common._types cimport uint8, uint32, float32
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/input_data.h" nogil:
+cdef extern from "cpp/input/label_matrix.h" nogil:
 
     cdef cppclass ILabelMatrix:
         pass
@@ -13,14 +13,18 @@ cdef extern from "cpp/input_data.h" nogil:
         pass
 
 
-    cdef cppclass DenseLabelMatrixImpl(IRandomAccessLabelMatrix):
+cdef extern from "cpp/input/label_matrix_dense.h" nogil:
+
+    cdef cppclass DenseLabelMatrixImpl"DenseLabelMatrix"(IRandomAccessLabelMatrix):
 
         # Constructors:
 
         DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) except +
 
 
-    cdef cppclass DokLabelMatrixImpl(IRandomAccessLabelMatrix):
+cdef extern from "cpp/input/label_matrix_dok.h" nogil:
+
+    cdef cppclass DokLabelMatrixImpl"DokLabelMatrix"(IRandomAccessLabelMatrix):
 
         # Constructors:
 
@@ -31,18 +35,24 @@ cdef extern from "cpp/input_data.h" nogil:
         void setValue(uint32 exampleIndex, uint32 rowIndex)
 
 
+cdef extern from "cpp/input/feature_matrix.h" nogil:
+
     cdef cppclass IFeatureMatrix:
         pass
 
 
-    cdef cppclass DenseFeatureMatrixImpl(IFeatureMatrix):
+cdef extern from "cpp/input/feature_matrix_dense.h" nogil:
+
+    cdef cppclass DenseFeatureMatrixImpl"DenseFeatureMatrix"(IFeatureMatrix):
 
         # Constructors:
 
         DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) except +
 
 
-    cdef cppclass CscFeatureMatrixImpl(IFeatureMatrix):
+cdef extern from "cpp/input/feature_matrix_csc.h" nogil:
+
+    cdef cppclass CscFeatureMatrixImpl"CscFeatureMatrix"(IFeatureMatrix):
 
         # Constructors:
 
@@ -50,11 +60,15 @@ cdef extern from "cpp/input_data.h" nogil:
                              const uint32* xColIndices) except +
 
 
+cdef extern from "cpp/input/nominal_feature_mask.h" nogil:
+
     cdef cppclass INominalFeatureMask:
         pass
 
 
-    cdef cppclass DokNominalFeatureMaskImpl(INominalFeatureMask):
+cdef extern from "cpp/input/nominal_feature_mask_dok.h" nogil:
+
+    cdef cppclass DokNominalFeatureMaskImpl"DokNominalFeatureMask"(INominalFeatureMask):
 
         # Functions:
 
