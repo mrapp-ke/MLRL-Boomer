@@ -46,7 +46,7 @@ class LabelWiseHistogram : virtual public IHistogram {
 
                 StatisticVector* totalCoverableSumVector_;
 
-                StatisticVector* tmpVector_;
+                StatisticVector tmpVector_;
 
             public:
 
@@ -63,16 +63,15 @@ class LabelWiseHistogram : virtual public IHistogram {
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : histogram_(histogram), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                      totalSumVector_(histogram_.totalSumVectorPtr_.get()) {
+                      totalSumVector_(histogram_.totalSumVectorPtr_.get()),
+                      tmpVector_(StatisticVector(labelIndices.getNumElements())) {
                     accumulatedSumVector_ = nullptr;
                     totalCoverableSumVector_ = nullptr;
-                    tmpVector_ = nullptr;
                 }
 
                 ~StatisticsSubset() {
                     delete accumulatedSumVector_;
                     delete totalCoverableSumVector_;
-                    delete tmpVector_;
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
@@ -118,18 +117,12 @@ class LabelWiseHistogram : virtual public IHistogram {
                     const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
-                        // Initialize temporary vector, if necessary...
-                        if (tmpVector_ == nullptr) {
-                            uint32 numPredictions = labelIndices_.getNumElements();
-                            tmpVector_ = new StatisticVector(numPredictions);
-                        }
-
-                        tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
-                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
-                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
-                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
-                                               sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpVector_);
+                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                              labelIndices_, sumsOfStatistics.gradients_cbegin(),
+                                              sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
+                                              sumsOfStatistics.hessians_cend());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpVector_);
                     }
 
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
