@@ -66,6 +66,47 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
 };
 
+/**
+ * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
+ * Hessians that have been calculated according to a loss function that is applied label-wise using L2 regularization.
+ * The labels are assigned to bins based on the corresponding gradients.
+ */
+class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
+
+    private:
+
+        float64 l2RegularizationWeight_;
+
+        uint32 numPositiveBins_;
+
+        uint32 numNegativeBins_;
+
+        LabelWiseEvaluatedPrediction prediction_;
+
+    public:
+
+        /**
+         * @param numPositiveBins           The number of bins to be used for labels that should be predicted as
+         *                                  positive
+         * @param numNegativeBins           The number of bins to be used for labels that should be predicted as
+         *                                  negative
+         * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+         *                                  scores to be predicted by rules
+         */
+        BinningLabelWiseRuleEvaluation(uint32 numPositiveBins, uint32 numNegativeBins, float64 l2RegularizationWeight)
+            : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins_),
+              numNegativeBins_(numNegativeBins),
+              prediction_(LabelWiseEvaluatedPrediction(numPositiveBins + numNegativeBins)) {
+
+        }
+
+        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+                const DenseLabelWiseStatisticVector& statisticVector) override {
+            // TODO
+        }
+
+};
+
 RegularizedLabelWiseRuleEvaluationFactoryImpl::RegularizedLabelWiseRuleEvaluationFactoryImpl(
         float64 l2RegularizationWeight)
     : l2RegularizationWeight_(l2RegularizationWeight) {
