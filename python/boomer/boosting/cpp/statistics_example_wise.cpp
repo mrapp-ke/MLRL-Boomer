@@ -2,7 +2,6 @@
 #include "data/matrix_dense_numeric.h"
 #include "data/matrix_dense_example_wise.h"
 #include "data/vector_dense_example_wise.h"
-#include <cstdlib>
 
 using namespace boosting;
 
@@ -48,16 +47,6 @@ class ExampleWiseHistogram : virtual public IHistogram {
 
                 StatisticVector tmpVector_;
 
-                int dsysvLwork_;
-
-                float64* dsysvTmpArray1_;
-
-                int* dsysvTmpArray2_;
-
-                double* dsysvTmpArray3_;
-
-                float64* dspmvTmpArray_;
-
             public:
 
                 /**
@@ -77,19 +66,11 @@ class ExampleWiseHistogram : virtual public IHistogram {
                       tmpVector_(StatisticVector(labelIndices.getNumElements())) {
                     accumulatedSumVector_ = nullptr;
                     totalCoverableSumVector_ = nullptr;
-                    dsysvTmpArray1_ = nullptr;
-                    dsysvTmpArray2_ = nullptr;
-                    dsysvTmpArray3_ = nullptr;
-                    dspmvTmpArray_ = nullptr;
                 }
 
                 ~StatisticsSubset() {
                     delete accumulatedSumVector_;
                     delete totalCoverableSumVector_;
-                    free(dsysvTmpArray1_);
-                    free(dsysvTmpArray2_);
-                    free(dsysvTmpArray3_);
-                    free(dspmvTmpArray_);
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
@@ -147,20 +128,6 @@ class ExampleWiseHistogram : virtual public IHistogram {
                 }
 
                 const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
-                    // To avoid array recreation each time this function is called, the temporary arrays are only
-                    // initialized if they have not been initialized yet
-                    if (dsysvTmpArray1_ == nullptr) {
-                        uint32 numPredictions = labelIndices_.getNumElements();
-                        dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
-                        dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
-                        dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
-
-                        // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
-                        dsysvLwork_ = histogram_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_,
-                                                                                      numPredictions);
-                        dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
-                    }
-
                     StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
@@ -169,14 +136,10 @@ class ExampleWiseHistogram : virtual public IHistogram {
                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
                                               sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateExampleWisePrediction(tmpVector_, dsysvLwork_,
-                                                                                  dsysvTmpArray1_, dsysvTmpArray2_,
-                                                                                  dsysvTmpArray3_, dspmvTmpArray_);
+                        return ruleEvaluationPtr_->calculateExampleWisePrediction(tmpVector_);
                     }
 
-                    return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfStatistics, dsysvLwork_,
-                                                                              dsysvTmpArray1_, dsysvTmpArray2_,
-                                                                              dsysvTmpArray3_, dspmvTmpArray_);
+                    return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfStatistics);
                 }
 
         };
