@@ -21,7 +21,6 @@ from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 
-
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE
 from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
@@ -49,8 +48,9 @@ class Boomer(MLRuleLearner):
                  head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, feature_binning: str = None,
-                 pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0,
-                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1):
+                 label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
+                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
+                 max_head_refinements: int = 1, num_threads: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -81,6 +81,10 @@ class Boomer(MLRuleLearner):
                                                     their feature values. Must be `equal-width`, `equal-frequency` or
                                                     None, if no feature binning should be used. Additional arguments may
                                                     be provided as a dictionary, e.g. `equal-width{\"bin_ratio\":0.5}`
+        :param label_binning:                       The strategy that is used for assigning labels to bins. Must be
+                                                    `equal-width` or None, if no label binning should be used.
+                                                    Additional arguments may be provided as a dictionary, e.g.
+                                                    `equal-width{\"num_bins\":8}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
@@ -108,6 +112,7 @@ class Boomer(MLRuleLearner):
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
         self.feature_binning = feature_binning
+        self.label_binning = label_binning
         self.pruning = pruning
         self.shrinkage = shrinkage
         self.l2_regularization_weight = l2_regularization_weight
@@ -129,6 +134,8 @@ class Boomer(MLRuleLearner):
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
         if self.feature_binning is not None:
             name += '_feature-binning=' + str(self.feature_binning)
+        if self.label_binning is not None:
+            name += '_label-binning=' + str(self.label_binning)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
         if 0.0 < float(self.shrinkage) < 1.0:
@@ -165,7 +172,8 @@ class Boomer(MLRuleLearner):
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(loss_function)
         l2_regularization_weight = self.__create_l2_regularization_weight()
-        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
+        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight,
+                                                                        self.label_binning)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads = create_num_threads(self.num_threads)
         thresholds_factory = create_thresholds_factory(self.feature_binning)
@@ -195,7 +203,7 @@ class Boomer(MLRuleLearner):
             return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float):
+    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float, label_binning: str):
         if isinstance(loss_function, LabelWiseLoss):
             return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
         else:
