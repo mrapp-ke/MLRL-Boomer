@@ -5,7 +5,8 @@
  */
 #pragma once
 
-#include "input_data.h"
+#include "input/feature_matrix.h"
+#include "input/nominal_feature_mask.h"
 #include "rule_refinement.h"
 #include "sub_sampling.h"
 #include "statistics.h"
