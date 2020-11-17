@@ -149,7 +149,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
         }
 
         const CoverageMask& getCoverageMask() const {
-
+            return coverageMask_;
         }
 
         float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
