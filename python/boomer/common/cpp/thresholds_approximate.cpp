@@ -2,6 +2,11 @@
 #include "rule_refinement_approximate.h"
 
 
+static inline void filterCurrentVector()
+{
+    //TODO: in this PR
+}
+
 /**
  * Provides access to a subset of the thresholds that are stored by an instance of the class
  * `ApproximateThresholds`.
@@ -92,13 +97,15 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                                                                   featureIndex, std::move(callbackPtr));
         }
 
+        CoverageMask coverageMask_;
+
     public:
 
         /**
          * @param thresholds A reference to an object of type `ApproximateThresholds` that stores the thresholds
          */
         ThresholdsSubset(ApproximateThresholds& thresholds)
-            : thresholds_(thresholds) {
+            : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())) {
 
         }
 
@@ -113,6 +120,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
         }
 
         void filterThresholds(Refinement& refinement) override {
+            //TODO: In this Branch
 
         }
 
