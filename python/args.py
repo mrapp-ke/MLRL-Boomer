@@ -181,6 +181,9 @@ class ArgumentParserBuilder:
                                         instance_sub_sampling=INSTANCE_SUB_SAMPLING_BAGGING,
                                         feature_sub_sampling=FEATURE_SUB_SAMPLING_RANDOM, **kwargs)
         parser = self.parser
+        parser.add_argument('--label-binning', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('label_binning', None, **kwargs),
+                            help='The name of the strategy to be used for label binning or None')
         parser.add_argument('--l2-regularization-weight', type=float,
                             default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
                             help='The weight of the L2 regularization to be used')
