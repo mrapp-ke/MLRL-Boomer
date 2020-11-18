@@ -32,7 +32,11 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
 
     if (covered) {
         for(intp r = 0; r < start; r++){
-            coverageMaskIterator[r] = numConditions;
+            for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
+                BinVector::Example example = *it;
+                filteredVector->addExample(r, example);
+                coverageMaskIterator[r + example.index] = numConditions;
+            }
             filteredIterator[i].numExamples = iterator[r].numExamples;
             filteredIterator[i].minValue = iterator[r].minValue;
             filteredIterator[i].maxValue = iterator[r].maxValue;
