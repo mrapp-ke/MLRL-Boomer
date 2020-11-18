@@ -4,7 +4,7 @@
 
 
 static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
-                                       intp conditionStart, intp conditionEnd, uint32 numConditions,
+                                       intp conditionStart, intp conditionEnd, bool covered, uint32 numConditions,
                                        CoverageMask& coverageMask)
 {
     //TODO: in this PR
@@ -15,27 +15,37 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
     BinVector::iterator filteredIterator = filteredVector->begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
-    bool descending = conditionEnd < conditionStart;
+    uint32 numTotalElements = vector.getNumElements();
+    coverageMask.target = numConditions;
     intp start, end;
-
-    if (descending) {
-        start = conditionEnd + 1;
-        end = conditionStart + 1;
-    } else {
-        start = conditionStart;
-        end = conditionEnd;
-    }
-
+    start = conditionStart;
+    end = conditionEnd;
     uint32 i = 0;
 
-    for (intp r = start; r < end; r++) {
-        coverageMaskIterator[r] = numConditions;
-        filteredIterator[i].numExamples = iterator[r].numExamples;
-        filteredIterator[i].minValue = iterator[r].minValue;
-        filteredIterator[i].maxValue = iterator[r].maxValue;
-        i++;
+    if (covered) {
+        for(intp r = 0; r < start; r++){
+            coverageMaskIterator[r] = numConditions;
+            filteredIterator[i].numExamples = iterator[r].numExamples;
+            filteredIterator[i].minValue = iterator[r].minValue;
+            filteredIterator[i].maxValue = iterator[r].maxValue;
+            i++;
+        }
+        for(intp r = end; r <= numTotalElements; r++){
+            coverageMaskIterator[r] = numConditions;
+            filteredIterator[i].numExamples = iterator[r].numExamples;
+            filteredIterator[i].minValue = iterator[r].minValue;
+            filteredIterator[i].maxValue = iterator[r].maxValue;
+            i++;
+        }
+    } else {
+        for(intp r = start; r < end; r++) {
+            coverageMaskIterator[r] = numConditions;
+            filteredIterator[i].numExamples = iterator[r].numExamples;
+            filteredIterator[i].minValue = iterator[r].minValue;
+            filteredIterator[i].maxValue = iterator[r].maxValue;
+            i++;
+        }
     }
-
 }
 
 /**
@@ -163,7 +173,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
             FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
             BinVector* binVector = cacheEntry.vectorPtr.get();
 
-            filterCurrentVector(*binVector, cacheEntry, refinement.start, refinement.end,
+            filterCurrentVector(*binVector, cacheEntry, refinement.start, refinement.end, refinement.covered,
                                 numModifications_, coverageMask_);
         }
 
