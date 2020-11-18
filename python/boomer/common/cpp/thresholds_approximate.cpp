@@ -9,13 +9,16 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
 {
     //TODO: in this PR
 
+    uint32 numTotalElements = vector.getNumElements();
+    uint32 distance = abs(conditionStart - conditionEnd);
+    uint32 numElements = covered ? distance : (numTotalElements > distance ? numTotalElements - distance : 0);
+
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
 
     typename BinVector::const_iterator iterator = vector.cbegin();
     BinVector::iterator filteredIterator = filteredVector->begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
-    uint32 numTotalElements = vector.getNumElements();
     coverageMask.target = numConditions;
     intp start, end;
     start = conditionStart;
@@ -46,6 +49,10 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
             i++;
         }
     }
+
+    filteredVector->setNumElements(numElements);
+    cacheEntry.numConditions = numConditions;
+
 }
 
 /**
