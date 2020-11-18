@@ -178,6 +178,12 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
             FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
             BinVector* binVector = cacheEntry.vectorPtr.get();
 
+            if(binVector == nullptr){
+                auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                BinCacheEntry& binCacheEntry = cacheIterator->second;
+                binVector = binCacheEntry.binVectorPtr.get();
+            }
+
             filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered,
                                 numModifications_, coverageMask_);
         }
