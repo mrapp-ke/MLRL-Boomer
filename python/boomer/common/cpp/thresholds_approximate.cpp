@@ -4,14 +4,13 @@
 
 
 static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
-                                       intp conditionStart, intp conditionEnd, bool covered, uint32 numConditions,
+                                       intp conditionEnd, bool covered, uint32 numConditions,
                                        CoverageMask& coverageMask)
 {
     //TODO: in this PR
 
     uint32 numTotalElements = vector.getNumElements();
-    uint32 distance = abs(conditionStart - conditionEnd);
-    uint32 numElements = covered ? distance : (numTotalElements > distance ? numTotalElements - distance : 0);
+    uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
 
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
 
@@ -25,32 +24,23 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     coverageMask.target = numConditions;
-    intp start, end;
-    start = conditionStart;
-    end = conditionEnd;
+    intp end = conditionEnd;
     uint32 i = 0;
 
     if (covered) {
-        for(intp r = 0; r < start; r++){
-            for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
-                BinVector::Example example = *it;
-                filteredVector->addExample(r, example);
-                coverageMaskIterator[r + example.index] = numConditions;
-            }
-            filteredIterator[i].numExamples = iterator[r].numExamples;
-            filteredIterator[i].minValue = iterator[r].minValue;
-            filteredIterator[i].maxValue = iterator[r].maxValue;
-            i++;
-        }
-        for(intp r = end; r <= numTotalElements; r++){
-            coverageMaskIterator[r] = numConditions;
+        for(intp r = 0; r < end; r++){
+            //for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
+            //    BinVector::Example example = *it;
+            //    filteredVector->addExample(r, example);
+            //    coverageMaskIterator[r + example.index] = numConditions;
+            //}
             filteredIterator[i].numExamples = iterator[r].numExamples;
             filteredIterator[i].minValue = iterator[r].minValue;
             filteredIterator[i].maxValue = iterator[r].maxValue;
             i++;
         }
     } else {
-        for(intp r = start; r < end; r++) {
+        for(intp r = end; r < numTotalElements; r++) {
             coverageMaskIterator[r] = numConditions;
             filteredIterator[i].numExamples = iterator[r].numExamples;
             filteredIterator[i].minValue = iterator[r].minValue;
@@ -189,7 +179,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
             FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
             BinVector* binVector = cacheEntry.vectorPtr.get();
 
-            filterCurrentVector(*binVector, cacheEntry, refinement.start, refinement.end, refinement.covered,
+            filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered,
                                 numModifications_, coverageMask_);
         }
 
