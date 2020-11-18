@@ -281,7 +281,8 @@ def __format_conditions(meta_data: MetaData, feature_indices: np.ndarray, thresh
         text += operator
         text += ' '
 
-        if print_nominal_values and attribute is not None and attribute.nominal_values is not None:
+        if print_nominal_values and attribute is not None and attribute.nominal_values is not None and len(
+                attribute.nominal_values) > i:
             text += '"' + attribute.nominal_values[i] + '"'
         else:
             text += str(thresholds[i])
