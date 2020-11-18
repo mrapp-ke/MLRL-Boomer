@@ -3,7 +3,7 @@
 #include "rule_refinement_approximate.h"
 
 
-static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
+static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
                                        intp conditionEnd, bool covered, uint32 numConditions,
                                        CoverageMask& coverageMask)
 {
@@ -24,30 +24,29 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     coverageMask.target = numConditions;
-    intp end = conditionEnd;
+    intp start, end;
     uint32 i = 0;
 
     if (covered) {
-        for(intp r = 0; r < end; r++){
-            //for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
-            //    BinVector::Example example = *it;
-            //    filteredVector->addExample(r, example);
-            //    coverageMaskIterator[r + example.index] = numConditions;
-            //}
-            filteredIterator[i].numExamples = iterator[r].numExamples;
-            filteredIterator[i].minValue = iterator[r].minValue;
-            filteredIterator[i].maxValue = iterator[r].maxValue;
-            i++;
-        }
+        start = 0;
+        end = conditionEnd;
     } else {
-        for(intp r = end; r < numTotalElements; r++) {
+        start = conditionEnd;
+        end = numTotalElements;
+    }
+
+    for(intp r = start; r < end; r++) {
+            for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
+                BinVector::Example example = *it;
+                filteredVector->addExample(r, example);
+                coverageMaskIterator[example.index] = numConditions;
+            }
             coverageMaskIterator[r] = numConditions;
             filteredIterator[i].numExamples = iterator[r].numExamples;
             filteredIterator[i].minValue = iterator[r].minValue;
             filteredIterator[i].maxValue = iterator[r].maxValue;
             i++;
         }
-    }
 
     filteredVector->setNumElements(numElements);
     cacheEntry.numConditions = numConditions;
