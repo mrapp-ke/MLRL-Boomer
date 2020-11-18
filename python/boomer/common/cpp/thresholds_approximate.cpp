@@ -3,13 +3,13 @@
 #include "rule_refinement_approximate.h"
 
 
-static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEntry<BinVector>& BinCacheEntry,
+static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
                                        intp conditionStart, intp conditionEnd, uint32 numConditions,
-                                       CoverageMask& coverageMask, IStatistics& statistics)
+                                       CoverageMask& coverageMask)
 {
     //TODO: in this PR
 
-    BinVector* filteredVector = BinCacheEntry.vectorPtr.get();
+    BinVector* filteredVector = cacheEntry.vectorPtr.get();
 
     typename BinVector::const_iterator iterator = vector.cbegin();
     BinVector::iterator filteredIterator = filteredVector->begin();
@@ -160,11 +160,11 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
             uint32 featureIndex = refinement.featureIndex;
             auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-            FilteredCacheEntry<BinVector>& BinCacheEntry = cacheFilteredIterator->second;
-            BinVector* binVector = BinCacheEntry.vectorPtr.get();
+            FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
+            BinVector* binVector = cacheEntry.vectorPtr.get();
 
-            filterCurrentVector(*binVector, BinCacheEntry, refinement.start, refinement.end,
-                                numModifications_, coverageMask_, *thresholds_.statisticsPtr_);
+            filterCurrentVector(*binVector, cacheEntry, refinement.start, refinement.end,
+                                numModifications_, coverageMask_);
         }
 
         void filterThresholds(const Condition& condition) override {
