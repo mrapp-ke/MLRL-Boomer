@@ -94,7 +94,7 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
          *                                  scores to be predicted by rules
          */
         BinningLabelWiseRuleEvaluation(uint32 numPositiveBins, uint32 numNegativeBins, float64 l2RegularizationWeight)
-            : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins_),
+            : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
               numNegativeBins_(numNegativeBins),
               prediction_(LabelWiseEvaluatedPrediction(numPositiveBins + numNegativeBins)) {
 
