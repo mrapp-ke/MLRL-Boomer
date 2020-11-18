@@ -8,6 +8,7 @@ e.g. to the console or to a file.
 """
 import logging as log
 from abc import ABC, abstractmethod
+from typing import Dict, List
 
 import numpy as np
 from boomer.common.rules import RuleModel, RuleList, Rule, Body, EmptyBody, ConjunctiveBody, Head, FullHead, PartialHead
@@ -27,8 +28,8 @@ class ModelPrinterOutput(ABC):
         """
         Write a textual representation of a model to the output.
 
-        :param experiment_name: The name of the experiment
-        :param model:           The textual representation of the model
+        :param experiment_name:     The name of the experiment
+        :param model:               The textual representation of the model
         :param total_folds:         The total number of folds
         :param fold:                The fold for which the results should be written or None, if no cross validation is
                                     used or if the overall results, averaged over all folds, should be written
@@ -41,11 +42,13 @@ class ModelPrinter(ABC):
     An abstract base class for all classes that allow to print a textual representation of a `MLLearner`'s model.
     """
 
-    def __init__(self, *args: ModelPrinterOutput):
+    def __init__(self, options: Dict, outputs: List[ModelPrinterOutput]):
         """
-        :param args: The outputs, the textual representations of models should be written to
+        :param options: A dictionary that contains the options to be used for printing models
+        :param outputs: The outputs, the textual representations of models should be written to
         """
-        self.outputs = args
+        self.options = options
+        self.outputs = outputs
 
     def print(self, experiment_name: str, meta_data: MetaData, learner: Learner, current_fold: int, num_folds: int):
         """
@@ -91,7 +94,8 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
     Writes the textual representation of a model to a TXT file.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True):
+    def __init__(self, options: Dict, output_dir: str, clear_dir: bool = True):
+        super().__init__(options)
         self.output_dir = output_dir
         self.clear_dir = clear_dir
 
@@ -113,28 +117,24 @@ class RulePrinter(ModelPrinter):
     Allows to print a textual representation of a `MLRuleLearner`'s rule-based model.
     """
 
-    def __init__(self, *args: ModelPrinterOutput):
-        super().__init__(*args)
+    def __init__(self, options: Dict, outputs: List[ModelPrinterOutput]):
+        super().__init__(options, outputs)
 
     def _format_model(self, meta_data: MetaData, model) -> str:
-        return format_model(meta_data, model)
+        return format_model(meta_data, model, self.options)
 
 
-def format_model(meta_data: MetaData, model: RuleModel, print_feature_names: bool = True,
-                 print_label_names: bool = True) -> str:
+def format_model(meta_data: MetaData, model: RuleModel, options: Dict) -> str:
     """
     Formats a specific rule-based model as a text.
 
-    :param meta_data:           The meta data of the training data set
-    :param model:               The model to be formatted
-    :param print_feature_names: True, if the names of features should be printed, if available, False, if the indices of
-                                features should be printed
-    :param print_label_names:   True, if the names of labels should be printed, if available, False, if the indices of
-                                labels should be printed
-    :return:                    The text
+    :param meta_data:   The meta data of the training data set
+    :param model:       The model to be formatted
+    :param options:     The options to be used for printing the model
+    :return:            The text
     """
     if isinstance(model, RuleList):
-        return __format_rule_list(meta_data, model, print_feature_names, print_label_names)
+        return __format_rule_list(meta_data, model, **options)
     else:
         raise ValueError('Model has unknown type: ' + type(model).__name__)
 
