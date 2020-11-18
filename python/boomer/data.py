@@ -9,7 +9,7 @@ import logging as log
 import os.path as path
 import xml.etree.ElementTree as XmlTree
 from enum import Enum, auto
-from typing import List
+from typing import List, Optional
 from xml.dom import minidom
 
 import arff
@@ -38,13 +38,15 @@ class Attribute:
     Represents an attribute contained in a data set.
     """
 
-    def __init__(self, attribute_name: str, attribute_type: AttributeType):
+    def __init__(self, attribute_name: str, attribute_type: AttributeType, nominal_values: Optional[List[str]] = None):
         """
-        :param attribute_name:   The name of the attribute
-        :param attribute_type:   The type of the attribute
+        :param attribute_name:  The name of the attribute
+        :param attribute_type:  The type of the attribute
+        :param nominal_values:  A list that contains the possible values in case of a nominal attribute, None otherwise
         """
         self.attribute_name = attribute_name
         self.attribute_type = attribute_type
+        self.nominal_values = nominal_values
 
 
 class MetaData:
@@ -325,8 +327,16 @@ def __create_meta_data(attributes: list, label_names: List[str]) -> MetaData:
         attribute_name = __parse_attribute_or_label_name(attribute[0])
 
         if attribute_name not in label_set:
-            attribute_type = AttributeType.NOMINAL if isinstance(attribute[1], list) else AttributeType.NUMERIC
-            attribute_list.append(Attribute(attribute_name, attribute_type))
+            type_definition = attribute[1]
+
+            if isinstance(type_definition, list):
+                attribute_type = AttributeType.NOMINAL
+                nominal_values = type_definition
+            else:
+                attribute_type = AttributeType.NUMERIC
+                nominal_values = None
+
+            attribute_list.append(Attribute(attribute_name, attribute_type, nominal_values))
         elif len(attribute_list) == 0:
             labels_at_start = True
 
