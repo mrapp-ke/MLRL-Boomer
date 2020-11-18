@@ -54,8 +54,7 @@ class Lapack {
          * shape `(n, nrhs)`, representing the ordinates. X is a matrix of unknowns with shape `(n, nrhs)`.
          *
          * DSYSV will overwrite the matrices A and B. When terminated successfully, B will contain the solution to the
-         * system of linear equations. To retain their state, this function will copy the given arrays before invoking
-         * DSYSV.
+         * system of linear equations.
          *
          * Furthermore, DSYSV assumes the matrix of coefficients A to be symmetrical, i.e., it will only use the
          * upper-right triangle of A, whereas the remaining elements are ignored. For reasons of space efficiency, this
@@ -64,32 +63,22 @@ class Lapack {
          * elements are omitted. This function will implicitly convert the given array into a matrix that is suited for
          * DSYSV.
          *
-         * Optionally, this function allows to specify a weight to be used for L2 regularization. The given weight is
-         * added to each element on the diagonal of the matrix of coefficients A.
-         *
-         * @param coefficients              An array of type `float64`, shape `n * (n + 1) / 2)`, representing the
-         *                                  coefficients
-         * @param invertedOrdinates         An array of type `float64`, shape `(n)`, representing the inverted
-         *                                  ordinates, i.e., the ordinates multiplied by -1. The sign of the elements in
-         *                                  this array will be inverted to when creating the matrix B
-         * @param tmpArray1                 A pointer to an array of type `float64`, shape `(n, n)` that will be used to
-         *                                  temporarily store values computed by the DSYSV routine. May contain
-         *                                  arbitrary values
+         * @param tmpArray1                 A pointer to an array of type `float64`, shape `(n, n)` that stores the
+         *                                  coefficients in the matrix A. It will be used to temporarily store values
+         *                                  computed by the DSYSV routine
          * @param tmpArray2                 A pointer to an array of type `int`, shape `(n)` that will be used to
          *                                  temporarily store values computed by the DSYSV routine. May contain
          *                                  arbitrary values
          * @param tmpArray3                 A pointer to an array of type `double`, shape `(lwork)` that will be used to
          *                                  temporarily store values computed by the DSYSV routine. May contain
          *                                  arbitrary values
-         * @param output                    A pointer to an array of type `float64`, shape `(n)`, the solution of the
-         *                                  system of linear equations should be written to. May contain arbitrary
-         *                                  values
+         * @param output                    A pointer to an array of type `float64`, shape `(n)` that stores the
+         *                                  ordinates in the matrix A. The solution of the system of linear equations
+         *                                  will be written to this array
          * @param n                         The number of equations
          * @param lwork                     The value for the parameter "lwork" to be used by the DSYSV routine. Must
          *                                  have been determined using the function `queryDsysvLworkParameter`
-         * @param l2RegularizationWeight    A scalar of type `float64`, representing the weight of the L2 regularization
          */
-        void dsysv(const float64* coefficients, const float64* invertedOrdinates, float64* tmpArray1, int* tmpArray2,
-                   double* tmpArray3, float64* output, int n, int lwork, float64 l2RegularizationWeight);
+        void dsysv(float64* tmpArray1, int* tmpArray2, double* tmpArray3, float64* output, int n, int lwork);
 
 };
