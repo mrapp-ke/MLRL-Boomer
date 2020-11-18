@@ -15,6 +15,11 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredCacheEnt
 
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
 
+    if (filteredVector == nullptr) {
+        cacheEntry.vectorPtr = std::make_unique<BinVector>(numElements);
+        filteredVector = cacheEntry.vectorPtr.get();
+    }
+
     typename BinVector::const_iterator iterator = vector.cbegin();
     BinVector::iterator filteredIterator = filteredVector->begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
