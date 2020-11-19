@@ -36,26 +36,42 @@ class IBinning {
 
     public:
 
+        /**
+         * Stores information about the values in a `FeatureVector`. This includes the number of bins, the values should
+         * be assigned to, as well as the minimum and maximum value in the vector.
+         */
+        struct FeatureInfo {
+            uint32 numBins;
+            float32 minValue;
+            float32 maxValue;
+        };
+
         virtual ~IBinning() { };
 
         /**
-         * Returns the number of bins that should be used to assign the values in a specific array to.
+         * Retrieves and returns information about the values in a given `FeatureVector` that is required to apply the
+         * binning method.
+         *
+         * This function must be called prior to the function `createBins` to obtain information, e.g. the number of
+         * bins to be used, that is required to apply the binning method. This function may also be used to prepare,
+         * e.g. sort, the given `FeatureVector`. The `FeatureInfo` returned by this function must be passed to the
+         * function `createBins` later on.
          *
          * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
-         * @return              The number of bins to be used
+         * @return              A struct of `type `FeatureInfo` that stores the information
          */
-        virtual uint32 getNumBins(const FeatureVector& featureVector) const = 0;
+        virtual FeatureInfo getFeatureInfo(FeatureVector& featureVector) const = 0;
 
         /**
-         * Assigns the values in an array to bins.
+         * Assigns the values in a given `FeatureVector` to bins.
          *
-         * @param numBins       The number of bins to be used
-         * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to the
-         *                      bins
+         * @param featureInfo   A struct of type `FeatureInfo` that stores information about the given `FeatureVector`
+         * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
          * @param observer      A reference to an object of type `IBinningObserver`, which should be notified when a
          *                      value is assigned to a bin
          */
-        virtual void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const = 0;
+        virtual void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                IBinningObserver& observer) const = 0;
 
 };
 
@@ -76,9 +92,10 @@ class EqualFrequencyBinningImpl : public IBinning {
          */
         EqualFrequencyBinningImpl(float32 binRatio);
 
-        uint32 getNumBins(const FeatureVector& featureVector) const override;
+        FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
 
-        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const override;
+        void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                        IBinningObserver& observer) const override;
 
 };
 
@@ -99,8 +116,9 @@ class EqualWidthBinningImpl : public IBinning {
          */
         EqualWidthBinningImpl(float32 binRatio);
 
-        uint32 getNumBins(const FeatureVector& featureVector) const override;
+        FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
 
-        void createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const override;
+        void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                        IBinningObserver& observer) const override;
 
 };
