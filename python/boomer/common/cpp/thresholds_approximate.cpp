@@ -41,7 +41,6 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
                 filteredVector->addExample(r, example);
                 coverageMaskIterator[example.index] = numConditions;
             }
-            coverageMaskIterator[r] = numConditions;
             filteredIterator[i].numExamples = iterator[r].numExamples;
             filteredIterator[i].minValue = iterator[r].minValue;
             filteredIterator[i].maxValue = iterator[r].maxValue;
