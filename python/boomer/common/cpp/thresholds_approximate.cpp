@@ -7,8 +7,6 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
                                        intp conditionEnd, bool covered, uint32 numConditions,
                                        CoverageMask& coverageMask)
 {
-    //TODO: in this PR
-
     uint32 numTotalElements = vector.getNumElements();
     uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
 
@@ -171,7 +169,6 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
         }
 
         void filterThresholds(Refinement& refinement) override {
-            //TODO: In this Branch
             numModifications_++;
 
             uint32 featureIndex = refinement.featureIndex;
