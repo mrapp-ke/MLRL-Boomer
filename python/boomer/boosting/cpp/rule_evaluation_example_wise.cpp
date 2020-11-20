@@ -1,6 +1,8 @@
 #include "rule_evaluation_example_wise.h"
 #include "linalg.h"
 #include <cstdlib>
+#include <cmath>
+#include <limits>
 
 using namespace boosting;
 
@@ -239,6 +241,82 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
 };
 
+static inline void equalWidthBinning(const DenseExampleWiseStatisticVector& statisticVector, float64* coefficients,
+                                     float64* ordinates, uint32 numPositiveBins, uint32 numNegativeBins) {
+    uint32 n = numPositiveBins + numNegativeBins;
+
+    // Set arrays to zero...
+    for (uint32 c = 0; c < n; c++) {
+        ordinates[c] = 0;
+        uint32 offset = c * n;
+
+        for (uint32 r = 0; r < c + 1; r++) {
+            coefficients[offset + r] = 0;
+        }
+    }
+
+    // Find minimum and maximum gradients...
+    uint32 numGradients = statisticVector.getNumElements();
+    DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+
+    // TODO Simplify by using std::array
+    float64 minPositive = std::numeric_limits<float64>::max();
+    float64 maxPositive = 0;
+    float64 minNegative = 0;
+    float64 maxNegative = std::numeric_limits<float64>::min();
+
+    for (uint32 i = 0; i < numGradients; i++) {
+        float64 gradient = gradientIterator[i];
+
+        if (gradient < 0) {
+            if (gradient < minNegative) {
+                minNegative = gradient;
+            }
+
+            if (gradient > maxNegative) {
+                maxNegative = gradient;
+            }
+        } else if (gradient > 0) {
+            if (gradient < minPositive) {
+                minPositive = gradient;
+            }
+
+            if (gradient > maxPositive) {
+                maxPositive = gradient;
+            }
+        }
+    }
+
+    float64 spanPerPositiveBin = maxPositive > 0 ? (maxPositive - minPositive) / numPositiveBins : 0;
+    float64 spanPerNegativeBin = minNegative < 0 ? (maxNegative - minNegative) / numNegativeBins : 0;
+
+    for (uint32 i = 0; i < numGradients; i++) {
+        float64 gradient = gradientIterator[i];
+        uint32 binIndex;
+
+        if (gradient < 0) {
+            // Gradient belongs to a negative bin...
+            binIndex = floor((gradient - minNegative) / spanPerNegativeBin);
+
+            if (binIndex >= numNegativeBins) {
+                binIndex = numNegativeBins - 1;
+            }
+        } else if (gradient > 0) {
+            // Gradient belongs to a positive bin...
+            binIndex = floor((gradient - minPositive) / spanPerPositiveBin);
+
+            if (binIndex >= numPositiveBins) {
+                binIndex = numPositiveBins - 1;
+            }
+
+            binIndex += numNegativeBins;
+        }
+
+        ordinates[binIndex] -= gradient;
+        // TODO Add Hessians to bin
+    }
+}
+
 /**
  * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
  * Hessians that have been calculated according to a loss function that is applied example wise using L2 regularization.
@@ -267,6 +345,11 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                                             EvaluatedPrediction& prediction, int dsysvLwork, float64* dsysvTmpArray1,
                                             int* dsysvTmpArray2, double* dsysvTmpArray3,
                                             float64* dspmvTmpArray) override {
+            uint32 numPredictions = prediction.getNumElements();
+            EvaluatedPrediction::score_iterator scoreIterator = prediction.scores_begin();
+
+            // Apply equal-width binning...
+            equalWidthBinning(statisticVector, dsysvTmpArray1, scoreIterator, numPositiveBins_, numNegativeBins_);
             // TODO
         }
 
