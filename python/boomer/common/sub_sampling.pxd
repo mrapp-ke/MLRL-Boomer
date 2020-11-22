@@ -1,9 +1,21 @@
 from boomer.common._types cimport uint32, float32
 from boomer.common._indices cimport IIndexVector
-from boomer.common._random cimport RNG
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
+
+
+cdef extern from "cpp/sampling/random.h" nogil:
+
+    cdef cppclass RNG:
+
+        # Constructors:
+
+        RNG(uint32 randomState) except +
+
+        # Functions:
+
+        uint32 random(uint32 min, uint32 max)
 
 
 cdef extern from "cpp/sampling/weight_vector.h" nogil:

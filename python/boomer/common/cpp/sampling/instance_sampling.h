@@ -4,7 +4,7 @@
 #pragma once
 
 #include "weight_vector.h"
-#include "../random.h"
+#include "random.h"
 #include <memory>
 
 
