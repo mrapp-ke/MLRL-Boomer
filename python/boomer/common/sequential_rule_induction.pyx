@@ -3,7 +3,6 @@
 
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
-from boomer.common._random cimport RNG
 from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
@@ -11,7 +10,7 @@ from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
 from boomer.common.thresholds cimport AbstractThresholds
 from boomer.common.stopping_criteria cimport StoppingCriterion
-from boomer.common.sub_sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling
+from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.head_refinement cimport IHeadRefinementFactory
 
 from libcpp.memory cimport shared_ptr, unique_ptr, make_unique
