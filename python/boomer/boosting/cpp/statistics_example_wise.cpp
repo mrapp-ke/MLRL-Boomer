@@ -2,7 +2,6 @@
 #include "data/matrix_dense_numeric.h"
 #include "data/matrix_dense_example_wise.h"
 #include "data/vector_dense_example_wise.h"
-#include <cstdlib>
 
 using namespace boosting;
 
@@ -46,17 +45,7 @@ class ExampleWiseHistogram : virtual public IHistogram {
 
                 StatisticVector* totalCoverableSumVector_;
 
-                StatisticVector* tmpVector_;
-
-                int dsysvLwork_;
-
-                float64* dsysvTmpArray1_;
-
-                int* dsysvTmpArray2_;
-
-                double* dsysvTmpArray3_;
-
-                float64* dspmvTmpArray_;
+                StatisticVector tmpVector_;
 
             public:
 
@@ -73,24 +62,15 @@ class ExampleWiseHistogram : virtual public IHistogram {
                                  std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                     : histogram_(histogram), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                      totalSumVector_(histogram.totalSumVectorPtr_.get()) {
+                      totalSumVector_(histogram.totalSumVectorPtr_.get()),
+                      tmpVector_(StatisticVector(labelIndices.getNumElements())) {
                     accumulatedSumVector_ = nullptr;
                     totalCoverableSumVector_ = nullptr;
-                    tmpVector_ = nullptr;
-                    dsysvTmpArray1_ = nullptr;
-                    dsysvTmpArray2_ = nullptr;
-                    dsysvTmpArray3_ = nullptr;
-                    dspmvTmpArray_ = nullptr;
                 }
 
                 ~StatisticsSubset() {
                     delete accumulatedSumVector_;
                     delete totalCoverableSumVector_;
-                    delete tmpVector_;
-                    free(dsysvTmpArray1_);
-                    free(dsysvTmpArray2_);
-                    free(dsysvTmpArray3_);
-                    free(dspmvTmpArray_);
                 }
 
                 void addToMissing(uint32 statisticIndex, uint32 weight) override {
@@ -136,61 +116,30 @@ class ExampleWiseHistogram : virtual public IHistogram {
                     const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
-
-                        // Initialize temporary vector, if necessary...
-                        if (tmpVector_ == nullptr) {
-                            uint32 numPredictions = labelIndices_.getNumElements();
-                            tmpVector_ = new StatisticVector(numPredictions);
-                        }
-
-                        tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
-                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
-                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
-                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
-                                               sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*tmpVector_);
+                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                              labelIndices_, sumsOfStatistics.gradients_cbegin(),
+                                              sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
+                                              sumsOfStatistics.hessians_cend());
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpVector_);
                     }
 
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
                 }
 
                 const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
-                    // To avoid array recreation each time this function is called, the temporary arrays are only
-                    // initialized if they have not been initialized yet
-                    if (dsysvTmpArray1_ == nullptr) {
-                        uint32 numPredictions = labelIndices_.getNumElements();
-                        dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
-                        dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
-                        dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
-
-                        // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
-                        dsysvLwork_ = histogram_.lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_,
-                                                                                      numPredictions);
-                        dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
-                    }
-
                     StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
-                        // Initialize temporary vector, if necessary...
-                        if (tmpVector_ == nullptr) {
-                            uint32 numPredictions = labelIndices_.getNumElements();
-                            tmpVector_ = new StatisticVector(numPredictions);
-                        }
-
-                        tmpVector_->difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
-                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
-                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
-                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
-                                               sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateExampleWisePrediction(*tmpVector_, dsysvLwork_,
-                                                                                  dsysvTmpArray1_, dsysvTmpArray2_,
-                                                                                  dsysvTmpArray3_, dspmvTmpArray_);
+                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                              labelIndices_, sumsOfStatistics.gradients_cbegin(),
+                                              sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
+                                              sumsOfStatistics.hessians_cend());
+                        return ruleEvaluationPtr_->calculateExampleWisePrediction(tmpVector_);
                     }
 
-                    return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfStatistics, dsysvLwork_,
-                                                                              dsysvTmpArray1_, dsysvTmpArray2_,
-                                                                              dsysvTmpArray3_, dspmvTmpArray_);
+                    return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfStatistics);
                 }
 
         };
@@ -206,8 +155,6 @@ class ExampleWiseHistogram : virtual public IHistogram {
 
         std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
-        std::shared_ptr<Lapack> lapackPtr_;
-
         std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
     public:
@@ -220,16 +167,13 @@ class ExampleWiseHistogram : virtual public IHistogram {
          * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory`,
          *                                  to be used for calculating the predictions, as well as corresponding quality
          *                                  scores, of rules
-         * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
-         *                                  different Lapack routines
          */
         ExampleWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                              std::unique_ptr<StatisticVector> totalSumVectorPtr,
-                             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                             std::shared_ptr<Lapack> lapackPtr)
+                             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
             : numStatistics_(statisticMatrixPtr->getNumRows()), numLabels_(statisticMatrixPtr->getNumCols()),
               statisticMatrixPtr_(std::move(statisticMatrixPtr)), totalSumVectorPtr_(std::move(totalSumVectorPtr)),
-              lapackPtr_(lapackPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+              ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
         }
 
@@ -318,7 +262,7 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
 
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
                     std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
-                    statistics_.ruleEvaluationFactoryPtr_, statistics_.lapackPtr_);
+                    statistics_.ruleEvaluationFactoryPtr_);
             }
 
         };
@@ -348,8 +292,6 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
          * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory`,
          *                                  to be used for calculating the predictions, as well as corresponding quality
          *                                  scores, of rules
-         * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
-         *                                  different Lapack routines
          * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
          *                                  provides random access to the labels of the training examples
          * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
@@ -359,14 +301,12 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
          */
         ExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                               std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                              std::shared_ptr<Lapack> lapackPtr,
                               std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
             : ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>(
                   std::move(statisticMatrixPtr),
-                  std::make_unique<StatisticVector>(statisticMatrixPtr->getNumCols()), ruleEvaluationFactoryPtr,
-                  lapackPtr),
+                  std::make_unique<StatisticVector>(statisticMatrixPtr->getNumCols()), ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
               scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
 
@@ -415,10 +355,10 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
 
 DenseExampleWiseStatisticsFactoryImpl::DenseExampleWiseStatisticsFactoryImpl(
         std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, std::unique_ptr<Lapack> lapackPtr,
+        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
         std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
     : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-      lapackPtr_(std::move(lapackPtr)), labelMatrixPtr_(labelMatrixPtr) {
+      labelMatrixPtr_(labelMatrixPtr) {
 
 }
 
@@ -435,6 +375,6 @@ std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactoryImpl::c
     }
 
     return std::make_unique<ExampleWiseStatistics<DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
-        lossFunctionPtr_, ruleEvaluationFactoryPtr_, lapackPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
+        lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
         std::move(scoreMatrixPtr));
 }

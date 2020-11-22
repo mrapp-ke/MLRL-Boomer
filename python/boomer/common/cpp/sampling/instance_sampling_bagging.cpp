@@ -1,0 +1,24 @@
+#include "instance_sampling_bagging.h"
+#include "weight_vector_dense.h"
+
+
+Bagging::Bagging(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
+}
+
+std::unique_ptr<IWeightVector> Bagging::subSample(uint32 numExamples, RNG& rng) const {
+    uint32 numSamples = (uint32) (sampleSize_ * numExamples);
+    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples, numSamples);
+    DenseWeightVector::iterator iterator = weightVectorPtr->begin();
+
+    for (uint32 i = 0; i < numSamples; i++) {
+        // Randomly select the index of an example...
+        uint32 randomIndex = rng.random(0, numExamples);
+
+        // Update weight at the selected index...
+        iterator[randomIndex] += 1;
+    }
+
+    return weightVectorPtr;
+}

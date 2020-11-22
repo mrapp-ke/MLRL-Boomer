@@ -70,13 +70,15 @@ class RuleLearnerRunnable(Runnable, ABC):
                                     clear_dir=args.current_fold == -1))
 
             if args.store_rules:
-                model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=False))
+                model_printer_outputs.append(
+                    ModelPrinterTxtOutput(options=args.print_options, output_dir=output_dir, clear_dir=False))
 
         model_dir = args.model_dir
         persistence = None if model_dir is None else ModelPersistence(model_dir)
         learner = self._create_learner(args)
         parameter_input = parameter_input
-        model_printer = RulePrinter(*model_printer_outputs) if len(model_printer_outputs) > 0 else None
+        model_printer = RulePrinter(args.print_options, model_printer_outputs) if len(
+            model_printer_outputs) > 0 else None
         train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
         test_evaluation = ClassificationEvaluation(*evaluation_outputs)
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
