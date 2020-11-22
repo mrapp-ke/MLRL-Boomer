@@ -19,12 +19,12 @@ from boomer.common.input_data import DokNominalFeatureMask
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, NoPruning, IREP
 from boomer.common.rules import ModelBuilder
+from boomer.common.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
+from boomer.common.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
+    NoInstanceSubSampling
+from boomer.common.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
-from boomer.common.sub_sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
-from boomer.common.sub_sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
-    NoInstanceSubSampling
-from boomer.common.sub_sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from boomer.common.thresholds import ThresholdsFactory
 from boomer.common.thresholds_approximate import ApproximateThresholdsFactory
 from boomer.common.thresholds_exact import ExactThresholdsFactory
