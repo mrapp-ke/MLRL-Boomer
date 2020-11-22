@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../indices/index_vector.h"
-#include "../random.h"
+#include "random.h"
 #include <memory>
 
 
