@@ -10,7 +10,7 @@ from boomer.common.head_refinement cimport IHeadRefinement
 from boomer.common.rules cimport Condition, Comparator, ConditionList
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport IStatistics, IStatisticsSubset
-from boomer.common.sub_sampling cimport IWeightVector
+from boomer.common.sampling cimport IWeightVector
 from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 
 from libcpp.unordered_map cimport unordered_map
