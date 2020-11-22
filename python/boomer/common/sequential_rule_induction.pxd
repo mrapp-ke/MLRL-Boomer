@@ -7,7 +7,7 @@ from boomer.common.head_refinement cimport HeadRefinementFactory
 from boomer.common.input_data cimport LabelMatrix, FeatureMatrix, NominalFeatureMask
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
-from boomer.common.sub_sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
+from boomer.common.sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 
 
 cdef class SequentialRuleInduction:

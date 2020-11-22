@@ -3,7 +3,7 @@ from boomer.common.rules cimport ModelBuilder
 from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.thresholds cimport AbstractThresholds
-from boomer.common.sub_sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
+from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.head_refinement cimport IHeadRefinementFactory
