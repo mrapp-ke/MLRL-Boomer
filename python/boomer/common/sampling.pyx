@@ -15,7 +15,7 @@ cdef class InstanceSubSampling:
 
 cdef class Bagging(InstanceSubSampling):
     """
-    A wrapper for the C++ class `BaggingImpl`.
+    A wrapper for the C++ class `Bagging`.
     """
 
     def __cinit__(self, float32 sample_size = 1.0):
@@ -28,7 +28,7 @@ cdef class Bagging(InstanceSubSampling):
 
 cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
     """
-    A wrapper for the C++ class `RandomInstanceSubsetSelectionImpl`.
+    A wrapper for the C++ class `RandomInstanceSubsetSelection`.
     """
 
     def __cinit__(self, float32 sample_size = 0.66):
@@ -42,7 +42,7 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
 
 cdef class NoInstanceSubSampling(InstanceSubSampling):
     """
-    A wrapper for the C++ class `NoInstanceSubSamplingImpl`.
+    A wrapper for the C++ class `NoInstanceSubSampling`.
     """
 
     def __cinit__(self):
@@ -58,7 +58,7 @@ cdef class FeatureSubSampling:
 
 cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
     """
-    A wrapper for the C++ class `RandomFeatureSubsetSelectionImpl`.
+    A wrapper for the C++ class `RandomFeatureSubsetSelection`.
     """
 
     def __cinit__(self, float32 sample_size = 0.0):
@@ -73,7 +73,7 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
 
 cdef class NoFeatureSubSampling(FeatureSubSampling):
     """
-    A wrapper for the C++ class `NoFeatureSubSamplingImpl`.
+    A wrapper for the C++ class `NoFeatureSubSampling`.
     """
 
     def __cinit__(self):
@@ -89,7 +89,7 @@ cdef class LabelSubSampling:
 
 cdef class RandomLabelSubsetSelection(LabelSubSampling):
     """
-    A wrapper for the C++ class `RandomLabelSubsetSelectionImpl`.
+    A wrapper for the C++ class `RandomLabelSubsetSelection`.
     """
 
     def __cinit__(self, uint32 num_samples):
@@ -102,7 +102,7 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
 cdef class NoLabelSubSampling(LabelSubSampling):
     """
-    A wrapper for the C++ class `NoLabelSubSamplingImpl`.
+    A wrapper for the C++ class `NoLabelSubSampling`.
     """
 
     def __cinit__(self):
