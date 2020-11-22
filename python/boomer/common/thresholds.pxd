@@ -4,7 +4,7 @@ from boomer.common.head_refinement cimport HeadRefinementFactory
 from boomer.common.input_data cimport FeatureMatrix, NominalFeatureMask
 from boomer.common.rule_refinement cimport Refinement
 from boomer.common.statistics cimport StatisticsProvider
-from boomer.common.sub_sampling cimport IWeightVector
+from boomer.common.sampling cimport IWeightVector
 
 from libcpp.memory cimport unique_ptr
 
