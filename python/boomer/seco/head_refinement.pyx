@@ -11,7 +11,7 @@ from libcpp.memory cimport make_shared
 
 cdef class PartialHeadRefinementFactory(HeadRefinementFactory):
     """
-    A wrapper for the C++ class `PartialHeadRefinementFactoryImpl`.
+    A wrapper for the C++ class `PartialHeadRefinementFactory`.
     """
 
     def __cinit__(self, LiftFunction lift_function):
