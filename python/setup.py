@@ -66,6 +66,7 @@ sources = [
     'boomer/boosting/cpp/statistics_example_wise.cpp',
     'boomer/boosting/cpp/rule_evaluation_label_wise.cpp',
     'boomer/boosting/cpp/rule_evaluation_example_wise.cpp',
+    'boomer/seco/cpp/stopping/stopping_criterion_coverage.cpp',
     'boomer/seco/cpp/head_refinement/head_refinement_partial.cpp',
     'boomer/seco/cpp/head_refinement/lift_function_peak.cpp',
     'boomer/seco/cpp/heuristics/heuristic_f_measure.cpp',
